@@ -1,36 +1,29 @@
-# Cómo van las imágenes por marca
+# Estado de las imágenes por marca
 
-## ✅ Samsung — ya tiene fotos reales
+## ✅ Samsung — completo (autorizado)
 
-Reemplacé los placeholders de Samsung por las imágenes oficiales que enviaste:
+- `images/samsung/logo-samsung.png` — logo oficial (en el encabezado de todas las páginas de Samsung).
+- `images/samsung/hero-samsung-cartagena.jpg` — técnico autorizado Samsung (portada).
+- `images/samsung/equipo-samsung-cartagena.jpg` — técnico con carné y maletín Samsung.
+- `images/samsung/cocina-samsung-cartagena.jpg`, `cliente-samsung-cartagena.jpg`,
+  `family-hub-samsung-cartagena.jpg`, `familia-samsung-cartagena.jpg` — galería de
+  producto.
 
-- `images/samsung/logo-samsung.png` — logo oficial.
-- `images/samsung/hero-samsung-cartagena.jpg` — nevera Family Hub en cocina (portada).
-- `images/samsung/equipo-samsung-cartagena.jpg` — cliente usando la nevera.
-- `images/samsung/family-hub-samsung-cartagena.jpg` — pantalla Family Hub (galería).
-- `images/samsung/familia-samsung-cartagena.jpg` — familia junto a la nevera (galería).
-
-El color de acento de toda la página de Samsung también se actualizó al azul
-real de su logo (`#034EA2`), tomado directamente del archivo que enviaste.
-
-Estas son fotos oficiales/de catálogo de Samsung, no fotos de tus propios
-técnicos — por eso el texto `alt` de cada una describe el producto (por
-ejemplo, "nevera Samsung Family Hub instalada en una cocina"), sin decir que
-muestran una reparación real. Si más adelante tienes fotos de tus propios
-técnicos trabajando, esas sí puedes (y conviene) usarlas para reforzar la
-confianza del cliente.
+Como confirmaste que tu negocio **es un centro autorizado por Samsung**, usé las
+fotos con la insignia "Técnico Autorizado" tal cual las enviaste, y agregué una
+etiqueta "Autorizado" junto al nombre de la marca en el encabezado de esas
+páginas.
 
 ## ⏳ LG, Electrolux, Whirlpool, Mabe, Haceb — pendientes
 
-Estas 5 marcas siguen con el placeholder de color. Envíame las imágenes de
-cada una (puedes mandarlas de a 5 por mensaje, igual que hiciste con
-Samsung) y las agrego con el mismo criterio: logo real, fotos en las
-carpetas correspondientes, alt descriptivo y color de acento tomado del
-logo de cada marca.
+Estas 5 marcas siguen con el placeholder de color mientras me envías sus
+imágenes (logo + fotos, de a 5 por mensaje como hiciste con Samsung). Para
+cada una dime también si eres **autorizado oficialmente por esa marca** o no,
+porque eso cambia si puedo usar la palabra "Autorizado" en esa página.
 
 ```
 images/
-  logo/            → logo genérico del sitio (STC), no cambia por marca
+  logo/            → logo genérico del sitio (STC), solo se usa como reserva
   home/            → fotos de portada e "quiénes somos" generales
   samsung/         ✅ completo
   lg/               ⏳ pendiente
@@ -40,15 +33,13 @@ images/
   haceb/            ⏳ pendiente
 ```
 
-## Recomendaciones para las fotos que faltan
+## Cómo se usa cada logo de marca
 
-1. Si son fotos oficiales de catálogo (como las de Samsung), sirven para
-   mostrar la tecnología del equipo — no se necesitan fotos de tus técnicos
-   para eso.
-2. Si tienes fotos reales de tu equipo trabajando, mucho mejor: se ven en la
-   sección "Especialistas en [marca]" y refuerzan la confianza del cliente.
-3. Formato recomendado: `.jpg` (fotos) o `.png` (logos con transparencia),
-   menos de 200 KB por imagen cuando sea posible.
-4. Si me envías el logo de la marca, extraigo el color oficial del archivo
-   y lo aplico como color de acento de esa página automáticamente (así lo
-   hice con el azul de Samsung).
+Desde esta actualización, **cada página de marca muestra su propio logo en el
+encabezado** (no el logo genérico "STC"). El logo genérico solo aparece en las
+páginas que no son de una marca específica: inicio, preguntas frecuentes,
+zonas, servicios generales y la página de fallas comunes de todas las marcas.
+
+Si me envías el logo de una marca, extraigo su color oficial del archivo y lo
+aplico automáticamente como color de acento de toda esa página (así lo hice
+con el azul de Samsung, `#034EA2`, tomado directamente del logo).

@@ -1,72 +1,77 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Rediseño del sitio `servicio-tecnico-en-cartagena.com` con una arquitectura
-ampliada para posicionar en Google en Cartagena: más páginas indexables,
-enlazado interno, enlaces salientes de autoridad y cobertura de palabras
-clave. Ver `IMAGENES-LEEME.md` para el estado de las fotos por marca.
+Tercera iteración: cada marca ahora tiene su **propio logo en el encabezado**,
+sus **propias páginas dedicadas** de fallas comunes / mantenimiento /
+instalación (nada compartido ni mezclado entre marcas), todas las zonas de
+cobertura enlazadas desde cada marca, y un rediseño visual completo del CSS.
 
-## Estructura del sitio (20 páginas)
+## Estructura del sitio (38 páginas)
 
 ```
 index.html                                 → home, todas las marcas
 preguntas-frecuentes.html                  → FAQ general (pilar)
-fallas-comunes-neveras-cartagena.html      → pilar de fallas por marca
+fallas-comunes-neveras-cartagena.html      → pilar de fallas (enlaza a cada marca)
 
-marcas/
-  samsung.html  lg.html  electrolux.html
-  whirlpool.html  mabe.html  haceb.html    → 1 página por marca
+marcas/samsung/
+  index.html                → resumen de la marca (logo propio en el header)
+  fallas-comunes.html       → guía completa de fallas Samsung
+  mantenimiento-preventivo.html
+  instalacion-nevecones.html
+marcas/lg/            (mismas 4 páginas)
+marcas/electrolux/    (mismas 4 páginas)
+marcas/whirlpool/     (mismas 4 páginas)
+marcas/mabe/          (mismas 4 páginas)
+marcas/haceb/         (mismas 4 páginas)
 
-servicios/
-  mantenimiento-preventivo-neveras-cartagena.html
-  instalacion-nevecones-cartagena.html
-  reparacion-compresores-neveras-cartagena.html
-
-zonas/
-  bocagrande.html   manga.html        el-laguito.html
-  castillogrande.html  crespo.html    centro-historico.html
-  pie-de-la-popa.html  turbaco.html   → 1 página por sector de Cartagena
+servicios/            → 3 páginas "pilar" (genéricas, enlazan a cada marca)
+zonas/                → 8 páginas, una por sector de Cartagena
 ```
 
-Todo enlaza entre sí: el menú tiene desplegables de **Marcas**, **Servicios**
-y **Zonas**; cada página de marca enlaza a servicios y zonas relacionadas;
-cada página de servicio y de zona enlaza de vuelta a las 6 marcas; y el pie
-de página repite el mapa completo del sitio en todas las páginas.
+24 páginas de marca (4 × 6) + 8 de zona + 3 de servicio + 3 generales = 38.
 
-## SEO técnico incluido
+## Qué cambió en esta iteración (a partir de tu feedback)
 
-- Meta tags completos (title, description, keywords, canonical, Open Graph).
-- **Etiqueta de verificación de Google Search Console** en las 20 páginas.
-- Datos estructurados `schema.org`: `LocalBusiness`, `Service`, `FAQPage`,
-  `BreadcrumbList` según la página.
-- Enlaces salientes de autoridad: sitio oficial de cada marca y la
-  Superintendencia de Industria y Comercio (garantías al consumidor).
-- `robots.txt` y `sitemap.xml` con las 20 páginas.
-- Sin frameworks pesados: CSS propio y liviano en vez de Tailwind por CDN.
-- Imágenes locales organizadas por carpeta, sin depender de servidores
-  externos.
+1. **Logo propio por marca en el encabezado.** Cada una de las 24 páginas de
+   marca muestra el logo de esa marca (no el genérico "STC") en el header,
+   con "Servicio Técnico [Marca] · Cartagena" y una pestaña "Autorizado"
+   cuando aplica (por ahora, solo Samsung, que confirmaste que es autorizado).
+   La barra superior incluye un enlace "&larr; Todas las marcas" para volver
+   al sitio general sin perder la navegación.
+2. **Cada marca tiene sus propias páginas**, no contenido genérico compartido:
+   - `fallas-comunes.html`: guía completa de diagnóstico, propia de esa marca.
+   - `mantenimiento-preventivo.html`: consejos de cuidado específicos de su
+     tecnología (compresor, sistema No Frost, etc.), no un texto genérico.
+   - `instalacion-nevecones.html`: consideraciones de instalación propias de
+     esa marca.
+   - Pestañas de navegación (Resumen / Fallas Comunes / Mantenimiento /
+     Instalación) en la parte superior de cada página de marca.
+3. **Todas las zonas de Cartagena enlazadas desde cada marca** (antes solo se
+   mostraba una muestra de 4; ahora las 8, con enlace a la página de cada
+   zona).
+4. **Rediseño completo del CSS**: sombras y elevación más cuidadas, tarjetas
+   con hover, header con efecto de desenfoque (blur) al hacer scroll, hero
+   con acento decorativo, tipografía con mejor jerarquía, footer con línea de
+   acento superior — sin frameworks externos, sigue cargando rápido.
+5. **Imágenes reales de Samsung** (logo, técnico autorizado con carné y
+   maletín Samsung, galería de producto) reemplazando los placeholders,
+   ahora usadas como foto principal y no solo como imágenes secundarias.
 
 ## Estado de las imágenes por marca
 
-- **Samsung**: fotos reales aplicadas (logo oficial + 4 fotos de producto),
-  con `alt` descriptivo y el color de acento de la página tomado del azul
-  real del logo (`#034EA2`).
-- **LG, Electrolux, Whirlpool, Mabe, Haceb**: siguen con el placeholder de
-  color a la espera de que envíes las imágenes de cada una.
-
-Detalle completo en `IMAGENES-LEEME.md`.
+Ver `IMAGENES-LEEME.md` para el detalle. Resumen: Samsung completo con fotos
+reales; LG, Electrolux, Whirlpool, Mabe y Haceb siguen con el placeholder de
+color a la espera de sus imágenes.
 
 ## Pendiente de tu parte
 
-1. Enviar las imágenes de las 5 marcas restantes (logo + fotos), igual que
-   hiciste con Samsung.
+1. Enviar las imágenes de las 5 marcas restantes (logo + fotos), y decirme si
+   cada una es oficialmente autorizada por el fabricante o no.
 2. Confirmar el correo de contacto (uso
    `contacto@servicio-tecnico-en-cartagena.com` en todo el sitio).
-3. Reemplazar los testimonios por reseñas reales o reseñas de Google
-   Business Profile.
-4. Verificar que los enlaces a los sitios oficiales de cada marca sigan
-   vigentes antes de publicar.
-5. Subir el sitio a Google Search Console (la etiqueta ya está en el
-   `<head>` de las 20 páginas) y enviar `sitemap.xml`.
+3. Reemplazar los testimonios por reseñas reales o reseñas de Google Business
+   Profile.
+4. Subir el sitio a Google Search Console (la etiqueta ya está en el
+   `<head>` de las 38 páginas) y enviar `sitemap.xml`.
 
 ## Cómo previsualizarlo
 

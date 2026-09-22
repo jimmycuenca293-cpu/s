@@ -19,40 +19,148 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://servicio-tecnico-en-cartagena.com/marcas/samsung.html</loc>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/samsung/index.html</loc>
     <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://servicio-tecnico-en-cartagena.com/marcas/lg.html</loc>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/samsung/fallas-comunes.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/samsung/mantenimiento-preventivo.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/samsung/instalacion-nevecones.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/lg/index.html</loc>
     <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://servicio-tecnico-en-cartagena.com/marcas/electrolux.html</loc>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/lg/fallas-comunes.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/lg/mantenimiento-preventivo.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/lg/instalacion-nevecones.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/electrolux/index.html</loc>
     <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://servicio-tecnico-en-cartagena.com/marcas/whirlpool.html</loc>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/electrolux/fallas-comunes.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/electrolux/mantenimiento-preventivo.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/electrolux/instalacion-nevecones.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/whirlpool/index.html</loc>
     <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://servicio-tecnico-en-cartagena.com/marcas/mabe.html</loc>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/whirlpool/fallas-comunes.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/whirlpool/mantenimiento-preventivo.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/whirlpool/instalacion-nevecones.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/mabe/index.html</loc>
     <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://servicio-tecnico-en-cartagena.com/marcas/haceb.html</loc>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/mabe/fallas-comunes.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/mabe/mantenimiento-preventivo.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/mabe/instalacion-nevecones.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/haceb/index.html</loc>
     <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/haceb/fallas-comunes.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/haceb/mantenimiento-preventivo.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://servicio-tecnico-en-cartagena.com/marcas/haceb/instalacion-nevecones.html</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://servicio-tecnico-en-cartagena.com/servicios/mantenimiento-preventivo-neveras-cartagena.html</loc>
