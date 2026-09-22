@@ -1,77 +1,74 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Tercera iteración: cada marca ahora tiene su **propio logo en el encabezado**,
-sus **propias páginas dedicadas** de fallas comunes / mantenimiento /
-instalación (nada compartido ni mezclado entre marcas), todas las zonas de
-cobertura enlazadas desde cada marca, y un rediseño visual completo del CSS.
+Cuarta iteración: corrige el bug de navegación, agrega las fotos reales de
+LG, suma 2 páginas dedicadas más por marca (repuestos originales y preguntas
+frecuentes) y amplía el texto SEO en las páginas más cortas.
 
-## Estructura del sitio (38 páginas)
+## Estructura del sitio (50 páginas)
 
 ```
 index.html                                 → home, todas las marcas
 preguntas-frecuentes.html                  → FAQ general (pilar)
 fallas-comunes-neveras-cartagena.html      → pilar de fallas (enlaza a cada marca)
 
-marcas/samsung/
-  index.html                → resumen de la marca (logo propio en el header)
-  fallas-comunes.html       → guía completa de fallas Samsung
+marcas/samsung/   (6 páginas cada una)
+marcas/lg/
+marcas/electrolux/
+marcas/whirlpool/
+marcas/mabe/
+marcas/haceb/
+  index.html
+  fallas-comunes.html
   mantenimiento-preventivo.html
   instalacion-nevecones.html
-marcas/lg/            (mismas 4 páginas)
-marcas/electrolux/    (mismas 4 páginas)
-marcas/whirlpool/     (mismas 4 páginas)
-marcas/mabe/          (mismas 4 páginas)
-marcas/haceb/         (mismas 4 páginas)
+  repuestos-originales.html      ← nueva
+  preguntas-frecuentes.html      ← nueva
 
 servicios/            → 3 páginas "pilar" (genéricas, enlazan a cada marca)
 zonas/                → 8 páginas, una por sector de Cartagena
 ```
 
-24 páginas de marca (4 × 6) + 8 de zona + 3 de servicio + 3 generales = 38.
+36 páginas de marca (6 × 6) + 8 de zona + 3 de servicio + 3 generales = 50.
 
-## Qué cambió en esta iteración (a partir de tu feedback)
+## Qué se corrigió en esta iteración
 
-1. **Logo propio por marca en el encabezado.** Cada una de las 24 páginas de
-   marca muestra el logo de esa marca (no el genérico "STC") en el header,
-   con "Servicio Técnico [Marca] · Cartagena" y una pestaña "Autorizado"
-   cuando aplica (por ahora, solo Samsung, que confirmaste que es autorizado).
-   La barra superior incluye un enlace "&larr; Todas las marcas" para volver
-   al sitio general sin perder la navegación.
-2. **Cada marca tiene sus propias páginas**, no contenido genérico compartido:
-   - `fallas-comunes.html`: guía completa de diagnóstico, propia de esa marca.
-   - `mantenimiento-preventivo.html`: consejos de cuidado específicos de su
-     tecnología (compresor, sistema No Frost, etc.), no un texto genérico.
-   - `instalacion-nevecones.html`: consideraciones de instalación propias de
-     esa marca.
-   - Pestañas de navegación (Resumen / Fallas Comunes / Mantenimiento /
-     Instalación) en la parte superior de cada página de marca.
-3. **Todas las zonas de Cartagena enlazadas desde cada marca** (antes solo se
-   mostraba una muestra de 4; ahora las 8, con enlace a la página de cada
-   zona).
-4. **Rediseño completo del CSS**: sombras y elevación más cuidadas, tarjetas
-   con hover, header con efecto de desenfoque (blur) al hacer scroll, hero
-   con acento decorativo, tipografía con mejor jerarquía, footer con línea de
-   acento superior — sin frameworks externos, sigue cargando rápido.
-5. **Imágenes reales de Samsung** (logo, técnico autorizado con carné y
-   maletín Samsung, galería de producto) reemplazando los placeholders,
-   ahora usadas como foto principal y no solo como imágenes secundarias.
+1. **Bug de navegación corregido.** En las páginas de fallas, mantenimiento,
+   instalación (y los pilares de servicios/zonas), el botón principal del
+   hero (“Agenda tu…”) era un ancla `#contacto` que saltaba a la sección de
+   contacto pegada justo antes del pie de página. En páginas cortas eso se
+   sentía como si el clic te mandara al footer. Ahora ese botón va
+   directamente a WhatsApp con el mensaje pre-cargado, y se agregó un botón
+   "Llamar" al lado. El salto a `#contacto` solo se mantiene en el home y en
+   el resumen de cada marca, donde sí existe un formulario completo más
+   abajo.
+2. **Imágenes reales de LG** (logo, nevera French Door en cocina, cliente
+   usando InstaView, galería de producto) reemplazando los placeholders,
+   con el rojo oficial de LG (`#AD0036`) como color de acento.
+3. **2 páginas nuevas por marca**: `repuestos-originales.html` (compresores,
+   tarjetas electrónicas, empaques y motores originales, con FAQ propia) y
+   `preguntas-frecuentes.html` (preguntas específicas de esa marca: precio,
+   garantía, zonas). La pestaña de navegación de cada marca ahora tiene 6
+   secciones en vez de 4.
+4. **Más texto SEO** en las secciones más cortas (frecuencia de
+   mantenimiento, tiempo de instalación), agregando contexto de zonas y
+   tecnología específica de cada marca en vez de un párrafo genérico de una
+   sola línea.
 
 ## Estado de las imágenes por marca
 
-Ver `IMAGENES-LEEME.md` para el detalle. Resumen: Samsung completo con fotos
-reales; LG, Electrolux, Whirlpool, Mabe y Haceb siguen con el placeholder de
-color a la espera de sus imágenes.
+Ver `IMAGENES-LEEME.md`. Resumen: Samsung y LG completos; Electrolux,
+Whirlpool, Mabe y Haceb siguen con el placeholder de color.
 
 ## Pendiente de tu parte
 
-1. Enviar las imágenes de las 5 marcas restantes (logo + fotos), y decirme si
-   cada una es oficialmente autorizada por el fabricante o no.
+1. Enviar las imágenes de las 4 marcas restantes (logo + fotos), y decirme
+   si cada una es oficialmente autorizada por el fabricante o no.
 2. Confirmar el correo de contacto (uso
    `contacto@servicio-tecnico-en-cartagena.com` en todo el sitio).
-3. Reemplazar los testimonios por reseñas reales o reseñas de Google Business
-   Profile.
+3. Reemplazar los testimonios por reseñas reales o reseñas de Google
+   Business Profile.
 4. Subir el sitio a Google Search Console (la etiqueta ya está en el
-   `<head>` de las 38 páginas) y enviar `sitemap.xml`.
+   `<head>` de las 50 páginas) y enviar `sitemap.xml`.
 
 ## Cómo previsualizarlo
 
