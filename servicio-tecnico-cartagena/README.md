@@ -1,10 +1,9 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Rediseño del sitio `servicio-tecnico-en-cartagena.com` a partir del archivo
-que compartiste (`public_html_4.zip`), con una **arquitectura ampliada**
-pensada para posicionar en Google en Cartagena: más páginas indexables, más
-enlazado interno, enlaces salientes de autoridad y más cobertura de palabras
-clave.
+Rediseño del sitio `servicio-tecnico-en-cartagena.com` con una arquitectura
+ampliada para posicionar en Google en Cartagena: más páginas indexables,
+enlazado interno, enlaces salientes de autoridad y cobertura de palabras
+clave. Ver `IMAGENES-LEEME.md` para el estado de las fotos por marca.
 
 ## Estructura del sitio (20 páginas)
 
@@ -33,64 +32,41 @@ y **Zonas**; cada página de marca enlaza a servicios y zonas relacionadas;
 cada página de servicio y de zona enlaza de vuelta a las 6 marcas; y el pie
 de página repite el mapa completo del sitio en todas las páginas.
 
-## Qué se corrigió de la versión anterior
+## SEO técnico incluido
 
-1. No existía una página de inicio "todas las marcas" (la home era en
-   realidad la página de Samsung).
-2. Las páginas estaban aisladas, sin ningún enlace entre ellas.
-3. Todas las imágenes cargaban desde un dominio ajeno (`turepuestoslg.click`).
-4. Tailwind por CDN, más lento que un CSS propio.
-5. Correo y dirección distintos e inconsistentes en cada página (NAP).
-6. FAQ y "consejos rápidos" casi idénticos entre marcas (contenido duplicado).
-7. Testimonios con los mismos nombres repetidos en las 6 páginas.
-8. Sin páginas propias por servicio o por zona, sin enlaces salientes, y con
-   poca cobertura de palabras clave de cola larga.
+- Meta tags completos (title, description, keywords, canonical, Open Graph).
+- **Etiqueta de verificación de Google Search Console** en las 20 páginas.
+- Datos estructurados `schema.org`: `LocalBusiness`, `Service`, `FAQPage`,
+  `BreadcrumbList` según la página.
+- Enlaces salientes de autoridad: sitio oficial de cada marca y la
+  Superintendencia de Industria y Comercio (garantías al consumidor).
+- `robots.txt` y `sitemap.xml` con las 20 páginas.
+- Sin frameworks pesados: CSS propio y liviano en vez de Tailwind por CDN.
+- Imágenes locales organizadas por carpeta, sin depender de servidores
+  externos.
 
-## Qué se agregó en esta iteración (a partir de tu feedback)
+## Estado de las imágenes por marca
 
-- **Etiqueta de verificación de Google Search Console** añadida a las 20
-  páginas: `google-site-verification` con tu código.
-- **3 páginas de servicio** independientes de marca (mantenimiento
-  preventivo, instalación de nevecones, reparación de compresores), cada una
-  con su propio `<title>`, meta description, FAQ y datos estructurados
-  `Service`.
-- **8 páginas de zona** (Bocagrande, Manga, El Laguito, Castillogrande,
-  Crespo, Centro Histórico, Pie de la Popa, Turbaco), cada una con contenido
-  propio sobre las características reales de ese sector (brisa marina en
-  Bocagrande, cercanía al aeropuerto en Crespo, etc.), no una copia genérica.
-- **Página pilar de fallas comunes** (`fallas-comunes-neveras-cartagena.html`)
-  que reúne las fallas principales de las 6 marcas en una sola página, con
-  enlace profundo a la sección de fallas de cada marca.
-- **Enlaces salientes (autoridad)**: cada página de marca y la home enlazan
-  al sitio oficial de la marca en Colombia y a la Superintendencia de
-  Industria y Comercio (SIC) para información de garantías al consumidor.
-- **Más palabras clave de cola larga** en meta keywords y contenido: "cerca
-  de mí", "cuánto cuesta", por sector, por servicio.
-- **Menú de navegación ampliado** con desplegables de Marcas, Servicios y
-  Zonas (antes solo existía el de Marcas).
-- **FAQ general ampliado** de 6 a 11 preguntas (precio del diagnóstico,
-  atención en fines de semana, marcas atendidas, diferencia entre
-  mantenimiento y reparación, negocios/restaurantes).
-- **`sitemap.xml`** actualizado con las 20 páginas.
+- **Samsung**: fotos reales aplicadas (logo oficial + 4 fotos de producto),
+  con `alt` descriptivo y el color de acento de la página tomado del azul
+  real del logo (`#034EA2`).
+- **LG, Electrolux, Whirlpool, Mabe, Haceb**: siguen con el placeholder de
+  color a la espera de que envíes las imágenes de cada una.
+
+Detalle completo en `IMAGENES-LEEME.md`.
 
 ## Pendiente de tu parte
 
-1. **Reemplaza las imágenes** por fotos reales — instrucciones en
-   `IMAGENES-LEEME.md`.
-2. **Confirma el correo de contacto**: sigo usando
-   `contacto@servicio-tecnico-en-cartagena.com` como correo consistente en
-   todo el sitio. Si tienes uno real, dímelo y lo actualizo en las 20
-   páginas de una vez.
-3. **Reemplaza los testimonios** por reseñas reales o incrusta tus reseñas
-   de Google Business Profile.
-4. **Verifica los enlaces salientes** a los sitios oficiales de cada marca
-   (Samsung, LG, Electrolux, Whirlpool, Mabe, Haceb): puse las URLs
-   oficiales conocidas para Colombia, pero confírmalas antes de publicar por
-   si alguna cambió.
-5. **Sube el sitio a Google Search Console** — la etiqueta de verificación
-   ya está en el `<head>` de las 20 páginas, así que Google debería poder
-   verificar la propiedad en cuanto publiques el sitio. Luego envía
-   `sitemap.xml`.
+1. Enviar las imágenes de las 5 marcas restantes (logo + fotos), igual que
+   hiciste con Samsung.
+2. Confirmar el correo de contacto (uso
+   `contacto@servicio-tecnico-en-cartagena.com` en todo el sitio).
+3. Reemplazar los testimonios por reseñas reales o reseñas de Google
+   Business Profile.
+4. Verificar que los enlaces a los sitios oficiales de cada marca sigan
+   vigentes antes de publicar.
+5. Subir el sitio a Google Search Console (la etiqueta ya está en el
+   `<head>` de las 20 páginas) y enviar `sitemap.xml`.
 
 ## Cómo previsualizarlo
 

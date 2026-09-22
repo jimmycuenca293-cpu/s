@@ -1,63 +1,54 @@
-# Cómo reemplazar las imágenes
+# Cómo van las imágenes por marca
 
-Todas las imágenes están organizadas **por carpetas**, una por marca, para que
-el sitio cargue rápido (sin depender de servidores externos) y sea fácil de
-mantener. Ahora mismo cada archivo es un **placeholder** (fondo de color con
-texto) que debes reemplazar por fotos reales, manteniendo el mismo nombre y
-la misma carpeta.
+## ✅ Samsung — ya tiene fotos reales
+
+Reemplacé los placeholders de Samsung por las imágenes oficiales que enviaste:
+
+- `images/samsung/logo-samsung.png` — logo oficial.
+- `images/samsung/hero-samsung-cartagena.jpg` — nevera Family Hub en cocina (portada).
+- `images/samsung/equipo-samsung-cartagena.jpg` — cliente usando la nevera.
+- `images/samsung/family-hub-samsung-cartagena.jpg` — pantalla Family Hub (galería).
+- `images/samsung/familia-samsung-cartagena.jpg` — familia junto a la nevera (galería).
+
+El color de acento de toda la página de Samsung también se actualizó al azul
+real de su logo (`#034EA2`), tomado directamente del archivo que enviaste.
+
+Estas son fotos oficiales/de catálogo de Samsung, no fotos de tus propios
+técnicos — por eso el texto `alt` de cada una describe el producto (por
+ejemplo, "nevera Samsung Family Hub instalada en una cocina"), sin decir que
+muestran una reparación real. Si más adelante tienes fotos de tus propios
+técnicos trabajando, esas sí puedes (y conviene) usarlas para reforzar la
+confianza del cliente.
+
+## ⏳ LG, Electrolux, Whirlpool, Mabe, Haceb — pendientes
+
+Estas 5 marcas siguen con el placeholder de color. Envíame las imágenes de
+cada una (puedes mandarlas de a 5 por mensaje, igual que hiciste con
+Samsung) y las agrego con el mismo criterio: logo real, fotos en las
+carpetas correspondientes, alt descriptivo y color de acento tomado del
+logo de cada marca.
 
 ```
 images/
-  logo/
-    logo.svg          → logo de tu empresa (se usa en el menú y el pie de página)
-    favicon.svg        → ícono de la pestaña del navegador
-  home/
-    hero-servicio-tecnico-cartagena.jpg   → foto principal de portada (técnico trabajando)
-    equipo-tecnico-cartagena.jpg          → foto del equipo / técnicos certificados
-  samsung/
-    hero-samsung-cartagena.jpg            → técnico reparando una nevera Samsung
-    equipo-samsung-cartagena.jpg          → primer plano de la reparación / repuestos
-    logo-samsung.svg                      → logo de la marca (ya incluido, no es necesario tocarlo)
-  lg/            (mismo patrón)
-  electrolux/    (mismo patrón)
-  whirlpool/     (mismo patrón)
-  mabe/          (mismo patrón)
-  haceb/         (mismo patrón)
+  logo/            → logo genérico del sitio (STC), no cambia por marca
+  home/            → fotos de portada e "quiénes somos" generales
+  samsung/         ✅ completo
+  lg/               ⏳ pendiente
+  electrolux/       ⏳ pendiente
+  whirlpool/        ⏳ pendiente
+  mabe/             ⏳ pendiente
+  haceb/            ⏳ pendiente
 ```
 
-Las páginas de **servicios** y **zonas** reutilizan las fotos de `home/` y de
-cada marca, así que no necesitan imágenes propias adicionales.
+## Recomendaciones para las fotos que faltan
 
-## Recomendaciones para las fotos reales
-
-1. **Usa fotos propias**, idealmente del técnico trabajando, del antes/después
-   de una reparación, o de la nevera reparada. Esto es mucho más creíble para
-   los clientes y para Google que fotos genéricas de internet.
-2. **Formato y peso**: usa `.jpg` o, mejor aún, `.webp` (más liviano). Antes
-   de subir cada foto, compres primero (herramientas gratuitas: Squoosh.app,
-   TinyPNG). Apunta a menos de 200 KB por imagen.
-3. **Tamaño recomendado**:
-   - Fotos "hero" (portada): 1200×900 px aprox.
-   - Fotos "equipo/reparación": 1000×720 px aprox.
-4. **Mantén el mismo nombre de archivo** al reemplazar, así no tienes que
-   tocar el HTML. Si usas `.webp` en vez de `.jpg`, avísame o busca y
-   reemplaza la extensión en los archivos `.html` correspondientes.
-5. El texto `alt` de cada imagen ya está optimizado para SEO (describe la
-   marca, el servicio y "Cartagena"). Si cambias la foto por una muy distinta
-   en contenido, ajusta también el `alt` para que siga describiendo lo que
-   se ve.
-
-## Sobre las imágenes del sitio anterior
-
-El sitio original cargaba **todas sus imágenes desde un dominio de terceros**
-(`turepuestoslg.click`), un sitio de venta de repuestos que no es tuyo. Esto
-es un riesgo importante:
-
-- Si ese sitio cambia o elimina las imágenes, las tuyas se rompen sin previo aviso.
-- Depender de un servidor externo añade una conexión extra y **hace más
-  lenta** la carga de tu página (peor SEO y peor experiencia de usuario).
-- No tenías control sobre el peso ni el formato de esas imágenes.
-
-Por eso esta nueva versión sirve todas las imágenes **desde tu propio
-dominio**, en carpetas separadas, para que cargue más rápido y no dependa de
-nadie más.
+1. Si son fotos oficiales de catálogo (como las de Samsung), sirven para
+   mostrar la tecnología del equipo — no se necesitan fotos de tus técnicos
+   para eso.
+2. Si tienes fotos reales de tu equipo trabajando, mucho mejor: se ven en la
+   sección "Especialistas en [marca]" y refuerzan la confianza del cliente.
+3. Formato recomendado: `.jpg` (fotos) o `.png` (logos con transparencia),
+   menos de 200 KB por imagen cuando sea posible.
+4. Si me envías el logo de la marca, extraigo el color oficial del archivo
+   y lo aplico como color de acento de esa página automáticamente (así lo
+   hice con el azul de Samsung).
