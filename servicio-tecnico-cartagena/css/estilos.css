@@ -140,7 +140,8 @@ h2{font-size:clamp(1.5rem,3vw,2.1rem);color:var(--accent-dark);margin-bottom:12p
 
 /* ---------- Zonas de cobertura ---------- */
 .zonas-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;}
-.zona-chip{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:12px 14px;font-size:.9rem;font-weight:600;}
+.zona-chip{display:block;background:#fff;border:1px solid var(--borde);border-radius:10px;padding:12px 14px;font-size:.9rem;font-weight:600;transition:.15s;}
+.zona-chip:hover{border-color:var(--accent);color:var(--accent-dark);box-shadow:0 6px 16px -8px rgba(0,0,0,.2);}
 
 /* ---------- Testimonios ---------- */
 .testimonios{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;}

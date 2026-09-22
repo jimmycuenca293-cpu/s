@@ -25,6 +25,9 @@ images/
   haceb/         (mismo patrón)
 ```
 
+Las páginas de **servicios** y **zonas** reutilizan las fotos de `home/` y de
+cada marca, así que no necesitan imágenes propias adicionales.
+
 ## Recomendaciones para las fotos reales
 
 1. **Usa fotos propias**, idealmente del técnico trabajando, del antes/después

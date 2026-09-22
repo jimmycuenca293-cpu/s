@@ -1,113 +1,96 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
 Rediseño del sitio `servicio-tecnico-en-cartagena.com` a partir del archivo
-que compartiste (`public_html_4.zip`: `default.php`, `lg`, `electrolux`,
-`whirlpool`, `mabe`, `haceb`). Mismo contenido y textos aprovechados donde
-eran buenos, con una **arquitectura nueva** pensada para posicionar en
-Google en Cartagena.
+que compartiste (`public_html_4.zip`), con una **arquitectura ampliada**
+pensada para posicionar en Google en Cartagena: más páginas indexables, más
+enlazado interno, enlaces salientes de autoridad y más cobertura de palabras
+clave.
 
-## Qué tenía el sitio original (diagnóstico)
+## Estructura del sitio (20 páginas)
 
-1. **Sin página de inicio real**: `default.php` era en realidad la página de
-   Samsung — no existía una página "todas las marcas".
-2. **Páginas aisladas, sin enlaces internas**: ninguna de las 6 páginas
-   (`default.php`, `lg`, `electrolux`, `whirlpool`, `mabe`, `haceb`) enlazaba
-   a las demás, ni siquiera a la home. Google no podía descubrirlas navegando
-   el sitio, y el usuario no podía cambiar de marca sin conocer la URL exacta.
-3. **Todas las imágenes cargaban desde un dominio ajeno**
-   (`turepuestoslg.click`), lo que hace el sitio más lento y frágil (ver
-   `IMAGENES-LEEME.md`).
-4. **Tailwind vía CDN** (`cdn.tailwindcss.com`): ese script compila los
-   estilos en el navegador en cada carga, lo cual Tailwind mismo desaconseja
-   en producción por el impacto en velocidad.
-5. **Datos de contacto inconsistentes**: cada página tenía un correo
-   distinto (`servicio@samsungcartagena.com`, `servicio@lgcartagena.com`,
-   etc.) que no coincide con tu dominio real, y una dirección de relleno
-   ("Mock Address"). Para Google, el NAP (nombre, dirección, teléfono) debe
-   ser idéntico en todo el sitio y en tu ficha de Google Business Profile.
-6. **Contenido casi idéntico entre páginas** (FAQ y "consejos rápidos" con el
-   mismo texto cambiando solo el nombre de la marca), lo que Google puede
-   interpretar como contenido duplicado o páginas puerta ("doorway pages").
-7. **Testimonios con los mismos nombres repetidos en cada marca** (María P.,
-   Carlos R., Luisa T. en todas las páginas), lo que se ve poco creíble.
+```
+index.html                                 → home, todas las marcas
+preguntas-frecuentes.html                  → FAQ general (pilar)
+fallas-comunes-neveras-cartagena.html      → pilar de fallas por marca
 
-## Qué cambia en esta versión
+marcas/
+  samsung.html  lg.html  electrolux.html
+  whirlpool.html  mabe.html  haceb.html    → 1 página por marca
 
-- **`index.html`**: nueva página de inicio, "todas las marcas", con su propio
-  contenido único (quiénes somos, por qué elegirnos, zonas, testimonios, FAQ
-  resumida) y una cuadrícula que enlaza a cada marca.
-- **`/marcas/samsung.html`, `lg.html`, `electrolux.html`, `whirlpool.html`,
-  `mabe.html`, `haceb.html`**: una página por marca, cada una con:
-  - Encabezado, menú y pie de página **iguales e interconectados** (home ↔
-    cada marca ↔ FAQ), con menú "Marcas" desplegable y migas de pan
-    (breadcrumbs).
-  - Contenido específico y diferenciado por marca (fallas comunes reales de
-    cada tecnología: Linear Compressor de LG, Twin Cooling de Samsung, No
-    Frost de Mabe/Haceb, Sixth Sense de Whirlpool, tarjetas electrónicas de
-    Electrolux).
-  - Solo 2 preguntas frecuentes propias de la marca + enlace a la página
-    general de preguntas frecuentes (evita duplicar el mismo FAQ seis veces).
-  - Enlaces a "otras marcas que reparamos" (refuerza el enlazado interno).
-  - Datos estructurados (`schema.org`): `Service`, `FAQPage` y
-    `BreadcrumbList` propios de cada página.
-- **`preguntas-frecuentes.html`**: página "pilar" con las preguntas generales
-  (garantía, zonas, repuestos, frecuencia de mantenimiento), enlazada desde
-  todas las demás páginas.
-- **Imágenes locales y organizadas por carpeta** (`/images/samsung/`,
-  `/images/lg/`, etc.) en vez de hotlink a un dominio externo — ver
-  `IMAGENES-LEEME.md` para reemplazarlas por fotos reales.
-- **Sin frameworks pesados**: CSS propio y liviano (`css/estilos.css`, ~9 KB)
-  en vez del script de Tailwind por CDN. Menos peso, carga más rápida.
-- **`robots.txt` y `sitemap.xml`** actualizados con las 8 páginas del sitio.
-- **NAP consistente**: mismo teléfono, mismo correo
-  (`contacto@servicio-tecnico-en-cartagena.com`) y misma zona de cobertura en
-  todas las páginas.
-- **Acordeón de FAQ y fallas comunes con `<details>/<summary>` nativo**: no
-  depende de JavaScript para mostrar el contenido (mejor para SEO y
-  accesibilidad) y es más liviano que la versión anterior.
-- **Formulario de agendamiento**: arma el mensaje y redirige a WhatsApp
-  (`js/main.js`), sin necesidad de backend.
+servicios/
+  mantenimiento-preventivo-neveras-cartagena.html
+  instalacion-nevecones-cartagena.html
+  reparacion-compresores-neveras-cartagena.html
 
-## Pendiente de tu parte (importante)
+zonas/
+  bocagrande.html   manga.html        el-laguito.html
+  castillogrande.html  crespo.html    centro-historico.html
+  pie-de-la-popa.html  turbaco.html   → 1 página por sector de Cartagena
+```
+
+Todo enlaza entre sí: el menú tiene desplegables de **Marcas**, **Servicios**
+y **Zonas**; cada página de marca enlaza a servicios y zonas relacionadas;
+cada página de servicio y de zona enlaza de vuelta a las 6 marcas; y el pie
+de página repite el mapa completo del sitio en todas las páginas.
+
+## Qué se corrigió de la versión anterior
+
+1. No existía una página de inicio "todas las marcas" (la home era en
+   realidad la página de Samsung).
+2. Las páginas estaban aisladas, sin ningún enlace entre ellas.
+3. Todas las imágenes cargaban desde un dominio ajeno (`turepuestoslg.click`).
+4. Tailwind por CDN, más lento que un CSS propio.
+5. Correo y dirección distintos e inconsistentes en cada página (NAP).
+6. FAQ y "consejos rápidos" casi idénticos entre marcas (contenido duplicado).
+7. Testimonios con los mismos nombres repetidos en las 6 páginas.
+8. Sin páginas propias por servicio o por zona, sin enlaces salientes, y con
+   poca cobertura de palabras clave de cola larga.
+
+## Qué se agregó en esta iteración (a partir de tu feedback)
+
+- **Etiqueta de verificación de Google Search Console** añadida a las 20
+  páginas: `google-site-verification` con tu código.
+- **3 páginas de servicio** independientes de marca (mantenimiento
+  preventivo, instalación de nevecones, reparación de compresores), cada una
+  con su propio `<title>`, meta description, FAQ y datos estructurados
+  `Service`.
+- **8 páginas de zona** (Bocagrande, Manga, El Laguito, Castillogrande,
+  Crespo, Centro Histórico, Pie de la Popa, Turbaco), cada una con contenido
+  propio sobre las características reales de ese sector (brisa marina en
+  Bocagrande, cercanía al aeropuerto en Crespo, etc.), no una copia genérica.
+- **Página pilar de fallas comunes** (`fallas-comunes-neveras-cartagena.html`)
+  que reúne las fallas principales de las 6 marcas en una sola página, con
+  enlace profundo a la sección de fallas de cada marca.
+- **Enlaces salientes (autoridad)**: cada página de marca y la home enlazan
+  al sitio oficial de la marca en Colombia y a la Superintendencia de
+  Industria y Comercio (SIC) para información de garantías al consumidor.
+- **Más palabras clave de cola larga** en meta keywords y contenido: "cerca
+  de mí", "cuánto cuesta", por sector, por servicio.
+- **Menú de navegación ampliado** con desplegables de Marcas, Servicios y
+  Zonas (antes solo existía el de Marcas).
+- **FAQ general ampliado** de 6 a 11 preguntas (precio del diagnóstico,
+  atención en fines de semana, marcas atendidas, diferencia entre
+  mantenimiento y reparación, negocios/restaurantes).
+- **`sitemap.xml`** actualizado con las 20 páginas.
+
+## Pendiente de tu parte
 
 1. **Reemplaza las imágenes** por fotos reales — instrucciones en
    `IMAGENES-LEEME.md`.
-2. **Confirma o corrige los datos de contacto**: usé
-   `contacto@servicio-tecnico-en-cartagena.com` como correo consistente. Si
-   tienes un correo real o una dirección física para mostrar (o prefieres
-   dejar solo "servicio a domicilio" sin dirección, que es válido para un
-   negocio sin local propio), dímelo y lo actualizo.
-3. **Reemplaza los testimonios** por reseñas reales de clientes, o mejor aún,
-   incrusta tus reseñas reales de Google Business Profile — los testimonios
-   inventados repetidos son un riesgo de credibilidad.
-4. **Sube el sitio a Google Search Console** y envía `sitemap.xml` una vez
-   esté publicado en el dominio real.
-5. Verifica el ID de Google Tag Manager (`GTM-5BNQCQ7G`, tomado del sitio
-   original) y el meta de verificación de Search Console si necesitas
-   volver a añadirlo.
-
-## Estructura de carpetas
-
-```
-servicio-tecnico-cartagena/
-  index.html
-  preguntas-frecuentes.html
-  robots.txt
-  sitemap.xml
-  css/estilos.css
-  js/main.js
-  marcas/
-    samsung.html
-    lg.html
-    electrolux.html
-    whirlpool.html
-    mabe.html
-    haceb.html
-  images/
-    logo/
-    home/
-    samsung/  lg/  electrolux/  whirlpool/  mabe/  haceb/
-```
+2. **Confirma el correo de contacto**: sigo usando
+   `contacto@servicio-tecnico-en-cartagena.com` como correo consistente en
+   todo el sitio. Si tienes uno real, dímelo y lo actualizo en las 20
+   páginas de una vez.
+3. **Reemplaza los testimonios** por reseñas reales o incrusta tus reseñas
+   de Google Business Profile.
+4. **Verifica los enlaces salientes** a los sitios oficiales de cada marca
+   (Samsung, LG, Electrolux, Whirlpool, Mabe, Haceb): puse las URLs
+   oficiales conocidas para Colombia, pero confírmalas antes de publicar por
+   si alguna cambió.
+5. **Sube el sitio a Google Search Console** — la etiqueta de verificación
+   ya está en el `<head>` de las 20 páginas, así que Google debería poder
+   verificar la propiedad en cuanto publiques el sitio. Luego envía
+   `sitemap.xml`.
 
 ## Cómo previsualizarlo
 
