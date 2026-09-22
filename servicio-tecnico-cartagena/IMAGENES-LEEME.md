@@ -2,32 +2,32 @@
 
 ## ✅ Samsung — completo (autorizado)
 ## ✅ LG — completo
+## ✅ Whirlpool — completo
 
-- `images/lg/logo-lg.png` — logo oficial.
-- `images/lg/hero-lg-cartagena.jpg`, `equipo-lg-cartagena.jpg` — fotos del
-  técnico especializado en LG que enviaste (maletín "LG Service", gorra LG).
-- `images/lg/cocina-lg-cartagena.jpg`, `cliente-lg-cartagena.jpg`,
-  `thinq-lg-cartagena.jpg`, `lineup-lg-cartagena.jpg` — galería de producto.
+- `images/whirlpool/logo-whirlpool.png` — logo oficial (Whirlpool Corporation).
+- `images/whirlpool/hero-whirlpool-cartagena.jpg`, `equipo-whirlpool-cartagena.jpg` —
+  fotos del técnico y del equipo en el centro de servicio que enviaste.
+- Galería: técnico reparando el sistema de refrigeración, técnico explicando
+  el diagnóstico a un cliente, nevera French Door negra, nevera French Door
+  en acero.
 
-**Importante sobre LG**: no confirmaste que tu negocio sea distribuidor
-autorizado oficial de LG (a diferencia de Samsung, que sí confirmaste). Las
-fotos que enviaste muestran a un técnico con maletín "LG Service" y carné,
-así que usé las fotos porque las pediste explícitamente, pero **no** agregué
-la palabra "Autorizado" en el encabezado de LG hasta que me confirmes que
-tienes esa certificación oficial — igual que hice con Samsung, para evitar
-un reclamo de marca por publicidad de una autorización que no existe. Si sí
-eres autorizado por LG, dímelo y agrego la misma etiqueta que tiene Samsung.
+**Sobre el color de marca**: el color que tenía antes (azul) estaba mal —
+lo corregí al negro y dorado reales de Whirlpool (`#9C740A` dorado oscuro
+sobre `#231F20` casi negro), tomados de tu logo.
 
-## ⏳ Electrolux, Whirlpool, Mabe, Haceb — pendientes
+**Sobre "Autorizado"**: no confirmaste que tu negocio sea distribuidor
+autorizado oficial de Whirlpool, así que —igual que con LG— usé las fotos
+porque las pediste, pero no agregué la palabra "Autorizado" en el
+encabezado hasta que me lo confirmes.
+
+## ⏳ Electrolux, Mabe, Haceb — pendientes
 
 ```
 images/
-  logo/            → logo genérico del sitio (STC), solo se usa como reserva
-  home/            → fotos de portada e "quiénes somos" generales
   samsung/         ✅ completo (autorizado)
   lg/              ✅ completo
+  whirlpool/       ✅ completo
   electrolux/       ⏳ pendiente
-  whirlpool/        ⏳ pendiente
   mabe/             ⏳ pendiente
   haceb/            ⏳ pendiente
 ```

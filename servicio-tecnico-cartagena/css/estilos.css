@@ -100,6 +100,15 @@ nav.main-menu > ul > li > a:hover, nav.main-menu a.activo{color:var(--accent-dar
   .nav-cta .btn-outline{display:none;}
 }
 
+/* ---------- Artículos de contenido extenso ---------- */
+.articulo{max-width:78ch;}
+.articulo h2{margin-bottom:20px;}
+.articulo p{color:var(--text-light);margin-bottom:16px;font-size:1rem;line-height:1.75;}
+.articulo p:last-child{margin-bottom:0;}
+.articulo strong{color:var(--text);}
+.articulo a{color:var(--accent-dark);font-weight:600;}
+.articulo a:hover{text-decoration:underline;}
+
 /* ---------- Pestañas de sub-navegación por marca ---------- */
 .marca-tabs{background:var(--bg-alt);border-bottom:1px solid var(--borde);}
 .marca-tabs ul{display:flex;gap:4px;flex-wrap:wrap;padding:10px 0;overflow-x:auto;}
