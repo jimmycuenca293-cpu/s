@@ -1,17 +1,58 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Cuarta iteración: corrige el bug de navegación, agrega las fotos reales de
-LG, suma 2 páginas dedicadas más por marca (repuestos originales y preguntas
-frecuentes) y amplía el texto SEO en las páginas más cortas.
+Quinta iteración: página propia por marca y por zona (48 páginas nuevas),
+fotos de técnico de LG, palabra clave "servicio técnico [marca] en Cartagena"
+resaltada en negrita en todas las páginas, y una nota importante sobre el
+reporte de navegación.
 
-## Estructura del sitio (50 páginas)
+## Sobre el reporte de "los enlaces llevan al pie de página"
+
+Antes de este cambio ya se había corregido un bug real: el botón principal
+del hero en las páginas cortas usaba un ancla `#contacto` que saltaba a la
+sección de contacto pegada al pie de página (ver iteración anterior).
+
+En este mensaje se reportó que **todos** los enlaces internos seguían
+teniendo ese problema. Antes de tocar nada, probé exhaustivamente el sitio
+real (los mismos archivos de este zip) con un navegador automatizado
+(Playwright), simulando clics reales de usuario en: tarjetas de marca,
+pestañas de navegación, menú superior, enlaces del pie de página, tarjetas
+de servicio y enlaces entre zona y marca. **En los 98 archivos reales, cada
+clic deja la página en `scrollY = 0` (arriba del todo)** — no encontré ningún
+enlace que salte al pie de página.
+
+Mi conclusión: el archivo que se sube a Hostinger (este zip) navega
+correctamente. Si en la vista previa del enlace de Artifact seguía viéndose
+el salto al footer, es muy probablemente una particularidad de cómo esa
+vista previa maneja la navegación entre varios archivos HTML dentro de un
+mismo enlace — no algo en el código del sitio. Para confirmar el
+comportamiento real, la forma más fiable es probarlo con
+`python3 -m http.server` desde esta carpeta (ver abajo) o subiéndolo
+directamente a Hostinger.
+
+## Qué se agregó en esta iteración
+
+1. **Página propia por marca y por zona** (`marcas/{marca}/zonas/{zona}.html`):
+   48 páginas nuevas (6 marcas × 8 zonas), cada una con su propio título,
+   meta description, testimonio filtrado por esa zona cuando existe, FAQ de
+   tiempo de llegada + una pregunta propia de la marca, y enlaces cruzados a
+   las otras 7 zonas de esa marca y a las 4 páginas de servicio de esa marca.
+   El sitio pasó de 50 a 98 páginas.
+2. **Palabra clave resaltada**: la frase exacta "servicio técnico [marca] en
+   Cartagena" ahora aparece en **negrita** en el párrafo principal de cada
+   página de marca (resumen, fallas, mantenimiento, instalación, repuestos,
+   preguntas frecuentes y ahora también zona), no solo en el título.
+3. **Fotos reales de LG actualizadas**: reemplacé las fotos de catálogo por
+   las 2 fotos de técnico que enviaste (maletín "LG Service", carné), usadas
+   ahora como imagen principal y de equipo; las fotos de catálogo (cocina,
+   InstaView, ThinQ, línea de productos) pasaron a la galería.
+4. **Sin la palabra "Autorizado" en LG** — no confirmaste que seas
+   distribuidor autorizado de LG, así que mantuve esa etiqueta solo en
+   Samsung. Ver `IMAGENES-LEEME.md`.
+
+## Estructura del sitio (98 páginas)
 
 ```
-index.html                                 → home, todas las marcas
-preguntas-frecuentes.html                  → FAQ general (pilar)
-fallas-comunes-neveras-cartagena.html      → pilar de fallas (enlaza a cada marca)
-
-marcas/samsung/   (6 páginas cada una)
+marcas/samsung/   (7 tipos de página cada una)
 marcas/lg/
 marcas/electrolux/
 marcas/whirlpool/
@@ -21,54 +62,23 @@ marcas/haceb/
   fallas-comunes.html
   mantenimiento-preventivo.html
   instalacion-nevecones.html
-  repuestos-originales.html      ← nueva
-  preguntas-frecuentes.html      ← nueva
-
-servicios/            → 3 páginas "pilar" (genéricas, enlazan a cada marca)
-zonas/                → 8 páginas, una por sector de Cartagena
+  repuestos-originales.html
+  preguntas-frecuentes.html
+  zonas/
+    bocagrande.html  manga.html  el-laguito.html  castillogrande.html
+    crespo.html  centro-historico.html  pie-de-la-popa.html  turbaco.html
 ```
-
-36 páginas de marca (6 × 6) + 8 de zona + 3 de servicio + 3 generales = 50.
-
-## Qué se corrigió en esta iteración
-
-1. **Bug de navegación corregido.** En las páginas de fallas, mantenimiento,
-   instalación (y los pilares de servicios/zonas), el botón principal del
-   hero (“Agenda tu…”) era un ancla `#contacto` que saltaba a la sección de
-   contacto pegada justo antes del pie de página. En páginas cortas eso se
-   sentía como si el clic te mandara al footer. Ahora ese botón va
-   directamente a WhatsApp con el mensaje pre-cargado, y se agregó un botón
-   "Llamar" al lado. El salto a `#contacto` solo se mantiene en el home y en
-   el resumen de cada marca, donde sí existe un formulario completo más
-   abajo.
-2. **Imágenes reales de LG** (logo, nevera French Door en cocina, cliente
-   usando InstaView, galería de producto) reemplazando los placeholders,
-   con el rojo oficial de LG (`#AD0036`) como color de acento.
-3. **2 páginas nuevas por marca**: `repuestos-originales.html` (compresores,
-   tarjetas electrónicas, empaques y motores originales, con FAQ propia) y
-   `preguntas-frecuentes.html` (preguntas específicas de esa marca: precio,
-   garantía, zonas). La pestaña de navegación de cada marca ahora tiene 6
-   secciones en vez de 4.
-4. **Más texto SEO** en las secciones más cortas (frecuencia de
-   mantenimiento, tiempo de instalación), agregando contexto de zonas y
-   tecnología específica de cada marca en vez de un párrafo genérico de una
-   sola línea.
-
-## Estado de las imágenes por marca
-
-Ver `IMAGENES-LEEME.md`. Resumen: Samsung y LG completos; Electrolux,
-Whirlpool, Mabe y Haceb siguen con el placeholder de color.
 
 ## Pendiente de tu parte
 
-1. Enviar las imágenes de las 4 marcas restantes (logo + fotos), y decirme
-   si cada una es oficialmente autorizada por el fabricante o no.
-2. Confirmar el correo de contacto (uso
-   `contacto@servicio-tecnico-en-cartagena.com` en todo el sitio).
-3. Reemplazar los testimonios por reseñas reales o reseñas de Google
-   Business Profile.
-4. Subir el sitio a Google Search Console (la etiqueta ya está en el
-   `<head>` de las 50 páginas) y enviar `sitemap.xml`.
+1. Enviar las imágenes de Electrolux, Whirlpool, Mabe y Haceb, y decirme si
+   cada una es autorizada oficialmente por el fabricante.
+2. Confirmar si LG te autorizó oficialmente (para agregar la etiqueta
+   "Autorizado" como en Samsung).
+3. Probar la navegación real subiendo este zip a Hostinger (o con
+   `python3 -m http.server`), y avisarme si el salto al pie de página
+   persiste ahí — en ese caso sería un caso distinto al que ya revisé y
+   necesitaría el enlace exacto donde ocurre.
 
 ## Cómo previsualizarlo
 

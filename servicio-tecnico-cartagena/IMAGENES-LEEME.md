@@ -3,21 +3,22 @@
 ## ✅ Samsung — completo (autorizado)
 ## ✅ LG — completo
 
-- `images/lg/logo-lg.png` — logo oficial (encabezado de todas las páginas de LG).
-- `images/lg/hero-lg-cartagena.jpg` — nevera LG French Door en cocina (portada).
-- `images/lg/equipo-lg-cartagena.jpg` — cliente usando la pantalla InstaView.
-- `images/lg/lineup-lg-cartagena.jpg`, `producto-lg-cartagena.jpg` — galería de producto.
+- `images/lg/logo-lg.png` — logo oficial.
+- `images/lg/hero-lg-cartagena.jpg`, `equipo-lg-cartagena.jpg` — fotos del
+  técnico especializado en LG que enviaste (maletín "LG Service", gorra LG).
+- `images/lg/cocina-lg-cartagena.jpg`, `cliente-lg-cartagena.jpg`,
+  `thinq-lg-cartagena.jpg`, `lineup-lg-cartagena.jpg` — galería de producto.
 
-No confirmaste que seas distribuidor autorizado de LG, así que **no** usé la
-palabra "Autorizado" en su encabezado (a diferencia de Samsung). El color de
-acento de toda la sección LG es el rojo oficial `#AD0036`, tomado del logo
-que enviaste.
+**Importante sobre LG**: no confirmaste que tu negocio sea distribuidor
+autorizado oficial de LG (a diferencia de Samsung, que sí confirmaste). Las
+fotos que enviaste muestran a un técnico con maletín "LG Service" y carné,
+así que usé las fotos porque las pediste explícitamente, pero **no** agregué
+la palabra "Autorizado" en el encabezado de LG hasta que me confirmes que
+tienes esa certificación oficial — igual que hice con Samsung, para evitar
+un reclamo de marca por publicidad de una autorización que no existe. Si sí
+eres autorizado por LG, dímelo y agrego la misma etiqueta que tiene Samsung.
 
 ## ⏳ Electrolux, Whirlpool, Mabe, Haceb — pendientes
-
-Estas 4 marcas siguen con el placeholder de color mientras me envías sus
-imágenes (logo + fotos). Dime también si eres autorizado oficialmente por
-cada una o no.
 
 ```
 images/
@@ -31,12 +32,5 @@ images/
   haceb/            ⏳ pendiente
 ```
 
-## Cómo se usa cada logo de marca
-
-Cada página de marca muestra su propio logo en el encabezado (no el logo
-genérico "STC"). El logo genérico solo aparece en las páginas que no son de
-una marca específica: inicio, preguntas frecuentes generales, zonas,
-servicios generales y la página de fallas comunes de todas las marcas.
-
-Si me envías el logo de una marca, extraigo su color oficial del archivo y
-lo aplico automáticamente como color de acento de toda esa página.
+Cuando envíes las imágenes de cada marca, dime también si es autorizada
+oficialmente por el fabricante o no.
