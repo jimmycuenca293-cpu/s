@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://servicio-tecnico-en-cartagena.com/sitemap.xml

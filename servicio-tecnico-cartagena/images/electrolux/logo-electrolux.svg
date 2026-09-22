@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <rect width="200" height="60" rx="10" fill="#004C97"/>
+  <text x="100" y="36" font-family="Arial, sans-serif" font-size="22" font-weight="700"
+        fill="#fff" text-anchor="middle">Electrolux</text>
+</svg>

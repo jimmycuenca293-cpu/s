@@ -1,0 +1,199 @@
+/* =========================================================
+   Servicio Técnico Cartagena — hoja de estilos compartida
+   Sin frameworks externos: carga rápida, sin JS de terceros.
+   ========================================================= */
+
+:root{
+  --accent:#1565C0;
+  --accent-dark:#0D47A1;
+  --accent-light:#E3F2FD;
+  --verde:#128C7E;
+  --verde-osc:#0E6E63;
+  --text:#1f2430;
+  --text-light:#555;
+  --bg:#ffffff;
+  --bg-alt:#F5F7FA;
+  --borde:#e3e6ea;
+  --radius:12px;
+  --max:1180px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Segoe UI',Roboto,Arial,sans-serif;
+  color:var(--text);
+  background:var(--bg);
+  line-height:1.65;
+}
+img{max-width:100%;display:block;height:auto;}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+.container{max-width:var(--max);margin:0 auto;padding:0 20px;}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+
+/* ---------- Botones ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 30px;border-radius:50px;font-weight:700;font-size:1rem;
+  border:2px solid transparent;cursor:pointer;transition:.2s ease;
+}
+.btn-primario{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:0 8px 22px -6px rgba(0,0,0,.35);}
+.btn-primario:hover{transform:translateY(-2px);}
+.btn-whatsapp{background:var(--verde);color:#fff;}
+.btn-whatsapp:hover{background:var(--verde-osc);}
+.btn-outline{border-color:var(--accent);color:var(--accent);background:#fff;}
+.btn-outline:hover{background:var(--accent-light);}
+.btn-sm{padding:9px 18px;font-size:.85rem;border-radius:40px;}
+
+/* ---------- Barra superior de contacto ---------- */
+.top-bar{background:var(--accent-dark);color:#fff;font-size:.82rem;padding:6px 0;}
+.top-bar .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
+.top-bar a{color:#fff;opacity:.95;}
+.top-bar a:hover{opacity:1;text-decoration:underline;}
+
+/* ---------- Header / navegación ---------- */
+header.site{background:#fff;border-bottom:1px solid var(--borde);position:sticky;top:0;z-index:50;}
+.nav-wrap{display:flex;align-items:center;justify-content:space-between;padding:12px 0;gap:16px;}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;color:var(--accent-dark);}
+.logo img{height:42px;width:auto;}
+nav.main-menu > ul{display:flex;gap:22px;align-items:center;}
+nav.main-menu a{font-weight:600;font-size:.95rem;color:var(--text);padding:6px 2px;border-bottom:2px solid transparent;}
+nav.main-menu a:hover, nav.main-menu a.activo{color:var(--accent);border-color:var(--accent);}
+.menu-marcas{position:relative;}
+.submenu{
+  display:none;position:absolute;top:100%;left:0;background:#fff;
+  border:1px solid var(--borde);border-radius:10px;box-shadow:0 12px 28px rgba(0,0,0,.12);
+  min-width:220px;padding:8px;margin-top:10px;
+}
+.menu-marcas:hover .submenu, .menu-marcas:focus-within .submenu{display:block;}
+.submenu li a{display:block;padding:9px 12px;border-radius:8px;font-weight:500;}
+.submenu li a:hover{background:var(--bg-alt);}
+.nav-cta{display:flex;gap:10px;}
+.nav-toggle{display:none;}
+
+@media(max-width:900px){
+  nav.main-menu{position:fixed;inset:0 0 0 30%;background:#fff;transform:translateX(100%);transition:.25s;padding:90px 24px 24px;overflow-y:auto;z-index:60;box-shadow:-10px 0 30px rgba(0,0,0,.15);}
+  nav.main-menu.abierto{transform:translateX(0);}
+  nav.main-menu ul{flex-direction:column;align-items:flex-start;gap:4px;width:100%;}
+  .submenu{display:block;position:static;box-shadow:none;border:none;padding-left:12px;margin-top:0;}
+  .menu-marcas:hover .submenu{display:block;}
+  .nav-toggle{display:block;background:none;border:none;font-size:1.6rem;cursor:pointer;color:var(--accent-dark);}
+  .nav-cta .btn-outline{display:none;}
+}
+
+/* ---------- Breadcrumbs ---------- */
+.breadcrumbs{background:var(--bg-alt);font-size:.85rem;padding:10px 0;color:var(--text-light);}
+.breadcrumbs a{color:var(--accent-dark);font-weight:600;}
+.breadcrumbs a:hover{text-decoration:underline;}
+
+/* ---------- Hero ---------- */
+.hero{background:linear-gradient(135deg,var(--accent-light),#fff);padding:56px 0 64px;}
+.hero .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:44px;align-items:center;}
+.badge{display:inline-block;background:var(--accent);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:6px 14px;border-radius:30px;margin-bottom:16px;}
+.hero h1{font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2;color:var(--accent-dark);margin-bottom:16px;}
+.hero p.lead{font-size:1.08rem;color:var(--text-light);margin-bottom:26px;max-width:56ch;}
+.stars{color:#FFC107;letter-spacing:2px;font-size:1.1rem;}
+.rating-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;font-size:.9rem;color:var(--text-light);}
+.rating-row strong{color:var(--text);}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px;}
+.hero-img{border-radius:var(--radius);overflow:hidden;box-shadow:0 20px 45px -18px rgba(13,71,161,.4);}
+
+/* ---------- Secciones genéricas ---------- */
+section{padding:64px 0;}
+section.alt{background:var(--bg-alt);}
+.eyebrow{color:var(--accent);font-weight:700;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px;display:block;}
+h2{font-size:clamp(1.5rem,3vw,2.1rem);color:var(--accent-dark);margin-bottom:12px;}
+.subtitle{color:var(--text-light);max-width:64ch;margin-bottom:36px;}
+
+/* ---------- Grid de marcas (home) ---------- */
+.marcas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px;}
+.marca-card{background:#fff;border:1px solid var(--borde);border-radius:var(--radius);padding:26px 22px;text-align:center;transition:.2s;}
+.marca-card:hover{box-shadow:0 14px 30px -12px rgba(0,0,0,.18);transform:translateY(-3px);}
+.marca-card img{height:46px;width:auto;margin:0 auto 16px;object-fit:contain;}
+.marca-card h3{font-size:1.05rem;margin-bottom:6px;color:var(--text);}
+.marca-card p{font-size:.85rem;color:var(--text-light);margin-bottom:14px;}
+
+/* ---------- Tarjetas de servicio / razones ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;}
+.card{background:#fff;border:1px solid var(--borde);border-radius:var(--radius);padding:26px;}
+.card .icono{width:46px;height:46px;border-radius:12px;background:var(--accent-light);color:var(--accent-dark);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:14px;}
+.card h3{font-size:1.08rem;margin-bottom:8px;color:var(--accent-dark);}
+.card p{font-size:.92rem;color:var(--text-light);}
+
+/* ---------- Contenido con imagen (quienes somos, garantia) ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center;}
+.split img{border-radius:var(--radius);}
+.split.invertido{direction:rtl;}
+.split.invertido > *{direction:ltr;}
+.split h2{margin-bottom:14px;}
+.split p{color:var(--text-light);margin-bottom:14px;}
+.check-list li{position:relative;padding-left:26px;margin-bottom:10px;color:var(--text-light);}
+.check-list li::before{content:"✓";position:absolute;left:0;color:var(--verde);font-weight:800;}
+
+/* ---------- Pasos ---------- */
+.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:26px;counter-reset:paso;}
+.paso{text-align:center;}
+.paso-num{width:46px;height:46px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.paso h3{font-size:1rem;margin-bottom:6px;}
+.paso p{font-size:.88rem;color:var(--text-light);}
+
+/* ---------- Zonas de cobertura ---------- */
+.zonas-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;}
+.zona-chip{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:12px 14px;font-size:.9rem;font-weight:600;}
+
+/* ---------- Testimonios ---------- */
+.testimonios{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;}
+.testimonio{background:#fff;border-left:4px solid var(--accent);border-radius:8px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.testimonio p{font-style:italic;color:var(--text-light);margin-bottom:12px;}
+.testimonio strong{font-size:.9rem;color:var(--text);}
+
+/* ---------- Fallas comunes (acordeón nativo) ---------- */
+.acordeon details{background:#fff;border:1px solid var(--borde);border-radius:10px;margin-bottom:12px;padding:0;overflow:hidden;}
+.acordeon summary{cursor:pointer;padding:18px 20px;font-weight:700;color:var(--accent-dark);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.acordeon summary::-webkit-details-marker{display:none;}
+.acordeon summary::after{content:"+";font-size:1.4rem;color:var(--accent);flex:none;}
+.acordeon details[open] summary::after{content:"–";}
+.acordeon .contenido{padding:0 20px 20px;color:var(--text-light);font-size:.94rem;}
+.acordeon .contenido strong{color:var(--text);}
+
+/* ---------- FAQ enlace a página general ---------- */
+.faq-cta{margin-top:20px;font-size:.92rem;}
+
+/* ---------- CTA final ---------- */
+.cta-final{background:linear-gradient(135deg,var(--accent-dark),var(--accent));color:#fff;text-align:center;}
+.cta-final h2{color:#fff;}
+.cta-final p{color:#dbe9ff;max-width:60ch;margin:0 auto 26px;}
+.cta-final .btn-outline{background:transparent;border-color:#fff;color:#fff;}
+.cta-final .btn-outline:hover{background:rgba(255,255,255,.12);}
+
+/* ---------- Formulario simple (redirige a WhatsApp) ---------- */
+.form-box{background:#fff;border-radius:var(--radius);padding:30px;box-shadow:0 18px 40px -20px rgba(0,0,0,.25);max-width:560px;margin:0 auto;text-align:left;color:var(--text);}
+.form-box label{display:block;font-size:.85rem;font-weight:700;margin-bottom:6px;margin-top:14px;}
+.form-box input, .form-box select, .form-box textarea{
+  width:100%;padding:11px 13px;border:1px solid var(--borde);border-radius:8px;font-size:.95rem;font-family:inherit;
+}
+.form-box button{width:100%;margin-top:20px;}
+
+/* ---------- Footer ---------- */
+footer.site{background:#10131a;color:#c7cad2;padding:52px 0 20px;font-size:.9rem;}
+.footer-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:30px;}
+.footer-grid h4{color:#fff;margin-bottom:14px;font-size:1rem;}
+.footer-grid li{margin-bottom:8px;}
+.footer-grid a:hover{color:#fff;text-decoration:underline;}
+.footer-bottom{text-align:center;margin-top:34px;padding-top:20px;border-top:1px solid #262b36;color:#7b8091;font-size:.82rem;}
+@media(max-width:800px){.footer-grid{grid-template-columns:1fr 1fr;}}
+
+/* ---------- Botón flotante de WhatsApp ---------- */
+.wa-float{
+  position:fixed;bottom:22px;right:22px;background:var(--verde);color:#fff;
+  width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 24px rgba(0,0,0,.3);z-index:80;font-size:1.6rem;
+}
+
+/* ---------- Responsive general ---------- */
+@media(max-width:800px){
+  .hero .grid, .split, .split.invertido{grid-template-columns:1fr;}
+  .split.invertido{direction:ltr;}
+  .hero-img{order:-1;}
+}
