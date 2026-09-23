@@ -11,22 +11,31 @@ WhatsApp y contenido genuinamente propios por país.
   0 enlaces o imágenes rotos, sin placeholders sin resolver).
 - **41 ciudades y zonas** con página propia, cada una con su propio título
   SEO (`Servicio Técnico Mabe en {Ciudad}, {País}`), meta descripción y
-  JSON-LD `LocalBusiness` — no una plantilla genérica con el nombre pegado.
+  JSON-LD `LocalBusiness`.
+- **Barrios y sectores reales** listados en cada una de las 41 páginas de
+  ciudad (sección "Cobertura"), con nube de palabras clave propia por
+  ciudad y un párrafo adicional de texto orientado a búsqueda.
+- **Nuevas secciones con fotos** en la página de inicio de cada país: "Así
+  es una visita de Servicio Técnico Mabe" (3 fotos, paso a paso) y "Nuestro
+  Estándar" (centro de reparación autorizado).
 
 ## Estructura
 
 ```
 index.html                  Hub global: elige tu país
 {pais}/index.html            Página de inicio de cada país (hero, por qué
-                              elegirnos, quiénes somos, garantía, blog, FAQ)
+                              elegirnos, cómo trabajamos con fotos, quiénes
+                              somos, nuestro estándar, garantía, blog, FAQ)
 {pais}/zonas-de-cobertura.html   Índice de ciudades/zonas del país
-{pais}/zonas/{ciudad}.html   Página propia por ciudad (título y contenido únicos)
+{pais}/zonas/{ciudad}.html   Página propia por ciudad: detalle, barrios que
+                              cubrimos, señales de alerta, nube de palabras
+                              clave local
 {pais}/electrodomesticos/{tipo}/  6 tipos × 6 páginas cada uno (igual en
-                              los 8 países): index, fallas-comunes,
-                              mantenimiento, instalacion, repuestos, FAQ
+                              los 8 países): index (con enlaces a cada
+                              ciudad), fallas-comunes, mantenimiento,
+                              instalacion, repuestos, FAQ
 {pais}/blog/                 9 artículos por país (localizados)
-{pais}/diagnostico.html      Herramienta de diagnóstico rápido (fallas
-                              filtrables de los 6 tipos)
+{pais}/diagnostico.html      Herramienta de diagnóstico rápido
 {pais}/nosotros.html, garantia.html, preguntas-frecuentes.html, servicios/
 ```
 
@@ -35,68 +44,58 @@ Países y sus carpetas: `panama/`, `costarica/`, `colombia/`, `ecuador/`,
 
 ## Decisiones de contenido (para que sepas qué esperar)
 
-1. **Ciudades por país** (las que definiste):
-   - Panamá: las 8 zonas ya construidas (San Francisco, Bella Vista, etc.)
-   - Costa Rica: los 8 cantones ya construidos (San José Centro, Escazú, etc.)
-   - Colombia: Medellín, Cali, Bucaramanga, Cartagena, Ibagué, Barranquilla,
-     Valledupar, Manizales, Bogotá, Cúcuta, Pereira (11 ciudades)
-   - Ecuador: Guayaquil, Quito, Cuenca
-   - Guatemala: solo Ciudad de Guatemala (la capital)
-   - El Salvador: solo San Salvador (la capital)
-   - Paraguay: solo Asunción (la capital)
-   - Chile: 8 comunas de Santiago (Santiago Centro, Providencia, Las Condes,
-     Ñuñoa, La Florida, Maipú, Puente Alto, Vitacura)
-2. **Profundidad por ciudad**: cada ciudad tiene **una página completa**
-   (hero propio, por qué elegirnos, los 6 electrodomésticos en tarjetas,
-   testimonios, FAQ) con título y meta descripción únicos. El detalle
-   profundo por electrodoméstico (fallas comunes, mantenimiento,
-   instalación, repuestos) vive a nivel país, no repetido 41 veces —
-   evita duplicar miles de páginas casi idénticas y sigue dando SEO local
-   fuerte por ciudad.
-3. **Vocabulario por país** (la marca lo pide, ya lo veníamos haciendo):
-   - Panamá, Colombia: **nevera**
-   - Costa Rica, Ecuador, Guatemala, El Salvador: **refrigeradora**
-   - Paraguay: **heladera** (como se dice en la región del Río de la Plata)
-   - Chile: **refrigerador** (masculino — toda la gramática del sitio de
-     Chile está ajustada: "el refrigerador", "un refrigerador", "los
-     refrigeradores")
-4. **Teléfonos**: exactamente los que diste, incluida la reutilización a
-   propósito del mismo número en varios países (Panamá/Guatemala/El
-   Salvador comparten uno; Ecuador/Paraguay comparten otro).
-5. **6 tipos de electrodomésticos en los 8 países** (neveras/refrigeradoras,
-   lavadoras, secadoras, torres de lavado, cocinas, hornos) — le di a todos
-   los países el catálogo más completo que ya teníamos en Costa Rica, para
-   maximizar el SEO en todos lados por igual.
-6. **hreflang real entre países**: al estar todo bajo un mismo dominio
-   (`centrodeserviciotecnicomabe.com/{pais}/`), la página de inicio de cada
-   país enlaza correctamente por `hreflang` a las de los otros 7 países y al
-   hub — esto es SEO internacional hecho como corresponde, algo que no era
-   posible cuando Panamá y Costa Rica vivían en dominios separados.
+1. **Ciudades por país** (las que definiste): Panamá (8 zonas ya
+   construidas), Costa Rica (8 cantones ya construidos), Colombia
+   (Medellín, Cali, Bucaramanga, Cartagena, Ibagué, Barranquilla,
+   Valledupar, Manizales, Bogotá, Cúcuta, Pereira), Ecuador (Guayaquil,
+   Quito, Cuenca), Guatemala (solo la capital), El Salvador (solo la
+   capital), Paraguay (solo Asunción), Chile (8 comunas de Santiago).
+2. **Barrios dentro de cada ciudad**: cada página de ciudad ahora incluye
+   una sección "Barrios y sectores que cubrimos" con 3 a 5 barrios reales
+   (por ejemplo, en Medellín: El Poblado, Laureles, Belén, La América,
+   Envigado). Es contenido dentro de la misma página, no una página nueva
+   por barrio — así se evita duplicar miles de páginas casi idénticas
+   mientras se sigue reforzando el SEO local.
+3. **Profundidad por ciudad**: una página completa por ciudad (no el árbol
+   completo de 6 páginas × 6 electrodomésticos repetido en cada una). El
+   detalle profundo por electrodoméstico vive a nivel país, con enlaces
+   directos desde ahí a cada ciudad.
+4. **Vocabulario por país**: nevera (Panamá/Colombia), refrigeradora
+   (Costa Rica/Ecuador/Guatemala/El Salvador), heladera (Paraguay),
+   refrigerador masculino (Chile, con toda la gramática ajustada).
+5. **Teléfonos**: exactamente los que diste, incluida la reutilización a
+   propósito del mismo número en varios países.
+6. **6 tipos de electrodomésticos en los 8 países**, con enlaces cruzados
+   entre cada tipo y cada ciudad del país (por ejemplo, la página de
+   Neveras de Colombia enlaza a Medellín, Cali, Bogotá, etc.).
+7. **hreflang real entre países** bajo un mismo dominio.
 
-## Estado de las imágenes
+## Fotos nuevas que enviaste
 
-- **Panamá y Costa Rica**: sus fotos reales de cliente ya usadas (no se
-  tocaron).
+Las 5 fotos de "técnico Mabe" que enviaste se aplicaron en la página de
+inicio de los 8 países, en dos secciones nuevas:
+- **"Así es una visita de Servicio Técnico Mabe"**: llegada al domicilio,
+  diagnóstico explicado, reparación con garantía (3 fotos).
+- **"Nuestro Estándar"**: la foto del centro de reparación autorizado,
+  presentada como el estándar de organización que seguimos en cada visita
+  a domicilio (no como una tienda física en cada ciudad, para no prometer
+  algo que no es cierto).
+
+## Estado de las demás imágenes
+
+- **Panamá y Costa Rica**: sus fotos reales de cliente ya usadas.
 - **Colombia, Ecuador, Guatemala, El Salvador, Paraguay, Chile**: fotos de
-  catálogo Mabe genéricas (las mismas que ya usábamos, es el mismo
-  fabricante y modelos), renombradas por país. Ninguna se presenta como
-  "foto real de un cliente de X país" — cuando tengas fotos propias de
-  cada país, dime y las reemplazo con el mismo criterio que ya usamos en
-  Panamá/Costa Rica.
-- **Logo**: el mismo logo real "servicio mabe" en los 8 países (misma
-  marca).
+  catálogo Mabe genéricas (mismo fabricante y modelos), renombradas por
+  país. Cuando tengas fotos propias de cada país, dime y las reemplazo.
+- **Logo**: el mismo logo real "servicio mabe" en los 8 países.
 
 ## Pendiente de tu parte
 
-1. Fotos reales de cliente para Colombia, Ecuador, Guatemala, El Salvador,
-   Paraguay y Chile (opcional — el sitio funciona bien con las fotos de
-   catálogo mientras tanto).
-2. Confirmar si quieres números de WhatsApp reales y propios para cada país
-   más adelante (dijiste que sabías que no eran los reales de cada país y
-   que lo dejáramos así por ahora).
-3. Revisar el listado de ciudades de Colombia/Ecuador — si tienes zonas
-   específicas dentro de cada ciudad (no solo la ciudad completa) que
-   quieras destacar, dímelo y las agrego como páginas adicionales.
+1. Fotos reales de cliente para los 6 países nuevos (opcional).
+2. Confirmar si más adelante quieres números de WhatsApp reales y propios
+   por país.
+3. Si tienes zonas específicas dentro de Colombia/Ecuador que quieras
+   destacar además de las ya incluidas, dímelo.
 
 ## Cómo previsualizarlo
 
