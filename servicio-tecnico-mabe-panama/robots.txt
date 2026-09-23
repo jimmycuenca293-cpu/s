@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://serviciotecnicomabepanama.click/sitemap.xml

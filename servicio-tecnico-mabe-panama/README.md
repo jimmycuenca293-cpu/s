@@ -1,60 +1,76 @@
-# Servicio Técnico Mabe Panamá — sitio SEO completo
+# Servicio Técnico Mabe Panamá — segunda versión (diseño y arquitectura propios)
 
-Sitio nuevo, construido desde cero para **Servicio Técnico Mabe Panamá**
-(Ciudad de Panamá), reutilizando la misma arquitectura probada del sitio de
-Cartagena (secciones SEO, JSON-LD, blog, zonas, validaciones), pero con
-contenido 100% propio para esta marca y ciudad.
+Este sitio fue reconstruido desde cero. La primera versión reutilizaba el
+CSS y la estructura de páginas del sitio de Cartagena (otro proyecto de
+este mismo repositorio) solo cambiando el texto — con justa razón no era
+lo que se pidió. Esta versión tiene:
 
-- **Dominio**: https://serviciotecnicomabepanama.click/
-- **WhatsApp / teléfono**: +507 6933-7976
-- **71 páginas** generadas y validadas (0 errores de HTML, 0 errores de
-  JSON-LD, 0 enlaces/imágenes rotas, 0 texto duplicado, 0 regresiones del
-  bug de scroll).
+- **Diseño visual propio**: tipografía (Manrope + Inter), paleta azul
+  marino + ámbar (no la paleta azul de Cartagena), header con menú
+  desplegable, tarjetas con animación al hacer scroll, botón de WhatsApp
+  flotante con pulso, barra fija inferior en móvil, línea de tiempo
+  "cómo funciona", nube de palabras clave, y acordeón de preguntas
+  frecuentes.
+- **Arquitectura de SEO más sólida, no solo más páginas**: la primera
+  versión generaba 32 páginas casi idénticas (8 zonas × 4 electrodomésticos,
+  cambiando solo el nombre de la zona). Eso es exactamente el tipo de
+  "contenido delgado" (thin/doorway content) que Google penaliza en vez de
+  premiar. Esta versión tiene **8 páginas de zona** (una por cada zona real
+  de Ciudad de Panamá, con contenido único sobre el tipo de edificios,
+  acceso y tiempos de esa zona específica) y **24 páginas por tipo de
+  electrodoméstico** (resumen, fallas comunes, mantenimiento, instalación,
+  repuestos y preguntas frecuentes × 4 tipos), cada una con contenido
+  realmente distinto, no plantillas con una palabra cambiada.
+- **Blog con artículos largos y propios** (6 artículos de 700-900 palabras
+  sobre temas específicos de Panamá: voltaje y apagones, clima húmedo,
+  reparar vs. reemplazar, centros de lavado para apartamentos pequeños),
+  no páginas de relleno.
+- **SEO técnico ampliado**: además de JSON-LD `LocalBusiness`, `Service` y
+  `FAQPage`, se agregó `Organization`, `WebSite`, `Article` en el blog,
+  `HowTo` en las páginas de mantenimiento e instalación (contenido basado
+  en pasos), etiquetas `hreflang` para español de Panamá, y meta
+  `geo.region`/`geo.placename`.
+- **46 páginas en total**, todas validadas: HTML balanceado, JSON-LD sin
+  errores de sintaxis, 0 enlaces o imágenes rotas, sin salto de scroll al
+  navegar.
 
-## Qué incluye
+## Estructura del sitio
 
-- **4 tipos de electrodomésticos**, cada uno con su propia página principal
-  + 5 subpáginas + 8 páginas de zona:
-  - Neveras y Refrigeradoras
-  - Lavadoras
-  - Secadoras
-  - Centros de Lavado
-  - Subpáginas por tipo: Resumen (index), Fallas Comunes, Mantenimiento
-    Preventivo, Instalación, Repuestos Originales, Preguntas Frecuentes.
-- **8 zonas reales de Ciudad de Panamá**: San Francisco, Bella Vista, El
-  Cangrejo, Costa del Este, Punta Pacífica, Obarrio, Marbella, San
-  Miguelito — cada una con página propia y también cruzada con cada tipo de
-  electrodoméstico (8 zonas × 4 tipos = 32 páginas de zona).
-- **3 páginas de servicio genéricas**: mantenimiento preventivo,
-  instalación, reparación de motores/compresores.
-- **Blog**, página general de preguntas frecuentes, y página pilar de
-  fallas comunes.
-- **Botón de WhatsApp** en todas las páginas, con mensajes predefinidos
-  según la página (número +507 6933-7976).
-- **JSON-LD**: `LocalBusiness`, `Service`, `FAQPage`, `BreadcrumbList`, y
-  `speakable` para respuestas de asistentes de voz / IA.
-- Mismo blindaje contra el bug de "salto al footer" que en el sitio de
-  Cartagena.
+```
+index.html                        Inicio
+nosotros.html                     Sobre el servicio técnico
+zonas-de-cobertura.html           Índice de las 8 zonas
+zonas/{zona}.html                 8 páginas de zona (contenido único c/u)
+preguntas-frecuentes.html         FAQ general
+blog/index.html + 6 artículos     Blog con guías largas
+servicios/*.html                  3 servicios genéricos
+electrodomesticos/{tipo}/         4 tipos × 6 páginas cada uno:
+  index.html                        resumen
+  fallas-comunes.html               tabla de fallas + detalle
+  mantenimiento.html                rutina de mantenimiento (HowTo)
+  instalacion.html                  buenas prácticas de instalación (HowTo)
+  repuestos.html                    piezas más reemplazadas
+  preguntas-frecuentes.html         FAQ propia del tipo
+```
 
 ## Estado de las imágenes
 
-- **Neveras y Refrigeradoras**: fotos reales del equipo (reutilizadas de
-  las fotos de Mabe que ya nos diste para Cartagena, ya que es la misma
-  marca/producto): logo, hero, equipo, y galería de 7 fotos.
-- **Lavadoras, Secadoras, Centros de Lavado**: por ahora tienen el logo de
-  Mabe real, pero las fotos de hero/equipo/galería son marcadores de
-  posición (placeholders) generados automáticamente, a la espera de las
-  fotos que dijiste que ibas a enviar.
-
-Cuando envíes las fotos de lavadoras, secadoras y centros de lavado (o
-fotos distintas para neveras específicas de Panamá), las agrego de
-inmediato y regenero el sitio.
+- **Neveras**: fotos reales del equipo (las que ya enviaste, reutilizadas
+  porque es la misma marca/producto).
+- **Lavadoras, Secadoras, Centros de Lavado**: imágenes de marcador de
+  posición (placeholder) con el color de marca, a la espera de las fotos
+  que vas a enviar.
+- **Blog**: portadas de marcador de posición por categoría.
+- El logo del sitio (`images/logo/logo.svg`) es un ícono propio generado
+  para este negocio, no el logo oficial de Mabe — así evitamos dar a
+  entender una afiliación oficial con la marca que no has confirmado.
 
 ## Pendiente de tu parte
 
-1. Enviar las fotos de lavadoras, secadoras y centros de lavado (y decirme
-   si las fotos de neveras que ya usé están bien o prefieres otras).
-2. Confirmar el correo de contacto (por ahora uso
+1. Fotos de lavadoras, secadoras y centros de lavado.
+2. Fotos para las portadas del blog (o las genero con las mismas fotos de
+   producto si prefieres no enviar fotos nuevas para esto).
+3. Confirmar el correo de contacto (uso
    `contacto@serviciotecnicomabepanama.click`).
 
 ## Cómo previsualizarlo
