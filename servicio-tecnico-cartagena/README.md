@@ -1,66 +1,55 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Decimocuarta iteración: se agregó **General Electric (GE) como séptima
-marca**, con las 14 páginas correspondientes (principal, fallas,
-mantenimiento, instalación, repuestos, preguntas frecuentes y 8 zonas), y
-se agregaron **3 secciones nuevas de SEO** en las 7 páginas principales de
-marca. También corregí un error de redacción que afectaba a las 7 marcas.
+Decimoquinta iteración: 5 fotos más de General Electric (ya tiene 7 en
+galería, como las demás marcas), se quitó la sección de precios, y se
+reemplazó por dos secciones nuevas de SEO en las 7 marcas.
 
-## General Electric: séptima marca agregada
+## 1. Se quitó "Precio Referencial del Servicio Técnico"
 
-Agregué GE con el mismo nivel de detalle que las otras 6 marcas:
+Tenías razón: publicar precios de referencia no es la práctica correcta
+para este tipo de negocio. La quité por completo de las 7 páginas
+principales de marca.
 
-- Logo oficial, con el azul real de GE (`#3C72B9`) tomado del logo.
-- Foto principal: nevera GE empotrada en cocina moderna.
-- Foto de equipo: panel de control y dispensador de agua y hielo.
-- Galería con 2 fotos de producto (acero inoxidable y negro).
-- Contenido completo: fallas comunes, modelos, mantenimiento,
-  instalación, preguntas frecuentes y testimonios — igual que las otras
-  6 marcas.
-- Las 8 páginas de zona por marca (Bocagrande, Manga, etc.) se generaron
-  automáticamente para GE también.
+## 2. Dos secciones nuevas en su lugar (más útiles para posicionar, sin hablar de precios)
 
-**Importante sobre "Autorizado"**: no confirmaste que tu negocio sea
-distribuidor autorizado oficial de General Electric, así que —a
-diferencia de las otras 6 marcas— **no** le agregué el sello
-"Autorizado" hasta que me lo confirmes.
+1. **"Repuestos Originales {Marca} que Instalamos con Más Frecuencia en
+   Cartagena"** — resume las piezas más solicitadas (compresor, tarjeta
+   de control, válvula del dispensador, empaques) y enlaza a la página
+   completa de repuestos de cada marca. Refuerza búsquedas como
+   "repuestos [marca] cartagena" y fortalece el enlace interno hacia la
+   página de repuestos.
+2. **"Técnico Especializado {Marca} vs. Técnico Genérico en Cartagena"**
+   — contenido de diferenciación que explica por qué un técnico con
+   experiencia específica en la marca es mejor opción que uno genérico,
+   sin mencionar cifras. Apunta a búsquedas de decisión ("mejor técnico
+   nevera [marca] cartagena").
 
-## 3 secciones nuevas de SEO en las 7 páginas de marca
+## 3. General Electric: 5 fotos más (ya tiene 7 en galería)
 
-Como me diste libertad de elegir, agregué:
+Agregué las imágenes que enviaste: técnico con maletín llegando a una
+vivienda, cocina integral con nevera GE Profile y electrodomésticos
+empotrados, asesora de atención al cliente, panel de control GE Profile,
+y combo de nevera con horno empotrado. GE ya tiene la misma cantidad de
+fotos que Electrolux y Haceb (7).
 
-1. **"Señales de Alerta: Cuándo Llamar a un Técnico {Marca}"** — una
-   lista rápida de síntomas (reutiliza las fallas ya redactadas de cada
-   marca) para capturar búsquedas de diagnóstico temprano.
-2. **"Vida Útil de una Nevera {Marca}: ¿Cuándo Vale la Pena Repararla?"**
-   — contenido sobre la decisión reparar vs. reemplazar, un tema de
-   búsqueda de alto interés que no estaba cubierto.
-3. **"Precio Referencial del Servicio Técnico {Marca} en Cartagena"** —
-   transparencia sobre cómo se cobra (diagnóstico, mano de obra,
-   repuestos), sin inventar cifras exactas que pudieran quedar
-   desactualizadas, apuntando a la búsqueda "cuánto cuesta reparar
-   nevera [marca] cartagena".
-
-## Corrección: error de redacción en las 7 páginas principales
-
-Al revisar cómo se veía la nueva marca GE, encontré una frase mal armada
-en el artículo largo de la página principal de marca ("Por eso, neveras
-y nevecones Samsung, especialistas en... Un diagnóstico...", una oración
-sin verbo). Este error existía desde hace varias iteraciones en **las 7
-marcas**, no solo en GE. Lo corregí de raíz: ahora la oración es
-gramaticalmente correcta en todas.
+**Sigue pendiente confirmar la autorización de GE**: las fotos que
+enviaste muestran uniformes y una camioneta con la leyenda "Técnico
+Autorizado", pero como te expliqué antes, solo agrego el sello
+"Autorizado" en el sitio cuando tú lo confirmas explícitamente (así lo
+hice con las otras 6 marcas). Si esas fotos significan que sí eres
+distribuidor/servicio autorizado de GE, dímelo con esas palabras y se lo
+agrego de inmediato.
 
 ## Estado de las imágenes y autorización por marca
 
 7 marcas en el sitio. Samsung, LG, Whirlpool, Mabe, Electrolux y Haceb:
-autorizadas y con fotos reales. General Electric: fotos reales, pendiente
-de confirmar autorización — ver `IMAGENES-LEEME.md`.
+autorizadas y con fotos reales. General Electric: 7 fotos reales,
+autorización pendiente de confirmar — ver `IMAGENES-LEEME.md`.
 
 ## Pendiente de tu parte
 
 1. Confirmar si tu negocio es distribuidor/servicio autorizado oficial de
-   General Electric (para agregar el sello "Autorizado" como en las
-   otras 6 marcas).
+   General Electric.
 2. Confirmar el correo de contacto (uso
    `contacto@servicio-tecnico-en-cartagena.com` en todo el sitio).
 

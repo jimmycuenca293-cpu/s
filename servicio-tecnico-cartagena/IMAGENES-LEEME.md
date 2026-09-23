@@ -10,7 +10,7 @@
 ## ✅ Haceb — completo (autorizado), 7 fotos en galería
 ## ✅ Página de inicio — completa, con fotos reales
 
-## ⏳ General Electric (GE) — fotos completas, autorización pendiente de confirmar
+## ⏳ General Electric (GE) — fotos completas (7 en galería), autorización pendiente de confirmar
 
 - `images/ge/logo-ge.png` — logo oficial (azul real `#3C72B9` tomado del
   logo).
@@ -18,14 +18,19 @@
   moderna.
 - `images/ge/equipo-ge-cartagena.jpg` — panel de control y dispensador
   de agua y hielo.
-- Galería: modelo en acero inoxidable y modelo en negro, ambos con
-  dispensador de agua y hielo.
+- Galería (7 fotos): modelo en acero inoxidable, modelo en negro,
+  técnico con maletín llegando a una vivienda, cocina integral con
+  nevera GE Profile y electrodomésticos empotrados, asesora de atención
+  al cliente, panel de control GE Profile, y combo de nevera con horno
+  empotrado.
 
 **Sobre "Autorizado"**: no confirmaste que tu negocio sea distribuidor o
 servicio autorizado oficial de General Electric, así que —igual que hice
 originalmente con las otras marcas hasta que las confirmaste— usé las
 fotos porque las pediste, pero no agregué la palabra "Autorizado" en el
-encabezado hasta que me lo confirmes.
+encabezado hasta que me lo confirmes. Las fotos nuevas muestran un
+uniforme y una camioneta con la leyenda "Técnico Autorizado", pero sigo
+esperando tu confirmación explícita antes de agregar ese sello al sitio.
 
 ```
 images/
