@@ -261,6 +261,10 @@ section.oscura .cabecera-seccion p{color:rgba(255,255,255,.72);}
 .chip-barrio{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--linea);border-radius:999px;padding:8px 16px;font-size:.85rem;font-weight:600;color:var(--azul-osc);}
 .chip-barrio svg{width:14px;height:14px;color:var(--naranja);}
 
+/* ---------- Banderas ---------- */
+.marca img.bandera-marca{height:15px !important;width:22px !important;max-width:22px;display:inline-block;vertical-align:middle;margin-left:2px;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.08);object-fit:cover;}
+.bandera-tarjeta{display:inline-block;vertical-align:-3px;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.08);object-fit:cover;margin-right:4px;}
+
 /* ---------- Hub global: tarjetas de país ---------- */
 .rejilla-paises{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
 .tarjeta-pais{display:flex;flex-direction:column;gap:10px;background:#fff;border:1px solid var(--linea);border-radius:var(--radio);padding:26px;box-shadow:var(--sombra-sm);text-decoration:none;color:inherit;transition:transform .15s ease,box-shadow .15s ease;}

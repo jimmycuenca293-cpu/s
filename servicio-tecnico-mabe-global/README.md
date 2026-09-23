@@ -12,6 +12,9 @@ WhatsApp y contenido genuinamente propios por país.
 - **41 ciudades y zonas** con página propia y sección de barrios reales.
 - **Etiqueta de Google Search Console** (`3ZMlpKxc91rNZZaoEM3iNwyRLAF6sNuoiJAr0wDconI`)
   agregada en las 482 páginas.
+- **Banderas de cada país**: en la página global (junto a cada tarjeta de
+  país) y en el encabezado del propio sitio de cada país (junto al nombre,
+  "Servicio Técnico Mabe Panamá 🇵🇦").
 
 ## Qué tiene cada página de electrodoméstico (6 tipos × 6 páginas × 8 países)
 
@@ -79,6 +82,15 @@ Países y sus carpetas: `panama/`, `costarica/`, `colombia/`, `ecuador/`,
 4. **Teléfonos**: exactamente los que diste, incluida la reutilización a
    propósito del mismo número en varios países.
 5. **hreflang real entre países** bajo un mismo dominio.
+
+## Banderas
+
+- **Fotos reales** (las que enviaste): Ecuador, Chile, Colombia, Costa Rica
+  y Panamá.
+- **Simplificadas** (no tenía foto real de esa bandera, así que generé una
+  versión plana con los colores oficiales en vez de inventar una foto):
+  Guatemala, El Salvador y Paraguay. Si me pasas la foto real de estas 3,
+  las reemplazo directo.
 
 ## Estado de las imágenes
 
