@@ -1,7 +1,6 @@
 # Estado de las imágenes por marca
 
-**Las 6 marcas están completas**: autorizadas y con fotos reales. La
-página de inicio (`images/home/`) también tiene fotos reales.
+7 marcas en el sitio. Las primeras 6 están confirmadas como autorizadas.
 
 ## ✅ Samsung — completo (autorizado)
 ## ✅ LG — completo (autorizado)
@@ -11,18 +10,22 @@ página de inicio (`images/home/`) también tiene fotos reales.
 ## ✅ Haceb — completo (autorizado), 7 fotos en galería
 ## ✅ Página de inicio — completa, con fotos reales
 
-- `images/haceb/logo-haceb.png` — logo oficial.
-- `images/haceb/hero-haceb-cartagena.jpg` — técnico Haceb revisando una
-  nevera French Door.
-- `images/haceb/equipo-haceb-cartagena.jpg` — técnico junto a su vehículo
-  de servicio.
-- Galería (7 fotos): producto con dispensador de agua, foto institucional
-  "Un hogar, mil historias felices", French Door de 4 puertas en cocina
-  de madera, congelador superior en acero inoxidable, modelo con panel
-  digital y fabricador de hielo, interior organizado, y French Door de 4
-  puertas en estudio.
-- `images/home/`: hero, quiénes somos, y 3 fotos más distribuidas en las
-  secciones de "Por qué elegirnos", "Nuestros servicios" y "Reseñas".
+## ⏳ General Electric (GE) — fotos completas, autorización pendiente de confirmar
+
+- `images/ge/logo-ge.png` — logo oficial (azul real `#3C72B9` tomado del
+  logo).
+- `images/ge/hero-ge-cartagena.jpg` — nevera GE empotrada en cocina
+  moderna.
+- `images/ge/equipo-ge-cartagena.jpg` — panel de control y dispensador
+  de agua y hielo.
+- Galería: modelo en acero inoxidable y modelo en negro, ambos con
+  dispensador de agua y hielo.
+
+**Sobre "Autorizado"**: no confirmaste que tu negocio sea distribuidor o
+servicio autorizado oficial de General Electric, así que —igual que hice
+originalmente con las otras marcas hasta que las confirmaste— usé las
+fotos porque las pediste, pero no agregué la palabra "Autorizado" en el
+encabezado hasta que me lo confirmes.
 
 ```
 images/
@@ -32,9 +35,9 @@ images/
   mabe/            ✅ completo (autorizado)
   electrolux/      ✅ completo (autorizado)
   haceb/           ✅ completo (autorizado)
+  ge/              ⏳ fotos completas, autorización pendiente de confirmar
   home/            ✅ completo
 ```
 
-Las 6 marcas y la página de inicio quedan al 100%. Si quieres agregar más
-fotos a alguna sección, dime a cuál y las agrego con el mismo criterio:
-distribuidas por sección, no todas juntas.
+Si confirmas que General Electric es autorizada, dímelo y le agrego el
+sello de inmediato.
