@@ -1,6 +1,7 @@
 # Estado de las imágenes por marca
 
-**Las 6 marcas están completas**: autorizadas y con fotos reales.
+**Las 6 marcas están completas**: autorizadas y con fotos reales. La
+página de inicio (`images/home/`) también tiene fotos reales.
 
 ## ✅ Samsung — completo (autorizado)
 ## ✅ LG — completo (autorizado)
@@ -8,6 +9,7 @@
 ## ✅ Mabe — completo (autorizado)
 ## ✅ Electrolux — completo (autorizado), 7 fotos en galería
 ## ✅ Haceb — completo (autorizado), 7 fotos en galería
+## ✅ Página de inicio — completa, con fotos reales
 
 - `images/haceb/logo-haceb.png` — logo oficial.
 - `images/haceb/hero-haceb-cartagena.jpg` — técnico Haceb revisando una
@@ -19,6 +21,8 @@
   de madera, congelador superior en acero inoxidable, modelo con panel
   digital y fabricador de hielo, interior organizado, y French Door de 4
   puertas en estudio.
+- `images/home/`: hero, quiénes somos, y 3 fotos más distribuidas en las
+  secciones de "Por qué elegirnos", "Nuestros servicios" y "Reseñas".
 
 ```
 images/
@@ -28,8 +32,9 @@ images/
   mabe/            ✅ completo (autorizado)
   electrolux/      ✅ completo (autorizado)
   haceb/           ✅ completo (autorizado)
+  home/            ✅ completo
 ```
 
-Las 6 marcas quedan al 100%. Si quieres agregar más fotos a alguna marca,
-dime a cuál y las agrego con el mismo criterio: distribuidas por sección,
-no todas juntas.
+Las 6 marcas y la página de inicio quedan al 100%. Si quieres agregar más
+fotos a alguna sección, dime a cuál y las agrego con el mismo criterio:
+distribuidas por sección, no todas juntas.
