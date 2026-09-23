@@ -85,12 +85,39 @@ Países y sus carpetas: `panama/`, `costarica/`, `colombia/`, `ecuador/`,
 
 ## Banderas
 
-- **Fotos reales** (las que enviaste): Ecuador, Chile, Colombia, Costa Rica
-  y Panamá.
-- **Simplificadas** (no tenía foto real de esa bandera, así que generé una
-  versión plana con los colores oficiales en vez de inventar una foto):
-  Guatemala, El Salvador y Paraguay. Si me pasas la foto real de estas 3,
-  las reemplazo directo.
+Las 8 banderas usan tus fotos reales: Ecuador, Chile, Colombia, Costa Rica,
+Panamá, Guatemala, El Salvador y Paraguay.
+
+## SEO técnico (esta ronda)
+
+- **Sitemap con prioridad, frecuencia y fecha**: cada URL en cada
+  `sitemap.xml` (los 8 países + el maestro global) ahora trae
+  `<lastmod>`, `<changefreq>` y `<priority>` según el tipo de página
+  (inicio 1.0, categoría de electrodoméstico 0.9, zonas 0.8, blog 0.5),
+  en vez de solo la URL sola.
+- **`theme-color`**: el navegador móvil ahora usa el azul de la marca en
+  la barra superior al abrir cualquier página.
+- **`og:image:alt`**: las vistas previas de WhatsApp/Facebook ahora
+  describen la imagen, no solo la muestran.
+- **Meta description con límite seguro**: si alguna descripción se pasa
+  de 160 caracteres, se recorta automáticamente en el build para que
+  Google no la corte a mitad de palabra en los resultados de búsqueda.
+- **Velocidad de carga (Core Web Vitals)**: la foto principal de cada
+  página de inicio y de cada categoría de electrodoméstico ahora se
+  carga con prioridad alta (`fetchpriority="high"`) porque es la imagen
+  más grande visible al abrir la página; el resto de las imágenes fuera
+  de la primera pantalla llevan `loading="lazy" decoding="async"` para
+  no competir por ancho de banda con lo que el usuario ve primero. Un
+  sitio más rápido es una señal de posicionamiento en Google.
+
+## CSS
+
+- **Selección de texto de marca**: al seleccionar texto con el mouse
+  ahora se resalta en el naranja de Mabe en vez del azul por defecto del
+  navegador.
+- **Respeto a "reducir movimiento"**: quien tenga esa preferencia
+  activada en su teléfono o computadora (accesibilidad) ya no ve las
+  animaciones ni el scroll suave del sitio.
 
 ## Estado de las imágenes
 
