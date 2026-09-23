@@ -1,6 +1,31 @@
 # Servicio Técnico Mabe Panamá
 
-## Última actualización: herramienta de Diagnóstico Rápido (nueva)
+## Última actualización: corrección de la foto de Neveras + nuevas secciones de SEO
+
+Se detectó y corrigió un error real: la categoría **Neveras y
+Refrigeradores** nunca había mostrado una foto real de nevera, ni en la
+página de inicio ni en su propia página — la foto que aparecía ahí era
+en realidad la del técnico saludando al cliente (una foto genérica que
+sí pertenece al sitio, pero no era una nevera). Se corrigió así:
+
+- La foto del técnico se conservó, pero se movió a un archivo propio
+  (`images/nosotros/tecnico-saludo-cliente-panama.jpg`) para usarla solo
+  como imagen genérica de portada/confianza, ya no asociada a "Neveras".
+- La categoría "Neveras y Refrigeradores" ahora muestra la foto real de
+  nevera que enviaste, tanto en la tarjeta de inicio como en su propia
+  página de electrodoméstico.
+- Se agregaron tres secciones nuevas a la página de inicio, pensadas
+  para reforzar el posicionamiento (las mismas que se agregaron en el
+  sitio de Costa Rica): **"Por Qué Elegirnos"**, **"Quiénes Somos"** y
+  **"Garantía en cada reparación"**. La sección "Qué Reparamos" se
+  mantuvo (no se eliminó) porque la razón para quitarla era que las
+  fotos no correspondían al equipo real — ese era exactamente el error
+  de la foto de nevera, ya corregido en la raíz; quitar la sección
+  hubiera sacrificado enlaces internos útiles hacia cada página de
+  electrodoméstico sin resolver nada que no se resolviera ya arreglando
+  la foto.
+
+## Anterior: herramienta de Diagnóstico Rápido
 
 Nueva página **`/diagnostico.html`** — "Diagnóstico Rápido: ¿Qué le Pasa
 a tu Electrodoméstico Mabe?":
@@ -49,6 +74,14 @@ a escribir por WhatsApp.
 1. Fotos adicionales para galerías (si tienes más de una foto por tipo).
 2. Confirmar el correo de contacto
    (`contacto@serviciotecnicomabepanama.click`).
+
+## Nota sobre este control de calidad
+
+Antes de esta entrega se revisó archivo por archivo (con hash, no solo
+visualmente) que cada foto real corresponda al electrodoméstico que
+dice mostrar, se corrió el validador de HTML/JSON-LD (0 errores reales)
+y el verificador de enlaces e imágenes (0 rotos sobre 1390 referencias
+en 49 páginas).
 
 ## Cómo previsualizarlo
 
