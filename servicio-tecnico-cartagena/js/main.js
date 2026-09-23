@@ -2,6 +2,19 @@
 (function () {
   "use strict";
 
+  // Fuerza que cada página cargue desde arriba (donde está el título <h1>),
+  // salvo que la URL tenga un ancla específica (#contacto-...). Evita que el
+  // navegador restaure una posición de scroll de la página anterior.
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+  if (!window.location.hash) {
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("pageshow", function () {
+    if (!window.location.hash) window.scrollTo(0, 0);
+  });
+
   // Menú móvil
   var toggle = document.querySelector(".nav-toggle");
   var menu = document.querySelector("nav.main-menu");

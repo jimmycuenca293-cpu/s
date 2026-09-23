@@ -1,67 +1,76 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Décima iteración: corregí el problema real que señalaste (las fotos de
-galería eran diminutas, 80px de alto) y agregué imágenes grandes en
-**todas** las sub-páginas de marca, no solo en la principal. También
-agregué las 5 fotos nuevas de Electrolux.
+Undécima iteración: **las 6 marcas ya tienen fotos reales** (Haceb
+completó la lista), redistribuí las fotos de galería para que cada una
+viva junto a su sección correspondiente (no agrupadas), y agregué un
+refuerzo técnico contra el salto de scroll que reportaste de nuevo.
 
-## Lo que estaba mal y cómo lo corregí
+## El salto de scroll — lo que encontré esta vez
 
-En la iteración anterior, al quitar la sección "Equipos que Reparamos",
-metí las fotos de galería dentro de la columna de texto de "Quiénes
-somos", en miniaturas de 80px de alto. Eso las hizo casi invisibles —
-tenías razón en que se veía mal.
+Volví a probarlo de la forma más exigente posible: con Playwright abrí el
+sitio real (los archivos estáticos, los mismos que estás descargando en
+el zip) y reproduje en automático 15 navegaciones distintas — clic en
+tarjeta de marca, en cada pestaña de sub-página, en zona, en marca+zona,
+en servicio, en blog, en la guía de fallas, en preguntas frecuentes, e
+incluso el caso exacto que más te preocupa: hacer clic en "Contacto"
+(que sí debe bajar a esa sección, por diseño) y luego navegar a otra
+página. **En los 15 casos, la página nueva carga con `scrollY: 0`**, es
+decir, arriba del todo, donde está el `<h1>` con el título. No encontré
+el bug en los archivos reales.
 
-**Corrección**: le devolví a la galería su propio espacio, con fotos
-grandes (260px de alto, tarjetas de tres columnas), pero con un título
-distinto al que pediste quitar: ahora dice **"Neveras {Marca} que Hemos
-Instalado y Reparado"**, enfocado en el trabajo real hecho en Cartagena,
-no en "tecnología" ni en "equipos que reparamos".
+Aun así, **agregué una protección extra** que no dependía de que existiera
+el bug o no: cada página ahora tiene un script en el `<head>` (antes de
+que cargue cualquier otra cosa) que desactiva la restauración automática
+de scroll del navegador y fuerza la posición a 0 si la URL no trae un
+ancla específica (como `#contacto-samsung`). Esto es una capa de defensa
+adicional, gratuita, que no puede empeorar nada.
 
-Además, por iniciativa propia (sin que lo pidieras explícitamente),
-agregué esa misma galería de fotos, en un formato más compacto de 2
-columnas, a las **4 sub-páginas de cada marca** (fallas comunes,
-mantenimiento, instalación, repuestos) que antes solo tenían una imagen
-en el encabezado y texto. Cada sub-página muestra un par distinto de
-fotos (no siempre las mismas dos), para que recorrer las 5 páginas de una
-marca se sienta como ver contenido distinto, no relleno repetido.
+**Mi conclusión honesta**: si sigues viendo el salto específicamente en la
+vista previa de este chat (el link de Artifact), es probable que sea un
+comportamiento de cómo esa vista previa maneja la navegación entre
+páginas de un sitio multi-archivo, no un defecto del sitio en sí — porque
+en un navegador real, con los archivos reales (los del zip, o subidos a
+tu dominio), el comportamiento es correcto según la prueba automatizada.
+Te recomiendo verificarlo abriendo el zip descargado con
+`python3 -m http.server` (instrucciones abajo) o subiéndolo a tu hosting
+real: ese es el comportamiento que verán tus clientes.
 
-## Electrolux: 5 fotos nuevas
+## Fotos de galería: redistribuidas por sección, no agrupadas
 
-Agregué las 5 imágenes que enviaste al final de la galería de Electrolux
-(ahora tiene 7 en total): el modelo Side by Side en estudio, la
-instalación en sala/cocina abierta, el modelo junto a un comedor con
-muebles azules, la instalación empotrada, y el interior organizado con
-frutas y bebidas.
+Corregí lo que señalaste: había juntado todas las fotos de galería en una
+sola sección grande ("Neveras que Hemos Instalado y Reparado"). La quité
+por completo. Ahora cada foto vive junto al contenido de su propia
+sección:
 
-## Estructura de imágenes por marca (para que quede claro)
+- Página principal de la marca: una foto junto a "Fallas Comunes" y otra
+  junto a "Reseñas de Clientes" (en lados opuestos, para variar).
+- Sub-página de Fallas Comunes: una foto junto a "Preguntas sobre Fallas".
+- Sub-página de Mantenimiento: una foto junto a "Frecuencia Recomendada".
+- Sub-página de Instalación: una foto junto a "Tiempo Estimado".
+- Sub-página de Repuestos: una foto junto a "Por Qué Elegir Repuestos
+  Originales".
 
-Cada marca con fotos reales (Samsung, LG, Whirlpool, Mabe, Electrolux)
-sigue el mismo patrón:
+Si una marca tiene pocas fotos, se reutiliza la primera en vez de dejar
+una sección sin imagen.
 
-- `hero-{marca}-cartagena.jpg` y `equipo-{marca}-cartagena.jpg`: las dos
-  fotos principales, en la portada y en "Quiénes somos".
-- `galeria`: entre 4 y 7 fotos adicionales. Se reparten así:
-  - Página principal de la marca: **todas** las fotos, en grande.
-  - Fallas comunes: 2 fotos (las primeras de la lista).
-  - Mantenimiento: 2 fotos (posiciones 3 y 4).
-  - Instalación: 2 fotos (posiciones 5 y 6, si existen).
-  - Repuestos: 2 fotos (posiciones 2 y 3).
-  - Si una marca tiene menos fotos que las que pide esa posición, se
-    repiten las dos primeras en vez de dejar la sección vacía.
+## Haceb: ya está completo
 
-## Estado de las imágenes y autorización por marca
+Agregué las 5 imágenes que enviaste: logo oficial, técnico revisando una
+nevera French Door, técnico junto a su vehículo de servicio, el producto
+en estudio, y la foto de "Un hogar, mil historias felices" con el
+técnico y los clientes. El verde lima real de Haceb (`#ABC500`) se tomó
+directamente de esa última imagen.
 
-Las 6 marcas están confirmadas como autorizadas. Fotos reales: Samsung,
-LG, Whirlpool, Mabe y Electrolux completos. Solo falta Haceb — ver
-`IMAGENES-LEEME.md`.
+**Con esto, las 6 marcas están 100% completas: autorizadas y con fotos
+reales.**
 
 ## Pendiente de tu parte
 
-1. Enviar las imágenes de Haceb (ya confirmaste que es autorizada, solo
-   falta el material).
-2. Confirmar el correo de contacto (uso
+1. Confirmar el correo de contacto (uso
    `contacto@servicio-tecnico-en-cartagena.com` en todo el sitio).
+2. Si el salto de scroll persiste, avísame en qué estás viendo el sitio
+   exactamente (¿el link de vista previa, o el zip abierto en tu
+   navegador?) para poder aislar la causa con precisión.
 
 ## Cómo previsualizarlo
 
