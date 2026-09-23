@@ -1,76 +1,65 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Undécima iteración: **las 6 marcas ya tienen fotos reales** (Haceb
-completó la lista), redistribuí las fotos de galería para que cada una
-viva junto a su sección correspondiente (no agrupadas), y agregué un
-refuerzo técnico contra el salto de scroll que reportaste de nuevo.
+Duodécima iteración: 5 fotos más de Haceb, dos secciones nuevas en las 6
+páginas principales de marca (Modelos y Filtros de Agua), y más preguntas
+frecuentes en cada página.
 
-## El salto de scroll — lo que encontré esta vez
+## 1. Haceb: 5 fotos más (ya tiene 7 en galería)
 
-Volví a probarlo de la forma más exigente posible: con Playwright abrí el
-sitio real (los archivos estáticos, los mismos que estás descargando en
-el zip) y reproduje en automático 15 navegaciones distintas — clic en
-tarjeta de marca, en cada pestaña de sub-página, en zona, en marca+zona,
-en servicio, en blog, en la guía de fallas, en preguntas frecuentes, e
-incluso el caso exacto que más te preocupa: hacer clic en "Contacto"
-(que sí debe bajar a esa sección, por diseño) y luego navegar a otra
-página. **En los 15 casos, la página nueva carga con `scrollY: 0`**, es
-decir, arriba del todo, donde está el `<h1>` con el título. No encontré
-el bug en los archivos reales.
+Agregué las imágenes que enviaste: la nevera French Door de 4 puertas en
+cocina de madera, el modelo de congelador superior en acero inoxidable,
+el modelo negro con panel digital y fabricador de hielo manual, el
+interior organizado, y el French Door de 4 puertas en estudio.
 
-Aun así, **agregué una protección extra** que no dependía de que existiera
-el bug o no: cada página ahora tiene un script en el `<head>` (antes de
-que cargue cualquier otra cosa) que desactiva la restauración automática
-de scroll del navegador y fuerza la posición a 0 si la URL no trae un
-ancla específica (como `#contacto-samsung`). Esto es una capa de defensa
-adicional, gratuita, que no puede empeorar nada.
+## 2. Sección nueva: "Modelos de Neveras y Nevecones {Marca}"
 
-**Mi conclusión honesta**: si sigues viendo el salto específicamente en la
-vista previa de este chat (el link de Artifact), es probable que sea un
-comportamiento de cómo esa vista previa maneja la navegación entre
-páginas de un sitio multi-archivo, no un defecto del sitio en sí — porque
-en un navegador real, con los archivos reales (los del zip, o subidos a
-tu dominio), el comportamiento es correcto según la prueba automatizada.
-Te recomiendo verificarlo abriendo el zip descargado con
-`python3 -m http.server` (instrucciones abajo) o subiéndolo a tu hosting
-real: ese es el comportamiento que verán tus clientes.
+En las 6 páginas principales de marca, agregué una sección con las
+líneas de producto que cada fabricante ofrece y que reparamos:
 
-## Fotos de galería: redistribuidas por sección, no agrupadas
+- **Samsung**: Side-by-Side (RS), French Door (RF/4 puertas), Top & Bottom
+  Freezer (RT/RB).
+- **LG**: InstaView Door-in-Door, Side-by-Side con Linear Compressor, Top
+  & Bottom Freezer.
+- **Electrolux**: Side by Side con dispensador, Frost Free (No Frost),
+  Empotrables e integrales.
+- **Whirlpool**: Side-by-Side con Sixth Sense, French Door con
+  dispensador, Modelos No Frost tradicionales.
+- **Mabe**: Side by Side con dispensador, Congelador superior con Home
+  Energy Saver, Modelos con panel digital.
+- **Haceb**: French Door de 4 puertas, Congelador superior (Top Freezer),
+  Modelos con panel digital y fabricador de hielo.
 
-Corregí lo que señalaste: había juntado todas las fotos de galería en una
-sola sección grande ("Neveras que Hemos Instalado y Reparado"). La quité
-por completo. Ahora cada foto vive junto al contenido de su propia
-sección:
+Esto ayuda a capturar búsquedas como "modelos de nevera {marca}" y le da
+más contexto a cada página sobre qué equipos específicos atendemos.
 
-- Página principal de la marca: una foto junto a "Fallas Comunes" y otra
-  junto a "Reseñas de Clientes" (en lados opuestos, para variar).
-- Sub-página de Fallas Comunes: una foto junto a "Preguntas sobre Fallas".
-- Sub-página de Mantenimiento: una foto junto a "Frecuencia Recomendada".
-- Sub-página de Instalación: una foto junto a "Tiempo Estimado".
-- Sub-página de Repuestos: una foto junto a "Por Qué Elegir Repuestos
-  Originales".
+## 3. Sección nueva: "Filtros de Agua para Nevecones {Marca}"
 
-Si una marca tiene pocas fotos, se reutiliza la primera en vez de dejar
-una sección sin imagen.
+También en las 6 páginas principales, agregué una sección sobre el
+servicio de cambio de filtro de agua (para nevecones con dispensador de
+agua o fabricador de hielo): por qué cambiarlo cada 6 meses, qué
+revisamos al hacerlo, y un botón directo de WhatsApp para solicitar el
+cambio. Esto captura búsquedas como "filtro de agua nevera {marca}
+cartagena".
 
-## Haceb: ya está completo
+## 4. Más preguntas frecuentes en cada página
 
-Agregué las 5 imágenes que enviaste: logo oficial, técnico revisando una
-nevera French Door, técnico junto a su vehículo de servicio, el producto
-en estudio, y la foto de "Un hogar, mil historias felices" con el
-técnico y los clientes. El verde lima real de Haceb (`#ABC500`) se tomó
-directamente de esa última imagen.
+- Agregué 2 preguntas nuevas a las preguntas frecuentes generales (sobre
+  filtros de agua y sobre si reparamos modelos antiguos), que aparecen en
+  la página de inicio y en la página general de preguntas frecuentes.
+- Agregué 1 pregunta nueva a cada una de las 6 marcas (relacionada con
+  filtros de agua o modelos), que aparece tanto en la página principal de
+  la marca como en su página dedicada de preguntas frecuentes.
 
-**Con esto, las 6 marcas están 100% completas: autorizadas y con fotos
-reales.**
+## Estado de las imágenes y autorización por marca
+
+Las 6 marcas están confirmadas como autorizadas y con fotos reales.
+Haceb ahora tiene 7 fotos en su galería, igual que Electrolux — ver
+`IMAGENES-LEEME.md`.
 
 ## Pendiente de tu parte
 
 1. Confirmar el correo de contacto (uso
    `contacto@servicio-tecnico-en-cartagena.com` en todo el sitio).
-2. Si el salto de scroll persiste, avísame en qué estás viendo el sitio
-   exactamente (¿el link de vista previa, o el zip abierto en tu
-   navegador?) para poder aislar la causa con precisión.
 
 ## Cómo previsualizarlo
 
