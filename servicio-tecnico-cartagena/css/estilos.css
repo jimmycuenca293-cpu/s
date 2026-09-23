@@ -240,6 +240,19 @@ footer.site::before{content:"";position:absolute;top:0;left:0;right:0;height:3px
 .footer-bottom{text-align:center;margin-top:36px;padding-top:22px;border-top:1px solid #22252f;color:#6d7280;font-size:.82rem;}
 @media(max-width:800px){.footer-grid{grid-template-columns:1fr 1fr;}}
 
+/* ---------- Teléfono destacado (SEO local + AI) ---------- */
+.telefono-destacado{background:var(--bg-alt,#f3f6fb);border-top:1px solid var(--borde);border-bottom:1px solid var(--borde);padding:40px 0;text-align:center;}
+.telefono-destacado h2{margin:6px 0 16px;font-size:1.5rem;}
+.telefono-numero{display:inline-block;font-size:2rem;font-weight:800;color:var(--accent-dark);letter-spacing:.01em;margin-bottom:14px;text-decoration:none;}
+.telefono-numero:hover{text-decoration:underline;}
+.telefono-destacado p{max-width:60ch;margin:0 auto 18px;color:var(--text-muted,#555);}
+
+/* ---------- Pasos (cómo solicitar visita técnica) ---------- */
+.cards.pasos{grid-template-columns:repeat(4,1fr);}
+.cards.pasos .icono{background:var(--accent);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;margin-bottom:12px;}
+@media(max-width:800px){.cards.pasos{grid-template-columns:1fr 1fr;}}
+@media(max-width:520px){.cards.pasos{grid-template-columns:1fr;}}
+
 /* ---------- Botón flotante de WhatsApp ---------- */
 .wa-float{
   position:fixed;bottom:24px;right:24px;background:var(--verde);color:#fff;

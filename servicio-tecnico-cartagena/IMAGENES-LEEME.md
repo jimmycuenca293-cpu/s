@@ -1,32 +1,32 @@
 # Estado de las imágenes por marca
 
+Confirmaste que **las 6 marcas son autorizadas**. Todas muestran el sello
+"Autorizado" en el sitio.
+
 ## ✅ Samsung — completo (autorizado)
-## ✅ LG — completo
-## ✅ Whirlpool — completo
-## ✅ Mabe — completo
+## ✅ LG — completo (autorizado)
+## ✅ Whirlpool — completo (autorizado)
+## ✅ Mabe — completo (autorizado)
 
 - `images/mabe/logo-mabe.png` — logo oficial.
 - `images/mabe/hero-mabe-cartagena.jpg`, `equipo-mabe-cartagena.jpg` — fotos
   del técnico que enviaste.
-- Galería: técnico dirigiéndose a un centro de reparación, nevera Mabe con
-  congelador superior.
+- Galería (7 imágenes): técnico dirigiéndose a un centro de reparación,
+  nevera con congelador superior, nevera con tecnología Home Energy Saver,
+  modelo Side by Side plateado, instalación empotrada en cocina integral, y
+  dos modelos negro mate con la garantía de 10 años en el compresor.
 
-**Sobre "Autorizado"**: no confirmaste que tu negocio sea distribuidor
-autorizado oficial de Mabe, así que —igual que con LG y Whirlpool— usé las
-fotos porque las pediste, pero no agregué la palabra "Autorizado" en el
-encabezado hasta que me lo confirmes.
-
-## ⏳ Electrolux, Haceb — pendientes
+## ⏳ Electrolux, Haceb — autorizadas, pendientes solo de fotos
 
 ```
 images/
   samsung/         ✅ completo (autorizado)
-  lg/              ✅ completo
-  whirlpool/       ✅ completo
-  mabe/            ✅ completo
-  electrolux/       ⏳ pendiente
-  haceb/            ⏳ pendiente
+  lg/              ✅ completo (autorizado)
+  whirlpool/       ✅ completo (autorizado)
+  mabe/            ✅ completo (autorizado)
+  electrolux/      ⏳ autorizada, pendiente de fotos
+  haceb/           ⏳ autorizada, pendiente de fotos
 ```
 
-Cuando envíes las imágenes de cada marca, dime también si es autorizada
-oficialmente por el fabricante o no.
+Cuando envíes las imágenes de Electrolux y Haceb quedan las 6 marcas
+completas al 100%.

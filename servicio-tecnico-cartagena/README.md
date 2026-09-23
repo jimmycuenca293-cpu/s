@@ -1,60 +1,82 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Séptima iteración: **encontré y corregí la causa real** del salto al pie de
-página, agregué Mabe, y sumé fotos a las páginas de marca que antes eran
-solo texto.
+Octava iteración: confirmaste que **las 6 marcas son autorizadas**, se
+agregaron más fotos de Mabe, se reemplazó la sección genérica de
+"Tecnología" por un proceso claro de **"Cómo solicitar visita técnica"**,
+se agregó una sección de **teléfono destacado** en cada página de marca,
+zona y servicio, se sumó markup **speakable** para asistentes de IA/Google,
+y se creó un **Blog** con todas las guías del sitio enlazado desde el menú
+y el pie de página de las 99 páginas.
 
-## El bug del salto al pie de página — causa real encontrada
+## 1. Las 6 marcas ahora son "Autorizado"
 
-Reportaste, con razón, que el problema seguía pasando en **todos** los
-enlaces internos. Investigué más a fondo y encontré la causa real: **las 98
-páginas del sitio compartían el mismo `id="contacto"`** en su sección final
-(justo antes del pie de página). Cada página tenía su propia sección con
-ese identificador repetido.
+Confirmaste que Samsung, LG, Electrolux, Whirlpool, Mabe y Haceb son todas
+autorizadas. Ahora las 6 muestran el sello "&#10003; Autorizado" en el
+encabezado de su página y en el logo del header, igual que ya tenía
+Samsung.
 
-Si en algún momento el navegador (o la vista previa) queda con `#contacto`
-en la URL —por ejemplo, después de tocar el botón "Contacto" del menú— y
-luego se navega a *cualquier otra página* del sitio sin borrar ese
-fragmento, el navegador busca un elemento con `id="contacto"` en la nueva
-página... y lo encuentra, porque **todas las páginas tenían uno**, siempre
-la sección justo antes del footer. Por eso parecía que "todo enviaba al pie
-de página": técnicamente no era un enlace roto, era un identificador
-duplicado en el sitio entero que un fragmento de URL "pegado" podía
-enganchar en cualquier página.
+## 2. Más fotos de Mabe
 
-**La solución**: le di a cada una de las 98 páginas un `id` único para su
-sección de contacto (`contacto-inicio`, `contacto-samsung`,
-`contacto-lg-fallas`, `contacto-mabe-manga`, etc.). Ahora, aunque un
-fragmento de URL quede pegado de una navegación anterior, no puede
-coincidir con ninguna sección de una página distinta a la que pertenece.
+Agregué las 5 fotos nuevas que enviaste a la galería de Mabe (ahora tiene 7
+imágenes): la nevera con tecnología Home Energy Saver, el modelo Side by
+Side plateado, la instalación empotrada en cocina integral, y los dos
+modelos negro mate con la garantía de 10 años en el compresor.
 
-Lo probé de forma automatizada reproduciendo exactamente tu escenario: clic
-en "Contacto" (salta a la sección de contacto del inicio) → clic en la
-tarjeta de Mabe → clic en la pestaña "Fallas Comunes". Las tres
-navegaciones quedan arriba del todo (`scrollY: 0`), sin excepción.
+## 3. Se quitó "Tecnología" y se agregó "Cómo Solicitar una Visita Técnica"
 
-## Qué más se agregó en esta iteración
+Antes, la sección de galería de cada marca tenía el título "Tecnología
+{marca} que Reparamos en Cartagena". Cambié ese título a "Equipos {marca}
+que Reparamos en Cartagena" y agregué una sección nueva, completamente
+distinta, llamada **"Cómo Solicitar una Visita Técnica {marca} en
+Cartagena"**, con 4 pasos claros: 1) escríbanos o llame, 2) agendamos su
+visita, 3) diagnóstico en el sitio, 4) reparación con garantía. Esta
+sección aparece en las 6 páginas principales de marca.
 
-1. **Mabe completo**: logo, fotos del técnico y galería, con el azul oficial
-   de Mabe (`#2597BE`) tomado de tu logo.
-2. **Fotos en las páginas de marca que antes eran solo texto**: las páginas
-   de Fallas Comunes, Mantenimiento, Instalación y Repuestos de cada marca
-   ahora tienen una foto real junto al texto del encabezado (antes eran
-   una sola columna de texto sin imagen). Se aplicó a las 6 marcas × 4
-   páginas = 24 páginas.
+## 4. Sección de teléfono destacado
 
-## Estado de las imágenes por marca
+Se agregó un bloque grande y visible con el título **"Teléfono Servicio
+Técnico {Marca} Cartagena"** y el número +57 321 799 6144 en formato
+grande y clickeable, apuntando a `tel:` y a WhatsApp. Aparece en:
 
-Samsung, LG, Whirlpool y Mabe completos. Electrolux y Haceb pendientes —
-ver `IMAGENES-LEEME.md`.
+- Las 6 páginas principales de marca (con el nombre de la marca).
+- La página de inicio.
+- Las 8 páginas de zona (Bocagrande, Manga, etc.).
+- Las 3 páginas de servicio (mantenimiento, instalación, compresores).
+- El blog.
+
+Esto ayuda al posicionamiento de búsquedas como "teléfono servicio técnico
+[marca] cartagena", que es justo lo que pediste.
+
+## 5. Secciones pensadas para IA / buscadores con IA (AEO)
+
+Agregué markup `speakable` (schema.org `SpeakableSpecification`) en el
+JSON-LD de todas las páginas, apuntando a las secciones de teléfono
+destacado y a los acordeones de preguntas frecuentes. Esto es lo que Google
+y los asistentes de IA (Google AI Overviews, asistentes de voz) usan para
+identificar qué fragmento de la página pueden citar directamente como
+respuesta corta. En la práctica: la sección de teléfono destacado y las
+preguntas frecuentes de cada página están marcadas como contenido
+"citable" para IA.
+
+## 6. Blog nuevo, enlazado desde todas las secciones del sitio
+
+Creé `blog.html`: un índice que agrupa las 25 guías del sitio (fallas
+comunes, mantenimiento, instalación y repuestos, tanto generales como por
+marca). Agregué el enlace **"Blog"** al menú principal y al pie de página,
+así que aparece literalmente en las 99 páginas del sitio, en todas las
+secciones (marcas, zonas, servicios, preguntas frecuentes, inicio).
+
+## Estado de las imágenes y autorización por marca
+
+Las 6 marcas están confirmadas como autorizadas. Fotos reales: Samsung, LG,
+Whirlpool y Mabe completos. Electrolux y Haceb siguen pendientes de tus
+fotos — ver `IMAGENES-LEEME.md`.
 
 ## Pendiente de tu parte
 
-1. Enviar las imágenes de Electrolux y Haceb, y decirme si cada una es
-   autorizada oficialmente por el fabricante.
-2. Confirmar si LG, Whirlpool o Mabe te autorizaron oficialmente (para
-   agregar la etiqueta "Autorizado" como en Samsung).
-3. Confirmar el correo de contacto (uso
+1. Enviar las imágenes de Electrolux y Haceb (ya confirmaste que ambas son
+   autorizadas, solo faltan las fotos).
+2. Confirmar el correo de contacto (uso
    `contacto@servicio-tecnico-en-cartagena.com` en todo el sitio).
 
 ## Cómo previsualizarlo
