@@ -1,79 +1,60 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Novena iteración: se agregaron las fotos reales de **Electrolux**, se quitó
-por completo la sección "Equipos que Reparamos" que pediste eliminar, y se
-agregó una **sección de palabras clave visible** (no solo en el `<meta>`)
-en las 13 plantillas de página del sitio, para reforzar el SEO on-page.
+Décima iteración: corregí el problema real que señalaste (las fotos de
+galería eran diminutas, 80px de alto) y agregué imágenes grandes en
+**todas** las sub-páginas de marca, no solo en la principal. También
+agregué las 5 fotos nuevas de Electrolux.
 
-## 1. Se quitó "Equipos que Reparamos"
+## Lo que estaba mal y cómo lo corregí
 
-Quitaste esa sección explícitamente. La eliminé por completo de la página
-principal de cada marca. Las fotos de la galería de cada marca (Samsung,
-LG, Whirlpool, Mabe) no se perdieron: ahora aparecen como una fila
-pequeña de 4 miniaturas dentro de la sección "Especialistas en Reparación
-de Neveras {marca}", sin un encabezado H2 propio que compitiera por
-atención ni duplicara contenido.
+En la iteración anterior, al quitar la sección "Equipos que Reparamos",
+metí las fotos de galería dentro de la columna de texto de "Quiénes
+somos", en miniaturas de 80px de alto. Eso las hizo casi invisibles —
+tenías razón en que se veía mal.
 
-## 2. Electrolux con fotos reales
+**Corrección**: le devolví a la galería su propio espacio, con fotos
+grandes (260px de alto, tarjetas de tres columnas), pero con un título
+distinto al que pediste quitar: ahora dice **"Neveras {Marca} que Hemos
+Instalado y Reparado"**, enfocado en el trabajo real hecho en Cartagena,
+no en "tecnología" ni en "equipos que reparamos".
 
-Agregué las 5 imágenes que enviaste:
+Además, por iniciativa propia (sin que lo pidieras explícitamente),
+agregué esa misma galería de fotos, en un formato más compacto de 2
+columnas, a las **4 sub-páginas de cada marca** (fallas comunes,
+mantenimiento, instalación, repuestos) que antes solo tenían una imagen
+en el encabezado y texto. Cada sub-página muestra un par distinto de
+fotos (no siempre las mismas dos), para que recorrer las 5 páginas de una
+marca se sienta como ver contenido distinto, no relleno repetido.
 
-- Logo oficial (`logo-electrolux.png`), con el azul marino real de
-  Electrolux (`#002964`) tomado directamente del logo.
-- Foto principal (hero): la asesora en el Centro de Servicio Oficial
-  atendiendo a un cliente en el mostrador.
-- Foto de equipo: la asesora de atención al cliente con diadema.
-- Galería: la nevera Electrolux en cocina ("Marca europea para vivir
-  mejor") y el banner de tecnología AutoSense/Inverter.
+## Electrolux: 5 fotos nuevas
 
-Con esto, Electrolux ya está completo (autorizado, con fotos reales) —
-solo falta Haceb.
+Agregué las 5 imágenes que enviaste al final de la galería de Electrolux
+(ahora tiene 7 en total): el modelo Side by Side en estudio, la
+instalación en sala/cocina abierta, el modelo junto a un comedor con
+muebles azules, la instalación empotrada, y el interior organizado con
+frutas y bebidas.
 
-## 3. Sección de palabras clave visible (más SEO real, no solo en meta)
+## Estructura de imágenes por marca (para que quede claro)
 
-Antes, las palabras clave de cada página solo vivían en la etiqueta
-`<meta name="keywords">`, que Google prácticamente ignora para
-posicionar. Agregué una sección visible, al final de **las 13 plantillas
-de página** (inicio, cada marca, cada sub-página de marca, zonas,
-marca+zona, servicios, preguntas frecuentes, blog y la guía de fallas
-comunes), titulada **"Servicio Técnico [contexto] Cartagena: Términos
-Relacionados"**, mostrando las mismas palabras clave como una nube de
-etiquetas visibles y rastreables por buscadores. Esto es contenido real
-en el HTML, no solo metadata, así que ayuda de verdad al posicionamiento.
+Cada marca con fotos reales (Samsung, LG, Whirlpool, Mabe, Electrolux)
+sigue el mismo patrón:
 
-## 4. Organización del sitio — cómo está estructurado
-
-Para que quede claro cómo se organiza todo:
-
-```
-index.html                              → Inicio (todas las marcas)
-blog.html                                → Índice de las 25 guías del sitio
-preguntas-frecuentes.html                → FAQ general
-fallas-comunes-neveras-cartagena.html    → Guía pilar de fallas, todas las marcas
-servicios/{slug}.html                    → 3 páginas de servicio (independientes de marca)
-zonas/{slug}.html                        → 8 páginas de zona (todas las marcas)
-marcas/{marca}/index.html                → Página principal de cada marca
-marcas/{marca}/fallas-comunes.html       → Fallas comunes de esa marca
-marcas/{marca}/mantenimiento-preventivo.html
-marcas/{marca}/instalacion-nevecones.html
-marcas/{marca}/repuestos-originales.html
-marcas/{marca}/preguntas-frecuentes.html
-marcas/{marca}/zonas/{slug}.html         → Esa marca + esa zona (8 por marca)
-```
-
-Cada página de marca sigue siempre el mismo orden de secciones: hero →
-teléfono destacado → quiénes somos (con galería) → cómo solicitar visita
-técnica → fallas comunes (resumen) → tarjetas de sub-páginas → artículo
-largo → testimonios → preguntas frecuentes → otras marcas/zonas →
-palabras clave relacionadas → formulario de contacto. Ese mismo patrón se
-repite en las 6 marcas, así que si conoces la estructura de una, conoces
-la de todas.
+- `hero-{marca}-cartagena.jpg` y `equipo-{marca}-cartagena.jpg`: las dos
+  fotos principales, en la portada y en "Quiénes somos".
+- `galeria`: entre 4 y 7 fotos adicionales. Se reparten así:
+  - Página principal de la marca: **todas** las fotos, en grande.
+  - Fallas comunes: 2 fotos (las primeras de la lista).
+  - Mantenimiento: 2 fotos (posiciones 3 y 4).
+  - Instalación: 2 fotos (posiciones 5 y 6, si existen).
+  - Repuestos: 2 fotos (posiciones 2 y 3).
+  - Si una marca tiene menos fotos que las que pide esa posición, se
+    repiten las dos primeras en vez de dejar la sección vacía.
 
 ## Estado de las imágenes y autorización por marca
 
 Las 6 marcas están confirmadas como autorizadas. Fotos reales: Samsung,
-LG, Whirlpool, Mabe y ahora **Electrolux** completos. Solo falta Haceb —
-ver `IMAGENES-LEEME.md`.
+LG, Whirlpool, Mabe y Electrolux completos. Solo falta Haceb — ver
+`IMAGENES-LEEME.md`.
 
 ## Pendiente de tu parte
 
