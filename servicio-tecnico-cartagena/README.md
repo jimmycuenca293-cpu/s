@@ -1,43 +1,59 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Sexta iteración: más contenido de texto tipo artículo/blog en todas las
-páginas del sitio (no solo las de marca), imágenes y color de marca
-correctos para Whirlpool, y una galería ampliada.
+Séptima iteración: **encontré y corregí la causa real** del salto al pie de
+página, agregué Mabe, y sumé fotos a las páginas de marca que antes eran
+solo texto.
 
-## Qué se agregó en esta iteración
+## El bug del salto al pie de página — causa real encontrada
 
-1. **Bloques de artículo (contenido SEO extenso)** en las 5 páginas
-   principales de cada marca (resumen, fallas comunes, mantenimiento,
-   instalación, repuestos): cada una ahora tiene una sección de 4 párrafos
-   reales (no solo bullets ni tarjetas), con la profundidad de un artículo
-   de blog, usando los datos ya diferenciados de cada marca (fallas,
-   tecnología, consejos). 30 bloques de artículo en total.
-2. **Texto ampliado en el resto del sitio**: las 8 páginas de zona
-   generales, las 48 páginas de marca+zona, los 3 pilares de servicios y el
-   pilar de fallas comunes ahora tienen 2-3 párrafos adicionales en vez de
-   una sola línea, incluyendo menciones específicas (la falla más atendida
-   de esa marca en esa zona, el consejo de mantenimiento correspondiente).
-3. **Whirlpool corregido y ampliado**:
-   - El color de marca estaba mal (había puesto un azul arbitrario). Lo
-     corregí al negro y dorado reales de Whirlpool, tomados de tu logo.
-   - Agregué las 5 imágenes nuevas que enviaste: la galería pasó de 2 a 4
-     fotos (técnico reparando, técnico con cliente, y 2 neveras), usando
-     las mejores y evitando repetir tomas de producto casi idénticas.
-4. **Corrección de un bug de mayúsculas**: al insertar frases ya escritas
-   dentro de párrafos nuevos, "Cartagena" y códigos de modelo como "RS" se
-   estaban convirtiendo a minúsculas por error. Ya corregido.
+Reportaste, con razón, que el problema seguía pasando en **todos** los
+enlaces internos. Investigué más a fondo y encontré la causa real: **las 98
+páginas del sitio compartían el mismo `id="contacto"`** en su sección final
+(justo antes del pie de página). Cada página tenía su propia sección con
+ese identificador repetido.
+
+Si en algún momento el navegador (o la vista previa) queda con `#contacto`
+en la URL —por ejemplo, después de tocar el botón "Contacto" del menú— y
+luego se navega a *cualquier otra página* del sitio sin borrar ese
+fragmento, el navegador busca un elemento con `id="contacto"` en la nueva
+página... y lo encuentra, porque **todas las páginas tenían uno**, siempre
+la sección justo antes del footer. Por eso parecía que "todo enviaba al pie
+de página": técnicamente no era un enlace roto, era un identificador
+duplicado en el sitio entero que un fragmento de URL "pegado" podía
+enganchar en cualquier página.
+
+**La solución**: le di a cada una de las 98 páginas un `id` único para su
+sección de contacto (`contacto-inicio`, `contacto-samsung`,
+`contacto-lg-fallas`, `contacto-mabe-manga`, etc.). Ahora, aunque un
+fragmento de URL quede pegado de una navegación anterior, no puede
+coincidir con ninguna sección de una página distinta a la que pertenece.
+
+Lo probé de forma automatizada reproduciendo exactamente tu escenario: clic
+en "Contacto" (salta a la sección de contacto del inicio) → clic en la
+tarjeta de Mabe → clic en la pestaña "Fallas Comunes". Las tres
+navegaciones quedan arriba del todo (`scrollY: 0`), sin excepción.
+
+## Qué más se agregó en esta iteración
+
+1. **Mabe completo**: logo, fotos del técnico y galería, con el azul oficial
+   de Mabe (`#2597BE`) tomado de tu logo.
+2. **Fotos en las páginas de marca que antes eran solo texto**: las páginas
+   de Fallas Comunes, Mantenimiento, Instalación y Repuestos de cada marca
+   ahora tienen una foto real junto al texto del encabezado (antes eran
+   una sola columna de texto sin imagen). Se aplicó a las 6 marcas × 4
+   páginas = 24 páginas.
 
 ## Estado de las imágenes por marca
 
-Samsung, LG y Whirlpool completos. Electrolux, Mabe y Haceb pendientes —
+Samsung, LG, Whirlpool y Mabe completos. Electrolux y Haceb pendientes —
 ver `IMAGENES-LEEME.md`.
 
 ## Pendiente de tu parte
 
-1. Enviar las imágenes de Electrolux, Mabe y Haceb, y decirme si cada una
-   es autorizada oficialmente por el fabricante.
-2. Confirmar si LG o Whirlpool te autorizaron oficialmente (para agregar la
-   etiqueta "Autorizado" como en Samsung).
+1. Enviar las imágenes de Electrolux y Haceb, y decirme si cada una es
+   autorizada oficialmente por el fabricante.
+2. Confirmar si LG, Whirlpool o Mabe te autorizaron oficialmente (para
+   agregar la etiqueta "Autorizado" como en Samsung).
 3. Confirmar el correo de contacto (uso
    `contacto@servicio-tecnico-en-cartagena.com` en todo el sitio).
 
