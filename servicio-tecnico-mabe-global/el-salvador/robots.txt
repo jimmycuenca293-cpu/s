@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://centrodeserviciotecnicomabe.com/el-salvador/sitemap.xml
