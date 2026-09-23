@@ -9,34 +9,53 @@ WhatsApp y contenido genuinamente propios por país.
   Salvador, Paraguay y Chile.
 - **482 páginas** generadas y validadas (0 errores reales de HTML/JSON-LD,
   0 enlaces o imágenes rotos, sin placeholders sin resolver).
-- **41 ciudades y zonas** con página propia, cada una con su propio título
-  SEO (`Servicio Técnico Mabe en {Ciudad}, {País}`), meta descripción y
-  JSON-LD `LocalBusiness`.
-- **Barrios y sectores reales** listados en cada una de las 41 páginas de
-  ciudad (sección "Cobertura"), con nube de palabras clave propia por
-  ciudad y un párrafo adicional de texto orientado a búsqueda.
-- **Nuevas secciones con fotos** en la página de inicio de cada país: "Así
-  es una visita de Servicio Técnico Mabe" (3 fotos, paso a paso) y "Nuestro
-  Estándar" (centro de reparación autorizado).
+- **41 ciudades y zonas** con página propia y sección de barrios reales.
+- **Etiqueta de Google Search Console** (`3ZMlpKxc91rNZZaoEM3iNwyRLAF6sNuoiJAr0wDconI`)
+  agregada en las 482 páginas.
+
+## Qué tiene cada página de electrodoméstico (6 tipos × 6 páginas × 8 países)
+
+- **Resumen**: hero, fallas destacadas, enlaces a cada ciudad del país.
+- **Fallas Comunes**: tabla de fallas + detalle, y ahora una tabla de
+  **códigos de error** (4 por tipo) con qué significa cada uno y su causa
+  probable, con el aviso honesto de que el código exacto varía por modelo.
+- **Mantenimiento**: cada punto explicado (qué hacer, por qué importa,
+  cada cuánto), no una simple lista de viñetas.
+- **Instalación**: cada punto explicado con el motivo real detrás (qué
+  pasa si no se hace así), no una simple lista de viñetas.
+- **Repuestos** y **Preguntas Frecuentes**: igual que antes, con dos
+  secciones nuevas agregadas (ver abajo).
+- **Todas** las páginas de electrodoméstico ahora incluyen una sección de
+  **WhatsApp** ("WhatsApp de Servicio Técnico Mabe [ciudad/país]") y una
+  sección de **palabras clave locales** ("Servicio Técnico Mabe
+  [Ciudad]") con términos de búsqueda propios de esa página.
+
+## Otras secciones nuevas
+
+- **Barrios y sectores que cubrimos**: en las 41 páginas de ciudad, con
+  barrios reales (ej. en Medellín: El Poblado, Laureles, Belén, La
+  América, Envigado).
+- **"Así es una visita de Servicio Técnico Mabe"** y **"Nuestro
+  Estándar"**: en la página de inicio de los 8 países, usando las fotos
+  de técnico que enviaste.
+- Párrafo con enlaces a cada ciudad en las páginas de resumen de cada
+  tipo de electrodoméstico.
 
 ## Estructura
 
 ```
 index.html                  Hub global: elige tu país
-{pais}/index.html            Página de inicio de cada país (hero, por qué
-                              elegirnos, cómo trabajamos con fotos, quiénes
-                              somos, nuestro estándar, garantía, blog, FAQ)
-{pais}/zonas-de-cobertura.html   Índice de ciudades/zonas del país
-{pais}/zonas/{ciudad}.html   Página propia por ciudad: detalle, barrios que
-                              cubrimos, señales de alerta, nube de palabras
-                              clave local
-{pais}/electrodomesticos/{tipo}/  6 tipos × 6 páginas cada uno (igual en
-                              los 8 países): index (con enlaces a cada
-                              ciudad), fallas-comunes, mantenimiento,
-                              instalacion, repuestos, FAQ
-{pais}/blog/                 9 artículos por país (localizados)
-{pais}/diagnostico.html      Herramienta de diagnóstico rápido
-{pais}/nosotros.html, garantia.html, preguntas-frecuentes.html, servicios/
+{pais}/index.html            Inicio del país
+{pais}/zonas/{ciudad}.html   Página propia por ciudad, con barrios
+{pais}/electrodomesticos/{tipo}/
+  index.html                 Resumen + enlaces a cada ciudad
+  fallas-comunes.html        Fallas + códigos de error
+  mantenimiento.html         Cada punto explicado (qué y por qué)
+  instalacion.html           Cada punto explicado (qué y por qué)
+  repuestos.html             Piezas + WhatsApp + SEO local
+  preguntas-frecuentes.html  FAQ + WhatsApp + SEO local
+{pais}/blog/, diagnostico.html, nosotros.html, garantia.html,
+  preguntas-frecuentes.html, servicios/
 ```
 
 Países y sus carpetas: `panama/`, `costarica/`, `colombia/`, `ecuador/`,
@@ -44,58 +63,41 @@ Países y sus carpetas: `panama/`, `costarica/`, `colombia/`, `ecuador/`,
 
 ## Decisiones de contenido (para que sepas qué esperar)
 
-1. **Ciudades por país** (las que definiste): Panamá (8 zonas ya
-   construidas), Costa Rica (8 cantones ya construidos), Colombia
-   (Medellín, Cali, Bucaramanga, Cartagena, Ibagué, Barranquilla,
-   Valledupar, Manizales, Bogotá, Cúcuta, Pereira), Ecuador (Guayaquil,
-   Quito, Cuenca), Guatemala (solo la capital), El Salvador (solo la
-   capital), Paraguay (solo Asunción), Chile (8 comunas de Santiago).
-2. **Barrios dentro de cada ciudad**: cada página de ciudad ahora incluye
-   una sección "Barrios y sectores que cubrimos" con 3 a 5 barrios reales
-   (por ejemplo, en Medellín: El Poblado, Laureles, Belén, La América,
-   Envigado). Es contenido dentro de la misma página, no una página nueva
-   por barrio — así se evita duplicar miles de páginas casi idénticas
-   mientras se sigue reforzando el SEO local.
-3. **Profundidad por ciudad**: una página completa por ciudad (no el árbol
-   completo de 6 páginas × 6 electrodomésticos repetido en cada una). El
-   detalle profundo por electrodoméstico vive a nivel país, con enlaces
-   directos desde ahí a cada ciudad.
-4. **Vocabulario por país**: nevera (Panamá/Colombia), refrigeradora
+1. **Ciudades por país**: Panamá (8 zonas ya construidas), Costa Rica (8
+   cantones ya construidos), Colombia (11 ciudades), Ecuador (Guayaquil,
+   Quito, Cuenca), Guatemala y El Salvador (solo su capital), Paraguay
+   (solo Asunción), Chile (8 comunas de Santiago).
+2. **Códigos de error**: son códigos representativos del tipo de panel
+   digital que usan estos electrodomésticos (patrones como F1, E1, UE,
+   dEF, comunes en la categoría), no una lista extraída manual por
+   modelo de Mabe. Cada tabla incluye el aviso de que el código exacto
+   puede variar y de escribir por WhatsApp con el código real que
+   muestra la pantalla.
+3. **Vocabulario por país**: nevera (Panamá/Colombia), refrigeradora
    (Costa Rica/Ecuador/Guatemala/El Salvador), heladera (Paraguay),
    refrigerador masculino (Chile, con toda la gramática ajustada).
-5. **Teléfonos**: exactamente los que diste, incluida la reutilización a
+4. **Teléfonos**: exactamente los que diste, incluida la reutilización a
    propósito del mismo número en varios países.
-6. **6 tipos de electrodomésticos en los 8 países**, con enlaces cruzados
-   entre cada tipo y cada ciudad del país (por ejemplo, la página de
-   Neveras de Colombia enlaza a Medellín, Cali, Bogotá, etc.).
-7. **hreflang real entre países** bajo un mismo dominio.
+5. **hreflang real entre países** bajo un mismo dominio.
 
-## Fotos nuevas que enviaste
-
-Las 5 fotos de "técnico Mabe" que enviaste se aplicaron en la página de
-inicio de los 8 países, en dos secciones nuevas:
-- **"Así es una visita de Servicio Técnico Mabe"**: llegada al domicilio,
-  diagnóstico explicado, reparación con garantía (3 fotos).
-- **"Nuestro Estándar"**: la foto del centro de reparación autorizado,
-  presentada como el estándar de organización que seguimos en cada visita
-  a domicilio (no como una tienda física en cada ciudad, para no prometer
-  algo que no es cierto).
-
-## Estado de las demás imágenes
+## Estado de las imágenes
 
 - **Panamá y Costa Rica**: sus fotos reales de cliente ya usadas.
 - **Colombia, Ecuador, Guatemala, El Salvador, Paraguay, Chile**: fotos de
   catálogo Mabe genéricas (mismo fabricante y modelos), renombradas por
-  país. Cuando tengas fotos propias de cada país, dime y las reemplazo.
+  país.
+- **Las 5 fotos de técnico** que enviaste: aplicadas en la página de
+  inicio de los 8 países.
 - **Logo**: el mismo logo real "servicio mabe" en los 8 países.
 
 ## Pendiente de tu parte
 
 1. Fotos reales de cliente para los 6 países nuevos (opcional).
-2. Confirmar si más adelante quieres números de WhatsApp reales y propios
+2. Si tienes los códigos de error reales de algún modelo específico de
+   Mabe (del manual del equipo), pásamelos y reemplazo los genéricos por
+   los exactos.
+3. Confirmar si más adelante quieres números de WhatsApp reales y propios
    por país.
-3. Si tienes zonas específicas dentro de Colombia/Ecuador que quieras
-   destacar además de las ya incluidas, dímelo.
 
 ## Cómo previsualizarlo
 
