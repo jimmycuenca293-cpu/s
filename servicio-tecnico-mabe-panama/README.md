@@ -1,38 +1,46 @@
-# Servicio Técnico Mabe Panamá — segunda versión (diseño y arquitectura propios)
+# Servicio Técnico Mabe Panamá — diseño y arquitectura propios
 
-Este sitio fue reconstruido desde cero. La primera versión reutilizaba el
-CSS y la estructura de páginas del sitio de Cartagena (otro proyecto de
-este mismo repositorio) solo cambiando el texto — con justa razón no era
-lo que se pidió. Esta versión tiene:
+Este sitio fue reconstruido desde cero (ver historial de commits): la
+primera versión reutilizaba el CSS y la estructura de páginas del sitio de
+Cartagena solo cambiando el texto, y la segunda versión (esta) tiene diseño
+visual propio y una arquitectura de SEO más sólida.
+
+## Corrección importante: rutas relativas
+
+Después de publicar la segunda versión, al abrirla en la vista previa del
+Artifact se veía sin estilos ni imágenes. La causa: el sitio usaba rutas
+"absolutas desde la raíz" (`/css/estilos.css`, `/images/...`,
+`/electrodomesticos/...`). Esas rutas funcionan perfecto cuando el sitio
+vive en la raíz de `serviciotecnicomabepanama.click`, pero se rompen en
+cualquier vista previa que lo sirva desde una subcarpeta (como el Artifact
+de Claude). Se corrigió todo el generador para usar **rutas relativas**
+(`./css/...`, `../images/...`, etc., según la profundidad de cada página),
+que funcionan igual de bien en el dominio real y en cualquier previsualización.
+Se validó sirviendo el sitio completo desde una subcarpeta simulada: 0
+enlaces o imágenes rotas.
+
+## Qué incluye
 
 - **Diseño visual propio**: tipografía (Manrope + Inter), paleta azul
-  marino + ámbar (no la paleta azul de Cartagena), header con menú
-  desplegable, tarjetas con animación al hacer scroll, botón de WhatsApp
-  flotante con pulso, barra fija inferior en móvil, línea de tiempo
-  "cómo funciona", nube de palabras clave, y acordeón de preguntas
-  frecuentes.
-- **Arquitectura de SEO más sólida, no solo más páginas**: la primera
-  versión generaba 32 páginas casi idénticas (8 zonas × 4 electrodomésticos,
-  cambiando solo el nombre de la zona). Eso es exactamente el tipo de
-  "contenido delgado" (thin/doorway content) que Google penaliza en vez de
-  premiar. Esta versión tiene **8 páginas de zona** (una por cada zona real
-  de Ciudad de Panamá, con contenido único sobre el tipo de edificios,
-  acceso y tiempos de esa zona específica) y **24 páginas por tipo de
-  electrodoméstico** (resumen, fallas comunes, mantenimiento, instalación,
-  repuestos y preguntas frecuentes × 4 tipos), cada una con contenido
-  realmente distinto, no plantillas con una palabra cambiada.
-- **Blog con artículos largos y propios** (6 artículos de 700-900 palabras
-  sobre temas específicos de Panamá: voltaje y apagones, clima húmedo,
-  reparar vs. reemplazar, centros de lavado para apartamentos pequeños),
-  no páginas de relleno.
-- **SEO técnico ampliado**: además de JSON-LD `LocalBusiness`, `Service` y
-  `FAQPage`, se agregó `Organization`, `WebSite`, `Article` en el blog,
-  `HowTo` en las páginas de mantenimiento e instalación (contenido basado
-  en pasos), etiquetas `hreflang` para español de Panamá, y meta
-  `geo.region`/`geo.placename`.
-- **46 páginas en total**, todas validadas: HTML balanceado, JSON-LD sin
-  errores de sintaxis, 0 enlaces o imágenes rotas, sin salto de scroll al
-  navegar.
+  marino + ámbar, header con menú desplegable, tarjetas con animación al
+  hacer scroll, botón de WhatsApp flotante con pulso, barra fija inferior
+  en móvil, línea de tiempo "cómo funciona", nube de palabras clave, y
+  acordeón de preguntas frecuentes.
+- **Arquitectura de SEO más sólida, no solo más páginas**: 8 páginas de
+  zona (una por cada zona real de Ciudad de Panamá, con contenido único
+  sobre el tipo de edificios, acceso y tiempos de esa zona específica) y
+  24 páginas por tipo de electrodoméstico (resumen, fallas comunes,
+  mantenimiento, instalación, repuestos y preguntas frecuentes × 4 tipos),
+  en vez de páginas casi duplicadas cambiando solo un nombre.
+- **Blog con 6 artículos largos y propios** (700-900 palabras) sobre temas
+  específicos de Panamá: voltaje y apagones, clima húmedo, reparar vs.
+  reemplazar, centros de lavado para apartamentos pequeños.
+- **SEO técnico ampliado**: JSON-LD `LocalBusiness`, `Service`, `FAQPage`,
+  `BreadcrumbList`, `Organization`, `WebSite`, `Article` (blog) y `HowTo`
+  (mantenimiento e instalación), `hreflang` es-PA, meta `geo.region`.
+- **46 páginas en total**, validadas: HTML balanceado, JSON-LD sin
+  errores, 0 enlaces o imágenes rotas (probado también desde una
+  subcarpeta), sin salto de scroll al navegar.
 
 ## Estructura del sitio
 
