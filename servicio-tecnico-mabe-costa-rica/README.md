@@ -10,6 +10,17 @@ copia con el nombre del país cambiado.
 - **63 páginas** generadas y validadas (0 errores de HTML, 0 errores de
   JSON-LD, 0 enlaces/imágenes rotas, sin salto de scroll).
 
+## Corrección aplicada antes de esta entrega
+
+Al reutilizar las fotos reales de Panamá para neveras, lavadoras,
+secadoras y torres de lavado, los archivos seguían nombrados
+`*-panama.jpg` mientras el código generaba nombres `*-costarica.jpg`.
+Eso hacía que el sitio mostrara marcadores de posición en vez de las
+fotos reales, aunque los archivos sí estaban copiados. Se renombraron
+todos los archivos para que coincidan, y se verificó visualmente que
+las fotos reales ya aparecen en inicio y en cada página de
+electrodoméstico.
+
 ## Qué tiene de más respecto al sitio de Panamá (a propósito)
 
 1. **6 tipos de electrodomésticos en vez de 4**: se agregaron **Cocinas**
