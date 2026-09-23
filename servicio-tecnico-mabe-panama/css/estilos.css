@@ -4,11 +4,12 @@
    ========================================================= */
 
 :root{
-  --azul:#0F5FA6;
-  --azul-osc:#0A3D6B;
-  --azul-tinta:#081F33;
-  --azul-suave:#EAF3FB;
-  --azul-rgb:15,95,166;
+  /* Paleta tomada del logo real de Servicio Mabe (azul-teal degradado) */
+  --azul:#20749C;
+  --azul-osc:#0D3C52;
+  --azul-tinta:#051E2A;
+  --azul-suave:#D2E0E7;
+  --azul-rgb:32,116,156;
   --ambar:#F5A524;
   --ambar-osc:#C97F0C;
   --verde:#1FAA59;
@@ -293,7 +294,7 @@ footer.pie{background:var(--azul-tinta);color:rgba(255,255,255,.7);padding-top:6
 .pie-grid a{font-size:.87rem;color:rgba(255,255,255,.68);}
 .pie-grid a:hover{color:#fff;}
 .pie-marca{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.pie-marca img{height:36px;filter:brightness(0) invert(1);opacity:.95;}
+.pie-marca img{height:36px;width:auto;border-radius:6px;}
 .pie-marca strong{color:#fff;font-family:var(--fuente-titulo);}
 .pie-desc{font-size:.87rem;color:rgba(255,255,255,.62);max-width:320px;}
 .pie-social{display:flex;gap:10px;margin-top:16px;}
