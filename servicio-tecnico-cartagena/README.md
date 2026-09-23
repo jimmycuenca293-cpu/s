@@ -1,81 +1,84 @@
 # Servicio Técnico Cartagena — sitio reestructurado para SEO orgánico
 
-Octava iteración: confirmaste que **las 6 marcas son autorizadas**, se
-agregaron más fotos de Mabe, se reemplazó la sección genérica de
-"Tecnología" por un proceso claro de **"Cómo solicitar visita técnica"**,
-se agregó una sección de **teléfono destacado** en cada página de marca,
-zona y servicio, se sumó markup **speakable** para asistentes de IA/Google,
-y se creó un **Blog** con todas las guías del sitio enlazado desde el menú
-y el pie de página de las 99 páginas.
+Novena iteración: se agregaron las fotos reales de **Electrolux**, se quitó
+por completo la sección "Equipos que Reparamos" que pediste eliminar, y se
+agregó una **sección de palabras clave visible** (no solo en el `<meta>`)
+en las 13 plantillas de página del sitio, para reforzar el SEO on-page.
 
-## 1. Las 6 marcas ahora son "Autorizado"
+## 1. Se quitó "Equipos que Reparamos"
 
-Confirmaste que Samsung, LG, Electrolux, Whirlpool, Mabe y Haceb son todas
-autorizadas. Ahora las 6 muestran el sello "&#10003; Autorizado" en el
-encabezado de su página y en el logo del header, igual que ya tenía
-Samsung.
+Quitaste esa sección explícitamente. La eliminé por completo de la página
+principal de cada marca. Las fotos de la galería de cada marca (Samsung,
+LG, Whirlpool, Mabe) no se perdieron: ahora aparecen como una fila
+pequeña de 4 miniaturas dentro de la sección "Especialistas en Reparación
+de Neveras {marca}", sin un encabezado H2 propio que compitiera por
+atención ni duplicara contenido.
 
-## 2. Más fotos de Mabe
+## 2. Electrolux con fotos reales
 
-Agregué las 5 fotos nuevas que enviaste a la galería de Mabe (ahora tiene 7
-imágenes): la nevera con tecnología Home Energy Saver, el modelo Side by
-Side plateado, la instalación empotrada en cocina integral, y los dos
-modelos negro mate con la garantía de 10 años en el compresor.
+Agregué las 5 imágenes que enviaste:
 
-## 3. Se quitó "Tecnología" y se agregó "Cómo Solicitar una Visita Técnica"
+- Logo oficial (`logo-electrolux.png`), con el azul marino real de
+  Electrolux (`#002964`) tomado directamente del logo.
+- Foto principal (hero): la asesora en el Centro de Servicio Oficial
+  atendiendo a un cliente en el mostrador.
+- Foto de equipo: la asesora de atención al cliente con diadema.
+- Galería: la nevera Electrolux en cocina ("Marca europea para vivir
+  mejor") y el banner de tecnología AutoSense/Inverter.
 
-Antes, la sección de galería de cada marca tenía el título "Tecnología
-{marca} que Reparamos en Cartagena". Cambié ese título a "Equipos {marca}
-que Reparamos en Cartagena" y agregué una sección nueva, completamente
-distinta, llamada **"Cómo Solicitar una Visita Técnica {marca} en
-Cartagena"**, con 4 pasos claros: 1) escríbanos o llame, 2) agendamos su
-visita, 3) diagnóstico en el sitio, 4) reparación con garantía. Esta
-sección aparece en las 6 páginas principales de marca.
+Con esto, Electrolux ya está completo (autorizado, con fotos reales) —
+solo falta Haceb.
 
-## 4. Sección de teléfono destacado
+## 3. Sección de palabras clave visible (más SEO real, no solo en meta)
 
-Se agregó un bloque grande y visible con el título **"Teléfono Servicio
-Técnico {Marca} Cartagena"** y el número +57 321 799 6144 en formato
-grande y clickeable, apuntando a `tel:` y a WhatsApp. Aparece en:
+Antes, las palabras clave de cada página solo vivían en la etiqueta
+`<meta name="keywords">`, que Google prácticamente ignora para
+posicionar. Agregué una sección visible, al final de **las 13 plantillas
+de página** (inicio, cada marca, cada sub-página de marca, zonas,
+marca+zona, servicios, preguntas frecuentes, blog y la guía de fallas
+comunes), titulada **"Servicio Técnico [contexto] Cartagena: Términos
+Relacionados"**, mostrando las mismas palabras clave como una nube de
+etiquetas visibles y rastreables por buscadores. Esto es contenido real
+en el HTML, no solo metadata, así que ayuda de verdad al posicionamiento.
 
-- Las 6 páginas principales de marca (con el nombre de la marca).
-- La página de inicio.
-- Las 8 páginas de zona (Bocagrande, Manga, etc.).
-- Las 3 páginas de servicio (mantenimiento, instalación, compresores).
-- El blog.
+## 4. Organización del sitio — cómo está estructurado
 
-Esto ayuda al posicionamiento de búsquedas como "teléfono servicio técnico
-[marca] cartagena", que es justo lo que pediste.
+Para que quede claro cómo se organiza todo:
 
-## 5. Secciones pensadas para IA / buscadores con IA (AEO)
+```
+index.html                              → Inicio (todas las marcas)
+blog.html                                → Índice de las 25 guías del sitio
+preguntas-frecuentes.html                → FAQ general
+fallas-comunes-neveras-cartagena.html    → Guía pilar de fallas, todas las marcas
+servicios/{slug}.html                    → 3 páginas de servicio (independientes de marca)
+zonas/{slug}.html                        → 8 páginas de zona (todas las marcas)
+marcas/{marca}/index.html                → Página principal de cada marca
+marcas/{marca}/fallas-comunes.html       → Fallas comunes de esa marca
+marcas/{marca}/mantenimiento-preventivo.html
+marcas/{marca}/instalacion-nevecones.html
+marcas/{marca}/repuestos-originales.html
+marcas/{marca}/preguntas-frecuentes.html
+marcas/{marca}/zonas/{slug}.html         → Esa marca + esa zona (8 por marca)
+```
 
-Agregué markup `speakable` (schema.org `SpeakableSpecification`) en el
-JSON-LD de todas las páginas, apuntando a las secciones de teléfono
-destacado y a los acordeones de preguntas frecuentes. Esto es lo que Google
-y los asistentes de IA (Google AI Overviews, asistentes de voz) usan para
-identificar qué fragmento de la página pueden citar directamente como
-respuesta corta. En la práctica: la sección de teléfono destacado y las
-preguntas frecuentes de cada página están marcadas como contenido
-"citable" para IA.
-
-## 6. Blog nuevo, enlazado desde todas las secciones del sitio
-
-Creé `blog.html`: un índice que agrupa las 25 guías del sitio (fallas
-comunes, mantenimiento, instalación y repuestos, tanto generales como por
-marca). Agregué el enlace **"Blog"** al menú principal y al pie de página,
-así que aparece literalmente en las 99 páginas del sitio, en todas las
-secciones (marcas, zonas, servicios, preguntas frecuentes, inicio).
+Cada página de marca sigue siempre el mismo orden de secciones: hero →
+teléfono destacado → quiénes somos (con galería) → cómo solicitar visita
+técnica → fallas comunes (resumen) → tarjetas de sub-páginas → artículo
+largo → testimonios → preguntas frecuentes → otras marcas/zonas →
+palabras clave relacionadas → formulario de contacto. Ese mismo patrón se
+repite en las 6 marcas, así que si conoces la estructura de una, conoces
+la de todas.
 
 ## Estado de las imágenes y autorización por marca
 
-Las 6 marcas están confirmadas como autorizadas. Fotos reales: Samsung, LG,
-Whirlpool y Mabe completos. Electrolux y Haceb siguen pendientes de tus
-fotos — ver `IMAGENES-LEEME.md`.
+Las 6 marcas están confirmadas como autorizadas. Fotos reales: Samsung,
+LG, Whirlpool, Mabe y ahora **Electrolux** completos. Solo falta Haceb —
+ver `IMAGENES-LEEME.md`.
 
 ## Pendiente de tu parte
 
-1. Enviar las imágenes de Electrolux y Haceb (ya confirmaste que ambas son
-   autorizadas, solo faltan las fotos).
+1. Enviar las imágenes de Haceb (ya confirmaste que es autorizada, solo
+   falta el material).
 2. Confirmar el correo de contacto (uso
    `contacto@servicio-tecnico-en-cartagena.com` en todo el sitio).
 

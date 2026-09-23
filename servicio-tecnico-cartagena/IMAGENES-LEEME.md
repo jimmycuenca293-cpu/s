@@ -7,16 +7,18 @@ Confirmaste que **las 6 marcas son autorizadas**. Todas muestran el sello
 ## ✅ LG — completo (autorizado)
 ## ✅ Whirlpool — completo (autorizado)
 ## ✅ Mabe — completo (autorizado)
+## ✅ Electrolux — completo (autorizado)
 
-- `images/mabe/logo-mabe.png` — logo oficial.
-- `images/mabe/hero-mabe-cartagena.jpg`, `equipo-mabe-cartagena.jpg` — fotos
-  del técnico que enviaste.
-- Galería (7 imágenes): técnico dirigiéndose a un centro de reparación,
-  nevera con congelador superior, nevera con tecnología Home Energy Saver,
-  modelo Side by Side plateado, instalación empotrada en cocina integral, y
-  dos modelos negro mate con la garantía de 10 años en el compresor.
+- `images/electrolux/logo-electrolux.png` — logo oficial (azul marino real
+  `#002964` tomado del logo).
+- `images/electrolux/hero-electrolux-cartagena.jpg` — asesora en el Centro
+  de Servicio Oficial atendiendo a un cliente en el mostrador.
+- `images/electrolux/equipo-electrolux-cartagena.jpg` — asesora de
+  atención al cliente con diadema.
+- Galería: nevera Electrolux en cocina ("Marca europea para vivir mejor")
+  y banner de tecnología AutoSense/Inverter.
 
-## ⏳ Electrolux, Haceb — autorizadas, pendientes solo de fotos
+## ⏳ Haceb — autorizada, pendiente solo de fotos
 
 ```
 images/
@@ -24,9 +26,9 @@ images/
   lg/              ✅ completo (autorizado)
   whirlpool/       ✅ completo (autorizado)
   mabe/            ✅ completo (autorizado)
-  electrolux/      ⏳ autorizada, pendiente de fotos
+  electrolux/      ✅ completo (autorizado)
   haceb/           ⏳ autorizada, pendiente de fotos
 ```
 
-Cuando envíes las imágenes de Electrolux y Haceb quedan las 6 marcas
-completas al 100%.
+Cuando envíes las imágenes de Haceb, las 6 marcas quedan completas al
+100%.
