@@ -119,6 +119,21 @@ Panamá, Guatemala, El Salvador y Paraguay.
   activada en su teléfono o computadora (accesibilidad) ya no ve las
   animaciones ni el scroll suave del sitio.
 
+## Corrección: Centro de Servicio Autorizado (no "independiente")
+
+Cambié todo el texto que decía "servicio técnico independiente" por
+"Centro de Servicio Autorizado Mabe", en las 8 páginas de inicio, las 8
+páginas de Nosotros, las 8 de Garantía, y los 2 pies de página (cada país
++ el hub global). También encontré y borré una línea suelta que no tenía
+nada que ver con el sitio ("Te queda bien.", en el pie de página de las 8
+webs) — quedó eliminada.
+
+## Zonas de cobertura más arriba
+
+En la página de inicio de los 8 países, la sección "Zonas de cobertura"
+estaba muy abajo (después de 8 secciones). La subí para que aparezca
+justo después de "Qué Reparamos", como la tercera sección de la página.
+
 ## Estado de las imágenes
 
 - **Panamá y Costa Rica**: sus fotos reales de cliente ya usadas.
