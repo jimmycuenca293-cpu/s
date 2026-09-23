@@ -1,69 +1,54 @@
 # Servicio Técnico Mabe Panamá
 
-## Última actualización: correcciones directas + página nueva + más SEO
+## Última actualización: herramienta de Diagnóstico Rápido (nueva)
 
-Respondiendo punto por punto a lo que se reportó:
+Nueva página **`/diagnostico.html`** — "Diagnóstico Rápido: ¿Qué le Pasa
+a tu Electrodoméstico Mabe?":
 
-1. **El blog no tenía fotos de los electrodomésticos**: corregido. Cada
-   artículo del blog ahora usa la foto real del electrodoméstico del que
-   habla (neveras, lavadoras, torres), y los dos artículos generales usan
-   fotos reales del técnico. Ya no hay marcadores de posición genéricos
-   en el blog.
-2. **Color amarillo que no corresponde a Mabe**: corregido. Se reemplazó
-   el amarillo/ámbar por un naranja tomado directamente de una gráfica
-   real de Servicio Mabe, en botones, títulos y acentos de todo el sitio.
-3. **Fotos de electrodomésticos cortadas**: corregido. Las fotos de
-   producto (lavadora, secadora, torre) ahora se muestran completas, sin
-   recortar, tanto en las tarjetas como en las páginas de cada
-   electrodoméstico.
-4. **Etiqueta de Google Search Console**: agregada
-   (`google-site-verification`) en el `<head>` de todas las páginas del
-   sitio.
-5. **Nueva sección de WhatsApp**: se agregó un bloque grande, en verde,
-   con el título exacto "WhatsApp de Servicio Técnico Mabe Panamá", en
-   la página de inicio, en Nosotros, en Garantía y en las 4 páginas
-   principales de electrodoméstico.
-6. **Página nueva: Garantía** (`garantia.html`): explica qué cubre la
-   garantía sobre pieza y mano de obra, qué no cubre, y FAQ propia.
-   Aclara que es garantía de nuestro servicio, no garantía de fábrica de
-   Mabe (para no generar confusión). Enlazada desde el menú principal,
-   el menú móvil y el pie de página.
-7. **Nueva sección "Un especialista en Mabe, no un técnico genérico"**
-   en Nosotros, con foto real de técnico Mabe en cocina.
-8. **Fotos reales nuevas**: se usaron las fotos que enviaste de técnicos
-   trabajando (Nosotros, portadas de blog) y se incorporó el tagline
-   real de la marca, "Te queda bien.", en el pie de página.
+- Reúne las **19 fallas comunes** documentadas en las 4 páginas de
+  electrodoméstico (neveras, lavadoras, secadoras, torres de lavado) en
+  una sola herramienta, con síntoma, causa probable y nivel de urgencia
+  (Vigilar / Revisar pronto / Urgente).
+- **Filtro interactivo** por tipo de electrodoméstico (pestañas), hecho
+  en JavaScript puro — pero todo el contenido está en el HTML desde el
+  inicio (no oculto detrás de JS), así que es 100% indexable por Google
+  aunque el filtro no funcione.
+- Cada falla tiene su propio botón de WhatsApp que abre un mensaje **ya
+  redactado con esa falla específica** (mejora la conversión: el cliente
+  no tiene que explicar el problema desde cero).
+- Enlaza de vuelta a la página completa de fallas de cada
+  electrodoméstico (refuerza el enlazado interno).
+- JSON-LD `ItemList` con las 19 fallas para SEO estructurado.
+- Enlazada desde el menú principal, el menú móvil, el pie de página, y
+  una sección promocional nueva en la página de inicio.
 
-## Fotos usadas de las que enviaste
+Por qué esta herramienta y no otra sección más de texto: es la primera
+pieza interactiva real del sitio (no solo contenido estático), agrupa
+en una sola URL todas las búsquedas tipo "qué le pasa a mi [equipo]
+mabe [síntoma]" en vez de tenerlas repartidas en 4 páginas distintas, y
+da un motivo concreto para que alguien use el sitio antes de decidirse
+a escribir por WhatsApp.
 
-- Foto de técnico trabajando en electrodomésticos → Nosotros y portadas
-  de blog.
-- Foto de técnico con brazos cruzados en cocina (con las 4 garantías:
-  Técnicos especializados, Servicio confiable, Atención rápida, Garantía
-  mabe) → sección "Técnico Especializado" en Nosotros.
-- Foto de la torre Mabe en lavandería (recorté la franja inferior con
-  letra pequeña de otros países — Chile/Perú/Colombia — porque esos
-  términos de garantía no aplican a Panamá) → página de Garantía.
-- El logo "servicio mabe" y su gráfica de marca → ya estaban aplicados
-  desde la actualización anterior (logo real + paleta de colores).
+## Resumen de todo lo hecho hasta ahora
 
-## Qué se hizo antes (resumen acumulado)
-
-- Diseño visual propio, arquitectura de SEO basada en contenido único
-  (no páginas duplicadas), rutas relativas, logo y paleta reales, SEO
-  ampliado de Torres de Lavado (7 fallas, 8 FAQ, artículo dedicado,
-  nube de keywords).
+1. Diseño visual propio (Manrope + Inter, paleta tomada del logo real,
+   naranja de marca en vez de amarillo).
+2. Arquitectura de SEO basada en contenido único (no páginas
+   duplicadas): 8 zonas reales, 4 tipos de electrodoméstico × 6 páginas,
+   blog con artículos largos, SEO reforzado especialmente en Torres de
+   Lavado.
+3. Rutas relativas (funciona igual en el dominio real y en cualquier
+   vista previa).
+4. Fotos reales del cliente en neveras, lavadoras, secadoras, torres,
+   blog, Nosotros y Garantía — mostradas completas, sin recortar.
+5. Página de Garantía, sección de WhatsApp destacada, y ahora la
+   herramienta de Diagnóstico Rápido.
 
 ## Pendiente de tu parte
 
-1. Si tienes fotos adicionales para las galerías de lavadoras, secadoras
-   o torres (más de una foto por tipo), las agrego.
-2. Confirmar el correo de contacto (uso
-   `contacto@serviciotecnicomabepanama.click`).
-3. Confirmar si quieres que la etiqueta de Google Search Console se
-   valide desde este mismo dominio una vez esté publicado en
-   `serviciotecnicomabepanama.click` (la etiqueta ya está en el código,
-   solo falta que el sitio esté en línea para que Google la lea).
+1. Fotos adicionales para galerías (si tienes más de una foto por tipo).
+2. Confirmar el correo de contacto
+   (`contacto@serviciotecnicomabepanama.click`).
 
 ## Cómo previsualizarlo
 

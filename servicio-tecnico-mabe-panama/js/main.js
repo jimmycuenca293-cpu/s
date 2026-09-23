@@ -79,6 +79,27 @@
       });
     }
 
+    // Herramienta de diagnóstico: filtrar tarjetas por tipo de electrodoméstico
+    var pestanas = document.querySelectorAll("[data-filtro-tipo]");
+    var tarjetasDiag = document.querySelectorAll(".tarjeta-diagnostico");
+    if (pestanas.length && tarjetasDiag.length) {
+      pestanas.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var filtro = btn.getAttribute("data-filtro-tipo");
+          pestanas.forEach(function (b) {
+            b.classList.remove("boton-cta");
+            b.classList.add("boton-linea-azul");
+          });
+          btn.classList.remove("boton-linea-azul");
+          btn.classList.add("boton-cta");
+          tarjetasDiag.forEach(function (card) {
+            var coincide = filtro === "todos" || card.getAttribute("data-tipo") === filtro;
+            card.classList.toggle("oculta", !coincide);
+          });
+        });
+      });
+    }
+
     // Seguimiento simple de clics a WhatsApp (para consola/analítica futura)
     document.querySelectorAll('a[href*="wa.me"]').forEach(function (a) {
       a.addEventListener("click", function () {
