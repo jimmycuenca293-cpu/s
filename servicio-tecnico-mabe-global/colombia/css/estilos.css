@@ -276,7 +276,7 @@ section.oscura .cabecera-seccion p{color:rgba(255,255,255,.72);}
 .tarjeta-pais:hover{transform:translateY(-3px);box-shadow:var(--sombra-md);border-color:var(--azul);}
 .tarjeta-pais-cabecera{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
 .tarjeta-pais-cabecera h3{font-size:1.2rem;color:var(--azul-osc);}
-.tarjeta-pais-tel{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;color:var(--acento);white-space:nowrap;}
+.tarjeta-pais-tel{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;color:var(--verde-osc);white-space:nowrap;}
 .tarjeta-pais-tel svg{width:16px;height:16px;}
 .tarjeta-pais p{font-size:.92rem;color:var(--texto-sua);flex:1;}
 .tarjeta-pais .enlace-flecha{color:var(--azul);font-weight:700;}
@@ -357,7 +357,7 @@ section.oscura .cabecera-seccion p{color:rgba(255,255,255,.72);}
 
 /* ---------- Footer ---------- */
 footer.pie{background:var(--azul-tinta);color:rgba(255,255,255,.7);padding-top:60px;}
-.pie-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:36px;padding-bottom:44px;}
+.pie-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px 36px;padding-bottom:44px;}
 .pie-grid h4{color:#fff;font-size:.92rem;margin-bottom:16px;font-family:var(--fuente-titulo);}
 .pie-grid ul li{margin-bottom:10px;}
 .pie-grid a{font-size:.87rem;color:rgba(255,255,255,.68);}

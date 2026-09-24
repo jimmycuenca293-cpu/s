@@ -164,6 +164,39 @@ justo después de "Qué Reparamos", como la tercera sección de la página.
    por una, con un script automático**, y confirmé que ninguna se corre
    hacia el costado en celular.
 
+## Ronda siguiente: título, WhatsApp verde de verdad, URL real de Mabe, enlaces externos y tecnología
+
+1. **Título de la página global**: "dondequiera" ahora se escribe
+   separado, "donde quiera que estés", como pediste.
+2. **Botones de WhatsApp que no eran verdes**: varios botones y el
+   ícono junto al número de teléfono en la página global usaban el
+   color de acento (celeste) en vez del verde de WhatsApp. Encontré 6
+   botones con este problema ("Escribir por WhatsApp", "Escribir
+   ahora", "Solicitar instalación", "Solicitar este servicio", etc.) y
+   los cambié todos a verde, para que cualquier botón que lleve a
+   WhatsApp se vea como WhatsApp.
+3. **La URL oficial de Mabe estaba mal**: el sitio tenía guardado
+   `www.mabe.com`, que no es el dominio real. Lo busqué y corregí a
+   **`mabeglobal.com`** (el sitio oficial verificado del fabricante),
+   usado tanto en los datos estructurados para Google (Schema.org)
+   como en el enlace visible nuevo.
+4. **Nueva sección "Enlaces de interés"**: agregada al pie de página de
+   las 913 páginas (los 8 países + el hub), con 2 enlaces externos
+   verificados: el sitio oficial de Mabe y el artículo de Wikipedia
+   sobre electrodomésticos. Los enlaces externos a fuentes confiables
+   ayudan al SEO porque le dan contexto temático a Google sobre de qué
+   trata tu página.
+5. **Nueva sección "Tecnología"**: se agregó a la página principal de
+   cada uno de los 6 tipos de electrodoméstico, en los 8 países (48
+   páginas en total). Explica 4 tecnologías reales de cada tipo de
+   equipo (ej. en neveras: sistema No Frost, compresor de alta
+   eficiencia, control electrónico de temperatura, dispensador con
+   filtro) y por qué importan para el diagnóstico.
+
+Solo usé URLs externas que pude confirmar que existen de verdad (no
+inventé ninguna): el sitio oficial de Mabe y el artículo de Wikipedia
+mencionados arriba.
+
 ## Estado de las imágenes
 
 - **Panamá y Costa Rica**: sus fotos reales de cliente ya usadas.
