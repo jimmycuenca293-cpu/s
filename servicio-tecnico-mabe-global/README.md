@@ -208,6 +208,27 @@ menú. Ahora "Electrodomésticos" es una flechita que se abre y se
 cierra (como un acordeón): cerrado por defecto, así el menú completo
 cabe de un vistazo.
 
+## Dos secciones nuevas por cada electrodoméstico (48 páginas)
+
+1. **"Respuesta rápida"**: una caja destacada al inicio de las páginas
+   de Fallas Comunes, Mantenimiento, Instalación y Repuestos de cada
+   uno de los 6 tipos de electrodoméstico, en los 8 países. Da una
+   respuesta directa y completa en 2-3 frases a la pregunta principal
+   de esa página (ej. "¿qué hacer si mi nevera no enfría?"). Este
+   formato — pregunta implícita + respuesta corta y autocontenida — es
+   justo el que buscan las respuestas de IA de Google (AI Overviews) y
+   asistentes como ChatGPT o Perplexity cuando citan una fuente: entre
+   más fácil sea extraer una respuesta clara de tu página, más
+   probable que te citen a ti en vez de a la competencia.
+2. **"Vida útil: ¿reparar o reemplazar?"**: nueva sección en la página
+   principal de cada tipo de electrodoméstico, con el rango de años de
+   vida útil real (ej. neveras 12-15 años, torres de lavado 8-10 años,
+   cocinas 15-20 años) y un criterio claro de cuándo conviene reparar
+   vs. reemplazar. Es contenido que la gente busca mucho ("cuánto dura
+   una nevera", "vale la pena reparar mi lavadora") y que antes solo
+   existía como un artículo de blog para neveras — ahora está en los 6
+   tipos.
+
 ## SEO: descripciones que se repetían entre países
 
 Encontré un problema real y lo corregí: 117 páginas (de blog, de
