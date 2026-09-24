@@ -208,6 +208,32 @@ menú. Ahora "Electrodomésticos" es una flechita que se abre y se
 cierra (como un acordeón): cerrado por defecto, así el menú completo
 cabe de un vistazo.
 
+## La página global también estaba corta: 4 secciones nuevas
+
+Verifiqué el enlace publicado de la página global directamente: el
+ícono de WhatsApp, el color celeste (no naranja) y "donde quiera que
+estés" ya estaban correctos ahí desde rondas anteriores — si los
+seguías viendo mal, era una versión en caché del navegador o un zip
+viejo. Aun así, tenías razón en que la página global se había quedado
+muy corta comparada con las de cada país (solo tenía el encabezado, la
+lista de países y el pie de página), así que le agregué:
+
+1. **"Qué Reparamos"**: los 6 tipos de electrodoméstico con ícono y
+   descripción.
+2. **"Por Qué Elegirnos"**: 4 razones (diagnóstico honesto, garantía
+   real, especialistas en Mabe, una sola red en 8 países).
+3. **"Cómo Funciona"**: 3 pasos para agendar el servicio sin importar
+   el país.
+4. **FAQ global**: 4 preguntas frecuentes sobre la red completa (con
+   su propio schema FAQPage para Google), como "¿tienen un solo
+   número para todos los países?" o "¿el servicio es el mismo en todos
+   los países?".
+
+También le agregué a la etiqueta `<head>` de la página global el
+`theme-color`, `og:image` y las etiquetas de Twitter Card que le
+faltaban — tenía su propio código de cabecera separado del resto del
+sitio y se había quedado sin esa mejora de una ronda anterior.
+
 ## Dos secciones nuevas por cada electrodoméstico (48 páginas)
 
 1. **"Respuesta rápida"**: una caja destacada al inicio de las páginas
