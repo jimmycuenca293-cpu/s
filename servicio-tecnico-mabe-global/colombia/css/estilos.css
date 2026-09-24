@@ -116,8 +116,12 @@ nav.menu-principal > ul > li > a:hover, nav.menu-principal a.activo{color:var(--
 .cajon-cierre{background:none;border:none;cursor:pointer;padding:8px;margin-left:auto;display:block;}
 .cajon-panel nav ul{margin-top:18px;}
 .cajon-panel nav a{display:block;padding:13px 6px;border-bottom:1px solid var(--linea);font-weight:700;font-family:var(--fuente-titulo);color:var(--azul-tinta);}
-.cajon-panel .submenu-movil{padding-left:14px;}
-.cajon-panel .submenu-movil a{font-weight:600;font-size:.92rem;color:var(--texto-sua);border-bottom:none;padding:9px 6px;}
+.submenu-movil-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;border-bottom:1px solid var(--linea);padding:13px 6px;font-weight:700;font-family:var(--fuente-titulo);font-size:1rem;color:var(--azul-tinta);cursor:pointer;text-align:left;}
+.caret-movil{width:11px;height:11px;flex-shrink:0;transition:transform .2s;}
+.tiene-submenu.abierto .caret-movil{transform:rotate(180deg);}
+.cajon-panel .submenu-movil{padding-left:14px;display:none;}
+.tiene-submenu.abierto .submenu-movil{display:block;}
+.cajon-panel .submenu-movil a{font-weight:600;font-size:.92rem;color:var(--texto-sua);border-bottom:none;padding:9px 6px;display:flex;align-items:center;gap:6px;}
 
 /* ---------- Migas de pan ---------- */
 .migas{font-size:.82rem;color:var(--texto-tenue);padding:14px 0;}

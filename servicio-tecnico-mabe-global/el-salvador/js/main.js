@@ -37,6 +37,16 @@
       });
     }
 
+    // Acordeón de "Electrodomésticos" dentro del menú móvil
+    document.querySelectorAll("[data-toggle-submenu]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var li = btn.closest(".tiene-submenu");
+        if (li) {
+          li.classList.toggle("abierto");
+        }
+      });
+    });
+
     // Revelado suave al hacer scroll
     var elementos = document.querySelectorAll(".reveal");
     if ("IntersectionObserver" in window && elementos.length) {

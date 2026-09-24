@@ -197,6 +197,30 @@ Solo usé URLs externas que pude confirmar que existen de verdad (no
 inventé ninguna): el sitio oficial de Mabe y el artículo de Wikipedia
 mencionados arriba.
 
+## Menú móvil reorganizado
+
+El submenú "Electrodomésticos" dentro del menú de celular (el que se
+abre con el ícono de las 3 rayitas) se quedaba siempre abierto,
+mostrando los 6 tipos de electrodoméstico de una sola vez y empujando
+todo el resto del menú (Diagnóstico, Zonas, Blog, Nosotros, Garantía,
+FAQ...) muy hacia abajo, obligando a hacer scroll dentro del propio
+menú. Ahora "Electrodomésticos" es una flechita que se abre y se
+cierra (como un acordeón): cerrado por defecto, así el menú completo
+cabe de un vistazo.
+
+## SEO: descripciones que se repetían entre países
+
+Encontré un problema real y lo corregí: 117 páginas (de blog, de
+servicios y de categorías de electrodoméstico) tenían la descripción
+para Google **exactamente igual** entre países que usan la misma
+palabra (nevera/refrigeradora). La causa: el límite de seguridad de
+160 caracteres que agregué en una ronda anterior cortaba el texto
+justo antes de donde se mencionaba la ciudad y el país, dejando a
+todos los países con el mismo texto genérico. Reordené esas
+descripciones para que la ciudad y el país vayan primero, así nunca se
+pierden aunque el texto se recorte. Verifiqué las 482 páginas: ahora
+son 0 descripciones duplicadas y 0 descripciones demasiado cortas.
+
 ## Estado de las imágenes
 
 - **Panamá y Costa Rica**: sus fotos reales de cliente ya usadas.
