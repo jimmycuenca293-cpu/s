@@ -134,6 +134,36 @@ En la página de inicio de los 8 países, la sección "Zonas de cobertura"
 estaba muy abajo (después de 8 secciones). La subí para que aparezca
 justo después de "Qué Reparamos", como la tercera sección de la página.
 
+## Ícono de WhatsApp, color de marca y arreglos de celular
+
+1. **Ícono de WhatsApp**: el ícono que usaba todo el sitio (botones,
+   burbuja flotante, barra de contacto) era un dibujo de contorno mal
+   proporcionado. Lo reemplacé por el logo real y reconocible de
+   WhatsApp (relleno, no de líneas), en las 913 páginas.
+2. **Se quitó el naranja**: analicé el logo real de Servicio Mabe (que
+   me pasaste) y no tiene nada de naranja — es azul/celeste degradado de
+   principio a fin. Cambié el color de acento de todo el sitio (botones,
+   íconos, números destacados, el ícono de la llave inglesa del favicon)
+   de naranja a un celeste sacado directamente del brillo del logo real.
+   El verde de WhatsApp se mantiene, porque ese es el color oficial de
+   WhatsApp, no de Mabe.
+3. **Botón flotante de WhatsApp duplicado en celular**: en el teléfono
+   había dos formas de escribir por WhatsApp al mismo tiempo — la
+   burbuja verde flotante Y la barra fija de abajo — y la burbuja quedaba
+   encima del título principal, tapándolo. Quité la burbuja flotante en
+   celular (queda solo la barra de abajo, que ya cubre esa función).
+4. **Tabla de códigos de error achatada en celular**: en vez de
+   deslizarse hacia los lados como debía, el texto de cada código se
+   apretaba y se cortaba feo. Corregido para que se deslice
+   correctamente.
+5. **Scroll lateral (la página se corría hacia el costado) en celular**:
+   encontré y corregí dos causas: un botón con texto largo que no
+   cabía en una sola línea ("Ver todos los detalles de la garantía") y
+   un problema técnico de cómo el navegador calcula el ancho de columnas
+   dentro de una cuadrícula. Verifiqué **las 482 páginas del sitio, una
+   por una, con un script automático**, y confirmé que ninguna se corre
+   hacia el costado en celular.
+
 ## Estado de las imágenes
 
 - **Panamá y Costa Rica**: sus fotos reales de cliente ya usadas.
