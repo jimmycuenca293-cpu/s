@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>TecniGuía Línea Blanca</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -141,6 +142,11 @@ details.mini summary{cursor:pointer;color:var(--accent);font-weight:600;font-siz
 .ficha-eq{display:flex;flex-direction:column;gap:10px}
 .ficha-eq .desc{font-family:var(--f-display);font-size:22px;font-weight:700;line-height:1.15;text-wrap:balance}
 .src{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.capture.main3{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.cap.main{border-style:solid;border-color:var(--accent)}
+.cap.main strong{font-size:20px}
+.cap.want{border-style:solid;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft);background:var(--accent-soft)}
+.cap.want::after{content:"Te lo pido en este paso";font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
 .scan svg{flex:0 0 auto;width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:1.8}
 .placa{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 12px;font-size:13.5px}
 .placa div span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
@@ -203,26 +209,24 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
     <div id="resume" hidden></div>
 
     <div class="panel">
-      <label class="f" style="font-size:15px;color:var(--ink);font-weight:600">¿Qué daño tiene?
-        <textarea id="desc" placeholder="Ej. No enfría abajo, el congelador sí. Suena el compresor. (Toca el micrófono del teclado para dictar)" style="font-weight:400"></textarea>
+      <h3>Muéstrame el daño</h3>
+      <div class="capture main3">
+        <label class="cap main" data-cap="video"><strong>Video</strong><small>Graba el equipo funcionando 15 a 30 s, con el sonido. Es lo que más me dice.</small>
+          <input type="file" class="in-video" accept="video/*" capture="environment"></label>
+        <label class="cap main" data-cap="audio"><strong>Sonido</strong><small>Teléfono pegado a la pieza que suena, sin hablar</small>
+          <input type="file" class="in-audio" accept="audio/*,video/*" capture></label>
+        <label class="cap" data-cap="foto"><strong>Fotos</strong><small>Tarjeta, pantalla, pieza, hielo</small>
+          <input type="file" class="in-foto" accept="image/*" multiple></label>
+      </div>
+      <div class="thumbs"></div>
+      <div class="audio-box" hidden></div>
+      <label class="f" style="font-size:15px;color:var(--ink);font-weight:600">¿Qué daño tiene? <span style="font-weight:400;color:var(--muted);font-size:13px">(si no grabaste, escríbelo)</span>
+        <textarea id="desc" placeholder="Ej. No enfría abajo, el congelador sí. (Toca el micrófono del teclado para dictar)" style="font-weight:400;min-height:64px"></textarea>
       </label>
       <label class="f">Código en pantalla (si hay)
         <input type="text" id="codigo" placeholder="Ej. 22E, OE, F8E1" autocomplete="off" style="max-width:220px">
       </label>
       <div id="code-quick" hidden></div>
-      <details class="mini" id="more">
-        <summary>Agregar foto, video o sonido del daño</summary>
-        <div class="capture" style="margin-top:10px">
-          <label class="cap" data-cap="foto"><strong>Fotos</strong><small>Tarjeta, pantalla, pieza dañada</small>
-            <input type="file" class="in-foto" accept="image/*" multiple></label>
-          <label class="cap" data-cap="video"><strong>Video</strong><small>Imágenes y sonido</small>
-            <input type="file" class="in-video" accept="video/*" capture="environment"></label>
-          <label class="cap" data-cap="audio"><strong>Sonido</strong><small>De cerca, sin hablar</small>
-            <input type="file" class="in-audio" accept="audio/*,video/*" capture></label>
-        </div>
-        <div class="thumbs"></div>
-        <div class="audio-box" hidden></div>
-      </details>
       <details class="mini" id="manual">
         <summary>Sin etiqueta: escribir el equipo a mano</summary>
         <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
@@ -945,7 +949,7 @@ document.addEventListener("change", async e => {
   } else if (inp.classList.contains("in-video")) {
     setStatus("Procesando video…", true);
     pend.frames.forEach(p => URL.revokeObjectURL(p.url)); pend.frames = [];
-    try { pend.frames = await extractFrames(files[0], 4); } catch { flash("No pude sacar imágenes de este video. Usa fotos."); }
+    try { pend.frames = await extractFrames(files[0], 6); } catch { flash("No pude sacar imágenes de este video. Usa fotos."); }
     const a = await analyzeAudioFile(files[0], "sonido del video"); if (a) pend.audio = a;
     renderPend(); setStatus("");
   } else if (inp.classList.contains("in-audio")) {
@@ -1015,23 +1019,23 @@ function analyzeBuffer(buf, srcLabel) {
   const sr = buf.sampleRate, maxS = Math.min(buf.length, sr * 30);
   const x = new Float32Array(maxS);
   for (let ch = 0; ch < buf.numberOfChannels; ch++) { const d = buf.getChannelData(ch); for (let i = 0; i < maxS; i++) x[i] += d[i] / buf.numberOfChannels; }
-  const N = 4096, hop = 2048, frames = Math.max(1, Math.floor((maxS - N) / hop));
+  const N = 4096, hop = 1024, frames = Math.max(1, Math.floor((maxS - N) / hop));
   const spec = new Float64Array(N / 2), win = new Float64Array(N);
   for (let i = 0; i < N; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (N - 1));
-  const cols = [], energies = [];
+  const cols = [], energies = [], hfE = [];
   const re = new Float64Array(N), im = new Float64Array(N);
   for (let f = 0; f < frames; f++) {
     let e = 0;
     for (let i = 0; i < N; i++) { const s = x[f * hop + i] || 0; re[i] = s * win[i]; im[i] = 0; e += s * s; }
     energies.push(Math.sqrt(e / N));
     fft(re, im);
-    const col = new Float32Array(128);
+    const col = new Float32Array(128); let hf = 0;
     for (let k = 1; k < N / 2; k++) {
       const m = Math.hypot(re[k], im[k]); spec[k] += m;
-      const hz = k * sr / N;
+      const hz = k * sr / N; if (hz > 800) hf += m * m;
       if (hz >= 30 && hz < 8000) { const b = Math.min(127, Math.floor(Math.log2(hz / 30) / Math.log2(8000 / 30) * 128)); col[b] = Math.max(col[b], m); }
     }
-    cols.push(col);
+    cols.push(col); hfE.push(Math.sqrt(hf));
   }
   const binHz = sr / N, peaks = [];
   for (let k = 3; k < N / 2 - 1 && k * binHz < 8000; k++) if (spec[k] > spec[k - 1] && spec[k] >= spec[k + 1]) peaks.push([k * binHz, spec[k]]);
@@ -1044,9 +1048,14 @@ function analyzeBuffer(buf, srcLabel) {
     bands[hz < 250 ? 0 : hz < 1000 ? 1 : hz < 4000 ? 2 : 3] += p;
   }
   const centroid = cen / (sumMag || 1), bandPct = bands.map(b => Math.round(100 * b / (tot || 1)));
-  const sorted = [...energies].sort((a, b) => a - b), med = sorted[Math.floor(sorted.length / 2)] || 1e-9;
-  const onsets = [];
-  for (let i = 1; i < energies.length; i++) if (energies[i] > med * 3 && energies[i] > energies[i - 1] * 1.8 && (!onsets.length || i - onsets[onsets.length - 1] > 2)) onsets.push(i);
+  // Golpes y clics: saltos de energía en agudos (>800 Hz), donde no estorba el zumbido del motor
+  const onsetOn = arr => {
+    const srt = [...arr].sort((a, b) => a - b), md = srt[Math.floor(srt.length / 2)] || 1e-9, o = [];
+    for (let i = 1; i < arr.length; i++) if (arr[i] > md * 3 && arr[i] > arr[i - 1] * 1.8 && (!o.length || i - o[o.length - 1] > 2)) o.push(i);
+    return o;
+  };
+  const oHf = onsetOn(hfE), oAll = onsetOn(energies);
+  const onsets = oHf.length >= oAll.length ? oHf : oAll;
   const dur = maxS / sr, secPer = hop / sr;
   const intervals = onsets.slice(1).map((o, i) => (o - onsets[i]) * secPer);
   const avgInt = intervals.length ? intervals.reduce((a, b) => a + b, 0) / intervals.length : 0;
@@ -1067,10 +1076,44 @@ function analyzeBuffer(buf, srcLabel) {
     energia_bandas_pct: { "0-250Hz": bandPct[0], "250-1000Hz": bandPct[1], "1-4kHz": bandPct[2], ">4kHz": bandPct[3] },
     golpes_detectados: onsets.length, intervalo_golpes_s: +avgInt.toFixed(2),
     zumbido_red_hz: humHz ? +humHz[0].toFixed(0) : null, pistas_automaticas: hints,
-    _cols: cols
+    _cols: cols, _env: energies
   };
 }
-const audioForAI = a => { const { _cols, ...rest } = a; return JSON.stringify(rest); };
+const audioForAI = a => { const { _cols, _env, _img, ...rest } = a; return JSON.stringify(rest); };
+/* Espectrograma como imagen para el guía: tiempo → horizontal, frecuencia (log) → vertical, energía arriba */
+function specImage(a) {
+  const W = 960, H = 420, L = 64, T = 70, R = 12, B = 34, pw = W - L - R, ph = H - T - B;
+  const c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  x.fillStyle = "#ffffff"; x.fillRect(0, 0, W, H);
+  x.fillStyle = "#111"; x.font = "bold 15px sans-serif";
+  x.fillText(`Espectrograma - ${a.fuente} - ${a.duracion_s} s`, L, 18);
+  // envolvente de energía
+  const env = a._env || [], emx = Math.max(1e-9, ...env);
+  x.strokeStyle = "#0b6e8a"; x.lineWidth = 1.5; x.beginPath();
+  env.forEach((v, i) => { const px = L + i / Math.max(1, env.length - 1) * pw, py = T - 10 - (v / emx) * 34; i ? x.lineTo(px, py) : x.moveTo(px, py); });
+  x.stroke(); x.fillStyle = "#555"; x.font = "11px sans-serif"; x.fillText("volumen", 6, T - 22);
+  // mapa
+  const cols = a._cols || []; let mx = 1e-9; cols.forEach(col => col.forEach(v => { if (v > mx) mx = v; }));
+  const cw = pw / Math.max(1, cols.length), bh = ph / 128;
+  cols.forEach((col, i) => col.forEach((v, b) => {
+    const k = Math.pow(v / mx, 0.45); if (k < 0.04) return;
+    const g = Math.round(255 * (1 - k)); x.fillStyle = `rgb(${g},${g},${g})`;
+    x.fillRect(L + i * cw, T + ph - (b + 1) * bh, Math.ceil(cw) + 0.5, Math.ceil(bh) + 0.5);
+  }));
+  // ejes
+  x.strokeStyle = "#999"; x.lineWidth = 1; x.strokeRect(L, T, pw, ph);
+  x.fillStyle = "#333"; x.font = "12px sans-serif";
+  [50, 60, 120, 250, 500, 1000, 2000, 4000, 8000].forEach(hz => {
+    const b = Math.log2(hz / 30) / Math.log2(8000 / 30) * 128, py = T + ph - b * bh;
+    if (py < T || py > T + ph) return;
+    x.strokeStyle = hz === 60 || hz === 120 ? "#d33" : "#ddd"; x.beginPath(); x.moveTo(L, py); x.lineTo(L + pw, py); x.stroke();
+    x.fillText(hz >= 1000 ? hz / 1000 + " kHz" : hz + " Hz", 4, py + 4);
+  });
+  const d = a.duracion_s, step = d > 20 ? 5 : d > 8 ? 2 : 1;
+  for (let s = 0; s <= d; s += step) x.fillText(s + " s", L + s / d * pw - 6, H - 12);
+  return new Promise(r => c.toBlob(r, "image/png"));
+}
 function audioHTML(a) {
   const bp = a.energia_bandas_pct;
   return `<div class="panel" style="padding:12px;background:var(--bg);border-style:dashed">
@@ -1140,7 +1183,9 @@ REGLAS DE PRECISIÓN (obligatorias):
 6. Nunca inventes números de parte. Describe el repuesto.
 7. No recomiendes abrir el sistema sellado (gas) sin evidencia: compresor probado bien eléctricamente, temperaturas de tubería, presiones o síntomas inequívocos.
 8. Si el técnico no puede hacer una prueba, propón otra que distinga las mismas hipótesis.
-9. Las pistas automáticas del sonido son orientativas (análisis de espectro hecho en el teléfono); úsalas como indicio, nunca como confirmación.
+9. SONIDO Y VIDEO: muchos daños se reconocen más rápido viéndolos u oyéndolos. Cuando un ruido, un clic, el arranque del compresor, una vibración, el giro del tambor, la entrada o salida de agua o un ventilador sean clave, pide como paso un video ("tipo":"video") o un sonido ("tipo":"sonido"), diciendo exactamente dónde poner el teléfono, qué debe estar haciendo el equipo y cuántos segundos grabar.
+   Del sonido recibes mediciones automáticas y una imagen de ESPECTROGRAMA: eje horizontal = tiempo; eje vertical = frecuencia en escala logarítmica (líneas rojas en 60 y 120 Hz = red eléctrica); más oscuro = más fuerte; arriba, la curva de volumen. Cómo leerlo: líneas horizontales continuas = tono o zumbido constante (motor, compresor, bobina; 60/120 Hz = vibración eléctrica de 60 Hz); rayas verticales que se repiten = golpes o clics periódicos (el intervalo dice si es por vuelta de un motor o un relé que cicla); mancha difusa en agudos (>2 kHz) = roce, rodamiento seco, aire o agua; volumen que sube y se corta = arranque que falla. De los videos recibes varios fotogramas en orden de tiempo: compáralos para ver movimiento (gira o no gira, vibra, hay agua, hay hielo, luces o códigos que cambian).
+   Todo esto es indicio fuerte pero NO confirmación de una pieza: confirma con una prueba.
 10. Cuando una prueba confirme la falla: "estado" = "diagnostico" y entrega la reparación completa, incluyendo la causa raíz para que no se repita (ej. fusible térmico abierto → ducto tapado; hielo en evaporador → resistencia, bimetal o sensor de deshielo) y cómo verificar que quedó bien.
 11. Si el técnico informa que la reparación no funcionó, vuelve a "investigando" y replantea.
 12. Contexto eléctrico: Colombia, 110-120 V / 60 Hz; secadoras eléctricas a 220 V. Refrigerantes comunes: R134a y R600a (inflamable).
@@ -1148,7 +1193,7 @@ REGLAS DE PRECISIÓN (obligatorias):
 14. Se te dan los VALORES DE REFERENCIA de la app y los CASOS REALES de este mismo técnico. Úsalos: si un caso parecido se confirmó, puedes priorizar esa prueba, pero igual hay que confirmarla en este equipo. Nunca repitas un diagnóstico que el técnico ya reportó que NO resolvió, salvo que haya nueva evidencia.
 
 FORMATO: responde SOLO con un objeto JSON con esta forma exacta:
-{"equipo":"tipo, marca, modelo","lo_que_veo":"lo observado en las imágenes o el sonido de ESTE turno, o null","hipotesis":[{"falla":"","probabilidad":50,"por_que":"breve"}],"estado":"investigando","paso":{"tipo":"medir|observar|escuchar|foto|sonido|pregunta|prueba","titulo":"orden corta","instruccion":"qué hacer exactamente, dónde y cómo","valor_esperado":"qué resultado indica bueno y cuál indica malo, o null","seguridad":"advertencia si aplica, o null","opciones":["respuestas rápidas posibles, 2 a 5"]},"diagnostico":null}
+{"equipo":"tipo, marca, modelo","lo_que_veo":"lo observado en las imágenes o el sonido de ESTE turno, o null","hipotesis":[{"falla":"","probabilidad":50,"por_que":"breve"}],"estado":"investigando","paso":{"tipo":"medir|observar|escuchar|foto|video|sonido|pregunta|prueba","titulo":"orden corta","instruccion":"qué hacer exactamente, dónde y cómo","valor_esperado":"qué resultado indica bueno y cuál indica malo, o null","seguridad":"advertencia si aplica, o null","opciones":["respuestas rápidas posibles, 2 a 5"]},"diagnostico":null}
 - "hipotesis": de 1 a 4, ordenadas, probabilidades que sumen como máximo 100.
 - Cuando "estado" = "diagnostico", "paso" puede ser null y "diagnostico" debe ser:
 {"falla_principal":"","confirmado_por":"qué prueba lo confirmó","confianza":"alta|media","explicacion":"2-4 frases","causa_raiz":"","pasos":[""],"repuestos":[""],"herramientas":[""],"verificacion_final":[""],"seguridad":[""],"tiempo_estimado":""}`;
@@ -1186,7 +1231,7 @@ Aprueba SOLO si se cumplen las tres condiciones:
 3. La causa raíz tiene sentido con los síntomas.
 Si no apruebas, propone la UNA prueba que falta, con el mismo formato de paso.
 Responde SOLO con JSON: {"aprobado":true,"motivo":"una o dos frases","hipotesis":[{"falla":"","probabilidad":0,"por_que":""}],"paso":null}
-Si no apruebas: "aprobado":false y "paso":{"tipo":"medir|observar|escuchar|foto|sonido|pregunta|prueba","titulo":"","instruccion":"","valor_esperado":"","seguridad":null,"opciones":[""]}`;
+Si no apruebas: "aprobado":false y "paso":{"tipo":"medir|observar|escuchar|foto|video|sonido|pregunta|prueba","titulo":"","instruccion":"","valor_esperado":"","seguridad":null,"opciones":[""]}`;
 
 function caseText(c) {
   return [
@@ -1230,7 +1275,9 @@ $("#go").addEventListener("click", () => {
 
 async function askNext(answerText) {
   const maxImg = limits?.images?.maxCount ?? 0;
-  const allImgs = [...pend.photos, ...pend.frames];
+  let specImg = null;
+  if (pend.audio && maxImg) { try { const bl = await specImage(pend.audio); if (bl) specImg = { blob: bl, label: "espectrograma del sonido (" + pend.audio.fuente + ")" }; } catch {} }
+  const allImgs = [...pend.photos.filter(p => p.label !== "etiqueta"), ...(specImg ? [specImg] : []), ...pend.frames, ...pend.photos.filter(p => p.label === "etiqueta")];
   const imgs = maxImg ? allImgs.slice(0, maxImg) : [];
   const parts = [];
   if (answerText) parts.push(answerText);
@@ -1322,7 +1369,7 @@ function setCaseHeader(c) {
   $("#case-ficha").innerHTML = c.placa?.placa ? fichaHTML(c.placa, true) : "";
 }
 function tipoOf(t) { const b = t.split(" ")[0]; return b === "nevecón" ? "nevera" : b; }
-const TIPO_LABEL = { medir: "Medir", observar: "Observar", escuchar: "Escuchar", foto: "Tomar foto", sonido: "Grabar sonido", pregunta: "Pregunta", prueba: "Prueba" };
+const TIPO_LABEL = { medir: "Medir", observar: "Observar", escuchar: "Escuchar", foto: "Tomar foto", sonido: "Grabar sonido", video: "Grabar video", pregunta: "Pregunta", prueba: "Prueba" };
 function list(arr, ordered) {
   const a = (arr || []).filter(Boolean); if (!a.length) return "";
   const tag = ordered ? "ol" : "ul";
@@ -1377,6 +1424,8 @@ function renderVisit(readOnly) {
   } else {
     $("#step").innerHTML = last.paso ? stepHTML(last.paso, visit.turns.length) : "";
     $("#answer-title").textContent = "Tu resultado";
+    const want = { sonido: "audio", escuchar: "audio", video: "video", foto: "foto", observar: "foto" }[last.paso?.tipo];
+    $$("#answer .cap").forEach(c => c.classList.toggle("want", c.dataset.cap === want));
     $("#opts").innerHTML = (last.paso?.opciones || []).slice(0, 5).map(o => `<button type="button" aria-pressed="false" data-o="${esc(o)}">${esc(o)}</button>`).join("");
     $("#cant").hidden = false;
   }
@@ -1421,7 +1470,7 @@ $("#reset").addEventListener("click", () => {
   ctl?.abort(); visit = null; clearPend(); stopTimer(true); keepAwake(false); try { speechSynthesis.cancel(); } catch {}
   PLACA = null; $("#placa-out").hidden = true; $("#scan-box").classList.remove("done");
   $("#scan-title").textContent = "Foto de la etiqueta"; $("#scan-sub").textContent = "La etiqueta con el modelo (dentro de la nevera, en la puerta o atrás de la lavadora). Con eso sé qué equipo es.";
-  $("#more").open = false; $("#manual").open = false;
+  $("#manual").open = false;
   offerResume();
   $("#session").hidden = true; $("#start").hidden = false; $("#result").innerHTML = "";
   fieldIds.forEach(id => $("#" + id).value = ""); store.set("tg_draft", null); quickCode();
