@@ -4,6 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 python3 build.py
 ( cd public/api && composer install --no-dev --optimize-autoloader --no-interaction --quiet )
+echo "Require all denied" > public/api/vendor/.htaccess
 rm -f tecniguia-pro.zip
 cp schema.sql INSTALAR.md public/
 ( cd public && zip -qr ../tecniguia-pro.zip . -x 'api/config.php' 'api/vendor/*/.git/*' 'api/vendor/*/*/.git/*' 'api/vendor/*/*/.github/*' 'api/vendor/*/*/tests/*' 'api/vendor/*/*/examples/*' 'api/vendor/*/*/fixtures/*' 'api/vendor/*/*/scripts/*' )
