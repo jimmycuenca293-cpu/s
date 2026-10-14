@@ -1,0 +1,11 @@
+# Solo se pueden abrir los puntos de entrada de la API.
+<FilesMatch "\.(php)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^(auth|visitas|ia|admin)\.php$">
+  Require all granted
+</FilesMatch>
+<FilesMatch "\.(json|lock|md|sql|txt|dist|xml)$">
+  Require all denied
+</FilesMatch>
+Options -Indexes

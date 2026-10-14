@@ -1,0 +1,21 @@
+# TecniGuía Pro
+Options -Indexes
+DirectoryIndex index.html
+
+# Forzar HTTPS (activa el SSL gratis en hPanel → Seguridad → SSL)
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# No mostrar archivos internos
+<FilesMatch "\.(sql|md|lock|sample\.php)$">
+  Require all denied
+</FilesMatch>

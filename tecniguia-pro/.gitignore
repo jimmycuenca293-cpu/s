@@ -1,0 +1,6 @@
+# Dependencias (se reinstalan con: cd public/api && composer install --no-dev)
+public/api/vendor/
+# Claves del servidor: nunca al repositorio
+public/api/config.php
+# Paquete para subir a Hostinger (se genera con ./empaquetar.sh)
+*.zip
