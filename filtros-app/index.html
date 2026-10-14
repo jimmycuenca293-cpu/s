@@ -1,0 +1,636 @@
+<title>FiltroYa Cali</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Encuentra el filtro de agua de tu nevecón con una foto o la referencia. Entrega el mismo día en Cali con instalación y envíos a toda Colombia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: tienda de un solo carril para el celular — buscador arriba, resultados en tarjetas, pedido en hoja inferior, menú al pulgar */
+:root{
+  --bg:#f2f6f5; --panel:#ffffff; --ink:#0f2a2e; --muted:#587074; --line:#d6e0df;
+  --accent:#0a7c70; --accent-ink:#ffffff; --accent-soft:#dbf0eb; --deep:#0f3d43;
+  --ok:#2e7d4f; --ok-soft:#dff1e6; --warn:#a86400; --warn-soft:#fbefd9; --bad:#b3261e; --bad-soft:#f9e1df;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1a1c; --panel:#132427; --ink:#e2eeec; --muted:#93acaa; --line:#25393c;
+  --accent:#3fc1ae; --accent-ink:#04211d; --accent-soft:#143a35; --deep:#0a2a2e;
+  --ok:#6cc790; --ok-soft:#16301f; --warn:#f0a73a; --warn-soft:#33270f; --bad:#f2857b; --bad-soft:#3a1c1a;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1a1c; --panel:#132427; --ink:#e2eeec; --muted:#93acaa; --line:#25393c;
+  --accent:#3fc1ae; --accent-ink:#04211d; --accent-soft:#143a35; --deep:#0a2a2e;
+  --ok:#6cc790; --ok-soft:#16301f; --warn:#f0a73a; --warn-soft:#33270f; --bad:#f2857b; --bad-soft:#3a1c1a;
+  color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:780px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main.wrap{padding-block:0 calc(100px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px}
+
+/* Encabezado */
+.hero{background:var(--deep);color:#e9f6f3;padding-block:18px 26px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-40px;width:220px;height:220px;border-radius:50%;border:28px solid rgba(63,193,174,.18)}
+.hero .wrap{display:flex;flex-direction:column;gap:14px;position:relative;z-index:1}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{font-family:var(--f-display);font-weight:800;font-size:24px;letter-spacing:-.01em}
+.logo span{color:#5fd6c3}
+.city{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:4px 6px 4px 12px;font-size:13px}
+.city select{background:transparent;border:0;color:#fff;font-weight:700;padding:2px 4px;max-width:150px}
+.city select option{color:#111}
+.hero h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,7vw,40px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.015em}
+.hero p{margin:0;color:#b9d8d2;max-width:52ch}
+.searchbox{display:flex;gap:8px;background:var(--panel);border-radius:var(--r);padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.searchbox input{flex:1 1 auto;min-width:0;border:0;background:transparent;padding:10px 10px;font-size:16px;color:var(--ink)}
+.searchbox input:focus{outline:none}
+.searchbox button{border:0;background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:0 16px;font-weight:700;cursor:pointer}
+.snap{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.snap label{position:relative;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);border-radius:12px;padding:10px 12px;cursor:pointer;font-size:13px;line-height:1.25}
+.snap label:hover{background:rgba(255,255,255,.12)}
+.snap svg{width:28px;height:28px;flex:0 0 auto;stroke:#5fd6c3;fill:none;stroke-width:1.7}
+.snap b{display:block;font-size:14px;color:#fff}
+.snap input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{border:1px solid rgba(255,255,255,.22);background:transparent;color:#d4ece7;border-radius:999px;padding:4px 10px;font-family:var(--f-mono);font-size:12px;cursor:pointer}
+
+/* Promesa de entrega */
+.promise{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:-14px}
+.promise div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12.5px;color:var(--muted);line-height:1.3}
+.promise b{display:block;color:var(--ink);font-size:14px;margin-bottom:2px}
+
+h2{font-family:var(--f-display);font-weight:700;font-size:22px;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:0;font-size:14px}
+.note{font-size:13.5px;border-radius:10px;padding:10px 12px;background:var(--warn-soft);border-left:3px solid var(--warn)}
+.note.info{background:var(--accent-soft);border-left-color:var(--accent)}
+.example{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--warn-soft);color:var(--warn);padding:2px 7px;border-radius:4px}
+
+/* Tarjetas de producto */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card .head{display:flex;gap:12px;align-items:flex-start}
+.card svg.cart{width:54px;height:80px;flex:0 0 auto}
+.card .brand{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card h3{margin:0;font-size:16px;line-height:1.25}
+.ref{font-family:var(--f-mono);font-size:13px;color:var(--accent);word-break:break-all}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--accent-soft);color:var(--ink)}
+.badge.orig{background:var(--deep);color:#e9f6f3}
+.badge.ok{background:var(--ok-soft);color:var(--ok)} .badge.warn{background:var(--warn-soft);color:var(--warn)} .badge.bad{background:var(--bad-soft);color:var(--bad)}
+.price{font-family:var(--f-display);font-weight:700;font-size:24px;font-variant-numeric:tabular-nums}
+.eta{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:flex-start}
+.eta svg{width:16px;height:16px;flex:0 0 auto;stroke:var(--accent);fill:none;stroke-width:2;margin-top:2px}
+.fits{font-size:12.5px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.wa{background:#1fa855;border-color:#1fa855;color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* Resultado de búsqueda */
+.found{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:8px}
+.found .read{font-family:var(--f-mono);font-size:13px;background:var(--bg);border-radius:8px;padding:6px 8px;word-break:break-word}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+
+/* Hoja de pedido */
+.sheet-bg{position:fixed;inset:0;background:rgba(5,20,22,.55);z-index:30}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;background:var(--panel);border-radius:20px 20px 0 0;max-height:92vh;overflow-y:auto;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+.sheet-in{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto}
+.sheet h3{font-family:var(--f-display);font-size:21px;margin:0}
+.opt{display:grid;gap:8px}
+.opt label{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:12px;cursor:pointer}
+.opt label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.opt input{margin-top:3px;accent-color:var(--accent);width:18px;height:18px;flex:0 0 auto}
+.opt b{display:block}
+.opt small{color:var(--muted);font-size:13px}
+.opt .amt{margin-left:auto;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);min-width:0}
+label.f input,label.f select,label.f textarea{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:16px;width:100%;color:var(--ink)}
+.qty{display:flex;align-items:center;gap:10px}
+.qty button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:20px;cursor:pointer}
+.qty b{min-width:2ch;text-align:center;font-size:18px;font-variant-numeric:tabular-nums}
+.sum{border-top:1px dashed var(--line);padding-top:10px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:14px;font-variant-numeric:tabular-nums}
+.sum .t{font-family:var(--f-display);font-weight:700;font-size:22px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--muted);background:var(--accent-soft);border-radius:12px;padding:12px}
+.consent input{width:20px;height:20px;margin-top:1px;accent-color:var(--accent);flex:0 0 auto}
+.consent b{color:var(--ink)}
+.err{color:var(--bad);font-size:14px;margin:0;min-height:1em}
+
+/* Confirmación */
+.done{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px}
+.done .big{font-family:var(--f-display);font-size:26px;font-weight:700;line-height:1.1}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+
+/* Pedidos y vendedor */
+.list{background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.li{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 14px;border-top:1px solid var(--line)}
+.li:first-child{border-top:0}
+.li .m{font-size:13px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+.tile b{display:block;font-family:var(--f-display);font-size:clamp(19px,5.2vw,26px);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tile span{font-size:12.5px;color:var(--muted)}
+.tw{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Menú inferior */
+nav.bnav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(3,1fr);background:var(--panel);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+nav.bnav button{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted);padding:6px 2px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:700}
+nav.bnav svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.bnav button[aria-selected="true"]{color:var(--accent);background:var(--accent-soft)}
+nav.bnav button{position:relative}
+nav.bnav button[data-badge]:not([data-badge=""])::after{content:attr(data-badge);position:absolute;top:2px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font-size:11px;line-height:18px;text-align:center;padding:0 5px}
+@media (min-width:900px){nav.bnav{max-width:520px;margin:0 auto;border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0}}
+footer{color:var(--muted);font-size:12.5px;padding-top:6px}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="top">
+      <div class="logo">Filtro<span>Ya</span></div>
+      <label class="city">Entregar en
+        <select id="city" aria-label="Ciudad de entrega"></select>
+      </label>
+    </div>
+    <h1>El filtro exacto de tu nevecón, hoy mismo en Cali</h1>
+    <p>Tómale una foto al filtro viejo o a la etiqueta del nevecón, o escribe la referencia. Te decimos cuál es, cuánto cuesta y cuándo te llega.</p>
+    <form class="searchbox" id="search-form" role="search">
+      <input id="q" type="search" placeholder="Ej. DA29-00020B, LT700P o RF28HMEDBSR" autocomplete="off" aria-label="Referencia del filtro o modelo del nevecón">
+      <button type="submit">Buscar</button>
+    </form>
+    <div class="snap">
+      <label><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2.5" width="8" height="19" rx="3"/><path d="M8 7h8M8 17h8M12 2.5V1"/></svg><span><b>Foto del filtro</b>El que vas a cambiar</span>
+        <input type="file" id="in-filtro" accept="image/*" capture="environment"></label>
+      <label><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 12h6M7 15h8"/></svg><span><b>Foto de la etiqueta</b>Adentro del nevecón</span>
+        <input type="file" id="in-etiqueta" accept="image/*" capture="environment"></label>
+    </div>
+    <div class="chips" id="chips" aria-label="Referencias más buscadas"></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ BUSCAR ============ -->
+<section id="v-buscar" style="display:flex;flex-direction:column;gap:18px">
+  <div class="promise" id="promise"></div>
+  <div id="ai-off" class="note info" hidden>La búsqueda por foto funciona al abrir la app dentro de Claude. Mientras tanto, escribe la referencia que trae el filtro o el modelo del nevecón.</div>
+  <div id="found" hidden></div>
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div class="row" style="justify-content:space-between"><h2 id="list-title">Filtros más pedidos</h2><span class="example">Catálogo de ejemplo</span></div>
+    <p class="sub" id="list-sub">Precios, existencias y compatibilidades de ejemplo para el prototipo.</p>
+  </div>
+  <div class="grid" id="grid"></div>
+  <footer>¿No sabes cuál es? Escríbenos por WhatsApp con la foto de la etiqueta del nevecón y te decimos. Cambia el filtro cada 6 meses o cuando el agua cambie de sabor.</footer>
+</section>
+
+<!-- ============ MIS PEDIDOS ============ -->
+<section id="v-pedidos" hidden style="flex-direction:column;gap:14px">
+  <div><h2>Mis pedidos</h2><p class="sub">Los pedidos que hiciste desde este teléfono y la fecha del próximo cambio.</p></div>
+  <div id="orders"></div>
+</section>
+
+<!-- ============ VENDEDOR ============ -->
+<section id="v-vendedor" hidden style="flex-direction:column;gap:14px">
+  <div><h2>Vista del vendedor</h2><p class="sub">Así se verá tu panel. En el prototipo muestra los pedidos hechos en este teléfono; en la versión real llegan los de todos los clientes.</p></div>
+  <div class="tiles" id="kpis"></div>
+  <div class="row" style="justify-content:space-between"><h2 style="font-size:18px">Recordatorios de cambio</h2><label class="row" style="gap:6px;font-size:13px;color:var(--muted);cursor:pointer"><input type="checkbox" id="demo-rem"> Ver con clientes de ejemplo</label></div>
+  <p class="sub" style="margin-top:-8px">Cuando a un cliente le toca el cambio, toca <b>Recordar</b>: se abre WhatsApp con el mensaje listo para él. En la versión real se envían solos.</p>
+  <div id="reminders"></div>
+  <div class="row" style="justify-content:space-between"><h2 style="font-size:18px">Inventario</h2><span class="example">Ejemplo</span></div>
+  <div class="tw"><table><thead><tr><th>Filtro</th><th>Tipo</th><th>Precio</th><th>Stock Cali</th><th>Estado</th></tr></thead><tbody id="inv"></tbody></table></div>
+</section>
+</main>
+
+<nav class="tabs bnav" role="tablist" aria-label="Secciones">
+  <button role="tab" data-tab="buscar" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>Buscar</button>
+  <button role="tab" data-tab="pedidos" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>Mis pedidos</button>
+  <button role="tab" data-tab="vendedor" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Vendedor</button>
+</nav>
+
+<div class="sheet-bg" id="sheet-bg" hidden></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sh-title"><div class="sheet-in" id="sheet-in"></div></div>
+
+<script>
+(() => {
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const COP = n => "$ " + Math.round(n).toLocaleString("es-CO");
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+
+/* ===================== DATOS DEL NEGOCIO (EJEMPLO) ===================== */
+// Cambia estos datos por los reales antes de compartir la app.
+const NEGOCIO = {
+  nombre: "FiltroYa Cali",
+  whatsapp: "573000000000",            // número con 57 adelante, sin espacios
+  nequi: "300 000 0000",
+  titularNequi: "Nombre del titular",
+  corteHoy: 15,                        // pedidos antes de las 3:00 p. m. llegan hoy en Cali
+  domicilioCali: 8000,
+  instalacion: 35000,                  // filtro + instalación + revisión del nevecón
+  envioPrincipal: 14000, envioOtros: 19000, recargoContraEntrega: 6000,
+  mesesCambio: 6
+};
+const CALI_METRO = ["Cali", "Yumbo", "Jamundí", "Palmira", "Candelaria"];
+const INSTALA_EN = ["Cali", "Yumbo", "Jamundí"];
+const PRINCIPALES = ["Bogotá", "Medellín", "Barranquilla", "Cartagena", "Bucaramanga", "Pereira", "Manizales", "Armenia", "Ibagué", "Pasto", "Popayán", "Neiva", "Cúcuta", "Santa Marta", "Villavicencio", "Montería", "Tuluá", "Buga", "Cartago", "Buenaventura"];
+const CIUDADES = [...CALI_METRO, ...PRINCIPALES, "Otro municipio"];
+
+// Catálogo de ejemplo: referencias y modelos compatibles más comunes. Antes de lanzar se reemplaza con el catálogo del proveedor.
+const CATALOGO = [
+  { id: "sam-cin-o", marca: "Samsung", nombre: "Filtro Samsung HAF-CIN original", ref: "DA29-00020B", refs: ["DA29-00020B", "DA29-00020A", "HAF-CIN", "HAF-CIN/EXP", "46-9101"], modelos: ["RF28HMEDBSR", "RF263BEAESR", "RF28HFEDBSR", "RF4287HARS", "RF26J7500SR", "RF23J9011SR"], tipo: "original", precio: 189000, stock: 9, forma: "cin", color: "#2d6cdf" },
+  { id: "sam-cin-c", marca: "Samsung", nombre: "Filtro compatible HAF-CIN", ref: "DA29-00020B", refs: ["DA29-00020B", "DA29-00020A", "HAF-CIN", "HAF-CIN/EXP", "46-9101"], modelos: ["RF28HMEDBSR", "RF263BEAESR", "RF28HFEDBSR", "RF4287HARS", "RF26J7500SR", "RF23J9011SR"], tipo: "compatible", precio: 79000, stock: 24, forma: "cin", color: "#5a8fe6" },
+  { id: "sam-qin-o", marca: "Samsung", nombre: "Filtro Samsung HAF-QIN original", ref: "DA97-17376B", refs: ["DA97-17376B", "DA97-08006C", "HAF-QIN", "HAF-QIN/EXP"], modelos: ["RF28R7351SR", "RF22R7351SG", "RF28R7201SR", "RF23M8070SR"], tipo: "original", precio: 199000, stock: 4, forma: "qin", color: "#2d6cdf" },
+  { id: "sam-cu1-c", marca: "Samsung", nombre: "Filtro compatible Aqua-Pure Plus", ref: "DA29-00003G", refs: ["DA29-00003G", "DA29-00003B", "DA29-00003F", "HAFCU1"], modelos: ["RS2630SH", "RS2530BSH", "RS2555SL", "RS261MDRS"], tipo: "compatible", precio: 69000, stock: 11, forma: "cu1", color: "#5a8fe6" },
+  { id: "lg-700-o", marca: "LG", nombre: "Filtro LG LT700P original", ref: "LT700P", refs: ["LT700P", "ADQ36006101", "ADQ36006102", "46-9690"], modelos: ["LFX28968ST", "LFX25973ST", "LMX25964ST", "LFX31925ST"], tipo: "original", precio: 179000, stock: 6, forma: "lt", color: "#c2185b" },
+  { id: "lg-700-c", marca: "LG", nombre: "Filtro compatible LT700P", ref: "LT700P", refs: ["LT700P", "ADQ36006101", "ADQ36006102", "46-9690"], modelos: ["LFX28968ST", "LFX25973ST", "LMX25964ST", "LFX31925ST"], tipo: "compatible", precio: 72000, stock: 18, forma: "lt", color: "#d9578a" },
+  { id: "lg-1000-c", marca: "LG", nombre: "Filtro compatible LT1000P", ref: "LT1000P", refs: ["LT1000P", "ADQ74793501", "MDJ64844601", "LT1000PC"], modelos: ["LRMVS3006S", "LRFVS3006S", "LRMVC2306S"], tipo: "compatible", precio: 85000, stock: 7, forma: "lt", color: "#d9578a" },
+  { id: "lg-800-c", marca: "LG", nombre: "Filtro compatible LT800P", ref: "LT800P", refs: ["LT800P", "ADQ73613401", "ADQ73613402", "ADQ75795104"], modelos: ["LFXS26973S", "LFXS28968S", "LMXS28626S"], tipo: "compatible", precio: 79000, stock: 2, forma: "lt", color: "#d9578a" },
+  { id: "lg-500-c", marca: "LG", nombre: "Filtro compatible LT500P", ref: "LT500P", refs: ["LT500P", "5231JA2002A", "GEN11042FR-08", "46-9890"], modelos: ["LRSC26925TT", "LSC27925ST", "LSC27910ST"], tipo: "compatible", precio: 65000, stock: 0, forma: "twist", color: "#d9578a" },
+  { id: "wp-1-o", marca: "Whirlpool", nombre: "EveryDrop Filtro 1 original", ref: "EDR1RXD1", refs: ["EDR1RXD1", "W10295370A", "W10295370", "FILTER1", "46-9930"], modelos: ["WRF555SDFZ", "WRF767SDHZ", "WRX735SDHZ", "KRFF305ESS"], tipo: "original", precio: 175000, stock: 5, forma: "push", color: "#e06a00" },
+  { id: "wp-4-c", marca: "Whirlpool", nombre: "Filtro compatible EveryDrop 4", ref: "EDR4RXD1", refs: ["EDR4RXD1", "UKF8001", "UKF8001AXX", "4396395", "FILTER4", "46-9006"], modelos: ["MFI2570FEZ", "WRF736SDAM", "KRFF507ESS"], tipo: "compatible", precio: 68000, stock: 13, forma: "twist", color: "#f08a2c" },
+  { id: "ge-mwf-c", marca: "GE / Mabe", nombre: "Filtro compatible GE MWF", ref: "MWF", refs: ["MWF", "MWFP", "MWFA", "GWF", "46-9991"], modelos: ["GSS25GSHSS", "GSH25JSDSS", "PSS26NGMWW"], tipo: "compatible", precio: 62000, stock: 15, forma: "twist", color: "#4a5a66" },
+  { id: "fr-ultra-c", marca: "Frigidaire / Electrolux", nombre: "Filtro compatible ULTRAWF", ref: "ULTRAWF", refs: ["ULTRAWF", "46-9999"], modelos: ["FGHS2631PF", "FFSS2615TS", "LFSS2612TF"], tipo: "compatible", precio: 66000, stock: 8, forma: "push", color: "#4a5a66" },
+  { id: "fr-ep-c", marca: "Frigidaire / Electrolux", nombre: "Filtro compatible EPTWFU01", ref: "EPTWFU01", refs: ["EPTWFU01", "EWF02", "FPPWFU01"], modelos: ["FGHB2868TF", "FFHB2750TS", "LFHB2751TF"], tipo: "compatible", precio: 74000, stock: 6, forma: "push", color: "#4a5a66" }
+];
+const POPULARES = ["DA29-00020B", "LT700P", "DA97-17376B", "EDR1RXD1", "MWF", "UKF8001"];
+
+/* ===================== DIBUJO DEL FILTRO ===================== */
+function cartSVG(p) {
+  const c = p.color, cap = "#d8e2e1";
+  const body = {
+    cin: `<rect x="14" y="10" width="26" height="62" rx="6" fill="${c}"/><rect x="18" y="4" width="18" height="10" rx="3" fill="${cap}"/><rect x="14" y="28" width="26" height="5" fill="#ffffff55"/>`,
+    qin: `<rect x="12" y="14" width="30" height="58" rx="8" fill="${c}"/><rect x="20" y="4" width="14" height="12" rx="3" fill="${cap}"/><circle cx="27" cy="40" r="7" fill="#ffffff55"/>`,
+    cu1: `<rect x="15" y="12" width="24" height="60" rx="4" fill="${c}"/><rect x="21" y="3" width="12" height="11" rx="2" fill="${cap}"/><rect x="15" y="20" width="24" height="3" fill="#ffffff55"/><rect x="15" y="60" width="24" height="3" fill="#ffffff55"/>`,
+    lt: `<rect x="17" y="8" width="20" height="66" rx="10" fill="${c}"/><rect x="23" y="2" width="8" height="9" rx="2" fill="${cap}"/><rect x="17" y="22" width="20" height="4" fill="#ffffff55"/>`,
+    twist: `<rect x="14" y="16" width="26" height="56" rx="5" fill="${c}"/><path d="M18 16 L22 6 H32 L36 16Z" fill="${cap}"/><rect x="14" y="30" width="26" height="4" fill="#ffffff55"/>`,
+    push: `<rect x="13" y="8" width="28" height="64" rx="7" fill="${c}"/><rect x="13" y="8" width="28" height="12" rx="7" fill="${cap}"/><circle cx="27" cy="46" r="6" fill="#ffffff55"/>`
+  }[p.forma] || "";
+  return `<svg class="cart" viewBox="0 0 54 80" aria-hidden="true">${body}</svg>`;
+}
+
+/* ===================== ENTREGA ===================== */
+function bogotaNow() {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hour12: false, weekday: "short" }).formatToParts(new Date());
+  const g = t => parts.find(p => p.type === t)?.value;
+  return { y: +g("year"), m: +g("month"), d: +g("day"), h: +g("hour") % 24, wd: g("weekday") };
+}
+function addBusinessDays(base, n) {   // lunes a sábado
+  const d = new Date(Date.UTC(base.y, base.m - 1, base.d, 12));
+  let k = 0;
+  while (k < n) { d.setUTCDate(d.getUTCDate() + 1); if (d.getUTCDay() !== 0) k++; }
+  return d;
+}
+const fmtDay = d => d.toLocaleDateString("es-CO", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+function delivery(city) {
+  const now = bogotaNow(), sunday = now.wd === "Sun";
+  if (CALI_METRO.includes(city)) {
+    const hoy = !sunday && now.h < NEGOCIO.corteHoy;
+    const area = city === "Cali";
+    if (area && hoy) return { corto: "Llega hoy", largo: `Llega hoy antes de las 7:00 p. m. (pide antes de las ${NEGOCIO.corteHoy === 12 ? "12" : NEGOCIO.corteHoy - 12}:00 p. m.)`, hoy: true, local: true, envio: NEGOCIO.domicilioCali, dias: 0 };
+    const d = addBusinessDays(now, area ? 1 : (hoy ? 0 : 1) || 1);
+    return { corto: area ? "Llega mañana" : "Llega en 1 día", largo: `Llega el ${fmtDay(d)}`, hoy: false, local: true, envio: area ? NEGOCIO.domicilioCali : NEGOCIO.domicilioCali + 4000, dias: 1 };
+  }
+  const principal = PRINCIPALES.includes(city);
+  const [a, b] = principal ? [1, 3] : [3, 6];
+  return { corto: `Llega en ${a} a ${b} días hábiles`, largo: `Llega entre el ${fmtDay(addBusinessDays(now, a))} y el ${fmtDay(addBusinessDays(now, b))} por transportadora`, hoy: false, local: false, envio: principal ? NEGOCIO.envioPrincipal : NEGOCIO.envioOtros, dias: b };
+}
+const city = () => $("#city").value;
+const etaIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.5"/><circle cx="17" cy="17.5" r="1.5"/></svg>';
+
+/* ===================== BÚSQUEDA ===================== */
+const norm = s => String(s || "").toUpperCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^A-Z0-9]/g, "");
+function buscar(q) {
+  const n = norm(q); if (n.length < 3) return [];
+  const hits = [];
+  for (const p of CATALOGO) {
+    let s = 0, por = "";
+    for (const r of p.refs) { const rn = norm(r); if (rn === n) { s = Math.max(s, 100); por = "referencia " + r; } else if (n.length >= 4 && (rn.includes(n) || n.includes(rn) && rn.length >= 4)) { if (s < 70) { s = 70; por = "referencia " + r; } } }
+    for (const m of p.modelos) { const mn = norm(m); if (mn === n || (n.length >= 6 && (mn.startsWith(n) || n.startsWith(mn)))) { if (s < 90) { s = 90; por = "nevecón " + m; } } }
+    if (!s && n.length >= 4 && norm(p.marca + p.nombre).includes(n)) { s = 30; por = "nombre"; }
+    if (s) hits.push({ p, s, por });
+  }
+  return hits.sort((a, b) => b.s - a.s || (a.p.tipo === "original" ? -1 : 1));
+}
+function stockBadge(p) {
+  if (!p.stock) return '<span class="badge bad">Agotado: pídelo por encargo</span>';
+  if (p.stock <= 3) return `<span class="badge warn">Quedan ${p.stock} en Cali</span>`;
+  return `<span class="badge ok">Disponible en Cali</span>`;
+}
+function cardHTML(p, por) {
+  const d = delivery(city());
+  return `<article class="card">
+    <div class="head">${cartSVG(p)}<div style="min-width:0;display:flex;flex-direction:column;gap:4px">
+      <span class="brand">${esc(p.marca)}</span><h3>${esc(p.nombre)}</h3><span class="ref">${esc(p.ref)}</span>
+      <div class="badges"><span class="badge ${p.tipo === "original" ? "orig" : ""}">${p.tipo === "original" ? "Original" : "Compatible certificado"}</span>${stockBadge(p)}</div>
+    </div></div>
+    ${por ? `<div class="fits">Coincide por ${esc(por)}</div>` : `<div class="fits">Sirve para ${esc(p.modelos.slice(0, 3).join(", "))} y más</div>`}
+    <div class="row" style="justify-content:space-between;align-items:flex-end">
+      <div><div class="price">${COP(p.precio)}</div><div class="eta">${etaIcon}<span>${esc(p.stock ? d.corto : "Por encargo: 3 a 5 días")}${d.local && INSTALA_EN.includes(city()) && p.stock ? " · con instalación" : ""}</span></div></div>
+      <button class="btn" type="button" data-buy="${p.id}">Pedir</button>
+    </div>
+  </article>`;
+}
+function renderGrid(list, title, sub) {
+  $("#list-title").textContent = title; $("#list-sub").textContent = sub;
+  $("#grid").innerHTML = list.length ? list.map(x => cardHTML(x.p || x, x.por)).join("") : `<div class="found"><b>No lo encontramos en el catálogo.</b><span class="sub">Escríbenos por WhatsApp con la foto de la etiqueta del nevecón: te confirmamos cuál es y te lo conseguimos.</span><a class="btn wa" href="${waLink("Hola, busco un filtro para mi nevecón. Te mando la foto de la etiqueta.")}" target="_blank" rel="noopener">Preguntar por WhatsApp</a></div>`;
+}
+function showPopular() {
+  const seen = new Set(), list = [];
+  POPULARES.forEach(r => { const h = buscar(r)[0]; if (h && !seen.has(h.p.id)) { seen.add(h.p.id); list.push(h.p); } });
+  CATALOGO.forEach(p => { if (!seen.has(p.id) && list.length < 8) { seen.add(p.id); list.push(p); } });
+  renderGrid(list, "Filtros más pedidos", "Precios, existencias y compatibilidades de ejemplo para el prototipo.");
+}
+function doSearch(q, origen) {
+  const hits = buscar(q);
+  $("#found").hidden = true;
+  renderGrid(hits, hits.length ? `Resultados para “${q}”` : `Sin resultados para “${q}”`, hits.length ? (hits.some(h => h.p.tipo === "original") && hits.some(h => h.p.tipo === "compatible") ? "Tienes dos opciones: el original de la marca o el compatible certificado, más económico." : "Revisa que la referencia coincida con la de tu filtro.") : "Prueba con la referencia impresa en el filtro, o con el modelo del nevecón (está en la etiqueta de adentro).");
+  if (origen !== "chip") document.getElementById("list-title").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+$("#search-form").addEventListener("submit", e => { e.preventDefault(); const q = $("#q").value.trim(); if (q) doSearch(q); else showPopular(); });
+$("#q").addEventListener("input", e => { if (!e.target.value.trim()) showPopular(); });
+$("#chips").innerHTML = POPULARES.map(r => `<button type="button" data-q="${esc(r)}">${esc(r)}</button>`).join("");
+$("#chips").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#q").value = b.dataset.q; doSearch(b.dataset.q, "chip"); $("#list-title").scrollIntoView({ behavior: "smooth", block: "start" }); });
+
+/* ===================== FOTO (IA) ===================== */
+let sample = null, limits = null;
+(async () => {
+  try { if (window.claude && claude.use) sample = await claude.use("sample"); if (sample) limits = await sample.limits().catch(() => null); } catch { sample = null; }
+  $("#ai-off").hidden = !!(sample && limits?.images);
+})();
+const catalogoParaIA = () => CATALOGO.map(p => `${p.id} | ${p.marca} | refs: ${p.refs.join(", ")} | nevecones: ${p.modelos.join(", ")}`).join("\n");
+async function fotoBuscar(file, que) {
+  const box = $("#found"); box.hidden = false;
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (!sample || !limits?.images) { box.innerHTML = `<div class="found"><b>La búsqueda por foto necesita abrir la app dentro de Claude.</b><span class="sub">Escribe la referencia que trae el filtro, o el modelo del nevecón que aparece en la etiqueta.</span></div>`; return; }
+  box.innerHTML = `<div class="found"><span><span class="spin" aria-hidden="true"></span> Leyendo la foto ${que === "filtro" ? "del filtro" : "de la etiqueta"}…</span></div>`;
+  const prompt = `Eres el asistente de una tienda de filtros de agua para neveras y nevecones en Colombia. La imagen es ${que === "filtro" ? "un filtro de agua de nevera (el que el cliente va a cambiar)" : "la etiqueta o placa de datos de un nevecón"}.
+1. Transcribe EXACTAMENTE la referencia del filtro o el modelo del nevecón que se ve impreso. No adivines: si no se lee, null.
+2. Compara con este catálogo (id | marca | referencias | nevecones compatibles) y devuelve en "coincidencias" SOLO los id cuya referencia o modelo coincide con lo que leíste. Si no coincide ninguno, lista vacía. No inventes compatibilidades.
+CATÁLOGO:
+${catalogoParaIA()}
+Responde SOLO con JSON: {"legible":true,"que_es":"filtro|etiqueta|otro","marca":null,"referencia_leida":null,"modelo_leido":null,"coincidencias":[],"nota":"una frase para el cliente, o null"}`;
+  try {
+    const d = await sample.json(prompt, { images: [file], modelTier: "default" });
+    if (!d || d.legible === false) { box.innerHTML = `<div class="found"><b>No se lee bien la foto.</b><span class="sub">${esc(d?.nota || "")} Tómala de frente, con buena luz y sin flash. Si el filtro está muy gastado, toma la foto de la etiqueta del nevecón.</span></div>`; return; }
+    const leido = d.referencia_leida || d.modelo_leido;
+    const ids = new Set((d.coincidencias || []).filter(id => CATALOGO.some(p => p.id === id)));
+    const extra = leido ? buscar(leido) : [];
+    extra.forEach(h => ids.add(h.p.id));
+    const list = CATALOGO.filter(p => ids.has(p.id)).sort((a, b) => (a.tipo === "original" ? -1 : 1));
+    box.innerHTML = `<div class="found">
+      <span class="sub">Leímos en la foto:</span>
+      <div class="read">${esc([d.marca, d.referencia_leida && "Filtro " + d.referencia_leida, d.modelo_leido && "Nevecón " + d.modelo_leido].filter(Boolean).join(" · ") || "sin referencia legible")}</div>
+      ${d.nota ? `<span class="sub">${esc(d.nota)}</span>` : ""}
+      ${list.length ? "" : `<span>No lo tenemos en el catálogo. Escríbenos y te lo conseguimos.</span><a class="btn wa" href="${waLink(`Hola, busco el filtro para: ${leido || "mi nevecón"}. ¿Lo tienen?`)}" target="_blank" rel="noopener">Preguntar por WhatsApp</a>`}
+    </div>`;
+    if (list.length) { renderGrid(list.map(p => ({ p, por: leido ? (d.referencia_leida ? "referencia " + d.referencia_leida : "nevecón " + d.modelo_leido) : "" })), "Este es tu filtro", "Compara el original con el compatible certificado y escoge."); }
+    if (leido) $("#q").value = leido;
+  } catch (e) {
+    box.innerHTML = `<div class="found"><b>${e?.code === "not_granted" ? "No se dio permiso para leer la foto." : "No pudimos leer la foto."}</b><span class="sub">Escribe la referencia o pregúntanos por WhatsApp.</span></div>`;
+  }
+}
+$("#in-filtro").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; if (f) fotoBuscar(f, "filtro"); });
+$("#in-etiqueta").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; if (f) fotoBuscar(f, "etiqueta"); });
+
+/* ===================== CIUDAD ===================== */
+$("#city").innerHTML = CIUDADES.map(c => `<option>${esc(c)}</option>`).join("");
+$("#city").value = store.get("fy_city", "Cali");
+function renderPromise() {
+  const c = city(), d = delivery(c), local = CALI_METRO.includes(c);
+  $("#promise").innerHTML = local ? `
+    <div><b>${esc(d.corto)}</b>${d.hoy ? "Pide antes de las 3 p. m." : "Entrega a domicilio"}</div>
+    <div><b>${INSTALA_EN.includes(c) ? "Con instalación" : "Domicilio"}</b>${INSTALA_EN.includes(c) ? "Te lo instalamos y revisamos el nevecón" : "En " + esc(c)}</div>
+    <div><b>Paga al recibir</b>O por Nequi</div>` : `
+    <div><b>${esc(d.corto.replace("Llega en ", ""))}</b>Por transportadora</div>
+    <div><b>Envío ${COP(d.envio)}</b>A ${esc(c)}</div>
+    <div><b>Contra entrega</b>O por Nequi</div>`;
+}
+$("#city").addEventListener("change", () => { store.set("fy_city", city()); renderPromise(); const q = $("#q").value.trim(); q ? doSearch(q, "chip") : showPopular(); });
+
+/* ===================== PEDIDO ===================== */
+// Celular colombiano → "57" + 10 dígitos empezando por 3; null si no es válido
+function celularCO(s) {
+  let d = String(s || "").replace(/\D/g, "");
+  if (d.length === 12 && d.startsWith("57")) d = d.slice(2);
+  return /^3\d{9}$/.test(d) ? "57" + d : null;
+}
+const waTo = (num, txt) => `https://wa.me/${num}?text=${encodeURIComponent(txt)}`;
+const waLink = txt => `https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(txt)}`;
+let cart = null;
+function openSheet(html) { $("#sheet-in").innerHTML = html; $("#sheet").hidden = false; $("#sheet-bg").hidden = false; document.body.style.overflow = "hidden"; $("#sheet").scrollTop = 0; }
+function closeSheet() { $("#sheet").hidden = true; $("#sheet-bg").hidden = true; document.body.style.overflow = ""; }
+$("#sheet-bg").addEventListener("click", closeSheet);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#sheet").hidden) closeSheet(); });
+
+$("#grid").addEventListener("click", e => { const b = e.target.closest("[data-buy]"); if (b) startOrder(b.dataset.buy); });
+function startOrder(id) {
+  const p = CATALOGO.find(x => x.id === id); if (!p) return;
+  const c = city(), d = delivery(c), local = CALI_METRO.includes(c), puedeInstalar = INSTALA_EN.includes(c) && p.stock > 0;
+  const prev = store.get("fy_cliente", {});
+  cart = { p, qty: 1, entrega: puedeInstalar ? "instalacion" : (local ? "domicilio" : "transportadora"), pago: "contra" };
+  openSheet(`
+    <div class="grab" aria-hidden="true"></div>
+    <div class="row" style="gap:12px;flex-wrap:nowrap">${cartSVG(p)}<div style="min-width:0"><span class="brand" style="font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em">${esc(p.marca)}</span><h3 id="sh-title">${esc(p.nombre)}</h3><span class="ref">${esc(p.ref)}</span></div></div>
+    <div class="row" style="justify-content:space-between"><div class="price">${COP(p.precio)}</div>
+      <div class="qty" aria-label="Cantidad"><button type="button" data-q="-1" aria-label="Menos">−</button><b id="qty">1</b><button type="button" data-q="1" aria-label="Más">+</button></div></div>
+    ${!p.stock ? `<div class="note">Está agotado en Cali. Lo pedimos al proveedor: llega en 3 a 5 días.</div>` : ""}
+    <div><b>¿Cómo lo recibes en ${esc(c)}?</b></div>
+    <div class="opt" id="o-entrega">
+      ${puedeInstalar ? `<label><input type="radio" name="entrega" value="instalacion" checked><span><b>Te lo llevamos e instalamos</b><small>${esc(d.largo)}. Incluye revisión del nevecón y purga del filtro.</small></span><span class="amt">${COP(NEGOCIO.instalacion)}</span></label>` : ""}
+      ${local ? `<label><input type="radio" name="entrega" value="domicilio" ${puedeInstalar ? "" : "checked"}><span><b>Solo domicilio</b><small>${esc(d.largo)}. Tú lo instalas (te mandamos el video).</small></span><span class="amt">${COP(d.envio)}</span></label>`
+              : `<label><input type="radio" name="entrega" value="transportadora" checked><span><b>Envío por transportadora</b><small>${esc(d.largo)}. Te mandamos el número de guía.</small></span><span class="amt">${COP(d.envio)}</span></label>`}
+    </div>
+    <div><b>¿Cómo pagas?</b></div>
+    <div class="opt" id="o-pago">
+      <label><input type="radio" name="pago" value="contra" checked><span><b>Contra entrega</b><small>${local ? "Pagas en efectivo o Nequi cuando lo recibes." : `Pagas a la transportadora al recibir (recargo de ${COP(NEGOCIO.recargoContraEntrega)}).`}</small></span></label>
+      <label><input type="radio" name="pago" value="nequi"><span><b>Nequi o transferencia</b><small>Pagas ahora y nos mandas el comprobante por WhatsApp.</small></span></label>
+    </div>
+    <div class="fields">
+      <label class="f">Nombre<input id="c-nombre" autocomplete="name" value="${esc(prev.nombre || "")}"></label>
+      <label class="f"><span><b style="color:var(--ink)">Tu WhatsApp</b> · para confirmar el pedido y recordarte el cambio</span><input id="c-tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="300 123 4567" maxlength="16" value="${esc(prev.tel || "")}"></label>
+      <label class="f">Dirección<input id="c-dir" autocomplete="street-address" placeholder="Calle 5 # 66-20, apto 301" value="${esc(prev.dir || "")}"></label>
+      <label class="f">${local ? "Barrio" : "Barrio y ciudad"}<input id="c-barrio" value="${esc(prev.barrio || "")}" placeholder="${local ? "El Ingenio" : "Barrio, " + esc(c)}"></label>
+      <label class="f">Modelo del nevecón (opcional)<input id="c-modelo" value="${esc(prev.modelo || $("#q").value || "")}" placeholder="Ayuda a confirmar que le sirve"></label>
+    </div>
+    <label class="consent"><input type="checkbox" id="c-rec"><span><b>Recuérdame por WhatsApp cuando toque cambiar el filtro</b> (cada ${NEGOCIO.mesesCambio} meses). Autorizo a ${esc(NEGOCIO.nombre)} a escribirme para eso. Puedo pedir que no me escriban más en cualquier momento.</span></label>
+    <div class="sum" id="sum"></div>
+    <p class="err" id="c-err" aria-live="polite"></p>
+    <button class="btn wa" type="button" id="c-send"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg>Enviar pedido por WhatsApp</button>
+    <button class="btn ghost" type="button" id="c-close">Seguir buscando</button>
+    <p class="sub" style="font-size:12.5px;margin:0">Al enviar se abre WhatsApp con tu pedido listo. Te confirmamos disponibilidad y hora de entrega.</p>
+  `);
+  renderSum();
+}
+function totals() {
+  const c = city(), d = delivery(c), p = cart.p;
+  const sub = p.precio * cart.qty;
+  const ent = cart.entrega === "instalacion" ? NEGOCIO.instalacion : d.envio;
+  const rec = cart.pago === "contra" && cart.entrega === "transportadora" ? NEGOCIO.recargoContraEntrega : 0;
+  return { sub, ent, rec, total: sub + ent + rec, d };
+}
+function renderSum() {
+  const t = totals();
+  $("#sum").innerHTML = `<span>${cart.qty} × ${esc(cart.p.ref)}</span><span>${COP(t.sub)}</span>
+    <span>${cart.entrega === "instalacion" ? "Domicilio + instalación" : cart.entrega === "domicilio" ? "Domicilio" : "Envío"}</span><span>${COP(t.ent)}</span>
+    ${t.rec ? `<span>Recargo contra entrega</span><span>${COP(t.rec)}</span>` : ""}
+    <span class="t">Total</span><span class="t">${COP(t.total)}</span>`;
+}
+$("#sheet").addEventListener("click", e => {
+  const q = e.target.closest("[data-q]");
+  if (q && cart) { cart.qty = Math.max(1, Math.min(10, cart.qty + +q.dataset.q)); $("#qty").textContent = cart.qty; renderSum(); }
+  if (e.target.closest("#c-close")) closeSheet();
+  if (e.target.closest("#c-send")) sendOrder();
+  if (e.target.closest("#ics")) saveICS();
+  if (e.target.closest("#done-close")) closeSheet();
+});
+$("#sheet").addEventListener("change", e => {
+  if (!cart) return;
+  if (e.target.name === "entrega") cart.entrega = e.target.value;
+  if (e.target.name === "pago") cart.pago = e.target.value;
+  renderSum();
+});
+let lastOrder = null;
+function sendOrder() {
+  const v = id => $("#" + id).value.trim();
+  const cli = { nombre: v("c-nombre"), tel: v("c-tel"), dir: v("c-dir"), barrio: v("c-barrio"), modelo: v("c-modelo"), recordar: $("#c-rec").checked };
+  const wa = celularCO(cli.tel);
+  if (!cli.nombre) { $("#c-err").textContent = "Escribe tu nombre."; $("#c-nombre").focus(); return; }
+  if (!wa) { $("#c-err").textContent = "Escribe tu número de WhatsApp: celular de 10 dígitos que empieza por 3 (ej. 300 123 4567)."; $("#c-tel").focus(); return; }
+  if (!cli.dir) { $("#c-err").textContent = "Escribe la dirección de entrega."; $("#c-dir").focus(); return; }
+  cli.wa = wa; cli.tel = wa.slice(2).replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");
+  store.set("fy_cliente", cli);
+  const t = totals(), p = cart.p, c = city();
+  const id = "FY-" + Date.now().toString(36).toUpperCase().slice(-6);
+  const cambio = new Date(); cambio.setMonth(cambio.getMonth() + NEGOCIO.mesesCambio);
+  const order = { id, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: p.nombre, ref: p.ref, pid: p.id, qty: cart.qty, ciudad: c, entrega: cart.entrega, pago: cart.pago, total: t.total, eta: p.stock ? t.d.largo : "Por encargo: 3 a 5 días", cliente: cli, estado: "Enviado por WhatsApp" };
+  const orders = store.get("fy_orders", []); orders.unshift(order); store.set("fy_orders", orders.slice(0, 50));
+  lastOrder = order;
+  const msg = [
+    `Hola ${NEGOCIO.nombre}, quiero hacer este pedido (${id}):`,
+    `• ${cart.qty} × ${p.nombre} (${p.ref}) — ${COP(t.sub)}`,
+    `• ${cart.entrega === "instalacion" ? "Domicilio + instalación" : cart.entrega === "domicilio" ? "Domicilio" : "Envío por transportadora"} — ${COP(t.ent)}`,
+    t.rec ? `• Recargo contra entrega — ${COP(t.rec)}` : "",
+    `Total: ${COP(t.total)}`,
+    `Pago: ${cart.pago === "contra" ? "contra entrega" : "Nequi / transferencia"}`,
+    `Nombre: ${cli.nombre}`, `Tel: ${cli.tel}`, `Dirección: ${[cli.dir, cli.barrio, c].filter(Boolean).join(", ")}`,
+    cli.modelo ? `Nevecón: ${cli.modelo}` : "",
+    `Recordatorio de cambio cada ${NEGOCIO.mesesCambio} meses por WhatsApp: ${cli.recordar ? "SÍ, autorizo" : "No"}`
+  ].filter(Boolean).join("\n");
+  const link = waLink(msg);
+  openSheet(`
+    <div class="grab" aria-hidden="true"></div>
+    <div class="done">
+      <span class="sub">Pedido ${esc(id)}</span>
+      <div class="big" id="sh-title">¡Listo! Toca para enviarlo por WhatsApp</div>
+      <a class="btn wa" href="${link}" target="_blank" rel="noopener">Abrir WhatsApp con mi pedido</a>
+      <ol class="steps">
+        <li>En WhatsApp toca <b>Enviar</b>. Te respondemos para confirmar.</li>
+        ${cart.pago === "nequi" ? `<li>Paga ${COP(t.total)} al Nequi <b style="user-select:all">${esc(NEGOCIO.nequi)}</b> (${esc(NEGOCIO.titularNequi)}) y manda el comprobante.</li>` : `<li>Pagas ${COP(t.total)} cuando lo recibas.</li>`}
+        <li>${esc(order.eta)}.</li>
+      </ol>
+      <div class="note info">Tu próximo cambio de filtro: <b>${cambio.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" })}</b>. ${cli.recordar ? `Te escribimos al WhatsApp <b>${esc(cli.tel)}</b> unos días antes.` : "Guarda el recordatorio en tu calendario para no olvidarlo."}</div>
+      <div class="row"><button class="btn ghost" type="button" id="ics">Guardar recordatorio en mi calendario</button><button class="btn ghost" type="button" id="done-close">Cerrar</button></div>
+      <span class="sub" id="ics-msg"></span>
+    </div>`);
+  renderOrders(); renderSeller();
+}
+let downloads = null;
+(async () => { try { if (window.claude && claude.use) downloads = await claude.use("downloads"); } catch {} })();
+async function saveICS() {
+  if (!lastOrder) return;
+  const d = new Date(lastOrder.cambio), ymd = d.toISOString().slice(0, 10).replace(/-/g, "");
+  const end = new Date(d.getTime() + 864e5).toISOString().slice(0, 10).replace(/-/g, "");
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//FiltroYa//ES", "BEGIN:VEVENT", `UID:${lastOrder.id}@filtroya`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`, `DTSTART;VALUE=DATE:${ymd}`, `DTEND;VALUE=DATE:${end}`, `SUMMARY:Cambiar filtro de agua del nevecón (${lastOrder.ref})`, `DESCRIPTION:Pídelo por WhatsApp a ${NEGOCIO.nombre}: https://wa.me/${NEGOCIO.whatsapp}`, "BEGIN:VALARM", "TRIGGER:-P3D", "ACTION:DISPLAY", "DESCRIPTION:En 3 días toca cambiar el filtro", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+  const msg = $("#ics-msg");
+  if (!downloads) { msg.textContent = "Para guardar el recordatorio abre la app dentro de Claude. Igual te avisamos por WhatsApp."; return; }
+  try { await downloads.save({ filename: "recordatorio-filtro.ics", data: new Blob([ics], { type: "text/calendar" }) }); msg.textContent = "Recordatorio listo: ábrelo para agregarlo a tu calendario."; }
+  catch { msg.textContent = "No se guardó el recordatorio."; }
+}
+
+/* ===================== MIS PEDIDOS ===================== */
+function renderOrders() {
+  const o = store.get("fy_orders", []);
+  $("#orders").innerHTML = o.length ? `<div class="list">${o.map(x => `<div class="li"><div style="min-width:0"><b>${esc(x.producto)}</b><div class="m">${esc(x.id)} · ${new Date(x.fecha).toLocaleDateString("es-CO")} · ${esc(x.ciudad)}</div><div class="m">Próximo cambio: ${new Date(x.cambio).toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" })}</div></div><div style="text-align:right"><b>${COP(x.total)}</b><div class="m">${esc(x.estado)}</div><a class="m" href="${waLink(`Hola, quiero volver a pedir el filtro ${x.ref} (pedido anterior ${x.id}).`)}" target="_blank" rel="noopener">Volver a pedir</a></div></div>`).join("")}</div>`
+    : `<div class="found"><b>Aún no tienes pedidos.</b><span class="sub">Busca tu filtro y pídelo: aquí verás el pedido y la fecha del próximo cambio.</span></div>`;
+}
+
+/* ===================== VENDEDOR ===================== */
+function renderSeller() {
+  const o = store.get("fy_orders", []);
+  const ventas = o.reduce((a, x) => a + x.total, 0);
+  const inst = o.filter(x => x.entrega === "instalacion").length;
+  const valor = CATALOGO.reduce((a, p) => a + p.precio * p.stock, 0);
+  $("#kpis").innerHTML = `
+    <div class="tile"><b>${o.length}</b><span>pedidos (este teléfono)</span></div>
+    <div class="tile"><b>${COP(ventas)}</b><span>en pedidos</span></div>
+    <div class="tile"><b>${inst}</b><span>con instalación</span></div>
+    <div class="tile"><b>${COP(valor)}</b><span>inventario a precio de venta (ejemplo)</span></div>`;
+  renderReminders(o);
+  $("#inv").innerHTML = CATALOGO.map(p => `<tr><td><b>${esc(p.nombre)}</b><br><span class="ref">${esc(p.ref)}</span></td><td>${p.tipo === "original" ? "Original" : "Compatible"}</td><td class="n">${COP(p.precio)}</td><td class="n">${p.stock}</td><td>${p.stock === 0 ? '<span class="badge bad">Agotado</span>' : p.stock <= 3 ? '<span class="badge warn">Pedir al proveedor</span>' : '<span class="badge ok">Bien</span>'}</td></tr>`).join("");
+}
+
+/* ===================== RECORDATORIOS ===================== */
+const DIA = 864e5;
+function demoReminders() {   // solo para ver cómo luce el panel con muchos clientes
+  const hoy = Date.now(), mk = (n, dias, ref, ciudad) => ({ id: "EJ-" + n, demo: true, ref, ciudad, cambio: new Date(hoy + dias * DIA).toISOString(), cliente: { nombre: "Cliente de ejemplo " + n, wa: "573000000000", recordar: true } });
+  return [mk(1, -2, "DA29-00020B", "Cali"), mk(2, 0, "LT700P", "Cali"), mk(3, 3, "EDR1RXD1", "Jamundí"), mk(4, 12, "MWF", "Bogotá"), mk(5, 40, "DA97-17376B", "Cali")];
+}
+function renderReminders(o) {
+  const enviados = store.get("fy_recordados", {});
+  let list = o.filter(x => x.cliente?.recordar && x.cliente?.wa);
+  if ($("#demo-rem")?.checked) list = list.concat(demoReminders());
+  list.sort((a, b) => a.cambio.localeCompare(b.cambio));
+  const hoy = Date.now();
+  const tocan = list.filter(x => (new Date(x.cambio) - hoy) / DIA <= 7 && !enviados[x.id]).length;
+  const tab = $('nav.bnav button[data-tab="vendedor"]');
+  tab.dataset.badge = tocan ? String(tocan) : "";
+  if (!list.length) {
+    $("#reminders").innerHTML = `<div class="found"><span class="sub">Aún no hay clientes con recordatorio. Cuando alguien compre y acepte el recordatorio, aquí sale su nombre y la fecha de cambio. Son ventas que se repiten cada ${NEGOCIO.mesesCambio} meses.</span></div>`;
+    return;
+  }
+  $("#reminders").innerHTML = `<div class="list">${list.map(x => {
+    const dias = Math.ceil((new Date(x.cambio) - hoy) / DIA), env = enviados[x.id];
+    const est = env ? `<span class="badge ok">Recordado ${new Date(env).toLocaleDateString("es-CO")}</span>`
+      : dias < 0 ? `<span class="badge bad">Vencido hace ${-dias} d</span>` : dias <= 7 ? `<span class="badge warn">${dias === 0 ? "Toca hoy" : `En ${dias} d`}</span>` : `<span class="badge">En ${dias} d</span>`;
+    const nombre = x.cliente.nombre.split(" ")[0];
+    const msg = `Hola ${nombre}, te escribimos de ${NEGOCIO.nombre}. Ya se cumplen ${NEGOCIO.mesesCambio} meses del filtro de agua de tu nevecón (${x.ref}). ¿Te lo llevamos ${INSTALA_EN.includes(x.ciudad) ? "e instalamos " : ""}esta semana? Responde SÍ y lo agendamos. Si no quieres más recordatorios, responde NO.`;
+    return `<div class="li"><div style="min-width:0"><b>${esc(x.cliente.nombre)}</b>${x.demo ? ' <span class="example">Ejemplo</span>' : ""}<div class="m">${esc(x.ref)} · ${esc(x.ciudad)} · cambio ${new Date(x.cambio).toLocaleDateString("es-CO", { day: "numeric", month: "short", year: "numeric" })}</div><div style="margin-top:4px">${est}</div></div>
+      <div style="display:flex;align-items:center"><a class="btn wa" style="padding:8px 12px;font-size:14px" href="${waTo(x.cliente.wa, msg)}" target="_blank" rel="noopener" data-rec="${esc(x.id)}">Recordar</a></div></div>`;
+  }).join("")}</div>`;
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest("[data-rec]"); if (!a) return;
+  const env = store.get("fy_recordados", {}); env[a.dataset.rec] = new Date().toISOString(); store.set("fy_recordados", env);
+  setTimeout(() => renderReminders(store.get("fy_orders", [])), 300);
+});
+document.addEventListener("change", e => { if (e.target.id === "demo-rem") renderReminders(store.get("fy_orders", [])); });
+
+/* ===================== PESTAÑAS ===================== */
+function showTab(name) {
+  $$("nav.bnav button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
+  ["buscar", "pedidos", "vendedor"].forEach(t => { const s = $("#v-" + t); s.hidden = t !== name; if (t === name) s.style.display = "flex"; });
+  $(".hero").hidden = name !== "buscar";
+  if (name === "pedidos") renderOrders();
+  if (name === "vendedor") renderSeller();
+  window.scrollTo({ top: 0 });
+}
+$$("nav.bnav button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+renderPromise(); showPopular(); renderOrders(); renderSeller();
+})();
+</script>
