@@ -1,0 +1,2103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b6e8a">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<title>TecniGuía Línea Blanca</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Asistente de diagnóstico para técnicos de neveras, nevecones, lavadoras y secadoras: códigos de error, guía por síntomas y análisis con IA de fotos, video y sonido.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: banco de taller — barra de herramientas arriba, una columna de trabajo, fichas técnicas con franja de severidad */
+:root{
+  --bg:#eef1f3; --panel:#ffffff; --ink:#15212b; --muted:#5a6873; --line:#d5dce1;
+  --accent:#0b6e8a; --accent-ink:#ffffff; --accent-soft:#dcedf2;
+  --amber:#b86e00; --amber-soft:#fbefd9; --red:#b3261e; --red-soft:#f9e1df; --green:#2e7d4f; --green-soft:#dff1e6;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171c; --panel:#18222a; --ink:#e3eaee; --muted:#93a3ad; --line:#2b3943;
+  --accent:#4cb3d0; --accent-ink:#06222b; --accent-soft:#16323c;
+  --amber:#f0a73a; --amber-soft:#33270f; --red:#f2857b; --red-soft:#3a1c1a; --green:#6cc790; --green-soft:#16301f;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171c; --panel:#18222a; --ink:#e3eaee; --muted:#93a3ad; --line:#2b3943;
+  --accent:#4cb3d0; --accent-ink:#06222b; --accent-soft:#16323c;
+  --amber:#f0a73a; --amber-soft:#33270f; --red:#f2857b; --red-soft:#3a1c1a; --green:#6cc790; --green-soft:#16301f;
+  color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:10px;padding-block:10px;flex-wrap:wrap}
+.brand h1{font-family:var(--f-display);font-weight:700;font-size:24px;letter-spacing:.02em;margin:0;text-transform:uppercase}
+.brand h1 span{color:var(--accent)}
+.brand p{margin:0;color:var(--muted);font-size:13px}
+nav.bnav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);background:var(--panel);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+nav.bnav button{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted);padding:6px 2px;border-radius:10px;cursor:pointer;font-size:11.5px;font-weight:600;min-width:0}
+nav.bnav svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.bnav button[aria-selected="true"]{color:var(--accent);background:var(--accent-soft)}
+main.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+@media (min-width:900px){nav.bnav{max-width:560px;margin:0 auto;border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0}}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section.view{display:flex;flex-direction:column;gap:16px;padding-top:18px}
+h2{font-family:var(--f-display);font-size:24px;font-weight:600;margin:0;text-wrap:balance;letter-spacing:.01em}
+h3{font-family:var(--f-display);font-size:19px;font-weight:600;margin:0;letter-spacing:.02em;text-transform:uppercase}
+.lead{color:var(--muted);margin:0;max-width:65ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);min-width:0}
+input[type=text],input[type=search],select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%;color:var(--ink)}
+textarea{min-height:88px;resize:vertical}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:var(--bg);padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:500}
+.seg button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--ink);box-shadow:inset 0 0 0 1px var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:11px 18px;border-radius:8px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.capture{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px}
+.cap{position:relative;border:1.5px dashed var(--line);border-radius:var(--r);padding:14px 12px;display:flex;flex-direction:column;gap:4px;cursor:pointer;background:var(--bg)}
+.cap:hover{border-color:var(--accent)}
+.cap strong{font-family:var(--f-display);font-size:18px;text-transform:uppercase;letter-spacing:.03em}
+.cap small{color:var(--muted);font-size:12.5px;line-height:1.35}
+.cap input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.cap.on{border-style:solid;border-color:var(--accent);background:var(--accent-soft)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.thumb{position:relative;width:76px;height:76px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);cursor:pointer;font-size:13px;line-height:1}
+.thumb em{position:absolute;left:0;right:0;bottom:0;font-style:normal;font-size:10px;background:var(--ink);color:var(--bg);text-align:center;opacity:.85}
+.note{font-size:13px;border-radius:8px;padding:10px 12px;background:var(--amber-soft);color:var(--ink);border-left:3px solid var(--amber)}
+.note.info{background:var(--accent-soft);border-left-color:var(--accent)}
+.mono{font-family:var(--f-mono)}
+canvas.spec{width:100%;height:120px;border-radius:8px;background:var(--bg);border:1px solid var(--line);display:block}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.feat div{background:var(--bg);border-radius:8px;padding:8px 10px}
+.feat b{display:block;font-family:var(--f-mono);font-size:15px;font-variant-numeric:tabular-nums}
+.feat span{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.hint{font-size:13.5px;margin:0;padding-left:18px}
+/* Ficha de diagnóstico */
+.ficha{border-left:5px solid var(--accent)}
+.ficha.alta{border-left-color:var(--green)} .ficha.media{border-left-color:var(--amber)} .ficha.baja{border-left-color:var(--red)}
+.ficha .head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:flex-start}
+.ficha .falla{font-family:var(--f-display);font-size:26px;font-weight:700;line-height:1.1;text-wrap:balance;margin:2px 0 0}
+.eyebrow{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--ink);white-space:nowrap}
+.pill.alta{background:var(--green-soft);color:var(--green)} .pill.media{background:var(--amber-soft);color:var(--amber)} .pill.baja{background:var(--red-soft);color:var(--red)}
+ol.steps,ul.list{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+ol.steps li::marker{font-family:var(--f-mono);color:var(--accent);font-weight:500}
+.causa{display:grid;grid-template-columns:64px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.causa:first-child{border-top:0}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.causa .pct{font-family:var(--f-mono);font-size:18px;font-variant-numeric:tabular-nums}
+.causa p{margin:2px 0 0;font-size:13.5px;color:var(--muted)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+td.mono{white-space:nowrap}
+.danger{background:var(--red-soft);border-left:3px solid var(--red);border-radius:8px;padding:10px 12px;font-size:13.5px}
+.danger ul{margin:4px 0 0;padding-left:18px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 9px;border-radius:6px;background:var(--bg);border:1px solid var(--line)}
+/* Códigos */
+.code-item{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.code-item:first-child{border-top:0}
+.code-big{font-family:var(--f-mono);font-size:22px;font-weight:500;color:var(--accent);word-break:break-all}
+.code-item h4{margin:0;font-size:15px}
+.code-item .meta{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.code-item p{margin:4px 0 0;font-size:13.5px}
+/* Síntomas */
+details.sym{border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+details.sym summary{cursor:pointer;padding:12px 14px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.sym summary::after{content:"+";font-family:var(--f-mono);color:var(--accent)}
+details.sym[open] summary::after{content:"−"}
+details.sym .body{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+.chat{display:flex;flex-direction:column;gap:10px}
+.msg{padding:10px 12px;border-radius:10px;max-width:92%;white-space:pre-wrap;font-size:14px}
+.msg.me{align-self:flex-end;background:var(--accent-soft)}
+.msg.ai{align-self:flex-start;background:var(--bg);border:1px solid var(--line)}
+.hist-item{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left;width:100%}
+.hist-item:first-child{border-top:0}
+.example-tag{font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:var(--amber-soft);color:var(--amber);padding:2px 8px;border-radius:4px;font-weight:600}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp 0.8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.calc-out{font-size:14px;border-radius:8px;padding:10px 12px;background:var(--bg);border-left:3px solid var(--line)}
+.calc-out.good{background:var(--green-soft);border-left-color:var(--green)}
+.calc-out.warn{background:var(--amber-soft);border-left-color:var(--amber)}
+.calc-out.bad{background:var(--red-soft);border-left-color:var(--red)}
+.sync{font-size:12px;color:var(--muted)}
+.scan{display:flex;gap:12px;align-items:center;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:var(--r);padding:12px 14px;position:relative;cursor:pointer}
+.scan input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.scan strong{font-family:var(--f-display);font-size:19px;text-transform:uppercase;letter-spacing:.03em;display:block}
+.scan small{color:var(--muted);font-size:12.5px}
+.scan.big{padding:18px 16px;border-width:2px}
+.scan.big strong{font-size:23px}
+.scan.done{background:var(--panel)}
+details.mini summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:14px}
+.ficha-eq{display:flex;flex-direction:column;gap:10px}
+.ficha-eq .desc{font-family:var(--f-display);font-size:22px;font-weight:700;line-height:1.15;text-wrap:balance}
+.src{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.capture.main3{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.cap.main{border-style:solid;border-color:var(--accent)}
+.cap.main strong{font-size:20px}
+.cap.want{border-style:solid;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft);background:var(--accent-soft)}
+.cap.want::after{content:"Te lo pido en este paso";font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.st-h{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-size:20px;font-weight:600;letter-spacing:.02em;text-transform:uppercase}
+.st-h .opt{font-family:var(--f-body);text-transform:none;font-size:13px;font-weight:400;color:var(--muted);letter-spacing:0}
+.num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--f-mono);font-size:15px;flex:0 0 auto}
+.st-h.done .num{background:var(--green);color:var(--panel);font-size:0}
+.st-h.done .num::after{content:"✓";font-size:16px}
+.btn.go{flex:1 1 auto;max-width:380px;font-size:17px;padding:14px 18px}
+.btn.go .num{background:var(--accent-ink);color:var(--accent);width:24px;height:24px;font-size:13px}
+#step,#seen,#result{scroll-margin-top:80px}
+.howto{background:var(--panel);border:1.5px solid var(--accent);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.howto ol{font-size:14.5px}
+#opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+#opts button{padding:14px 12px;font-size:16px;font-weight:600;text-align:left;border-radius:10px}
+#opts button:active{background:var(--accent-soft)}
+.why{font-size:14px;color:var(--muted);margin:0;max-width:65ch}
+.hist-row{display:flex;align-items:stretch;gap:6px;border-top:1px solid var(--line)}
+.hist-row:first-child{border-top:0}
+.hist-row .hist-item{border-top:0;flex:1 1 auto;min-width:0}
+.hist-del{border:0;background:none;color:var(--red);font-size:12.5px;font-weight:600;cursor:pointer;padding:0 6px}
+.hist-del.sure{background:var(--red-soft);border-radius:8px}
+.btn.danger-btn{color:var(--red);border-color:var(--red)}
+.btn.danger-fill{background:var(--red);border-color:var(--red);color:var(--panel)}
+.scan svg{flex:0 0 auto;width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:1.8}
+.placa{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 12px;font-size:13.5px}
+.placa div span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.placa div b{font-family:var(--f-mono);font-weight:500;word-break:break-word}
+.tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-top:1px solid var(--line);padding-top:10px}
+.tools button{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13.5px}
+.tools button.on{border-color:var(--accent);background:var(--accent-soft)}
+.timer{font-family:var(--f-mono);font-size:22px;font-variant-numeric:tabular-nums;min-width:4.5ch}
+.timer.done{color:var(--red)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.tile{background:var(--bg);border-radius:8px;padding:10px 12px}
+.tile b{display:block;font-family:var(--f-display);font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile span{font-size:12px;color:var(--muted)}
+.rank{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:13.5px;align-items:center}
+.rank .bar{grid-column:1 / -1;margin:0 0 6px}
+.ref-item{padding:12px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.ref-item:first-child{border-top:0;padding-top:0}
+.ref-item h4{margin:0;font-size:15px}
+.ref-item p{margin:0;font-size:13.5px}
+.ref-item .how{color:var(--muted)}
+.ref-gb{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:6px 16px}
+footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
+</style>
+
+<header class="top">
+  <div class="wrap" style="padding-block:0">
+    <div class="brand">
+      <h1>Tecni<span>Guía</span></h1>
+      <p>Diagnóstico de neveras, nevecones, lavadoras y secadoras</p>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs bnav" role="tablist" aria-label="Secciones">
+  <button role="tab" data-tab="diag" aria-selected="true" id="t-diag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg><span>Visita</span></button>
+  <button role="tab" data-tab="medir" aria-selected="false" id="t-medir"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><rect x="9" y="5" width="6" height="4"/><circle cx="12" cy="15" r="2.5"/></svg><span>Medir</span></button>
+  <button role="tab" data-tab="codigos" aria-selected="false" id="t-codigos"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h3M7 14h6M14 10h3"/></svg><span>Códigos</span></button>
+  <button role="tab" data-tab="sintomas" aria-selected="false" id="t-sintomas"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg><span>Síntomas</span></button>
+  <button role="tab" data-tab="historial" aria-selected="false" id="t-historial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg><span>Historial</span></button>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ VISITA GUIADA ============ -->
+<section class="view" id="v-diag">
+  <div>
+    <h2>Visita guiada</h2>
+  </div>
+  <div class="howto" id="howto" hidden>
+    <b>Así se usa</b>
+    <ol class="steps">
+      <li><b>Foto de la etiqueta.</b> Con eso sé qué equipo es: modelo, gas, voltaje y sus fallas típicas.</li>
+      <li><b>Muéstrame el daño.</b> Graba un video o el sonido. Si no puedes, escríbelo o díctalo.</li>
+      <li><b>Diagnosticar.</b> Te pido una prueba a la vez. Respondes con un toque. Te doy la falla solo cuando una prueba la confirma, y la reviso dos veces.</li>
+    </ol>
+    <button class="btn" type="button" id="howto-ok">Entendido</button>
+  </div>
+
+  <div class="note info" id="ai-off" hidden>Para activar el diagnóstico con IA, pega tu clave de Claude en el archivo <b>api/clave.php</b> de tu Hostinger. Sin conexión puedes usar <b>Códigos de error</b> y <b>Por síntoma</b>, y el análisis de sonido funciona igual.</div>
+
+  <!-- Inicio de la visita -->
+  <div id="start" style="display:flex;flex-direction:column;gap:14px">
+    <div class="st-h" id="st1"><span class="num">1</span>Foto de la etiqueta <span class="opt">(o salta este paso)</span></div>
+    <label class="scan big" id="scan-box">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3"/><path d="M7 9h10M7 12h7M7 15h9"/></svg>
+      <span><strong id="scan-title">Tomar foto</strong><small id="scan-sub">La etiqueta con el modelo (dentro de la nevera, en la puerta o atrás de la lavadora). Con eso sé qué equipo es.</small></span>
+      <input type="file" id="in-placa" accept="image/*" capture="environment">
+    </label>
+    <div id="placa-out" hidden></div>
+    <div id="resume" hidden></div>
+
+    <div class="panel">
+      <div class="st-h" id="st2"><span class="num">2</span>Muéstrame el daño</div>
+      <div class="capture main3">
+        <label class="cap main" data-cap="video"><strong>Video</strong><small>Graba el equipo funcionando 15 a 30 s, con el sonido. Es lo que más me dice.</small>
+          <input type="file" class="in-video" accept="video/*" capture="environment"></label>
+        <label class="cap main" data-cap="audio"><strong>Sonido</strong><small>Teléfono pegado a la pieza que suena, sin hablar</small>
+          <input type="file" class="in-audio" accept="audio/*,video/*" capture></label>
+        <label class="cap" data-cap="foto"><strong>Fotos</strong><small>Tarjeta, pantalla, pieza, hielo</small>
+          <input type="file" class="in-foto" accept="image/*" multiple></label>
+      </div>
+      <div class="thumbs"></div>
+      <div class="audio-box" hidden></div>
+      <label class="f" style="font-size:15px;color:var(--ink);font-weight:600">¿Qué daño tiene? <span style="font-weight:400;color:var(--muted);font-size:13px">(si no grabaste, escríbelo)</span>
+        <textarea id="desc" placeholder="Ej. No enfría abajo, el congelador sí. (Toca el micrófono del teclado para dictar)" style="font-weight:400;min-height:64px"></textarea>
+      </label>
+      <label class="f">Código en pantalla (si hay)
+        <input type="text" id="codigo" placeholder="Ej. 22E, OE, F8E1" autocomplete="off" style="max-width:220px">
+      </label>
+      <div id="code-quick" hidden></div>
+      <details class="mini" id="manual">
+        <summary>Sin etiqueta: escribir el equipo a mano</summary>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+          <div class="seg" id="tipo" role="group" aria-label="Tipo de electrodoméstico">
+            <button type="button" data-v="nevera" aria-pressed="false">Nevera</button>
+            <button type="button" data-v="nevecón (side by side / french door)" aria-pressed="false">Nevecón</button>
+            <button type="button" data-v="lavadora" aria-pressed="false">Lavadora</button>
+            <button type="button" data-v="secadora" aria-pressed="false">Secadora</button>
+            <button type="button" data-v="lavasecadora" aria-pressed="false">Lavasecadora</button>
+          </div>
+          <div class="grid2">
+            <label class="f">Marca
+              <select id="marca">
+                <option value="">— Sin especificar —</option>
+                <option>Samsung</option><option>LG</option><option>Whirlpool</option><option>Mabe</option><option>GE</option>
+                <option>Electrolux</option><option>Frigidaire</option><option>Haceb</option><option>Challenger</option>
+                <option>Midea</option><option>Indurama</option><option>Kalley</option><option>Otra</option>
+              </select>
+            </label>
+            <label class="f">Modelo
+              <input type="text" id="modelo" placeholder="Ej. RT38K5930SL" autocomplete="off">
+            </label>
+            <label class="f">Años de uso aprox.
+              <input type="text" id="edad" placeholder="Ej. 6" inputmode="numeric" autocomplete="off">
+            </label>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="row" style="justify-content:space-between">
+      <button class="btn go" id="go" type="button"><span class="num">3</span>Empezar diagnóstico</button>
+      <label class="row" style="gap:8px;font-size:13px;cursor:pointer;color:var(--muted)">
+        <input type="checkbox" id="precise" checked style="width:18px;height:18px">
+        <span>Precisión máxima (más lento)</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Visita en curso -->
+  <div id="session" hidden style="display:flex;flex-direction:column;gap:16px">
+    <div class="panel" style="flex-direction:row;flex-wrap:wrap;justify-content:space-between;align-items:center">
+      <div style="min-width:0;flex:1 1 220px"><span class="eyebrow">Equipo</span><div id="case-sum" style="font-weight:600"></div><div id="case-ficha"></div></div>
+      <button class="btn ghost" type="button" id="reset">Nueva visita</button>
+    </div>
+    <div id="casos"></div>
+    <div id="seen"></div>
+    <div id="step"></div>
+    <div class="panel" id="answer" hidden>
+      <h3 id="answer-title">Tu respuesta</h3>
+      <p class="sync" style="margin:0" id="opts-hint">Toca una respuesta y se envía. O escribe, dicta, toma foto o graba abajo.</p>
+      <div class="seg" id="opts"></div>
+      <label class="f">Lo que encontraste (valor medido, lo que viste u oíste)
+        <textarea id="ans" placeholder="Ej. No hay continuidad / el ventilador no gira y tiene hielo. (Puedes dictar con el micrófono del teclado)" style="min-height:70px"></textarea>
+      </label>
+      <label class="scan" id="multi-box" style="padding:10px 12px">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><rect x="8" y="5" width="8" height="5"/><circle cx="12" cy="16" r="2.5"/></svg>
+        <span><strong style="font-size:17px">Foto del multímetro</strong><small>Leo la pantalla y escribo la medida por ti</small></span>
+        <input type="file" id="in-multi" accept="image/*" capture="environment">
+      </label>
+      <div id="multi-out" hidden></div>
+      <div class="capture">
+        <label class="cap" data-cap="foto"><strong>Foto</strong><small>De lo que te pedí</small>
+          <input type="file" class="in-foto" accept="image/*" multiple></label>
+        <label class="cap" data-cap="video"><strong>Video</strong><small>Imágenes y sonido</small>
+          <input type="file" class="in-video" accept="video/*" capture="environment"></label>
+        <label class="cap" data-cap="audio"><strong>Sonido</strong><small>Graba de cerca</small>
+          <input type="file" class="in-audio" accept="audio/*,video/*" capture></label>
+      </div>
+      <div class="thumbs"></div>
+      <div class="audio-box" hidden></div>
+      <div class="row">
+        <button class="btn" type="button" id="send">Enviar lo que escribí o grabé</button>
+        <button class="btn ghost" type="button" id="cant">No puedo hacer esta prueba</button>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn ghost" id="stop" type="button" hidden>Detener</button>
+      <span id="status" class="eyebrow" aria-live="polite"></span>
+    </div>
+    <div id="result"></div>
+    <div class="panel" id="hyp-box" hidden>
+      <h3>Lo que puede ser</h3>
+      <div id="hyp"></div>
+      <p class="eyebrow" style="margin:0;text-transform:none;letter-spacing:0">Porcentajes con la evidencia hasta ahora. Cambian con cada prueba.</p>
+    </div>
+    <details class="sym" id="timeline" hidden><summary id="tl-sum">Pruebas hechas</summary><div class="body"><ol class="steps" id="tl"></ol></div></details>
+  </div>
+</section>
+
+<!-- ============ MEDICIONES ============ -->
+<section class="view" id="v-medir" hidden>
+  <div>
+    <h2>Mediciones y calculadoras</h2>
+    <p class="lead">Cálculos exactos con tus lecturas del multímetro y valores de referencia por componente. Estos mismos valores los usa el guía en la visita.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>Compresor: bornes y bobinas</h3>
+      <p class="lead" style="font-size:13.5px">Desenchufado y sin relé. Mide entre los tres bornes. No hace falta saber cuál es cuál.</p>
+      <div class="grid3">
+        <label class="f">Borne 1–2 (Ω)<input type="text" inputmode="decimal" id="k12" autocomplete="off"></label>
+        <label class="f">Borne 2–3 (Ω)<input type="text" inputmode="decimal" id="k23" autocomplete="off"></label>
+        <label class="f">Borne 1–3 (Ω)<input type="text" inputmode="decimal" id="k13" autocomplete="off"></label>
+      </div>
+      <label class="f">Cualquier borne contra la carcasa (tubo de cobre raspado)
+        <select id="kmasa"><option value="ol">OL / infinito</option><option value="lect">Marca algún valor</option></select>
+      </label>
+      <div id="k-out" class="calc-out">Escribe las tres lecturas. Si alguna da OL, escribe OL.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Resistencia calefactora</h3>
+      <p class="lead" style="font-size:13.5px">Deshielo, lavadora o secadora. Valor esperado con R = V² ÷ P.</p>
+      <div class="grid3">
+        <label class="f">Voltaje<select id="hv"><option>115</option><option>120</option><option>220</option><option>240</option></select></label>
+        <label class="f">Potencia (W)<input type="text" inputmode="decimal" id="hw" placeholder="Ej. 450" autocomplete="off"></label>
+        <label class="f">Medido (Ω)<input type="text" inputmode="decimal" id="hm" placeholder="opcional" autocomplete="off"></label>
+      </div>
+      <div id="h-out" class="calc-out">Escribe la potencia de la etiqueta de la resistencia.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Capacitor (condensador)</h3>
+      <p class="lead" style="font-size:13.5px">Descárgalo antes de medir. La tolerancia viene impresa (±5 %, ±6 %, ±10 %).</p>
+      <div class="grid3">
+        <label class="f">Nominal (µF)<input type="text" inputmode="decimal" id="cn" placeholder="Ej. 15" autocomplete="off"></label>
+        <label class="f">Tolerancia (%)<input type="text" inputmode="decimal" id="ct" value="6" autocomplete="off"></label>
+        <label class="f">Medido (µF)<input type="text" inputmode="decimal" id="cm" autocomplete="off"></label>
+      </div>
+      <div id="c-out" class="calc-out">Escribe el valor nominal y lo que mediste.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Corriente y consumo</h3>
+      <p class="lead" style="font-size:13.5px">Para comparar con la pinza amperimétrica. I = P ÷ V.</p>
+      <div class="grid3">
+        <label class="f">Voltaje<select id="av"><option>115</option><option>120</option><option>220</option><option>240</option></select></label>
+        <label class="f">Potencia (W)<input type="text" inputmode="decimal" id="aw" autocomplete="off"></label>
+        <label class="f">Medido (A)<input type="text" inputmode="decimal" id="am" placeholder="opcional" autocomplete="off"></label>
+      </div>
+      <div id="a-out" class="calc-out">Escribe la potencia de placa del componente.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Presión y temperatura del gas</h3>
+      <p class="lead" style="font-size:13.5px">Con la lectura del manómetro te da la temperatura de evaporación. Si pones la temperatura del tubo, calcula el sobrecalentamiento.</p>
+      <div class="grid3">
+        <label class="f">Gas<select id="pg"><option value="R134a">R134a</option><option value="R600a">R600a</option></select></label>
+        <label class="f">Unidad<select id="pu"><option value="psig">psig</option><option value="barg">bar (man.)</option><option value="inhg">pulg. Hg vacío</option></select></label>
+        <label class="f">Lectura<input type="text" inputmode="decimal" id="pv" autocomplete="off"></label>
+      </div>
+      <label class="f">Temperatura del tubo de succión, °C (opcional)<input type="text" inputmode="decimal" id="pt" autocomplete="off"></label>
+      <div id="p-out" class="calc-out">Escribe la lectura del manómetro.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Revisar tarjeta electrónica</h3>
+      <p class="lead" style="font-size:13.5px">Foto de la tarjeta por el lado de los componentes, con buena luz. Te digo qué se ve dañado y qué medir.</p>
+      <label class="scan" style="padding:10px 12px">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M7 9h3v3H7zM14 9h3M14 12h3M7 15h10"/></svg>
+        <span><strong style="font-size:17px">Foto de la tarjeta</strong><small>Si tienes el reverso (soldaduras), mándalo también</small></span>
+        <input type="file" id="in-pcb" accept="image/*" multiple>
+      </label>
+      <div id="pcb-out" hidden></div>
+    </div>
+  </div>
+
+  <div class="seg" id="r-tipo" role="group" aria-label="Equipo">
+    <button type="button" data-v="nevera" aria-pressed="true">Nevera / nevecón</button>
+    <button type="button" data-v="lavadora" aria-pressed="false">Lavadora</button>
+    <button type="button" data-v="secadora" aria-pressed="false">Secadora</button>
+  </div>
+  <div class="panel"><div id="ref"></div></div>
+</section>
+
+<!-- ============ CÓDIGOS ============ -->
+<section class="view" id="v-codigos" hidden>
+  <div>
+    <h2>Códigos de error</h2>
+    <p class="lead">Solo están los códigos que tienen el mismo significado en la mayoría de series de cada marca. Si el tuyo no aparece, empieza una visita guiada con el modelo completo. Antes de cambiar una pieza cara, confirma con el manual de servicio del modelo.</p>
+  </div>
+  <div class="panel">
+    <div class="grid2">
+      <label class="f">Código o palabra<input type="search" id="q" placeholder="Ej. 4C, desagüe, sensor, ventilador" autocomplete="off"></label>
+      <label class="f">Marca<select id="q-marca"><option value="">Todas</option></select></label>
+    </div>
+    <div class="seg" id="q-tipo" role="group" aria-label="Filtrar por tipo">
+      <button type="button" data-v="" aria-pressed="true">Todos</button>
+      <button type="button" data-v="nevera" aria-pressed="false">Neveras</button>
+      <button type="button" data-v="lavadora" aria-pressed="false">Lavadoras</button>
+      <button type="button" data-v="secadora" aria-pressed="false">Secadoras</button>
+    </div>
+  </div>
+  <div class="panel"><div id="codes"></div></div>
+</section>
+
+<!-- ============ SÍNTOMAS ============ -->
+<section class="view" id="v-sintomas" hidden>
+  <div>
+    <h2>Diagnóstico por síntoma</h2>
+    <p class="lead">Causas ordenadas de la más común a la menos común, con la prueba para confirmarla. Empieza siempre por la primera: es lo que más sale en el taller.</p>
+  </div>
+  <div class="seg" id="s-tipo" role="group" aria-label="Tipo">
+    <button type="button" data-v="nevera" aria-pressed="true">Nevera / nevecón</button>
+    <button type="button" data-v="lavadora" aria-pressed="false">Lavadora</button>
+    <button type="button" data-v="secadora" aria-pressed="false">Secadora</button>
+  </div>
+  <div id="syms" style="display:flex;flex-direction:column;gap:8px"></div>
+  <div class="danger"><b>Seguridad primero</b>
+    <ul>
+      <li>Desconecta el equipo antes de medir resistencias o tocar la tarjeta.</li>
+      <li>Descarga los condensadores (capacitor de marcha, tarjetas inverter) antes de manipularlos.</li>
+      <li>El sistema sellado (refrigerante) solo se abre con recuperadora, bomba de vacío y el gas correcto (R600a es inflamable).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ HISTORIAL ============ -->
+<section class="view" id="v-historial" hidden>
+  <div>
+    <h2>Historial y estadísticas</h2>
+    <p class="lead">Cada reparación que confirmas le enseña al guía: en las próximas visitas usa tus casos parecidos.</p>
+    <p class="sync" id="sync"></p>
+  </div>
+  <div class="panel" id="stats" hidden></div>
+  <div class="panel"><div id="hist"></div></div>
+  <div class="row"><button class="btn ghost" type="button" id="backup" hidden>Descargar respaldo de mis visitas</button><button class="btn ghost danger-btn" type="button" id="wipe" hidden>Borrar todo el historial</button><span class="sync" id="backup-msg"></span></div>
+  <div class="panel" id="wipe-confirm" hidden>
+    <b>¿Borrar todo el historial?</b>
+    <p class="sync" style="margin:0">Se borran todas las visitas, casos aprendidos, garantías y cuentas de este usuario. No se puede deshacer. Descarga un respaldo antes si lo quieres guardar.</p>
+    <div class="row"><button class="btn danger-fill" type="button" id="wipe-yes">Sí, borrar todo</button><button class="btn ghost" type="button" id="wipe-no">Cancelar</button></div>
+  </div>
+</section>
+
+<footer>TecniGuía orienta el diagnóstico; la decisión final es del técnico tras medir. Voltajes de referencia para Colombia: 110–120 V / 60 Hz (secadoras eléctricas a 220 V).</footer>
+</main>
+
+<script>
+/* =====================================================================
+   TecniGuía personal sencilla — sin cuenta ni base de datos.
+   La IA pasa por api/ia.php (con tu clave). El historial queda en este
+   teléfono. Si no hay clave, la app funciona sin la parte de IA.
+   ===================================================================== */
+(() => {
+  "use strict";
+  const lsGet = k => { try { return localStorage.getItem(k) || ""; } catch { return ""; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+  let estado = null;
+  const listo = (async () => {
+    try { const r = await fetch("api/ia.php", { cache: "no-store" }); estado = r.ok ? await r.json() : { ia: false }; }
+    catch { estado = { ia: false }; }
+    if (estado.ia && estado.codigo && !lsGet("tg_codigo")) await pedirCodigo();
+  })();
+
+  function pedirCodigo(msg) {
+    return new Promise(res => {
+      const ov = document.createElement("div");
+      ov.style.cssText = "position:fixed;inset:0;z-index:60;background:var(--bg);display:grid;place-items:center;padding:16px";
+      ov.innerHTML = `<form style="max-width:340px;width:100%;display:flex;flex-direction:column;gap:12px" class="panel">
+        <b style="font-size:18px">Código de acceso</b>
+        <span class="sync" style="margin:0">${msg || "Escribe tu código. Solo se pide una vez en este teléfono."}</span>
+        <input type="password" inputmode="numeric" autocomplete="off" style="font-size:18px;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)">
+        <button class="btn" type="submit">Entrar</button></form>`;
+      document.body.append(ov);
+      const inp = ov.querySelector("input"); setTimeout(() => inp.focus(), 50);
+      ov.querySelector("form").onsubmit = e => { e.preventDefault(); lsSet("tg_codigo", inp.value.trim()); ov.remove(); res(); };
+    });
+  }
+
+  function b64(blob) { return new Promise((r, j) => { const f = new FileReader(); f.onload = () => r(String(f.result).split(",")[1]); f.onerror = j; f.readAsDataURL(blob); }); }
+  async function prepImage(blob) {
+    let src;
+    try { src = await createImageBitmap(blob, { imageOrientation: "from-image" }); }
+    catch { src = await new Promise((r, j) => { const im = new Image(); im.onload = () => r(im); im.onerror = j; im.src = URL.createObjectURL(blob); }); }
+    const w = src.width || src.naturalWidth, h = src.height || src.naturalHeight, k = Math.min(1, 1568 / Math.max(w, h));
+    const c = document.createElement("canvas"); c.width = Math.round(w * k); c.height = Math.round(h * k);
+    const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(src, 0, 0, c.width, c.height);
+    return { mediaType: "image/jpeg", data: await b64(await new Promise(r => c.toBlob(r, "image/jpeg", 0.85))) };
+  }
+  function mapErr(status, j, e) {
+    if (e?.name === "AbortError") return { code: "cancelled", message: "cancelado" };
+    const msg = j?.mensaje || "Sin conexión";
+    if (status === 401 && j?.error === "codigo") { lsSet("tg_codigo", ""); pedirCodigo("El código no es correcto. Escríbelo otra vez y repite la consulta."); return { code: "codigo", message: msg }; }
+    if (status === 429 || (status === 503 && j?.error === "rate_limited")) return { code: "rate_limited", message: msg };
+    if (status === 422) return { code: "refused", message: msg };
+    if (status === 413) return { code: "prompt_too_large", message: msg };
+    if (status === 400 && j?.error === "image_rejected") return { code: "image_rejected", message: msg };
+    return { code: "upstream_error", message: msg };
+  }
+  async function sample(input, opts = {}) {
+    if (opts.signal?.aborted) throw { code: "cancelled", message: "cancelado" };
+    let images = [];
+    if (opts.images) {
+      const list = opts.images instanceof Blob ? [opts.images] : [...opts.images];
+      try { images = await Promise.all(list.slice(0, 8).map(prepImage)); } catch { throw { code: "image_rejected", message: "No se pudo leer una imagen." }; }
+    }
+    let r, j = null;
+    try {
+      r = await fetch("api/ia.php", { method: "POST", signal: opts.signal, headers: { "X-TG": "1", "X-Codigo": lsGet("tg_codigo"), "Content-Type": "application/json" },
+        body: JSON.stringify({ input, images, tier: opts.modelTier || "default", json: !!opts._json }) });
+      try { j = await r.json(); } catch {}
+    } catch (e) { throw mapErr(0, null, e); }
+    if (!r.ok) throw mapErr(r.status, j);
+    try { opts.onText && opts.onText({ text: j.text, delta: j.text }); } catch {}
+    return { text: j.text, truncated: !!j.truncated, modelTierApplied: opts.modelTier || "default" };
+  }
+  function parseJSON(t) {
+    const s = String(t || "").trim();
+    try { return JSON.parse(s); } catch {}
+    const f = /```(?:json)?\s*([\s\S]*?)```/i.exec(s); if (f) { try { return JSON.parse(f[1]); } catch {} }
+    const a = s.search(/[\[{]/), b = Math.max(s.lastIndexOf("}"), s.lastIndexOf("]"));
+    if (a >= 0 && b > a) { try { return JSON.parse(s.slice(a, b + 1)); } catch {} }
+    return undefined;
+  }
+  sample.json = async (input, opts = {}) => {
+    const r = await sample(input, { ...opts, _json: true });
+    const v = parseJSON(r.text);
+    if (v === undefined) throw { code: "invalid_json", message: "respuesta sin JSON", text: r.text };
+    return v;
+  };
+  sample.limits = async () => ({ maxPromptBytes: 262144, images: { maxCount: 8, maxInputBytes: 20e6, mediaTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"] } });
+
+  const downloads = {
+    async save({ filename, data }) {
+      const blob = data instanceof Blob ? data : new Blob([data], { type: "application/json" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename;
+      document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+      return { status: "saved" };
+    }
+  };
+  // db y user quedan en null: la app guarda el historial en este teléfono.
+  window.claude = { use: async name => { await listo; if (name === "sample") return estado?.ia ? sample : null; if (name === "downloads") return downloads; return null; } };
+})();
+
+</script>
+<script>
+(() => {
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+
+/* ===================== BASE DE CÓDIGOS ===================== */
+// t: tipo · m: marca · c: código(s) · f: falla · r: qué revisar
+const CODES = [
+  // ---- Samsung lavadoras
+  {t:"lavadora",m:"Samsung",c:["4C","4E","nF"],f:"No entra agua o entra muy lento",r:"Llave de paso abierta y presión de agua; filtro malla de la electroválvula tapado; manguera doblada; bobina de la electroválvula (aprox. 0,8–1,5 kΩ)."},
+  {t:"lavadora",m:"Samsung",c:["5C","5E","nd"],f:"No desagua",r:"Filtro de la bomba (abajo al frente) con monedas o pelusa; manguera de desagüe tapada o muy alta; bomba de desagüe (continuidad y que gire libre); cableado a la bomba."},
+  {t:"lavadora",m:"Samsung",c:["UE","UB","Ub"],f:"Carga desbalanceada en centrifugado",r:"Redistribuir ropa; nivelar patas; amortiguadores o resortes de suspensión vencidos (lavadora que golpea); en carga superior, varillas de suspensión."},
+  {t:"lavadora",m:"Samsung",c:["DC","dC","DE","dE","DE1","DE2"],f:"Puerta o tapa no cierra / no detecta seguro",r:"Gancho de la puerta torcido; chapa (door lock) con continuidad; cables del bloqueo; en carga superior, interruptor de tapa e imán."},
+  {t:"lavadora",m:"Samsung",c:["LC","LE","LE1","LC1"],f:"Fuga de agua detectada",r:"Revisar empaque (fuelle) roto, mangueras internas, bomba con fuga, sensor de fuga en la base mojado."},
+  {t:"lavadora",m:"Samsung",c:["HC","HE","HE1"],f:"Falla de calentamiento",r:"Resistencia calentadora (continuidad); sensor de temperatura NTC; relé de la resistencia en la tarjeta."},
+  {t:"lavadora",m:"Samsung",c:["tC","tE","tC1","tE1"],f:"Sensor de temperatura (termistor) abierto o en corto",r:"Medir el NTC: debe dar unos kΩ a temperatura ambiente y bajar al calentarlo; revisar conector y arnés."},
+  {t:"lavadora",m:"Samsung",c:["3C","3E","3E1","3E2","3E3","3E4"],f:"Falla del motor o de su sensor (hall/tacómetro)",r:"Motor trabado por objeto o rodamientos; conector del motor; sensor hall; correa (en carga superior); módulo inverter de la tarjeta."},
+  {t:"lavadora",m:"Samsung",c:["1C","1E","PE","PC"],f:"Sensor de nivel (presostato) fuera de rango",r:"Manguerita del presostato tapada, rota o con agua; presostato electrónico (frecuencia); cableado."},
+  {t:"lavadora",m:"Samsung",c:["OC","OE","OF"],f:"Sobrellenado (exceso de agua)",r:"Electroválvula que no cierra (sigue entrando agua desenchufada = válvula mala); presostato o su manguera."},
+  {t:"lavadora",m:"Samsung",c:["Sd","SUdS","5d"],f:"Exceso de espuma",r:"Exceso de jabón o jabón no HE; dejar terminar el ciclo; revisar desagüe parcialmente tapado."},
+  {t:"lavadora",m:"Samsung",c:["bE","bE1","bE2"],f:"Botón trabado en el panel",r:"Botón hundido, perilla mal puesta o humedad en el panel; tarjeta del panel."},
+  // ---- LG lavadoras
+  {t:"lavadora",m:"LG",c:["IE"],f:"No entra agua (llenado lento)",r:"Presión de agua; filtros de la electroválvula; válvula (aprox. 1 kΩ); presostato."},
+  {t:"lavadora",m:"LG",c:["OE"],f:"No desagua",r:"Filtro de bomba; manguera; bomba de desagüe (trabada o abierta); conector."},
+  {t:"lavadora",m:"LG",c:["UE"],f:"Desbalance en centrifugado",r:"Ropa mal repartida; nivelación; amortiguadores; en carga superior, varillas de suspensión."},
+  {t:"lavadora",m:"LG",c:["dE","dE1","dE2"],f:"Puerta / seguro de puerta",r:"Chapa de puerta (door lock); gancho; cable del seguro; tarjeta."},
+  {t:"lavadora",m:"LG",c:["LE"],f:"Motor trabado o sobrecargado (Direct Drive)",r:"Sobrecarga de ropa; sensor hall del estator (conector suelto o sensor malo); bobinas del estator (unos 10–15 Ω entre fases); rotor con imanes despegados."},
+  {t:"lavadora",m:"LG",c:["FE"],f:"Sobrellenado",r:"Electroválvula pegada abierta; presostato y su manguera."},
+  {t:"lavadora",m:"LG",c:["PE"],f:"Sensor de presión (nivel) fuera de rango",r:"Manguera del presostato; presostato; arnés."},
+  {t:"lavadora",m:"LG",c:["tE"],f:"Termistor de calentamiento",r:"NTC del calentador; resistencia calentadora; conector."},
+  {t:"lavadora",m:"LG",c:["AE"],f:"Fuga de agua (AquaLock)",r:"Agua en la base: empaques, mangueras, bomba."},
+  {t:"lavadora",m:"LG",c:["Sud","SUD"],f:"Exceso de espuma",r:"Usar menos detergente y tipo HE."},
+  {t:"lavadora",m:"LG",c:["CL"],f:"Bloqueo para niños activado (no es falla)",r:"Mantener presionado el botón indicado con el candado unos 3 s."},
+  // ---- Whirlpool lavadoras
+  {t:"lavadora",m:"Whirlpool",c:["F8E1","LF","Lo FL"],f:"Llenado largo / no entra agua",r:"Llave de paso; filtros de la válvula; electroválvula; presostato."},
+  {t:"lavadora",m:"Whirlpool",c:["F9E1","Ld","LD"],f:"Desagüe largo",r:"Bomba de desagüe; filtro u objeto en la bomba; manguera; altura de la manguera."},
+  {t:"lavadora",m:"Whirlpool",c:["F5E2"],f:"No bloquea la tapa",r:"Ensamble del bloqueo de tapa (lid lock); objeto bajo la tapa; cableado."},
+  {t:"lavadora",m:"Whirlpool",c:["F5E1"],f:"Interruptor de puerta/tapa",r:"Interruptor de tapa; cableado al control."},
+  {t:"lavadora",m:"Whirlpool",c:["F7E1"],f:"Motor no gira o no detecta velocidad",r:"Motor; correa; polea; control del motor (MCU); conector."},
+  {t:"lavadora",m:"Whirlpool",c:["F3E1"],f:"Sensor de presión (nivel)",r:"Manguera del presostato; presostato; tarjeta."},
+  {t:"lavadora",m:"Whirlpool",c:["F0E2","Sd","SUd"],f:"Exceso de espuma",r:"Detergente en exceso o no HE."},
+  {t:"lavadora",m:"Whirlpool",c:["F1E1"],f:"Falla de la tarjeta principal",r:"Reiniciar 5 minutos desenchufada; revisar tensión; si persiste, tarjeta."},
+  // ---- Electrolux / Frigidaire lavadoras
+  {t:"lavadora",m:"Electrolux / Frigidaire",c:["E11"],f:"Problema de llenado",r:"Presión de agua; filtros; electroválvula; presostato."},
+  {t:"lavadora",m:"Electrolux / Frigidaire",c:["E21"],f:"Problema de desagüe",r:"Filtro y bomba de desagüe; manguera."},
+  {t:"lavadora",m:"Electrolux / Frigidaire",c:["E41"],f:"Puerta abierta o seguro de puerta",r:"Chapa de puerta; cableado; gancho."},
+  // ---- Samsung neveras
+  {t:"nevera",m:"Samsung",c:["5E"],f:"Sensor de deshielo del refrigerador (o deshielo incompleto)",r:"Medir sensor (kΩ según tabla, sube con el frío); revisar resistencia de deshielo del refrigerador; hielo en el evaporador; dren tapado."},
+  {t:"nevera",m:"Samsung",c:["22E"],f:"Ventilador del refrigerador no gira o con hielo",r:"Aspas atrapadas por hielo (deshielo manual 24–48 h y revisar dren y resistencia); motor ventilador; conector."},
+  {t:"nevera",m:"Samsung",c:["21E"],f:"Ventilador del congelador",r:"Hielo en el ventilador del congelador; motor; deshielo deficiente."},
+  {t:"nevera",m:"Samsung",c:["8E","14E"],f:"Sensor de la fábrica de hielo",r:"Sensor de la bandeja de hielo; arnés de la puerta (cables partidos en la bisagra)."},
+  {t:"nevera",m:"Samsung",c:["39E"],f:"Función de la fábrica de hielo",r:"Motor de la fábrica de hielo trabado; bandeja congelada; sensor de bandeja."},
+  {t:"nevera",m:"Samsung",c:["40E"],f:"Ventilador del cuarto de hielo",r:"Hielo acumulado en el ducto; ventilador; empaque de la puerta."},
+  {t:"nevera",m:"Samsung",c:["33E"],f:"Resistencia del tubo de hielo",r:"Continuidad de la resistencia del ducto de hielo; conector."},
+  {t:"nevera",m:"Samsung",c:["OF OF"],f:"Modo demostración (enfría nada, luces encendidas)",r:"Mantener presionados a la vez los botones indicados en el manual (normalmente los dos de temperatura) unos 8 s."},
+  // ---- LG neveras
+  {t:"nevera",m:"LG",c:["Er FF","FF"],f:"Ventilador del congelador",r:"Hielo en el ventilador o en el evaporador (deshielo); motor ventilador; conector."},
+  {t:"nevera",m:"LG",c:["Er CF","CF"],f:"Ventilador del condensador",r:"Suciedad en el condensador; ventilador trabado; motor (detrás, abajo)."},
+  {t:"nevera",m:"LG",c:["Er IF","IF"],f:"Ventilador de la fábrica de hielo",r:"Hielo en el ventilador de la fábrica de hielo; motor."},
+  {t:"nevera",m:"LG",c:["Er dH","dH"],f:"Falla de deshielo",r:"Resistencia de deshielo (continuidad); fusible térmico / bimetal; sensor de deshielo."},
+  {t:"nevera",m:"LG",c:["Er rS","rS"],f:"Sensor del refrigerador",r:"NTC del refrigerador; arnés."},
+  {t:"nevera",m:"LG",c:["Er FS","FS"],f:"Sensor del congelador",r:"NTC del congelador; arnés."},
+  {t:"nevera",m:"LG",c:["Er dS","dS"],f:"Sensor de deshielo",r:"NTC de deshielo (en el evaporador); arnés."},
+  {t:"nevera",m:"LG",c:["Er IS","IS"],f:"Sensor de la fábrica de hielo",r:"Sensor de la bandeja; conexiones."},
+  {t:"nevera",m:"LG",c:["Er CO","CO"],f:"Comunicación entre tarjeta principal y pantalla",r:"Cables por la bisagra superior partidos; conector; tarjeta de pantalla o principal."},
+  // ---- Whirlpool neveras
+  {t:"nevera",m:"Whirlpool",c:["PO","PF"],f:"Corte de energía detectado",r:"Presionar cualquier botón para borrar; verificar alimentación estable."},
+  // ---- Samsung secadoras
+  {t:"secadora",m:"Samsung",c:["HE","hE","HC","hC"],f:"Falla de calentamiento",r:"Resistencia (eléctrica) o válvula/encendedor (gas); fusible térmico; termostato de seguridad; ducto obstruido."},
+  {t:"secadora",m:"Samsung",c:["tO","tS"],f:"Termistor abierto o en corto",r:"Termistor (aprox. 10 kΩ a 25 °C); arnés; tarjeta."},
+  {t:"secadora",m:"Samsung",c:["dE","dC"],f:"Puerta abierta / interruptor de puerta",r:"Interruptor de puerta; pestillo; cableado."},
+  {t:"secadora",m:"Samsung",c:["FL","FIL"],f:"Recordatorio de limpiar filtro (no es falla)",r:"Limpiar filtro de pelusa y el ducto."},
+  // ---- Whirlpool secadoras
+  {t:"secadora",m:"Whirlpool",c:["F3E1"],f:"Termistor de salida abierto",r:"Termistor de escape (unos 10 kΩ a 25 °C); conector; arnés al control."},
+  {t:"secadora",m:"Whirlpool",c:["F3E2"],f:"Termistor de salida en corto",r:"Termistor; cables pelados que hacen contacto."},
+  {t:"secadora",m:"Whirlpool",c:["F3E3"],f:"Termistor de entrada",r:"Termistor de entrada (junto a la resistencia); conector."},
+  {t:"secadora",m:"Whirlpool",c:["PF"],f:"Corte de energía",r:"Presionar Inicio para continuar; verificar alimentación."},
+  // ---- LG secadoras
+  {t:"secadora",m:"LG",c:["HS"],f:"Sensor de humedad",r:"Limpiar las barras sensoras del tambor (residuos de suavizante); arnés."},
+  {t:"secadora",m:"LG",c:["d80","d90","d95"],f:"Ducto obstruido (80%, 90%, 95%)",r:"Limpiar ducto completo y salida exterior; ducto muy largo o con muchos codos."},
+  {t:"secadora",m:"LG",c:["PF"],f:"Corte de energía",r:"Reiniciar ciclo; verificar alimentación."},
+  {t:"secadora",m:"LG",c:["dE"],f:"Puerta abierta",r:"Interruptor de puerta; pestillo."},
+];
+
+/* ===================== GUÍA POR SÍNTOMA ===================== */
+// p: probabilidad aproximada en taller (alta/media/baja) · prueba: cómo confirmarlo
+const SYMS = {
+  nevera: [
+    {s:"No enfría nada (ni congelador ni refrigerador)", causas:[
+      {c:"Compresor no arranca: relé de arranque / PTC o protector térmico (overload)", p:"alta", prueba:"Escuchar clic cada 2–5 min junto al compresor (el protector corta). PTC frío: 3–30 Ω. Overload frío: continuidad."},
+      {c:"Tarjeta electrónica o relé del compresor (equipos No Frost)", p:"media", prueba:"Medir 115 V a la salida del relé del compresor cuando la tarjeta pide frío."},
+      {c:"Compresor dañado (bobinas abiertas o a masa)", p:"media", prueba:"Medir C–R, C–S, R–S: R–S = C–R + C–S. Cualquier borne a carcasa debe dar infinito (megóhmetro ideal)."},
+      {c:"Termostato o control de temperatura", p:"media", prueba:"Puentear el termostato (equipo convencional) unos minutos: si arranca, termostato malo."},
+      {c:"Fuga de refrigerante / sistema sin gas", p:"media", prueba:"Compresor trabaja pero no hay frío ni condensador caliente; manchas de aceite; medir presión de baja con manómetro."},
+      {c:"Modo demostración activo (Samsung, LG)", p:"baja", prueba:"Luces y pantalla encendidas, compresor nunca arranca. Ver manual para salir del modo demo."}
+    ]},
+    {s:"Congelador enfría pero el refrigerador (abajo) no", causas:[
+      {c:"Evaporador bloqueado con hielo por falla de deshielo", p:"alta", prueba:"Quitar tapa del evaporador: bloque de hielo. Medir resistencia de deshielo (tubo de vidrio o calrod, típico 20–45 Ω a 115 V), bimetal (cerrado en frío) y sensor de deshielo."},
+      {c:"Ventilador del evaporador no gira", p:"alta", prueba:"Con la puerta del congelador abierta y presionando el interruptor de puerta, debe sonar el ventilador. Revisar si roza hielo."},
+      {c:"Damper (compuerta de aire) trabado cerrado", p:"media", prueba:"Ver si la compuerta abre; probar motor del damper; hielo en el ducto."},
+      {c:"Timer de deshielo o tarjeta no manda deshielo", p:"media", prueba:"Avanzar el timer manualmente hasta el clic de deshielo: debe calentar la resistencia y parar el compresor."},
+      {c:"Dren de deshielo tapado (hielo en el piso del congelador)", p:"media", prueba:"Agua congelada abajo del evaporador; destapar con agua caliente y jeringa."}
+    ]},
+    {s:"Enfría poco / trabaja todo el tiempo", causas:[
+      {c:"Condensador sucio o ventilador del condensador parado", p:"alta", prueba:"Limpiar condensador (atrás o abajo). Verificar que gire el ventilador del compresor."},
+      {c:"Empaque de puerta despegado o roto", p:"alta", prueba:"Prueba de la hoja de papel: cerrar la puerta sobre un papel y halar; debe ofrecer resistencia en todo el contorno."},
+      {c:"Deshielo parcial (hielo en parte del evaporador)", p:"media", prueba:"Escarcha irregular en el evaporador; revisar resistencia y sensor de deshielo."},
+      {c:"Carga de gas baja (fuga lenta)", p:"media", prueba:"Evaporador escarchado solo en la entrada; presión de baja por debajo de lo normal."},
+      {c:"Compresor con baja eficiencia (válvulas)", p:"baja", prueba:"Presiones correctas de carga pero no baja temperatura; consumo de corriente bajo."}
+    ]},
+    {s:"Hace ruido fuerte", causas:[
+      {c:"Ventilador del evaporador rozando hielo o con rodamiento seco", p:"alta", prueba:"Ruido al abrir el congelador que cambia con el interruptor de puerta. Revisar hielo y juego del eje."},
+      {c:"Ventilador del condensador con aspa suelta o sucia", p:"media", prueba:"Ruido atrás abajo; girar el aspa a mano y revisar juego."},
+      {c:"Compresor golpeando (soportes o interno)", p:"media", prueba:"Golpe metálico al arrancar o parar; revisar gomas de soporte. Golpeteo interno constante = compresor."},
+      {c:"Tubería vibrando contra el gabinete", p:"baja", prueba:"Tocar tubos con el equipo funcionando; separar con espuma."}
+    ]},
+    {s:"Gotea agua dentro o en el piso", causas:[
+      {c:"Dren de deshielo tapado", p:"alta", prueba:"Agua bajo los cajones o hielo en el fondo del congelador. Destapar el dren."},
+      {c:"Bandeja de evaporación rota o desplazada", p:"media", prueba:"Revisar bandeja junto al compresor."},
+      {c:"Manguera o válvula de agua del dispensador / fábrica de hielo", p:"media", prueba:"Revisar conexiones de la manguera de agua y la válvula atrás."},
+      {c:"Equipo desnivelado (puerta no cierra sola)", p:"baja", prueba:"Las patas delanteras deben quedar un poco más altas."}
+    ]},
+    {s:"Se forma mucha escarcha o hielo", causas:[
+      {c:"Empaque de puerta en mal estado", p:"alta", prueba:"Prueba del papel; revisar si la puerta cierra sola."},
+      {c:"Falla del sistema de deshielo", p:"alta", prueba:"Resistencia, bimetal, sensor, timer o tarjeta."},
+      {c:"Puerta mal cerrada por sobrecarga o desnivel", p:"media", prueba:"Revisar estantes y nivel."}
+    ]},
+    {s:"No prende (nada de luz ni ruido)", causas:[
+      {c:"Tomacorriente, cable o enchufe", p:"alta", prueba:"Medir 115 V en el tomacorriente y continuidad en el cable."},
+      {c:"Fusible de la tarjeta o fuente de la tarjeta", p:"media", prueba:"Fusible abierto en la tarjeta; varistor quemado (suele ser por subida de voltaje)."},
+      {c:"Tarjeta principal", p:"media", prueba:"Llega voltaje a la tarjeta pero no salen 5/12 V de la fuente."}
+    ]}
+  ],
+  lavadora: [
+    {s:"No entra agua", causas:[
+      {c:"Llave cerrada, baja presión o filtro de malla tapado", p:"alta", prueba:"Revisar caudal en la manguera; limpiar mallas de la electroválvula."},
+      {c:"Electroválvula de entrada dañada", p:"alta", prueba:"Bobina de 0,5–1,5 kΩ (a 115 V). Probar alimentándola directo con 115 V."},
+      {c:"Interruptor de tapa o bloqueo de puerta", p:"media", prueba:"Muchas lavadoras no llenan si no detectan tapa cerrada. Continuidad del interruptor."},
+      {c:"Presostato marca lleno (manguera con agua o rota)", p:"media", prueba:"Soplar suave la manguerita del presostato: debe oírse clic."}
+    ]},
+    {s:"No desagua o deja agua", causas:[
+      {c:"Filtro de bomba tapado (monedas, ganchos, pelusa)", p:"alta", prueba:"Abrir el filtro frontal (carga frontal) o revisar la entrada de la bomba."},
+      {c:"Bomba de desagüe trabada o abierta", p:"alta", prueba:"Medir continuidad de la bomba; girar el impulsor a mano (debe moverse con ligera resistencia magnética)."},
+      {c:"Manguera de desagüe tapada o doblada", p:"media", prueba:"Soplar la manguera; altura máxima según manual (aprox. 0,6–1,2 m)."},
+      {c:"Tarjeta no alimenta la bomba", p:"baja", prueba:"Medir 115 V en el conector de la bomba en etapa de desagüe."}
+    ]},
+    {s:"No centrifuga o centrifuga lento", causas:[
+      {c:"Desagüe incompleto (presostato no da vacío)", p:"alta", prueba:"Si queda agua, primero arreglar desagüe."},
+      {c:"Carga desbalanceada / suspensión vencida", p:"alta", prueba:"Tambor muy caído o que golpea; empujar el tambor: debe volver sin rebotar."},
+      {c:"Correa floja o rota (modelos con correa)", p:"media", prueba:"Revisar correa y poleas."},
+      {c:"Transmisión o embrague / clutch (carga superior)", p:"media", prueba:"Motor gira pero el tambor no; revisar acople y clutch."},
+      {c:"Seguro de tapa / puerta no confirma bloqueo", p:"media", prueba:"Revisar el lid lock o door lock."}
+    ]},
+    {s:"Vibra mucho o camina", causas:[
+      {c:"Amortiguadores o resortes vencidos", p:"alta", prueba:"Empujar el tambor: rebota varias veces = amortiguadores malos."},
+      {c:"Patas sin nivelar / piso irregular", p:"alta", prueba:"Nivel de burbuja; ajustar contratuercas de patas."},
+      {c:"Tornillos de transporte sin quitar (equipo nuevo)", p:"media", prueba:"Revisar atrás: pernos de transporte."},
+      {c:"Rodamientos del tambor dañados", p:"media", prueba:"Ruido de rodamiento (zumbido metálico) y juego del tambor al moverlo arriba–abajo."}
+    ]},
+    {s:"No agita o no lava (llena pero no gira)", causas:[
+      {c:"Correa, acople del motor o agitador barrido", p:"alta", prueba:"Motor gira y el agitador no: acoples o estrías del agitador."},
+      {c:"Capacitor de arranque del motor (motores de condensador)", p:"alta", prueba:"Medir µF: debe estar dentro de ±10 % de lo marcado. Motor zumba sin girar = capacitor."},
+      {c:"Motor dañado o sensor hall (inverter)", p:"media", prueba:"Medir bobinas del motor; en Direct Drive, sensor hall y estator."},
+      {c:"Tarjeta: relés del motor", p:"baja", prueba:"No llega voltaje al motor en la etapa de lavado."}
+    ]},
+    {s:"Bota agua por debajo", causas:[
+      {c:"Fuelle (empaque de puerta) roto", p:"alta", prueba:"Revisar pliegues del empaque buscando roturas."},
+      {c:"Manguera interna suelta o rota", p:"media", prueba:"Abrir y llenar en vacío para ver por dónde sale."},
+      {c:"Sello de la bomba o filtro mal cerrado", p:"media", prueba:"Agua en la zona del filtro de bomba."},
+      {c:"Sello de la tina / rodamiento (agua con óxido)", p:"baja", prueba:"Agua oxidada detrás del tambor."}
+    ]},
+    {s:"No prende", causas:[
+      {c:"Tomacorriente o cable de alimentación", p:"alta", prueba:"Medir 115 V; continuidad del cable."},
+      {c:"Fusible o fuente de la tarjeta", p:"media", prueba:"Fusible de tarjeta abierto; varistor quemado."},
+      {c:"Filtro de ruido (EMI) o interruptor de encendido", p:"media", prueba:"Continuidad del filtro de línea y del botón de encendido."}
+    ]}
+  ],
+  secadora: [
+    {s:"Gira pero no calienta", causas:[
+      {c:"Fusible térmico abierto (casi siempre por ducto tapado)", p:"alta", prueba:"Continuidad del fusible térmico. Si estaba abierto, limpiar todo el ducto antes de cambiarlo."},
+      {c:"Resistencia abierta (secadora eléctrica)", p:"alta", prueba:"Resistencia: aprox. 8–15 Ω (a 220 V). Infinito = abierta."},
+      {c:"Termostato de seguridad (high limit)", p:"media", prueba:"Debe estar cerrado en frío."},
+      {c:"Secadora a gas: encendedor (igniter) o bobinas de la válvula", p:"alta", prueba:"El encendedor debe ponerse rojo; si brilla pero no prende la llama, bobinas de la válvula (medir ohmios)."},
+      {c:"Una fase sin llegar (secadoras de 220 V)", p:"media", prueba:"Medir 220 V entre las dos fases del tomacorriente: con una sola fase gira pero no calienta."}
+    ]},
+    {s:"No gira (zumba o no hace nada)", causas:[
+      {c:"Correa rota", p:"alta", prueba:"El tambor gira suelto con la mano; switch de correa abre en algunos modelos."},
+      {c:"Interruptor de puerta", p:"alta", prueba:"Continuidad con la puerta cerrada."},
+      {c:"Motor (bobinas o interruptor centrífugo)", p:"media", prueba:"Medir bobinas; motor que zumba sin arrancar con correa puesta."},
+      {c:"Polea tensora o rodillos trabados", p:"media", prueba:"Girar el tambor a mano: debe girar suave."},
+      {c:"Fusible térmico (algunos modelos cortan también el motor)", p:"media", prueba:"Continuidad del fusible térmico."}
+    ]},
+    {s:"Tarda mucho en secar", causas:[
+      {c:"Ducto obstruido o muy largo", p:"alta", prueba:"Desconectar el ducto y probar: si seca bien, limpiar o acortar el ducto (máx. pocos codos)."},
+      {c:"Filtro de pelusa sucio o con residuo de suavizante", p:"alta", prueba:"Lavar el filtro con agua y jabón; dejar secar."},
+      {c:"Termostato de ciclo o termistor desajustado", p:"media", prueba:"Termistor ~10 kΩ a 25 °C; medir temperatura de salida."},
+      {c:"Ropa sale muy mojada (centrifugado de la lavadora)", p:"media", prueba:"Revisar centrifugado de la lavadora."}
+    ]},
+    {s:"Hace ruido (chillido, golpeteo, roce)", causas:[
+      {c:"Rodillos o eje del tambor gastados", p:"alta", prueba:"Chirrido rítmico; girar el tambor a mano."},
+      {c:"Polea tensora", p:"alta", prueba:"Chillido agudo; girar la polea: si se traba o tiene juego, cambiar."},
+      {c:"Patines o fieltro del tambor", p:"media", prueba:"Roce o raspado metálico; revisar fieltros."},
+      {c:"Objeto dentro del ventilador (blower)", p:"media", prueba:"Golpeteo; revisar la turbina del ventilador."}
+    ]},
+    {s:"Se apaga sola a los pocos minutos", causas:[
+      {c:"Motor sobrecalentado (protector interno)", p:"alta", prueba:"Revisar pelusa en el motor; rodamientos del motor."},
+      {c:"Ducto tapado: sobretemperatura", p:"alta", prueba:"Medir temperatura en la salida; limpiar ducto."},
+      {c:"Termostato de ciclo abre demasiado pronto", p:"media", prueba:"Comparar con uno nuevo; medir en caliente."}
+    ]},
+    {s:"Calienta demasiado / huele a quemado", causas:[
+      {c:"Ducto bloqueado (riesgo de incendio)", p:"alta", prueba:"Detener uso; limpiar ducto completo."},
+      {c:"Resistencia a masa (sigue calentando apagada)", p:"media", prueba:"Medir resistencia contra carcasa: debe ser infinito."},
+      {c:"Termostato de ciclo pegado cerrado", p:"media", prueba:"No abre al calentar."}
+    ]}
+  ]
+};
+
+/* ===================== PESTAÑAS ===================== */
+function showTab(name) {
+  $$("nav.tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
+  $$("section.view").forEach(v => v.hidden = v.id !== "v-" + name);
+  store.set("tg_tab", name);
+  if (name === "historial") renderHist();
+}
+$$("nav.tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+function segGroup(el, onChange) {
+  el.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    $$("button", el).forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    onChange && onChange(b.dataset.v);
+  });
+  return () => $("button[aria-pressed=true]", el)?.dataset.v ?? "";
+}
+
+/* ===================== CÓDIGOS ===================== */
+const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[\s\-_]/g, "");
+const brands = [...new Set(CODES.map(c => c.m))];
+brands.forEach(b => $("#q-marca").insertAdjacentHTML("beforeend", `<option>${esc(b)}</option>`));
+const qTipo = segGroup($("#q-tipo"), renderCodes);
+function findCodes(q, marca, tipo) {
+  const nq = norm(q);
+  return CODES.filter(c => {
+    if (marca && !c.m.toLowerCase().includes(marca.toLowerCase())) return false;
+    if (tipo && c.t !== tipo) return false;
+    if (!nq) return true;
+    const ncodes = c.c.map(norm).map(x => x.replace(/^er/, ""));
+    const nqc = nq.replace(/^er/, "");
+    return ncodes.some(x => x === nqc) || (nq.length > 2 && norm(c.f + " " + c.r).includes(nq));
+  });
+}
+function codeHTML(c) {
+  return `<div class="code-item"><div class="code-big">${esc(c.c[0])}</div><div style="min-width:0">
+    <div class="meta">${esc(c.m)} · ${esc(c.t)}${c.c.length > 1 ? " · también " + esc(c.c.slice(1).join(", ")) : ""}</div>
+    <h4>${esc(c.f)}</h4><p>${esc(c.r)}</p></div></div>`;
+}
+function renderCodes() {
+  const list = findCodes($("#q").value, $("#q-marca").value, qTipo());
+  $("#codes").innerHTML = list.length ? list.map(codeHTML).join("") :
+    `<p class="lead">No está en la base local. Escríbelo en <b>Diagnóstico IA</b> junto con la marca y el modelo y el asistente lo interpreta.</p>`;
+}
+$("#q").addEventListener("input", renderCodes);
+$("#q-marca").addEventListener("change", renderCodes);
+renderCodes();
+
+/* ===================== SÍNTOMAS ===================== */
+function renderSyms(tipo) {
+  $("#syms").innerHTML = SYMS[tipo].map((s, i) => `<details class="sym"${i === 0 ? " open" : ""}><summary>${esc(s.s)}</summary><div class="body">
+    ${s.causas.map((c, j) => `<div class="causa"><div><span class="pill ${c.p}">${c.p}</span></div><div style="min-width:0"><b>${j + 1}. ${esc(c.c)}</b><p>${esc(c.prueba)}</p></div></div>`).join("")}
+  </div></details>`).join("");
+}
+segGroup($("#s-tipo"), renderSyms);
+renderSyms("nevera");
+
+/* ===================== VALORES DE REFERENCIA ===================== */
+// Valores típicos de taller. Lo exacto lo da el manual de servicio del modelo.
+const REF = {
+  nevera: [
+    ["Compresor (bobinas)", "Desenchufado, sin relé. Ohmios entre C, R y S", "R–S = C–R + C–S. C–S es mayor que C–R. Pocos ohmios (aprox. 2 a 30 Ω según potencia)", "OL en cualquier par = bobina abierta. Cualquier lectura contra carcasa = a masa: cambiar compresor"],
+    ["Compresor inverter (U, V, W)", "Desenchufado. Ohmios entre los 3 pares", "Los 3 pares iguales entre sí (pocos ohmios)", "Un par distinto u OL = compresor. Lectura a carcasa = a masa"],
+    ["Relé PTC de arranque", "Frío, desconectado. Ohmios entre sus dos bornes del lado del compresor", "Aprox. 3 a 30 Ω", "OL = abierto. Suena suelto por dentro al agitarlo = partido"],
+    ["Protector térmico (overload)", "Frío, desconectado. Continuidad", "≈ 0 Ω", "OL en frío = dañado"],
+    ["Resistencia de deshielo", "Desconectada. Ohmios", "R = V² ÷ P. A 115 V: 350 W ≈ 38 Ω, 450 W ≈ 29 Ω, 600 W ≈ 22 Ω", "OL = abierta. Lectura contra chasis = a masa"],
+    ["Bimetal (termostato de deshielo)", "Desconectado. Continuidad frío y a ambiente", "Abierto a temperatura ambiente; cerrado (≈ 0 Ω) bajo cero. Enfríalo en hielo con sal unos minutos", "Abierto en frío o cerrado a ambiente = dañado"],
+    ["Fusible térmico de deshielo", "Desconectado. Continuidad", "≈ 0 Ω siempre", "OL = quemado. Busca por qué (bimetal pegado o resistencia siempre energizada)"],
+    ["Sensores NTC (refri, congelador, deshielo)", "Desconectado del arnés. Ohmios y anota la temperatura", "Según tabla de la marca; comunes 5 kΩ o 10 kΩ a 25 °C. Sube cuando se enfría", "OL = abierto; ≈ 0 = en corto; no cambia con la temperatura = dañado"],
+    ["Ventilador AC 115 V (polo sombreado)", "Desconectado. Ohmios de la bobina y girar el aspa a mano", "Continuidad (decenas a cientos de Ω) y gira suave", "OL = abierto. Aspa dura o con juego = rodamiento"],
+    ["Ventilador DC (inverter, Samsung, LG)", "No se mide en ohmios. Voltaje DC en el conector cuando la tarjeta lo pide", "Hay voltaje (típico 7 a 12 V DC) y gira", "Voltaje presente y no gira = ventilador. Sin voltaje = tarjeta o arnés"],
+    ["Consumo del compresor", "Pinza amperimétrica en la línea con el compresor trabajando", "Cerca de la corriente de placa (RLA) después del arranque", "Muy alto y corta el protector = trabado o problema de arranque. Muy bajo = bajo rendimiento o falta de gas"],
+  ],
+  lavadora: [
+    ["Electroválvula 115 V", "Desconectada. Ohmios por bobina", "Aprox. 500 a 1500 Ω", "OL = bobina abierta. Si entra agua desenchufada = no cierra"],
+    ["Bomba de desagüe 115 V", "Desconectada. Ohmios y girar el impulsor", "Continuidad (decenas hasta ~200 Ω). Gira con leve resistencia magnética", "OL = abierta. Impulsor trabado o partido"],
+    ["Capacitor del motor", "Descargado. Medir µF", "Dentro de la tolerancia impresa (±5 a ±10 %)", "Fuera de tolerancia, abombado o con fuga = cambiar"],
+    ["Motor con capacitor (carga superior)", "Desconectado. Ohmios entre común y cada bobina", "Dos bobinas de valor parecido", "OL o valores muy distintos = motor"],
+    ["Estator Direct Drive (LG y similares)", "Desconectado. Ohmios entre las 3 fases", "Los 3 pares iguales (típico 8 a 16 Ω)", "Un par distinto u OL = estator"],
+    ["Sensor hall del motor", "Energizado. Voltaje de alimentación y señal al girar el tambor despacio", "Alimentación presente (típico 5 V DC) y la señal cambia al girar", "Sin alimentación = tarjeta/arnés. Señal fija = sensor"],
+    ["Seguro de puerta (door lock)", "Desconectado. Continuidad del interruptor y de la bobina o bimetal", "Interruptor cierra al bloquear; bobina con continuidad", "OL en la bobina o el interruptor no cierra = seguro"],
+    ["Resistencia calentadora", "Desconectada. Ohmios", "R = V² ÷ P. 115 V 1000 W ≈ 13 Ω; 220 V 2000 W ≈ 24 Ω", "OL = abierta. Lectura a chasis = a masa (dispara el breaker)"],
+    ["Presostato analógico", "Desconectado. Continuidad mientras soplas suave por la manguera", "Los contactos cambian (clic) al soplar", "No cambia = presostato o manguera tapada"],
+  ],
+  secadora: [
+    ["Resistencia (eléctrica 220 V)", "Desconectada. Ohmios", "R = V² ÷ P. 220 V 5000 W ≈ 9,7 Ω; 240 V 5400 W ≈ 10,7 Ω", "OL = abierta. Lectura a chasis = a masa"],
+    ["Fusible térmico", "Desconectado. Continuidad", "≈ 0 Ω", "OL = quemado. Limpia el ducto completo antes de cambiarlo o se vuelve a quemar"],
+    ["Termostato de seguridad (high limit)", "Frío, desconectado. Continuidad", "Cerrado (≈ 0 Ω)", "OL en frío = dañado"],
+    ["Termostato de ciclo", "Frío, desconectado. Continuidad", "Cerrado (≈ 0 Ω)", "OL en frío = dañado"],
+    ["Termistor", "Desconectado. Ohmios a temperatura ambiente", "Común: ~10 kΩ a 25 °C; baja al calentarse", "OL = abierto; ≈ 0 = corto"],
+    ["Encendedor (gas)", "Desconectado. Ohmios", "Típico 50 a 400 Ω", "OL = abierto (no se pone rojo)"],
+    ["Sensor de llama (gas)", "Frío, desconectado. Continuidad", "Cerrado en frío; abre al calentar", "Abierto en frío = no deja encender el encendedor"],
+    ["Interruptor de puerta", "Desconectado. Continuidad con la puerta cerrada", "≈ 0 Ω cerrado", "OL con puerta cerrada = dañado"],
+    ["Motor", "Desconectado. Bobinas e interruptor centrífugo", "Continuidad en las bobinas (pocos ohmios)", "OL = abierto. Zumba y no arranca = interruptor centrífugo o rodamientos"],
+  ]
+};
+const refForAI = t => (REF[t] || []).map(r => `- ${r[0]}: ${r[1]}. Bueno: ${r[2]}. Malo: ${r[3]}.`).join("\n");
+segGroup($("#r-tipo"), renderRef);
+function renderRef(t) {
+  $("#ref").innerHTML = REF[t].map(r => `<div class="ref-item"><h4>${esc(r[0])}</h4><p class="how">${esc(r[1])}</p><div class="ref-gb"><p><span class="pill alta">Bueno</span> ${esc(r[2])}</p><p><span class="pill baja">Malo</span> ${esc(r[3])}</p></div></div>`).join("");
+}
+renderRef("nevera");
+
+/* ===================== CALCULADORAS ===================== */
+const num = id => { const v = $("#" + id).value.trim().replace(",", "."); if (/^ol$/i.test(v)) return Infinity; const n = parseFloat(v); return isFinite(n) ? n : null; };
+const fmt = (n, d = 1) => Number(n).toLocaleString("es-CO", { maximumFractionDigits: d });
+const out = (id, cls, html) => { const el = $("#" + id); el.className = "calc-out " + (cls || ""); el.innerHTML = html; };
+
+function calcCompresor() {
+  const r = { "1–2": num("k12"), "2–3": num("k23"), "1–3": num("k13") };
+  if (Object.values(r).some(v => v === null)) return out("k-out", "", "Escribe las tres lecturas. Si alguna da OL, escribe OL.");
+  if ($("#kmasa").value === "lect") return out("k-out", "bad", "<b>Compresor a masa.</b> Hay fuga a carcasa: no se repara. Confirma raspando bien el tubo y con el equipo desconectado de todo.");
+  const open = Object.entries(r).filter(([, v]) => v === Infinity).map(([k]) => k);
+  if (open.length) return out("k-out", "bad", `<b>Bobina abierta</b> (OL en ${open.join(", ")}). Antes de condenarlo, revisa que el protector interno no esté abierto por calor: deja enfriar 1 hora y vuelve a medir.`);
+  if (Object.values(r).some(v => v < 0.3)) return out("k-out", "bad", "<b>Lectura casi cero:</b> posible bobina en corto. Verifica las puntas (mide las puntas juntas y resta).");
+  const pairs = Object.entries(r).sort((a, b) => b[1] - a[1]);
+  const [rsPair, rs] = pairs[0];
+  const c = ["1", "2", "3"].find(x => !rsPair.includes(x));
+  const others = pairs.slice(1).map(([k, v]) => ({ t: k.split("–").find(x => x !== c), v })).sort((a, b) => a.v - b.v);
+  const run = others[0], start = others[1], sum = run.v + start.v, diff = Math.abs(rs - sum) / sum * 100;
+  const ident = `Común = borne <b>${c}</b> · Marcha (R) = borne <b>${run.t}</b> (${fmt(run.v, 2)} Ω) · Arranque (S) = borne <b>${start.t}</b> (${fmt(start.v, 2)} Ω).`;
+  if (diff <= 10) out("k-out", "good", `<b>Bobinas bien.</b> R–S ${fmt(rs, 2)} Ω ≈ C–R + C–S ${fmt(sum, 2)} Ω (diferencia ${fmt(diff)} %).<br>${ident}<br>Si no arranca, revisa relé/PTC, protector, capacitor y voltaje con el compresor intentando arrancar.`);
+  else out("k-out", "warn", `<b>No cuadra:</b> R–S ${fmt(rs, 2)} Ω contra C–R + C–S ${fmt(sum, 2)} Ω (diferencia ${fmt(diff)} %). Limpia los bornes, revisa el cero del multímetro y repite. Si sigue igual, posible espiras en corto.<br>${ident}`);
+}
+["k12", "k23", "k13", "kmasa"].forEach(id => $("#" + id).addEventListener("input", calcCompresor));
+
+function calcHeater() {
+  const v = num("hv"), w = num("hw"), m = num("hm");
+  if (!w || w === Infinity) return out("h-out", "", "Escribe la potencia de la etiqueta de la resistencia.");
+  const r = v * v / w;
+  let html = `Esperado: <b>${fmt(r, 1)} Ω</b> a ${v} V y ${fmt(w, 0)} W.`, cls = "";
+  if (m !== null) {
+    if (m === Infinity) { html += "<br><b>Abierta.</b> Cambiar la resistencia."; cls = "bad"; }
+    else {
+      const d = (m - r) / r * 100;
+      if (Math.abs(d) <= 15) { html += `<br><b>Bien:</b> mediste ${fmt(m, 1)} Ω (${d > 0 ? "+" : ""}${fmt(d)} %). Revisa también que no tenga lectura a chasis.`; cls = "good"; }
+      else { html += `<br><b>Fuera de rango:</b> mediste ${fmt(m, 1)} Ω (${d > 0 ? "+" : ""}${fmt(d)} %). Confirma la potencia real en la etiqueta del repuesto antes de cambiarla.`; cls = "warn"; }
+    }
+  }
+  out("h-out", cls, html);
+}
+["hv", "hw", "hm"].forEach(id => $("#" + id).addEventListener("input", calcHeater));
+
+function calcCap() {
+  const n = num("cn"), t = num("ct") ?? 6, m = num("cm");
+  if (!n || n === Infinity) return out("c-out", "", "Escribe el valor nominal y lo que mediste.");
+  const lo = n * (1 - t / 100), hi = n * (1 + t / 100);
+  let html = `Rango aceptable: <b>${fmt(lo, 2)} a ${fmt(hi, 2)} µF</b>.`, cls = "";
+  if (m !== null && m !== Infinity) {
+    if (m >= lo && m <= hi) { html += `<br><b>Bueno:</b> ${fmt(m, 2)} µF.`; cls = "good"; }
+    else { html += `<br><b>Cambiar:</b> ${fmt(m, 2)} µF está ${m < lo ? "por debajo" : "por encima"} del rango.`; cls = "bad"; }
+  }
+  out("c-out", cls, html);
+}
+["cn", "ct", "cm"].forEach(id => $("#" + id).addEventListener("input", calcCap));
+
+function calcAmp() {
+  const v = num("av"), w = num("aw"), m = num("am");
+  if (!w || w === Infinity) return out("a-out", "", "Escribe la potencia de placa del componente.");
+  const a = w / v;
+  let html = `Esperado: <b>${fmt(a, 2)} A</b> a ${v} V (cargas resistivas; en motores y compresores compara con la corriente de placa).`, cls = "";
+  if (m !== null && m !== Infinity) {
+    const d = (m - a) / a * 100;
+    html += `<br>Mediste ${fmt(m, 2)} A (${d > 0 ? "+" : ""}${fmt(d)} %).`;
+    cls = Math.abs(d) <= 15 ? "good" : "warn";
+  }
+  out("a-out", cls, html);
+}
+["av", "aw", "am"].forEach(id => $("#" + id).addEventListener("input", calcAmp));
+
+/* ---- Presión–temperatura (saturación). Tablas en bar absolutos. ---- */
+const PT = {
+  R134a: [[-40, 0.512], [-30, 0.844], [-26.1, 1.013], [-20, 1.327], [-10, 2.006], [0, 2.928], [10, 4.146], [20, 5.717], [30, 7.702], [40, 10.166], [50, 13.179], [60, 16.818]],
+  R600a: [[-40, 0.287], [-30, 0.465], [-20, 0.72], [-11.7, 1.013], [-10, 1.08], [0, 1.57], [10, 2.2], [20, 3.02], [30, 4.05], [40, 5.31], [50, 6.83], [60, 8.63]]
+};
+function satTemp(gas, pAbs) {
+  const t = PT[gas]; if (pAbs < t[0][1] || pAbs > t[t.length - 1][1]) return null;
+  for (let i = 1; i < t.length; i++) if (pAbs <= t[i][1]) {
+    const [t0, p0] = t[i - 1], [t1, p1] = t[i];
+    return t0 + (t1 - t0) * (Math.log(pAbs) - Math.log(p0)) / (Math.log(p1) - Math.log(p0));
+  }
+  return null;
+}
+function satPress(gas, temp) {
+  const t = PT[gas];
+  for (let i = 1; i < t.length; i++) if (temp <= t[i][0]) {
+    const [t0, p0] = t[i - 1], [t1, p1] = t[i];
+    return Math.exp(Math.log(p0) + (Math.log(p1) - Math.log(p0)) * (temp - t0) / (t1 - t0));
+  }
+  return null;
+}
+const toAbs = (v, u) => u === "psig" ? v * 0.0689476 + 1.01325 : u === "barg" ? v + 1.01325 : 1.01325 - v * 0.0338639;
+const fromAbs = (p, u) => u === "psig" ? (p - 1.01325) / 0.0689476 : u === "barg" ? p - 1.01325 : (1.01325 - p) / 0.0338639;
+const uName = { psig: "psig", barg: "bar", inhg: "pulg. Hg de vacío" };
+function calcPT() {
+  const g = $("#pg").value, u = $("#pu").value, v = num("pv"), lt = num("pt");
+  const ref = fromAbs(satPress(g, -25), u);
+  const refTxt = `Referencia: con ${g}, evaporar a −25 °C equivale a ${fmt(ref, 1)} ${uName[u]}${ref < 0 && u !== "inhg" ? " (vacío)" : ""}.`;
+  if (v === null || v === Infinity) return out("p-out", "", `Escribe la lectura del manómetro.<br><span class="sync">${refTxt}</span>`);
+  const pAbs = toAbs(v, u);
+  if (pAbs <= 0) return out("p-out", "bad", "Esa lectura no es posible: revisa la unidad.");
+  const ts = satTemp(g, pAbs);
+  if (ts === null) return out("p-out", "warn", `Fuera del rango de la tabla (−40 a 60 °C) para ${g}. Revisa la unidad y el gas.`);
+  let html = `Temperatura de saturación: <b>${fmt(ts, 1)} °C</b> (${fmt(pAbs, 2)} bar absolutos).`, cls = "";
+  if (lt !== null && lt !== Infinity) {
+    const sh = lt - ts;
+    html += `<br>Sobrecalentamiento: <b>${fmt(sh, 1)} K</b>.`;
+    if (sh < 0) { cls = "warn"; html += " Negativo: revisa dónde mediste el tubo y la lectura."; }
+  }
+  html += `<br><span class="sync">${refTxt} En neveras domésticas estabilizadas la evaporación suele estar entre −20 y −30 °C. Tabla de saturación aproximada; los equipos de tubo capilar se cargan por peso según la etiqueta.</span>`;
+  out("p-out", cls, html);
+}
+["pg", "pu", "pv", "pt"].forEach(id => $("#" + id).addEventListener("input", calcPT));
+calcPT();
+
+/* ===================== VISITA: ENTRADAS ===================== */
+const tipoSel = segGroup($("#tipo"));
+const fieldIds = ["marca", "modelo", "codigo", "edad", "desc"];
+const draft = store.get("tg_draft", null);
+if (draft) fieldIds.forEach(id => { if (draft[id]) $("#" + id).value = draft[id]; });
+fieldIds.forEach(id => $("#" + id).addEventListener("input", () => {
+  const d = {}; fieldIds.forEach(k => d[k] = $("#" + k).value); store.set("tg_draft", d);
+}));
+try { const p = localStorage.getItem("tg_precise"); if (p !== null) $("#precise").checked = p === "1"; } catch {}
+$("#precise").addEventListener("change", e => { try { localStorage.setItem("tg_precise", e.target.checked ? "1" : "0"); } catch {} });
+
+const tipoBase = () => tipoSel().startsWith("nev") ? "nevera" : tipoSel() === "lavasecadora" ? "" : tipoSel();
+const sameCode = (a, b) => norm(a).replace(/^er/, "") === norm(b).replace(/^er/, "");
+function quickCode() {
+  const v = $("#codigo").value.trim(), box = $("#code-quick");
+  const hits = v ? findCodes(v, $("#marca").value, tipoBase()).filter(c => c.c.some(x => sameCode(x, v))) : [];
+  box.hidden = !hits.length;
+  if (hits.length) box.innerHTML = `<div class="note info"><b>En la base de referencia:</b>${hits.slice(0, 3).map(c => `<div style="margin-top:6px"><span class="mono">${esc(c.c[0])}</span> · ${esc(c.m)} — <b>${esc(c.f)}</b>. ${esc(c.r)}</div>`).join("")}</div>`;
+}
+["codigo", "marca"].forEach(id => $("#" + id).addEventListener("input", quickCode));
+$("#marca").addEventListener("change", quickCode);
+$("#tipo").addEventListener("click", quickCode);
+
+/* ---- Evidencia pendiente (se envía con el próximo paso) ---- */
+const pend = { photos: [], frames: [], audio: null };
+function clearPend() {
+  [...pend.photos, ...pend.frames].forEach(p => URL.revokeObjectURL(p.url));
+  pend.photos = []; pend.frames = []; pend.audio = null; renderPend();
+}
+function renderPend() {
+  const all = [...pend.photos.map((p, i) => ({ ...p, k: "photos", i })), ...pend.frames.map((p, i) => ({ ...p, k: "frames", i }))];
+  const html = all.map(p => `<div class="thumb"><img src="${p.url}" alt="${esc(p.label)}"><em>${esc(p.label)}</em><button type="button" data-k="${p.k}" data-i="${p.i}" aria-label="Quitar">×</button></div>`).join("");
+  $$(".thumbs").forEach(t => t.innerHTML = html);
+  $$('.cap[data-cap="foto"]').forEach(c => c.classList.toggle("on", pend.photos.length > 0));
+  $$('.cap[data-cap="video"]').forEach(c => c.classList.toggle("on", pend.frames.length > 0));
+  $$('.cap[data-cap="audio"]').forEach(c => c.classList.toggle("on", !!pend.audio));
+  $$(".audio-box").forEach(b => { b.hidden = !pend.audio; b.innerHTML = pend.audio ? audioHTML(pend.audio) : ""; });
+  if (pend.audio) $$(".audio-box canvas").forEach(c => drawSpec(c, pend.audio._cols));
+  document.dispatchEvent(new Event("tg:pend"));
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest(".thumb button"); if (!b) return;
+  const arr = pend[b.dataset.k]; URL.revokeObjectURL(arr[+b.dataset.i].url); arr.splice(+b.dataset.i, 1); renderPend();
+});
+document.addEventListener("change", async e => {
+  const inp = e.target; if (!(inp instanceof HTMLInputElement) || inp.type !== "file") return;
+  const files = [...inp.files]; inp.value = ""; if (!files.length) return;
+  if (inp.classList.contains("in-foto")) {
+    files.forEach(f => pend.photos.push({ blob: f, url: URL.createObjectURL(f), label: "foto" }));
+    renderPend();
+  } else if (inp.classList.contains("in-video")) {
+    setStatus("Procesando video…", true);
+    pend.frames.forEach(p => URL.revokeObjectURL(p.url)); pend.frames = [];
+    try { pend.frames = await extractFrames(files[0], 6); } catch { flash("No pude sacar imágenes de este video. Usa fotos."); }
+    const a = await analyzeAudioFile(files[0], "sonido del video"); if (a) pend.audio = a;
+    renderPend(); setStatus("");
+  } else if (inp.classList.contains("in-audio")) {
+    setStatus("Analizando sonido…", true);
+    const a = await analyzeAudioFile(files[0], "grabación");
+    if (a) pend.audio = a; else flash("No pude leer ese audio. Graba en m4a, mp3 o wav, o graba un video corto.");
+    renderPend(); setStatus("");
+  }
+});
+function flash(t) { const el = $("#session").hidden ? $("#code-quick") : $("#result"); el.hidden = false; el.innerHTML = `<div class="note">${esc(t)}</div>`; }
+
+function extractFrames(file, n) {
+  return new Promise((resolve, reject) => {
+    const v = document.createElement("video"), url = URL.createObjectURL(file), out = [];
+    v.muted = true; v.playsInline = true; v.preload = "auto"; v.src = url;
+    const fail = () => { URL.revokeObjectURL(url); reject(new Error("video")); };
+    v.onerror = fail;
+    v.onloadedmetadata = async () => {
+      const d = isFinite(v.duration) ? v.duration : 0;
+      if (!d || !v.videoWidth) return fail();
+      const c = document.createElement("canvas"), scale = Math.min(1, 1280 / Math.max(v.videoWidth, v.videoHeight));
+      c.width = Math.round(v.videoWidth * scale); c.height = Math.round(v.videoHeight * scale);
+      const ctx = c.getContext("2d");
+      for (let i = 0; i < n; i++) {
+        const t = d * (i + 0.5) / n;
+        await new Promise(r => { v.onseeked = r; v.currentTime = t; });
+        ctx.drawImage(v, 0, 0, c.width, c.height);
+        const blob = await new Promise(r => c.toBlob(r, "image/jpeg", 0.85));
+        if (blob) out.push({ blob, url: URL.createObjectURL(blob), label: `video ${t.toFixed(1)} s` });
+      }
+      URL.revokeObjectURL(url); resolve(out);
+    };
+  });
+}
+
+/* ---- Análisis de sonido (local, en el teléfono) ---- */
+function fft(re, im) {
+  const n = re.length;
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit;
+    if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const a = -2 * Math.PI / len, wr = Math.cos(a), wi = Math.sin(a);
+    for (let i = 0; i < n; i += len) {
+      let cr = 1, ci = 0;
+      for (let j = 0; j < len / 2; j++) {
+        const k = i + j, l = k + len / 2;
+        const tr = re[l] * cr - im[l] * ci, ti = re[l] * ci + im[l] * cr;
+        re[l] = re[k] - tr; im[l] = im[k] - ti; re[k] += tr; im[k] += ti;
+        const nr = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = nr;
+      }
+    }
+  }
+}
+async function analyzeAudioFile(file, srcLabel) {
+  let buf;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ac = new AC();
+    buf = await ac.decodeAudioData(await file.arrayBuffer());
+    ac.close && ac.close();
+  } catch { return null; }
+  return analyzeBuffer(buf, srcLabel);
+}
+function analyzeBuffer(buf, srcLabel) {
+  const sr = buf.sampleRate, maxS = Math.min(buf.length, sr * 30);
+  const x = new Float32Array(maxS);
+  for (let ch = 0; ch < buf.numberOfChannels; ch++) { const d = buf.getChannelData(ch); for (let i = 0; i < maxS; i++) x[i] += d[i] / buf.numberOfChannels; }
+  const N = 4096, hop = 1024, frames = Math.max(1, Math.floor((maxS - N) / hop));
+  const spec = new Float64Array(N / 2), win = new Float64Array(N);
+  for (let i = 0; i < N; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (N - 1));
+  const cols = [], energies = [], hfE = [];
+  const re = new Float64Array(N), im = new Float64Array(N);
+  for (let f = 0; f < frames; f++) {
+    let e = 0;
+    for (let i = 0; i < N; i++) { const s = x[f * hop + i] || 0; re[i] = s * win[i]; im[i] = 0; e += s * s; }
+    energies.push(Math.sqrt(e / N));
+    fft(re, im);
+    const col = new Float32Array(128); let hf = 0;
+    for (let k = 1; k < N / 2; k++) {
+      const m = Math.hypot(re[k], im[k]); spec[k] += m;
+      const hz = k * sr / N; if (hz > 800) hf += m * m;
+      if (hz >= 30 && hz < 8000) { const b = Math.min(127, Math.floor(Math.log2(hz / 30) / Math.log2(8000 / 30) * 128)); col[b] = Math.max(col[b], m); }
+    }
+    cols.push(col); hfE.push(Math.sqrt(hf));
+  }
+  const binHz = sr / N, peaks = [];
+  for (let k = 3; k < N / 2 - 1 && k * binHz < 8000; k++) if (spec[k] > spec[k - 1] && spec[k] >= spec[k + 1]) peaks.push([k * binHz, spec[k]]);
+  peaks.sort((a, b) => b[1] - a[1]);
+  const top = [];
+  for (const p of peaks) { if (top.every(t => Math.abs(t[0] - p[0]) > 15)) top.push(p); if (top.length === 4) break; }
+  let tot = 0, cen = 0, sumMag = 0; const bands = [0, 0, 0, 0];
+  for (let k = 1; k < N / 2; k++) {
+    const hz = k * binHz, p = spec[k] * spec[k]; tot += p; cen += hz * spec[k]; sumMag += spec[k];
+    bands[hz < 250 ? 0 : hz < 1000 ? 1 : hz < 4000 ? 2 : 3] += p;
+  }
+  const centroid = cen / (sumMag || 1), bandPct = bands.map(b => Math.round(100 * b / (tot || 1)));
+  // Golpes y clics: saltos de energía en agudos (>800 Hz), donde no estorba el zumbido del motor
+  const onsetOn = arr => {
+    const srt = [...arr].sort((a, b) => a - b), md = srt[Math.floor(srt.length / 2)] || 1e-9, o = [];
+    for (let i = 1; i < arr.length; i++) if (arr[i] > md * 3 && arr[i] > arr[i - 1] * 1.8 && (!o.length || i - o[o.length - 1] > 2)) o.push(i);
+    return o;
+  };
+  const oHf = onsetOn(hfE), oAll = onsetOn(energies);
+  const onsets = oHf.length >= oAll.length ? oHf : oAll;
+  const dur = maxS / sr, secPer = hop / sr;
+  const intervals = onsets.slice(1).map((o, i) => (o - onsets[i]) * secPer);
+  const avgInt = intervals.length ? intervals.reduce((a, b) => a + b, 0) / intervals.length : 0;
+  const rms = Math.sqrt(x.reduce((a, s) => a + s * s, 0) / maxS), rmsDb = 20 * Math.log10(rms || 1e-9);
+  const humHz = top.find(t => [60, 120, 180, 240].some(h => Math.abs(t[0] - h) < 6));
+
+  const hints = [];
+  if (rmsDb < -50) hints.push("La grabación quedó muy baja. Acerca el teléfono a la pieza y repite.");
+  if (humHz) hints.push(`Zumbido de red en ${humHz[0].toFixed(0)} Hz: hay una bobina o motor energizado (compresor, motor, electroválvula). Si suena y no arranca, sospecha del arranque (PTC/relé, capacitor) o de un motor trabado.`);
+  if (onsets.length >= 3 && avgInt > 0.3 && avgInt < 3) hints.push(`Golpes repetitivos cada ${avgInt.toFixed(2)} s: algo que roza o golpea en cada vuelta (aspa contra hielo, tambor desbalanceado, objeto en bomba).`);
+  else if (onsets.length >= 1 && onsets.length <= 4 && dur > 8) hints.push(`Clics aislados (${onsets.length}): si coinciden con el intento de arranque del compresor, sospecha del protector térmico o del relé.`);
+  if (bandPct[2] + bandPct[3] > 45 && centroid > 1500) hints.push("Mucha energía en agudos: roce metálico, rodamiento seco o chillido de polea o rodillo.");
+  if (bandPct[0] > 70 && !humHz) hints.push("Domina el sonido grave sin zumbido de red: golpeteo mecánico o vibración.");
+  if (!hints.length) hints.push("Sin un patrón claro. Graba más cerca de la pieza que suena, sin hablar, de 15 a 30 segundos.");
+  return {
+    fuente: srcLabel, duracion_s: +dur.toFixed(1), nivel_dbfs: +rmsDb.toFixed(1),
+    picos_hz: top.map(t => +t[0].toFixed(0)), centroide_hz: +centroid.toFixed(0),
+    energia_bandas_pct: { "0-250Hz": bandPct[0], "250-1000Hz": bandPct[1], "1-4kHz": bandPct[2], ">4kHz": bandPct[3] },
+    golpes_detectados: onsets.length, intervalo_golpes_s: +avgInt.toFixed(2),
+    zumbido_red_hz: humHz ? +humHz[0].toFixed(0) : null, pistas_automaticas: hints,
+    _cols: cols, _env: energies
+  };
+}
+const audioForAI = a => { const { _cols, _env, _img, ...rest } = a; return JSON.stringify(rest); };
+/* Espectrograma como imagen para el guía: tiempo → horizontal, frecuencia (log) → vertical, energía arriba */
+function specImage(a) {
+  const W = 960, H = 420, L = 64, T = 70, R = 12, B = 34, pw = W - L - R, ph = H - T - B;
+  const c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  x.fillStyle = "#ffffff"; x.fillRect(0, 0, W, H);
+  x.fillStyle = "#111"; x.font = "bold 15px sans-serif";
+  x.fillText(`Espectrograma - ${a.fuente} - ${a.duracion_s} s`, L, 18);
+  // envolvente de energía
+  const env = a._env || [], emx = Math.max(1e-9, ...env);
+  x.strokeStyle = "#0b6e8a"; x.lineWidth = 1.5; x.beginPath();
+  env.forEach((v, i) => { const px = L + i / Math.max(1, env.length - 1) * pw, py = T - 10 - (v / emx) * 34; i ? x.lineTo(px, py) : x.moveTo(px, py); });
+  x.stroke(); x.fillStyle = "#555"; x.font = "11px sans-serif"; x.fillText("volumen", 6, T - 22);
+  // mapa
+  const cols = a._cols || []; let mx = 1e-9; cols.forEach(col => col.forEach(v => { if (v > mx) mx = v; }));
+  const cw = pw / Math.max(1, cols.length), bh = ph / 128;
+  cols.forEach((col, i) => col.forEach((v, b) => {
+    const k = Math.pow(v / mx, 0.45); if (k < 0.04) return;
+    const g = Math.round(255 * (1 - k)); x.fillStyle = `rgb(${g},${g},${g})`;
+    x.fillRect(L + i * cw, T + ph - (b + 1) * bh, Math.ceil(cw) + 0.5, Math.ceil(bh) + 0.5);
+  }));
+  // ejes
+  x.strokeStyle = "#999"; x.lineWidth = 1; x.strokeRect(L, T, pw, ph);
+  x.fillStyle = "#333"; x.font = "12px sans-serif";
+  [50, 60, 120, 250, 500, 1000, 2000, 4000, 8000].forEach(hz => {
+    const b = Math.log2(hz / 30) / Math.log2(8000 / 30) * 128, py = T + ph - b * bh;
+    if (py < T || py > T + ph) return;
+    x.strokeStyle = hz === 60 || hz === 120 ? "#d33" : "#ddd"; x.beginPath(); x.moveTo(L, py); x.lineTo(L + pw, py); x.stroke();
+    x.fillText(hz >= 1000 ? hz / 1000 + " kHz" : hz + " Hz", 4, py + 4);
+  });
+  const d = a.duracion_s, step = d > 20 ? 5 : d > 8 ? 2 : 1;
+  for (let s = 0; s <= d; s += step) x.fillText(s + " s", L + s / d * pw - 6, H - 12);
+  return new Promise(r => c.toBlob(r, "image/png"));
+}
+function audioHTML(a) {
+  const bp = a.energia_bandas_pct;
+  return `<div class="panel" style="padding:12px;background:var(--bg);border-style:dashed">
+    <div class="row" style="justify-content:space-between"><h3 style="font-size:16px">Análisis del sonido</h3><span class="eyebrow">${esc(a.fuente)} · ${a.duracion_s} s</span></div>
+    <canvas class="spec" width="800" height="120" aria-label="Espectrograma del sonido"></canvas>
+    <div class="feat">${[
+      [a.picos_hz.slice(0, 2).join(" / ") + " Hz", "picos dominantes"],
+      [a.centroide_hz + " Hz", "brillo (centroide)"],
+      [a.golpes_detectados + (a.intervalo_golpes_s ? ` · ${a.intervalo_golpes_s} s` : ""), "golpes · intervalo"],
+      [`${bp["0-250Hz"]} / ${bp["250-1000Hz"]} / ${bp["1-4kHz"]} / ${bp[">4kHz"]}`, "% graves → agudos"]
+    ].map(([b, s]) => `<div><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join("")}</div>
+    <ul class="hint">${a.pistas_automaticas.map(h => `<li>${esc(h)}</li>`).join("")}</ul>
+    <p class="eyebrow" style="margin:0;text-transform:none;letter-spacing:0">Las pistas del sonido orientan, no confirman. Se envían al guía junto con tu respuesta.</p>
+  </div>`;
+}
+function drawSpec(c, cols) {
+  if (!cols) return;
+  const ctx = c.getContext("2d"), W = c.width, H = c.height, cs = getComputedStyle(document.documentElement);
+  ctx.fillStyle = cs.getPropertyValue("--bg").trim(); ctx.fillRect(0, 0, W, H);
+  let mx = 1e-9; cols.forEach(col => col.forEach(v => { if (v > mx) mx = v; }));
+  const cw = W / Math.max(1, cols.length), bh = H / 128;
+  ctx.fillStyle = cs.getPropertyValue("--accent").trim();
+  cols.forEach((col, i) => col.forEach((v, b) => {
+    const a = Math.pow(v / mx, 0.45); if (a < 0.06) return;
+    ctx.globalAlpha = a; ctx.fillRect(i * cw, H - (b + 1) * bh, Math.ceil(cw), Math.ceil(bh));
+  }));
+  ctx.globalAlpha = 1;
+}
+
+/* ===================== HERRAMIENTAS DEL GUÍA (cálculos exactos) ===================== */
+let toolLog = [];
+const toNum = v => { if (v === null || v === undefined) return null; const s = String(v).trim().replace(",", "."); if (/^ol$/i.test(s) || /inf/i.test(s)) return Infinity; const n = parseFloat(s); return isFinite(n) ? n : null; };
+const r1 = (n, d = 1) => Math.round(n * 10 ** d) / 10 ** d;
+const GUIDE_TOOLS = [
+  { name: "resistencia_calefactor",
+    description: "Calcula la resistencia esperada de una resistencia calefactora (deshielo, lavadora, secadora) con R = V²/P y la compara con lo medido. Devuelve ohmios esperados, desviación % y veredicto.",
+    inputSchema: { type: "object", properties: { voltaje: { type: "number" }, potencia_w: { type: "number" }, medido_ohm: { type: "string", description: "valor medido en ohmios o 'OL'; opcional" } }, required: ["voltaje", "potencia_w"] },
+    execute(i) {
+      const v = toNum(i.voltaje), w = toNum(i.potencia_w), m = toNum(i.medido_ohm);
+      if (!v || !w || v === Infinity || w === Infinity) throw new Error("voltaje y potencia_w deben ser números");
+      const r = v * v / w, out = { esperado_ohm: r1(r) };
+      if (m === Infinity) out.veredicto = "abierta (OL)";
+      else if (m !== null) { out.medido_ohm = m; out.desviacion_pct = r1((m - r) / r * 100); out.veredicto = Math.abs(out.desviacion_pct) <= 15 ? "dentro de rango" : "fuera de rango"; }
+      toolLog.push(`Resistencia esperada a ${v} V y ${w} W: ${r1(r)} Ω${out.veredicto ? " → " + out.veredicto + (out.medido_ohm !== undefined ? ` (medido ${m} Ω)` : "") : ""}`);
+      return out;
+    } },
+  { name: "verificar_compresor",
+    description: "Con las 3 lecturas en ohmios entre los bornes de un compresor convencional (1-2, 2-3, 1-3), identifica común, marcha y arranque y verifica que R-S = C-R + C-S. Acepta 'OL'.",
+    inputSchema: { type: "object", properties: { b12: { type: "string" }, b23: { type: "string" }, b13: { type: "string" }, a_masa: { type: "boolean", description: "true si algún borne marca contra la carcasa" } }, required: ["b12", "b23", "b13"] },
+    execute(i) {
+      if (i.a_masa) { toolLog.push("Compresor: a masa (fuga a carcasa)"); return { veredicto: "a masa: compresor dañado" }; }
+      const r = { "1-2": toNum(i.b12), "2-3": toNum(i.b23), "1-3": toNum(i.b13) };
+      if (Object.values(r).some(x => x === null)) throw new Error("faltan lecturas");
+      const open = Object.keys(r).filter(k => r[k] === Infinity);
+      if (open.length) { toolLog.push(`Compresor: bobina abierta (OL en ${open.join(", ")})`); return { veredicto: "bobina abierta", pares_abiertos: open, nota: "dejar enfriar 1 h por si es el protector interno y volver a medir" }; }
+      const pairs = Object.entries(r).sort((a, b) => b[1] - a[1]), [rsPair, rs] = pairs[0];
+      const c = ["1", "2", "3"].find(x => !rsPair.includes(x));
+      const o = pairs.slice(1).map(([k, v]) => ({ t: k.split("-").find(x => x !== c), v })).sort((a, b) => a.v - b.v);
+      const dif = Math.abs(rs - (o[0].v + o[1].v)) / (o[0].v + o[1].v) * 100;
+      const out = { comun: c, marcha: o[0].t, arranque: o[1].t, R_S: rs, suma_CR_CS: r1(o[0].v + o[1].v, 2), diferencia_pct: r1(dif), veredicto: dif <= 10 ? "bobinas bien" : "no cuadra: repetir medición, posible espiras en corto" };
+      toolLog.push(`Compresor: común ${c}, marcha ${o[0].t}, arranque ${o[1].t}; diferencia ${r1(dif)} % → ${out.veredicto}`);
+      return out;
+    } },
+  { name: "verificar_capacitor",
+    description: "Verifica si un capacitor medido (µF) está dentro de su tolerancia.",
+    inputSchema: { type: "object", properties: { nominal_uf: { type: "number" }, medido_uf: { type: "number" }, tolerancia_pct: { type: "number", description: "por defecto 6" } }, required: ["nominal_uf", "medido_uf"] },
+    execute(i) {
+      const n = toNum(i.nominal_uf), m = toNum(i.medido_uf), t = toNum(i.tolerancia_pct) || 6;
+      if (!n || m === null) throw new Error("faltan valores");
+      const lo = n * (1 - t / 100), hi = n * (1 + t / 100), ok = m >= lo && m <= hi;
+      toolLog.push(`Capacitor ${n} µF ±${t} %: rango ${r1(lo, 2)}–${r1(hi, 2)}; medido ${m} → ${ok ? "bueno" : "cambiar"}`);
+      return { rango_min: r1(lo, 2), rango_max: r1(hi, 2), veredicto: ok ? "bueno" : "fuera de tolerancia" };
+    } },
+  { name: "presion_temperatura",
+    description: "Convierte la lectura del manómetro a temperatura de saturación para R134a o R600a y calcula el sobrecalentamiento si se da la temperatura del tubo de succión.",
+    inputSchema: { type: "object", properties: { gas: { type: "string", enum: ["R134a", "R600a"] }, lectura: { type: "number" }, unidad: { type: "string", enum: ["psig", "barg", "inhg"] }, temp_tubo_c: { type: "number" } }, required: ["gas", "lectura", "unidad"] },
+    execute(i) {
+      if (!PT[i.gas]) throw new Error("gas no soportado");
+      const pAbs = toAbs(toNum(i.lectura), i.unidad), ts = satTemp(i.gas, pAbs);
+      if (ts === null) throw new Error("fuera de la tabla (-40 a 60 °C)");
+      const out = { temp_saturacion_c: r1(ts), presion_abs_bar: r1(pAbs, 2) };
+      const lt = toNum(i.temp_tubo_c); if (lt !== null && lt !== Infinity) out.sobrecalentamiento_k = r1(lt - ts);
+      toolLog.push(`${i.gas} a ${i.lectura} ${uName[i.unidad]}: saturación ${r1(ts)} °C${out.sobrecalentamiento_k !== undefined ? `, sobrecalentamiento ${out.sobrecalentamiento_k} K` : ""}`);
+      return out;
+    } },
+  { name: "buscar_codigo",
+    description: "Busca un código de error en la base local de la app (Samsung, LG, Whirlpool, Electrolux). Devuelve significado y qué revisar, o vacío si no está.",
+    inputSchema: { type: "object", properties: { codigo: { type: "string" }, marca: { type: "string" } }, required: ["codigo"] },
+    execute(i) {
+      const hits = findCodes(String(i.codigo), i.marca ? String(i.marca) : "", "").filter(c => c.c.some(x => sameCode(x, String(i.codigo))));
+      toolLog.push(`Base de códigos: ${i.codigo}${i.marca ? " " + i.marca : ""} → ${hits.length ? hits.map(h => h.m + ": " + h.f).join("; ") : "no está en la base"}`);
+      return hits.map(h => ({ marca: h.m, tipo: h.t, codigos: h.c, falla: h.f, revisar: h.r }));
+    } },
+  { name: "valores_referencia",
+    description: "Devuelve la tabla de valores de referencia (bueno/malo) de componentes para nevera, lavadora o secadora.",
+    inputSchema: { type: "object", properties: { equipo: { type: "string", enum: ["nevera", "lavadora", "secadora"] } }, required: ["equipo"] },
+    execute(i) { const t = REF[i.equipo]; if (!t) throw new Error("equipo no válido"); return t.map(r => ({ componente: r[0], como: r[1], bueno: r[2], malo: r[3] })); } }
+];
+
+/* ===================== GUÍA (IA) ===================== */
+let sample = null, limits = null, ctl = null, visit = null, db = null;
+let VISITS = store.get("tg_visits", []);
+(async () => {
+  try {
+    if (window.claude && claude.use) {
+      let user;
+      [sample, db, user] = await Promise.all([claude.use("sample"), claude.use("db").catch(() => null), claude.use("user").catch(() => null)]);
+      // Solo el dueño guarda en la nube; cada técnico que use el enlace guarda en su propio teléfono.
+      if (db && !(user && await user.isOwner().catch(() => false))) db = null;
+    }
+    if (sample) limits = await sample.limits().catch(() => null);
+  } catch { sample = null; }
+  offerResume();
+  syncVisits();
+  $("#ai-off").hidden = !!sample;
+  $("#go").textContent = sample ? "Empezar diagnóstico" : "Buscar en la base local";
+})();
+
+function setStatus(t, busy) { $("#status").innerHTML = (busy ? '<span class="spin" aria-hidden="true"></span> ' : "") + esc(t); }
+const ERR = {
+  not_granted: "No se dio permiso para usar Claude. Puedes seguir con Códigos y Por síntoma.",
+  sampling_disabled: "Claude no está disponible en esta cuenta.",
+  rate_limited: "Demasiadas consultas seguidas o llegaste al límite de uso. Espera un momento y vuelve a enviar.",
+  session_expired: "Tu sesión expiró. Vuelve a iniciar sesión en Claude.",
+  image_rejected: "Una imagen no se pudo usar (formato o tamaño). Quítala y envía de nuevo.",
+  images_unavailable: "En esta vista no se pueden enviar imágenes. Quítalas y describe lo que ves.",
+  invalid_json: "La respuesta llegó incompleta. Toca Enviar de nuevo.",
+  refused: "El guía no pudo responder esa consulta. Reformula lo que escribiste.",
+};
+const errText = e => ERR[e?.code] || "No se pudo completar el paso. Revisa la conexión y vuelve a enviar.";
+
+const RULES = `Eres un técnico de línea blanca con 25 años de experiencia en neveras, nevecones, lavadoras y secadoras de todas las marcas que se venden en Colombia y Latinoamérica. Estás guiando EN VIVO a otro técnico profesional que está frente al equipo en casa del cliente, con multímetro y herramientas. Tu trabajo es encontrar la falla real con pruebas, no adivinar. Un diagnóstico equivocado le hace perder plata y al cliente.
+
+REGLAS DE PRECISIÓN (obligatorias):
+1. Pide UNA sola prueba por turno: la que más reduzca la incertidumbre al menor costo y tiempo. Primero lo simple y lo más frecuente (alimentación eléctrica, modo demo o bloqueo, obstrucciones, hielo, empaques, conectores, filtros) y después componentes caros (tarjeta, compresor, motor, sistema sellado).
+2. NO declares una pieza dañada sin una prueba que lo confirme: medición fuera de rango, observación directa inequívoca, o prueba de alimentación directa o de sustitución. Mientras no haya confirmación, "estado" = "investigando".
+3. Separa lo observado de lo inferido. Describe solo lo que realmente se ve en las imágenes; si no se ve claro, pide otra foto. No inventes datos.
+4. Códigos de error: afirma su significado solo si estás seguro para esa marca y tipo de equipo. Si cambia según la serie o el modelo, dilo y pide la etiqueta del modelo. Nunca inventes un código.
+5. Cada medición debe decir: entre qué puntos o terminales medir, si el equipo va desenchufado o energizado, la escala del multímetro y el valor esperado (bueno vs. malo: abierto = infinito/OL, corto ≈ 0 Ω). Si el valor exacto depende del modelo, da el rango típico y explica cómo interpretarlo.
+6. Nunca inventes números de parte. Describe el repuesto.
+7. No recomiendes abrir el sistema sellado (gas) sin evidencia: compresor probado bien eléctricamente, temperaturas de tubería, presiones o síntomas inequívocos.
+8. Si el técnico no puede hacer una prueba, propón otra que distinga las mismas hipótesis.
+9. SONIDO Y VIDEO: muchos daños se reconocen más rápido viéndolos u oyéndolos. Cuando un ruido, un clic, el arranque del compresor, una vibración, el giro del tambor, la entrada o salida de agua o un ventilador sean clave, pide como paso un video ("tipo":"video") o un sonido ("tipo":"sonido"), diciendo exactamente dónde poner el teléfono, qué debe estar haciendo el equipo y cuántos segundos grabar.
+   Del sonido recibes mediciones automáticas y una imagen de ESPECTROGRAMA: eje horizontal = tiempo; eje vertical = frecuencia en escala logarítmica (líneas rojas en 60 y 120 Hz = red eléctrica); más oscuro = más fuerte; arriba, la curva de volumen. Cómo leerlo: líneas horizontales continuas = tono o zumbido constante (motor, compresor, bobina; 60/120 Hz = vibración eléctrica de 60 Hz); rayas verticales que se repiten = golpes o clics periódicos (el intervalo dice si es por vuelta de un motor o un relé que cicla); mancha difusa en agudos (>2 kHz) = roce, rodamiento seco, aire o agua; volumen que sube y se corta = arranque que falla. De los videos recibes varios fotogramas en orden de tiempo: compáralos para ver movimiento (gira o no gira, vibra, hay agua, hay hielo, luces o códigos que cambian).
+   Todo esto es indicio fuerte pero NO confirmación de una pieza: confirma con una prueba.
+10. Cuando una prueba confirme la falla: "estado" = "diagnostico" y entrega la reparación completa, incluyendo la causa raíz para que no se repita (ej. fusible térmico abierto → ducto tapado; hielo en evaporador → resistencia, bimetal o sensor de deshielo) y cómo verificar que quedó bien.
+11. Si el técnico informa que la reparación no funcionó, vuelve a "investigando" y replantea.
+12. Contexto eléctrico: Colombia, 110-120 V / 60 Hz; secadoras eléctricas a 220 V. Refrigerantes comunes: R134a y R600a (inflamable).
+13. Español de Colombia, directo, frases cortas. El técnico lee en el celular con las manos ocupadas.
+14. HERRAMIENTAS: si tienes herramientas disponibles, úsalas para TODO cálculo (resistencia esperada de calefactores con la potencia de la etiqueta, bobinas de compresor, capacitores, presión-temperatura) y para consultar códigos en la base local. No hagas cálculos de memoria. Llámalas solo cuando aporten al paso actual.
+15. Se te dan los VALORES DE REFERENCIA de la app y los CASOS REALES de este mismo técnico. Úsalos: si un caso parecido se confirmó, puedes priorizar esa prueba, pero igual hay que confirmarla en este equipo. Nunca repitas un diagnóstico que el técnico ya reportó que NO resolvió, salvo que haya nueva evidencia.
+
+FORMATO: responde SOLO con un objeto JSON con esta forma exacta:
+{"equipo":"tipo, marca, modelo","lo_que_veo":"lo observado en las imágenes o el sonido de ESTE turno, o null","hipotesis":[{"falla":"","probabilidad":50,"por_que":"breve"}],"estado":"investigando","paso":{"tipo":"medir|observar|escuchar|foto|video|sonido|pregunta|prueba","titulo":"orden corta","instruccion":"qué hacer exactamente, dónde y cómo","por_que":"en una frase sencilla: qué busca esta prueba y qué descarta","valor_esperado":"qué resultado indica bueno y cuál indica malo, o null","seguridad":"advertencia si aplica, o null","opciones":["respuestas rápidas posibles, 2 a 5"]},"diagnostico":null}
+- "hipotesis": de 1 a 4, ordenadas, probabilidades que sumen como máximo 100.
+- Cuando "estado" = "diagnostico", "paso" puede ser null y "diagnostico" debe ser:
+{"falla_principal":"","confirmado_por":"qué prueba lo confirmó","confianza":"alta|media","explicacion":"2-4 frases","causa_raiz":"","pasos":[""],"repuestos":[""],"herramientas":[""],"verificacion_final":[""],"seguridad":[""],"tiempo_estimado":""}`;
+
+/* ---- Memoria: tus casos confirmados ---- */
+const words5 = s => new Set((norm(s).match(/[a-z]{5,}/g) || []));
+function similarCases(c, excludeId) {
+  const base = c.tipo.split(" ")[0].replace("nevecón", "nevera"), w = words5(c.desc);
+  return VISITS.filter(v => v.id !== excludeId && v.turns?.some(t => t.diagnostico) && (v.resultado === "ok" || (v.descartados || []).length))
+    .map(v => {
+      let s = 0;
+      if (v.caso.tipo.split(" ")[0].replace("nevecón", "nevera") === base) s += 2; else return null;
+      if (c.marca && v.caso.marca === c.marca) s += 2;
+      if (c.codigo && v.caso.codigo && sameCode(c.codigo, v.caso.codigo)) s += 4;
+      if (c.modelo && v.caso.modelo && norm(v.caso.modelo).slice(0, 6) === norm(c.modelo).slice(0, 6)) s += 2;
+      const vw = words5(v.caso.desc); let shared = 0; w.forEach(x => vw.has(x) && shared++); s += Math.min(4, shared);
+      return s >= 4 ? { v, s } : null;
+    }).filter(Boolean).sort((a, b) => b.s - a.s).slice(0, 4).map(x => x.v);
+}
+function caseSummary(v) {
+  const dx = [...v.turns].reverse().find(t => t.diagnostico)?.diagnostico;
+  return `- ${[v.caso.tipo.split(" (")[0], v.caso.marca, v.caso.modelo, v.caso.codigo && "código " + v.caso.codigo].filter(Boolean).join(", ")}. Síntoma: ${(v.caso.desc || "").slice(0, 200)}. ` +
+    (v.resultado === "ok" && dx ? `FALLA CONFIRMADA Y REPARADA: ${dx.falla_principal} (confirmado por: ${dx.confirmado_por || "?"}).` : "") +
+    ((v.descartados || []).length ? ` Diagnósticos que NO resolvieron: ${v.descartados.join("; ")}.` : "");
+}
+function casosHTML(list) {
+  if (!list.length) return "";
+  return `<details class="sym"><summary>Tus casos parecidos (${list.length})</summary><div class="body"><ul class="list">${list.map(v => `<li>${esc(caseSummary(v).slice(2))}</li>`).join("")}</ul><p class="sync" style="margin:0">El guía los tiene en cuenta, pero igual te pide pruebas: un caso parecido no es una confirmación.</p></div></details>`;
+}
+
+const AUDIT = `Eres el jefe de taller y revisas el diagnóstico de un técnico de línea blanca antes de que cambie una pieza. Tu trabajo es evitar diagnósticos equivocados.
+Aprueba SOLO si se cumplen las tres condiciones:
+1. Hay al menos una prueba concreta en el historial (medición fuera de rango, observación directa inequívoca, prueba de alimentación directa) que confirma la pieza o falla señalada.
+2. No queda una explicación alternativa razonable que esa prueba no descarte (ej. un ventilador que no gira puede ser el motor o la falta de voltaje de la tarjeta: si no se midió el voltaje, no está confirmado).
+3. La causa raíz tiene sentido con los síntomas.
+Si no apruebas, propone la UNA prueba que falta, con el mismo formato de paso.
+Responde SOLO con JSON: {"aprobado":true,"motivo":"una o dos frases","hipotesis":[{"falla":"","probabilidad":0,"por_que":""}],"paso":null}
+Si no apruebas: "aprobado":false y "paso":{"tipo":"medir|observar|escuchar|foto|video|sonido|pregunta|prueba","titulo":"","instruccion":"","por_que":"","valor_esperado":"","seguridad":null,"opciones":[""]}`;
+
+function caseText(c) {
+  return [
+    `Tipo de equipo: ${c.tipo || "no indicado (dedúcelo de la etiqueta o la descripción; si no se puede, pregúntalo)"}`, `Marca: ${c.marca || "no indicada"}`, `Modelo: ${c.modelo || "no indicado"}`,
+    `Código de error: ${c.codigo || "ninguno"}`, `Años de uso: ${c.edad || "no indicado"}`,
+    `Lo que hace y lo que ya revisó el técnico: ${c.desc || "no indicado"}`,
+    c.placa ? `Datos leídos de la etiqueta (impresos): ${JSON.stringify(c.placa.placa || c.placa)}` : "",
+    c.placa?.equipo ? `Conocimiento del modelo (no confirmado en este equipo): ${JSON.stringify(c.placa.equipo)}` : "",
+    c.historialEquipo ? `ESTE MISMO EQUIPO (misma serie) YA FUE ATENDIDO POR ESTE TÉCNICO: ${c.historialEquipo.join(" | ")}. Si la falla se repite, busca la causa raíz de la reincidencia antes de cambiar otra vez la misma pieza.` : "",
+    c.refCodigo ? `Base de referencia local para ese código (puede variar por serie): ${c.refCodigo}` : ""
+  ].filter(Boolean).join("\n");
+}
+function transcript(v) {
+  return v.turns.map((t, i) => {
+    const s = t.paso, out = [];
+    if (s) out.push(`PASO ${i + 1} que pediste: [${s.tipo}] ${s.titulo}. ${s.instruccion}${s.valor_esperado ? " Esperado: " + s.valor_esperado : ""}`);
+    if (t.lo_que_veo) out.push(`Lo que observaste en ese turno: ${t.lo_que_veo}`);
+    if ((t.calculos || []).length) out.push(`Cálculos de la app en ese turno: ${t.calculos.join("; ")}`);
+    if (t.diagnostico) out.push(`Diste el diagnóstico: ${t.diagnostico.falla_principal} (confirmado por: ${t.diagnostico.confirmado_por || "?"})`);
+    if (t.respuesta) out.push(`RESPUESTA DEL TÉCNICO: ${t.respuesta}`);
+    return out.join("\n");
+  }).join("\n\n");
+}
+
+$("#go").addEventListener("click", () => {
+  const c = { tipo: tipoSel(), marca: $("#marca").value, modelo: $("#modelo").value.trim(), codigo: $("#codigo").value.trim(), edad: $("#edad").value.trim(), desc: $("#desc").value.trim() };
+  if (!c.desc && !c.codigo && !pend.audio && !pend.photos.some(p => p.label !== "etiqueta") && !pend.frames.length) { flash("Escribe el daño o el código."); $("#desc").focus(); return; }
+  if (!sample) { localFallback(c); return; }
+  if (c.codigo) {
+    const hits = findCodes(c.codigo, c.marca, tipoBase()).filter(x => x.c.some(y => sameCode(y, c.codigo)));
+    if (hits.length) c.refCodigo = hits.map(h => `${h.m} ${h.c[0]}: ${h.f}. ${h.r}`).join(" | ");
+  }
+  if (PLACA) { c.placa = PLACA; const u = sameUnit(PLACA); if (u.length) c.historialEquipo = unitHistory(u); }
+  visit = { id: Date.now(), fecha: new Date().toISOString(), caso: c, turns: [], resultado: null };
+  keepAwake(true);
+  $("#start").hidden = true; $("#session").hidden = false;
+  setCaseHeader(c);
+  $("#result").innerHTML = ""; $("#step").innerHTML = ""; $("#seen").innerHTML = ""; $("#hyp-box").hidden = true;
+  $("#casos").innerHTML = casosHTML(similarCases(c, visit.id));
+  const firstNote = [pend.audio ? "Adjunté sonido." : "", (pend.photos.length + pend.frames.length) ? "Adjunté imágenes." : ""].filter(Boolean).join(" ");
+  askNext(firstNote || null);
+});
+
+async function askNext(answerText) {
+  const maxImg = limits?.images?.maxCount ?? 0;
+  let specImg = null;
+  if (pend.audio && maxImg) { try { const bl = await specImage(pend.audio); if (bl) specImg = { blob: bl, label: "espectrograma del sonido (" + pend.audio.fuente + ")" }; } catch {} }
+  const allImgs = [...pend.photos.filter(p => p.label !== "etiqueta"), ...(specImg ? [specImg] : []), ...pend.frames, ...pend.photos.filter(p => p.label === "etiqueta")];
+  const imgs = maxImg ? allImgs.slice(0, maxImg) : [];
+  const parts = [];
+  if (answerText) parts.push(answerText);
+  if (imgs.length) parts.push(`Adjunto ${imgs.length} imagen(es) en este turno: ${imgs.map((p, i) => `#${i + 1} ${p.label}`).join(", ")}.`);
+  if (allImgs.length > imgs.length) parts.push(`(${allImgs.length - imgs.length} imagen(es) no se pudieron enviar por el límite.)`);
+  if (pend.audio) parts.push(`Análisis acústico automático (${pend.audio.fuente}): ${audioForAI(pend.audio)}`);
+  const respuesta = parts.join(" ");
+  if (visit.turns.length) visit.turns[visit.turns.length - 1].respuesta = respuesta;
+  else visit.respuestaInicial = respuesta;
+
+  const n = visit.turns.length;
+  const tb = tipoOf(visit.caso.tipo);
+  const refs = (tb === "lavasecadora" ? refForAI("lavadora") + "\n" + refForAI("secadora") : refForAI(tb));
+  const sims = similarCases(visit.caso, visit.id);
+  const prompt = `${RULES}
+
+VALORES DE REFERENCIA DE LA APP (típicos; si el modelo difiere, dilo):
+${refs}
+
+${sims.length ? "CASOS REALES DE ESTE TÉCNICO PARECIDOS A ESTE:\n" + sims.map(caseSummary).join("\n") : "No hay casos anteriores parecidos."}
+${(visit.descartados || []).length ? "\nEN ESTA VISITA YA SE DESCARTÓ (la reparación no resolvió): " + visit.descartados.join("; ") : ""}
+
+CASO:
+${caseText(visit.caso)}
+${visit.respuestaInicial ? "Evidencia inicial: " + visit.respuestaInicial : ""}
+
+${n ? "HISTORIAL DE LA VISITA:\n" + transcript(visit) : "Es el inicio de la visita."}
+${n >= 10 ? `\nYa van ${n} pruebas. Si la evidencia ya confirma la falla, entrega el diagnóstico; si no, pide solo lo indispensable.` : ""}
+
+Decide ahora el siguiente paso (o el diagnóstico si ya está confirmado).`;
+
+  ctl = new AbortController();
+  $("#answer").hidden = true; $("#stop").hidden = false;
+  const t0 = Date.now(); const tick = setInterval(() => setStatus(`Pensando el siguiente paso… ${Math.round((Date.now() - t0) / 1000)} s`, true), 1000);
+  setStatus("Pensando el siguiente paso…", true);
+  $("#result").innerHTML = "";
+  try {
+    const opts = { signal: ctl.signal, modelTier: $("#precise").checked ? "complex" : "default", cache: false };
+    toolLog = [];
+    if ((limits?.tools?.maxCount ?? 0) >= GUIDE_TOOLS.length) opts.tools = GUIDE_TOOLS;
+    if (imgs.length) opts.images = imgs.map(p => p.blob);
+    const d = await sample.json(prompt, opts);
+    if (!d || typeof d !== "object" || (!d.paso && !d.diagnostico)) throw { code: "invalid_json" };
+    if (d.estado === "diagnostico" && !d.diagnostico) d.estado = "investigando";
+    let auditoria = null;
+    if (d.estado === "diagnostico") {
+      clearInterval(tick); setStatus("Doble verificación del diagnóstico…", true);
+      try {
+        const audit = await sample.json(`${AUDIT}
+
+CASO:
+${caseText(visit.caso)}
+${visit.respuestaInicial ? "Evidencia inicial: " + visit.respuestaInicial : ""}
+
+HISTORIAL DE LA VISITA:
+${transcript(visit)}
+${respuesta ? "ÚLTIMA RESPUESTA DEL TÉCNICO: " + respuesta : ""}
+${d.lo_que_veo ? "Lo observado en las imágenes de este turno: " + d.lo_que_veo : ""}
+
+DIAGNÓSTICO PROPUESTO:
+${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: "complex", cache: false });
+        if (audit && audit.aprobado === false && audit.paso && audit.paso.instruccion) {
+          auditoria = audit.motivo || "Falta una prueba que confirme la falla.";
+          d.estado = "investigando"; d.diagnostico = null; d.paso = audit.paso;
+          if (Array.isArray(audit.hipotesis) && audit.hipotesis.length) d.hipotesis = audit.hipotesis;
+        } else if (audit && audit.aprobado === true) {
+          d.diagnostico.verificado = true;
+          if (audit.motivo) d.diagnostico.verificacion = audit.motivo;
+        }
+      } catch (e) { if (e?.code === "cancelled") throw e; }
+    }
+    visit.turns.push({ paso: d.paso || null, lo_que_veo: d.lo_que_veo || null, hipotesis: d.hipotesis || [], diagnostico: d.estado === "diagnostico" ? d.diagnostico : null, equipo: d.equipo, auditoria, calculos: toolLog.slice(0, 8) });
+    clearPend(); $("#ans").value = "";
+    saveVisit();
+    renderVisit();
+  } catch (e) {
+    // revertir la respuesta para poder reenviar
+    if (visit.turns.length) visit.turns[visit.turns.length - 1].respuesta = undefined;
+    if (e?.code !== "cancelled") $("#result").innerHTML = `<div class="note">${esc(errText(e))}</div>`;
+    if (e?.code === "not_granted" || e?.code === "sampling_disabled") { sample = null; $("#ai-off").hidden = false; }
+    if (visit.turns.length) $("#answer").hidden = !visit.turns[visit.turns.length - 1].paso && !visit.turns[visit.turns.length - 1].diagnostico;
+    else { $("#session").hidden = true; $("#start").hidden = false; }
+  } finally {
+    clearInterval(tick); setStatus(""); $("#stop").hidden = true;
+  }
+}
+$("#stop").addEventListener("click", () => ctl?.abort());
+
+function setCaseHeader(c) {
+  $("#case-sum").textContent = [c.placa?.equipo?.descripcion || c.tipo.split(" (")[0], c.marca, c.modelo, c.codigo && "código " + c.codigo].filter(Boolean).join(" · ");
+  $("#case-ficha").innerHTML = c.placa?.placa ? fichaHTML(c.placa, true) : "";
+}
+function tipoOf(t) { const b = t.split(" ")[0]; return b === "nevecón" ? "nevera" : b; }
+const TIPO_LABEL = { medir: "Medir", observar: "Observar", escuchar: "Escuchar", foto: "Tomar foto", sonido: "Grabar sonido", video: "Grabar video", pregunta: "Pregunta", prueba: "Prueba" };
+function list(arr, ordered) {
+  const a = (arr || []).filter(Boolean); if (!a.length) return "";
+  const tag = ordered ? "ol" : "ul";
+  return `<${tag} class="${ordered ? "steps" : "list"}">${a.map(x => `<li>${esc(x)}</li>`).join("")}</${tag}>`;
+}
+function hypHTML(h) {
+  return (h || []).slice(0, 4).map(x => {
+    const p = Math.max(0, Math.min(100, Math.round(Number(x.probabilidad) || 0)));
+    return `<div class="causa"><div><div class="pct">${p}%</div><div class="bar"><i style="width:${p}%"></i></div></div><div style="min-width:0"><b>${esc(x.falla)}</b><p>${esc(x.por_que)}</p></div></div>`;
+  }).join("");
+}
+function stepHTML(s, n) {
+  return `<article class="panel ficha">
+    <div class="head"><span class="eyebrow">Paso ${n}</span><span class="pill">${esc(TIPO_LABEL[s.tipo] || s.tipo || "Paso")}</span></div>
+    <div class="falla">${esc(s.titulo)}</div>
+    <p style="margin:0;max-width:65ch;font-size:16px">${esc(s.instruccion)}</p>
+    ${s.por_que ? `<p class="why"><b>Por qué esta prueba:</b> ${esc(s.por_que)}</p>` : ""}
+    ${s.valor_esperado ? `<div class="note info"><b>Cómo interpretar:</b> ${esc(s.valor_esperado)}</div>` : ""}
+    ${s.seguridad ? `<div class="danger"><b>Cuidado:</b> ${esc(s.seguridad)}</div>` : ""}
+    ${toolsHTML(s)}
+  </article>`;
+}
+function dxHTML(d) {
+  const conf = d.confianza === "alta" ? "alta" : "media";
+  return `<article class="panel ficha ${conf}">
+    <div class="head"><span class="eyebrow">Diagnóstico confirmado</span><span class="row">${d.verificado ? '<span class="pill alta">Verificado dos veces</span>' : ""}<span class="pill ${conf}">Confianza ${conf}</span></span></div>
+    <div class="falla">${esc(d.falla_principal)}</div>
+    ${d.confirmado_por ? `<div class="note info"><b>Confirmado por:</b> ${esc(d.confirmado_por)}${d.verificacion ? "<br><b>Revisión:</b> " + esc(d.verificacion) : ""}</div>` : ""}
+    <p style="margin:0;max-width:65ch">${esc(d.explicacion)}</p>
+    ${d.causa_raiz ? `<div class="note"><b>Causa raíz, para que no se repita:</b> ${esc(d.causa_raiz)}</div>` : ""}
+    ${(d.pasos || []).length ? `<h3>Reparación</h3>${list(d.pasos, true)}` : ""}
+    <div class="grid2">
+      ${(d.repuestos || []).length ? `<div><h3>Repuestos</h3><div class="chips" style="margin-top:6px">${d.repuestos.map(r => `<span class="chip">${esc(r)}</span>`).join("")}</div></div>` : ""}
+      ${(d.herramientas || []).length ? `<div><h3>Herramientas</h3><div class="chips" style="margin-top:6px">${d.herramientas.map(r => `<span class="chip">${esc(r)}</span>`).join("")}</div></div>` : ""}
+    </div>
+    ${(d.verificacion_final || []).length ? `<h3>Antes de entregar, verifica</h3>${list(d.verificacion_final)}` : ""}
+    ${(d.seguridad || []).length ? `<div class="danger"><b>Seguridad</b>${list(d.seguridad)}</div>` : ""}
+    ${d.tiempo_estimado ? `<span class="eyebrow">Tiempo estimado: ${esc(d.tiempo_estimado)}</span>` : ""}
+  </article>`;
+}
+function renderVisit(readOnly) {
+  const last = visit.turns[visit.turns.length - 1]; if (!last) return;
+  stopTimer(true); $("#multi-out").hidden = true;
+  $("#hyp-box").hidden = !(last.hipotesis || []).length || !!last.diagnostico;
+  $("#hyp").innerHTML = hypHTML(last.hipotesis);
+  $("#casos").innerHTML = casosHTML(similarCases(visit.caso, visit.id));
+  const calc = (last.calculos || []).length ? `<div class="note info"><b>Cálculos exactos que hizo la app:</b>${list(last.calculos)}</div>` : "";
+  $("#seen").innerHTML = calc + (last.auditoria ? `<div class="note"><b>Doble verificación:</b> todavía no está confirmado. ${esc(last.auditoria)}</div>` : "") + (last.lo_que_veo ? `<div class="note info"><b>Lo que veo / oigo:</b> ${esc(last.lo_que_veo)}</div>` : "");
+  if (last.diagnostico) {
+    $("#step").innerHTML = dxHTML(last.diagnostico) + (visit.resultado ? `<div class="note info">Resultado registrado: <b>${visit.resultado === "ok" ? "reparado y funcionando" : visit.resultado}</b></div>` : "");
+    $("#answer-title").textContent = "¿Cómo te fue?";
+    $("#opts").innerHTML = ["Reparé y quedó funcionando", "La reparación no funcionó", "Tengo otro dato"].map(o => `<button type="button" aria-pressed="false" data-o="${esc(o)}">${esc(o)}</button>`).join("");
+    $("#cant").hidden = true;
+  } else {
+    $("#step").innerHTML = last.paso ? stepHTML(last.paso, visit.turns.length) : "";
+    $("#answer-title").textContent = "Tu resultado";
+    const want = { sonido: "audio", escuchar: "audio", video: "video", foto: "foto", observar: "foto" }[last.paso?.tipo];
+    $$("#answer .cap").forEach(c => c.classList.toggle("want", c.dataset.cap === want));
+    $("#opts").innerHTML = (last.paso?.opciones || []).slice(0, 5).map(o => `<button type="button" aria-pressed="false" data-o="${esc(o)}">${esc(o)}</button>`).join("");
+    $("#cant").hidden = false;
+  }
+  $("#answer").hidden = !!readOnly;
+  const done = visit.turns.slice(0, -1).filter(t => t.paso);
+  $("#timeline").hidden = !done.length;
+  $("#tl-sum").textContent = `Pruebas hechas (${done.length})`;
+  $("#tl").innerHTML = done.map(t => `<li><b>${esc(t.paso.titulo)}</b><br><span style="color:var(--muted)">${esc((t.respuesta || "").replace(/Análisis acústico automático.*$/, "[sonido adjunto]"))}</span></li>`).join("");
+  $("#step").scrollIntoView({ behavior: "smooth", block: "start" });
+  if (!readOnly && voiceOn()) speakStep(last);
+}
+$("#opts").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  sendAnswer(b.dataset.o);   // un toque = enviar
+});
+$("#send").addEventListener("click", () => sendAnswer(""));
+function sendAnswer(opt) {
+  if (!visit || !sample) return;
+  const txt = $("#ans").value.trim();
+  const last = visit.turns[visit.turns.length - 1];
+  if (last?.diagnostico && opt === "Reparé y quedó funcionando") {
+    visit.resultado = "ok"; saveVisit(); renderVisit(true);
+    showClose();
+    return;
+  }
+  if (!opt && !txt && !pend.photos.length && !pend.frames.length && !pend.audio) { $("#result").innerHTML = `<div class="note">Elige una opción, escribe lo que encontraste o adjunta una foto o un sonido.</div>`; return; }
+  if (last?.diagnostico && opt === "La reparación no funcionó") {
+    visit.resultado = null;
+    visit.descartados = [...(visit.descartados || []), last.diagnostico.falla_principal];
+  }
+  askNext([opt, txt].filter(Boolean).join(". "));
+}
+$("#cant").addEventListener("click", () => {
+  if (!visit || !sample) return;
+  const txt = $("#ans").value.trim();
+  askNext("No puedo hacer esta prueba" + (txt ? ": " + txt : "") + ". Dame otra forma de distinguir las mismas hipótesis.");
+});
+$("#reset").addEventListener("click", () => {
+  if (visit && !visit.resultado) skipResume = visit.id;
+  ctl?.abort(); visit = null; clearPend(); stopTimer(true); keepAwake(false); try { speechSynthesis.cancel(); } catch {}
+  PLACA = null; $("#placa-out").hidden = true; $("#scan-box").classList.remove("done");
+  $("#scan-title").textContent = "Tomar foto"; $("#scan-sub").textContent = "La etiqueta con el modelo (dentro de la nevera, en la puerta o atrás de la lavadora). Con eso sé qué equipo es.";
+  $("#manual").open = false;
+  offerResume(); updateSteps();
+  $("#session").hidden = true; $("#start").hidden = false; $("#result").innerHTML = "";
+  fieldIds.forEach(id => $("#" + id).value = ""); store.set("tg_draft", null); quickCode();
+  window.scrollTo({ top: 0 });
+});
+
+// Sin IA: usa la base local
+function localFallback(c) {
+  const t = tipoBase() || "lavadora";
+  const hits = c.codigo ? findCodes(c.codigo, c.marca, tipoBase()).filter(x => x.c.some(y => sameCode(y, c.codigo))) : [];
+  const d = norm(c.desc), words = s => norm(s).match(/[a-z]{4,}/g) || [];
+  const scored = SYMS[t].map(s => ({ s, n: words(s.s).filter(w => d.includes(w)).length })).filter(x => x.n).sort((a, b) => b.n - a.n);
+  let html = `<div class="note info">Resultado sin IA, a partir de la base local.</div>`;
+  if (hits.length) html += `<div class="panel">${hits.map(codeHTML).join("")}</div>`;
+  if (scored.length) {
+    const s = scored[0].s;
+    html += `<div class="panel ficha"><span class="eyebrow">Síntoma más parecido</span><div class="falla">${esc(s.s)}</div>${s.causas.map((x, j) => `<div class="causa"><div><span class="pill ${x.p}">${x.p}</span></div><div style="min-width:0"><b>${j + 1}. ${esc(x.c)}</b><p>${esc(x.prueba)}</p></div></div>`).join("")}</div>`;
+  }
+  if (!hits.length && !scored.length) html += `<p class="lead">No encontré coincidencias. Revisa la pestaña <b>Por síntoma</b>.</p>`;
+  $("#code-quick").hidden = false; $("#code-quick").innerHTML = html;
+}
+
+/* ===================== ESCANEAR PLACA ===================== */
+let PLACA = null;
+const PLACA_PROMPT = `La imagen es la etiqueta o placa de datos de un electrodoméstico (nevera, nevecón, lavadora, secadora o lavasecadora). Un técnico de línea blanca en Colombia la usa para saber exactamente qué equipo está revisando.
+
+PARTE 1 — "placa": transcribe EXACTAMENTE lo impreso. No adivines: si un campo no aparece o no se lee con seguridad, null.
+PARTE 2 — "equipo": lo que se sabe de ese modelo por tu conocimiento técnico (nomenclatura de la marca, línea, tecnología). Reglas:
+- Solo afirma lo que sabes con seguridad para ese modelo o su serie. Si no conoces el modelo, dilo en "nota", pon "confianza":"baja" y da solo lo que se deduce con certeza del tipo de equipo y de la placa.
+- "fallas_frecuentes": fallas conocidas en taller para esa línea o tecnología (máximo 5), no genéricas de cualquier equipo.
+- "modo_prueba": cómo entrar al modo de prueba o autodiagnóstico de ese modelo; null si no estás seguro.
+- "ano_aprox": año de fabricación solo si está impreso o si la marca codifica el año en la serie de forma conocida; si no, null.
+
+Responde SOLO con JSON:
+{"legible":true,"tipo":"nevera|nevecon|lavadora|secadora|lavasecadora","placa":{"marca":null,"modelo":null,"serie":null,"voltaje":null,"frecuencia":null,"corriente":null,"potencia":null,"refrigerante":null,"carga_refrigerante":null,"potencia_deshielo":null,"fecha_fabricacion":null,"otros":null},"equipo":{"descripcion":"ej. Nevecón side by side No Frost con compresor inverter","sistema":null,"compresor_o_motor":null,"control":null,"capacidad":null,"ano_aprox":null,"fallas_frecuentes":[],"modo_prueba":null,"confianza":"alta|media|baja","nota":null}}`;
+const PLACA_LABELS = { marca: "Marca", modelo: "Modelo", serie: "Serie", voltaje: "Voltaje", frecuencia: "Frecuencia", corriente: "Corriente", potencia: "Potencia", refrigerante: "Refrigerante", carga_refrigerante: "Carga de gas", potencia_deshielo: "Deshielo", fecha_fabricacion: "Fabricación", otros: "Otros" };
+const EQ_LABELS = { sistema: "Sistema", compresor_o_motor: "Compresor / motor", control: "Control", capacidad: "Capacidad", ano_aprox: "Año aprox." };
+function fichaHTML(P, compact) {
+  const pl = P.placa || {}, eq = P.equipo || {}, conf = ["alta", "media", "baja"].includes(eq.confianza) ? eq.confianza : "media";
+  const plRows = Object.entries(PLACA_LABELS).filter(([k]) => pl[k]).map(([k, l]) => `<div><span>${l}</span><b>${esc(pl[k])}</b></div>`).join("");
+  const eqRows = Object.entries(EQ_LABELS).filter(([k]) => eq[k]).map(([k, l]) => `<div><span>${l}</span><b>${esc(eq[k])}</b></div>`).join("");
+  const body = `
+    ${plRows ? `<div><div class="src">Leído de la etiqueta</div><div class="placa" style="margin-top:4px">${plRows}</div></div>` : ""}
+    ${eqRows ? `<div><div class="src">Conocimiento del modelo</div><div class="placa" style="margin-top:4px">${eqRows}</div></div>` : ""}
+    ${(eq.fallas_frecuentes || []).length ? `<div><div class="src">Fallas frecuentes de esta línea</div>${list(eq.fallas_frecuentes)}</div>` : ""}
+    ${eq.modo_prueba ? `<div class="note info"><b>Modo de prueba:</b> ${esc(eq.modo_prueba)}</div>` : ""}
+    ${eq.nota ? `<p class="sync" style="margin:0">${esc(eq.nota)}</p>` : ""}`;
+  if (compact) return `<details class="mini" style="margin-top:6px"><summary>Ficha del equipo</summary><div class="ficha-eq" style="margin-top:8px">${body}</div></details>`;
+  return `<div class="panel ficha-eq">
+    <div class="head row" style="justify-content:space-between;align-items:flex-start"><div class="desc">${esc(eq.descripcion || [pl.marca, pl.modelo].filter(Boolean).join(" "))}</div><span class="pill ${conf}">Datos del modelo: ${conf}</span></div>
+    ${body}
+    <p class="sync" style="margin:0">Lo de la etiqueta es lo impreso. Lo del modelo es conocimiento técnico: el guía igual te pide confirmar con pruebas.</p>
+  </div>`;
+}
+$("#in-placa").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const box = $("#placa-out"); box.hidden = false;
+  if (!sample || !limits?.images) { box.innerHTML = `<div class="note">Para leer la etiqueta falta tu clave de la IA en api/clave.php. Usa "Sin etiqueta: escribir el equipo a mano".</div>`; $("#manual").open = true; return; }
+  box.innerHTML = `<div class="note info"><span class="spin" aria-hidden="true"></span> Leyendo la etiqueta y buscando el modelo… (10 a 40 s)</div>`;
+  try {
+    const d = await sample.json(PLACA_PROMPT, { images: [f], modelTier: $("#precise").checked ? "complex" : "default" });
+    if (!d || d.legible === false || !d.placa) { box.innerHTML = `<div class="note">No se lee bien la etiqueta. ${esc(d?.equipo?.nota || "")} Tómala de frente, sin reflejo del flash y más cerca.</div>`; return; }
+    const pl = d.placa;
+    PLACA = { placa: Object.fromEntries(Object.entries(pl).filter(([, v]) => v !== null && v !== "")), equipo: d.equipo || {}, tipo: d.tipo };
+    if (pl.marca) {
+      const sel = $("#marca"), opt = [...sel.options].find(o => norm(o.value) && norm(pl.marca).includes(norm(o.value)));
+      if (opt) sel.value = opt.value; else { sel.insertAdjacentHTML("beforeend", `<option>${esc(pl.marca)}</option>`); sel.value = pl.marca; }
+    }
+    if (pl.modelo) $("#modelo").value = pl.modelo;
+    const yr = parseInt(d.equipo?.ano_aprox, 10);
+    if (yr > 1980 && yr <= new Date().getFullYear()) $("#edad").value = String(new Date().getFullYear() - yr);
+    const map = { nevera: 0, nevecon: 1, "nevecón": 1, lavadora: 2, secadora: 3, lavasecadora: 4 };
+    if (d.tipo in map) $$("#tipo button")[map[d.tipo]].click();
+    $("#modelo").dispatchEvent(new Event("input")); quickCode();
+    pend.photos = pend.photos.filter(p => p.label !== "etiqueta");
+    pend.photos.push({ blob: f, url: URL.createObjectURL(f), label: "etiqueta" }); renderPend();
+    box.innerHTML = unitAlertHTML(sameUnit(PLACA)) + fichaHTML(PLACA);
+    $("#scan-box").classList.add("done"); $("#scan-title").textContent = "Otra foto de la etiqueta"; $("#scan-sub").textContent = "Si algo no coincide con lo impreso, toma otra foto.";
+    updateSteps();
+  } catch (err) {
+    box.innerHTML = `<div class="note">${esc(errText(err))}</div>`;
+  }
+});
+
+/* ===================== FOTO DEL MULTÍMETRO ===================== */
+const MULTI_PROMPT = `La imagen es la pantalla de un multímetro o pinza amperimétrica. Lee EXACTAMENTE lo que muestra la pantalla y la posición del selector si se ve. No adivines: si no se lee, "legible": false.
+Responde SOLO con JSON: {"legible":true,"valor":"29.4","unidad":"Ω|kΩ|MΩ|V AC|V DC|mV|A|mA|µF|nF|°C|Hz|null","ol":false,"funcion":"resistencia|continuidad|voltaje AC|voltaje DC|corriente|capacitancia|temperatura|frecuencia|null","texto":"frase corta, ej. 'Medí 29,4 Ω' o 'Marca OL (abierto)'","nota":null}`;
+$("#in-multi").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const box = $("#multi-out"); box.hidden = false;
+  if (!sample || !limits?.images) { box.innerHTML = `<div class="note">Para leer el multímetro falta tu clave de la IA en api/clave.php.</div>`; return; }
+  box.innerHTML = `<div class="note info"><span class="spin" aria-hidden="true"></span> Leyendo la pantalla…</div>`;
+  try {
+    const d = await sample.json(MULTI_PROMPT, { images: [f], modelTier: "default" });
+    if (!d || d.legible === false) { box.innerHTML = `<div class="note">No se lee la pantalla. ${esc(d?.nota || "")} Tómala de frente y sin reflejo.</div>`; return; }
+    const t = d.texto || (d.ol ? "Marca OL (abierto)" : `Medí ${d.valor} ${d.unidad || ""}`.trim());
+    const a = $("#ans"); a.value = (a.value.trim() ? a.value.trim() + ". " : "") + t;
+    box.innerHTML = `<div class="note info">Leí: <b>${esc(t)}</b>${d.funcion ? ` · ${esc(d.funcion)}` : ""}. Ya lo escribí en tu respuesta; revisa que coincida con la pantalla.</div>`;
+  } catch (err) { box.innerHTML = `<div class="note">${esc(errText(err))}</div>`; }
+});
+
+/* ===================== REVISAR TARJETA ===================== */
+const PCB_PROMPT = `Eres técnico en electrónica de línea blanca (tarjetas de neveras, lavadoras y secadoras). Revisa la(s) foto(s) de una tarjeta electrónica.
+Reglas: reporta SOLO daños que realmente se vean (quemaduras, carbón, capacitores abombados o con fuga, varistor reventado, fusible ennegrecido, relé derretido u oscurecido, soldaduras frías o agrietadas, pistas levantadas o cortadas, corrosión, humedad, componentes faltantes). Si la foto no permite ver algo, dilo. No inventes. Ubica cada daño con palabras (ej. "esquina superior izquierda, junto al conector blanco de 3 pines").
+Responde SOLO con JSON:
+{"legible":true,"que_es":"qué tarjeta parece (principal, inverter, display) o null","danos":[{"componente":"","ubicacion":"","lo_que_se_ve":"","gravedad":"alta|media|baja"}],"que_medir":["mediciones concretas para confirmar, con el equipo desconectado o energizado según corresponda"],"conclusion":"una o dos frases","nota":"limitaciones de la foto, o null"}`;
+$("#in-pcb").addEventListener("change", async e => {
+  const files = [...e.target.files].slice(0, limits?.images?.maxCount || 1); e.target.value = ""; if (!files.length) return;
+  const box = $("#pcb-out"); box.hidden = false;
+  if (!sample || !limits?.images) { box.innerHTML = `<div class="note">Para revisar la tarjeta falta tu clave de la IA en api/clave.php.</div>`; return; }
+  box.innerHTML = `<div class="note info"><span class="spin" aria-hidden="true"></span> Revisando la tarjeta… (20 a 60 s)</div>`;
+  try {
+    const d = await sample.json(PCB_PROMPT, { images: files, modelTier: "complex" });
+    if (!d || d.legible === false) { box.innerHTML = `<div class="note">No se ve bien la tarjeta. ${esc(d?.nota || "")} Toma la foto más cerca y con luz de frente.</div>`; return; }
+    const dn = (d.danos || []).filter(x => x && x.componente);
+    box.innerHTML = `<div class="panel" style="padding:12px;background:var(--bg)">
+      ${d.que_es ? `<span class="eyebrow">${esc(d.que_es)}</span>` : ""}
+      ${dn.length ? dn.map(x => { const g = ["alta", "media", "baja"].includes(x.gravedad) ? x.gravedad : "media"; const cls = g === "alta" ? "baja" : g === "baja" ? "alta" : "media";
+        return `<div class="causa" style="grid-template-columns:auto 1fr"><div><span class="pill ${cls}">${g}</span></div><div style="min-width:0"><b>${esc(x.componente)}</b> · ${esc(x.ubicacion)}<p>${esc(x.lo_que_se_ve)}</p></div></div>`; }).join("")
+        : `<p style="margin:0">No se ven daños visibles en la foto. Eso no descarta fallas que no se ven (componentes abiertos por dentro).</p>`}
+      ${(d.que_medir || []).length ? `<h3 style="font-size:16px">Qué medir para confirmar</h3>${list(d.que_medir)}` : ""}
+      ${d.conclusion ? `<p style="margin:0"><b>${esc(d.conclusion)}</b></p>` : ""}
+      ${d.nota ? `<p class="sync" style="margin:0">${esc(d.nota)}</p>` : ""}
+      <div class="danger">Descarga los capacitores grandes de la fuente antes de tocar la tarjeta.</div>
+    </div>`;
+  } catch (err) { box.innerHTML = `<div class="note">${esc(errText(err))}</div>`; }
+});
+
+/* ===================== ESTE EQUIPO YA LO REPARASTE ===================== */
+const serieKey = s => norm(s).replace(/[^a-z0-9]/g, "");
+function sameUnit(P, excludeId) {
+  const s = serieKey(P?.placa?.serie || ""); if (s.length < 5) return [];
+  return VISITS.filter(v => v.id !== excludeId && serieKey(v.caso?.placa?.placa?.serie || "") === s).sort((a, b) => b.id - a.id);
+}
+const COP = n => Number(n || 0).toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 });
+const daysAgo = id => Math.floor((Date.now() - id) / 864e5);
+function unitHistory(list) {
+  return list.slice(0, 3).map(v => {
+    const dx = [...v.turns].reverse().find(t => t.diagnostico)?.diagnostico;
+    return `${new Date(v.fecha).toLocaleDateString("es-CO")} (hace ${daysAgo(v.id)} días): ${v.resultado === "ok" ? "REPARADO — " : "sin cerrar — "}${dx ? dx.falla_principal : "sin diagnóstico"}${v.garantia_dias ? `; garantía ${v.garantia_dias} días` : ""}`;
+  });
+}
+function unitAlertHTML(list) {
+  if (!list.length) return "";
+  const v = list[0], left = v.garantia_dias ? v.garantia_dias - daysAgo(v.id) : null;
+  const gar = v.resultado === "ok" && left !== null ? (left >= 0 ? `<b>En garantía:</b> le quedan ${left} días.` : `Garantía vencida hace ${-left} días.`) : "";
+  return `<div class="note ${left !== null && left >= 0 ? "" : "info"}"><b>Ya atendiste este equipo</b> (misma serie).<ul class="list" style="margin-top:4px">${unitHistory(list).map(t => `<li>${esc(t)}</li>`).join("")}</ul>${gar}<div class="sync">Si es la misma falla, el guía buscará la causa raíz.</div></div>`;
+}
+
+/* ===================== CIERRE: COBRO Y GARANTÍA ===================== */
+function showClose() {
+  $("#result").innerHTML = `<div class="panel" id="close">
+    <h3>Reparado. ¿Anotas el cobro?</h3>
+    <p class="sync" style="margin:0">Opcional. Solo lo ves tú; sirve para tus cuentas del mes y para avisarte de garantías.</p>
+    <div class="grid3">
+      <label class="f">Cobré ($)<input type="text" inputmode="numeric" id="cl-cobro" autocomplete="off" placeholder="Ej. 180000"></label>
+      <label class="f">Repuestos ($)<input type="text" inputmode="numeric" id="cl-costo" autocomplete="off" placeholder="Ej. 60000"></label>
+      <label class="f">Garantía<select id="cl-gar"><option value="0">Sin garantía</option><option value="30">30 días</option><option value="60">60 días</option><option value="90" selected>90 días</option><option value="180">6 meses</option></select></label>
+    </div>
+    <div class="row"><button class="btn" type="button" id="cl-save">Guardar</button><button class="btn ghost" type="button" id="cl-skip">Ahora no</button></div>
+  </div>`;
+  const money = id => { const v = $("#" + id).value.replace(/[^0-9]/g, ""); return v ? parseInt(v, 10) : null; };
+  $("#cl-save").onclick = () => {
+    visit.cobro = money("cl-cobro"); visit.costo = money("cl-costo"); visit.garantia_dias = +$("#cl-gar").value || null;
+    saveVisit();
+    $("#result").innerHTML = `<div class="note info">Guardado.${visit.cobro ? ` Ganancia: <b>${COP((visit.cobro || 0) - (visit.costo || 0))}</b>.` : ""}${visit.garantia_dias ? ` Garantía hasta el ${new Date(visit.id + visit.garantia_dias * 864e5).toLocaleDateString("es-CO")}.` : ""}</div>`;
+  };
+  $("#cl-skip").onclick = () => { $("#result").innerHTML = `<div class="note info">Listo. Visita guardada como <b>reparada</b>.</div>`; };
+}
+
+/* ===================== PASOS DEL INICIO ===================== */
+function updateSteps() {
+  const s1 = !!PLACA || !!$("#modelo").value.trim();
+  const s2 = !!($("#desc").value.trim() || $("#codigo").value.trim() || pend.audio || pend.frames.length || pend.photos.some(p => p.label !== "etiqueta"));
+  $("#st1").classList.toggle("done", s1); $("#st2").classList.toggle("done", s2);
+}
+["desc", "codigo", "modelo"].forEach(id => $("#" + id).addEventListener("input", updateSteps));
+document.addEventListener("tg:pend", updateSteps);
+try { $("#howto").hidden = localStorage.getItem("tg_howto") === "1"; } catch { $("#howto").hidden = false; }
+$("#howto-ok").addEventListener("click", () => { $("#howto").hidden = true; try { localStorage.setItem("tg_howto", "1"); } catch {} });
+
+/* ===================== CONTINUAR VISITA ===================== */
+let skipResume = null;
+function offerResume() {
+  const box = $("#resume"); if (!box) return;
+  const v = VISITS.find(x => x.id !== skipResume && !x.resultado && (x.turns || []).length && Date.now() - x.id < 3 * 864e5);
+  if (!v || visit || $("#start").hidden) { box.hidden = true; return; }
+  const last = v.turns[v.turns.length - 1];
+  const what = last.diagnostico ? "Diagnóstico: " + last.diagnostico.falla_principal : "Paso " + v.turns.length + ": " + (last.paso?.titulo || "");
+  box.hidden = false;
+  box.innerHTML = `<div class="note info row" style="justify-content:space-between"><span style="min-width:0"><b>Visita sin terminar</b> · ${esc([v.caso.placa?.equipo?.descripcion || v.caso.tipo.split(" (")[0], v.caso.modelo].filter(Boolean).join(" · "))}<br><span class="sync">${esc(what)}</span></span><button class="btn" type="button" id="resume-go" style="padding:8px 14px">Continuar</button></div>`;
+  $("#resume-go").onclick = () => {
+    visit = v; clearPend(); keepAwake(true);
+    $("#start").hidden = true; $("#session").hidden = false; $("#result").innerHTML = ""; box.hidden = true;
+    setCaseHeader(v.caso); renderVisit(!sample);
+  };
+}
+
+/* ===================== VOZ, CRONÓMETRO Y PANTALLA ===================== */
+const hasVoice = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+const voiceOn = () => hasVoice && store.get("tg_voice", false);
+function speak(text) {
+  if (!hasVoice) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const vs = speechSynthesis.getVoices();
+    u.voice = vs.find(v => /es[-_]CO/i.test(v.lang)) || vs.find(v => /es[-_](419|MX|US)/i.test(v.lang)) || vs.find(v => /^es/i.test(v.lang)) || null;
+    u.lang = u.voice?.lang || "es-CO"; u.rate = 1;
+    speechSynthesis.speak(u);
+  } catch {}
+}
+function speakStep(t) {
+  if (t.diagnostico) { const d = t.diagnostico; speak(`Diagnóstico: ${d.falla_principal}. Confirmado por: ${d.confirmado_por || ""}.`); return; }
+  const s = t.paso; if (!s) return;
+  speak([`Paso ${visit.turns.length}. ${s.titulo}.`, s.instruccion, s.valor_esperado && "Cómo interpretar: " + s.valor_esperado, s.seguridad && "Cuidado: " + s.seguridad].filter(Boolean).join(" "));
+}
+function toolsHTML(s) {
+  const m = /(\d{1,3})\s*(min|minuto)/i.exec((s.instruccion || "") + " " + (s.valor_esperado || ""));
+  const sug = m ? Math.min(180, +m[1]) : null;
+  const presets = [...new Set([sug, 1, 5, 10, 20].filter(Boolean))].slice(0, 5);
+  return `<div class="tools">
+    ${hasVoice ? `<button type="button" data-act="read">Leer en voz alta</button><button type="button" data-act="voice" class="${voiceOn() ? "on" : ""}" aria-pressed="${voiceOn()}">Voz automática</button>` : ""}
+    <span class="sync" style="margin-left:auto">Cronómetro</span>
+    ${presets.map(p => `<button type="button" data-min="${p}" class="${p === sug ? "on" : ""}">${p} min</button>`).join("")}
+    <span class="timer" id="timer" hidden></span><button type="button" data-act="tstop" id="tstop" hidden>Parar</button>
+  </div>`;
+}
+let timerId = null, timerEnd = 0;
+function stopTimer(silent) {
+  clearInterval(timerId); timerId = null;
+  if (silent) return;
+  const t = $("#timer"); if (t) { t.hidden = true; } const b = $("#tstop"); if (b) b.hidden = true;
+}
+function beep() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext, ac = new AC();
+    [0, 0.35, 0.7].forEach(off => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.value = 880; o.connect(g); g.connect(ac.destination);
+      g.gain.setValueAtTime(0.0001, ac.currentTime + off); g.gain.exponentialRampToValueAtTime(0.4, ac.currentTime + off + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + off + 0.25);
+      o.start(ac.currentTime + off); o.stop(ac.currentTime + off + 0.3);
+    });
+    setTimeout(() => ac.close(), 1500);
+  } catch {}
+  try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch {}
+}
+function startTimer(min) {
+  stopTimer(true); timerEnd = Date.now() + min * 60000;
+  const t = $("#timer"), b = $("#tstop"); if (!t) return;
+  t.hidden = false; b.hidden = false; t.classList.remove("done");
+  const tick = () => {
+    const left = Math.max(0, Math.round((timerEnd - Date.now()) / 1000));
+    const el = $("#timer"); if (!el) return stopTimer(true);
+    el.textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
+    if (!left) { stopTimer(true); el.classList.add("done"); el.textContent = "¡Listo!"; beep(); speak("Tiempo cumplido."); }
+  };
+  tick(); timerId = setInterval(tick, 500);
+}
+$("#step").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.min) { $$("#step .tools [data-min]").forEach(x => x.classList.toggle("on", x === b)); startTimer(+b.dataset.min); }
+  else if (b.dataset.act === "read") { const last = visit?.turns[visit.turns.length - 1]; if (last) speakStep(last); }
+  else if (b.dataset.act === "voice") { const on = !voiceOn(); store.set("tg_voice", on); b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); if (!on) try { speechSynthesis.cancel(); } catch {} }
+  else if (b.dataset.act === "tstop") { stopTimer(); }
+});
+let wakeLock = null, wantAwake = false;
+async function keepAwake(on) {
+  wantAwake = on;
+  try {
+    if (on && !wakeLock && navigator.wakeLock) { wakeLock = await navigator.wakeLock.request("screen"); wakeLock.addEventListener("release", () => { wakeLock = null; }); }
+    if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+  } catch { wakeLock = null; }
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && wantAwake) keepAwake(true); });
+
+/* ===================== RESPALDO ===================== */
+let downloads = null;
+(async () => { try { if (window.claude && claude.use) downloads = await claude.use("downloads"); } catch {} $("#backup").hidden = !downloads; })();
+$("#backup").addEventListener("click", async () => {
+  if (!downloads) return;
+  try {
+    await downloads.save({ filename: `tecniguia-respaldo-${new Date().toISOString().slice(0, 10)}.json`, data: JSON.stringify(VISITS, null, 2) });
+    $("#backup-msg").textContent = "Respaldo listo.";
+  } catch { $("#backup-msg").textContent = "No se descargó el respaldo."; }
+});
+
+/* ===================== HISTORIAL ===================== */
+const clean = v => JSON.parse(JSON.stringify(v));
+function setSync(t) { const el = $("#sync"); if (el) el.textContent = t; }
+async function saveVisit() {
+  const v = clean(visit);
+  VISITS = [v, ...VISITS.filter(x => x.id !== v.id)].slice(0, 300);
+  store.set("tg_visits", VISITS.slice(0, 80));
+  if (!db) { setSync("Guardado solo en este dispositivo."); return; }
+  try { await db.collection("visitas").doc(String(v.id)).set(v); setSync("Guardado en tu cuenta de Claude: lo ves en el celular y en el computador."); }
+  catch { setSync("No se pudo guardar en la nube; quedó en este dispositivo."); }
+}
+async function syncVisits() {
+  if (!db) { setSync("Guardado solo en este dispositivo."); return; }
+  try {
+    const snap = await db.collection("visitas").orderBy("id", "desc").limit(300).get();
+    const remote = snap.docs.map(d => d.data()).filter(v => v && v.id);
+    const byId = new Map(remote.map(v => [v.id, v]));
+    const localOnly = VISITS.filter(v => !byId.has(v.id));
+    for (const v of localOnly) { byId.set(v.id, v); db.collection("visitas").doc(String(v.id)).set(clean(v)).catch(() => {}); }
+    VISITS = [...byId.values()].sort((a, b) => b.id - a.id);
+    store.set("tg_visits", VISITS.slice(0, 80));
+    setSync(`Guardado en tu cuenta de Claude · ${VISITS.length} visita(s).`);
+    if (!$("#v-historial").hidden) renderHist();
+    offerResume();
+  } catch { setSync("Sin conexión a la nube; mostrando lo guardado en este dispositivo."); }
+}
+function renderStats() {
+  const h = VISITS, box = $("#stats");
+  const dxOf = v => [...(v.turns || [])].reverse().find(t => t.diagnostico)?.diagnostico;
+  const withDx = h.filter(dxOf), ok = h.filter(v => v.resultado === "ok");
+  box.hidden = !h.length; if (!h.length) return;
+  const stepsToDx = withDx.map(v => v.turns.findIndex(t => t.diagnostico) + 1);
+  const avg = stepsToDx.length ? stepsToDx.reduce((a, b) => a + b, 0) / stepsToDx.length : 0;
+  const fails = h.reduce((a, v) => a + (v.descartados || []).length, 0);
+  const count = (arr, key) => { const m = new Map(); arr.forEach(x => { const k = key(x); if (k) m.set(k, (m.get(k) || 0) + 1); }); return [...m].sort((a, b) => b[1] - a[1]).slice(0, 5); };
+  const topFallas = count(ok, v => [v.caso.marca, dxOf(v)?.falla_principal].filter(Boolean).join(" · "));
+  const topTipo = count(h, v => v.caso.tipo.split(" (")[0]);
+  const now = new Date(), ym = d => { const x = new Date(d); return x.getFullYear() * 12 + x.getMonth(); };
+  const thisM = ok.filter(v => ym(v.fecha) === ym(now)), lastM = ok.filter(v => ym(v.fecha) === ym(now) - 1);
+  const sum = (arr, f) => arr.reduce((a, v) => a + (f(v) || 0), 0);
+  const ingM = sum(thisM, v => v.cobro), ganM = sum(thisM, v => (v.cobro || 0) - (v.costo || 0)), ingL = sum(lastM, v => v.cobro);
+  const enGar = ok.filter(v => v.garantia_dias && v.garantia_dias - daysAgo(v.id) >= 0).length;
+  const money = ok.some(v => v.cobro);
+  const rankHTML = (rows, total) => rows.map(([k, n]) => `<span>${esc(k)}</span><b class="mono">${n}</b><div class="bar"><i style="width:${Math.round(100 * n / Math.max(1, total))}%"></i></div>`).join("");
+  box.innerHTML = `<h3>Tu taller</h3>
+    <div class="tiles">
+      <div class="tile"><b>${h.length}</b><span>visitas</span></div>
+      <div class="tile"><b>${ok.length}</b><span>reparadas y confirmadas</span></div>
+      <div class="tile"><b>${withDx.length ? Math.round(100 * ok.length / withDx.length) : 0}%</b><span>diagnósticos que resolvieron</span></div>
+      <div class="tile"><b>${avg ? avg.toLocaleString("es-CO", { maximumFractionDigits: 1 }) : "–"}</b><span>pruebas promedio hasta el diagnóstico</span></div>
+    </div>
+    ${money ? `<h3 style="font-size:16px">Cuentas de ${now.toLocaleDateString("es-CO", { month: "long" })}</h3>
+    <div class="tiles">
+      <div class="tile"><b style="font-size:22px">${COP(ingM)}</b><span>cobrado este mes${ingL ? ` · mes pasado ${COP(ingL)}` : ""}</span></div>
+      <div class="tile"><b style="font-size:22px">${COP(ganM)}</b><span>ganancia (cobro − repuestos)</span></div>
+      <div class="tile"><b>${thisM.length}</b><span>reparaciones este mes</span></div>
+      <div class="tile"><b>${enGar}</b><span>equipos en garantía</span></div>
+    </div>` : ""}
+    ${fails ? `<p class="sync" style="margin:0">${fails} diagnóstico(s) no resolvieron; el guía ya no los repite sin nueva evidencia.</p>` : ""}
+    ${topFallas.length ? `<h3 style="font-size:16px">Fallas que más reparas</h3><div class="rank">${rankHTML(topFallas, ok.length)}</div>` : ""}
+    ${topTipo.length ? `<h3 style="font-size:16px">Equipos que más atiendes</h3><div class="rank">${rankHTML(topTipo, h.length)}</div>` : ""}`;
+}
+function renderHist() {
+  renderStats();
+  const h = VISITS;
+  $("#wipe").hidden = !h.length;
+  if (!h.length) { $("#hist").innerHTML = `<p class="lead">Aún no hay visitas guardadas. Cada visita guiada aparece aquí con sus pruebas y el resultado.</p>`; return; }
+  $("#hist").innerHTML = h.map((v, i) => {
+    const last = v.turns[v.turns.length - 1] || {}, dx = v.turns.find(t => t.diagnostico)?.diagnostico;
+    const title = dx ? dx.falla_principal : (last.hipotesis?.[0]?.falla ? "En curso: " + last.hipotesis[0].falla : "Visita sin terminar");
+    const tag = v.resultado === "ok" ? '<span class="pill alta">Reparado</span>' : dx ? '<span class="pill media">Diagnosticado</span>' : '<span class="pill">En curso</span>';
+    return `<div class="hist-row"><button type="button" class="hist-item" data-i="${i}"><span style="min-width:0"><b>${esc(title)}</b><br><span class="eyebrow">${esc([v.caso.tipo.split(" (")[0], v.caso.marca, v.caso.modelo].filter(Boolean).join(" · "))} · ${v.turns.length} pasos</span></span><span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${tag}<span class="eyebrow mono">${new Date(v.fecha).toLocaleDateString("es-CO")}</span></span></button><button type="button" class="hist-del" data-del="${v.id}" aria-label="Borrar esta visita">Borrar</button></div>`;
+  }).join("");
+}
+async function deleteVisits(ids) {
+  const set = new Set(ids.map(Number));
+  VISITS = VISITS.filter(v => !set.has(v.id));
+  store.set("tg_visits", VISITS.slice(0, 80));
+  if (visit && set.has(visit.id)) visit = null;
+  if (db) for (const id of set) { try { await db.collection("visitas").doc(String(id)).delete(); } catch {} }
+  renderHist(); offerResume();
+}
+$("#wipe").addEventListener("click", () => { $("#wipe-confirm").hidden = false; $("#wipe-confirm").scrollIntoView({ behavior: "smooth", block: "center" }); });
+$("#wipe-no").addEventListener("click", () => { $("#wipe-confirm").hidden = true; });
+$("#wipe-yes").addEventListener("click", async () => {
+  $("#wipe-confirm").hidden = true;
+  await deleteVisits(VISITS.map(v => v.id));
+  try { localStorage.removeItem("tg_visits"); localStorage.removeItem("tg_draft"); } catch {}
+  $("#backup-msg").textContent = "Historial borrado.";
+});
+$("#hist").addEventListener("click", e => {
+  const del = e.target.closest(".hist-del");
+  if (del) {   // primer toque pide confirmar, segundo borra
+    if (!del.classList.contains("sure")) { $$(".hist-del.sure").forEach(x => { x.classList.remove("sure"); x.textContent = "Borrar"; }); del.classList.add("sure"); del.textContent = "¿Seguro? Toca otra vez"; return; }
+    deleteVisits([del.dataset.del]); return;
+  }
+  const b = e.target.closest(".hist-item"); if (!b) return;
+  const v = VISITS[+b.dataset.i]; if (!v) return;
+  visit = v; clearPend();
+  showTab("diag");
+  $("#start").hidden = true; $("#session").hidden = false; $("#result").innerHTML = "";
+  setCaseHeader(v.caso);
+  renderVisit(!sample || v.resultado === "ok");
+});
+
+const t0tab = store.get("tg_tab", "diag"); if (t0tab !== "diag") showTab(t0tab);
+})();
+</script>
+
+</body>
+</html>

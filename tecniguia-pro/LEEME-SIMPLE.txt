@@ -1,0 +1,23 @@
+TECNIGUÍA PERSONAL — SIN CUENTA NI BASE DE DATOS
+
+1. En Hostinger, abre el Administrador de archivos y entra a la carpeta
+   donde la quieres (ej. public_html o la carpeta de un subdominio).
+2. Sube tecniguia.zip y dale clic derecho -> Extraer.
+3. Abre tu página: la app abre de una, sin pedir nada.
+   Ya funcionan: códigos de error, síntomas, mediciones, calculadoras,
+   análisis de sonido e historial (se guarda en tu celular).
+
+PARA ACTIVAR LA IA (diagnóstico guiado, foto de la etiqueta, multímetro):
+4. Saca tu clave en https://console.anthropic.com
+   (Billing: carga saldo -> API Keys -> Create Key -> copia la clave sk-ant-...).
+5. En el Administrador de archivos abre la carpeta api -> clave.php -> Editar.
+6. Pega la clave entre las comillas:
+      define('ANTHROPIC_API_KEY', 'sk-ant-TU-CLAVE');
+   Guarda. Listo.
+
+RECOMENDADO: en ese mismo archivo pon un código en CODIGO_ACCESO
+(ej. '4821'). La app te lo pide una sola vez en tu celular y así nadie
+más puede gastar tu saldo si encuentra tu página.
+
+Si el diagnóstico se corta: hPanel -> Avanzado -> Configuración de PHP ->
+max_execution_time = 300.

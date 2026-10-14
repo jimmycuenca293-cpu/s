@@ -1,0 +1,11 @@
+# Solo se puede abrir ia.php; clave.php y las librerías quedan cerradas.
+<FilesMatch "\.(php)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^ia\.php$">
+  Require all granted
+</FilesMatch>
+<FilesMatch "\.(json|lock|md|txt|dist|xml)$">
+  Require all denied
+</FilesMatch>
+Options -Indexes
