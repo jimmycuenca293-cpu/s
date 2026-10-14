@@ -134,6 +134,13 @@ details.sym .body{padding:0 14px 14px;display:flex;flex-direction:column;gap:10p
 .scan input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
 .scan strong{font-family:var(--f-display);font-size:19px;text-transform:uppercase;letter-spacing:.03em;display:block}
 .scan small{color:var(--muted);font-size:12.5px}
+.scan.big{padding:18px 16px;border-width:2px}
+.scan.big strong{font-size:23px}
+.scan.done{background:var(--panel)}
+details.mini summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:14px}
+.ficha-eq{display:flex;flex-direction:column;gap:10px}
+.ficha-eq .desc{font-family:var(--f-display);font-size:22px;font-weight:700;line-height:1.15;text-wrap:balance}
+.src{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .scan svg{flex:0 0 auto;width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:1.8}
 .placa{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 12px;font-size:13.5px}
 .placa div span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
@@ -180,80 +187,84 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
 <section class="view" id="v-diag">
   <div>
     <h2>Visita guiada</h2>
-    <p class="lead">Dime qué tiene el equipo. Te voy a pedir una prueba a la vez (medir, mirar, escuchar o tomar una foto) hasta confirmar la falla. No te doy un daño por seguro hasta que una prueba lo confirme.</p>
+    <p class="lead">Foto de la etiqueta, escribe el daño y listo. Te pido una prueba a la vez hasta confirmar la falla.</p>
   </div>
 
   <div class="note info" id="ai-off" hidden>La visita guiada funciona cuando abres esta app dentro de Claude. Sin conexión puedes usar <b>Códigos de error</b> y <b>Por síntoma</b>, y el análisis de sonido funciona igual.</div>
 
   <!-- Inicio de la visita -->
-  <div id="start" style="display:flex;flex-direction:column;gap:16px">
+  <div id="start" style="display:flex;flex-direction:column;gap:14px">
+    <label class="scan big" id="scan-box">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3"/><path d="M7 9h10M7 12h7M7 15h9"/></svg>
+      <span><strong id="scan-title">Foto de la etiqueta</strong><small id="scan-sub">La etiqueta con el modelo (dentro de la nevera, en la puerta o atrás de la lavadora). Con eso sé qué equipo es.</small></span>
+      <input type="file" id="in-placa" accept="image/*" capture="environment">
+    </label>
+    <div id="placa-out" hidden></div>
+
     <div class="panel">
-      <h3>1 · Equipo</h3>
-      <label class="scan" id="scan-box">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3"/><path d="M7 9h10M7 12h7M7 15h9"/></svg>
-        <span><strong>Escanear placa</strong><small>Foto de la etiqueta del equipo: lleno marca, modelo, voltaje y refrigerante por ti</small></span>
-        <input type="file" id="in-placa" accept="image/*" capture="environment">
+      <label class="f" style="font-size:15px;color:var(--ink);font-weight:600">¿Qué daño tiene?
+        <textarea id="desc" placeholder="Ej. No enfría abajo, el congelador sí. Suena el compresor." style="font-weight:400"></textarea>
       </label>
-      <div id="placa-out" hidden></div>
-      <div class="seg" id="tipo" role="group" aria-label="Tipo de electrodoméstico">
-        <button type="button" data-v="nevera" aria-pressed="true">Nevera</button>
-        <button type="button" data-v="nevecón (side by side / french door)" aria-pressed="false">Nevecón</button>
-        <button type="button" data-v="lavadora" aria-pressed="false">Lavadora</button>
-        <button type="button" data-v="secadora" aria-pressed="false">Secadora</button>
-        <button type="button" data-v="lavasecadora" aria-pressed="false">Lavasecadora</button>
-      </div>
-      <div class="grid2">
-        <label class="f">Marca
-          <select id="marca">
-            <option value="">— Sin especificar —</option>
-            <option>Samsung</option><option>LG</option><option>Whirlpool</option><option>Mabe</option><option>GE</option>
-            <option>Electrolux</option><option>Frigidaire</option><option>Haceb</option><option>Challenger</option>
-            <option>Midea</option><option>Indurama</option><option>Kalley</option><option>Otra</option>
-          </select>
-        </label>
-        <label class="f">Modelo completo (de la placa)
-          <input type="text" id="modelo" placeholder="Ej. RT38K5930SL/CO, WM3400CW" autocomplete="off">
-        </label>
-        <label class="f">Código de error en pantalla
-          <input type="text" id="codigo" placeholder="Ej. 5E, OE, F8E1, Er FF" autocomplete="off">
-        </label>
-        <label class="f">Años de uso aprox.
-          <input type="text" id="edad" placeholder="Ej. 6" inputmode="numeric" autocomplete="off">
-        </label>
-      </div>
-      <label class="f">¿Qué hace el equipo? ¿Qué ya revisaste?
-        <textarea id="desc" placeholder="Ej. El congelador enfría bien pero abajo no enfría. El compresor trabaja. No se oye el ventilador del congelador. Ya limpié el condensador."></textarea>
+      <label class="f">Código en pantalla (si hay)
+        <input type="text" id="codigo" placeholder="Ej. 22E, OE, F8E1" autocomplete="off" style="max-width:220px">
       </label>
       <div id="code-quick" hidden></div>
+      <details class="mini" id="more">
+        <summary>Agregar foto, video o sonido del daño</summary>
+        <div class="capture" style="margin-top:10px">
+          <label class="cap" data-cap="foto"><strong>Fotos</strong><small>Tarjeta, pantalla, pieza dañada</small>
+            <input type="file" class="in-foto" accept="image/*" multiple></label>
+          <label class="cap" data-cap="video"><strong>Video</strong><small>Imágenes y sonido</small>
+            <input type="file" class="in-video" accept="video/*" capture="environment"></label>
+          <label class="cap" data-cap="audio"><strong>Sonido</strong><small>De cerca, sin hablar</small>
+            <input type="file" class="in-audio" accept="audio/*,video/*" capture></label>
+        </div>
+        <div class="thumbs"></div>
+        <div class="audio-box" hidden></div>
+      </details>
+      <details class="mini" id="manual">
+        <summary>Sin etiqueta: escribir el equipo a mano</summary>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+          <div class="seg" id="tipo" role="group" aria-label="Tipo de electrodoméstico">
+            <button type="button" data-v="nevera" aria-pressed="false">Nevera</button>
+            <button type="button" data-v="nevecón (side by side / french door)" aria-pressed="false">Nevecón</button>
+            <button type="button" data-v="lavadora" aria-pressed="false">Lavadora</button>
+            <button type="button" data-v="secadora" aria-pressed="false">Secadora</button>
+            <button type="button" data-v="lavasecadora" aria-pressed="false">Lavasecadora</button>
+          </div>
+          <div class="grid2">
+            <label class="f">Marca
+              <select id="marca">
+                <option value="">— Sin especificar —</option>
+                <option>Samsung</option><option>LG</option><option>Whirlpool</option><option>Mabe</option><option>GE</option>
+                <option>Electrolux</option><option>Frigidaire</option><option>Haceb</option><option>Challenger</option>
+                <option>Midea</option><option>Indurama</option><option>Kalley</option><option>Otra</option>
+              </select>
+            </label>
+            <label class="f">Modelo
+              <input type="text" id="modelo" placeholder="Ej. RT38K5930SL" autocomplete="off">
+            </label>
+            <label class="f">Años de uso aprox.
+              <input type="text" id="edad" placeholder="Ej. 6" inputmode="numeric" autocomplete="off">
+            </label>
+          </div>
+        </div>
+      </details>
     </div>
 
-    <div class="panel">
-      <h3>2 · Evidencia <span style="text-transform:none;font-family:var(--f-body);font-size:13px;color:var(--muted);font-weight:400">(opcional)</span></h3>
-      <div class="capture">
-        <label class="cap" data-cap="foto"><strong>Fotos</strong><small>Placa del modelo, tarjeta, pantalla, pieza dañada</small>
-          <input type="file" class="in-foto" accept="image/*" multiple></label>
-        <label class="cap" data-cap="video"><strong>Video</strong><small>Equipo funcionando: sacamos imágenes y sonido</small>
-          <input type="file" class="in-video" accept="video/*" capture="environment"></label>
-        <label class="cap" data-cap="audio"><strong>Sonido</strong><small>De cerca, 10 a 30 s, sin hablar</small>
-          <input type="file" class="in-audio" accept="audio/*,video/*" capture></label>
-      </div>
-      <div class="thumbs"></div>
-      <div class="audio-box" hidden></div>
-    </div>
-
-    <label class="row" style="gap:10px;font-size:14px;cursor:pointer">
-      <input type="checkbox" id="precise" checked style="width:18px;height:18px">
-      <span><b>Precisión máxima.</b> Piensa más cada paso (30 a 90 s). Desmárcalo si necesitas ir rápido.</span>
-    </label>
-    <div class="row">
-      <button class="btn" id="go" type="button">Empezar diagnóstico</button>
+    <div class="row" style="justify-content:space-between">
+      <button class="btn" id="go" type="button" style="flex:1 1 auto;max-width:360px">Empezar diagnóstico</button>
+      <label class="row" style="gap:8px;font-size:13px;cursor:pointer;color:var(--muted)">
+        <input type="checkbox" id="precise" checked style="width:18px;height:18px">
+        <span>Precisión máxima (más lento)</span>
+      </label>
     </div>
   </div>
 
   <!-- Visita en curso -->
   <div id="session" hidden style="display:flex;flex-direction:column;gap:16px">
     <div class="panel" style="flex-direction:row;flex-wrap:wrap;justify-content:space-between;align-items:center">
-      <div style="min-width:0"><span class="eyebrow">Equipo</span><div id="case-sum" style="font-weight:600"></div></div>
+      <div style="min-width:0;flex:1 1 220px"><span class="eyebrow">Equipo</span><div id="case-sum" style="font-weight:600"></div><div id="case-ficha"></div></div>
       <button class="btn ghost" type="button" id="reset">Nueva visita</button>
     </div>
     <div id="casos"></div>
@@ -1103,10 +1114,11 @@ Si no apruebas: "aprobado":false y "paso":{"tipo":"medir|observar|escuchar|foto|
 
 function caseText(c) {
   return [
-    `Tipo de equipo: ${c.tipo}`, `Marca: ${c.marca || "no indicada"}`, `Modelo: ${c.modelo || "no indicado"}`,
+    `Tipo de equipo: ${c.tipo || "no indicado (dedúcelo de la etiqueta o la descripción; si no se puede, pregúntalo)"}`, `Marca: ${c.marca || "no indicada"}`, `Modelo: ${c.modelo || "no indicado"}`,
     `Código de error: ${c.codigo || "ninguno"}`, `Años de uso: ${c.edad || "no indicado"}`,
     `Lo que hace y lo que ya revisó el técnico: ${c.desc || "no indicado"}`,
-    c.placa ? `Datos leídos de la placa: ${JSON.stringify(c.placa)}` : "",
+    c.placa ? `Datos leídos de la etiqueta (impresos): ${JSON.stringify(c.placa.placa || c.placa)}` : "",
+    c.placa?.equipo ? `Conocimiento del modelo (no confirmado en este equipo): ${JSON.stringify(c.placa.equipo)}` : "",
     c.refCodigo ? `Base de referencia local para ese código (puede variar por serie): ${c.refCodigo}` : ""
   ].filter(Boolean).join("\n");
 }
@@ -1123,7 +1135,7 @@ function transcript(v) {
 
 $("#go").addEventListener("click", () => {
   const c = { tipo: tipoSel(), marca: $("#marca").value, modelo: $("#modelo").value.trim(), codigo: $("#codigo").value.trim(), edad: $("#edad").value.trim(), desc: $("#desc").value.trim() };
-  if (!c.desc && !c.codigo && !pend.photos.length && !pend.frames.length && !pend.audio) { flash("Escribe qué hace el equipo o el código, o agrega una foto o un sonido."); return; }
+  if (!c.desc && !c.codigo && !pend.audio && !pend.photos.some(p => p.label !== "etiqueta") && !pend.frames.length) { flash("Escribe el daño o el código."); $("#desc").focus(); return; }
   if (!sample) { localFallback(c); return; }
   if (c.codigo) {
     const hits = findCodes(c.codigo, c.marca, tipoBase()).filter(x => x.c.some(y => sameCode(y, c.codigo)));
@@ -1133,7 +1145,7 @@ $("#go").addEventListener("click", () => {
   visit = { id: Date.now(), fecha: new Date().toISOString(), caso: c, turns: [], resultado: null };
   keepAwake(true);
   $("#start").hidden = true; $("#session").hidden = false;
-  $("#case-sum").textContent = [c.tipo.split(" (")[0], c.marca, c.modelo, c.codigo && "código " + c.codigo].filter(Boolean).join(" · ");
+  setCaseHeader(c);
   $("#result").innerHTML = ""; $("#step").innerHTML = ""; $("#seen").innerHTML = ""; $("#hyp-box").hidden = true;
   $("#casos").innerHTML = casosHTML(similarCases(c, visit.id));
   const firstNote = [pend.audio ? "Adjunté sonido." : "", (pend.photos.length + pend.frames.length) ? "Adjunté imágenes." : ""].filter(Boolean).join(" ");
@@ -1229,6 +1241,10 @@ ${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: "complex", c
 }
 $("#stop").addEventListener("click", () => ctl?.abort());
 
+function setCaseHeader(c) {
+  $("#case-sum").textContent = [c.placa?.equipo?.descripcion || c.tipo.split(" (")[0], c.marca, c.modelo, c.codigo && "código " + c.codigo].filter(Boolean).join(" · ");
+  $("#case-ficha").innerHTML = c.placa?.placa ? fichaHTML(c.placa, true) : "";
+}
 function tipoOf(t) { const b = t.split(" ")[0]; return b === "nevecón" ? "nevera" : b; }
 const TIPO_LABEL = { medir: "Medir", observar: "Observar", escuchar: "Escuchar", foto: "Tomar foto", sonido: "Grabar sonido", pregunta: "Pregunta", prueba: "Prueba" };
 function list(arr, ordered) {
@@ -1326,7 +1342,9 @@ $("#cant").addEventListener("click", () => {
 });
 $("#reset").addEventListener("click", () => {
   ctl?.abort(); visit = null; clearPend(); stopTimer(true); keepAwake(false); try { speechSynthesis.cancel(); } catch {}
-  PLACA = null; $("#placa-out").hidden = true;
+  PLACA = null; $("#placa-out").hidden = true; $("#scan-box").classList.remove("done");
+  $("#scan-title").textContent = "Foto de la etiqueta"; $("#scan-sub").textContent = "La etiqueta con el modelo (dentro de la nevera, en la puerta o atrás de la lavadora). Con eso sé qué equipo es.";
+  $("#more").open = false; $("#manual").open = false;
   $("#session").hidden = true; $("#start").hidden = false; $("#result").innerHTML = "";
   fieldIds.forEach(id => $("#" + id).value = ""); store.set("tg_draft", null); quickCode();
   window.scrollTo({ top: 0 });
@@ -1350,33 +1368,61 @@ function localFallback(c) {
 
 /* ===================== ESCANEAR PLACA ===================== */
 let PLACA = null;
-const PLACA_PROMPT = `La imagen es la etiqueta o placa de datos de un electrodoméstico (nevera, nevecón, lavadora o secadora). Transcribe EXACTAMENTE lo que está impreso. No adivines ni completes datos: si un campo no aparece o no se lee con seguridad, pon null.
+const PLACA_PROMPT = `La imagen es la etiqueta o placa de datos de un electrodoméstico (nevera, nevecón, lavadora, secadora o lavasecadora). Un técnico de línea blanca en Colombia la usa para saber exactamente qué equipo está revisando.
+
+PARTE 1 — "placa": transcribe EXACTAMENTE lo impreso. No adivines: si un campo no aparece o no se lee con seguridad, null.
+PARTE 2 — "equipo": lo que se sabe de ese modelo por tu conocimiento técnico (nomenclatura de la marca, línea, tecnología). Reglas:
+- Solo afirma lo que sabes con seguridad para ese modelo o su serie. Si no conoces el modelo, dilo en "nota", pon "confianza":"baja" y da solo lo que se deduce con certeza del tipo de equipo y de la placa.
+- "fallas_frecuentes": fallas conocidas en taller para esa línea o tecnología (máximo 5), no genéricas de cualquier equipo.
+- "modo_prueba": cómo entrar al modo de prueba o autodiagnóstico de ese modelo; null si no estás seguro.
+- "ano_aprox": año de fabricación solo si está impreso o si la marca codifica el año en la serie de forma conocida; si no, null.
+
 Responde SOLO con JSON:
-{"legible":true,"tipo":"nevera|nevecon|lavadora|secadora|lavasecadora|null","marca":null,"modelo":null,"serie":null,"voltaje":null,"frecuencia":null,"corriente":null,"potencia":null,"refrigerante":null,"carga_refrigerante":null,"potencia_deshielo":null,"fecha_fabricacion":null,"otros":null,"nota":"si algo no se lee bien, dilo aquí"}
-"otros": otros datos técnicos útiles impresos (presiones, clase climática, capacidad), en una sola línea.`;
+{"legible":true,"tipo":"nevera|nevecon|lavadora|secadora|lavasecadora","placa":{"marca":null,"modelo":null,"serie":null,"voltaje":null,"frecuencia":null,"corriente":null,"potencia":null,"refrigerante":null,"carga_refrigerante":null,"potencia_deshielo":null,"fecha_fabricacion":null,"otros":null},"equipo":{"descripcion":"ej. Nevecón side by side No Frost con compresor inverter","sistema":null,"compresor_o_motor":null,"control":null,"capacidad":null,"ano_aprox":null,"fallas_frecuentes":[],"modo_prueba":null,"confianza":"alta|media|baja","nota":null}}`;
 const PLACA_LABELS = { marca: "Marca", modelo: "Modelo", serie: "Serie", voltaje: "Voltaje", frecuencia: "Frecuencia", corriente: "Corriente", potencia: "Potencia", refrigerante: "Refrigerante", carga_refrigerante: "Carga de gas", potencia_deshielo: "Deshielo", fecha_fabricacion: "Fabricación", otros: "Otros" };
+const EQ_LABELS = { sistema: "Sistema", compresor_o_motor: "Compresor / motor", control: "Control", capacidad: "Capacidad", ano_aprox: "Año aprox." };
+function fichaHTML(P, compact) {
+  const pl = P.placa || {}, eq = P.equipo || {}, conf = ["alta", "media", "baja"].includes(eq.confianza) ? eq.confianza : "media";
+  const plRows = Object.entries(PLACA_LABELS).filter(([k]) => pl[k]).map(([k, l]) => `<div><span>${l}</span><b>${esc(pl[k])}</b></div>`).join("");
+  const eqRows = Object.entries(EQ_LABELS).filter(([k]) => eq[k]).map(([k, l]) => `<div><span>${l}</span><b>${esc(eq[k])}</b></div>`).join("");
+  const body = `
+    ${plRows ? `<div><div class="src">Leído de la etiqueta</div><div class="placa" style="margin-top:4px">${plRows}</div></div>` : ""}
+    ${eqRows ? `<div><div class="src">Conocimiento del modelo</div><div class="placa" style="margin-top:4px">${eqRows}</div></div>` : ""}
+    ${(eq.fallas_frecuentes || []).length ? `<div><div class="src">Fallas frecuentes de esta línea</div>${list(eq.fallas_frecuentes)}</div>` : ""}
+    ${eq.modo_prueba ? `<div class="note info"><b>Modo de prueba:</b> ${esc(eq.modo_prueba)}</div>` : ""}
+    ${eq.nota ? `<p class="sync" style="margin:0">${esc(eq.nota)}</p>` : ""}`;
+  if (compact) return `<details class="mini" style="margin-top:6px"><summary>Ficha del equipo</summary><div class="ficha-eq" style="margin-top:8px">${body}</div></details>`;
+  return `<div class="panel ficha-eq">
+    <div class="head row" style="justify-content:space-between;align-items:flex-start"><div class="desc">${esc(eq.descripcion || [pl.marca, pl.modelo].filter(Boolean).join(" "))}</div><span class="pill ${conf}">Datos del modelo: ${conf}</span></div>
+    ${body}
+    <p class="sync" style="margin:0">Lo de la etiqueta es lo impreso. Lo del modelo es conocimiento técnico: el guía igual te pide confirmar con pruebas.</p>
+  </div>`;
+}
 $("#in-placa").addEventListener("change", async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;
   const box = $("#placa-out"); box.hidden = false;
-  if (!sample || !limits?.images) { box.innerHTML = `<div class="note">Para leer la placa la app tiene que estar abierta dentro de Claude. Mientras tanto, escribe el modelo a mano.</div>`; return; }
-  box.innerHTML = `<div class="note info"><span class="spin" aria-hidden="true"></span> Leyendo la placa…</div>`;
+  if (!sample || !limits?.images) { box.innerHTML = `<div class="note">Para leer la etiqueta la app tiene que estar abierta dentro de Claude. Usa "Sin etiqueta: escribir el equipo a mano".</div>`; $("#manual").open = true; return; }
+  box.innerHTML = `<div class="note info"><span class="spin" aria-hidden="true"></span> Leyendo la etiqueta y buscando el modelo… (10 a 40 s)</div>`;
   try {
-    const d = await sample.json(PLACA_PROMPT, { images: [f], modelTier: "default" });
-    if (!d || d.legible === false) { box.innerHTML = `<div class="note">No se lee bien la placa. ${esc(d?.nota || "")} Toma la foto de frente, sin reflejo y más cerca.</div>`; return; }
-    PLACA = Object.fromEntries(Object.entries(d).filter(([k, v]) => v !== null && v !== "" && k !== "legible" && k !== "tipo" && k !== "nota"));
-    if (d.marca) {
-      const sel = $("#marca"), opt = [...sel.options].find(o => norm(o.value) && norm(d.marca).includes(norm(o.value)));
-      if (opt) sel.value = opt.value; else { sel.insertAdjacentHTML("beforeend", `<option>${esc(d.marca)}</option>`); sel.value = d.marca; }
+    const d = await sample.json(PLACA_PROMPT, { images: [f], modelTier: $("#precise").checked ? "complex" : "default" });
+    if (!d || d.legible === false || !d.placa) { box.innerHTML = `<div class="note">No se lee bien la etiqueta. ${esc(d?.equipo?.nota || "")} Tómala de frente, sin reflejo del flash y más cerca.</div>`; return; }
+    const pl = d.placa;
+    PLACA = { placa: Object.fromEntries(Object.entries(pl).filter(([, v]) => v !== null && v !== "")), equipo: d.equipo || {}, tipo: d.tipo };
+    if (pl.marca) {
+      const sel = $("#marca"), opt = [...sel.options].find(o => norm(o.value) && norm(pl.marca).includes(norm(o.value)));
+      if (opt) sel.value = opt.value; else { sel.insertAdjacentHTML("beforeend", `<option>${esc(pl.marca)}</option>`); sel.value = pl.marca; }
     }
-    if (d.modelo) $("#modelo").value = d.modelo;
-    const map = { nevera: 0, nevecon: 1, lavadora: 2, secadora: 3, lavasecadora: 4 };
+    if (pl.modelo) $("#modelo").value = pl.modelo;
+    const yr = parseInt(d.equipo?.ano_aprox, 10);
+    if (yr > 1980 && yr <= new Date().getFullYear()) $("#edad").value = String(new Date().getFullYear() - yr);
+    const map = { nevera: 0, nevecon: 1, "nevecón": 1, lavadora: 2, secadora: 3, lavasecadora: 4 };
     if (d.tipo in map) $$("#tipo button")[map[d.tipo]].click();
     $("#modelo").dispatchEvent(new Event("input")); quickCode();
-    pend.photos.push({ blob: f, url: URL.createObjectURL(f), label: "placa" }); renderPend();
-    box.innerHTML = `<div class="panel" style="padding:12px;background:var(--bg)"><h3 style="font-size:16px">Datos de la placa</h3>
-      <div class="placa">${Object.entries(PLACA_LABELS).filter(([k]) => PLACA[k]).map(([k, l]) => `<div><span>${l}</span><b>${esc(PLACA[k])}</b></div>`).join("")}</div>
-      ${d.nota ? `<p class="sync" style="margin:0">${esc(d.nota)}</p>` : ""}
-      <p class="sync" style="margin:0">Revisa que coincida con la etiqueta. Estos datos se envían al guía.</p></div>`;
+    pend.photos = pend.photos.filter(p => p.label !== "etiqueta");
+    pend.photos.push({ blob: f, url: URL.createObjectURL(f), label: "etiqueta" }); renderPend();
+    box.innerHTML = fichaHTML(PLACA);
+    $("#scan-box").classList.add("done"); $("#scan-title").textContent = "Otra foto de la etiqueta"; $("#scan-sub").textContent = "Si algo no coincide con lo impreso, toma otra foto.";
+    $("#desc").focus({ preventScroll: true });
   } catch (err) {
     box.innerHTML = `<div class="note">${esc(errText(err))}</div>`;
   }
@@ -1537,7 +1583,7 @@ $("#hist").addEventListener("click", e => {
   visit = v; clearPend();
   showTab("diag");
   $("#start").hidden = true; $("#session").hidden = false; $("#result").innerHTML = "";
-  $("#case-sum").textContent = [v.caso.tipo.split(" (")[0], v.caso.marca, v.caso.modelo, v.caso.codigo && "código " + v.caso.codigo].filter(Boolean).join(" · ");
+  setCaseHeader(v.caso);
   renderVisit(!sample || v.resultado === "ok");
 });
 
