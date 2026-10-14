@@ -200,10 +200,11 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
       <input type="file" id="in-placa" accept="image/*" capture="environment">
     </label>
     <div id="placa-out" hidden></div>
+    <div id="resume" hidden></div>
 
     <div class="panel">
       <label class="f" style="font-size:15px;color:var(--ink);font-weight:600">¿Qué daño tiene?
-        <textarea id="desc" placeholder="Ej. No enfría abajo, el congelador sí. Suena el compresor." style="font-weight:400"></textarea>
+        <textarea id="desc" placeholder="Ej. No enfría abajo, el congelador sí. Suena el compresor. (Toca el micrófono del teclado para dictar)" style="font-weight:400"></textarea>
       </label>
       <label class="f">Código en pantalla (si hay)
         <input type="text" id="codigo" placeholder="Ej. 22E, OE, F8E1" autocomplete="off" style="max-width:220px">
@@ -274,8 +275,14 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
       <h3 id="answer-title">Tu respuesta</h3>
       <div class="seg" id="opts"></div>
       <label class="f">Lo que encontraste (valor medido, lo que viste u oíste)
-        <textarea id="ans" placeholder="Ej. Marca 0 Ω entre los terminales / no hay continuidad / el ventilador no gira y tiene hielo" style="min-height:70px"></textarea>
+        <textarea id="ans" placeholder="Ej. No hay continuidad / el ventilador no gira y tiene hielo. (Puedes dictar con el micrófono del teclado)" style="min-height:70px"></textarea>
       </label>
+      <label class="scan" id="multi-box" style="padding:10px 12px">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><rect x="8" y="5" width="8" height="5"/><circle cx="12" cy="16" r="2.5"/></svg>
+        <span><strong style="font-size:17px">Foto del multímetro</strong><small>Leo la pantalla y escribo la medida por ti</small></span>
+        <input type="file" id="in-multi" accept="image/*" capture="environment">
+      </label>
+      <div id="multi-out" hidden></div>
       <div class="capture">
         <label class="cap" data-cap="foto"><strong>Foto</strong><small>De lo que te pedí</small>
           <input type="file" class="in-foto" accept="image/*" multiple></label>
@@ -358,6 +365,29 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
         <label class="f">Medido (A)<input type="text" inputmode="decimal" id="am" placeholder="opcional" autocomplete="off"></label>
       </div>
       <div id="a-out" class="calc-out">Escribe la potencia de placa del componente.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Presión y temperatura del gas</h3>
+      <p class="lead" style="font-size:13.5px">Con la lectura del manómetro te da la temperatura de evaporación. Si pones la temperatura del tubo, calcula el sobrecalentamiento.</p>
+      <div class="grid3">
+        <label class="f">Gas<select id="pg"><option value="R134a">R134a</option><option value="R600a">R600a</option></select></label>
+        <label class="f">Unidad<select id="pu"><option value="psig">psig</option><option value="barg">bar (man.)</option><option value="inhg">pulg. Hg vacío</option></select></label>
+        <label class="f">Lectura<input type="text" inputmode="decimal" id="pv" autocomplete="off"></label>
+      </div>
+      <label class="f">Temperatura del tubo de succión, °C (opcional)<input type="text" inputmode="decimal" id="pt" autocomplete="off"></label>
+      <div id="p-out" class="calc-out">Escribe la lectura del manómetro.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Revisar tarjeta electrónica</h3>
+      <p class="lead" style="font-size:13.5px">Foto de la tarjeta por el lado de los componentes, con buena luz. Te digo qué se ve dañado y qué medir.</p>
+      <label class="scan" style="padding:10px 12px">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M7 9h3v3H7zM14 9h3M14 12h3M7 15h10"/></svg>
+        <span><strong style="font-size:17px">Foto de la tarjeta</strong><small>Si tienes el reverso (soldaduras), mándalo también</small></span>
+        <input type="file" id="in-pcb" accept="image/*" multiple>
+      </label>
+      <div id="pcb-out" hidden></div>
     </div>
   </div>
 
@@ -818,6 +848,51 @@ function calcAmp() {
 }
 ["av", "aw", "am"].forEach(id => $("#" + id).addEventListener("input", calcAmp));
 
+/* ---- Presión–temperatura (saturación). Tablas en bar absolutos. ---- */
+const PT = {
+  R134a: [[-40, 0.512], [-30, 0.844], [-26.1, 1.013], [-20, 1.327], [-10, 2.006], [0, 2.928], [10, 4.146], [20, 5.717], [30, 7.702], [40, 10.166], [50, 13.179], [60, 16.818]],
+  R600a: [[-40, 0.287], [-30, 0.465], [-20, 0.72], [-11.7, 1.013], [-10, 1.08], [0, 1.57], [10, 2.2], [20, 3.02], [30, 4.05], [40, 5.31], [50, 6.83], [60, 8.63]]
+};
+function satTemp(gas, pAbs) {
+  const t = PT[gas]; if (pAbs < t[0][1] || pAbs > t[t.length - 1][1]) return null;
+  for (let i = 1; i < t.length; i++) if (pAbs <= t[i][1]) {
+    const [t0, p0] = t[i - 1], [t1, p1] = t[i];
+    return t0 + (t1 - t0) * (Math.log(pAbs) - Math.log(p0)) / (Math.log(p1) - Math.log(p0));
+  }
+  return null;
+}
+function satPress(gas, temp) {
+  const t = PT[gas];
+  for (let i = 1; i < t.length; i++) if (temp <= t[i][0]) {
+    const [t0, p0] = t[i - 1], [t1, p1] = t[i];
+    return Math.exp(Math.log(p0) + (Math.log(p1) - Math.log(p0)) * (temp - t0) / (t1 - t0));
+  }
+  return null;
+}
+const toAbs = (v, u) => u === "psig" ? v * 0.0689476 + 1.01325 : u === "barg" ? v + 1.01325 : 1.01325 - v * 0.0338639;
+const fromAbs = (p, u) => u === "psig" ? (p - 1.01325) / 0.0689476 : u === "barg" ? p - 1.01325 : (1.01325 - p) / 0.0338639;
+const uName = { psig: "psig", barg: "bar", inhg: "pulg. Hg de vacío" };
+function calcPT() {
+  const g = $("#pg").value, u = $("#pu").value, v = num("pv"), lt = num("pt");
+  const ref = fromAbs(satPress(g, -25), u);
+  const refTxt = `Referencia: con ${g}, evaporar a −25 °C equivale a ${fmt(ref, 1)} ${uName[u]}${ref < 0 && u !== "inhg" ? " (vacío)" : ""}.`;
+  if (v === null || v === Infinity) return out("p-out", "", `Escribe la lectura del manómetro.<br><span class="sync">${refTxt}</span>`);
+  const pAbs = toAbs(v, u);
+  if (pAbs <= 0) return out("p-out", "bad", "Esa lectura no es posible: revisa la unidad.");
+  const ts = satTemp(g, pAbs);
+  if (ts === null) return out("p-out", "warn", `Fuera del rango de la tabla (−40 a 60 °C) para ${g}. Revisa la unidad y el gas.`);
+  let html = `Temperatura de saturación: <b>${fmt(ts, 1)} °C</b> (${fmt(pAbs, 2)} bar absolutos).`, cls = "";
+  if (lt !== null && lt !== Infinity) {
+    const sh = lt - ts;
+    html += `<br>Sobrecalentamiento: <b>${fmt(sh, 1)} K</b>.`;
+    if (sh < 0) { cls = "warn"; html += " Negativo: revisa dónde mediste el tubo y la lectura."; }
+  }
+  html += `<br><span class="sync">${refTxt} En neveras domésticas estabilizadas la evaporación suele estar entre −20 y −30 °C. Tabla de saturación aproximada; los equipos de tubo capilar se cargan por peso según la etiqueta.</span>`;
+  out("p-out", cls, html);
+}
+["pg", "pu", "pv", "pt"].forEach(id => $("#" + id).addEventListener("input", calcPT));
+calcPT();
+
 /* ===================== VISITA: ENTRADAS ===================== */
 const tipoSel = segGroup($("#tipo"));
 const fieldIds = ["marca", "modelo", "codigo", "edad", "desc"];
@@ -1035,6 +1110,7 @@ let VISITS = store.get("tg_visits", []);
     }
     if (sample) limits = await sample.limits().catch(() => null);
   } catch { sample = null; }
+  offerResume();
   syncVisits();
   $("#ai-off").hidden = !!sample;
   $("#go").textContent = sample ? "Empezar diagnóstico" : "Buscar en la base local";
@@ -1288,7 +1364,7 @@ function dxHTML(d) {
 }
 function renderVisit(readOnly) {
   const last = visit.turns[visit.turns.length - 1]; if (!last) return;
-  stopTimer(true);
+  stopTimer(true); $("#multi-out").hidden = true;
   $("#hyp-box").hidden = !(last.hipotesis || []).length || !!last.diagnostico;
   $("#hyp").innerHTML = hypHTML(last.hipotesis);
   $("#casos").innerHTML = casosHTML(similarCases(visit.caso, visit.id));
@@ -1341,10 +1417,12 @@ $("#cant").addEventListener("click", () => {
   askNext("No puedo hacer esta prueba" + (txt ? ": " + txt : "") + ". Dame otra forma de distinguir las mismas hipótesis.");
 });
 $("#reset").addEventListener("click", () => {
+  if (visit && !visit.resultado) skipResume = visit.id;
   ctl?.abort(); visit = null; clearPend(); stopTimer(true); keepAwake(false); try { speechSynthesis.cancel(); } catch {}
   PLACA = null; $("#placa-out").hidden = true; $("#scan-box").classList.remove("done");
   $("#scan-title").textContent = "Foto de la etiqueta"; $("#scan-sub").textContent = "La etiqueta con el modelo (dentro de la nevera, en la puerta o atrás de la lavadora). Con eso sé qué equipo es.";
   $("#more").open = false; $("#manual").open = false;
+  offerResume();
   $("#session").hidden = true; $("#start").hidden = false; $("#result").innerHTML = "";
   fieldIds.forEach(id => $("#" + id).value = ""); store.set("tg_draft", null); quickCode();
   window.scrollTo({ top: 0 });
@@ -1427,6 +1505,67 @@ $("#in-placa").addEventListener("change", async e => {
     box.innerHTML = `<div class="note">${esc(errText(err))}</div>`;
   }
 });
+
+/* ===================== FOTO DEL MULTÍMETRO ===================== */
+const MULTI_PROMPT = `La imagen es la pantalla de un multímetro o pinza amperimétrica. Lee EXACTAMENTE lo que muestra la pantalla y la posición del selector si se ve. No adivines: si no se lee, "legible": false.
+Responde SOLO con JSON: {"legible":true,"valor":"29.4","unidad":"Ω|kΩ|MΩ|V AC|V DC|mV|A|mA|µF|nF|°C|Hz|null","ol":false,"funcion":"resistencia|continuidad|voltaje AC|voltaje DC|corriente|capacitancia|temperatura|frecuencia|null","texto":"frase corta, ej. 'Medí 29,4 Ω' o 'Marca OL (abierto)'","nota":null}`;
+$("#in-multi").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const box = $("#multi-out"); box.hidden = false;
+  if (!sample || !limits?.images) { box.innerHTML = `<div class="note">Para leer el multímetro la app tiene que estar abierta dentro de Claude.</div>`; return; }
+  box.innerHTML = `<div class="note info"><span class="spin" aria-hidden="true"></span> Leyendo la pantalla…</div>`;
+  try {
+    const d = await sample.json(MULTI_PROMPT, { images: [f], modelTier: "default" });
+    if (!d || d.legible === false) { box.innerHTML = `<div class="note">No se lee la pantalla. ${esc(d?.nota || "")} Tómala de frente y sin reflejo.</div>`; return; }
+    const t = d.texto || (d.ol ? "Marca OL (abierto)" : `Medí ${d.valor} ${d.unidad || ""}`.trim());
+    const a = $("#ans"); a.value = (a.value.trim() ? a.value.trim() + ". " : "") + t;
+    box.innerHTML = `<div class="note info">Leí: <b>${esc(t)}</b>${d.funcion ? ` · ${esc(d.funcion)}` : ""}. Ya lo escribí en tu respuesta; revisa que coincida con la pantalla.</div>`;
+  } catch (err) { box.innerHTML = `<div class="note">${esc(errText(err))}</div>`; }
+});
+
+/* ===================== REVISAR TARJETA ===================== */
+const PCB_PROMPT = `Eres técnico en electrónica de línea blanca (tarjetas de neveras, lavadoras y secadoras). Revisa la(s) foto(s) de una tarjeta electrónica.
+Reglas: reporta SOLO daños que realmente se vean (quemaduras, carbón, capacitores abombados o con fuga, varistor reventado, fusible ennegrecido, relé derretido u oscurecido, soldaduras frías o agrietadas, pistas levantadas o cortadas, corrosión, humedad, componentes faltantes). Si la foto no permite ver algo, dilo. No inventes. Ubica cada daño con palabras (ej. "esquina superior izquierda, junto al conector blanco de 3 pines").
+Responde SOLO con JSON:
+{"legible":true,"que_es":"qué tarjeta parece (principal, inverter, display) o null","danos":[{"componente":"","ubicacion":"","lo_que_se_ve":"","gravedad":"alta|media|baja"}],"que_medir":["mediciones concretas para confirmar, con el equipo desconectado o energizado según corresponda"],"conclusion":"una o dos frases","nota":"limitaciones de la foto, o null"}`;
+$("#in-pcb").addEventListener("change", async e => {
+  const files = [...e.target.files].slice(0, limits?.images?.maxCount || 1); e.target.value = ""; if (!files.length) return;
+  const box = $("#pcb-out"); box.hidden = false;
+  if (!sample || !limits?.images) { box.innerHTML = `<div class="note">Para revisar la tarjeta la app tiene que estar abierta dentro de Claude.</div>`; return; }
+  box.innerHTML = `<div class="note info"><span class="spin" aria-hidden="true"></span> Revisando la tarjeta… (20 a 60 s)</div>`;
+  try {
+    const d = await sample.json(PCB_PROMPT, { images: files, modelTier: "complex" });
+    if (!d || d.legible === false) { box.innerHTML = `<div class="note">No se ve bien la tarjeta. ${esc(d?.nota || "")} Toma la foto más cerca y con luz de frente.</div>`; return; }
+    const dn = (d.danos || []).filter(x => x && x.componente);
+    box.innerHTML = `<div class="panel" style="padding:12px;background:var(--bg)">
+      ${d.que_es ? `<span class="eyebrow">${esc(d.que_es)}</span>` : ""}
+      ${dn.length ? dn.map(x => { const g = ["alta", "media", "baja"].includes(x.gravedad) ? x.gravedad : "media"; const cls = g === "alta" ? "baja" : g === "baja" ? "alta" : "media";
+        return `<div class="causa" style="grid-template-columns:auto 1fr"><div><span class="pill ${cls}">${g}</span></div><div style="min-width:0"><b>${esc(x.componente)}</b> · ${esc(x.ubicacion)}<p>${esc(x.lo_que_se_ve)}</p></div></div>`; }).join("")
+        : `<p style="margin:0">No se ven daños visibles en la foto. Eso no descarta fallas que no se ven (componentes abiertos por dentro).</p>`}
+      ${(d.que_medir || []).length ? `<h3 style="font-size:16px">Qué medir para confirmar</h3>${list(d.que_medir)}` : ""}
+      ${d.conclusion ? `<p style="margin:0"><b>${esc(d.conclusion)}</b></p>` : ""}
+      ${d.nota ? `<p class="sync" style="margin:0">${esc(d.nota)}</p>` : ""}
+      <div class="danger">Descarga los capacitores grandes de la fuente antes de tocar la tarjeta.</div>
+    </div>`;
+  } catch (err) { box.innerHTML = `<div class="note">${esc(errText(err))}</div>`; }
+});
+
+/* ===================== CONTINUAR VISITA ===================== */
+let skipResume = null;
+function offerResume() {
+  const box = $("#resume"); if (!box) return;
+  const v = VISITS.find(x => x.id !== skipResume && !x.resultado && (x.turns || []).length && Date.now() - x.id < 3 * 864e5);
+  if (!v || visit || $("#start").hidden) { box.hidden = true; return; }
+  const last = v.turns[v.turns.length - 1];
+  const what = last.diagnostico ? "Diagnóstico: " + last.diagnostico.falla_principal : "Paso " + v.turns.length + ": " + (last.paso?.titulo || "");
+  box.hidden = false;
+  box.innerHTML = `<div class="note info row" style="justify-content:space-between"><span style="min-width:0"><b>Visita sin terminar</b> · ${esc([v.caso.placa?.equipo?.descripcion || v.caso.tipo.split(" (")[0], v.caso.modelo].filter(Boolean).join(" · "))}<br><span class="sync">${esc(what)}</span></span><button class="btn" type="button" id="resume-go" style="padding:8px 14px">Continuar</button></div>`;
+  $("#resume-go").onclick = () => {
+    visit = v; clearPend(); keepAwake(true);
+    $("#start").hidden = true; $("#session").hidden = false; $("#result").innerHTML = ""; box.hidden = true;
+    setCaseHeader(v.caso); renderVisit(!sample);
+  };
+}
 
 /* ===================== VOZ, CRONÓMETRO Y PANTALLA ===================== */
 const hasVoice = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
@@ -1541,6 +1680,7 @@ async function syncVisits() {
     store.set("tg_visits", VISITS.slice(0, 80));
     setSync(`Guardado en tu cuenta de Claude · ${VISITS.length} visita(s).`);
     if (!$("#v-historial").hidden) renderHist();
+    offerResume();
   } catch { setSync("Sin conexión a la nube; mostrando lo guardado en este dispositivo."); }
 }
 function renderStats() {
