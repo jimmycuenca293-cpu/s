@@ -124,6 +124,18 @@ details.sym .body{padding:0 14px 14px;display:flex;flex-direction:column;gap:10p
 .spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp 0.8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.calc-out{font-size:14px;border-radius:8px;padding:10px 12px;background:var(--bg);border-left:3px solid var(--line)}
+.calc-out.good{background:var(--green-soft);border-left-color:var(--green)}
+.calc-out.warn{background:var(--amber-soft);border-left-color:var(--amber)}
+.calc-out.bad{background:var(--red-soft);border-left-color:var(--red)}
+.sync{font-size:12px;color:var(--muted)}
+.ref-item{padding:12px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.ref-item:first-child{border-top:0;padding-top:0}
+.ref-item h4{margin:0;font-size:15px}
+.ref-item p{margin:0;font-size:13.5px}
+.ref-item .how{color:var(--muted)}
+.ref-gb{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:6px 16px}
 footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
 </style>
 
@@ -135,6 +147,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
     </div>
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button role="tab" data-tab="diag" aria-selected="true" id="t-diag">Visita guiada</button>
+      <button role="tab" data-tab="medir" aria-selected="false" id="t-medir">Mediciones</button>
       <button role="tab" data-tab="codigos" aria-selected="false" id="t-codigos">Códigos de error</button>
       <button role="tab" data-tab="sintomas" aria-selected="false" id="t-sintomas">Por síntoma</button>
       <button role="tab" data-tab="historial" aria-selected="false" id="t-historial">Historial</button>
@@ -218,6 +231,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
       <div style="min-width:0"><span class="eyebrow">Equipo</span><div id="case-sum" style="font-weight:600"></div></div>
       <button class="btn ghost" type="button" id="reset">Nueva visita</button>
     </div>
+    <div id="casos"></div>
     <div id="seen"></div>
     <div id="step"></div>
     <div class="panel" id="answer" hidden>
@@ -253,6 +267,70 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
     </div>
     <details class="sym" id="timeline" hidden><summary id="tl-sum">Pruebas hechas</summary><div class="body"><ol class="steps" id="tl"></ol></div></details>
   </div>
+</section>
+
+<!-- ============ MEDICIONES ============ -->
+<section class="view" id="v-medir" hidden>
+  <div>
+    <h2>Mediciones y calculadoras</h2>
+    <p class="lead">Cálculos exactos con tus lecturas del multímetro y valores de referencia por componente. Estos mismos valores los usa el guía en la visita.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>Compresor: bornes y bobinas</h3>
+      <p class="lead" style="font-size:13.5px">Desenchufado y sin relé. Mide entre los tres bornes. No hace falta saber cuál es cuál.</p>
+      <div class="grid3">
+        <label class="f">Borne 1–2 (Ω)<input type="text" inputmode="decimal" id="k12" autocomplete="off"></label>
+        <label class="f">Borne 2–3 (Ω)<input type="text" inputmode="decimal" id="k23" autocomplete="off"></label>
+        <label class="f">Borne 1–3 (Ω)<input type="text" inputmode="decimal" id="k13" autocomplete="off"></label>
+      </div>
+      <label class="f">Cualquier borne contra la carcasa (tubo de cobre raspado)
+        <select id="kmasa"><option value="ol">OL / infinito</option><option value="lect">Marca algún valor</option></select>
+      </label>
+      <div id="k-out" class="calc-out">Escribe las tres lecturas. Si alguna da OL, escribe OL.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Resistencia calefactora</h3>
+      <p class="lead" style="font-size:13.5px">Deshielo, lavadora o secadora. Valor esperado con R = V² ÷ P.</p>
+      <div class="grid3">
+        <label class="f">Voltaje<select id="hv"><option>115</option><option>120</option><option>220</option><option>240</option></select></label>
+        <label class="f">Potencia (W)<input type="text" inputmode="decimal" id="hw" placeholder="Ej. 450" autocomplete="off"></label>
+        <label class="f">Medido (Ω)<input type="text" inputmode="decimal" id="hm" placeholder="opcional" autocomplete="off"></label>
+      </div>
+      <div id="h-out" class="calc-out">Escribe la potencia de la etiqueta de la resistencia.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Capacitor (condensador)</h3>
+      <p class="lead" style="font-size:13.5px">Descárgalo antes de medir. La tolerancia viene impresa (±5 %, ±6 %, ±10 %).</p>
+      <div class="grid3">
+        <label class="f">Nominal (µF)<input type="text" inputmode="decimal" id="cn" placeholder="Ej. 15" autocomplete="off"></label>
+        <label class="f">Tolerancia (%)<input type="text" inputmode="decimal" id="ct" value="6" autocomplete="off"></label>
+        <label class="f">Medido (µF)<input type="text" inputmode="decimal" id="cm" autocomplete="off"></label>
+      </div>
+      <div id="c-out" class="calc-out">Escribe el valor nominal y lo que mediste.</div>
+    </div>
+
+    <div class="panel">
+      <h3>Corriente y consumo</h3>
+      <p class="lead" style="font-size:13.5px">Para comparar con la pinza amperimétrica. I = P ÷ V.</p>
+      <div class="grid3">
+        <label class="f">Voltaje<select id="av"><option>115</option><option>120</option><option>220</option><option>240</option></select></label>
+        <label class="f">Potencia (W)<input type="text" inputmode="decimal" id="aw" autocomplete="off"></label>
+        <label class="f">Medido (A)<input type="text" inputmode="decimal" id="am" placeholder="opcional" autocomplete="off"></label>
+      </div>
+      <div id="a-out" class="calc-out">Escribe la potencia de placa del componente.</div>
+    </div>
+  </div>
+
+  <div class="seg" id="r-tipo" role="group" aria-label="Equipo">
+    <button type="button" data-v="nevera" aria-pressed="true">Nevera / nevecón</button>
+    <button type="button" data-v="lavadora" aria-pressed="false">Lavadora</button>
+    <button type="button" data-v="secadora" aria-pressed="false">Secadora</button>
+  </div>
+  <div class="panel"><div id="ref"></div></div>
 </section>
 
 <!-- ============ CÓDIGOS ============ -->
@@ -301,7 +379,8 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
 <section class="view" id="v-historial" hidden>
   <div>
     <h2>Historial de diagnósticos</h2>
-    <p class="lead">Se guarda solo en este teléfono o computador.</p>
+    <p class="lead">Cada reparación que confirmas le enseña al guía: en las próximas visitas usa tus casos parecidos.</p>
+    <p class="sync" id="sync"></p>
   </div>
   <div class="panel"><div id="hist"></div></div>
 </section>
@@ -588,6 +667,119 @@ function renderSyms(tipo) {
 segGroup($("#s-tipo"), renderSyms);
 renderSyms("nevera");
 
+/* ===================== VALORES DE REFERENCIA ===================== */
+// Valores típicos de taller. Lo exacto lo da el manual de servicio del modelo.
+const REF = {
+  nevera: [
+    ["Compresor (bobinas)", "Desenchufado, sin relé. Ohmios entre C, R y S", "R–S = C–R + C–S. C–S es mayor que C–R. Pocos ohmios (aprox. 2 a 30 Ω según potencia)", "OL en cualquier par = bobina abierta. Cualquier lectura contra carcasa = a masa: cambiar compresor"],
+    ["Compresor inverter (U, V, W)", "Desenchufado. Ohmios entre los 3 pares", "Los 3 pares iguales entre sí (pocos ohmios)", "Un par distinto u OL = compresor. Lectura a carcasa = a masa"],
+    ["Relé PTC de arranque", "Frío, desconectado. Ohmios entre sus dos bornes del lado del compresor", "Aprox. 3 a 30 Ω", "OL = abierto. Suena suelto por dentro al agitarlo = partido"],
+    ["Protector térmico (overload)", "Frío, desconectado. Continuidad", "≈ 0 Ω", "OL en frío = dañado"],
+    ["Resistencia de deshielo", "Desconectada. Ohmios", "R = V² ÷ P. A 115 V: 350 W ≈ 38 Ω, 450 W ≈ 29 Ω, 600 W ≈ 22 Ω", "OL = abierta. Lectura contra chasis = a masa"],
+    ["Bimetal (termostato de deshielo)", "Desconectado. Continuidad frío y a ambiente", "Abierto a temperatura ambiente; cerrado (≈ 0 Ω) bajo cero. Enfríalo en hielo con sal unos minutos", "Abierto en frío o cerrado a ambiente = dañado"],
+    ["Fusible térmico de deshielo", "Desconectado. Continuidad", "≈ 0 Ω siempre", "OL = quemado. Busca por qué (bimetal pegado o resistencia siempre energizada)"],
+    ["Sensores NTC (refri, congelador, deshielo)", "Desconectado del arnés. Ohmios y anota la temperatura", "Según tabla de la marca; comunes 5 kΩ o 10 kΩ a 25 °C. Sube cuando se enfría", "OL = abierto; ≈ 0 = en corto; no cambia con la temperatura = dañado"],
+    ["Ventilador AC 115 V (polo sombreado)", "Desconectado. Ohmios de la bobina y girar el aspa a mano", "Continuidad (decenas a cientos de Ω) y gira suave", "OL = abierto. Aspa dura o con juego = rodamiento"],
+    ["Ventilador DC (inverter, Samsung, LG)", "No se mide en ohmios. Voltaje DC en el conector cuando la tarjeta lo pide", "Hay voltaje (típico 7 a 12 V DC) y gira", "Voltaje presente y no gira = ventilador. Sin voltaje = tarjeta o arnés"],
+    ["Consumo del compresor", "Pinza amperimétrica en la línea con el compresor trabajando", "Cerca de la corriente de placa (RLA) después del arranque", "Muy alto y corta el protector = trabado o problema de arranque. Muy bajo = bajo rendimiento o falta de gas"],
+  ],
+  lavadora: [
+    ["Electroválvula 115 V", "Desconectada. Ohmios por bobina", "Aprox. 500 a 1500 Ω", "OL = bobina abierta. Si entra agua desenchufada = no cierra"],
+    ["Bomba de desagüe 115 V", "Desconectada. Ohmios y girar el impulsor", "Continuidad (decenas hasta ~200 Ω). Gira con leve resistencia magnética", "OL = abierta. Impulsor trabado o partido"],
+    ["Capacitor del motor", "Descargado. Medir µF", "Dentro de la tolerancia impresa (±5 a ±10 %)", "Fuera de tolerancia, abombado o con fuga = cambiar"],
+    ["Motor con capacitor (carga superior)", "Desconectado. Ohmios entre común y cada bobina", "Dos bobinas de valor parecido", "OL o valores muy distintos = motor"],
+    ["Estator Direct Drive (LG y similares)", "Desconectado. Ohmios entre las 3 fases", "Los 3 pares iguales (típico 8 a 16 Ω)", "Un par distinto u OL = estator"],
+    ["Sensor hall del motor", "Energizado. Voltaje de alimentación y señal al girar el tambor despacio", "Alimentación presente (típico 5 V DC) y la señal cambia al girar", "Sin alimentación = tarjeta/arnés. Señal fija = sensor"],
+    ["Seguro de puerta (door lock)", "Desconectado. Continuidad del interruptor y de la bobina o bimetal", "Interruptor cierra al bloquear; bobina con continuidad", "OL en la bobina o el interruptor no cierra = seguro"],
+    ["Resistencia calentadora", "Desconectada. Ohmios", "R = V² ÷ P. 115 V 1000 W ≈ 13 Ω; 220 V 2000 W ≈ 24 Ω", "OL = abierta. Lectura a chasis = a masa (dispara el breaker)"],
+    ["Presostato analógico", "Desconectado. Continuidad mientras soplas suave por la manguera", "Los contactos cambian (clic) al soplar", "No cambia = presostato o manguera tapada"],
+  ],
+  secadora: [
+    ["Resistencia (eléctrica 220 V)", "Desconectada. Ohmios", "R = V² ÷ P. 220 V 5000 W ≈ 9,7 Ω; 240 V 5400 W ≈ 10,7 Ω", "OL = abierta. Lectura a chasis = a masa"],
+    ["Fusible térmico", "Desconectado. Continuidad", "≈ 0 Ω", "OL = quemado. Limpia el ducto completo antes de cambiarlo o se vuelve a quemar"],
+    ["Termostato de seguridad (high limit)", "Frío, desconectado. Continuidad", "Cerrado (≈ 0 Ω)", "OL en frío = dañado"],
+    ["Termostato de ciclo", "Frío, desconectado. Continuidad", "Cerrado (≈ 0 Ω)", "OL en frío = dañado"],
+    ["Termistor", "Desconectado. Ohmios a temperatura ambiente", "Común: ~10 kΩ a 25 °C; baja al calentarse", "OL = abierto; ≈ 0 = corto"],
+    ["Encendedor (gas)", "Desconectado. Ohmios", "Típico 50 a 400 Ω", "OL = abierto (no se pone rojo)"],
+    ["Sensor de llama (gas)", "Frío, desconectado. Continuidad", "Cerrado en frío; abre al calentar", "Abierto en frío = no deja encender el encendedor"],
+    ["Interruptor de puerta", "Desconectado. Continuidad con la puerta cerrada", "≈ 0 Ω cerrado", "OL con puerta cerrada = dañado"],
+    ["Motor", "Desconectado. Bobinas e interruptor centrífugo", "Continuidad en las bobinas (pocos ohmios)", "OL = abierto. Zumba y no arranca = interruptor centrífugo o rodamientos"],
+  ]
+};
+const refForAI = t => (REF[t] || []).map(r => `- ${r[0]}: ${r[1]}. Bueno: ${r[2]}. Malo: ${r[3]}.`).join("\n");
+segGroup($("#r-tipo"), renderRef);
+function renderRef(t) {
+  $("#ref").innerHTML = REF[t].map(r => `<div class="ref-item"><h4>${esc(r[0])}</h4><p class="how">${esc(r[1])}</p><div class="ref-gb"><p><span class="pill alta">Bueno</span> ${esc(r[2])}</p><p><span class="pill baja">Malo</span> ${esc(r[3])}</p></div></div>`).join("");
+}
+renderRef("nevera");
+
+/* ===================== CALCULADORAS ===================== */
+const num = id => { const v = $("#" + id).value.trim().replace(",", "."); if (/^ol$/i.test(v)) return Infinity; const n = parseFloat(v); return isFinite(n) ? n : null; };
+const fmt = (n, d = 1) => Number(n).toLocaleString("es-CO", { maximumFractionDigits: d });
+const out = (id, cls, html) => { const el = $("#" + id); el.className = "calc-out " + (cls || ""); el.innerHTML = html; };
+
+function calcCompresor() {
+  const r = { "1–2": num("k12"), "2–3": num("k23"), "1–3": num("k13") };
+  if (Object.values(r).some(v => v === null)) return out("k-out", "", "Escribe las tres lecturas. Si alguna da OL, escribe OL.");
+  if ($("#kmasa").value === "lect") return out("k-out", "bad", "<b>Compresor a masa.</b> Hay fuga a carcasa: no se repara. Confirma raspando bien el tubo y con el equipo desconectado de todo.");
+  const open = Object.entries(r).filter(([, v]) => v === Infinity).map(([k]) => k);
+  if (open.length) return out("k-out", "bad", `<b>Bobina abierta</b> (OL en ${open.join(", ")}). Antes de condenarlo, revisa que el protector interno no esté abierto por calor: deja enfriar 1 hora y vuelve a medir.`);
+  if (Object.values(r).some(v => v < 0.3)) return out("k-out", "bad", "<b>Lectura casi cero:</b> posible bobina en corto. Verifica las puntas (mide las puntas juntas y resta).");
+  const pairs = Object.entries(r).sort((a, b) => b[1] - a[1]);
+  const [rsPair, rs] = pairs[0];
+  const c = ["1", "2", "3"].find(x => !rsPair.includes(x));
+  const others = pairs.slice(1).map(([k, v]) => ({ t: k.split("–").find(x => x !== c), v })).sort((a, b) => a.v - b.v);
+  const run = others[0], start = others[1], sum = run.v + start.v, diff = Math.abs(rs - sum) / sum * 100;
+  const ident = `Común = borne <b>${c}</b> · Marcha (R) = borne <b>${run.t}</b> (${fmt(run.v, 2)} Ω) · Arranque (S) = borne <b>${start.t}</b> (${fmt(start.v, 2)} Ω).`;
+  if (diff <= 10) out("k-out", "good", `<b>Bobinas bien.</b> R–S ${fmt(rs, 2)} Ω ≈ C–R + C–S ${fmt(sum, 2)} Ω (diferencia ${fmt(diff)} %).<br>${ident}<br>Si no arranca, revisa relé/PTC, protector, capacitor y voltaje con el compresor intentando arrancar.`);
+  else out("k-out", "warn", `<b>No cuadra:</b> R–S ${fmt(rs, 2)} Ω contra C–R + C–S ${fmt(sum, 2)} Ω (diferencia ${fmt(diff)} %). Limpia los bornes, revisa el cero del multímetro y repite. Si sigue igual, posible espiras en corto.<br>${ident}`);
+}
+["k12", "k23", "k13", "kmasa"].forEach(id => $("#" + id).addEventListener("input", calcCompresor));
+
+function calcHeater() {
+  const v = num("hv"), w = num("hw"), m = num("hm");
+  if (!w || w === Infinity) return out("h-out", "", "Escribe la potencia de la etiqueta de la resistencia.");
+  const r = v * v / w;
+  let html = `Esperado: <b>${fmt(r, 1)} Ω</b> a ${v} V y ${fmt(w, 0)} W.`, cls = "";
+  if (m !== null) {
+    if (m === Infinity) { html += "<br><b>Abierta.</b> Cambiar la resistencia."; cls = "bad"; }
+    else {
+      const d = (m - r) / r * 100;
+      if (Math.abs(d) <= 15) { html += `<br><b>Bien:</b> mediste ${fmt(m, 1)} Ω (${d > 0 ? "+" : ""}${fmt(d)} %). Revisa también que no tenga lectura a chasis.`; cls = "good"; }
+      else { html += `<br><b>Fuera de rango:</b> mediste ${fmt(m, 1)} Ω (${d > 0 ? "+" : ""}${fmt(d)} %). Confirma la potencia real en la etiqueta del repuesto antes de cambiarla.`; cls = "warn"; }
+    }
+  }
+  out("h-out", cls, html);
+}
+["hv", "hw", "hm"].forEach(id => $("#" + id).addEventListener("input", calcHeater));
+
+function calcCap() {
+  const n = num("cn"), t = num("ct") ?? 6, m = num("cm");
+  if (!n || n === Infinity) return out("c-out", "", "Escribe el valor nominal y lo que mediste.");
+  const lo = n * (1 - t / 100), hi = n * (1 + t / 100);
+  let html = `Rango aceptable: <b>${fmt(lo, 2)} a ${fmt(hi, 2)} µF</b>.`, cls = "";
+  if (m !== null && m !== Infinity) {
+    if (m >= lo && m <= hi) { html += `<br><b>Bueno:</b> ${fmt(m, 2)} µF.`; cls = "good"; }
+    else { html += `<br><b>Cambiar:</b> ${fmt(m, 2)} µF está ${m < lo ? "por debajo" : "por encima"} del rango.`; cls = "bad"; }
+  }
+  out("c-out", cls, html);
+}
+["cn", "ct", "cm"].forEach(id => $("#" + id).addEventListener("input", calcCap));
+
+function calcAmp() {
+  const v = num("av"), w = num("aw"), m = num("am");
+  if (!w || w === Infinity) return out("a-out", "", "Escribe la potencia de placa del componente.");
+  const a = w / v;
+  let html = `Esperado: <b>${fmt(a, 2)} A</b> a ${v} V (cargas resistivas; en motores y compresores compara con la corriente de placa).`, cls = "";
+  if (m !== null && m !== Infinity) {
+    const d = (m - a) / a * 100;
+    html += `<br>Mediste ${fmt(m, 2)} A (${d > 0 ? "+" : ""}${fmt(d)} %).`;
+    cls = Math.abs(d) <= 15 ? "good" : "warn";
+  }
+  out("a-out", cls, html);
+}
+["av", "aw", "am"].forEach(id => $("#" + id).addEventListener("input", calcAmp));
+
 /* ===================== VISITA: ENTRADAS ===================== */
 const tipoSel = segGroup($("#tipo"));
 const fieldIds = ["marca", "modelo", "codigo", "edad", "desc"];
@@ -796,12 +988,16 @@ function drawSpec(c, cols) {
 }
 
 /* ===================== GUÍA (IA) ===================== */
-let sample = null, limits = null, ctl = null, visit = null;
+let sample = null, limits = null, ctl = null, visit = null, db = null;
+let VISITS = store.get("tg_visits", []);
 (async () => {
   try {
-    if (window.claude && claude.use) sample = await claude.use("sample");
+    if (window.claude && claude.use) {
+      [sample, db] = await Promise.all([claude.use("sample"), claude.use("db").catch(() => null)]);
+    }
     if (sample) limits = await sample.limits().catch(() => null);
   } catch { sample = null; }
+  syncVisits();
   $("#ai-off").hidden = !!sample;
   $("#go").textContent = sample ? "Empezar diagnóstico" : "Buscar en la base local";
 })();
@@ -835,12 +1031,48 @@ REGLAS DE PRECISIÓN (obligatorias):
 11. Si el técnico informa que la reparación no funcionó, vuelve a "investigando" y replantea.
 12. Contexto eléctrico: Colombia, 110-120 V / 60 Hz; secadoras eléctricas a 220 V. Refrigerantes comunes: R134a y R600a (inflamable).
 13. Español de Colombia, directo, frases cortas. El técnico lee en el celular con las manos ocupadas.
+14. Se te dan los VALORES DE REFERENCIA de la app y los CASOS REALES de este mismo técnico. Úsalos: si un caso parecido se confirmó, puedes priorizar esa prueba, pero igual hay que confirmarla en este equipo. Nunca repitas un diagnóstico que el técnico ya reportó que NO resolvió, salvo que haya nueva evidencia.
 
 FORMATO: responde SOLO con un objeto JSON con esta forma exacta:
 {"equipo":"tipo, marca, modelo","lo_que_veo":"lo observado en las imágenes o el sonido de ESTE turno, o null","hipotesis":[{"falla":"","probabilidad":50,"por_que":"breve"}],"estado":"investigando","paso":{"tipo":"medir|observar|escuchar|foto|sonido|pregunta|prueba","titulo":"orden corta","instruccion":"qué hacer exactamente, dónde y cómo","valor_esperado":"qué resultado indica bueno y cuál indica malo, o null","seguridad":"advertencia si aplica, o null","opciones":["respuestas rápidas posibles, 2 a 5"]},"diagnostico":null}
 - "hipotesis": de 1 a 4, ordenadas, probabilidades que sumen como máximo 100.
 - Cuando "estado" = "diagnostico", "paso" puede ser null y "diagnostico" debe ser:
 {"falla_principal":"","confirmado_por":"qué prueba lo confirmó","confianza":"alta|media","explicacion":"2-4 frases","causa_raiz":"","pasos":[""],"repuestos":[""],"herramientas":[""],"verificacion_final":[""],"seguridad":[""],"tiempo_estimado":""}`;
+
+/* ---- Memoria: tus casos confirmados ---- */
+const words5 = s => new Set((norm(s).match(/[a-z]{5,}/g) || []));
+function similarCases(c, excludeId) {
+  const base = c.tipo.split(" ")[0].replace("nevecón", "nevera"), w = words5(c.desc);
+  return VISITS.filter(v => v.id !== excludeId && v.turns?.some(t => t.diagnostico) && (v.resultado === "ok" || (v.descartados || []).length))
+    .map(v => {
+      let s = 0;
+      if (v.caso.tipo.split(" ")[0].replace("nevecón", "nevera") === base) s += 2; else return null;
+      if (c.marca && v.caso.marca === c.marca) s += 2;
+      if (c.codigo && v.caso.codigo && sameCode(c.codigo, v.caso.codigo)) s += 4;
+      if (c.modelo && v.caso.modelo && norm(v.caso.modelo).slice(0, 6) === norm(c.modelo).slice(0, 6)) s += 2;
+      const vw = words5(v.caso.desc); let shared = 0; w.forEach(x => vw.has(x) && shared++); s += Math.min(4, shared);
+      return s >= 4 ? { v, s } : null;
+    }).filter(Boolean).sort((a, b) => b.s - a.s).slice(0, 4).map(x => x.v);
+}
+function caseSummary(v) {
+  const dx = [...v.turns].reverse().find(t => t.diagnostico)?.diagnostico;
+  return `- ${[v.caso.tipo.split(" (")[0], v.caso.marca, v.caso.modelo, v.caso.codigo && "código " + v.caso.codigo].filter(Boolean).join(", ")}. Síntoma: ${(v.caso.desc || "").slice(0, 200)}. ` +
+    (v.resultado === "ok" && dx ? `FALLA CONFIRMADA Y REPARADA: ${dx.falla_principal} (confirmado por: ${dx.confirmado_por || "?"}).` : "") +
+    ((v.descartados || []).length ? ` Diagnósticos que NO resolvieron: ${v.descartados.join("; ")}.` : "");
+}
+function casosHTML(list) {
+  if (!list.length) return "";
+  return `<details class="sym"><summary>Tus casos parecidos (${list.length})</summary><div class="body"><ul class="list">${list.map(v => `<li>${esc(caseSummary(v).slice(2))}</li>`).join("")}</ul><p class="sync" style="margin:0">El guía los tiene en cuenta, pero igual te pide pruebas: un caso parecido no es una confirmación.</p></div></details>`;
+}
+
+const AUDIT = `Eres el jefe de taller y revisas el diagnóstico de un técnico de línea blanca antes de que cambie una pieza. Tu trabajo es evitar diagnósticos equivocados.
+Aprueba SOLO si se cumplen las tres condiciones:
+1. Hay al menos una prueba concreta en el historial (medición fuera de rango, observación directa inequívoca, prueba de alimentación directa) que confirma la pieza o falla señalada.
+2. No queda una explicación alternativa razonable que esa prueba no descarte (ej. un ventilador que no gira puede ser el motor o la falta de voltaje de la tarjeta: si no se midió el voltaje, no está confirmado).
+3. La causa raíz tiene sentido con los síntomas.
+Si no apruebas, propone la UNA prueba que falta, con el mismo formato de paso.
+Responde SOLO con JSON: {"aprobado":true,"motivo":"una o dos frases","hipotesis":[{"falla":"","probabilidad":0,"por_que":""}],"paso":null}
+Si no apruebas: "aprobado":false y "paso":{"tipo":"medir|observar|escuchar|foto|sonido|pregunta|prueba","titulo":"","instruccion":"","valor_esperado":"","seguridad":null,"opciones":[""]}`;
 
 function caseText(c) {
   return [
@@ -873,6 +1105,7 @@ $("#go").addEventListener("click", () => {
   $("#start").hidden = true; $("#session").hidden = false;
   $("#case-sum").textContent = [c.tipo.split(" (")[0], c.marca, c.modelo, c.codigo && "código " + c.codigo].filter(Boolean).join(" · ");
   $("#result").innerHTML = ""; $("#step").innerHTML = ""; $("#seen").innerHTML = ""; $("#hyp-box").hidden = true;
+  $("#casos").innerHTML = casosHTML(similarCases(c, visit.id));
   const firstNote = [pend.audio ? "Adjunté sonido." : "", (pend.photos.length + pend.frames.length) ? "Adjunté imágenes." : ""].filter(Boolean).join(" ");
   askNext(firstNote || null);
 });
@@ -891,7 +1124,16 @@ async function askNext(answerText) {
   else visit.respuestaInicial = respuesta;
 
   const n = visit.turns.length;
+  const tb = tipoOf(visit.caso.tipo);
+  const refs = (tb === "lavasecadora" ? refForAI("lavadora") + "\n" + refForAI("secadora") : refForAI(tb));
+  const sims = similarCases(visit.caso, visit.id);
   const prompt = `${RULES}
+
+VALORES DE REFERENCIA DE LA APP (típicos; si el modelo difiere, dilo):
+${refs}
+
+${sims.length ? "CASOS REALES DE ESTE TÉCNICO PARECIDOS A ESTE:\n" + sims.map(caseSummary).join("\n") : "No hay casos anteriores parecidos."}
+${(visit.descartados || []).length ? "\nEN ESTA VISITA YA SE DESCARTÓ (la reparación no resolvió): " + visit.descartados.join("; ") : ""}
 
 CASO:
 ${caseText(visit.caso)}
@@ -913,7 +1155,34 @@ Decide ahora el siguiente paso (o el diagnóstico si ya está confirmado).`;
     const d = await sample.json(prompt, opts);
     if (!d || typeof d !== "object" || (!d.paso && !d.diagnostico)) throw { code: "invalid_json" };
     if (d.estado === "diagnostico" && !d.diagnostico) d.estado = "investigando";
-    visit.turns.push({ paso: d.paso || null, lo_que_veo: d.lo_que_veo || null, hipotesis: d.hipotesis || [], diagnostico: d.estado === "diagnostico" ? d.diagnostico : null, equipo: d.equipo });
+    let auditoria = null;
+    if (d.estado === "diagnostico") {
+      clearInterval(tick); setStatus("Doble verificación del diagnóstico…", true);
+      try {
+        const audit = await sample.json(`${AUDIT}
+
+CASO:
+${caseText(visit.caso)}
+${visit.respuestaInicial ? "Evidencia inicial: " + visit.respuestaInicial : ""}
+
+HISTORIAL DE LA VISITA:
+${transcript(visit)}
+${respuesta ? "ÚLTIMA RESPUESTA DEL TÉCNICO: " + respuesta : ""}
+${d.lo_que_veo ? "Lo observado en las imágenes de este turno: " + d.lo_que_veo : ""}
+
+DIAGNÓSTICO PROPUESTO:
+${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: "complex", cache: false });
+        if (audit && audit.aprobado === false && audit.paso && audit.paso.instruccion) {
+          auditoria = audit.motivo || "Falta una prueba que confirme la falla.";
+          d.estado = "investigando"; d.diagnostico = null; d.paso = audit.paso;
+          if (Array.isArray(audit.hipotesis) && audit.hipotesis.length) d.hipotesis = audit.hipotesis;
+        } else if (audit && audit.aprobado === true) {
+          d.diagnostico.verificado = true;
+          if (audit.motivo) d.diagnostico.verificacion = audit.motivo;
+        }
+      } catch (e) { if (e?.code === "cancelled") throw e; }
+    }
+    visit.turns.push({ paso: d.paso || null, lo_que_veo: d.lo_que_veo || null, hipotesis: d.hipotesis || [], diagnostico: d.estado === "diagnostico" ? d.diagnostico : null, equipo: d.equipo, auditoria });
     clearPend(); $("#ans").value = "";
     saveVisit();
     renderVisit();
@@ -930,6 +1199,7 @@ Decide ahora el siguiente paso (o el diagnóstico si ya está confirmado).`;
 }
 $("#stop").addEventListener("click", () => ctl?.abort());
 
+function tipoOf(t) { const b = t.split(" ")[0]; return b === "nevecón" ? "nevera" : b; }
 const TIPO_LABEL = { medir: "Medir", observar: "Observar", escuchar: "Escuchar", foto: "Tomar foto", sonido: "Grabar sonido", pregunta: "Pregunta", prueba: "Prueba" };
 function list(arr, ordered) {
   const a = (arr || []).filter(Boolean); if (!a.length) return "";
@@ -954,9 +1224,9 @@ function stepHTML(s, n) {
 function dxHTML(d) {
   const conf = d.confianza === "alta" ? "alta" : "media";
   return `<article class="panel ficha ${conf}">
-    <div class="head"><span class="eyebrow">Diagnóstico confirmado</span><span class="pill ${conf}">Confianza ${conf}</span></div>
+    <div class="head"><span class="eyebrow">Diagnóstico confirmado</span><span class="row">${d.verificado ? '<span class="pill alta">Verificado dos veces</span>' : ""}<span class="pill ${conf}">Confianza ${conf}</span></span></div>
     <div class="falla">${esc(d.falla_principal)}</div>
-    ${d.confirmado_por ? `<div class="note info"><b>Confirmado por:</b> ${esc(d.confirmado_por)}</div>` : ""}
+    ${d.confirmado_por ? `<div class="note info"><b>Confirmado por:</b> ${esc(d.confirmado_por)}${d.verificacion ? "<br><b>Revisión:</b> " + esc(d.verificacion) : ""}</div>` : ""}
     <p style="margin:0;max-width:65ch">${esc(d.explicacion)}</p>
     ${d.causa_raiz ? `<div class="note"><b>Causa raíz, para que no se repita:</b> ${esc(d.causa_raiz)}</div>` : ""}
     ${(d.pasos || []).length ? `<h3>Reparación</h3>${list(d.pasos, true)}` : ""}
@@ -973,7 +1243,8 @@ function renderVisit(readOnly) {
   const last = visit.turns[visit.turns.length - 1]; if (!last) return;
   $("#hyp-box").hidden = !(last.hipotesis || []).length || !!last.diagnostico;
   $("#hyp").innerHTML = hypHTML(last.hipotesis);
-  $("#seen").innerHTML = last.lo_que_veo ? `<div class="note info"><b>Lo que veo / oigo:</b> ${esc(last.lo_que_veo)}</div>` : "";
+  $("#casos").innerHTML = casosHTML(similarCases(visit.caso, visit.id));
+  $("#seen").innerHTML = (last.auditoria ? `<div class="note"><b>Doble verificación:</b> todavía no está confirmado. ${esc(last.auditoria)}</div>` : "") + (last.lo_que_veo ? `<div class="note info"><b>Lo que veo / oigo:</b> ${esc(last.lo_que_veo)}</div>` : "");
   if (last.diagnostico) {
     $("#step").innerHTML = dxHTML(last.diagnostico) + (visit.resultado ? `<div class="note info">Resultado registrado: <b>${visit.resultado === "ok" ? "reparado y funcionando" : visit.resultado}</b></div>` : "");
     $("#answer-title").textContent = "¿Cómo te fue?";
@@ -1009,7 +1280,10 @@ $("#send").addEventListener("click", () => {
     return;
   }
   if (!opt && !txt && !pend.photos.length && !pend.frames.length && !pend.audio) { $("#result").innerHTML = `<div class="note">Elige una opción, escribe lo que encontraste o adjunta una foto o un sonido.</div>`; return; }
-  if (last?.diagnostico && opt === "La reparación no funcionó") visit.resultado = null;
+  if (last?.diagnostico && opt === "La reparación no funcionó") {
+    visit.resultado = null;
+    visit.descartados = [...(visit.descartados || []), last.diagnostico.falla_principal];
+  }
   askNext([opt, txt].filter(Boolean).join(". "));
 });
 $("#cant").addEventListener("click", () => {
@@ -1041,12 +1315,32 @@ function localFallback(c) {
 }
 
 /* ===================== HISTORIAL ===================== */
-function saveVisit() {
-  const h = store.get("tg_visits", []).filter(v => v.id !== visit.id);
-  h.unshift(visit); store.set("tg_visits", h.slice(0, 40));
+const clean = v => JSON.parse(JSON.stringify(v));
+function setSync(t) { const el = $("#sync"); if (el) el.textContent = t; }
+async function saveVisit() {
+  const v = clean(visit);
+  VISITS = [v, ...VISITS.filter(x => x.id !== v.id)].slice(0, 300);
+  store.set("tg_visits", VISITS.slice(0, 80));
+  if (!db) { setSync("Guardado solo en este dispositivo."); return; }
+  try { await db.collection("visitas").doc(String(v.id)).set(v); setSync("Guardado en tu cuenta de Claude: lo ves en el celular y en el computador."); }
+  catch { setSync("No se pudo guardar en la nube; quedó en este dispositivo."); }
+}
+async function syncVisits() {
+  if (!db) { setSync("Guardado solo en este dispositivo."); return; }
+  try {
+    const snap = await db.collection("visitas").orderBy("id", "desc").limit(300).get();
+    const remote = snap.docs.map(d => d.data()).filter(v => v && v.id);
+    const byId = new Map(remote.map(v => [v.id, v]));
+    const localOnly = VISITS.filter(v => !byId.has(v.id));
+    for (const v of localOnly) { byId.set(v.id, v); db.collection("visitas").doc(String(v.id)).set(clean(v)).catch(() => {}); }
+    VISITS = [...byId.values()].sort((a, b) => b.id - a.id);
+    store.set("tg_visits", VISITS.slice(0, 80));
+    setSync(`Guardado en tu cuenta de Claude · ${VISITS.length} visita(s).`);
+    if (!$("#v-historial").hidden) renderHist();
+  } catch { setSync("Sin conexión a la nube; mostrando lo guardado en este dispositivo."); }
 }
 function renderHist() {
-  const h = store.get("tg_visits", []);
+  const h = VISITS;
   if (!h.length) { $("#hist").innerHTML = `<p class="lead">Aún no hay visitas guardadas. Cada visita guiada aparece aquí con sus pruebas y el resultado.</p>`; return; }
   $("#hist").innerHTML = h.map((v, i) => {
     const last = v.turns[v.turns.length - 1] || {}, dx = v.turns.find(t => t.diagnostico)?.diagnostico;
@@ -1057,7 +1351,7 @@ function renderHist() {
 }
 $("#hist").addEventListener("click", e => {
   const b = e.target.closest(".hist-item"); if (!b) return;
-  const v = store.get("tg_visits", [])[+b.dataset.i]; if (!v) return;
+  const v = VISITS[+b.dataset.i]; if (!v) return;
   visit = v; clearPend();
   showTab("diag");
   $("#start").hidden = true; $("#session").hidden = false; $("#result").innerHTML = "";
