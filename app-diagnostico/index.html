@@ -1172,6 +1172,76 @@ function drawSpec(c, cols) {
   ctx.globalAlpha = 1;
 }
 
+/* ===================== HERRAMIENTAS DEL GUÍA (cálculos exactos) ===================== */
+let toolLog = [];
+const toNum = v => { if (v === null || v === undefined) return null; const s = String(v).trim().replace(",", "."); if (/^ol$/i.test(s) || /inf/i.test(s)) return Infinity; const n = parseFloat(s); return isFinite(n) ? n : null; };
+const r1 = (n, d = 1) => Math.round(n * 10 ** d) / 10 ** d;
+const GUIDE_TOOLS = [
+  { name: "resistencia_calefactor",
+    description: "Calcula la resistencia esperada de una resistencia calefactora (deshielo, lavadora, secadora) con R = V²/P y la compara con lo medido. Devuelve ohmios esperados, desviación % y veredicto.",
+    inputSchema: { type: "object", properties: { voltaje: { type: "number" }, potencia_w: { type: "number" }, medido_ohm: { type: "string", description: "valor medido en ohmios o 'OL'; opcional" } }, required: ["voltaje", "potencia_w"] },
+    execute(i) {
+      const v = toNum(i.voltaje), w = toNum(i.potencia_w), m = toNum(i.medido_ohm);
+      if (!v || !w || v === Infinity || w === Infinity) throw new Error("voltaje y potencia_w deben ser números");
+      const r = v * v / w, out = { esperado_ohm: r1(r) };
+      if (m === Infinity) out.veredicto = "abierta (OL)";
+      else if (m !== null) { out.medido_ohm = m; out.desviacion_pct = r1((m - r) / r * 100); out.veredicto = Math.abs(out.desviacion_pct) <= 15 ? "dentro de rango" : "fuera de rango"; }
+      toolLog.push(`Resistencia esperada a ${v} V y ${w} W: ${r1(r)} Ω${out.veredicto ? " → " + out.veredicto + (out.medido_ohm !== undefined ? ` (medido ${m} Ω)` : "") : ""}`);
+      return out;
+    } },
+  { name: "verificar_compresor",
+    description: "Con las 3 lecturas en ohmios entre los bornes de un compresor convencional (1-2, 2-3, 1-3), identifica común, marcha y arranque y verifica que R-S = C-R + C-S. Acepta 'OL'.",
+    inputSchema: { type: "object", properties: { b12: { type: "string" }, b23: { type: "string" }, b13: { type: "string" }, a_masa: { type: "boolean", description: "true si algún borne marca contra la carcasa" } }, required: ["b12", "b23", "b13"] },
+    execute(i) {
+      if (i.a_masa) { toolLog.push("Compresor: a masa (fuga a carcasa)"); return { veredicto: "a masa: compresor dañado" }; }
+      const r = { "1-2": toNum(i.b12), "2-3": toNum(i.b23), "1-3": toNum(i.b13) };
+      if (Object.values(r).some(x => x === null)) throw new Error("faltan lecturas");
+      const open = Object.keys(r).filter(k => r[k] === Infinity);
+      if (open.length) { toolLog.push(`Compresor: bobina abierta (OL en ${open.join(", ")})`); return { veredicto: "bobina abierta", pares_abiertos: open, nota: "dejar enfriar 1 h por si es el protector interno y volver a medir" }; }
+      const pairs = Object.entries(r).sort((a, b) => b[1] - a[1]), [rsPair, rs] = pairs[0];
+      const c = ["1", "2", "3"].find(x => !rsPair.includes(x));
+      const o = pairs.slice(1).map(([k, v]) => ({ t: k.split("-").find(x => x !== c), v })).sort((a, b) => a.v - b.v);
+      const dif = Math.abs(rs - (o[0].v + o[1].v)) / (o[0].v + o[1].v) * 100;
+      const out = { comun: c, marcha: o[0].t, arranque: o[1].t, R_S: rs, suma_CR_CS: r1(o[0].v + o[1].v, 2), diferencia_pct: r1(dif), veredicto: dif <= 10 ? "bobinas bien" : "no cuadra: repetir medición, posible espiras en corto" };
+      toolLog.push(`Compresor: común ${c}, marcha ${o[0].t}, arranque ${o[1].t}; diferencia ${r1(dif)} % → ${out.veredicto}`);
+      return out;
+    } },
+  { name: "verificar_capacitor",
+    description: "Verifica si un capacitor medido (µF) está dentro de su tolerancia.",
+    inputSchema: { type: "object", properties: { nominal_uf: { type: "number" }, medido_uf: { type: "number" }, tolerancia_pct: { type: "number", description: "por defecto 6" } }, required: ["nominal_uf", "medido_uf"] },
+    execute(i) {
+      const n = toNum(i.nominal_uf), m = toNum(i.medido_uf), t = toNum(i.tolerancia_pct) || 6;
+      if (!n || m === null) throw new Error("faltan valores");
+      const lo = n * (1 - t / 100), hi = n * (1 + t / 100), ok = m >= lo && m <= hi;
+      toolLog.push(`Capacitor ${n} µF ±${t} %: rango ${r1(lo, 2)}–${r1(hi, 2)}; medido ${m} → ${ok ? "bueno" : "cambiar"}`);
+      return { rango_min: r1(lo, 2), rango_max: r1(hi, 2), veredicto: ok ? "bueno" : "fuera de tolerancia" };
+    } },
+  { name: "presion_temperatura",
+    description: "Convierte la lectura del manómetro a temperatura de saturación para R134a o R600a y calcula el sobrecalentamiento si se da la temperatura del tubo de succión.",
+    inputSchema: { type: "object", properties: { gas: { type: "string", enum: ["R134a", "R600a"] }, lectura: { type: "number" }, unidad: { type: "string", enum: ["psig", "barg", "inhg"] }, temp_tubo_c: { type: "number" } }, required: ["gas", "lectura", "unidad"] },
+    execute(i) {
+      if (!PT[i.gas]) throw new Error("gas no soportado");
+      const pAbs = toAbs(toNum(i.lectura), i.unidad), ts = satTemp(i.gas, pAbs);
+      if (ts === null) throw new Error("fuera de la tabla (-40 a 60 °C)");
+      const out = { temp_saturacion_c: r1(ts), presion_abs_bar: r1(pAbs, 2) };
+      const lt = toNum(i.temp_tubo_c); if (lt !== null && lt !== Infinity) out.sobrecalentamiento_k = r1(lt - ts);
+      toolLog.push(`${i.gas} a ${i.lectura} ${uName[i.unidad]}: saturación ${r1(ts)} °C${out.sobrecalentamiento_k !== undefined ? `, sobrecalentamiento ${out.sobrecalentamiento_k} K` : ""}`);
+      return out;
+    } },
+  { name: "buscar_codigo",
+    description: "Busca un código de error en la base local de la app (Samsung, LG, Whirlpool, Electrolux). Devuelve significado y qué revisar, o vacío si no está.",
+    inputSchema: { type: "object", properties: { codigo: { type: "string" }, marca: { type: "string" } }, required: ["codigo"] },
+    execute(i) {
+      const hits = findCodes(String(i.codigo), i.marca ? String(i.marca) : "", "").filter(c => c.c.some(x => sameCode(x, String(i.codigo))));
+      toolLog.push(`Base de códigos: ${i.codigo}${i.marca ? " " + i.marca : ""} → ${hits.length ? hits.map(h => h.m + ": " + h.f).join("; ") : "no está en la base"}`);
+      return hits.map(h => ({ marca: h.m, tipo: h.t, codigos: h.c, falla: h.f, revisar: h.r }));
+    } },
+  { name: "valores_referencia",
+    description: "Devuelve la tabla de valores de referencia (bueno/malo) de componentes para nevera, lavadora o secadora.",
+    inputSchema: { type: "object", properties: { equipo: { type: "string", enum: ["nevera", "lavadora", "secadora"] } }, required: ["equipo"] },
+    execute(i) { const t = REF[i.equipo]; if (!t) throw new Error("equipo no válido"); return t.map(r => ({ componente: r[0], como: r[1], bueno: r[2], malo: r[3] })); } }
+];
+
 /* ===================== GUÍA (IA) ===================== */
 let sample = null, limits = null, ctl = null, visit = null, db = null;
 let VISITS = store.get("tg_visits", []);
@@ -1219,7 +1289,8 @@ REGLAS DE PRECISIÓN (obligatorias):
 11. Si el técnico informa que la reparación no funcionó, vuelve a "investigando" y replantea.
 12. Contexto eléctrico: Colombia, 110-120 V / 60 Hz; secadoras eléctricas a 220 V. Refrigerantes comunes: R134a y R600a (inflamable).
 13. Español de Colombia, directo, frases cortas. El técnico lee en el celular con las manos ocupadas.
-14. Se te dan los VALORES DE REFERENCIA de la app y los CASOS REALES de este mismo técnico. Úsalos: si un caso parecido se confirmó, puedes priorizar esa prueba, pero igual hay que confirmarla en este equipo. Nunca repitas un diagnóstico que el técnico ya reportó que NO resolvió, salvo que haya nueva evidencia.
+14. HERRAMIENTAS: si tienes herramientas disponibles, úsalas para TODO cálculo (resistencia esperada de calefactores con la potencia de la etiqueta, bobinas de compresor, capacitores, presión-temperatura) y para consultar códigos en la base local. No hagas cálculos de memoria. Llámalas solo cuando aporten al paso actual.
+15. Se te dan los VALORES DE REFERENCIA de la app y los CASOS REALES de este mismo técnico. Úsalos: si un caso parecido se confirmó, puedes priorizar esa prueba, pero igual hay que confirmarla en este equipo. Nunca repitas un diagnóstico que el técnico ya reportó que NO resolvió, salvo que haya nueva evidencia.
 
 FORMATO: responde SOLO con un objeto JSON con esta forma exacta:
 {"equipo":"tipo, marca, modelo","lo_que_veo":"lo observado en las imágenes o el sonido de ESTE turno, o null","hipotesis":[{"falla":"","probabilidad":50,"por_que":"breve"}],"estado":"investigando","paso":{"tipo":"medir|observar|escuchar|foto|video|sonido|pregunta|prueba","titulo":"orden corta","instruccion":"qué hacer exactamente, dónde y cómo","por_que":"en una frase sencilla: qué busca esta prueba y qué descarta","valor_esperado":"qué resultado indica bueno y cuál indica malo, o null","seguridad":"advertencia si aplica, o null","opciones":["respuestas rápidas posibles, 2 a 5"]},"diagnostico":null}
@@ -1278,6 +1349,7 @@ function transcript(v) {
     const s = t.paso, out = [];
     if (s) out.push(`PASO ${i + 1} que pediste: [${s.tipo}] ${s.titulo}. ${s.instruccion}${s.valor_esperado ? " Esperado: " + s.valor_esperado : ""}`);
     if (t.lo_que_veo) out.push(`Lo que observaste en ese turno: ${t.lo_que_veo}`);
+    if ((t.calculos || []).length) out.push(`Cálculos de la app en ese turno: ${t.calculos.join("; ")}`);
     if (t.diagnostico) out.push(`Diste el diagnóstico: ${t.diagnostico.falla_principal} (confirmado por: ${t.diagnostico.confirmado_por || "?"})`);
     if (t.respuesta) out.push(`RESPUESTA DEL TÉCNICO: ${t.respuesta}`);
     return out.join("\n");
@@ -1346,6 +1418,8 @@ Decide ahora el siguiente paso (o el diagnóstico si ya está confirmado).`;
   $("#result").innerHTML = "";
   try {
     const opts = { signal: ctl.signal, modelTier: $("#precise").checked ? "complex" : "default", cache: false };
+    toolLog = [];
+    if ((limits?.tools?.maxCount ?? 0) >= GUIDE_TOOLS.length) opts.tools = GUIDE_TOOLS;
     if (imgs.length) opts.images = imgs.map(p => p.blob);
     const d = await sample.json(prompt, opts);
     if (!d || typeof d !== "object" || (!d.paso && !d.diagnostico)) throw { code: "invalid_json" };
@@ -1377,7 +1451,7 @@ ${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: "complex", c
         }
       } catch (e) { if (e?.code === "cancelled") throw e; }
     }
-    visit.turns.push({ paso: d.paso || null, lo_que_veo: d.lo_que_veo || null, hipotesis: d.hipotesis || [], diagnostico: d.estado === "diagnostico" ? d.diagnostico : null, equipo: d.equipo, auditoria });
+    visit.turns.push({ paso: d.paso || null, lo_que_veo: d.lo_que_veo || null, hipotesis: d.hipotesis || [], diagnostico: d.estado === "diagnostico" ? d.diagnostico : null, equipo: d.equipo, auditoria, calculos: toolLog.slice(0, 8) });
     clearPend(); $("#ans").value = "";
     saveVisit();
     renderVisit();
@@ -1446,7 +1520,8 @@ function renderVisit(readOnly) {
   $("#hyp-box").hidden = !(last.hipotesis || []).length || !!last.diagnostico;
   $("#hyp").innerHTML = hypHTML(last.hipotesis);
   $("#casos").innerHTML = casosHTML(similarCases(visit.caso, visit.id));
-  $("#seen").innerHTML = (last.auditoria ? `<div class="note"><b>Doble verificación:</b> todavía no está confirmado. ${esc(last.auditoria)}</div>` : "") + (last.lo_que_veo ? `<div class="note info"><b>Lo que veo / oigo:</b> ${esc(last.lo_que_veo)}</div>` : "");
+  const calc = (last.calculos || []).length ? `<div class="note info"><b>Cálculos exactos que hizo la app:</b>${list(last.calculos)}</div>` : "";
+  $("#seen").innerHTML = calc + (last.auditoria ? `<div class="note"><b>Doble verificación:</b> todavía no está confirmado. ${esc(last.auditoria)}</div>` : "") + (last.lo_que_veo ? `<div class="note info"><b>Lo que veo / oigo:</b> ${esc(last.lo_que_veo)}</div>` : "");
   if (last.diagnostico) {
     $("#step").innerHTML = dxHTML(last.diagnostico) + (visit.resultado ? `<div class="note info">Resultado registrado: <b>${visit.resultado === "ok" ? "reparado y funcionando" : visit.resultado}</b></div>` : "");
     $("#answer-title").textContent = "¿Cómo te fue?";
