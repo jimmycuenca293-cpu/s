@@ -184,6 +184,33 @@ h2{font-family:var(--f-display);font-weight:700;font-size:22px;margin:0;letter-s
 .verdict.yes svg{stroke:var(--ok)} .verdict.no svg{stroke:var(--warn)}
 .verdict a{color:var(--accent);font-weight:700}
 
+/* Medidor de vida del filtro */
+.sl-grid{display:grid;grid-template-columns:132px minmax(0,1fr);gap:14px;align-items:center}
+@media (max-width:360px){.sl-grid{grid-template-columns:1fr}.gauge{margin:0 auto}}
+.sl-in{display:flex;flex-direction:column;gap:10px;min-width:0}
+.sl-in .f{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.sl-in input[type=month]{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-size:16px;color:var(--ink);min-width:0;width:100%}
+.sintomas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.sintomas button{border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 11px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink)}
+.sintomas button[aria-pressed="true"]{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.gauge{width:132px;height:132px;position:relative}
+.gauge svg{width:100%;height:100%;transform:rotate(-90deg)}
+.gauge .trk{fill:none;stroke:var(--line);stroke-width:11}
+.gauge .val{fill:none;stroke-width:11;stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1),stroke .4s}
+.gauge .lbl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.1}
+.gauge .lbl b{font-family:var(--f-display);font-size:28px;font-variant-numeric:tabular-nums}
+.gauge .lbl span{font-size:11.5px;color:var(--muted);max-width:90px}
+.gauge.sm{width:64px;height:64px}
+.gauge.sm .trk,.gauge.sm .val{stroke-width:12}
+.gauge.sm .lbl b{font-size:15px}
+.gauge.sm .lbl span{display:none}
+.sl-verdict{border-radius:12px;padding:10px 12px;font-size:14px;display:flex;flex-direction:column;gap:8px}
+.sl-verdict.ok{background:var(--ok-soft)} .sl-verdict.warn{background:var(--warn-soft)} .sl-verdict.bad{background:var(--bad-soft)}
+.ord{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;padding:12px 14px;border-top:1px solid var(--line);align-items:center}
+.ord:first-child{border-top:0}
+.ord .acts{grid-column:1/-1;display:flex;gap:8px}
+.ord .acts .btn{flex:1;padding:9px 10px;font-size:14px}
+
 /* Preguntas */
 details.faq{background:var(--panel);border:1px solid var(--line);border-radius:14px}
 details.faq summary{cursor:pointer;padding:13px 14px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:10px}
@@ -310,13 +337,11 @@ footer{color:var(--muted);font-size:12.5px}
 .prev{border-radius:12px;border:1px solid var(--line);max-width:100%;display:block;background:#fff}
 .copybox{background:var(--bg);border-radius:12px;padding:12px;white-space:pre-wrap;font-size:14px;line-height:1.5;word-break:break-word}
 .legal{font-size:13px;color:var(--muted);background:var(--bg);border-radius:12px;padding:10px 12px;border-left:3px solid var(--line)}
-.refbox{background:linear-gradient(135deg,var(--accent-soft),transparent);border:1.5px dashed var(--accent);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
 .citybox{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:center;background:var(--accent-soft);border:1.5px solid var(--accent);border-radius:14px;padding:12px}
 .citybox>svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:2}
 .citybox small{display:block;color:var(--muted);font-size:12.5px}
 .citybox select{grid-column:1/-1;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
 .linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer;text-align:left}
-.refbox .code{font-family:var(--f-mono);font-size:20px;color:var(--accent);user-select:all}
 </style>
 
 <header class="hero">
@@ -367,6 +392,25 @@ footer{color:var(--muted);font-size:12.5px}
   </div>
   <div class="cat-meta"><p class="sub" id="list-sub"></p><div id="citybox"></div></div>
   <div class="grid" id="grid"></div>
+
+  <div class="check salud" id="salud">
+    <h2 style="font-size:19px">¿Ya toca cambiar tu filtro?</h2>
+    <p class="sub">Dinos cuándo lo cambiaste y cómo está el agua. Te medimos cuánta vida le queda.</p>
+    <div class="sl-grid">
+      <div class="gauge" id="sl-gauge" aria-live="polite"></div>
+      <div class="sl-in">
+        <label class="f"><b>¿Cuándo lo cambiaste por última vez?</b><input type="month" id="sl-fecha"></label>
+        <div><b style="font-size:14px">¿Notas algo de esto?</b>
+          <div class="sintomas" id="sl-sint">
+            <button type="button" aria-pressed="false" data-s="sabor">Sabor u olor raro</button>
+            <button type="button" aria-pressed="false" data-s="flujo">Sale poca agua</button>
+            <button type="button" aria-pressed="false" data-s="hielo">Hielo turbio</button>
+            <button type="button" aria-pressed="false" data-s="luz">Luz de filtro encendida</button>
+          </div></div>
+      </div>
+    </div>
+    <div id="sl-out"></div>
+  </div>
 
   <div class="check">
     <h2 style="font-size:19px">¿Le sirve a mi nevecón?</h2>
@@ -510,7 +554,6 @@ const NEGOCIO = {
   recargoContraEntrega: 0,             // si la transportadora cobra por recaudar, ponlo aquí
   diasNacional: 2, diasEncargo: 5,
   descuentoPack: 0.10,                 // pack anual de 2 filtros
-  descuentoReferido: 5000,             // descuento para quien llega recomendado
   garantiaDias: 30,
   mesesCambio: 6
 };
@@ -972,7 +1015,7 @@ function startOrder(id) {
   const p = CATALOGO.find(x => x.id === id); if (!p) return;
   const prev = store.get("fy_cliente", {});
   cart = { p, qty: 1, pack: false, pago: "contra", entrega: null, step: 1, id: null,
-    cli: { nombre: prev.nombre || "", tel: prev.tel || "", ciudad: city(), dir: prev.dir || "", barrio: prev.barrio || "", indicaciones: "", modelo: modeloBuscado(), recordar: !!prev.recordar, referido: store.get("fy_refcode_in", "") } };
+    cli: { nombre: prev.nombre || "", tel: prev.tel || "", ciudad: city(), dir: prev.dir || "", barrio: prev.barrio || "", indicaciones: "", modelo: modeloBuscado(), recordar: !!prev.recordar } };
   fixEntrega(); renderStep();
 }
 // Solo se usa lo buscado si era el modelo de un nevecón (no la referencia del filtro)
@@ -991,8 +1034,7 @@ function totals() {
   const bruto = p.precio * unidades, desc = cart.pack ? bruto - packPrecio(p) : 0;
   const ent = cart.entrega === "instalacion" ? NEGOCIO.instalacion : d.envio;
   const rec = cart.pago === "contra" && cart.entrega === "transportadora" ? NEGOCIO.recargoContraEntrega : 0;
-  const refd = codigoValido(cart.cli.referido) ? NEGOCIO.descuentoReferido : 0;
-  return { d, unidades, bruto, desc, ent, rec, refd, total: bruto - desc - refd + ent + rec };
+  return { d, unidades, bruto, desc, ent, rec, total: bruto - desc + ent + rec };
 }
 const progress = n => `<div class="progress" aria-label="Paso ${n} de 3"><div class="${n >= 1 ? "on" : ""}">1. Pedido</div><div class="${n >= 2 ? "on" : ""}">2. Tus datos</div><div class="${n >= 3 ? "on" : ""}">3. Confirmar</div></div>`;
 const entregaTxt = e => e === "instalacion" ? "Domicilio + instalación" : e === "domicilio" ? "Domicilio" : "Envío por transportadora";
@@ -1000,7 +1042,6 @@ function sumHTML() {
   const t = totals();
   return `<div class="sum"><span>${t.unidades} × ${esc(cart.p.ref)}</span><span>${COP(t.bruto)}</span>
     ${t.desc ? `<span class="save">Descuento pack anual</span><span class="save">− ${COP(t.desc)}</span>` : ""}
-    ${t.refd ? `<span class="save">Descuento por recomendación</span><span class="save">− ${COP(t.refd)}</span>` : ""}
     <span>${entregaTxt(cart.entrega)}</span><span${t.ent ? "" : ' class="save"'}>${gratis(t.ent)}</span>
     ${t.rec ? `<span>Recargo contra entrega</span><span>${COP(t.rec)}</span>` : ""}
     <span class="t">Total</span><span class="t">${COP(t.total)}</span></div>`;
@@ -1048,7 +1089,6 @@ function renderStep() {
         <label class="f" id="f-dir" style="grid-column:1/-1"><b>Dirección</b><input id="c-dir" autocomplete="street-address" placeholder="Calle 5 # 66-20, apto 301" value="${esc(k.dir)}"></label>
         <label class="f" style="grid-column:1/-1">Indicaciones para la entrega (opcional)<input id="c-ind" value="${esc(k.indicaciones)}" placeholder="Ej. Torre 2, portería; llamar antes"></label>
         <label class="f" style="grid-column:1/-1">Modelo del nevecón (opcional)<input id="c-modelo" value="${esc(k.modelo)}" placeholder="Ayuda a confirmar que le sirve"></label>
-        <label class="f" style="grid-column:1/-1">¿Te recomendó alguien? Código (opcional, ${COP(NEGOCIO.descuentoReferido)} de descuento)<input id="c-ref" value="${esc(k.referido)}" placeholder="Ej. LUZ-8899" autocapitalize="characters"></label>
       </div>
       <label class="consent"><input type="checkbox" id="c-rec" ${k.recordar ? "checked" : ""}><span><b>Recuérdame por WhatsApp cuando toque cambiar el filtro</b> (cada ${NEGOCIO.mesesCambio} meses). Autorizo a ${esc(NEGOCIO.nombre)} a escribirme para eso y puedo pedir que no me escriban más.</span></label>
       <p class="err" id="c-err" aria-live="polite"></p>
@@ -1078,7 +1118,7 @@ function renderStep() {
 }
 function readStep2() {
   const v = id => $("#" + id).value.trim();
-  Object.assign(cart.cli, { nombre: v("c-nombre"), tel: v("c-tel"), ciudad: $("#c-ciudad").value, barrio: v("c-barrio"), dir: v("c-dir"), indicaciones: v("c-ind"), modelo: v("c-modelo"), recordar: $("#c-rec").checked, referido: v("c-ref").toUpperCase() });
+  Object.assign(cart.cli, { nombre: v("c-nombre"), tel: v("c-tel"), ciudad: $("#c-ciudad").value, barrio: v("c-barrio"), dir: v("c-dir"), indicaciones: v("c-ind"), modelo: v("c-modelo"), recordar: $("#c-rec").checked });
 }
 function validStep2() {
   const k = cart.cli, wa = celularCO(k.tel);
@@ -1097,7 +1137,6 @@ function orderMessage() {
     `Hola ${NEGOCIO.nombre}, quiero confirmar este pedido (${cart.id}):`,
     `• ${t.unidades} × ${p.nombre} (${p.ref}) — ${COP(t.bruto)}`,
     t.desc ? `• Descuento pack anual — −${COP(t.desc)}` : "",
-    t.refd ? `• Descuento por recomendación (${cart.cli.referido}) — −${COP(t.refd)}` : "",
     `• ${entregaTxt(cart.entrega)} — ${gratis(t.ent)}`,
     t.rec ? `• Recargo contra entrega — ${COP(t.rec)}` : "",
     `Total: ${COP(t.total)}`,
@@ -1154,7 +1193,6 @@ function placeOrder() {
         </ol>
         <div class="note info">Próximo cambio de filtro: <b>${cambio.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" })}</b>. ${k.recordar ? `Te escribimos al ${esc(k.tel)} unos días antes.` : "Guarda el recordatorio en tu calendario para no olvidarlo."}</div>
         <a class="btn wa block" href="${waLink(order.msg)}" target="_blank" rel="noopener">${ICON.wa}Abrir WhatsApp otra vez</a>
-        ${refBoxHTML(k)}
         <div class="row"><button class="btn ghost" type="button" id="ics">Guardar recordatorio en mi calendario</button><button class="btn ghost" type="button" id="done-close">Cerrar</button></div>
         <span class="sub" id="ics-msg"></span>
       </div>`);
@@ -1177,8 +1215,83 @@ async function saveICS() {
 /* ===================== MIS PEDIDOS ===================== */
 function renderOrders() {
   const o = store.get("fy_orders", []);
-  $("#orders").innerHTML = o.length ? `<div class="list">${o.map(x => `<div class="li"><div style="min-width:0"><b>${esc(x.producto)}</b><div class="m">${esc(x.id)} · ${new Date(x.fecha).toLocaleDateString("es-CO")} · ${esc(x.ciudad)}</div><div class="m">Próximo cambio: ${new Date(x.cambio).toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" })}</div></div><div style="text-align:right"><b>${COP(x.total)}</b><div class="m">${esc(x.estado)}</div><a class="m" href="${waLink(`Hola, quiero volver a pedir el filtro ${x.ref} (pedido anterior ${x.id}).`)}" target="_blank" rel="noopener">Volver a pedir</a></div></div>`).join("")}</div>`
-    : `<div class="check"><b>Aún no tienes pedidos.</b><span class="sub">Busca tu filtro y pídelo: aquí verás el pedido y la fecha del próximo cambio.</span></div>`;
+  $("#orders").innerHTML = o.length ? `<div class="list">${o.map(x => {
+    const v = vidaFiltro(new Date(x.fecha)), p = CATALOGO.find(c => c.id === x.pid);
+    return `<div class="ord">${gaugeHTML(v.pct, v.dias > 0 ? v.dias + "d" : "¡Ya!", "", true)}
+      <div style="min-width:0"><b>${esc(x.producto)}</b><div class="m">${esc(x.id)} · ${new Date(x.fecha).toLocaleDateString("es-CO")} · ${esc(x.ciudad)} · ${COP(x.total)}</div>
+        <div class="m">${v.dias > 0 ? `Le quedan ${v.dias} días: cámbialo hacia el ${v.fin.toLocaleDateString("es-CO", { day: "numeric", month: "long" })}` : "Ya toca cambiarlo"}</div></div>
+      <div class="acts">${p ? `<button class="btn${v.dias > 20 ? " ghost" : ""}" type="button" data-reorder="${p.id}">Volver a pedir</button>` : ""}<a class="btn ghost" href="${waLink(`Hola, pregunto por mi pedido ${x.id}.`)}" target="_blank" rel="noopener">${ICON.wa}Preguntar</a></div></div>`;
+  }).join("")}</div>`
+    : `<div class="check"><b>Aún no tienes pedidos.</b><span class="sub">Busca tu filtro y pídelo: aquí verás cuánta vida le queda y cuándo cambiarlo.</span></div>`;
+  animarGauges($("#orders"));
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-reorder]"); if (b) startOrder(b.dataset.reorder); });
+
+/* ===================== VIDA DEL FILTRO ===================== */
+// Anillo animado: pct de vida usada (0–1+)
+function gaugeHTML(pct, grande, chico, sm) {
+  const r = 52, L = 2 * Math.PI * r, v = Math.max(0, Math.min(1, pct));
+  const col = pct >= 1 ? "var(--bad)" : pct >= .8 ? "var(--warn)" : "var(--ok)";
+  return `<div class="gauge${sm ? " sm" : ""}"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="trk" cx="60" cy="60" r="${r}"/><circle class="val" cx="60" cy="60" r="${r}" stroke="${col}" stroke-dasharray="${L}" stroke-dashoffset="${L}" data-off="${L * (1 - v)}"/></svg><div class="lbl"><b>${grande}</b><span>${chico}</span></div></div>`;
+}
+// Arranca la animación del anillo después de pintarlo
+function animarGauges(root) { requestAnimationFrame(() => requestAnimationFrame(() => root.querySelectorAll(".val[data-off]").forEach(c => { c.style.strokeDashoffset = c.dataset.off; }))); }
+const DIA = 864e5;
+function vidaFiltro(desde) {
+  const fin = new Date(desde); fin.setMonth(fin.getMonth() + NEGOCIO.mesesCambio);
+  const total = fin - desde, usado = Date.now() - desde;
+  return { pct: usado / total, dias: Math.ceil((fin - Date.now()) / DIA), fin };
+}
+function renderSalud() {
+  const v = $("#sl-fecha").value, sint = $$("#sl-sint [aria-pressed=true]").map(b => b.dataset.s);
+  store.set("fy_salud", { fecha: v, sint });
+  if (!v) {
+    $("#sl-gauge").innerHTML = gaugeHTML(0, "?", "elige la fecha");
+    $("#sl-out").innerHTML = ""; return;
+  }
+  const [y, m] = v.split("-").map(Number), desde = new Date(y, m - 1, 15);
+  if (desde > new Date()) { $("#sl-out").innerHTML = `<div class="sl-verdict warn">Esa fecha está en el futuro. Revisa el mes.</div>`; return; }
+  const { pct, dias, fin } = vidaFiltro(desde);
+  // Cada síntoma cuenta: con 2 o más, el filtro ya está saturado aunque no se cumpla el tiempo
+  const urg = Math.min(1.2, pct + sint.length * .2), queda = Math.max(0, Math.round((1 - pct) * 100));
+  $("#sl-gauge").innerHTML = gaugeHTML(urg, pct >= 1 ? "0 %" : queda + " %", pct >= 1 ? "de vida: ya se venció" : "de vida le queda");
+  const marca = vista.marca !== "top" ? vista.marca : "";
+  const nivel = urg >= 1 ? "bad" : urg >= .8 ? "warn" : "ok";
+  const txt = {
+    bad: `<b>Toca cambiarlo ya.</b> ${pct >= 1 ? `Se venció hace ${Math.abs(dias)} días.` : "Lo que notas en el agua indica que el filtro se saturó."} Un filtro vencido deja pasar cloro, sedimento y mal sabor, y puede tapar la válvula del dispensador.`,
+    warn: `<b>Ya casi.</b> ${dias > 0 ? `Le quedan unos ${dias} días.` : ""} ${sint.length ? "Y lo que notas en el agua dice que ya se está saturando." : "Pídelo de una vez para que te llegue antes de que se venza."}`,
+    ok: `<b>Tu filtro está bien.</b> Le quedan unos ${dias} días. Toca cambiarlo hacia el ${fin.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" })}.`
+  }[nivel];
+  $("#sl-out").innerHTML = `<div class="sl-verdict ${nivel} rise">${txt}
+    <div class="row">${nivel !== "ok" ? `<button class="btn" type="button" data-sl-ver>Ver filtros${marca ? " " + esc(marca) : ""}</button>` : ""}<button class="btn ghost" type="button" data-sl-ics>Recordármelo en el calendario</button></div>
+    <span class="m" id="sl-msg"></span></div>`;
+  animarGauges($("#salud"));
+}
+(() => {
+  const s = store.get("fy_salud", {});
+  const max = new Date(); $("#sl-fecha").max = max.toISOString().slice(0, 7);
+  if (s.fecha) $("#sl-fecha").value = s.fecha;
+  (s.sint || []).forEach(k => { const b = $(`#sl-sint [data-s="${k}"]`); if (b) b.setAttribute("aria-pressed", "true"); });
+  renderSalud();
+})();
+$("#sl-fecha").addEventListener("input", renderSalud);
+$("#sl-sint").addEventListener("click", e => { const b = e.target.closest("[data-s]"); if (!b) return; b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true")); renderSalud(); });
+document.addEventListener("click", async e => {
+  if (e.target.closest("[data-sl-ver]")) { $("#list-title").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  if (!e.target.closest("[data-sl-ics]")) return;
+  const [y, m] = $("#sl-fecha").value.split("-").map(Number), { fin } = vidaFiltro(new Date(y, m - 1, 15));
+  const cuando = fin < new Date() ? new Date(Date.now() + DIA) : fin;
+  await guardarICS(cuando, "salud-" + $("#sl-fecha").value, $("#sl-msg"));
+});
+// Evento de calendario (todo el día) con aviso 3 días antes
+async function guardarICS(fecha, uid, msg) {
+  const ymd = d => d.toISOString().slice(0, 10).replace(/-/g, "");
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//FiltroYa//ES", "BEGIN:VEVENT", `UID:${uid}@filtroya`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
+    `DTSTART;VALUE=DATE:${ymd(fecha)}`, `DTEND;VALUE=DATE:${ymd(new Date(fecha.getTime() + DIA))}`, "SUMMARY:Cambiar el filtro de agua del nevecón",
+    `DESCRIPTION:Pídelo en ${NEGOCIO.nombre}: https://wa.me/${NEGOCIO.whatsapp}`, "BEGIN:VALARM", "TRIGGER:-P3D", "ACTION:DISPLAY", "DESCRIPTION:En 3 días toca cambiar el filtro", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+  if (!downloads) { msg.textContent = "Para guardar el recordatorio abre la app dentro de Claude."; return; }
+  try { await downloads.save({ filename: "recordatorio-filtro.ics", data: new Blob([ics], { type: "text/calendar" }) }); msg.textContent = "Listo: abre el archivo para agregarlo a tu calendario."; }
+  catch { msg.textContent = "No se guardó el recordatorio."; }
 }
 
 /* ===================== VENDEDOR ===================== */
@@ -1189,8 +1302,7 @@ function renderSeller() {
     <div class="tile"><b>${o.length}</b><span>pedidos (este teléfono)</span></div>
     <div class="tile"><b>${COP(ventas)}</b><span>en pedidos</span></div>
     <div class="tile"><b>${o.filter(x => x.entrega === "instalacion").length}</b><span>con instalación</span></div>
-    <div class="tile"><b>${o.filter(x => x.cliente?.recordar).length}</b><span>clientes con recordatorio</span></div>
-    <div class="tile"><b>${o.filter(x => codigoValido(x.cliente?.referido)).length}</b><span>llegaron recomendados</span></div>`;
+    <div class="tile"><b>${o.filter(x => x.cliente?.recordar).length}</b><span>clientes con recordatorio</span></div>`;
   renderReminders(o);
   $("#inv").innerHTML = CATALOGO.map(p => `<div class="it">${pimg(p)}<div style="min-width:0"><b>${esc(p.nombre)}</b><div class="m"><span class="ref">${esc(p.ref)}</span> · ${COP(p.precio)} · stock ${p.stock}</div>
     <div style="margin-top:4px">${p.stock === 0 ? '<span class="badge bad">Agotado</span>' : p.stock <= 3 ? '<span class="badge warn">Pedir al proveedor</span>' : '<span class="badge ok">Bien</span>'}</div></div>
@@ -1216,7 +1328,6 @@ $("#inv").addEventListener("change", async e => {
 });
 
 /* ===================== RECORDATORIOS ===================== */
-const DIA = 864e5;
 function demoReminders() {   // solo para ver cómo luce el panel con muchos clientes
   const hoy = Date.now(), mk = (n, dias, ref, ciudad) => ({ id: "EJ-" + n, demo: true, ref, ciudad, cambio: new Date(hoy + dias * DIA).toISOString(), cliente: { nombre: "Cliente de ejemplo " + n, wa: "573000000000", recordar: true } });
   return [mk(1, -2, "DA29-00020B", "Cali"), mk(2, 0, "LT700P", "Cali"), mk(3, 3, "EDR1RXD1", "Jamundí"), mk(4, 12, "MWF", "Bogotá"), mk(5, 40, "DA97-17376B", "Cali")];
@@ -1261,16 +1372,6 @@ function showTab(name) {
   window.scrollTo({ top: 0 });
 }
 $$("nav.bnav button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
-
-/* ===================== REFERIDOS ===================== */
-// Código de cada cliente: primer nombre + últimos 4 del celular (ej. LUZ-8899)
-const codigoDe = k => (String(k.nombre || "").trim().split(/\s+/)[0] || "AMIGO").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 8) + "-" + String(k.wa || k.tel || "").replace(/\D/g, "").slice(-4);
-const codigoValido = c => /^[A-Z]{2,8}-\d{4}$/.test(String(c || "").trim().toUpperCase());
-function refBoxHTML(k) {
-  const code = codigoDe(k);
-  const msg = `Te recomiendo ${NEGOCIO.nombre}: filtros de agua para nevecón con domicilio${INSTALA_EN.includes(k.ciudad) ? " e instalación" : ""}. Usa mi código ${code} y te dan ${COP(NEGOCIO.descuentoReferido)} de descuento. Pídelo aquí: https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(`Hola, vengo recomendado. Mi código es ${code}.`)}`;
-  return `<div class="refbox"><b>Recomiéndanos y ayuda a un amigo</b><span class="sub">Tu código: <span class="code">${esc(code)}</span>. Quien lo use recibe ${COP(NEGOCIO.descuentoReferido)} de descuento.</span><a class="btn ghost" href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${ICON.wa}Compartir mi código por WhatsApp</a></div>`;
-}
 
 /* ===================== CONSEGUIR CLIENTES ===================== */
 const BRAND = { deep: "#0f3d43", deep2: "#14505a", glow: "#5fd6c3", ink: "#0f2a2e", white: "#ffffff", muted: "#587074" };
