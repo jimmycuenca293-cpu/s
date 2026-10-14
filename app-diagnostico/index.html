@@ -1269,6 +1269,7 @@ function caseText(c) {
     `Lo que hace y lo que ya revisó el técnico: ${c.desc || "no indicado"}`,
     c.placa ? `Datos leídos de la etiqueta (impresos): ${JSON.stringify(c.placa.placa || c.placa)}` : "",
     c.placa?.equipo ? `Conocimiento del modelo (no confirmado en este equipo): ${JSON.stringify(c.placa.equipo)}` : "",
+    c.historialEquipo ? `ESTE MISMO EQUIPO (misma serie) YA FUE ATENDIDO POR ESTE TÉCNICO: ${c.historialEquipo.join(" | ")}. Si la falla se repite, busca la causa raíz de la reincidencia antes de cambiar otra vez la misma pieza.` : "",
     c.refCodigo ? `Base de referencia local para ese código (puede variar por serie): ${c.refCodigo}` : ""
   ].filter(Boolean).join("\n");
 }
@@ -1291,7 +1292,7 @@ $("#go").addEventListener("click", () => {
     const hits = findCodes(c.codigo, c.marca, tipoBase()).filter(x => x.c.some(y => sameCode(y, c.codigo)));
     if (hits.length) c.refCodigo = hits.map(h => `${h.m} ${h.c[0]}: ${h.f}. ${h.r}`).join(" | ");
   }
-  if (PLACA) c.placa = PLACA;
+  if (PLACA) { c.placa = PLACA; const u = sameUnit(PLACA); if (u.length) c.historialEquipo = unitHistory(u); }
   visit = { id: Date.now(), fecha: new Date().toISOString(), caso: c, turns: [], resultado: null };
   keepAwake(true);
   $("#start").hidden = true; $("#session").hidden = false;
@@ -1478,7 +1479,7 @@ function sendAnswer(opt) {
   const last = visit.turns[visit.turns.length - 1];
   if (last?.diagnostico && opt === "Reparé y quedó funcionando") {
     visit.resultado = "ok"; saveVisit(); renderVisit(true);
-    $("#result").innerHTML = `<div class="note info">Listo. Visita guardada en el historial como <b>reparada</b>.</div>`;
+    showClose();
     return;
   }
   if (!opt && !txt && !pend.photos.length && !pend.frames.length && !pend.audio) { $("#result").innerHTML = `<div class="note">Elige una opción, escribe lo que encontraste o adjunta una foto o un sonido.</div>`; return; }
@@ -1575,7 +1576,7 @@ $("#in-placa").addEventListener("change", async e => {
     $("#modelo").dispatchEvent(new Event("input")); quickCode();
     pend.photos = pend.photos.filter(p => p.label !== "etiqueta");
     pend.photos.push({ blob: f, url: URL.createObjectURL(f), label: "etiqueta" }); renderPend();
-    box.innerHTML = fichaHTML(PLACA);
+    box.innerHTML = unitAlertHTML(sameUnit(PLACA)) + fichaHTML(PLACA);
     $("#scan-box").classList.add("done"); $("#scan-title").textContent = "Otra foto de la etiqueta"; $("#scan-sub").textContent = "Si algo no coincide con lo impreso, toma otra foto.";
     updateSteps();
   } catch (err) {
@@ -1626,6 +1627,48 @@ $("#in-pcb").addEventListener("change", async e => {
     </div>`;
   } catch (err) { box.innerHTML = `<div class="note">${esc(errText(err))}</div>`; }
 });
+
+/* ===================== ESTE EQUIPO YA LO REPARASTE ===================== */
+const serieKey = s => norm(s).replace(/[^a-z0-9]/g, "");
+function sameUnit(P, excludeId) {
+  const s = serieKey(P?.placa?.serie || ""); if (s.length < 5) return [];
+  return VISITS.filter(v => v.id !== excludeId && serieKey(v.caso?.placa?.placa?.serie || "") === s).sort((a, b) => b.id - a.id);
+}
+const COP = n => Number(n || 0).toLocaleString("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 });
+const daysAgo = id => Math.floor((Date.now() - id) / 864e5);
+function unitHistory(list) {
+  return list.slice(0, 3).map(v => {
+    const dx = [...v.turns].reverse().find(t => t.diagnostico)?.diagnostico;
+    return `${new Date(v.fecha).toLocaleDateString("es-CO")} (hace ${daysAgo(v.id)} días): ${v.resultado === "ok" ? "REPARADO — " : "sin cerrar — "}${dx ? dx.falla_principal : "sin diagnóstico"}${v.garantia_dias ? `; garantía ${v.garantia_dias} días` : ""}`;
+  });
+}
+function unitAlertHTML(list) {
+  if (!list.length) return "";
+  const v = list[0], left = v.garantia_dias ? v.garantia_dias - daysAgo(v.id) : null;
+  const gar = v.resultado === "ok" && left !== null ? (left >= 0 ? `<b>En garantía:</b> le quedan ${left} días.` : `Garantía vencida hace ${-left} días.`) : "";
+  return `<div class="note ${left !== null && left >= 0 ? "" : "info"}"><b>Ya atendiste este equipo</b> (misma serie).<ul class="list" style="margin-top:4px">${unitHistory(list).map(t => `<li>${esc(t)}</li>`).join("")}</ul>${gar}<div class="sync">Si es la misma falla, el guía buscará la causa raíz.</div></div>`;
+}
+
+/* ===================== CIERRE: COBRO Y GARANTÍA ===================== */
+function showClose() {
+  $("#result").innerHTML = `<div class="panel" id="close">
+    <h3>Reparado. ¿Anotas el cobro?</h3>
+    <p class="sync" style="margin:0">Opcional. Solo lo ves tú; sirve para tus cuentas del mes y para avisarte de garantías.</p>
+    <div class="grid3">
+      <label class="f">Cobré ($)<input type="text" inputmode="numeric" id="cl-cobro" autocomplete="off" placeholder="Ej. 180000"></label>
+      <label class="f">Repuestos ($)<input type="text" inputmode="numeric" id="cl-costo" autocomplete="off" placeholder="Ej. 60000"></label>
+      <label class="f">Garantía<select id="cl-gar"><option value="0">Sin garantía</option><option value="30">30 días</option><option value="60">60 días</option><option value="90" selected>90 días</option><option value="180">6 meses</option></select></label>
+    </div>
+    <div class="row"><button class="btn" type="button" id="cl-save">Guardar</button><button class="btn ghost" type="button" id="cl-skip">Ahora no</button></div>
+  </div>`;
+  const money = id => { const v = $("#" + id).value.replace(/[^0-9]/g, ""); return v ? parseInt(v, 10) : null; };
+  $("#cl-save").onclick = () => {
+    visit.cobro = money("cl-cobro"); visit.costo = money("cl-costo"); visit.garantia_dias = +$("#cl-gar").value || null;
+    saveVisit();
+    $("#result").innerHTML = `<div class="note info">Guardado.${visit.cobro ? ` Ganancia: <b>${COP((visit.cobro || 0) - (visit.costo || 0))}</b>.` : ""}${visit.garantia_dias ? ` Garantía hasta el ${new Date(visit.id + visit.garantia_dias * 864e5).toLocaleDateString("es-CO")}.` : ""}</div>`;
+  };
+  $("#cl-skip").onclick = () => { $("#result").innerHTML = `<div class="note info">Listo. Visita guardada como <b>reparada</b>.</div>`; };
+}
 
 /* ===================== PASOS DEL INICIO ===================== */
 function updateSteps() {
@@ -1782,6 +1825,12 @@ function renderStats() {
   const count = (arr, key) => { const m = new Map(); arr.forEach(x => { const k = key(x); if (k) m.set(k, (m.get(k) || 0) + 1); }); return [...m].sort((a, b) => b[1] - a[1]).slice(0, 5); };
   const topFallas = count(ok, v => [v.caso.marca, dxOf(v)?.falla_principal].filter(Boolean).join(" · "));
   const topTipo = count(h, v => v.caso.tipo.split(" (")[0]);
+  const now = new Date(), ym = d => { const x = new Date(d); return x.getFullYear() * 12 + x.getMonth(); };
+  const thisM = ok.filter(v => ym(v.fecha) === ym(now)), lastM = ok.filter(v => ym(v.fecha) === ym(now) - 1);
+  const sum = (arr, f) => arr.reduce((a, v) => a + (f(v) || 0), 0);
+  const ingM = sum(thisM, v => v.cobro), ganM = sum(thisM, v => (v.cobro || 0) - (v.costo || 0)), ingL = sum(lastM, v => v.cobro);
+  const enGar = ok.filter(v => v.garantia_dias && v.garantia_dias - daysAgo(v.id) >= 0).length;
+  const money = ok.some(v => v.cobro);
   const rankHTML = (rows, total) => rows.map(([k, n]) => `<span>${esc(k)}</span><b class="mono">${n}</b><div class="bar"><i style="width:${Math.round(100 * n / Math.max(1, total))}%"></i></div>`).join("");
   box.innerHTML = `<h3>Tu taller</h3>
     <div class="tiles">
@@ -1790,6 +1839,13 @@ function renderStats() {
       <div class="tile"><b>${withDx.length ? Math.round(100 * ok.length / withDx.length) : 0}%</b><span>diagnósticos que resolvieron</span></div>
       <div class="tile"><b>${avg ? avg.toLocaleString("es-CO", { maximumFractionDigits: 1 }) : "–"}</b><span>pruebas promedio hasta el diagnóstico</span></div>
     </div>
+    ${money ? `<h3 style="font-size:16px">Cuentas de ${now.toLocaleDateString("es-CO", { month: "long" })}</h3>
+    <div class="tiles">
+      <div class="tile"><b style="font-size:22px">${COP(ingM)}</b><span>cobrado este mes${ingL ? ` · mes pasado ${COP(ingL)}` : ""}</span></div>
+      <div class="tile"><b style="font-size:22px">${COP(ganM)}</b><span>ganancia (cobro − repuestos)</span></div>
+      <div class="tile"><b>${thisM.length}</b><span>reparaciones este mes</span></div>
+      <div class="tile"><b>${enGar}</b><span>equipos en garantía</span></div>
+    </div>` : ""}
     ${fails ? `<p class="sync" style="margin:0">${fails} diagnóstico(s) no resolvieron; el guía ya no los repite sin nueva evidencia.</p>` : ""}
     ${topFallas.length ? `<h3 style="font-size:16px">Fallas que más reparas</h3><div class="rank">${rankHTML(topFallas, ok.length)}</div>` : ""}
     ${topTipo.length ? `<h3 style="font-size:16px">Equipos que más atiendes</h3><div class="rank">${rankHTML(topTipo, h.length)}</div>` : ""}`;
