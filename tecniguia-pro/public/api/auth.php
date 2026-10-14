@@ -28,7 +28,10 @@ switch ($a) {
         if (strlen($clave) < 8) {
             fail('La contraseña debe tener mínimo 8 caracteres.');
         }
-        if (empty($b['acepto'])) {
+        if (!registro_abierto()) {
+            fail('Esta app es personal y ya tiene su cuenta. Entra con tu correo y contraseña.', 403, 'closed');
+        }
+        if (empty($b['acepto']) && !modo_personal()) {
             fail('Debes aceptar los términos de uso.');
         }
         $st = db()->prepare('SELECT id FROM usuarios WHERE email = ?');

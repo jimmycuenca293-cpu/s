@@ -702,7 +702,19 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
     if (msg) $("#tg-pay-msg").textContent = msg;
     $("#tg-pay").hidden = false;
   }
+  function applyMode() {
+    const c = TG.cfg || {};
+    if (c.registro === false) { $("#tg-t-reg").hidden = true; tab(false); }
+    if (c.personal) {
+      $("#tg-r-acepto").closest("label").hidden = true;
+      $("#tg-wa1").closest("p").hidden = true;
+      $("#tg-r-tel").closest("label").hidden = true;
+      $("#tg-r-go").textContent = "Crear mi cuenta";
+      if (c.registro) tab(true);
+    }
+  }
   function fillCfg() {
+    applyMode();
     const wa = TG.cfg.whatsapp || "";
     ["#tg-wa1", "#tg-wa2"].forEach(s => { const el = $(s); if (el) el.textContent = wa; });
     const digits = wa.replace(/[^0-9]/g, "");
@@ -710,6 +722,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
     $("#tg-wa-link").href = digits ? `https://wa.me/${digits}?text=${msg}` : "#";
   }
   function planText(u) {
+    if (TG.cfg.personal) return "Cuenta personal";
     if (u.admin) return "Administrador";
     if (!u.plan_ok) return u.estado === "suspendido" ? "Cuenta suspendida" : "Plan vencido";
     const d = Math.max(0, u.dias_restantes ?? 0);
@@ -719,7 +732,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
     const bar = $("#tg-userbar"); if (!bar) return;
     const u = TG.user;
     bar.hidden = false;
-    bar.innerHTML = `<span style="min-width:0;display:flex;flex-direction:column;align-items:flex-end"><b></b><span>${planText(u)}</span></span>${u.admin ? '<a href="admin.html" style="font-size:12.5px">Panel</a>' : ""}<button type="button" id="tg-out">Salir</button>`;
+    bar.innerHTML = `<span style="min-width:0;display:flex;flex-direction:column;align-items:flex-end"><b></b><span>${planText(u)}</span></span>${u.admin && !TG.cfg.personal ? '<a href="admin.html" style="font-size:12.5px">Panel</a>' : ""}<button type="button" id="tg-out">Salir</button>`;
     bar.querySelector("b").textContent = u.nombre;
     $("#tg-out").onclick = async () => { try { await api("auth.php?a=salir", { method: "POST", body: {} }); } catch {} lsDel("tg_visits", "tg_draft", "tg_uid"); location.reload(); };
     const old = $("#tg-planbox"); if (old) old.remove();

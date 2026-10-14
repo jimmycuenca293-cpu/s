@@ -105,8 +105,26 @@ function require_user(): array
     return $u;
 }
 
+/** Modo personal: una sola cuenta, sin pruebas, pagos ni límites. */
+function modo_personal(): bool
+{
+    return defined('MODO_PERSONAL') && MODO_PERSONAL;
+}
+
+/** En modo personal solo se puede crear la primera cuenta. */
+function registro_abierto(): bool
+{
+    if (!modo_personal()) {
+        return true;
+    }
+    return (int) db()->query('SELECT COUNT(*) FROM usuarios')->fetchColumn() === 0;
+}
+
 function is_admin(array $u): bool
 {
+    if (modo_personal()) {
+        return true;
+    }
     return in_array(strtolower($u['email']), array_map('strtolower', ADMIN_EMAILS), true);
 }
 
@@ -144,5 +162,5 @@ function client_ip(): string
 
 function cfg_publica(): array
 {
-    return ['nombre_app' => NOMBRE_APP, 'whatsapp' => WHATSAPP_SOPORTE, 'dias_prueba' => DIAS_PRUEBA];
+    return ['nombre_app' => NOMBRE_APP, 'whatsapp' => WHATSAPP_SOPORTE, 'dias_prueba' => DIAS_PRUEBA, 'personal' => modo_personal(), 'registro' => registro_abierto()];
 }

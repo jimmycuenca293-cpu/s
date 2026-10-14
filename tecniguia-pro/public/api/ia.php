@@ -28,7 +28,7 @@ $uid = (int) $u['id'];
 $hoy = date('Y-m-d');
 $st = db()->prepare('SELECT llamadas FROM uso WHERE usuario_id = ? AND dia = ?');
 $st->execute([$uid, $hoy]);
-if ((int) $st->fetchColumn() >= LIMITE_DIARIO) {
+if (!modo_personal() && (int) $st->fetchColumn() >= LIMITE_DIARIO) {
     fail('Llegaste al límite de consultas de hoy. Se reinicia mañana.', 429, 'rate_limited');
 }
 
