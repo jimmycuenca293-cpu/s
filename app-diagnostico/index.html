@@ -164,6 +164,13 @@ details.mini summary{cursor:pointer;color:var(--accent);font-weight:600;font-siz
 #opts button{padding:14px 12px;font-size:16px;font-weight:600;text-align:left;border-radius:10px}
 #opts button:active{background:var(--accent-soft)}
 .why{font-size:14px;color:var(--muted);margin:0;max-width:65ch}
+.hist-row{display:flex;align-items:stretch;gap:6px;border-top:1px solid var(--line)}
+.hist-row:first-child{border-top:0}
+.hist-row .hist-item{border-top:0;flex:1 1 auto;min-width:0}
+.hist-del{border:0;background:none;color:var(--red);font-size:12.5px;font-weight:600;cursor:pointer;padding:0 6px}
+.hist-del.sure{background:var(--red-soft);border-radius:8px}
+.btn.danger-btn{color:var(--red);border-color:var(--red)}
+.btn.danger-fill{background:var(--red);border-color:var(--red);color:var(--panel)}
 .scan svg{flex:0 0 auto;width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:1.8}
 .placa{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 12px;font-size:13.5px}
 .placa div span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
@@ -482,7 +489,12 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
   </div>
   <div class="panel" id="stats" hidden></div>
   <div class="panel"><div id="hist"></div></div>
-  <div class="row"><button class="btn ghost" type="button" id="backup" hidden>Descargar respaldo de mis visitas</button><span class="sync" id="backup-msg"></span></div>
+  <div class="row"><button class="btn ghost" type="button" id="backup" hidden>Descargar respaldo de mis visitas</button><button class="btn ghost danger-btn" type="button" id="wipe" hidden>Borrar todo el historial</button><span class="sync" id="backup-msg"></span></div>
+  <div class="panel" id="wipe-confirm" hidden>
+    <b>¿Borrar todo el historial?</b>
+    <p class="sync" style="margin:0">Se borran todas las visitas, casos aprendidos, garantías y cuentas de este usuario. No se puede deshacer. Descarga un respaldo antes si lo quieres guardar.</p>
+    <div class="row"><button class="btn danger-fill" type="button" id="wipe-yes">Sí, borrar todo</button><button class="btn ghost" type="button" id="wipe-no">Cancelar</button></div>
+  </div>
 </section>
 
 <footer>TecniGuía orienta el diagnóstico; la decisión final es del técnico tras medir. Voltajes de referencia para Colombia: 110–120 V / 60 Hz (secadoras eléctricas a 220 V).</footer>
@@ -1248,7 +1260,10 @@ let VISITS = store.get("tg_visits", []);
 (async () => {
   try {
     if (window.claude && claude.use) {
-      [sample, db] = await Promise.all([claude.use("sample"), claude.use("db").catch(() => null)]);
+      let user;
+      [sample, db, user] = await Promise.all([claude.use("sample"), claude.use("db").catch(() => null), claude.use("user").catch(() => null)]);
+      // Solo el dueño guarda en la nube; cada técnico que use el enlace guarda en su propio teléfono.
+      if (db && !(user && await user.isOwner().catch(() => false))) db = null;
     }
     if (sample) limits = await sample.limits().catch(() => null);
   } catch { sample = null; }
@@ -1928,15 +1943,37 @@ function renderStats() {
 function renderHist() {
   renderStats();
   const h = VISITS;
+  $("#wipe").hidden = !h.length;
   if (!h.length) { $("#hist").innerHTML = `<p class="lead">Aún no hay visitas guardadas. Cada visita guiada aparece aquí con sus pruebas y el resultado.</p>`; return; }
   $("#hist").innerHTML = h.map((v, i) => {
     const last = v.turns[v.turns.length - 1] || {}, dx = v.turns.find(t => t.diagnostico)?.diagnostico;
     const title = dx ? dx.falla_principal : (last.hipotesis?.[0]?.falla ? "En curso: " + last.hipotesis[0].falla : "Visita sin terminar");
     const tag = v.resultado === "ok" ? '<span class="pill alta">Reparado</span>' : dx ? '<span class="pill media">Diagnosticado</span>' : '<span class="pill">En curso</span>';
-    return `<button type="button" class="hist-item" data-i="${i}"><span style="min-width:0"><b>${esc(title)}</b><br><span class="eyebrow">${esc([v.caso.tipo.split(" (")[0], v.caso.marca, v.caso.modelo].filter(Boolean).join(" · "))} · ${v.turns.length} pasos</span></span><span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${tag}<span class="eyebrow mono">${new Date(v.fecha).toLocaleDateString("es-CO")}</span></span></button>`;
+    return `<div class="hist-row"><button type="button" class="hist-item" data-i="${i}"><span style="min-width:0"><b>${esc(title)}</b><br><span class="eyebrow">${esc([v.caso.tipo.split(" (")[0], v.caso.marca, v.caso.modelo].filter(Boolean).join(" · "))} · ${v.turns.length} pasos</span></span><span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${tag}<span class="eyebrow mono">${new Date(v.fecha).toLocaleDateString("es-CO")}</span></span></button><button type="button" class="hist-del" data-del="${v.id}" aria-label="Borrar esta visita">Borrar</button></div>`;
   }).join("");
 }
+async function deleteVisits(ids) {
+  const set = new Set(ids.map(Number));
+  VISITS = VISITS.filter(v => !set.has(v.id));
+  store.set("tg_visits", VISITS.slice(0, 80));
+  if (visit && set.has(visit.id)) visit = null;
+  if (db) for (const id of set) { try { await db.collection("visitas").doc(String(id)).delete(); } catch {} }
+  renderHist(); offerResume();
+}
+$("#wipe").addEventListener("click", () => { $("#wipe-confirm").hidden = false; $("#wipe-confirm").scrollIntoView({ behavior: "smooth", block: "center" }); });
+$("#wipe-no").addEventListener("click", () => { $("#wipe-confirm").hidden = true; });
+$("#wipe-yes").addEventListener("click", async () => {
+  $("#wipe-confirm").hidden = true;
+  await deleteVisits(VISITS.map(v => v.id));
+  try { localStorage.removeItem("tg_visits"); localStorage.removeItem("tg_draft"); } catch {}
+  $("#backup-msg").textContent = "Historial borrado.";
+});
 $("#hist").addEventListener("click", e => {
+  const del = e.target.closest(".hist-del");
+  if (del) {   // primer toque pide confirmar, segundo borra
+    if (!del.classList.contains("sure")) { $$(".hist-del.sure").forEach(x => { x.classList.remove("sure"); x.textContent = "Borrar"; }); del.classList.add("sure"); del.textContent = "¿Seguro? Toca otra vez"; return; }
+    deleteVisits([del.dataset.del]); return;
+  }
   const b = e.target.closest(".hist-item"); if (!b) return;
   const v = VISITS[+b.dataset.i]; if (!v) return;
   visit = v; clearPend();
