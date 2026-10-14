@@ -207,6 +207,22 @@ nav.bnav button[aria-selected="true"]{color:var(--accent);background:var(--accen
 nav.bnav button[data-badge]:not([data-badge=""])::after{content:attr(data-badge);position:absolute;top:2px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font-size:11px;line-height:18px;text-align:center;padding:0 5px}
 @media (min-width:900px){nav.bnav{max-width:520px;margin:0 auto;border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0}}
 footer{color:var(--muted);font-size:12.5px}
+.grow{display:flex;flex-direction:column;gap:12px}
+.tool{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.tool summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px}
+.tool summary::after{content:"+";font-family:var(--f-mono);color:var(--accent);font-size:18px}
+.tool[open] summary::after{content:"−"}
+.tool .ic{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);display:grid;place-items:center}
+.tool .ic svg{width:24px;height:24px;stroke:var(--accent);fill:none;stroke-width:1.8}
+.tool summary b{display:block;font-size:15.5px}
+.tool summary span.m{display:block}
+.tool .body{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+.tool select,.tool input[type=date],.tool input[type=text]{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:16px;width:100%;color:var(--ink)}
+.prev{border-radius:12px;border:1px solid var(--line);max-width:100%;display:block;background:#fff}
+.copybox{background:var(--bg);border-radius:12px;padding:12px;white-space:pre-wrap;font-size:14px;line-height:1.5;word-break:break-word}
+.legal{font-size:13px;color:var(--muted);background:var(--bg);border-radius:12px;padding:10px 12px;border-left:3px solid var(--line)}
+.refbox{background:linear-gradient(135deg,var(--accent-soft),transparent);border:1.5px dashed var(--accent);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.refbox .code{font-family:var(--f-mono);font-size:20px;color:var(--accent);user-select:all}
 </style>
 
 <header class="hero">
@@ -282,6 +298,53 @@ footer{color:var(--muted);font-size:12.5px}
 <section id="v-vendedor" hidden style="flex-direction:column;gap:14px">
   <div><h2>Vista del vendedor</h2><p class="sub">Así se verá tu panel. En el prototipo muestra los pedidos hechos en este teléfono; en la versión real llegan los de todos los clientes.</p></div>
   <div class="tiles" id="kpis"></div>
+  <div class="grow">
+    <div><h2 style="font-size:18px">Conseguir clientes</h2><p class="sub">Herramientas para que la gente que necesita el filtro te encuentre y te vuelva a comprar.</p></div>
+
+    <details class="tool" id="t-sticker" open>
+      <summary><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM18 18h3v3M14 21h1"/></svg></span><span><b>Sticker QR para el nevecón</b><span class="m">Pégalo al instalar o al reparar una nevera. Lo escanean y te piden el filtro.</span></span></summary>
+      <div class="body">
+        <div class="fields">
+          <label class="f">Filtro<select id="st-prod"></select></label>
+          <label class="f">Próximo cambio<input type="date" id="st-fecha"></label>
+        </div>
+        <button class="btn" type="button" id="st-go">Crear hoja de 8 stickers</button>
+        <div id="st-out"></div>
+      </div>
+    </details>
+
+    <details class="tool" id="t-oferta">
+      <summary><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span><span><b>Imagen de oferta</b><span class="m">Para tu estado de WhatsApp, Marketplace e Instagram, con QR para pedir.</span></span></summary>
+      <div class="body">
+        <label class="f">Filtro<select id="of-prod"></select></label>
+        <label class="f">Frase de la oferta (opcional)<input type="text" id="of-frase" placeholder="Ej. Esta semana: instalación gratis" maxlength="60"></label>
+        <button class="btn" type="button" id="of-go">Crear imagen</button>
+        <div id="of-out"></div>
+      </div>
+    </details>
+
+    <details class="tool" id="t-pub">
+      <summary><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.5-4.5L16 5l3 3L8.5 18.5z"/><path d="M14 7l3 3"/></svg></span><span><b>Publicación escrita por IA</b><span class="m">El texto para cada red, con las palabras que la gente busca.</span></span></summary>
+      <div class="body">
+        <div class="fields">
+          <label class="f">Filtro<select id="pub-prod"></select></label>
+          <label class="f">Dónde la vas a publicar<select id="pub-canal">
+            <option value="marketplace">Facebook Marketplace</option>
+            <option value="estado">Estado de WhatsApp</option>
+            <option value="instagram">Instagram / Facebook</option>
+            <option value="google">Google (perfil de negocio)</option>
+            <option value="grupos">Grupos de barrio y conjuntos</option>
+          </select></label>
+          <label class="f" style="grid-column:1/-1">Barrio o zona (opcional)<input type="text" id="pub-zona" placeholder="Ej. Ciudad Jardín, Valle del Lili"></label>
+        </div>
+        <button class="btn" type="button" id="pub-go">Escribir publicación</button>
+        <div id="pub-out"></div>
+      </div>
+    </details>
+
+    <div class="legal">La app no compra bases de datos ni escribe a desconocidos: en Colombia es ilegal (Ley 1581) y WhatsApp bloquea los números que lo hacen. Solo les escribes a tus clientes que aceptaron el recordatorio.</div>
+  </div>
+
   <div class="row" style="justify-content:space-between"><h2 style="font-size:18px">Recordatorios de cambio</h2><label class="row" style="gap:6px;font-size:13px;color:var(--muted);cursor:pointer"><input type="checkbox" id="demo-rem"> Ver con clientes de ejemplo</label></div>
   <p class="sub" style="margin-top:-8px">Cuando a un cliente le toca el cambio, toca <b>Recordar</b>: se abre WhatsApp con el mensaje listo. En la versión real se envían solos.</p>
   <div id="reminders"></div>
@@ -301,6 +364,7 @@ footer{color:var(--muted);font-size:12.5px}
 <div class="sheet-bg" id="sheet-bg" hidden></div>
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sh-title"><div class="sheet-in" id="sheet-in"></div></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 (() => {
 "use strict";
@@ -335,6 +399,7 @@ const NEGOCIO = {
   envioPrincipal: 14000, envioOtros: 19000, recargoContraEntrega: 6000,
   diasNacional: 2, diasEncargo: 5,
   descuentoPack: 0.10,                 // pack anual de 2 filtros
+  descuentoReferido: 5000,             // descuento para quien llega recomendado
   garantiaDias: 30,
   mesesCambio: 6
 };
@@ -555,7 +620,7 @@ function startOrder(id) {
   const p = CATALOGO.find(x => x.id === id); if (!p) return;
   const prev = store.get("fy_cliente", {});
   cart = { p, qty: 1, pack: false, pago: "contra", entrega: null, step: 1, id: null,
-    cli: { nombre: prev.nombre || "", tel: prev.tel || "", ciudad: city(), dir: prev.dir || "", barrio: prev.barrio || "", indicaciones: "", modelo: modeloBuscado(), recordar: !!prev.recordar } };
+    cli: { nombre: prev.nombre || "", tel: prev.tel || "", ciudad: city(), dir: prev.dir || "", barrio: prev.barrio || "", indicaciones: "", modelo: modeloBuscado(), recordar: !!prev.recordar, referido: store.get("fy_refcode_in", "") } };
   fixEntrega(); renderStep();
 }
 // Solo se usa lo buscado si era el modelo de un nevecón (no la referencia del filtro)
@@ -574,7 +639,8 @@ function totals() {
   const bruto = p.precio * unidades, desc = cart.pack ? Math.round(bruto * NEGOCIO.descuentoPack) : 0;
   const ent = cart.entrega === "instalacion" ? NEGOCIO.instalacion : d.envio;
   const rec = cart.pago === "contra" && cart.entrega === "transportadora" ? NEGOCIO.recargoContraEntrega : 0;
-  return { d, unidades, bruto, desc, ent, rec, total: bruto - desc + ent + rec };
+  const refd = codigoValido(cart.cli.referido) ? NEGOCIO.descuentoReferido : 0;
+  return { d, unidades, bruto, desc, ent, rec, refd, total: bruto - desc - refd + ent + rec };
 }
 const progress = n => `<div class="progress" aria-label="Paso ${n} de 3"><div class="${n >= 1 ? "on" : ""}">1. Pedido</div><div class="${n >= 2 ? "on" : ""}">2. Tus datos</div><div class="${n >= 3 ? "on" : ""}">3. Confirmar</div></div>`;
 const entregaTxt = e => e === "instalacion" ? "Domicilio + instalación" : e === "domicilio" ? "Domicilio" : "Envío por transportadora";
@@ -582,6 +648,7 @@ function sumHTML() {
   const t = totals();
   return `<div class="sum"><span>${t.unidades} × ${esc(cart.p.ref)}</span><span>${COP(t.bruto)}</span>
     ${t.desc ? `<span class="save">Descuento pack anual</span><span class="save">− ${COP(t.desc)}</span>` : ""}
+    ${t.refd ? `<span class="save">Descuento por recomendación</span><span class="save">− ${COP(t.refd)}</span>` : ""}
     <span>${entregaTxt(cart.entrega)}</span><span>${COP(t.ent)}</span>
     ${t.rec ? `<span>Recargo contra entrega</span><span>${COP(t.rec)}</span>` : ""}
     <span class="t">Total</span><span class="t">${COP(t.total)}</span></div>`;
@@ -624,6 +691,7 @@ function renderStep() {
         <label class="f" id="f-dir" style="grid-column:1/-1"><b>Dirección</b><input id="c-dir" autocomplete="street-address" placeholder="Calle 5 # 66-20, apto 301" value="${esc(k.dir)}"></label>
         <label class="f" style="grid-column:1/-1">Indicaciones para la entrega (opcional)<input id="c-ind" value="${esc(k.indicaciones)}" placeholder="Ej. Torre 2, portería; llamar antes"></label>
         <label class="f" style="grid-column:1/-1">Modelo del nevecón (opcional)<input id="c-modelo" value="${esc(k.modelo)}" placeholder="Ayuda a confirmar que le sirve"></label>
+        <label class="f" style="grid-column:1/-1">¿Te recomendó alguien? Código (opcional, ${COP(NEGOCIO.descuentoReferido)} de descuento)<input id="c-ref" value="${esc(k.referido)}" placeholder="Ej. LUZ-8899" autocapitalize="characters"></label>
       </div>
       <label class="consent"><input type="checkbox" id="c-rec" ${k.recordar ? "checked" : ""}><span><b>Recuérdame por WhatsApp cuando toque cambiar el filtro</b> (cada ${NEGOCIO.mesesCambio} meses). Autorizo a ${esc(NEGOCIO.nombre)} a escribirme para eso y puedo pedir que no me escriban más.</span></label>
       <p class="err" id="c-err" aria-live="polite"></p>
@@ -652,7 +720,7 @@ function renderStep() {
 }
 function readStep2() {
   const v = id => $("#" + id).value.trim();
-  Object.assign(cart.cli, { nombre: v("c-nombre"), tel: v("c-tel"), ciudad: $("#c-ciudad").value, barrio: v("c-barrio"), dir: v("c-dir"), indicaciones: v("c-ind"), modelo: v("c-modelo"), recordar: $("#c-rec").checked });
+  Object.assign(cart.cli, { nombre: v("c-nombre"), tel: v("c-tel"), ciudad: $("#c-ciudad").value, barrio: v("c-barrio"), dir: v("c-dir"), indicaciones: v("c-ind"), modelo: v("c-modelo"), recordar: $("#c-rec").checked, referido: v("c-ref").toUpperCase() });
 }
 function validStep2() {
   const k = cart.cli, wa = celularCO(k.tel);
@@ -671,6 +739,7 @@ function orderMessage() {
     `Hola ${NEGOCIO.nombre}, quiero confirmar este pedido (${cart.id}):`,
     `• ${t.unidades} × ${p.nombre} (${p.ref}) — ${COP(t.bruto)}`,
     t.desc ? `• Descuento pack anual — −${COP(t.desc)}` : "",
+    t.refd ? `• Descuento por recomendación (${cart.cli.referido}) — −${COP(t.refd)}` : "",
     `• ${entregaTxt(cart.entrega)} — ${COP(t.ent)}`,
     t.rec ? `• Recargo contra entrega — ${COP(t.rec)}` : "",
     `Total: ${COP(t.total)}`,
@@ -727,6 +796,7 @@ function placeOrder() {
         </ol>
         <div class="note info">Próximo cambio de filtro: <b>${cambio.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" })}</b>. ${k.recordar ? `Te escribimos al ${esc(k.tel)} unos días antes.` : "Guarda el recordatorio en tu calendario para no olvidarlo."}</div>
         <a class="btn wa block" href="${waLink(order.msg)}" target="_blank" rel="noopener">${ICON.wa}Abrir WhatsApp otra vez</a>
+        ${refBoxHTML(k)}
         <div class="row"><button class="btn ghost" type="button" id="ics">Guardar recordatorio en mi calendario</button><button class="btn ghost" type="button" id="done-close">Cerrar</button></div>
         <span class="sub" id="ics-msg"></span>
       </div>`);
@@ -761,7 +831,8 @@ function renderSeller() {
     <div class="tile"><b>${o.length}</b><span>pedidos (este teléfono)</span></div>
     <div class="tile"><b>${COP(ventas)}</b><span>en pedidos</span></div>
     <div class="tile"><b>${o.filter(x => x.entrega === "instalacion").length}</b><span>con instalación</span></div>
-    <div class="tile"><b>${o.filter(x => x.cliente?.recordar).length}</b><span>clientes con recordatorio</span></div>`;
+    <div class="tile"><b>${o.filter(x => x.cliente?.recordar).length}</b><span>clientes con recordatorio</span></div>
+    <div class="tile"><b>${o.filter(x => codigoValido(x.cliente?.referido)).length}</b><span>llegaron recomendados</span></div>`;
   renderReminders(o);
   $("#inv").innerHTML = CATALOGO.map(p => `<div class="it">${pimg(p)}<div style="min-width:0"><b>${esc(p.nombre)}</b><div class="m"><span class="ref">${esc(p.ref)}</span> · ${COP(p.precio)} · stock ${p.stock}</div>
     <div style="margin-top:4px">${p.stock === 0 ? '<span class="badge bad">Agotado</span>' : p.stock <= 3 ? '<span class="badge warn">Pedir al proveedor</span>' : '<span class="badge ok">Bien</span>'}</div></div>
@@ -831,6 +902,164 @@ function showTab(name) {
   window.scrollTo({ top: 0 });
 }
 $$("nav.bnav button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+/* ===================== REFERIDOS ===================== */
+// Código de cada cliente: primer nombre + últimos 4 del celular (ej. LUZ-8899)
+const codigoDe = k => (String(k.nombre || "").trim().split(/\s+/)[0] || "AMIGO").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 8) + "-" + String(k.wa || k.tel || "").replace(/\D/g, "").slice(-4);
+const codigoValido = c => /^[A-Z]{2,8}-\d{4}$/.test(String(c || "").trim().toUpperCase());
+function refBoxHTML(k) {
+  const code = codigoDe(k);
+  const msg = `Te recomiendo ${NEGOCIO.nombre}: filtros de agua para nevecón con domicilio${INSTALA_EN.includes(k.ciudad) ? " e instalación" : ""}. Usa mi código ${code} y te dan ${COP(NEGOCIO.descuentoReferido)} de descuento. Pídelo aquí: https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(`Hola, vengo recomendado. Mi código es ${code}.`)}`;
+  return `<div class="refbox"><b>Recomiéndanos y ayuda a un amigo</b><span class="sub">Tu código: <span class="code">${esc(code)}</span>. Quien lo use recibe ${COP(NEGOCIO.descuentoReferido)} de descuento.</span><a class="btn ghost" href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${ICON.wa}Compartir mi código por WhatsApp</a></div>`;
+}
+
+/* ===================== CONSEGUIR CLIENTES ===================== */
+const BRAND = { deep: "#0f3d43", deep2: "#14505a", glow: "#5fd6c3", ink: "#0f2a2e", white: "#ffffff", muted: "#587074" };
+const prodOpts = (todos) => (todos ? `<option value="">Cualquier filtro (genérico)</option>` : "") + CATALOGO.map(p => `<option value="${p.id}">${esc(p.ref)} · ${esc(p.nombre)}</option>`).join("");
+$("#st-prod").innerHTML = prodOpts(true); $("#of-prod").innerHTML = prodOpts(false); $("#pub-prod").innerHTML = prodOpts(false);
+(() => { const d = new Date(); d.setMonth(d.getMonth() + NEGOCIO.mesesCambio); $("#st-fecha").value = d.toISOString().slice(0, 10); })();
+
+function qrModules(text) {
+  if (typeof qrcode !== "function") return null;
+  try { const q = qrcode(0, "M"); q.addData(text); q.make(); return q; } catch { return null; }
+}
+function drawQR(ctx, text, x, y, size) {
+  const q = qrModules(text);
+  if (!q) { ctx.fillStyle = "#eee"; ctx.fillRect(x, y, size, size); ctx.fillStyle = "#888"; ctx.font = "14px sans-serif"; ctx.fillText("QR sin conexión", x + 8, y + size / 2); return false; }
+  const n = q.getModuleCount(), quiet = 2, cell = size / (n + quiet * 2);
+  ctx.fillStyle = "#fff"; ctx.fillRect(x, y, size, size);
+  ctx.fillStyle = "#000";
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) ctx.fillRect(Math.floor(x + (c + quiet) * cell), Math.floor(y + (r + quiet) * cell), Math.ceil(cell), Math.ceil(cell));
+  return true;
+}
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function drop(ctx, x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s / 24, s / 24); ctx.fillStyle = BRAND.glow; ctx.fill(new Path2D("M12 2.5C9 6.5 6 9.6 6 13.5a6 6 0 0 0 12 0c0-3.9-3-7-6-11z")); ctx.restore(); }
+function wrapText(ctx, text, x, y, maxW, lh) {
+  const words = String(text).split(" "); let line = "", yy = y;
+  for (const w of words) { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > maxW && line) { ctx.fillText(line, x, yy); line = w; yy += lh; } else line = t; }
+  if (line) ctx.fillText(line, x, yy); return yy;
+}
+async function productImage(p) {   // foto real, o el dibujo del filtro
+  const src = IMGS[p.id] || "data:image/svg+xml;charset=utf-8," + encodeURIComponent(cartSVG(p).replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" width="270" height="400" '));
+  return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; });
+}
+const fontsReady = () => (document.fonts && document.fonts.ready ? document.fonts.ready.catch(() => {}) : Promise.resolve());
+async function saveCanvas(canvas, filename, msgEl) {
+  const blob = await new Promise(r => canvas.toBlob(r, "image/png"));
+  try {
+    if (downloads) { await downloads.save({ filename, data: blob }); msgEl.textContent = "Imagen descargada."; return; }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+    msgEl.textContent = "Si no se descargó, mantén presionada la imagen y toca Guardar.";
+  } catch { msgEl.textContent = "No se descargó. Mantén presionada la imagen y toca Guardar."; }
+}
+
+/* --- Sticker QR: hoja A4 de 8 --- */
+async function makeStickers() {
+  await fontsReady();
+  const p = CATALOGO.find(x => x.id === $("#st-prod").value) || null;
+  const f = $("#st-fecha").value ? new Date($("#st-fecha").value + "T12:00:00") : null;
+  const fecha = f ? f.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" }) : "";
+  const ref = p ? p.ref : "";
+  const qrText = waLink(`Hola ${NEGOCIO.nombre}, quiero cambiar el filtro de mi nevecón${ref ? ` (${ref})` : ""}. Lo vi en el sticker.`);
+  const W = 1240, H = 1754, cols = 2, rows = 4, m = 40, g = 24;
+  const sw = (W - m * 2 - g) / cols, sh = (H - m * 2 - g * (rows - 1)) / rows;
+  const c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, W, H);
+  for (let r = 0; r < rows; r++) for (let k = 0; k < cols; k++) {
+    const sx = m + k * (sw + g), sy = m + r * (sh + g);
+    x.save(); rr(x, sx, sy, sw, sh, 26); x.fillStyle = BRAND.deep; x.fill(); x.restore();
+    x.strokeStyle = "#cfd8d7"; x.setLineDash([10, 8]); rr(x, sx - 8, sy - 8, sw + 16, sh + 16, 32); x.stroke(); x.setLineDash([]);
+    const qs = Math.round(Math.min(sh - 60, sw * 0.42)), tw = sw - qs - 74;   // QR a la derecha, texto a la izquierda
+    drawQR(x, qrText, sx + sw - qs - 26, sy + (sh - qs) / 2, qs);
+    drop(x, sx + 24, sy + 26, 28);
+    x.fillStyle = "#fff"; x.font = "800 27px 'Bricolage Grotesque', sans-serif"; x.fillText(NEGOCIO.nombre, sx + 58, sy + 50, tw - 34);
+    x.fillStyle = BRAND.glow; x.font = "700 16px Manrope, sans-serif"; x.fillText("PRÓXIMO CAMBIO DEL FILTRO", sx + 26, sy + 100, tw);
+    x.fillStyle = "#fff"; x.font = "800 34px 'Bricolage Grotesque', sans-serif"; const yd = wrapText(x, fecha || "__ / __ / ____", sx + 26, sy + 142, tw, 38);
+    if (ref) { x.fillStyle = "#c4e4de"; x.font = "500 19px 'JetBrains Mono', monospace"; x.fillText("Filtro " + ref, sx + 26, yd + 40, tw); }
+    x.fillStyle = "#fff"; x.font = "700 19px Manrope, sans-serif"; wrapText(x, "Escanéame con la cámara y pídelo por WhatsApp", sx + 26, sy + sh - 82, tw, 24);
+  }
+  x.fillStyle = BRAND.muted; x.font = "16px Manrope, sans-serif"; x.fillText("Imprime en papel adhesivo y recorta por la línea punteada.", m, H - 12);
+  const url = c.toDataURL("image/png");
+  $("#st-out").innerHTML = `<img class="prev rise" src="${url}" alt="Hoja de stickers con código QR"><div class="row"><button class="btn" type="button" id="st-dl">Descargar hoja (PNG)</button><span class="sub" id="st-msg"></span></div><p class="sub" style="margin:0">Imprímela en papel adhesivo en cualquier papelería. ${typeof qrcode === "function" ? "Prueba un QR con la cámara antes de imprimir." : "Sin conexión no se pudo crear el QR: vuelve a intentarlo con internet."}</p>`;
+  $("#st-dl").onclick = () => saveCanvas(c, `stickers-${ref || "filtro"}.png`, $("#st-msg"));
+}
+$("#st-go").addEventListener("click", makeStickers);
+
+/* --- Imagen de oferta 1080×1350 --- */
+async function makeOffer() {
+  await fontsReady();
+  const p = CATALOGO.find(x => x.id === $("#of-prod").value); if (!p) return;
+  const frase = $("#of-frase").value.trim();
+  const W = 1080, H = 1350, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  const gr = x.createRadialGradient(W, 0, 50, W, 0, 1300); gr.addColorStop(0, BRAND.deep2); gr.addColorStop(1, BRAND.deep);
+  x.fillStyle = gr; x.fillRect(0, 0, W, H);
+  x.strokeStyle = "rgba(95,214,195,.15)"; x.lineWidth = 60; x.beginPath(); x.arc(W - 40, 80, 230, 0, Math.PI * 2); x.stroke();
+  drop(x, 70, 62, 52); x.fillStyle = "#fff"; x.font = "800 50px 'Bricolage Grotesque', sans-serif"; x.fillText(NEGOCIO.nombre, 136, 108);
+  x.fillStyle = BRAND.glow; x.font = "700 30px Manrope, sans-serif"; x.fillText(("Filtro de agua para nevecón " + p.marca).toUpperCase(), 70, 210);
+  x.fillStyle = "#fff"; x.font = "800 74px 'Bricolage Grotesque', sans-serif"; const yEnd = wrapText(x, p.nombre, 70, 300, 600, 80);
+  x.fillStyle = "#c4e4de"; x.font = "500 38px 'JetBrains Mono', monospace"; x.fillText(p.ref, 70, yEnd + 70);
+  // tarjeta del producto
+  x.save(); rr(x, 700, 250, 310, 440, 36); x.fillStyle = "#ffffff"; x.fill(); x.restore();
+  const img = await productImage(p);
+  if (img) { const r = Math.min(260 / img.width, 390 / img.height); const w = img.width * r, h = img.height * r; x.drawImage(img, 855 - w / 2, 470 - h / 2, w, h); }
+  // precio
+  x.fillStyle = BRAND.glow; x.font = "800 128px 'Bricolage Grotesque', sans-serif"; x.fillText(COP(p.precio), 70, 830);
+  x.fillStyle = "#fff"; x.font = "600 34px Manrope, sans-serif";
+  const puntos = ["Domicilio e instalación en Cali", "Envíos a toda Colombia", "Pagas al recibir o por Nequi"];
+  puntos.forEach((t, i) => { x.fillStyle = BRAND.glow; x.beginPath(); x.arc(86, 905 + i * 58, 9, 0, Math.PI * 2); x.fill(); x.fillStyle = "#fff"; x.fillText(t, 110, 917 + i * 58); });
+  if (frase) { x.save(); rr(x, 70, 1100, 640, 86, 43); x.fillStyle = BRAND.glow; x.fill(); x.restore(); x.fillStyle = BRAND.ink; x.font = "800 34px Manrope, sans-serif"; x.fillText(frase.slice(0, 34), 100, 1155); }
+  drawQR(x, waLink(`Hola ${NEGOCIO.nombre}, quiero el filtro ${p.ref} que vi en la publicación.`), W - 330, H - 400, 270);
+  x.fillStyle = "#fff"; x.font = "700 28px Manrope, sans-serif"; x.fillText("Escanea y pídelo", W - 318, H - 96);
+  x.fillStyle = "#c4e4de"; x.font = "500 26px Manrope, sans-serif"; x.fillText("WhatsApp " + NEGOCIO.whatsapp.replace(/^57/, "").replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3"), 70, H - 70);
+  const url = c.toDataURL("image/png");
+  $("#of-out").innerHTML = `<img class="prev rise" src="${url}" alt="Imagen de oferta"><div class="row"><button class="btn" type="button" id="of-dl">Descargar imagen</button><span class="sub" id="of-msg"></span></div>`;
+  $("#of-dl").onclick = () => saveCanvas(c, `oferta-${p.ref}.png`, $("#of-msg"));
+}
+$("#of-go").addEventListener("click", makeOffer);
+
+/* --- Publicación con IA --- */
+const CANAL = {
+  marketplace: "Facebook Marketplace: título corto con la referencia y la ciudad; descripción clara, con las referencias equivalentes y los modelos de nevecón compatibles para que aparezca en las búsquedas",
+  estado: "Estado de WhatsApp: muy corto (2 a 4 líneas), directo, con llamado a escribir",
+  instagram: "Publicación de Instagram/Facebook: gancho en la primera línea, beneficios, llamado a la acción y 8 a 12 hashtags locales",
+  google: "Publicación del perfil de negocio de Google: profesional, con la ciudad y la referencia, sin hashtags",
+  grupos: "Mensaje para grupos de barrio o de conjuntos residenciales: tono de vecino, cero spam, útil (cada cuánto cambiar el filtro), y la oferta al final"
+};
+function plantilla(p, canal, zona) {   // texto de respaldo sin IA
+  const lugar = zona ? `${zona}, Cali` : "Cali";
+  const base = `Filtro de agua para nevecón ${p.marca} ${p.ref} (${p.tipo === "original" ? "original" : "compatible certificado"}). Sirve para ${p.modelos.slice(0, 3).join(", ")} y más. ${COP(p.precio)}. Domicilio e instalación en ${lugar}, envíos a toda Colombia. Pagas al recibir. Escríbenos por WhatsApp.`;
+  return { titulo: `Filtro nevecón ${p.marca} ${p.ref} · ${lugar}`, texto: base, palabras_clave: [p.ref, ...p.refs.slice(1, 3), `filtro nevecón ${p.marca.toLowerCase()}`, "filtro agua nevera Cali"], mejor_momento: "Entre 6 y 9 p. m., cuando la gente revisa el celular en casa.", consejo: "Pon una foto real del filtro y responde rápido los mensajes." };
+}
+$("#pub-go").addEventListener("click", async () => {
+  const p = CATALOGO.find(x => x.id === $("#pub-prod").value); if (!p) return;
+  const canal = $("#pub-canal").value, zona = $("#pub-zona").value.trim(), out = $("#pub-out"), btn = $("#pub-go");
+  let d = null;
+  if (sample) {
+    btn.disabled = true; out.innerHTML = `<p class="sub"><span class="spin" aria-hidden="true"></span> Escribiendo la publicación…</p>`;
+    const prompt = `Escribe una publicación de venta en español de Colombia (cercano, claro, sin exagerar ni inventar) para un negocio de filtros de agua para neveras y nevecones en Cali.
+Negocio: ${NEGOCIO.nombre}. Domicilio${INSTALA_EN.length ? " e instalación" : ""} en Cali${zona ? " (zona: " + zona + ")" : ""}; envíos a toda Colombia en ${NEGOCIO.diasNacional} días hábiles; pago contra entrega o Nequi; garantía ${NEGOCIO.garantiaDias} días.
+Producto: ${p.nombre}. Tipo: ${p.tipo === "original" ? "original de la marca" : "compatible certificado"}. Referencia: ${p.ref}. Referencias equivalentes: ${p.refs.join(", ")}. Nevecones compatibles: ${p.modelos.join(", ")}. Precio: ${COP(p.precio)}.
+Canal: ${CANAL[canal]}.
+Reglas: no prometas entrega el mismo día; no digas "el mejor" ni datos que no te di; menciona que el filtro se cambia cada ${NEGOCIO.mesesCambio} meses.
+Responde SOLO con JSON: {"titulo":"","texto":"","palabras_clave":[""],"mejor_momento":"cuándo publicarlo","consejo":"un consejo corto para vender más en ese canal"}`;
+    try { d = await sample.json(prompt, { modelTier: "default", cache: false }); }
+    catch (e) { d = null; out.innerHTML = `<p class="sub">No se pudo usar la IA (${esc(e?.code || "error")}). Te dejo un texto base.</p>`; }
+    btn.disabled = false;
+  }
+  if (!d || !d.texto) d = plantilla(p, canal, zona);
+  const full = [d.titulo, d.texto, canal === "instagram" && d.palabras_clave ? d.palabras_clave.map(k => "#" + String(k).replace(/[^\p{L}\p{N}]/gu, "")).join(" ") : ""].filter(Boolean).join("\n\n");
+  out.innerHTML = `<div class="copybox rise" id="pub-text">${esc(full)}</div>
+    ${d.palabras_clave?.length ? `<div class="sub"><b>Palabras que la gente busca:</b> ${d.palabras_clave.map(esc).join(", ")}</div>` : ""}
+    ${d.mejor_momento ? `<div class="sub"><b>Cuándo publicar:</b> ${esc(d.mejor_momento)}</div>` : ""}
+    ${d.consejo ? `<div class="note info">${esc(d.consejo)}</div>` : ""}
+    <div class="row"><button class="btn" type="button" id="pub-copy">Copiar texto</button><a class="btn ghost" href="https://wa.me/?text=${encodeURIComponent(full)}" target="_blank" rel="noopener">${ICON.wa}Enviar a WhatsApp</a></div>
+    ${sample ? "" : `<p class="sub" style="margin:0">Texto base. Dentro de Claude la IA lo escribe a la medida de cada red.</p>`}`;
+  $("#pub-copy").onclick = async () => {
+    try { await navigator.clipboard.writeText(full); $("#pub-copy").textContent = "Copiado"; }
+    catch { const r = document.createRange(); r.selectNodeContents($("#pub-text")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $("#pub-copy").textContent = "Texto seleccionado: cópialo"; }
+  };
+});
 
 renderTrust(); showPopular(); renderOrders(); renderSeller();
 })();
