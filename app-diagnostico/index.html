@@ -130,6 +130,25 @@ details.sym .body{padding:0 14px 14px;display:flex;flex-direction:column;gap:10p
 .calc-out.warn{background:var(--amber-soft);border-left-color:var(--amber)}
 .calc-out.bad{background:var(--red-soft);border-left-color:var(--red)}
 .sync{font-size:12px;color:var(--muted)}
+.scan{display:flex;gap:12px;align-items:center;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:var(--r);padding:12px 14px;position:relative;cursor:pointer}
+.scan input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.scan strong{font-family:var(--f-display);font-size:19px;text-transform:uppercase;letter-spacing:.03em;display:block}
+.scan small{color:var(--muted);font-size:12.5px}
+.scan svg{flex:0 0 auto;width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:1.8}
+.placa{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 12px;font-size:13.5px}
+.placa div span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.placa div b{font-family:var(--f-mono);font-weight:500;word-break:break-word}
+.tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-top:1px solid var(--line);padding-top:10px}
+.tools button{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13.5px}
+.tools button.on{border-color:var(--accent);background:var(--accent-soft)}
+.timer{font-family:var(--f-mono);font-size:22px;font-variant-numeric:tabular-nums;min-width:4.5ch}
+.timer.done{color:var(--red)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.tile{background:var(--bg);border-radius:8px;padding:10px 12px}
+.tile b{display:block;font-family:var(--f-display);font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile span{font-size:12px;color:var(--muted)}
+.rank{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:13.5px;align-items:center}
+.rank .bar{grid-column:1 / -1;margin:0 0 6px}
 .ref-item{padding:12px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
 .ref-item:first-child{border-top:0;padding-top:0}
 .ref-item h4{margin:0;font-size:15px}
@@ -170,6 +189,12 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
   <div id="start" style="display:flex;flex-direction:column;gap:16px">
     <div class="panel">
       <h3>1 · Equipo</h3>
+      <label class="scan" id="scan-box">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3"/><path d="M7 9h10M7 12h7M7 15h9"/></svg>
+        <span><strong>Escanear placa</strong><small>Foto de la etiqueta del equipo: lleno marca, modelo, voltaje y refrigerante por ti</small></span>
+        <input type="file" id="in-placa" accept="image/*" capture="environment">
+      </label>
+      <div id="placa-out" hidden></div>
       <div class="seg" id="tipo" role="group" aria-label="Tipo de electrodoméstico">
         <button type="button" data-v="nevera" aria-pressed="true">Nevera</button>
         <button type="button" data-v="nevecón (side by side / french door)" aria-pressed="false">Nevecón</button>
@@ -378,11 +403,13 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
 <!-- ============ HISTORIAL ============ -->
 <section class="view" id="v-historial" hidden>
   <div>
-    <h2>Historial de diagnósticos</h2>
+    <h2>Historial y estadísticas</h2>
     <p class="lead">Cada reparación que confirmas le enseña al guía: en las próximas visitas usa tus casos parecidos.</p>
     <p class="sync" id="sync"></p>
   </div>
+  <div class="panel" id="stats" hidden></div>
   <div class="panel"><div id="hist"></div></div>
+  <div class="row"><button class="btn ghost" type="button" id="backup" hidden>Descargar respaldo de mis visitas</button><span class="sync" id="backup-msg"></span></div>
 </section>
 
 <footer>TecniGuía orienta el diagnóstico; la decisión final es del técnico tras medir. Voltajes de referencia para Colombia: 110–120 V / 60 Hz (secadoras eléctricas a 220 V).</footer>
@@ -1079,6 +1106,7 @@ function caseText(c) {
     `Tipo de equipo: ${c.tipo}`, `Marca: ${c.marca || "no indicada"}`, `Modelo: ${c.modelo || "no indicado"}`,
     `Código de error: ${c.codigo || "ninguno"}`, `Años de uso: ${c.edad || "no indicado"}`,
     `Lo que hace y lo que ya revisó el técnico: ${c.desc || "no indicado"}`,
+    c.placa ? `Datos leídos de la placa: ${JSON.stringify(c.placa)}` : "",
     c.refCodigo ? `Base de referencia local para ese código (puede variar por serie): ${c.refCodigo}` : ""
   ].filter(Boolean).join("\n");
 }
@@ -1101,7 +1129,9 @@ $("#go").addEventListener("click", () => {
     const hits = findCodes(c.codigo, c.marca, tipoBase()).filter(x => x.c.some(y => sameCode(y, c.codigo)));
     if (hits.length) c.refCodigo = hits.map(h => `${h.m} ${h.c[0]}: ${h.f}. ${h.r}`).join(" | ");
   }
+  if (PLACA) c.placa = PLACA;
   visit = { id: Date.now(), fecha: new Date().toISOString(), caso: c, turns: [], resultado: null };
+  keepAwake(true);
   $("#start").hidden = true; $("#session").hidden = false;
   $("#case-sum").textContent = [c.tipo.split(" (")[0], c.marca, c.modelo, c.codigo && "código " + c.codigo].filter(Boolean).join(" · ");
   $("#result").innerHTML = ""; $("#step").innerHTML = ""; $("#seen").innerHTML = ""; $("#hyp-box").hidden = true;
@@ -1219,6 +1249,7 @@ function stepHTML(s, n) {
     <p style="margin:0;max-width:65ch;font-size:16px">${esc(s.instruccion)}</p>
     ${s.valor_esperado ? `<div class="note info"><b>Cómo interpretar:</b> ${esc(s.valor_esperado)}</div>` : ""}
     ${s.seguridad ? `<div class="danger"><b>Cuidado:</b> ${esc(s.seguridad)}</div>` : ""}
+    ${toolsHTML(s)}
   </article>`;
 }
 function dxHTML(d) {
@@ -1241,6 +1272,7 @@ function dxHTML(d) {
 }
 function renderVisit(readOnly) {
   const last = visit.turns[visit.turns.length - 1]; if (!last) return;
+  stopTimer(true);
   $("#hyp-box").hidden = !(last.hipotesis || []).length || !!last.diagnostico;
   $("#hyp").innerHTML = hypHTML(last.hipotesis);
   $("#casos").innerHTML = casosHTML(similarCases(visit.caso, visit.id));
@@ -1262,6 +1294,7 @@ function renderVisit(readOnly) {
   $("#tl-sum").textContent = `Pruebas hechas (${done.length})`;
   $("#tl").innerHTML = done.map(t => `<li><b>${esc(t.paso.titulo)}</b><br><span style="color:var(--muted)">${esc((t.respuesta || "").replace(/Análisis acústico automático.*$/, "[sonido adjunto]"))}</span></li>`).join("");
   $("#step").scrollIntoView({ behavior: "smooth", block: "start" });
+  if (!readOnly && voiceOn()) speakStep(last);
 }
 $("#opts").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
@@ -1292,7 +1325,8 @@ $("#cant").addEventListener("click", () => {
   askNext("No puedo hacer esta prueba" + (txt ? ": " + txt : "") + ". Dame otra forma de distinguir las mismas hipótesis.");
 });
 $("#reset").addEventListener("click", () => {
-  ctl?.abort(); visit = null; clearPend();
+  ctl?.abort(); visit = null; clearPend(); stopTimer(true); keepAwake(false); try { speechSynthesis.cancel(); } catch {}
+  PLACA = null; $("#placa-out").hidden = true;
   $("#session").hidden = true; $("#start").hidden = false; $("#result").innerHTML = "";
   fieldIds.forEach(id => $("#" + id).value = ""); store.set("tg_draft", null); quickCode();
   window.scrollTo({ top: 0 });
@@ -1313,6 +1347,130 @@ function localFallback(c) {
   if (!hits.length && !scored.length) html += `<p class="lead">No encontré coincidencias. Revisa la pestaña <b>Por síntoma</b>.</p>`;
   $("#code-quick").hidden = false; $("#code-quick").innerHTML = html;
 }
+
+/* ===================== ESCANEAR PLACA ===================== */
+let PLACA = null;
+const PLACA_PROMPT = `La imagen es la etiqueta o placa de datos de un electrodoméstico (nevera, nevecón, lavadora o secadora). Transcribe EXACTAMENTE lo que está impreso. No adivines ni completes datos: si un campo no aparece o no se lee con seguridad, pon null.
+Responde SOLO con JSON:
+{"legible":true,"tipo":"nevera|nevecon|lavadora|secadora|lavasecadora|null","marca":null,"modelo":null,"serie":null,"voltaje":null,"frecuencia":null,"corriente":null,"potencia":null,"refrigerante":null,"carga_refrigerante":null,"potencia_deshielo":null,"fecha_fabricacion":null,"otros":null,"nota":"si algo no se lee bien, dilo aquí"}
+"otros": otros datos técnicos útiles impresos (presiones, clase climática, capacidad), en una sola línea.`;
+const PLACA_LABELS = { marca: "Marca", modelo: "Modelo", serie: "Serie", voltaje: "Voltaje", frecuencia: "Frecuencia", corriente: "Corriente", potencia: "Potencia", refrigerante: "Refrigerante", carga_refrigerante: "Carga de gas", potencia_deshielo: "Deshielo", fecha_fabricacion: "Fabricación", otros: "Otros" };
+$("#in-placa").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const box = $("#placa-out"); box.hidden = false;
+  if (!sample || !limits?.images) { box.innerHTML = `<div class="note">Para leer la placa la app tiene que estar abierta dentro de Claude. Mientras tanto, escribe el modelo a mano.</div>`; return; }
+  box.innerHTML = `<div class="note info"><span class="spin" aria-hidden="true"></span> Leyendo la placa…</div>`;
+  try {
+    const d = await sample.json(PLACA_PROMPT, { images: [f], modelTier: "default" });
+    if (!d || d.legible === false) { box.innerHTML = `<div class="note">No se lee bien la placa. ${esc(d?.nota || "")} Toma la foto de frente, sin reflejo y más cerca.</div>`; return; }
+    PLACA = Object.fromEntries(Object.entries(d).filter(([k, v]) => v !== null && v !== "" && k !== "legible" && k !== "tipo" && k !== "nota"));
+    if (d.marca) {
+      const sel = $("#marca"), opt = [...sel.options].find(o => norm(o.value) && norm(d.marca).includes(norm(o.value)));
+      if (opt) sel.value = opt.value; else { sel.insertAdjacentHTML("beforeend", `<option>${esc(d.marca)}</option>`); sel.value = d.marca; }
+    }
+    if (d.modelo) $("#modelo").value = d.modelo;
+    const map = { nevera: 0, nevecon: 1, lavadora: 2, secadora: 3, lavasecadora: 4 };
+    if (d.tipo in map) $$("#tipo button")[map[d.tipo]].click();
+    $("#modelo").dispatchEvent(new Event("input")); quickCode();
+    pend.photos.push({ blob: f, url: URL.createObjectURL(f), label: "placa" }); renderPend();
+    box.innerHTML = `<div class="panel" style="padding:12px;background:var(--bg)"><h3 style="font-size:16px">Datos de la placa</h3>
+      <div class="placa">${Object.entries(PLACA_LABELS).filter(([k]) => PLACA[k]).map(([k, l]) => `<div><span>${l}</span><b>${esc(PLACA[k])}</b></div>`).join("")}</div>
+      ${d.nota ? `<p class="sync" style="margin:0">${esc(d.nota)}</p>` : ""}
+      <p class="sync" style="margin:0">Revisa que coincida con la etiqueta. Estos datos se envían al guía.</p></div>`;
+  } catch (err) {
+    box.innerHTML = `<div class="note">${esc(errText(err))}</div>`;
+  }
+});
+
+/* ===================== VOZ, CRONÓMETRO Y PANTALLA ===================== */
+const hasVoice = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+const voiceOn = () => hasVoice && store.get("tg_voice", false);
+function speak(text) {
+  if (!hasVoice) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const vs = speechSynthesis.getVoices();
+    u.voice = vs.find(v => /es[-_]CO/i.test(v.lang)) || vs.find(v => /es[-_](419|MX|US)/i.test(v.lang)) || vs.find(v => /^es/i.test(v.lang)) || null;
+    u.lang = u.voice?.lang || "es-CO"; u.rate = 1;
+    speechSynthesis.speak(u);
+  } catch {}
+}
+function speakStep(t) {
+  if (t.diagnostico) { const d = t.diagnostico; speak(`Diagnóstico: ${d.falla_principal}. Confirmado por: ${d.confirmado_por || ""}.`); return; }
+  const s = t.paso; if (!s) return;
+  speak([`Paso ${visit.turns.length}. ${s.titulo}.`, s.instruccion, s.valor_esperado && "Cómo interpretar: " + s.valor_esperado, s.seguridad && "Cuidado: " + s.seguridad].filter(Boolean).join(" "));
+}
+function toolsHTML(s) {
+  const m = /(\d{1,3})\s*(min|minuto)/i.exec((s.instruccion || "") + " " + (s.valor_esperado || ""));
+  const sug = m ? Math.min(180, +m[1]) : null;
+  const presets = [...new Set([sug, 1, 5, 10, 20].filter(Boolean))].slice(0, 5);
+  return `<div class="tools">
+    ${hasVoice ? `<button type="button" data-act="read">Leer en voz alta</button><button type="button" data-act="voice" class="${voiceOn() ? "on" : ""}" aria-pressed="${voiceOn()}">Voz automática</button>` : ""}
+    <span class="sync" style="margin-left:auto">Cronómetro</span>
+    ${presets.map(p => `<button type="button" data-min="${p}" class="${p === sug ? "on" : ""}">${p} min</button>`).join("")}
+    <span class="timer" id="timer" hidden></span><button type="button" data-act="tstop" id="tstop" hidden>Parar</button>
+  </div>`;
+}
+let timerId = null, timerEnd = 0;
+function stopTimer(silent) {
+  clearInterval(timerId); timerId = null;
+  if (silent) return;
+  const t = $("#timer"); if (t) { t.hidden = true; } const b = $("#tstop"); if (b) b.hidden = true;
+}
+function beep() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext, ac = new AC();
+    [0, 0.35, 0.7].forEach(off => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.value = 880; o.connect(g); g.connect(ac.destination);
+      g.gain.setValueAtTime(0.0001, ac.currentTime + off); g.gain.exponentialRampToValueAtTime(0.4, ac.currentTime + off + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + off + 0.25);
+      o.start(ac.currentTime + off); o.stop(ac.currentTime + off + 0.3);
+    });
+    setTimeout(() => ac.close(), 1500);
+  } catch {}
+  try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch {}
+}
+function startTimer(min) {
+  stopTimer(true); timerEnd = Date.now() + min * 60000;
+  const t = $("#timer"), b = $("#tstop"); if (!t) return;
+  t.hidden = false; b.hidden = false; t.classList.remove("done");
+  const tick = () => {
+    const left = Math.max(0, Math.round((timerEnd - Date.now()) / 1000));
+    const el = $("#timer"); if (!el) return stopTimer(true);
+    el.textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
+    if (!left) { stopTimer(true); el.classList.add("done"); el.textContent = "¡Listo!"; beep(); speak("Tiempo cumplido."); }
+  };
+  tick(); timerId = setInterval(tick, 500);
+}
+$("#step").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.min) { $$("#step .tools [data-min]").forEach(x => x.classList.toggle("on", x === b)); startTimer(+b.dataset.min); }
+  else if (b.dataset.act === "read") { const last = visit?.turns[visit.turns.length - 1]; if (last) speakStep(last); }
+  else if (b.dataset.act === "voice") { const on = !voiceOn(); store.set("tg_voice", on); b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); if (!on) try { speechSynthesis.cancel(); } catch {} }
+  else if (b.dataset.act === "tstop") { stopTimer(); }
+});
+let wakeLock = null, wantAwake = false;
+async function keepAwake(on) {
+  wantAwake = on;
+  try {
+    if (on && !wakeLock && navigator.wakeLock) { wakeLock = await navigator.wakeLock.request("screen"); wakeLock.addEventListener("release", () => { wakeLock = null; }); }
+    if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+  } catch { wakeLock = null; }
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && wantAwake) keepAwake(true); });
+
+/* ===================== RESPALDO ===================== */
+let downloads = null;
+(async () => { try { if (window.claude && claude.use) downloads = await claude.use("downloads"); } catch {} $("#backup").hidden = !downloads; })();
+$("#backup").addEventListener("click", async () => {
+  if (!downloads) return;
+  try {
+    await downloads.save({ filename: `tecniguia-respaldo-${new Date().toISOString().slice(0, 10)}.json`, data: JSON.stringify(VISITS, null, 2) });
+    $("#backup-msg").textContent = "Respaldo listo.";
+  } catch { $("#backup-msg").textContent = "No se descargó el respaldo."; }
+});
 
 /* ===================== HISTORIAL ===================== */
 const clean = v => JSON.parse(JSON.stringify(v));
@@ -1339,7 +1497,31 @@ async function syncVisits() {
     if (!$("#v-historial").hidden) renderHist();
   } catch { setSync("Sin conexión a la nube; mostrando lo guardado en este dispositivo."); }
 }
+function renderStats() {
+  const h = VISITS, box = $("#stats");
+  const dxOf = v => [...(v.turns || [])].reverse().find(t => t.diagnostico)?.diagnostico;
+  const withDx = h.filter(dxOf), ok = h.filter(v => v.resultado === "ok");
+  box.hidden = !h.length; if (!h.length) return;
+  const stepsToDx = withDx.map(v => v.turns.findIndex(t => t.diagnostico) + 1);
+  const avg = stepsToDx.length ? stepsToDx.reduce((a, b) => a + b, 0) / stepsToDx.length : 0;
+  const fails = h.reduce((a, v) => a + (v.descartados || []).length, 0);
+  const count = (arr, key) => { const m = new Map(); arr.forEach(x => { const k = key(x); if (k) m.set(k, (m.get(k) || 0) + 1); }); return [...m].sort((a, b) => b[1] - a[1]).slice(0, 5); };
+  const topFallas = count(ok, v => [v.caso.marca, dxOf(v)?.falla_principal].filter(Boolean).join(" · "));
+  const topTipo = count(h, v => v.caso.tipo.split(" (")[0]);
+  const rankHTML = (rows, total) => rows.map(([k, n]) => `<span>${esc(k)}</span><b class="mono">${n}</b><div class="bar"><i style="width:${Math.round(100 * n / Math.max(1, total))}%"></i></div>`).join("");
+  box.innerHTML = `<h3>Tu taller</h3>
+    <div class="tiles">
+      <div class="tile"><b>${h.length}</b><span>visitas</span></div>
+      <div class="tile"><b>${ok.length}</b><span>reparadas y confirmadas</span></div>
+      <div class="tile"><b>${withDx.length ? Math.round(100 * ok.length / withDx.length) : 0}%</b><span>diagnósticos que resolvieron</span></div>
+      <div class="tile"><b>${avg ? avg.toLocaleString("es-CO", { maximumFractionDigits: 1 }) : "–"}</b><span>pruebas promedio hasta el diagnóstico</span></div>
+    </div>
+    ${fails ? `<p class="sync" style="margin:0">${fails} diagnóstico(s) no resolvieron; el guía ya no los repite sin nueva evidencia.</p>` : ""}
+    ${topFallas.length ? `<h3 style="font-size:16px">Fallas que más reparas</h3><div class="rank">${rankHTML(topFallas, ok.length)}</div>` : ""}
+    ${topTipo.length ? `<h3 style="font-size:16px">Equipos que más atiendes</h3><div class="rank">${rankHTML(topTipo, h.length)}</div>` : ""}`;
+}
 function renderHist() {
+  renderStats();
   const h = VISITS;
   if (!h.length) { $("#hist").innerHTML = `<p class="lead">Aún no hay visitas guardadas. Cada visita guiada aparece aquí con sus pruebas y el resultado.</p>`; return; }
   $("#hist").innerHTML = h.map((v, i) => {
