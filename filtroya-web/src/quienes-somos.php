@@ -8,20 +8,20 @@ $foto = is_file(__DIR__ . '/img/tecnico.jpg') ? '/img/tecnico.jpg' : '';
 $ld = ['@context' => 'https://schema.org', '@graph' => [
     ['@type' => 'AboutPage', 'name' => 'Quiénes somos', 'url' => base_url() . '/quienes-somos.php'],
     ['@type' => 'Person', 'name' => $nombre, 'jobTitle' => 'Técnico de ' . $esp, 'worksFor' => ['@type' => 'Store', 'name' => $n['nombre']],
-     'address' => ['@type' => 'PostalAddress', 'addressLocality' => 'Cali', 'addressCountry' => 'CO']] + ($foto ? ['image' => base_url() . $foto] : []),
+     'areaServed' => ['@type' => 'Country', 'name' => 'Colombia']] + ($foto ? ['image' => base_url() . $foto] : []),
 ]];
-cabeza('Quiénes somos | ' . $n['nombre'], $n['nombre'] . ': filtros de agua para nevecón escogidos por un técnico de ' . $esp . ' en Cali.', '/quienes-somos.php',
+cabeza('Quiénes somos | ' . $n['nombre'], $n['nombre'] . ': filtros de agua para nevecón escogidos por un técnico de ' . $esp . ', con envíos a toda Colombia.', '/quienes-somos.php',
     '<script type="application/ld+json">' . json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) . '</script>');
 ?>
 <nav class="miga"><a href="/">Inicio</a> › Quiénes somos</nav>
 <h1>Quiénes somos</h1>
 <div class="caja autor">
-  <?php if ($foto): ?><img src="<?= h($foto) ?>" alt="<?= h($nombre) ?>, técnico en Cali" width="64" height="64"><?php endif; ?>
-  <div><b><?= h($nombre) ?></b><br><span class="m">Técnico de <?= h($esp) ?> en Cali<?= $anos ? ' · ' . h($anos) . ' años de experiencia' : '' ?></span></div>
+  <?php if ($foto): ?><img src="<?= h($foto) ?>" alt="<?= h($nombre) ?>, técnico de neveras" width="64" height="64"><?php endif; ?>
+  <div><b><?= h($nombre) ?></b><br><span class="m">Técnico de <?= h($esp) ?><?= $anos ? ' · ' . h($anos) . ' años de experiencia' : '' ?></span></div>
 </div>
 <p><?= h($n['nombre']) ?> nació de la experiencia en el taller: todos los días vemos nevecones con el agua sabiendo mal, el dispensador echando agua despacio o la máquina de hielo forzada, y casi siempre la causa es un filtro vencido o una referencia equivocada.</p>
 <?php if (!empty($t['historia'])): ?><p><?= nl2br(h($t['historia'])) ?></p><?php endif; ?>
-<p>Por eso armamos una tienda sencilla: buscas la referencia de tu filtro o el modelo de tu nevecón, te mostramos el que le sirve con todas sus equivalencias, pagas en línea y te llega a la casa. En Cali, además, lo instalamos nosotros mismos sin costo y de paso revisamos el nevecón.</p>
+<p>Por eso armamos una tienda sencilla: buscas la referencia de tu filtro o el modelo de tu nevecón, te mostramos el que le sirve con todas sus equivalencias, pagas en línea y te llega a la casa. Y si tienes dudas, te asesoramos por WhatsApp.</p>
 <section class="caja"><h2>Lo que nos importa</h2>
 <ul class="ok"><li><b>La referencia correcta.</b> Cada página explica cómo confirmar que el filtro es el tuyo antes de comprar.</li><li><b>Precios claros.</b> El precio que ves es el que pagas, con el envío incluido.</li><li><b>Respaldo.</b> Te asesoramos por WhatsApp antes de comprar. Tienes 5 días para retractarte y la garantía legal.</li></ul></section>
 <section class="caja"><h2>Contacto</h2><p><?= identificacion() ?><br>Teléfono <?= h($n['telefono']) ?> · <?= h($n['correo']) ?><br>Atención: <?= h($n['horario']) ?></p></section>

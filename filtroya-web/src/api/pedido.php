@@ -39,12 +39,10 @@ if (!preg_match('/^3\d{9}$/', $cli['tel'])) fail('Escribe un celular válido (10
 if (!in_array($cli['ciudad'], $cat['ciudades'], true)) fail('Escoge tu ciudad.');
 if ($cli['barrio'] === '' || mb_strlen($cli['dir']) < 5) fail('Escribe el barrio y la dirección.');
 $entrega = (string) ($b['entrega'] ?? '');
-$ok = $cli['ciudad'] === 'Cali' ? ['instalacion', 'domicilio'] : ['transportadora'];
+$ok = ['transportadora'];  // entregas locales e instalación se coordinan por WhatsApp
 if (!in_array($entrega, $ok, true)) $entrega = $ok[0];
 
-// Instalación de filtros externos en Cali: con llaves se cobra en el pago; con links de pago se paga el día de la instalación
-$instalacion = costo_instalacion($C['lineas'], $entrega);
-if ($con_llaves) $total += $instalacion;
+$instalacion = 0;
 // Si el cliente tenía la página abierta con un precio viejo, se le avisa en vez de cobrar otro valor
 if ((int) ($b['total'] ?? -1) !== $total) fail('El precio se actualizó. Recarga la página para ver el valor correcto.', 409);
 

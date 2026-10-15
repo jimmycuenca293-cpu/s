@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/partes.php';
 $cat = catalogo();
-$pub = ['ciudades' => $cat['ciudades'], 'dias' => (object) ($cat['dias'] ?? []), 'productos' => array_map(fn($p) => ['nombre' => $p['nombre'], 'ref' => $p['ref'], 'marca' => $p['marca'], 'precio' => $p['precio'], 'pack' => $p['pack'], 'slug' => $p['slug'], 'ubic' => $p['ubic']], $cat['productos']), 'inst_ext' => (int) (cfg()['instalacion_externo'] ?? 30000), 'pago_link' => !con_llaves()];
+$pub = ['ciudades' => $cat['ciudades'], 'dias' => (object) ($cat['dias'] ?? []), 'productos' => array_map(fn($p) => ['nombre' => $p['nombre'], 'ref' => $p['ref'], 'marca' => $p['marca'], 'precio' => $p['precio'], 'pack' => $p['pack'], 'slug' => $p['slug'], 'ubic' => $p['ubic']], $cat['productos']), 'inst_ext' => 0, 'pago_link' => !con_llaves()];
 cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/carrito.php', '', false);
 ?>
 <h1>Tu carrito</h1>
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <button type="button" class="link" data-del="${i}">Quitar</button>${!l.pack ? `<button type="button" class="link" data-topack="${i}">Cambiar a pack de 2 y ahorrar ${cop(ahorro)}</button>` : ""}</div></div>
         <b class="lprecio">${cop(unit * l.cant)}</b></div>`;
     }).join("");
-    const ciudad = $("#c-ciudad").value, cali = ciudad === "Cali";
+    const ciudad = $("#c-ciudad").value, cali = false;  // la entrega local se coordina por WhatsApp
     const ext = L.some(l => P[l.pid].ubic === "externo"), cInst = ext ? C.inst_ext : 0;
     const ops = cali ? [["instalacion", "Te lo llevamos e instalamos", ext ? `Te llamamos para acordar el día y la hora. La instalación del filtro externo (en la manguera) cuesta ${cop(C.inst_ext)}${C.pago_link ? " y se paga el día de la instalación" : ""}; los internos se instalan gratis.` : "Te llamamos para acordar el día y la hora.", cInst], ["domicilio", "Solo entrega, sin instalación", "Te llamamos para acordar el día y la hora.", 0]]
       : ciudad ? [["transportadora", "Envío por transportadora", `Llega en unos ${(C.dias || {})[ciudad] || 2} días hábiles, hacia el ${habiles((C.dias || {})[ciudad] || 2)}. Te enviamos la guía al correo.`, 0]] : [];

@@ -144,24 +144,6 @@
 [filtro agua nevecon]
 [repuesto filtro nevera]
 
-===== CALI INSTALACIÓN (frase) =====
-"filtro nevecon cali"
-"filtro nevera cali"
-"instalacion filtro nevecon cali"
-"cambio filtro nevera cali"
-"tecnico nevecon cali"
-"filtro samsung cali"
-"filtro lg cali"
-
-===== CALI INSTALACIÓN (exacta) =====
-[filtro nevecon cali]
-[filtro nevera cali]
-[instalacion filtro nevecon cali]
-[cambio filtro nevera cali]
-[tecnico nevecon cali]
-[filtro samsung cali]
-[filtro lg cali]
-
 ===== NEGATIVAS (toda la campaña) =====
 "gratis"
 "pdf"

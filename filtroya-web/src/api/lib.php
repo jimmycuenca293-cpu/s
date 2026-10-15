@@ -259,7 +259,7 @@ function con_llaves(): bool
     return str_starts_with($w['public_key'], 'pub_') && !str_contains($w['public_key'], 'XXXX') && $w['integridad'] !== '' && !str_contains($w['integridad'], 'XXXX');
 }
 
-// Instalación en Cali: gratis para filtros internos; los externos (de manguera) tienen costo, una sola vez por visita
+// Instalación con costo (hoy no se ofrece en la tienda: se coordina por WhatsApp)
 function costo_instalacion(array $lineas, string $entrega): int
 {
     if ($entrega !== 'instalacion') return 0;
@@ -282,7 +282,7 @@ function linea_txt(array $l): string
 
 function entrega_txt(string $e): string
 {
-    return ['instalacion' => 'Domicilio + instalación en Cali', 'domicilio' => 'Domicilio en Cali', 'transportadora' => 'Envío por transportadora'][$e] ?? $e;
+    return ['instalacion' => 'Domicilio + instalación', 'domicilio' => 'Domicilio', 'transportadora' => 'Envío por transportadora'][$e] ?? $e;
 }
 
 function enviar_correo(string $para, string $asunto, string $html): bool

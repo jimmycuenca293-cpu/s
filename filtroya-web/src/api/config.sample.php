@@ -9,7 +9,7 @@ return [
         'nombre'    => 'PuroFiltro',
         'titular'   => 'Nombre del titular',            // persona o empresa dueña del negocio
         'documento' => 'C.C. o NIT 000.000.000-0',
-        'direccion' => 'Dirección del negocio, Cali, Valle del Cauca',
+        'direccion' => 'Dirección del negocio',     // opcional: si la dejas así no sale en la tienda
         'telefono'  => '321 799 6144',                   // sale en la tienda, en los términos y en los correos
         'correo'    => 'pedidos@filtrosdeaguanevecon.com',          // correo de atención al cliente
         'horario'   => 'lunes a sábado, de 8:00 a. m. a 6:00 p. m.',
@@ -49,8 +49,6 @@ return [
     'ga4' => '',
     // Google Tag Manager: carga Analytics y Google Ads. Eventos que manda la tienda: "whatsapp" (clic en WhatsApp) y "pago_wompi" (va a pagar)
     'gtm' => 'GTM-N39G66VJ',
-    // Instalación en Cali de filtros externos (de manguera). Los internos se instalan gratis.
-    'instalacion_externo' => 30000,
     // WhatsApp de atención (botón flotante en toda la tienda), 10 dígitos
     'whatsapp' => '3217996144',
 

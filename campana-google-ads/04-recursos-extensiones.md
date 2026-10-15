@@ -7,7 +7,6 @@
 | ¿Cuándo cambiar el filtro? | https://filtrosdeaguanevecon.com/purofiltro-guia/cada-cuanto-cambiar-el-filtro-del-nevecon/ | Las señales de que ya toca | Cada 6 meses o antes |
 | Busca por referencia | https://filtrosdeaguanevecon.com/purofiltro-referencias/ | Todas las equivalencias | Encuentra el tuyo fácil |
 | Envíos a toda Colombia | https://filtrosdeaguanevecon.com/purofiltro-envios/ | Tiempo de entrega a tu ciudad | Envío gratis |
-| Instalación en Cali | https://filtrosdeaguanevecon.com/purofiltro-cali/ | Gratis en filtros internos | Agendamos día y hora |
 | Ver la tienda | https://filtrosdeaguanevecon.com/purofiltro-tienda/ | Todos los filtros y precios | Samsung, LG, Whirlpool, GE |
 
 ## Textos destacados

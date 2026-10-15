@@ -4,7 +4,7 @@ La tienda vende sola: el cliente escoge el filtro, paga en Wompi y a ti te llega
 y todos los datos para despacharlo. Nada llega a WhatsApp.
 
 ## Lo que necesitas
-1. **Hostinger** con un plan que tenga PHP (cualquier plan de hosting web) y **un dominio** (ej. filtroyacali.com).
+1. **Hostinger** con un plan que tenga PHP (cualquier plan de hosting web) y **un dominio** (ej. filtrosdeaguanevecon.com).
 2. **Cuenta de comercio en Wompi** (wompi.com): la abres con tu cédula o RUT y tu cuenta bancaria.
 
 ## Paso 1. Subir la tienda
@@ -18,7 +18,7 @@ En Hostinger: **Correos > Cuentas de correo** y crea `pedidos@tudominio.com`. De
 ## Paso 3. Poner tus datos y llaves
 1. Dentro de `public_html/purofiltro-api/` copia `config.sample.php` y ponle de nombre `config.php`.
 2. Ábrelo (clic derecho > Editar) y llena:
-   - `dominio`: tu dominio con https, ej. `https://filtroyacali.com`
+   - `dominio`: tu dominio con https, ej. `https://filtrosdeaguanevecon.com`
    - `negocio`: tu nombre o el de la empresa, cédula o NIT, dirección, teléfono, correo y horario.
    - `correo_avisos`: el correo donde quieres recibir los pedidos pagados (puede ser tu Gmail).
    - `correo_remitente`: `pedidos@tudominio.com` (el del paso 2).
@@ -48,11 +48,11 @@ Le escribe por correo, solo a quien lo autorizó al comprar, cuando ya casi le t
 ## Paso 6. Google
 1. Entra a **search.google.com/search-console**, agrega tu dominio y verifícalo (Hostinger te ayuda con el registro DNS).
 2. En **Sitemaps** escribe `sitemap.xml` y envía.
-3. Crea tu **Perfil de Empresa en Google** (business.google.com) con la dirección en Cali y el link de la tienda.
+3. Crea tu **Perfil de Empresa en Google** (business.google.com) como **empresa de servicio sin local** (oculta la dirección y pon como zona de servicio Colombia) y el link de la tienda.
 
 La tienda trae 150 páginas para Google: una por cada filtro, **una por cada referencia equivalente** (84, por ejemplo
 `/referencia/ukf8001/` o `/referencia/haf-cin/`), **una por cada modelo de nevecón** (34, por ejemplo `/nevecon/rf28hmedbsr/`),
-8 guías, la página de Cali y los directorios de referencias y de neveras. Además trae todo lo que Google pide: una página por cada filtro con su referencia, precio, envío y devoluciones
+8 guías, 159 páginas de envíos por ciudad y los directorios de referencias y de neveras. Además trae todo lo que Google pide: una página por cada filtro con su referencia, precio, envío y devoluciones
 (datos estructurados de producto), páginas por marca, mapa del sitio y robots.txt. Google tarda de unos días a
 unas semanas en mostrar las páginas, y subir en los resultados depende de la competencia; nadie lo puede garantizar.
 

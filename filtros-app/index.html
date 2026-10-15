@@ -1,6 +1,6 @@
 <title>PuroFiltro</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Encuentra el filtro de agua de tu nevecón con una foto o la referencia. Domicilio e instalación en Cali y envíos a toda Colombia en 2 días hábiles.">
+<meta name="description" content="Encuentra el filtro de agua de tu nevecón con una foto o la referencia. Envío gratis a toda Colombia en 2 a 3 días hábiles y pago seguro en línea.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
 <style>
@@ -435,8 +435,8 @@ footer{color:var(--muted);font-size:12.5px}
     <h2 style="font-size:19px">Preguntas frecuentes</h2>
     <details class="faq"><summary>¿Cada cuánto se cambia el filtro?</summary><p>Cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión. Al comprar te podemos recordar por WhatsApp.</p></details>
     <details class="faq"><summary>¿Cómo sé cuál es el mío?</summary><p>Toma la foto del filtro viejo (la referencia viene impresa) o de la etiqueta de adentro del nevecón. Si no aparece, escríbenos por WhatsApp con la foto.</p></details>
-    <details class="faq"><summary>¿Lo pueden instalar?</summary><p>En Cali te lo llevamos y te lo instalamos: <b>gratis</b> los filtros internos y <b>$30.000</b> los externos (de manguera), porque hay que cortar y conectar la manguera. De paso revisamos el nevecón. En otras ciudades te lo enviamos gratis por transportadora y te mandamos el video de instalación: es fácil, se hace en minutos.</p></details>
-    <details class="faq"><summary>¿Cuánto cuesta el envío?</summary><p>Nada: el envío es gratis a toda Colombia y llega en 2 días hábiles. En Cali la entrega también es gratis.</p></details>
+    <details class="faq"><summary>¿Es difícil de instalar?</summary><p>No. La mayoría se cambia en 2 minutos y sin herramientas. En la página de cada filtro está el paso a paso, y si tienes dudas te asesoramos por WhatsApp.</p></details>
+    <details class="faq"><summary>¿Cuánto cuesta el envío?</summary><p>Nada: el envío es gratis a toda Colombia y llega en 2 a 3 días hábiles a las principales ciudades.</p></details>
     <details class="faq"><summary>¿Cómo compro?</summary><p>Escoges tu filtro, pones tus datos de entrega y pagas en línea en nuestra página de pago segura. Despachamos tu pedido apenas se aprueba el pago.</p></details>
     <details class="faq"><summary>¿Cómo pago?</summary><p>En línea, en página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. No guardamos los datos de tu tarjeta.</p></details>
   </div>
@@ -565,16 +565,13 @@ const NEGOCIO = {
   garantiaDias: 30,
   mesesCambio: 6
 };
-const CALI_METRO = ["Cali"];
-const INSTALA_EN = ["Cali"];
+const CALI_METRO = [];   // entregas locales: se coordinan por WhatsApp, no se muestran en la tienda
+const INSTALA_EN = [];
 // Ciudades a las que enviamos: [ciudad, departamento, días hábiles si son más de NEGOCIO.diasNacional]
 const CIUDADES_CO = [
-  ["Yumbo", "Valle del Cauca"],
-  ["Jamundí", "Valle del Cauca"],
-  ["Palmira", "Valle del Cauca"],
-  ["Candelaria", "Valle del Cauca"],
   ["Bogotá", "Bogotá D.C."],
   ["Medellín", "Antioquia"],
+  ["Cali", "Valle del Cauca"],
   ["Barranquilla", "Atlántico"],
   ["Cartagena", "Bolívar"],
   ["Bucaramanga", "Santander"],
@@ -582,17 +579,14 @@ const CIUDADES_CO = [
   ["Manizales", "Caldas"],
   ["Armenia", "Quindío"],
   ["Ibagué", "Tolima"],
-  ["Pasto", "Nariño", 3],
-  ["Popayán", "Cauca"],
-  ["Neiva", "Huila"],
   ["Cúcuta", "Norte de Santander"],
   ["Santa Marta", "Magdalena"],
   ["Villavicencio", "Meta"],
+  ["Neiva", "Huila"],
+  ["Pasto", "Nariño", 3],
+  ["Popayán", "Cauca"],
   ["Montería", "Córdoba", 3],
-  ["Tuluá", "Valle del Cauca"],
-  ["Buga", "Valle del Cauca"],
-  ["Cartago", "Valle del Cauca"],
-  ["Buenaventura", "Valle del Cauca", 3],
+  ["Valledupar", "Cesar", 3],
   ["Acacías", "Meta", 3],
   ["Aguachica", "Cesar", 4],
   ["Aguazul", "Casanare", 4],
@@ -600,10 +594,14 @@ const CIUDADES_CO = [
   ["Arauca", "Arauca", 4],
   ["Barrancabermeja", "Santander", 3],
   ["Bello", "Antioquia"],
+  ["Buenaventura", "Valle del Cauca", 3],
+  ["Buga", "Valle del Cauca"],
   ["Caicedonia", "Valle del Cauca"],
   ["Cajicá", "Cundinamarca"],
   ["Calarcá", "Quindío"],
   ["Caldas", "Antioquia"],
+  ["Candelaria", "Valle del Cauca"],
+  ["Cartago", "Valle del Cauca"],
   ["Caucasia", "Antioquia", 4],
   ["Cereté", "Córdoba", 3],
   ["Chía", "Cundinamarca"],
@@ -635,6 +633,7 @@ const CIUDADES_CO = [
   ["Inírida", "Guainía", 7],
   ["Ipiales", "Nariño", 3],
   ["Itagüí", "Antioquia"],
+  ["Jamundí", "Valle del Cauca"],
   ["La Calera", "Cundinamarca"],
   ["La Ceja", "Antioquia", 3],
   ["La Dorada", "Caldas", 3],
@@ -656,6 +655,7 @@ const CIUDADES_CO = [
   ["Mosquera", "Cundinamarca"],
   ["Ocaña", "Norte de Santander", 4],
   ["Paipa", "Boyacá", 3],
+  ["Palmira", "Valle del Cauca"],
   ["Pamplona", "Norte de Santander", 3],
   ["Piedecuesta", "Santander"],
   ["Pitalito", "Huila", 3],
@@ -684,14 +684,15 @@ const CIUDADES_CO = [
   ["Soledad", "Atlántico"],
   ["Sopó", "Cundinamarca"],
   ["Tocancipá", "Cundinamarca"],
+  ["Tuluá", "Valle del Cauca"],
   ["Tumaco", "Nariño", 4],
   ["Tunja", "Boyacá", 3],
   ["Turbaco", "Bolívar"],
   ["Turbo", "Antioquia", 4],
-  ["Valledupar", "Cesar", 3],
   ["Villa del Rosario", "Norte de Santander"],
   ["Villamaría", "Caldas"],
   ["Yopal", "Casanare", 3],
+  ["Yumbo", "Valle del Cauca"],
   ["Zarzal", "Valle del Cauca"],
   ["Zipaquirá", "Cundinamarca"]
 ];
@@ -827,11 +828,11 @@ function cardHTML(p, por) {
 // Lo de la entrega solo aparece cuando el cliente dice a qué ciudad va
 function subCiudad() {
   const c = city(); if (!c) return "";
-  if (INSTALA_EN.includes(c)) return "En Cali te lo llevamos gratis y te lo instalamos: gratis los filtros internos y $30.000 los externos. Agendamos el día contigo por WhatsApp.";
+  
   return `Te llega a ${c === "Otro municipio" ? "tu municipio" : c} el ${fmtDay(addBusinessDays(NEGOCIO.diasNacional))}, con envío gratis.`;
 }
 function renderCityBox() {
-  $("#citybox").innerHTML = city() ? "" : `<label class="citybox rise">${ICON.truck}<span><b>¿A qué ciudad te lo enviamos?</b><small>Te decimos el día exacto de entrega y si te lo instalamos.</small></span><select id="city2" aria-label="Tu ciudad">${cityOpts("")}</select></label>`;
+  $("#citybox").innerHTML = city() ? "" : `<label class="citybox rise">${ICON.truck}<span><b>¿A qué ciudad te lo enviamos?</b><small>Te decimos el día exacto en que te llega.</small></span><select id="city2" aria-label="Tu ciudad">${cityOpts("")}</select></label>`;
 }
 const MARCAS = [["Samsung", "#1f4fd1"], ["LG", "#c4004f"], ["Whirlpool", "#7b3fa8"], ["GE", "#1d5fae"]];
 let vista = { marca: store.get("fy_marca", "top"), ubic: "todos" };
@@ -1036,7 +1037,7 @@ function renderTrust() {
   $("#trust").innerHTML = !c
     ? `<div>${ICON.check}<b>Te ayudamos</b>Con una foto sabemos cuál es el tuyo</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`
     : d.local
-    ? `<div>${ICON.tool}<b>Instalación en Cali</b>Gratis en filtros internos; externos $30.000</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`
+    ? `<div>${ICON.tool}<b>Fácil de instalar</b>Paso a paso para cada filtro</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`
     : `<div>${ICON.truck}<b>Envío gratis</b>Llega en ${NEGOCIO.diasNacional} días hábiles</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`;
 }
 $("#city").addEventListener("change", () => setCity(city()));
@@ -1057,7 +1058,7 @@ function tutoHTML(p) {
   const d = INSTALACION[p.id]; if (!d) return "";
   return `<dl class="tdl"><dt>Dónde va</dt><dd>${esc(d.donde)}</dd><dt>Tiempo</dt><dd>${esc(d.tiempo)}</dd><dt>Herramientas</dt><dd>${esc(d.herramientas)}</dd></dl>
     <ol class="tpasos">${d.pasos.map(x => `<li>${esc(x)}</li>`).join("")}</ol><p style="margin:6px 0 0"><b>Último paso:</b> ${esc(d.reset)}</p>
-    <p class="m" style="font-size:12.5px;margin:6px 0 0">El agua de los primeros vasos puede salir turbia o con burbujas: es normal. Bota el primer hielo. En Cali te lo instalamos ${costoInst(p) ? "por " + COP(costoInst(p)) : "gratis"}.</p>`;
+    <p class="m" style="font-size:12.5px;margin:6px 0 0">El agua de los primeros vasos puede salir turbia o con burbujas: es normal. Bota el primer hielo. ¿Dudas? Te ayudamos por WhatsApp.</p>`;
 }
 const GUIAS = {
   cambio: () => `<h3 id="sh-title">¿Cuándo cambiar el filtro de agua del nevecón?</h3>
@@ -1237,7 +1238,7 @@ function renderStep() {
         <label><input type="radio" name="cant" value="uno" ${cart.pack ? "" : "checked"}><span><b>Solo este cambio</b><small>Cantidad: <span class="qty"><button type="button" data-q="-1" aria-label="Menos">−</button><b id="qty">${cart.qty}</b><button type="button" data-q="1" aria-label="Más">+</button></span></small></span></label>
         <label><input type="radio" name="cant" value="pack" ${cart.pack ? "checked" : ""}><span><b>Pack anual: 2 filtros</b><small>Uno ahora y otro para dentro de ${NEGOCIO.mesesCambio} meses. <span class="save">Ahorras ${COP(p.precio * 2 - packPrecio(p))} (${packAhorro(p)} %)</span></small></span><span class="amt">${COP(packPrecio(p))}</span></label>
       </div>
-      ${!c ? `<label class="citybox">${ICON.truck}<span><b>¿A qué ciudad te lo enviamos?</b><small>Así te decimos cuándo te llega y si te lo instalamos.</small></span><select id="o-ciudad" aria-label="Tu ciudad">${cityOpts("")}</select></label>
+      ${!c ? `<label class="citybox">${ICON.truck}<span><b>¿A qué ciudad te lo enviamos?</b><small>Así te decimos cuándo te llega.</small></span><select id="o-ciudad" aria-label="Tu ciudad">${cityOpts("")}</select></label>
       <button class="btn ghost block" type="button" data-close>Seguir buscando</button>` : `
       <div><b>¿Cómo lo recibes en ${esc(c)}?</b></div>
       <div class="opt" id="o-entrega">
@@ -1656,7 +1657,7 @@ async function makeOffer() {
   // precio
   x.fillStyle = BRAND.glow; x.font = "800 128px 'Bricolage Grotesque', sans-serif"; x.fillText(COP(p.precio), 70, 830);
   x.fillStyle = "#fff"; x.font = "600 34px Manrope, sans-serif";
-  const puntos = ["Instalación en Cali", "Envío gratis a toda Colombia", "Pago seguro en línea"];
+  const puntos = ["Envío gratis a toda Colombia", "Pago seguro en línea", "Asesoría por WhatsApp"];
   puntos.forEach((t, i) => { x.fillStyle = BRAND.glow; x.beginPath(); x.arc(86, 905 + i * 58, 9, 0, Math.PI * 2); x.fill(); x.fillStyle = "#fff"; x.fillText(t, 110, 917 + i * 58); });
   if (frase) { x.save(); rr(x, 70, 1100, 640, 86, 43); x.fillStyle = BRAND.glow; x.fill(); x.restore(); x.fillStyle = BRAND.ink; x.font = "800 34px Manrope, sans-serif"; x.fillText(frase.slice(0, 34), 100, 1155); }
   drawQR(x, waLink(`Hola ${NEGOCIO.nombre}, quiero el filtro ${p.ref} que vi en la publicación.`), W - 330, H - 400, 270);
@@ -1677,10 +1678,10 @@ const CANAL = {
   grupos: "Mensaje para grupos de barrio o de conjuntos residenciales: tono de vecino, cero spam, útil (cada cuánto cambiar el filtro), y la oferta al final"
 };
 function plantilla(p, canal, zona) {   // texto de respaldo sin IA
-  const lugar = zona ? `${zona}, Cali` : "Cali";
+  const lugar = zona || "toda Colombia";
   const sirve = p.modelos.length ? `Sirve para ${p.modelos.slice(0, 3).join(", ")} y más.` : (p.nota || "");
-  const base = `Filtro de agua para nevecón ${p.marca} ${p.ref}. ${sirve} ${COP(p.precio)}. Envío GRATIS a toda Colombia (${NEGOCIO.diasNacional} días hábiles). En ${lugar}: domicilio gratis e instalación ${costoInst(p) ? "por " + COP(costoInst(p)) : "gratis"}. Pago seguro en línea: tarjeta, PSE, Nequi o botón Bancolombia. Escríbenos por WhatsApp.`;
-  return { titulo: `Filtro nevecón ${p.marca} ${p.ref} · ${lugar}`, texto: base, palabras_clave: [p.ref, ...p.refs.slice(1, 3), `filtro nevecón ${p.marca.toLowerCase()}`, "filtro agua nevera Cali"], mejor_momento: "Entre 6 y 9 p. m., cuando la gente revisa el celular en casa.", consejo: "Pon una foto real del filtro y responde rápido los mensajes." };
+  const base = `Filtro de agua para nevecón ${p.marca} ${p.ref}. ${sirve} ${COP(p.precio)}. Envío GRATIS a toda Colombia (${NEGOCIO.diasNacional} días hábiles). Te asesoramos por WhatsApp. Pago seguro en línea: tarjeta, PSE, Nequi o botón Bancolombia. Escríbenos por WhatsApp.`;
+  return { titulo: `Filtro nevecón ${p.marca} ${p.ref} · ${lugar}`, texto: base, palabras_clave: [p.ref, ...p.refs.slice(1, 3), `filtro nevecón ${p.marca.toLowerCase()}`, "filtro agua nevera Colombia"], mejor_momento: "Entre 6 y 9 p. m., cuando la gente revisa el celular en casa.", consejo: "Pon una foto real del filtro y responde rápido los mensajes." };
 }
 $("#pub-go").addEventListener("click", async () => {
   const p = CATALOGO.find(x => x.id === $("#pub-prod").value); if (!p) return;
@@ -1688,8 +1689,8 @@ $("#pub-go").addEventListener("click", async () => {
   let d = null;
   if (sample) {
     btn.disabled = true; out.innerHTML = `<p class="sub"><span class="spin" aria-hidden="true"></span> Escribiendo la publicación…</p>`;
-    const prompt = `Escribe una publicación de venta en español de Colombia (cercano, claro, sin exagerar ni inventar) para un negocio de filtros de agua para neveras y nevecones en Cali.
-Negocio: ${NEGOCIO.nombre}. En Cali${zona ? " (zona: " + zona + ")" : ""} domicilio GRATIS e instalación GRATIS para filtros internos y de $30.000 para filtros externos (la instalación solo existe en Cali); envío GRATIS a toda Colombia en ${NEGOCIO.diasNacional} días hábiles por transportadora; pago solo en línea, en página segura (tarjeta, PSE, Nequi o botón Bancolombia).
+    const prompt = `Escribe una publicación de venta en español de Colombia (cercano, claro, sin exagerar ni inventar) para una tienda en línea de filtros de agua para neveras y nevecones con envíos a toda Colombia.
+Negocio: ${NEGOCIO.nombre}${zona ? " (zona: " + zona + ")" : ""}. envío GRATIS a toda Colombia en ${NEGOCIO.diasNacional} días hábiles por transportadora; pago solo en línea, en página segura (tarjeta, PSE, Nequi o botón Bancolombia).
 Producto: ${p.nombre}. Referencia: ${p.ref}. Referencias equivalentes: ${p.refs.join(", ")}. Nevecones compatibles: ${p.modelos.join(", ")}. Precio: ${COP(p.precio)}. No uses las palabras "original", "genuino" ni "compatible".
 Canal: ${CANAL[canal]}.
 Reglas: no prometas entrega el mismo día; no digas "el mejor" ni datos que no te di; menciona que el filtro se cambia cada ${NEGOCIO.mesesCambio} meses.
@@ -1718,10 +1719,10 @@ const SUGS = ["¿Qué filtro usa mi nevecón?", "¿Cada cuánto se cambia?", "¿
 function reglasAsistente() {
   const cat = CATALOGO.filter(p => ["Samsung", "LG", "Whirlpool", "GE"].includes(p.marca)).map(p =>
     `- id ${p.id} | ${p.nombre} | ref ${p.ref} | también: ${p.refs.join(", ")} | nevecones: ${p.modelos.join(", ") || "(confirmar con foto)"} | ${COP(p.precio)} | pack de 2: ${COP(packPrecio(p))} | ${p.stock ? "disponible" : "por encargo"}${p.linkPago ? " | pago en línea" : ""}${p.nota ? " | " + p.nota : ""}`).join("\n");
-  return `Eres el asistente de ventas de ${NEGOCIO.nombre}, una tienda de filtros de agua para neveras y nevecones (Samsung, LG, Whirlpool EveryDrop y GE General Electric), en Cali, Colombia. Hablas con un cliente desde la app de la tienda.
+  return `Eres el asistente de ventas de ${NEGOCIO.nombre}, una tienda de filtros de agua para neveras y nevecones (Samsung, LG, Whirlpool EveryDrop y GE General Electric), con envíos a toda Colombia. No digas en qué ciudad está la tienda. Hablas con un cliente desde la app de la tienda.
 DATOS DEL NEGOCIO (no inventes otros):
 - Envío GRATIS a toda Colombia por transportadora: llega en ${NEGOCIO.diasNacional} días hábiles.
-- En Cali: domicilio GRATIS; instalación GRATIS en filtros internos y $30.000 en externos (agendamos día y hora por WhatsApp). La instalación SOLO existe en Cali; en otras ciudades se manda el video de instalación.
+- Instalación: el cliente lo instala en minutos con el paso a paso de la página; para cualquier duda, asesoría por WhatsApp. No ofrezcas instalación a domicilio.
 - No prometas entrega el mismo día.
 - Pagos: solo en línea, en página de pago segura (tarjeta débito o crédito, PSE, Nequi o botón Bancolombia). No hay pago contra entrega ni transferencias.
 - Asesoría por WhatsApp al ${NEGOCIO.whatsapp.replace(/^57/, "")}. El filtro se cambia cada ${NEGOCIO.mesesCambio} meses o cuando el agua cambie de sabor u olor.

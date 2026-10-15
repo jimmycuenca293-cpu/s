@@ -14,6 +14,6 @@ Revisa los archivos en este orden:
 | 7 | `07-como-subirla.md` | Paso a paso para publicar la campaña |
 | 8 | `08-palabras-clave-para-copiar.txt` | Todas las palabras clave, una por línea, listas para copiar y pegar |
 
-**Resumen:** 6 grupos de anuncios · 6 anuncios con 15 títulos y 4 descripciones cada uno · 70 palabras clave (en frase y exacta: 140) · 28 negativas.
+**Resumen:** 5 grupos de anuncios · 5 anuncios con 15 títulos y 4 descripciones cada uno · 63 palabras clave (en frase y exacta: 126) · 28 negativas.
 
 Todos los títulos tienen máximo 30 caracteres y las descripciones máximo 90 (el número entre paréntesis es el largo).

@@ -132,11 +132,10 @@ app = cambiar(app, "const waLink = txt => waTo(NEGOCIO.whatsapp, txt);",
               'const waLink = txt => `mailto:${FY_WEB.correo}?subject=${encodeURIComponent("Consulta " + NEGOCIO.nombre)}&body=${encodeURIComponent(txt)}`;')
 app = cambiar(app, "<h1>El filtro exacto de tu nevecón, con una foto</h1>", "<h1>Filtros de agua para nevecón, con envío gratis a toda Colombia</h1>")
 app = cambiar(app, '<p class="lead">Tómale una foto al filtro que vas a cambiar y te decimos cuál es, cuánto cuesta y cuándo te llega.</p>',
-              '<p class="lead">Samsung, LG, Whirlpool y GE. Escribe la referencia de tu filtro o el modelo de tu nevecón, paga en línea y te llega en 2 días hábiles. En Cali te lo instalamos.</p>')
+              '<p class="lead">Samsung, LG, Whirlpool y GE. Escribe la referencia de tu filtro o el modelo de tu nevecón, paga en línea de forma segura y te llega en 2 a 3 días hábiles.</p>')
 app = cambiar(app, '<h2 id="list-title" class="cat-title">', '<span id="catalogo"></span><h2 id="list-title" class="cat-title">')
 # Textos de entrega y contacto
 app = cambiar(app, "Te avisamos por WhatsApp.` : \"Agendamos contigo el día y la hora por WhatsApp.\"", "Te avisamos por correo.` : \"Te llamamos para acordar el día y la hora.\"")
-app = cambiar(app, "Agendamos el día contigo por WhatsApp.", "Te llamamos para acordar el día.")
 app = cambiar(app, "Escríbenos por WhatsApp con la foto del filtro", "Escríbenos al correo con la foto del filtro")
 app = cambiar(app, "${ICON.wa}Preguntar por WhatsApp</a>", "Escríbenos</a>", 2)
 app = cambiar(app, "Mándanos la foto de la etiqueta por WhatsApp", "Mándanos la foto de la etiqueta por correo")
@@ -170,6 +169,7 @@ app = cambiar(app, '<button class="btn block" type="button" data-go="2">Continua
 app = cambiar(app, """        <select id="city" aria-label="Ciudad de entrega"></select>
       </label>""", """        <select id="city" aria-label="Ciudad de entrega"></select>
       </label>
+      <nav class="hero-nav"><a href="/tienda/">Tienda</a><a href="/marca/samsung/">Samsung</a><a href="/marca/lg/">LG</a><a href="/marca/whirlpool/">Whirlpool</a><a href="/marca/ge/">GE</a><a href="/instalacion/">Instalación</a><a href="/guia/">Guías</a></nav>
       <a class="cart-top" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a>""")
 
 # Pago con Wompi, enlace directo a un producto (?p=) y marca (?marca=)
@@ -219,17 +219,24 @@ EXPLORA = """<section class="explora" aria-label="Explora la tienda"><h2 style="
 <a href="/neveras/"><b>🧊 Por modelo de nevecón</b><span>Qué filtro usa tu nevecón</span></a>
 <a href="/guia/"><b>📘 Guías</b><span>Agua con mal sabor, dispensador, luz del filtro</span></a>
 <a href="/envios/"><b>🚚 Envíos a toda Colombia</b><span>Tiempo de entrega a tu ciudad</span></a>
-<a href="/cali/"><b>📍 Instalación en Cali</b><span>Gratis en filtros internos</span></a>
 <a href="#" data-wa-asesor><b>💬 Asesor por WhatsApp</b><span>Te ayudamos a escoger el tuyo</span></a>
-<a href="/quienes-somos.php"><b>👨‍🔧 Quiénes somos</b><span>Técnicos de neveras en Cali</span></a>
-</div><h3 style="font-size:16px;margin:6px 0 0">Información</h3><div class="ex-grid">
+<a href="/quienes-somos.php"><b>👨‍🔧 Quiénes somos</b><span>Técnicos de neveras y nevecones</span></a>
+</div></section>
+"""
+ABAJO = """<section class="explora" aria-label="Información"><h2 style="font-size:19px">Información</h2><div class="ex-grid">
 <a href="/terminos.php"><b>📄 Términos y condiciones</b><span>Compras, precios y entregas</span></a>
 <a href="/privacidad.php"><b>🔒 Tratamiento de datos</b><span>Cómo cuidamos tu información</span></a>
 <a href="/garantia-y-retracto.php"><b>↩️ Garantía y retracto</b><span>Garantía legal y 5 días de retracto</span></a>
 </div></section>
+<section class="pasos3" aria-label="Cómo comprar"><h2 style="font-size:19px">Compra en 3 pasos</h2><div class="p3-grid">
+<div><span>1</span><b>Encuentra tu filtro</b><p>Escribe la referencia de tu filtro viejo o el modelo de tu nevecón y te mostramos el que le sirve.</p></div>
+<div><span>2</span><b>Paga seguro en línea</b><p>Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia, en página de pago segura.</p></div>
+<div><span>3</span><b>Recíbelo en tu casa</b><p>Envío gratis a toda Colombia en 2 a 3 días hábiles. Lo instalas en minutos con nuestro paso a paso.</p></div>
+</div><div class="marcas-tira"><span>Filtros para</span><b>SAMSUNG</b><b>LG</b><b>Whirlpool</b><b>GE</b><b>KitchenAid</b><b>Maytag</b></div></section>
 """
 # En la web, las guías rápidas de la app se cambian por enlaces a las páginas completas
 app = cambiar_re(app, r'<div class="guias-rapidas" id="guias-rapidas">.*?</div></div>\n', EXPLORA)
+app = cambiar(app, '<div class="check salud" id="salud">', ABAJO + '<div class="check salud" id="salud">')
 
 # Enlaces fijos a todas las páginas de filtros (Google los sigue aunque no ejecute el JavaScript)
 enlaces = ['<nav class="seo-links" aria-label="Todos los filtros"><h2 style="font-size:19px">Todos nuestros filtros</h2>']
@@ -238,15 +245,18 @@ for marca in MARCAS:
     enlaces.append(f'<div><a class="mk" href="/marca/{slug(marca)}/">Filtros {esc(marca)}</a>' + "".join(f'<a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a>' for p in ps) + "</div>")
 enlaces.append('<div><a class="mk" href="/guia/">Guías</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cada cuánto cambiar el filtro</a><a href="/guia/como-saber-que-filtro-usa-mi-nevecon/">Qué filtro usa mi nevecón</a><a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">Cómo cambiar el filtro</a><a href="/guia/filtro-interno-o-externo/">Interno o externo</a><a href="/guia/por-que-el-agua-del-nevecon-sabe-mal/">El agua sabe mal</a><a href="/guia/el-dispensador-de-agua-del-nevecon-no-echa-agua/">El dispensador no echa agua</a><a href="/guia/como-reiniciar-la-luz-del-filtro-del-nevecon/">Reiniciar la luz del filtro</a></div>'
                '<div><a class="mk" href="/tienda/">Tienda: todos los filtros</a><a href="/tienda/">Ver la tienda completa</a><a href="/carrito.php">Mi carrito</a></div>'
-               '<div><a class="mk" href="/referencias/">Buscar por referencia o modelo</a><a href="/referencias/">Todas las referencias y equivalencias</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/instalacion/">Cómo instalar tu filtro</a><a href="/envios/">Envíos a toda Colombia</a><a href="/cali/">Filtros con instalación en Cali</a></div>')
-enlaces.append('</nav><footer class="web-foot"><div class="medios" aria-label="Medios de pago" style="width:100%"><span>🔒 Pago seguro</span><span>Visa</span><span>Mastercard</span><span>American Express</span><span>PSE</span><span>Nequi</span><span>Bancolombia</span></div><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a><span id="pie-negocio"></span></footer>')
+               '<div><a class="mk" href="/referencias/">Buscar por referencia o modelo</a><a href="/referencias/">Todas las referencias y equivalencias</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/instalacion/">Cómo instalar tu filtro</a><a href="/envios/">Envíos a toda Colombia</a></div>')
+enlaces.append('</nav>')
 i = app.index('<details class="faq"><summary>¿Cómo pago?</summary>')
 j = app.index("</div>", i) + len("</div>")
 app = app[:j] + "\n  " + "".join(enlaces) + app[j:]
 
+_EST = (SRC / "estilo.css").read_text(encoding="utf-8")
+CSS_COMUN = _EST[_EST.index("/* barra de anuncio */"):_EST.index("/* encabezado */")] + _EST[_EST.index("/* pie de página */"):]
 CSS_WEB = """
 .top .cart-top{position:relative;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);margin-left:auto}
 .top .city{order:3}.top .cart-top{order:2}
+.hero-nav{display:none}@media (min-width:980px){.hero-nav{display:flex;gap:2px;order:1;margin-left:auto}.hero-nav a{color:#dfeeea;text-decoration:none;font-weight:600;font-size:15px;padding:8px 11px;border-radius:10px}.hero-nav a:hover{background:rgba(255,255,255,.1);color:#fff}}
 .cart-top svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cart-top span{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--glow);color:#06221d;font-size:11.5px;font-weight:800;display:grid;place-items:center;padding:0 4px}
 .fy-toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,200%);background:#0a2a2e;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:14px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:90;transition:transform .25s;max-width:calc(100% - 32px);font-size:14.5px}
@@ -262,28 +272,36 @@ nav.bnav{grid-template-columns:repeat(2,1fr)!important}
 .seo-links a{color:var(--accent)}.seo-links a.mk{font-weight:800;color:var(--ink);width:100%}
 .web-foot{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 .web-foot a{color:var(--accent)}
+.wrap{max-width:1140px!important}
+.pasos3{display:flex;flex-direction:column;gap:12px}.p3-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.p3-grid div{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.p3-grid span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-weight:800;font-family:var(--f-display)}
+.p3-grid p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.marcas-tira{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 26px;padding:16px;border-radius:16px;background:var(--panel);border:1px solid var(--line)}
+.marcas-tira span{color:var(--muted);font-size:13px;width:100%;text-align:center}.marcas-tira b{font-family:var(--f-display);font-size:20px;letter-spacing:.02em;color:var(--ink);opacity:.72}
+.ex-grid a{transition:transform .18s,box-shadow .18s,border-color .18s}.ex-grid a:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(15,42,46,.45)}
 #wa-flot{left:auto!important;right:max(16px,env(safe-area-inset-right,0px))!important}@media (max-width:520px){#wa-flot span{display:none}#wa-flot{padding:14px!important}}
 .explora{display:flex;flex-direction:column;gap:10px}.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}.ex-grid a{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);text-decoration:none;color:var(--ink)}.ex-grid a span{font-size:13px;color:var(--muted)}.ex-grid a:hover{border-color:var(--accent)}
 .medios{display:flex;flex-wrap:wrap;gap:6px}.medios span{border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--ink);background:var(--panel)}
 """
 
 marca_ld = [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__/filtro/{p['slug']}/", "name": p["nombre_largo"]} for i, p in enumerate(CATALOGO)]
-index_php = f"""<?php require __DIR__ . '/api/sitio.php'; $S = sitio(); $n = $S['negocio']; ?>
+index_php = f"""<?php require __DIR__ . '/partes.php'; $S = sitio(); $n = $S['negocio']; ?>
 <!doctype html>
 <html lang="es-CO">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Filtros de agua para nevecón Samsung, LG, Whirlpool y GE | Envío gratis | <?= h($n['nombre']) ?></title>
-<meta name="description" content="Filtros de agua para nevecón Samsung, LG, Whirlpool EveryDrop y GE. Envío gratis a toda Colombia en 2 días hábiles e instalación en Cali. Paga con tarjeta, PSE o Nequi.">
+<meta name="description" content="Filtros de agua para nevecón Samsung, LG, Whirlpool EveryDrop y GE. Envío gratis a toda Colombia en 2 a 3 días hábiles. Paga con tarjeta, PSE o Nequi.">
 <link rel="canonical" href="<?= h($S['base']) ?>/">
-<meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevecón | <?= h($n['nombre']) ?>"><meta property="og:description" content="Envío gratis a toda Colombia. Instalación en Cali."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/lg-1000-o.jpg"><meta property="og:locale" content="es_CO">
+<meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevecón | <?= h($n['nombre']) ?>"><meta property="og:description" content="Envío gratis a toda Colombia. Pago seguro en línea."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/lg-1000-o.jpg"><meta property="og:locale" content="es_CO">
 <meta name="theme-color" content="#0a2a2e"><link rel="icon" href="/img/icono.svg" type="image/svg+xml">
 <?= verificacion_html() . analytics_html() ?>
 <script>window.FY_WA = <?= json_encode((strlen($w = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? ''))) === 10 ? '57' : '') . $w) ?>;</script>
 <script type="application/ld+json"><?php $ld = <<<'JSON'
 {json.dumps({"@context": "https://schema.org", "@graph": [
-    {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/lg-1000-o.jpg", "address": {"@type": "PostalAddress", "addressLocality": "Cali", "addressRegion": "Valle del Cauca", "addressCountry": "CO"}, "areaServed": {"@type": "Country", "name": "Colombia"}, "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi", "sameAs": "__SAMEAS__"},
+    {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/lg-1000-o.jpg", "areaServed": {"@type": "Country", "name": "Colombia"}, "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi", "sameAs": "__SAMEAS__"},
     {"@type": "WebSite", "name": "__NOMBRE__", "url": "__BASE__/", "inLanguage": "es-CO"},
     {"@type": "ItemList", "name": "Filtros de agua para nevecón", "itemListElement": marca_ld}]}, ensure_ascii=False)}
 JSON;
@@ -291,12 +309,14 @@ echo str_replace(['__BASE__', '__NOMBRE__', '"__SAMEAS__"'], [$S['base'], addsla
 <link rel="alternate" type="text/plain" title="Resumen para asistentes de IA" href="/llms.txt">
 <script>window.FY_WEB = <?= json_encode($S['web'], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) ?>;</script>
 <script src="/carrito.js" defer></script>
-<style>{CSS_WEB}</style>
+<style>{CSS_WEB}
+{CSS_COMUN}
+footer.pie{{margin:24px 0 0;padding-bottom:84px}}footer.pie .medios{{display:flex;flex-wrap:wrap;gap:6px}}footer.pie .medios span{{border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700}}</style>
 </head>
 <body>
-<?= gtm_body_html() ?>
+<?= gtm_body_html() . anuncio_html() ?>
 {app}
-<script>document.getElementById("pie-negocio").textContent = <?= json_encode('WhatsApp ' . $n['telefono'] . ' · ' . $n['horario'], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) ?>;</script>
+<?= pie_html() ?>
 </body>
 </html>
 """
@@ -336,7 +356,7 @@ def cabeza_php(partes, titulo, desc, ruta, ld, img=None):
             f"cabeza({php_str(titulo)}, {php_str(desc)}, {php_str(ruta)}, '{extra}<script type=\"application/ld+json\">' . str_replace('__BASE__', sitio()['base'], $ld) . '</script>'); ?>")
 
 
-RUTAS_CIUDAD = {"Cali": "/cali/", **{c[0]: f"/envios/{slug(c[1])}/{slug(c[0])}/" for c in CIUDADES_CO}}
+RUTAS_CIUDAD = {**{c[0]: f"/envios/{slug(c[1])}/{slug(c[0])}/" for c in CIUDADES_CO}}
 CIUDADES_TOP = ["Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena", "Bucaramanga", "Pereira", "Manizales", "Armenia", "Ibagué", "Cúcuta", "Santa Marta",
                 "Villavicencio", "Neiva", "Pasto", "Popayán", "Montería", "Valledupar", "Sincelejo", "Tunja", "Palmira", "Soacha", "Envigado", "Chía"]
 PRINCIPALES = {norm(p["ref"]) for p in CATALOGO}
@@ -354,7 +374,7 @@ for p in CATALOGO:
     ahorro = p["precio"] * 2 - p["pack"]
     titulo = f'{p["nombre_largo"]} | Envío gratis a toda Colombia' if len(p['nombre_largo']) < 34 else f'{p["nombre_largo"]} | Envío gratis'
     desc = (f'Compra el {p["nombre_largo"]} a {cop(p["precio"])} con envío gratis a toda Colombia en 2 días hábiles'
-            + (f'. También aparece como {", ".join(alias[:3])}' if alias else "") + (". En Cali te lo instalamos por $ 30.000." if ubic(p) == "externo" else ". En Cali te lo instalamos gratis.") + " Paga con tarjeta, PSE o Nequi.")
+            + (f'. También aparece como {", ".join(alias[:3])}' if alias else "") + ". Paga con tarjeta, PSE o Nequi.")
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "Product", "name": p["nombre_largo"], "image": f"__BASE__/img/{p['id']}.jpg", "sku": p["ref"], "mpn": p["ref"],
          "brand": {"@type": "Brand", "name": p["marca"]}, "description": f'Filtro de agua para nevecón {p["marca"]}, referencia {p["ref"]}. {p.get("desc") or donde}',
@@ -380,7 +400,7 @@ for p in CATALOGO:
     <span class="m">Filtro de agua para nevecón {esc(p["marca"])} · {"Externo" if ubic(p) == "externo" else "Interno"} · Referencia <span class="ref">{esc(p["ref"])}</span></span>
     <?php if ($R['n']) echo '<a href="#opiniones" style="text-decoration:none">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span class="m">(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
     <span class="precio">{cop(p["precio"])}</span>
-    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li>En Cali: <b>domicilio gratis e instalación {"por $ 30.000" if ubic(p) == "externo" else "gratis"}</b>.</li><li>Pack anual de 2 filtros: {cop(p["pack"])} (ahorras {cop(ahorro)}).</li><li>Asesoría por WhatsApp para confirmar que es el de tu nevecón.</li></ul>
+    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li><b>Fácil de instalar:</b> paso a paso en esta página.</li><li>Pack anual de 2 filtros: {cop(p["pack"])} (ahorras {cop(ahorro)}).</li><li>Asesoría por WhatsApp para confirmar que es el de tu nevecón.</li></ul>
     <div class="compra"><button class="btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="link" type="button" data-add="{p["id"]}" data-pack="1">+ Pack anual de 2 por {cop(p["pack"])} (ahorras {cop(ahorro)})</button></div>
     <span class="m">Pago seguro en línea: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span><?= medios_pago_html() ?>
   </div>
@@ -391,13 +411,13 @@ for p in CATALOGO:
   <p>Retiene el cloro, el sedimento y las partículas que le dan mal sabor y mal olor al agua y al hielo, y ayuda a proteger la válvula y la máquina de hielo del nevecón. Rinde unos 6 meses de uso normal; después se satura y conviene cambiarlo.</p>
   <p>{f"Si tu filtro viejo dice <b>{esc(p['ref'])}</b> o alguna de estas referencias: {esc(', '.join(alias))}, este es el tuyo." if alias else f"Si tu filtro viejo dice <b>{esc(p['ref'])}</b>, este es el tuyo."}</p>
   <h3 style="margin:6px 0 0;font-size:16px">Qué incluye</h3>
-  <ul class="ok"><li>1 filtro de agua {esc(p["ref"])} nuevo, en su empaque (o 2 si escoges el pack anual).</li><li>Envío gratis a toda Colombia con número de guía.</li><li>En Cali: instalación {"por $ 30.000" if ubic(p) == "externo" else "gratis"} y revisión del dispensador.</li><li>Asesoría por WhatsApp para confirmar que es el de tu nevecón.</li></ul>
+  <ul class="ok"><li>1 filtro de agua {esc(p["ref"])} nuevo, en su empaque (o 2 si escoges el pack anual).</li><li>Envío gratis a toda Colombia con número de guía.</li><li>Paso a paso de instalación y asesoría por WhatsApp.</li><li>Asesoría por WhatsApp para confirmar que es el de tu nevecón.</li></ul>
 </section>
 <section class="caja datos">
   <h2>Ficha técnica y datos rápidos</h2>
-  <p>El <b>{esc(p["nombre_largo"])}</b> es el filtro de agua {"externo (va en la manguera)" if ubic(p) == "externo" else "interno"} para nevecones {esc(p["marca"])}{(", también conocido como " + esc(", ".join(alias[:5]))) if alias else ""}. Cuesta {cop(p["precio"])} en <?= h(cfg()['negocio']['nombre']) ?> con envío gratis a toda Colombia (2 a 3 días hábiles en las principales ciudades) e instalación en Cali ({"$ 30.000" if ubic(p) == "externo" else "gratis"}). Se cambia cada 6 meses.</p>
+  <p>El <b>{esc(p["nombre_largo"])}</b> es el filtro de agua {"externo (va en la manguera)" if ubic(p) == "externo" else "interno"} para nevecones {esc(p["marca"])}{(", también conocido como " + esc(", ".join(alias[:5]))) if alias else ""}. Cuesta {cop(p["precio"])} en <?= h(cfg()['negocio']['nombre']) ?> con envío gratis a toda Colombia (2 a 3 días hábiles en las principales ciudades). Se cambia cada 6 meses.</p>
   <dl class="dq"><dt>Referencia</dt><dd>{esc(p["ref"])}</dd><dt>Marca del nevecón</dt><dd>{esc(p["marca"])}</dd><dt>Tipo</dt><dd>{"Externo, en la manguera" if ubic(p) == "externo" else "Interno"}</dd>
-  <dt>Precio</dt><dd>{cop(p["precio"])} (pack de 2: {cop(p["pack"])})</dd><dt>Envío</dt><dd>Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades</dd><dt>Instalación</dt><dd>{"$ 30.000 en Cali" if ubic(p) == "externo" else "Gratis en Cali"}</dd><dt>Duración</dt><dd>6 meses</dd>
+  <dt>Precio</dt><dd>{cop(p["precio"])} (pack de 2: {cop(p["pack"])})</dd><dt>Envío</dt><dd>Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades</dd><dt>Instalación</dt><dd>{"En la manguera del agua, 10 a 15 minutos" if ubic(p) == "externo" else "Dentro del nevecón, 2 minutos sin herramientas"}</dd><dt>Duración</dt><dd>6 meses</dd>
   {f'<dt>Equivalencias</dt><dd>{esc(", ".join(alias))}</dd>' if alias else ""}{f'<dt>Nevecones</dt><dd>{esc(", ".join(p["modelos"]))}</dd>' if p["modelos"] else ""}</dl>
 </section>
 <section class="caja">
@@ -418,7 +438,7 @@ for p in CATALOGO:
 <section style="display:flex;flex-direction:column;gap:8px">
   <h2>Preguntas frecuentes</h2>
   <details><summary>¿Cuánto cuesta el envío?</summary><p>Nada. El envío es gratis a toda Colombia y llega en unos 2 a 3 días hábiles a las principales ciudades. Mira el <a href="/envios/">tiempo de entrega a tu ciudad</a>.</p></details>
-  <details><summary>¿Lo instalan?</summary><p>{"En Cali te lo llevamos gratis y lo instalamos por $ 30.000: hay que cortar y conectar la manguera del agua." if ubic(p) == "externo" else "En Cali te lo llevamos e instalamos gratis."} En otras ciudades te lo enviamos con las instrucciones: se instala en minutos, sin herramientas.</p></details>
+  <details><summary>¿Es difícil de instalarlo?</summary><p>No. {"Se conecta en la manguera del agua en 10 a 15 minutos." if ubic(p) == "externo" else "Se cambia en 2 minutos y sin herramientas."} Sigue el paso a paso de esta página y, si tienes dudas, te asesoramos por WhatsApp.</p></details>
   <details><summary>¿Cómo pago?</summary><p>En línea, en página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Te llega el recibo a tu correo.</p></details>
   <details><summary>¿Y si no me sirve?</summary><p>Tienes 5 días hábiles para retractarte con el filtro sin instalar, y la garantía legal si llega con un defecto de fábrica. Mira los <a href="/terminos.php#garantia">términos</a>.</p></details>
 </section>
@@ -445,11 +465,11 @@ for marca in MARCAS:
         {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "__BASE__/"},
         {"@type": "ListItem", "position": 2, "name": f"Filtros {marca}", "item": f"__BASE__/marca/{s}/"}]}
     titulo = f"Filtros de agua para nevecón {marca} | Envío gratis a toda Colombia"
-    desc = f"{INTRO.get(marca, '')} Envío gratis a toda Colombia e instalación en Cali. Paga con tarjeta, PSE o Nequi."
+    desc = f"{INTRO.get(marca, '')} Envío gratis a toda Colombia. Paga con tarjeta, PSE o Nequi."
     pagina = cabeza_php("/../../partes.php", titulo, desc, f"/marca/{s}/", ld) + f"""
 <nav class="miga"><a href="/">Inicio</a> › Filtros {esc(marca)}</nav>
 <h1>Filtros de agua para nevecón {esc(marca)}</h1>
-<p>{esc(INTRO.get(marca, ""))} Todos con <b>envío gratis</b> a toda Colombia y, en Cali, <b>instalación a domicilio</b>.</p>
+<p>{esc(INTRO.get(marca, ""))} Todos con <b>envío gratis</b> a toda Colombia y pago seguro en línea.</p>
 <div class="grid">{"".join(tarjeta(p) for p in ps)}</div>
 <section class="caja"><h2>¿Cuál es el mío?</h2><p>Saca el filtro viejo y busca la referencia impresa, o mira el modelo en la etiqueta de adentro del nevecón. Escríbelo en el <a href="/#catalogo">buscador de la tienda</a> y te mostramos el filtro que le sirve.</p></section>
 <?php pie(); ?>
@@ -458,7 +478,7 @@ for marca in MARCAS:
     d.mkdir(parents=True, exist_ok=True)
     (d / "index.php").write_text(pagina, encoding="utf-8")
 
-# ---------- referencias, nevecones, guías, Cali y directorios ----------
+# ---------- referencias, nevecones, guías, envíos y directorios ----------
 extra = paginas_seo.generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDADES_CO)
 
 # ---------- catálogo del servidor ----------
@@ -491,7 +511,7 @@ cat_php = {
 # ---------- carpetas con el nombre del proyecto ----------
 # Todas las carpetas (y la hoja de estilos y el carrito) llevan "purofiltro-" adelante para no chocar
 # con archivos que ya existan en el hosting. Se renombran al final y se corrigen todas las rutas.
-CARPETAS = ["img", "api", "data", "filtro", "referencia", "referencias", "nevecon", "neveras", "marca", "guia", "envios", "cali", "tienda", "instalacion"]
+CARPETAS = ["img", "api", "data", "filtro", "referencia", "referencias", "nevecon", "neveras", "marca", "guia", "envios", "tienda", "instalacion"]
 for c in CARPETAS:
     viejo, nuevo = OUT / c, OUT / (PREFIJO + c)
     if not viejo.exists():

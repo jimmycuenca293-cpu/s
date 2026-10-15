@@ -89,3 +89,76 @@ input,select,textarea{font:inherit;color:inherit;background:var(--bg);border:1px
 .card .btn.sm{margin-top:auto}
 
 .tutorial ol.pasos{display:flex;flex-direction:column;gap:8px;padding-left:22px;margin:4px 0}.tutorial ol.pasos li{line-height:1.5}
+
+/* ===================== Diseño v2: más limpio y profesional ===================== */
+:root{--f:Manrope,"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;--f-display:"Bricolage Grotesque",Manrope,system-ui,sans-serif;--sombra:0 1px 2px rgba(15,42,46,.05),0 10px 30px -14px rgba(15,42,46,.18);--sombra-alta:0 2px 4px rgba(15,42,46,.06),0 22px 44px -18px rgba(15,42,46,.28);--radio:18px}
+body{font-size:16px;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+.wrap{max-width:1140px}
+h1,h2,.precio,.logo{font-family:var(--f-display)}
+h1{font-size:clamp(28px,4.6vw,44px);letter-spacing:-.025em;line-height:1.08;font-weight:800}
+h2{font-size:clamp(20px,2.4vw,26px);letter-spacing:-.015em;font-weight:800}
+h3{letter-spacing:-.01em}
+/* barra de anuncio */
+.anuncio{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 28px;background:linear-gradient(90deg,#0f7f70,#12998a);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;text-align:center}
+@media (max-width:640px){.anuncio span:not(:first-child){display:none}}
+/* encabezado */
+header.top{position:sticky;top:0;z-index:50;background:rgba(10,42,46,.96);backdrop-filter:saturate(1.4) blur(8px);box-shadow:0 1px 0 rgba(255,255,255,.06)}
+header.top .wrap{padding-block:14px}
+.topnav{display:flex;align-items:center;gap:4px}
+.topnav>a,.marcas-nav a{color:#dfeeea;text-decoration:none;font-weight:600;font-size:15px;padding:8px 12px;border-radius:10px;transition:background .15s,color .15s}
+.topnav>a:hover,.marcas-nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+.marcas-nav{display:flex;gap:2px;padding-right:6px;margin-right:6px;border-right:1px solid rgba(255,255,255,.12)}
+@media (max-width:900px){.marcas-nav{display:none}}
+.cartbtn{margin-left:6px}
+/* contenido */
+main.wrap{padding-block:26px 56px;gap:26px}
+.miga{font-size:13px}.miga a{text-decoration:none}.miga a:hover{text-decoration:underline}
+.caja{border-radius:var(--radio);padding:22px;gap:12px;box-shadow:var(--sombra);border-color:transparent}
+@media (prefers-color-scheme:dark){.caja{border-color:var(--line)}}
+.caja h2{margin-top:0}
+.btn{border-radius:14px;padding:14px 20px;transition:transform .12s,box-shadow .15s,background .15s;box-shadow:0 6px 16px -8px rgba(15,127,112,.6)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px -10px rgba(15,127,112,.7)}
+.btn.ghost{box-shadow:none;border-width:1.5px}.btn.ghost:hover{background:var(--accent-soft)}
+/* listas con chulito */
+ul.ok{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+ul.ok li{position:relative;padding-left:28px;margin:0}
+ul.ok li::before{content:"";position:absolute;left:0;top:3px;width:18px;height:18px;border-radius:50%;background:var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f7f70' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/12px no-repeat}
+/* ficha de producto */
+.prod{gap:36px}
+.foto{border-radius:24px;padding:28px;box-shadow:var(--sombra);border-color:transparent;background:#fff}
+.prod>.caja{position:sticky;top:96px}
+@media (max-width:640px){.prod>.caja{position:static}}
+.precio{font-size:40px;letter-spacing:-.03em}
+/* tarjetas de productos */
+.grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.card{border-radius:var(--radio);padding:12px;gap:8px;border-color:transparent;box-shadow:var(--sombra);transition:transform .18s,box-shadow .18s}
+.card:hover{transform:translateY(-4px);box-shadow:var(--sombra-alta)}
+.card .im{height:180px;border-radius:14px;background:#fff}
+.card .im img{max-height:164px;transition:transform .25s}.card:hover .im img{transform:scale(1.04)}
+.card b{font-size:15.5px}.card .p{font-size:19px;letter-spacing:-.02em}
+/* filtros de la tienda */
+.tienda-filtros button{transition:background .15s,border-color .15s}
+/* preguntas frecuentes */
+details{border-radius:14px;border-color:transparent;box-shadow:var(--sombra);padding:16px 18px}
+summary{list-style:none;display:flex;justify-content:space-between;gap:12px}summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:22px;line-height:1;color:var(--accent);font-weight:600;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin:10px 0 0;color:var(--muted)}
+/* tablas */
+table.t{border-collapse:collapse;width:100%}table.t th,table.t td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}table.t th{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+/* pie de página */
+footer.pie{background:#0a2a2e;color:#a9c4bf;border-top:0;font-size:14px;margin-top:20px}
+footer.pie .wrap{display:grid;gap:28px}
+.pie-top{grid-template-columns:1.4fr 1fr 1fr 1fr;padding-block:48px 28px}
+@media (max-width:860px){.pie-top{grid-template-columns:1fr 1fr}.pie-marca{grid-column:1/-1}}
+@media (max-width:480px){.pie-top{grid-template-columns:1fr}}
+footer.pie nav{display:flex;flex-direction:column;gap:9px}
+footer.pie nav b{color:#fff;font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+footer.pie a{color:#cfe3df;text-decoration:none}footer.pie a:hover{color:#fff;text-decoration:underline}
+.pie-marca{display:flex;flex-direction:column;gap:12px;align-items:flex-start}.pie-marca p{margin:0;max-width:340px;line-height:1.6}
+.pie-wa{background:#25d366;color:#fff!important;font-weight:700;padding:10px 16px;border-radius:12px;text-decoration:none!important}
+.pie-hora{font-size:13px}
+.pie-medios{display:flex!important;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-block:18px;border-top:1px solid rgba(255,255,255,.08)}
+footer.pie .medios span{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:#e6f2ef}
+.pie-base{display:flex!important;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding-block:16px 26px;font-size:12.5px;color:#7fa09a;border-top:1px solid rgba(255,255,255,.08)}
+footer.pie .logo{display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:800;font-size:22px}footer.pie .logo b{color:#5fd6c3}

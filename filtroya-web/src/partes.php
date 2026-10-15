@@ -12,23 +12,42 @@ function cabeza(string $titulo, string $desc, string $ruta, string $extra = '', 
         . '<title>' . h($titulo) . '</title><meta name="description" content="' . h($desc) . '">'
         . ($indexar ? '<link rel="canonical" href="' . h($canon) . '">' : '<meta name="robots" content="noindex">')
         . '<meta property="og:type" content="website"><meta property="og:title" content="' . h($titulo) . '"><meta property="og:description" content="' . h($desc) . '"><meta property="og:url" content="' . h($canon) . '"><meta property="og:locale" content="es_CO">'
-        . '<script src="/carrito.js" defer></script><meta name="theme-color" content="#0a2a2e"><link rel="icon" href="/img/icono.svg" type="image/svg+xml"><link rel="stylesheet" href="/estilo.css">' . verificacion_html() . analytics_html() . $extra . '</head><body>' . gtm_body_html()
+        . '<script src="/carrito.js" defer></script><meta name="theme-color" content="#0a2a2e"><link rel="icon" href="/img/icono.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap"><link rel="stylesheet" href="/estilo.css">' . verificacion_html() . analytics_html() . $extra . '</head><body>' . gtm_body_html()
+        . anuncio_html()
         . '<header class="top"><div class="wrap"><a class="logo" href="/"><img src="/img/icono.svg" alt="" width="26" height="26"><span>Puro<b>Filtro</b></span></a>'
-        . '<nav class="topnav"><a href="/tienda/">Tienda</a><a href="/instalacion/" class="solo-ancho">Instalación</a><a href="/guia/">Guías</a>'
+        . '<nav class="topnav"><a href="/tienda/">Tienda</a><span class="marcas-nav solo-ancho"><a href="/marca/samsung/">Samsung</a><a href="/marca/lg/">LG</a><a href="/marca/whirlpool/">Whirlpool</a><a href="/marca/ge/">GE</a></span><a href="/instalacion/" class="solo-ancho">Instalación</a><a href="/guia/">Guías</a>'
         . '<a class="cartbtn" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a></nav>'
         . '</div></header><main class="wrap">';
 }
 
-function pie(): void
+// Barra superior con los beneficios (la usan todas las páginas, también la de inicio)
+function anuncio_html(): string
+{
+    return '<div class="anuncio"><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago 100 % seguro en línea</span><span>💬 Asesoría por WhatsApp</span></div>';
+}
+
+// Pie de página (también lo usa la página de inicio)
+function pie_html(): string
 {
     $S = sitio();
     $n = $S['negocio'];
-    $marcas = catalogo()['marcas'];
-    echo '</main><footer class="pie"><div class="wrap"><nav><b>Filtros por marca</b>';
-    foreach ($marcas as $m) echo '<a href="/marca/' . h($m['slug']) . '/">Filtros ' . h($m['nombre']) . '</a>';
-    echo '</nav><nav><b>Ayuda</b><a href="/referencias/">Buscar por referencia</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/guia/">Guías</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cuándo cambiar el filtro</a><a href="/instalacion/">Cómo instalar tu filtro</a><a href="/envios/">Envíos a toda Colombia</a><a href="/cali/">Instalación en Cali</a><a href="/quienes-somos.php">Quiénes somos</a>';
-    echo '</nav><nav><b>Compra segura</b><span>🔒 Pago cifrado en página segura</span><span>🚚 Envío gratis a toda Colombia</span><span>💬 Asesoría por WhatsApp</span>' . medios_pago_html();
-    echo '</nav><nav><b>Información</b><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a></nav>'
-        . '<p>WhatsApp ' . h($n['telefono']) . ' · ' . h($n['horario']) . '<br>'
-        . 'Precios en pesos colombianos, con envío incluido. Las marcas mencionadas pertenecen a sus dueños; somos un comercio independiente.</p></div></footer>' . whatsapp_html() . '</body></html>';
+    $tel = preg_replace('/\D/', '', (string) (cfg()['whatsapp'] ?? ''));
+    $h = '<footer class="pie"><div class="wrap pie-top">'
+        . '<div class="pie-marca"><a class="logo" href="/"><img src="/img/icono.svg" alt="" width="26" height="26"><span>Puro<b>Filtro</b></span></a>'
+        . '<p>Filtros de agua para nevecones Samsung, LG, Whirlpool y GE. Te ayudamos a encontrar el tuyo y te llega a la puerta de tu casa en toda Colombia.</p>'
+        . ($tel ? '<a class="pie-wa" href="https://wa.me/57' . substr($tel, -10) . '" target="_blank" rel="noopener">💬 WhatsApp ' . h($n['telefono']) . '</a>' : '')
+        . '<span class="pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
+        . '<nav><b>Filtros</b>';
+    foreach (catalogo()['marcas'] as $m) $h .= '<a href="/marca/' . h($m['slug']) . '/">Filtros ' . h($m['nombre']) . '</a>';
+    $h .= '<a href="/tienda/">Ver toda la tienda</a></nav>'
+        . '<nav><b>Ayuda</b><a href="/referencias/">Buscar por referencia</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cuándo cambiar el filtro</a><a href="/instalacion/">Cómo instalar tu filtro</a><a href="/guia/">Guías</a><a href="/envios/">Envíos a toda Colombia</a></nav>'
+        . '<nav><b>Empresa</b><a href="/quienes-somos.php">Quiénes somos</a><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a></nav>'
+        . '</div><div class="wrap pie-medios"><span class="pie-seguro">🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'
+        . '<div class="wrap pie-base"><span>© ' . date('Y') . ' ' . h($n['nombre']) . '. Precios en pesos colombianos con envío incluido.</span><span>Las marcas mencionadas pertenecen a sus dueños; somos un comercio independiente.</span></div></footer>';
+    return $h;
+}
+
+function pie(): void
+{
+    echo '</main>' . pie_html() . whatsapp_html() . '</body></html>';
 }

@@ -34,7 +34,7 @@ w("01-configuracion.md", """# 1. Configuración de la campaña
 |---|---|
 | Tipo | **Búsqueda** (Search). Quita la Red de Display y los socios de búsqueda. |
 | Objetivo | Ventas. Conversión principal: **pago_wompi**. Secundaria: **whatsapp**. |
-| Ubicación | **Colombia**, con "Presencia: personas que están o suelen estar en las ubicaciones". El grupo «Cali instalación» se limita a Cali (radio 20 km). |
+| Ubicación | **Colombia**, con "Presencia: personas que están o suelen estar en las ubicaciones". |
 | Idioma | Español |
 | Presupuesto | Empieza con **$25.000 a $35.000 al día** (unos $750.000 a $1.050.000 al mes). Súbelo cuando veas ventas. |
 | Puja | Semanas 1 a 4: **Maximizar clics** con límite de CPC de $1.500. Con 15 o más conversiones pago_wompi: **Maximizar conversiones** y luego **CPA objetivo** de $25.000. |
@@ -89,7 +89,6 @@ w("04-recursos-extensiones.md", f"""# 4. Recursos (extensiones)
 | ¿Cuándo cambiar el filtro? | {D}/purofiltro-guia/cada-cuanto-cambiar-el-filtro-del-nevecon/ | Las señales de que ya toca | Cada 6 meses o antes |
 | Busca por referencia | {D}/purofiltro-referencias/ | Todas las equivalencias | Encuentra el tuyo fácil |
 | Envíos a toda Colombia | {D}/purofiltro-envios/ | Tiempo de entrega a tu ciudad | Envío gratis |
-| Instalación en Cali | {D}/purofiltro-cali/ | Gratis en filtros internos | Agendamos día y hora |
 | Ver la tienda | {D}/purofiltro-tienda/ | Todos los filtros y precios | Samsung, LG, Whirlpool, GE |
 
 ## Textos destacados

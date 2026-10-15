@@ -1,5 +1,5 @@
 """Páginas extra para Google: una por cada referencia equivalente, una por cada modelo de nevecón,
-guías, la página de Cali y los directorios. Las usa build.py.
+guías, envíos por ciudad y los directorios. Las usa build.py.
 
 Cada página trae información propia (equivalencias, cómo confirmar, cómo cambiarlo, modelos),
 no solo el nombre cambiado: así Google la toma como útil y no como una copia.
@@ -37,7 +37,7 @@ def caja_producto(p, titulo=None):
     <span class="m">{esc(titulo or "El filtro que necesitas")}</span>
     <h2 style="margin:0">{esc(p["nombre_largo"])}</h2>
     <span class="precio">{cop(p["precio"])}</span>
-    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li>En Cali: <b>domicilio gratis e instalación {"por $ 30.000" if "-ex-" in p["id"] else "gratis"}</b>.</li><li>Asesoría por WhatsApp para confirmar que es el de tu nevecón.</li></ul>
+    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li><b>Fácil de instalar:</b> paso a paso en la página del filtro.</li><li>Asesoría por WhatsApp para confirmar que es el de tu nevecón.</li></ul>
     <div class="compra"><button class="btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><a class="link" href="/filtro/{p["slug"]}/">Ver todos los detalles del filtro</a></div>
   </div>
 </div>"""
@@ -105,18 +105,17 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
             refs_dir.append((r, ruta, p))
             otras = [x for x in p["refs"] if norm(x) != n]
             titulo = f"Filtro {r} para nevecón {p['marca']} | Equivale a {p['ref']}"
-            desc = (f"¿Buscas el filtro {r}? Es la misma referencia que el {p['nombre_largo']}: {cop(p['precio'])} con envío gratis a toda Colombia. "
-                    + (f"En Cali te lo instalamos por $ 30.000." if ubic(p) == "externo" else "En Cali te lo instalamos gratis."))
+            desc = (f"¿Buscas el filtro {r}? Es la misma referencia que el {p['nombre_largo']}: {cop(p['precio'])} con envío gratis a toda Colombia. " + "Paga en línea con tarjeta, PSE o Nequi.")
             preguntas = [
                 (f"¿El filtro {r} es igual al {p['ref']}?", f"Sí. {r} y {p['ref']} son nombres de la misma referencia de filtro para nevecón {p['marca']}: tienen la misma forma, la misma conexión y se cambian igual."),
                 (f"¿Cada cuánto se cambia el filtro {r}?", "Cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión."),
-                (f"¿Cuánto cuesta el envío del {r}?", "Nada. El envío es gratis a toda Colombia y llega en unos 2 días hábiles después del pago. " + ("En Cali lo instalamos por $ 30.000." if ubic(p) == "externo" else "En Cali también lo instalamos gratis.")),
+                (f"¿Cuánto cuesta el envío del {r}?", "Nada. El envío es gratis a toda Colombia y llega en unos 2 días hábiles después del pago. "),
             ]
             mg, mg_ld = miga(("Inicio", "/"), ("Referencias", "/referencias/"), (f"Filtro {r}", None))
             modelos = ", ".join(f'<a href="/nevecon/{slug(m)}/">{esc(m)}</a>' for m in p["modelos"])
             cuerpo = f"""{mg}
 <h1>Filtro {esc(r)} para nevecón {esc(p["marca"])}</h1>
-<p>El filtro <b>{esc(r)}</b> es la misma referencia que el <b>{esc(p["nombre_largo"])}</b>: {donde}. Lo tenemos a <b>{cop(p["precio"])}</b> con envío gratis a toda Colombia, y en Cali te lo instalamos {"por $ 30.000" if ubic(p) == "externo" else "gratis"}.</p>
+<p>El filtro <b>{esc(r)}</b> es la misma referencia que el <b>{esc(p["nombre_largo"])}</b>: {donde}. Lo tenemos a <b>{cop(p["precio"])}</b> con envío gratis a toda Colombia.</p>
 {caja_producto(p, f"Para el {r} te sirve")}
 <section class="caja">
   <h2>Equivalencias del filtro {esc(r)}</h2>
@@ -149,17 +148,16 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
             modelos_dir.append((p["marca"], m, ruta, p))
             hermanos = [x for x in p["modelos"] if x != m]
             titulo = f"Filtro de agua para nevecón {p['marca']} {m} | {p['ref']}"
-            desc = (f"El nevecón {p['marca']} {m} usa el filtro {p['nombre_largo']}. Cómprelo a {cop(p['precio'])} con envío gratis a toda Colombia "
-                    + (f"e instalación en Cali por $ 30.000." if ubic(p) == "externo" else "e instalación gratis en Cali.")).replace("Cómprelo", "Cómpralo")
+            desc = (f"El nevecón {p['marca']} {m} usa el filtro {p['nombre_largo']}. Cómprelo a {cop(p['precio'])} con envío gratis a toda Colombia " + ". Paga con tarjeta, PSE o Nequi.").replace("Cómprelo", "Cómpralo")
             preguntas = [
                 (f"¿Qué filtro usa el nevecón {p['marca']} {m}?", f"El {p['nombre_largo']} (referencia {p['ref']}). También aparece como {', '.join([x for x in p['refs'] if norm(x) != norm(p['ref'])][:4]) or p['ref']}."),
                 (f"¿Cada cuánto se cambia el filtro del {m}?", "Cada 6 meses, o antes si el agua cambia de sabor, de olor, o el hielo sale turbio o con mal sabor."),
-                (f"¿Me lo instalan?", "En Cali sí, gratis. En el resto del país te lo enviamos gratis y se instala en minutos, sin herramientas."),
+                (f"¿Es difícil de instalar?", "No. Se instala en minutos y sin herramientas: el paso a paso está en esta página y te asesoramos por WhatsApp."),
             ]
             mg, mg_ld = miga(("Inicio", "/"), ("Neveras", "/neveras/"), (f"Nevecón {p['marca']} {m}", None))
             cuerpo = f"""{mg}
 <h1>Filtro de agua para nevecón {esc(p["marca"])} {esc(m)}</h1>
-<p>El nevecón <b>{esc(p["marca"])} {esc(m)}</b> usa el filtro <b>{esc(p["nombre_largo"])}</b>. Lo tenemos a {cop(p["precio"])} con envío gratis a toda Colombia y, en Cali, instalación {"por $ 30.000" if ubic(p) == "externo" else "gratis"}.</p>
+<p>El nevecón <b>{esc(p["marca"])} {esc(m)}</b> usa el filtro <b>{esc(p["nombre_largo"])}</b>. Lo tenemos a {cop(p["precio"])} con envío gratis a toda Colombia.</p>
 {caja_producto(p, f"Para el {m} te sirve")}
 <section class="caja">
   <h2>Antes de comprar, confirma tu modelo</h2>
@@ -204,7 +202,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 <h2>Filtro externo (en la manguera)</h2>{pasos_cambio(CATALOGO[0], lambda p: "externo")}
 <h2>Después de cambiarlo</h2>
 <p>Las primeras gotas pueden salir con un poco de carbón: es normal, por eso se botan los primeros 2 o 3 litros. Si el dispensador gotea o el agua no sale, revisa que el filtro haya quedado hasta el fondo y bien girado.</p>
-<p>En <b>Cali</b> no tienes que hacer nada de esto: al comprar escoges «Domicilio + instalación» y te lo instalamos: gratis los filtros internos y $ 30.000 los externos (de manguera).</p>
+<p>¿Te quedó alguna duda? Escríbenos por WhatsApp y te guiamos paso a paso.</p>
 <div class="grid">{grid_top}</div>"""),
         ("filtro-interno-o-externo", "Filtro de nevecón interno o externo: ¿cuál necesito?",
          "Diferencias entre el filtro de agua interno y el externo del nevecón, y cómo saber cuál lleva el tuyo.",
@@ -280,7 +278,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
         art = {"@type": "Article", "headline": titulo, "description": desc, "inLanguage": "es-CO", "datePublished": "2026-10-15", "dateModified": "2026-10-15",
                "author": {"@type": "Organization", "name": "PuroFiltro"}, "mainEntityOfPage": f"__BASE__{ruta}"}
         firma = ('<p class="m">Escrito por <a href="/quienes-somos.php"><?= h(trim((string) (cfg()["tecnico"]["nombre"] ?? "")) ?: cfg()["negocio"]["nombre"]) ?></a>, '
-                 'técnico de neveras en Cali · Actualizado el 15 de octubre de 2026</p>')
+                 'técnico de neveras · Actualizado el 15 de octubre de 2026</p>')
         escribir(ruta, titulo, desc, [mg_ld, art], f'{mg}\n<article class="legal"><h1>{esc(titulo)}</h1>\n{firma}\n{cuerpo_g}</article>')
     mg, mg_ld = miga(("Inicio", "/"), ("Guías", None))
     escribir("/guia/", "Guías sobre filtros de agua para nevecón", "Guías para escoger, cambiar y cuidar el filtro de agua de tu nevecón.", [mg_ld],
@@ -302,7 +300,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
              [mg_ld, lista],
              f"""{mg}
 <h1>Tienda de filtros de agua para nevecón</h1>
-<p>{len(CATALOGO)} filtros para nevecones Samsung, LG, Whirlpool y GE. <b>Envío gratis</b> a toda Colombia y, en Cali, <b>instalación a domicilio</b>. Agrega varios al carrito y paga una sola vez.</p>
+<p>{len(CATALOGO)} filtros para nevecones Samsung, LG, Whirlpool y GE. <b>Envío gratis</b> a toda Colombia y pago seguro en línea. Agrega varios al carrito y paga una sola vez.</p>
 <div class="tienda-filtros" id="f-marca">{chips}</div>
 <div class="tienda-filtros" id="f-tipo"><button type="button" data-t="todos" aria-pressed="true">Internos y externos</button><button type="button" data-t="interno" aria-pressed="false">Internos</button><button type="button" data-t="externo" aria-pressed="false">Externos</button>
 <label style="margin-left:auto;font-size:14px">Ordenar <select id="orden"><option value="pop">Más pedidos</option><option value="asc">Menor precio</option><option value="desc">Mayor precio</option></select></label></div>
@@ -324,24 +322,8 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 }})();
 </script>""")
 
-    # ---------- Cali ----------
-    mg, mg_ld = miga(("Inicio", "/"), ("Filtros en Cali", None))
-    cali_ld = {"@type": "Store", "@id": "__BASE__/#tienda", "name": "PuroFiltro", "url": "__BASE__/cali/", "image": "__BASE__/img/lg-1000-o.jpg",
-               "address": {"@type": "PostalAddress", "addressLocality": "Cali", "addressRegion": "Valle del Cauca", "addressCountry": "CO"},
-               "areaServed": {"@type": "City", "name": "Cali"}, "priceRange": "$$"}
-    escribir("/cali/", "Filtros de agua para nevecón en Cali | Domicilio gratis e instalación",
-             "Filtros de agua para nevecón Samsung, LG, Whirlpool y GE en Cali, con domicilio gratis e instalación (gratis en filtros internos). Paga en línea con tarjeta, PSE o Nequi.",
-             [mg_ld, cali_ld],
-             f"""{mg}
-<h1>Filtros de agua para nevecón en Cali, con instalación a domicilio</h1>
-<p>En Cali te llevamos el filtro de tu nevecón y te lo instalamos: <b>gratis</b> los filtros internos y <b>$ 30.000</b> los externos (de manguera), porque hay que cortar y conectar la manguera. De paso revisamos que el dispensador y la máquina de hielo queden funcionando bien.</p>
-<section class="caja"><h2>Cómo funciona</h2><ol><li>Busca tu filtro por la referencia o por el modelo del nevecón.</li><li>Escoge «Domicilio + instalación» y paga en línea con tarjeta, PSE, Nequi o botón Bancolombia.</li><li>Te llamamos para acordar el día y la hora, y llegamos con el filtro.</li></ol></section>
-<h2>Filtros que instalamos</h2>
-<div class="grid">{"".join(tarjeta(p) for p in CATALOGO)}</div>
-<p class="m">¿No estás en Cali? Te lo enviamos gratis a toda Colombia y llega en unos 2 días hábiles.</p>""")
-
     # ---------- ciudades: una página por ciudad y por departamento ----------
-    rutas_ciudad = {"Cali": "/cali/"}
+    rutas_ciudad = {}
     deptos = {}
     for c in CIUDADES_CO:
         deptos.setdefault(c[1], []).append(c)
@@ -352,7 +334,6 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
     for c in CIUDADES_CO:
         ciudad, depto = c[0], c[1]
         dias = c[2] if len(c) > 2 else 2
-        cerca_cali = depto == "Valle del Cauca"
         lejos = dias >= 5
         ruta = rutas_ciudad[ciudad]
         vecinas = [x for x in deptos[depto] if x[0] != ciudad]
@@ -362,7 +343,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
             (f"¿Envían filtros de agua para nevecón a {ciudad}?", f"Sí. Enviamos a {ciudad} ({depto}) los filtros para nevecones Samsung, LG, Whirlpool y GE, con envío gratis y número de guía."),
             (f"¿Cuánto se demora el envío a {ciudad}?", f"Llega en unos {cuando} después del pago. {'Por la distancia puede tardar un poco más en temporada alta.' if lejos else 'Despachamos el mismo día o el siguiente día hábil.'}"),
             (f"¿Cuánto cuesta el envío a {ciudad}?", "Nada: el envío es gratis y el precio que ves es el precio final."),
-            (f"¿Me lo instalan en {ciudad}?", "La instalación a domicilio es solo en Cali. Pero el filtro se cambia en menos de 5 minutos y sin herramientas: te dejamos los pasos en la página de cada filtro y en la guía."),
+            (f"¿Es difícil de instalar?", "No. El filtro se cambia en menos de 5 minutos y sin herramientas: te dejamos los pasos en la página de cada filtro y te asesoramos por WhatsApp."),
             (f"¿Cómo pago desde {ciudad}?", "En línea, en página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Te llega el recibo a tu correo."),
         ]
         ld = [mg_ld, faq_ld(preguntas), {
@@ -376,7 +357,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 <section class="caja">
   <h2>Envío a {esc(ciudad)}</h2>
   <dl class="dq"><dt>Ciudad</dt><dd>{esc(ciudad)}</dd><dt>Departamento</dt><dd>{esc(depto)}</dd><dt>Tiempo de entrega</dt><dd>Unos {cuando}</dd><dt>Costo del envío</dt><dd>Gratis</dd>
-  <dt>Instalación</dt><dd>{'Solo en Cali (a ' + esc(ciudad) + ' te lo enviamos listo para instalar)' if cerca_cali else 'La haces tú en 5 minutos, sin herramientas'}</dd><dt>Pago</dt><dd>Tarjeta, PSE, Nequi o botón Bancolombia</dd></dl>
+  <dt>Instalación</dt><dd>La haces tú en 5 minutos, sin herramientas</dd><dt>Pago</dt><dd>Tarjeta, PSE, Nequi o botón Bancolombia</dd></dl>
 </section>
 <h2>Filtros que enviamos a {esc(ciudad)}</h2>
 <div class="grid">{"".join(tarjeta(p) for p in CATALOGO)}</div>
@@ -388,7 +369,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
   <li>Cámbialo en 5 minutos con la guía <a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">cómo cambiar el filtro de agua del nevecón</a>.</li></ol>
 </section>
 {faq_html(preguntas)}
-{f'<section class="caja"><h2>También enviamos en {esc(depto)}</h2><div class="chips">' + "".join(f'<a href="{rutas_ciudad[x[0]]}">{esc(x[0])}</a>' for x in vecinas) + (f'<a href="/cali/">Cali</a>' if cerca_cali else "") + '</div></section>' if vecinas or cerca_cali else ""}
+{f'<section class="caja"><h2>También enviamos en {esc(depto)}</h2><div class="chips">' + "".join(f'<a href="{rutas_ciudad[x[0]]}">{esc(x[0])}</a>' for x in vecinas)  + '</div></section>' if vecinas else ""}
 <p class="m">Mira <a href="/envios/">todas las ciudades a las que enviamos</a>.</p>"""
         escribir(ruta, f"Filtros de agua para nevecón en {ciudad} | Envío gratis",
                  f"Filtros de agua para nevecón Samsung, LG, Whirlpool y GE con envío gratis a {ciudad}, {depto}. Llega en unos {cuando}. Paga en línea con tarjeta, PSE o Nequi.",
@@ -396,27 +377,24 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
     for depto, cs in deptos.items():
         mg, mg_ld = miga(("Inicio", "/"), ("Envíos", "/envios/"), (depto, None))
         lista = sorted(cs, key=lambda x: slug(x[0]))
-        if depto == "Valle del Cauca":
-            lista = [["Cali", depto]] + lista
         escribir(f"/envios/{slug(depto)}/", f"Filtros de agua para nevecón en {depto} | Envío gratis",
                  f"Enviamos filtros de agua para nevecón Samsung, LG, Whirlpool y GE a {', '.join(x[0] for x in lista[:6])} y más ciudades de {depto}. Envío gratis.",
                  [mg_ld, {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__{rutas_ciudad[x[0]]}", "name": x[0]} for i, x in enumerate(lista)]}],
                  f"""{mg}
 <h1>Filtros de agua para nevecón en {esc(depto)}</h1>
 <p>Enviamos gratis los filtros de agua para nevecones Samsung, LG, Whirlpool y GE a {len(lista)} {"ciudad" if len(lista) == 1 else "ciudades"} de {esc(depto)}. Escoge la tuya para ver el tiempo de entrega:</p>
-<div class="caja" style="overflow-x:auto"><table class="t"><tr><th>Ciudad</th><th>Entrega</th><th>Envío</th></tr>{"".join(f'<tr><td><a href="{rutas_ciudad[x[0]]}">{esc(x[0])}</a></td><td>{"Domicilio e instalación" if x[0] == "Cali" else "Unos " + str(x[2] if len(x) > 2 else 2) + " días hábiles"}</td><td>Gratis</td></tr>' for x in lista)}</table></div>
+<div class="caja" style="overflow-x:auto"><table class="t"><tr><th>Ciudad</th><th>Entrega</th><th>Envío</th></tr>{"".join(f'<tr><td><a href="{rutas_ciudad[x[0]]}">{esc(x[0])}</a></td><td>{"Unos " + str(x[2] if len(x) > 2 else 2) + " días hábiles"}</td><td>Gratis</td></tr>' for x in lista)}</table></div>
 <h2>Filtros disponibles</h2>
 <div class="grid">{"".join(tarjeta(p) for p in CATALOGO)}</div>""")
     mg, mg_ld = miga(("Inicio", "/"), ("Envíos", None))
     bloques = "".join(f'<section class="caja"><h2><a href="/envios/{slug(d)}/">{esc(d)}</a></h2><div class="chips">'
-                      + ("<a href=\"/cali/\">Cali</a>" if d == "Valle del Cauca" else "")
                       + "".join(f'<a href="{rutas_ciudad[x[0]]}">{esc(x[0])}</a>' for x in sorted(cs, key=lambda x: slug(x[0]))) + "</div></section>"
                       for d, cs in sorted(deptos.items(), key=lambda kv: slug(kv[0])))
     escribir("/envios/", "Envío gratis de filtros para nevecón a toda Colombia | Ciudades",
-             f"Enviamos filtros de agua para nevecón a {len(CIUDADES_CO) + 1} ciudades de los {len(deptos)} departamentos de Colombia y Bogotá. Envío gratis, pago en línea.",
+             f"Enviamos filtros de agua para nevecón a {len(CIUDADES_CO)} ciudades de los {len(deptos)} departamentos de Colombia y Bogotá. Envío gratis, pago en línea.",
              [mg_ld], f"""{mg}
 <h1>Enviamos a toda Colombia</h1>
-<p>Envío <b>gratis</b> de filtros de agua para nevecón a {len(CIUDADES_CO) + 1} ciudades y municipios de {len(deptos)} departamentos. Si tu municipio no aparece, también te lo enviamos: escoge «Otro municipio» al pagar.</p>
+<p>Envío <b>gratis</b> de filtros de agua para nevecón a {len(CIUDADES_CO)} ciudades y municipios de {len(deptos)} departamentos. Si tu municipio no aparece, también te lo enviamos: escoge «Otro municipio» al pagar.</p>
 {bloques}""")
 
     # ---------- tutoriales de instalación ----------
@@ -427,7 +405,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
              [mg_ld, {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__/filtro/{p['slug']}/#instalacion", "name": f"Cómo instalar el {p['nombre_largo']}"} for i, p in enumerate(CATALOGO)]}],
              f"""{mg}
 <h1>Cómo instalar el filtro de agua de tu nevecón</h1>
-<p>Cada filtro se instala distinto: unos van arriba dentro del refrigerador y se giran, otros van en la rejilla de abajo y otros en la manguera de atrás. Busca el tuyo y sigue el paso a paso. Se hace en minutos y sin herramientas; en Cali te lo instalamos (gratis los filtros internos; $ 30.000 los externos).</p>
+<p>Cada filtro se instala distinto: unos van arriba dentro del refrigerador y se giran, otros van en la rejilla de abajo y otros en la manguera de atrás. Busca el tuyo y sigue el paso a paso. Se hace en minutos y sin herramientas; y te asesoramos por WhatsApp.</p>
 <section class="caja"><h2>Antes de empezar</h2><ul><li>Ten a la mano un trapo: al sacar el filtro caen unas gotas.</li><li>Confirma que el filtro nuevo tenga la misma referencia que el viejo o una de sus <a href="/referencias/">equivalencias</a>.</li><li>Después de instalarlo, purga el agua y reinicia la luz del filtro (está en cada tutorial).</li></ul></section>
 {filas}
 <p class="m">¿Cada cuánto se cambia? Mira la guía <a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">cada cuánto cambiar el filtro del nevecón</a>.</p>""")

@@ -31,11 +31,6 @@ GRUPOS = [
   "d": ["Escribe la referencia de tu filtro o el modelo de tu nevecón y te mostramos el tuyo.",
         "Filtros para nevecón Samsung, LG, Whirlpool y GE con envío gratis a toda Colombia."],
   "kw": ["filtro de agua para nevecon", "filtro nevecon", "filtro de agua nevera", "filtro para nevera", "filtro nevera dispensador", "filtro refrigerador", "filtro de agua refrigerador", "cambiar filtro nevecon", "filtro agua nevecon", "repuesto filtro nevera"]},
- {"nombre": "Cali instalación", "url": "/purofiltro-cali/", "p1": "Cali", "p2": "Instalacion",
-  "t": ["Filtros para Nevecón en Cali", "Instalación a Domicilio Cali", "Instalación Gratis Internos", "Técnicos de Neveras en Cali", "Domicilio Gratis en Cali", "Samsung, LG, Whirlpool y GE", "Agendamos Día y Hora", "Revisamos tu Nevecón", "Compra en 2 Minutos"],
-  "d": ["En Cali te llevamos el filtro y te lo instalamos: gratis los internos, externos $30.000.",
-        "Técnicos de neveras en Cali. Agendamos contigo por WhatsApp el día y la hora."],
-  "kw": ["filtro nevecon cali", "filtro nevera cali", "instalacion filtro nevecon cali", "cambio filtro nevera cali", "tecnico nevecon cali", "filtro samsung cali", "filtro lg cali"], "geo": "Solo Cali y alrededores (radio 20 km)"},
 ]
 NEGATIVAS = ["gratis", "pdf", "como hacer", "casero", "usado", "segunda", "olx", "empleo", "trabajo", "curso", "piscina", "acuario", "aire acondicionado", "lavadora", "carro", "moto", "jarra", "brita", "grifo", "ducha", "osmosis", "purificador de agua para casa", "filtro de aceite", "filtro de aire", "manual", "que es", "imagenes", "dibujo"]
 
