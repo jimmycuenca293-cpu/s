@@ -175,9 +175,6 @@ app = cambiar(app, """        <select id="city" aria-label="Ciudad de entrega"><
       </label>""", """        <select id="city" aria-label="Ciudad de entrega"></select>
       </label>
       <a class="cart-top" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a>""")
-# Recordatorio en calendario sin la capacidad de descargas de Claude
-app = cambiar(app, 'if (!downloads) { msg.textContent = "Para guardar el recordatorio abre la app dentro de Claude."; return; }',
-              'if (!downloads) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" })); a.download = "recordatorio-filtro.ics"; document.body.append(a); a.click(); a.remove(); msg.textContent = "Listo: abre el archivo para agregarlo a tu calendario."; return; }', 2)
 
 # Pago con Wompi, enlace directo a un producto (?p=) y marca (?marca=)
 WEB_JS = r'''

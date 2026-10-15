@@ -171,6 +171,7 @@ h2{font-family:var(--f-display);font-weight:700;font-size:22px;margin:0;letter-s
 .btn.wa{background:var(--wa);border-color:var(--wa);color:#fff}
 .btn.block{width:100%}
 .btn:disabled{opacity:.5;cursor:not-allowed}
+.btn svg:not([width]){width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linejoin:round}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
 /* Comprobador */
@@ -1226,9 +1227,7 @@ async function saveICS() {
   const end = new Date(d.getTime() + 864e5).toISOString().slice(0, 10).replace(/-/g, "");
   const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//PuroFiltro//ES", "BEGIN:VEVENT", `UID:${lastOrder.id}@purofiltro`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`, `DTSTART;VALUE=DATE:${ymd}`, `DTEND;VALUE=DATE:${end}`, `SUMMARY:Cambiar filtro de agua del nevecón (${lastOrder.ref})`, `DESCRIPTION:Pídelo por WhatsApp a ${NEGOCIO.nombre}: https://wa.me/${NEGOCIO.whatsapp}`, "BEGIN:VALARM", "TRIGGER:-P3D", "ACTION:DISPLAY", "DESCRIPTION:En 3 días toca cambiar el filtro", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   const msg = $("#ics-msg");
-  if (!downloads) { msg.textContent = "Para guardar el recordatorio abre la app dentro de Claude."; return; }
-  try { await downloads.save({ filename: "recordatorio-filtro.ics", data: new Blob([ics], { type: "text/calendar" }) }); msg.textContent = "Recordatorio listo: ábrelo para agregarlo a tu calendario."; }
-  catch { msg.textContent = "No se guardó el recordatorio."; }
+  abrirCalendario(ymd, end, `Cambiar filtro de agua del nevecón (${lastOrder.ref})`, msg);
 }
 
 /* ===================== MIS PEDIDOS ===================== */
@@ -1304,15 +1303,20 @@ document.addEventListener("click", async e => {
   const cuando = fin < new Date() ? new Date(Date.now() + DIA) : fin;
   await guardarICS(cuando, "salud-" + $("#sl-fecha").value, $("#sl-msg"));
 });
+// Dentro de Claude no se pueden descargar archivos .ics: se abre el evento en Google Calendar
+function abrirCalendario(desde, hasta, titulo, msg) {
+  const u = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(titulo) + "&dates=" + desde + "/" + hasta
+    + "&details=" + encodeURIComponent(`Toca cambiar el filtro (cada ${NEGOCIO.mesesCambio} meses). Pídelo en ${NEGOCIO.nombre}: https://wa.me/${NEGOCIO.whatsapp}`);
+  window.open(u, "_blank", "noopener");
+  msg.innerHTML = `Se abrió Google Calendar: toca <b>Guardar</b>. Si no se abrió, <a href="${u}" target="_blank" rel="noopener">toca aquí</a>.`;
+}
 // Evento de calendario (todo el día) con aviso 3 días antes
 async function guardarICS(fecha, uid, msg) {
   const ymd = d => d.toISOString().slice(0, 10).replace(/-/g, "");
   const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//PuroFiltro//ES", "BEGIN:VEVENT", `UID:${uid}@purofiltro`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
     `DTSTART;VALUE=DATE:${ymd(fecha)}`, `DTEND;VALUE=DATE:${ymd(new Date(fecha.getTime() + DIA))}`, "SUMMARY:Cambiar el filtro de agua del nevecón",
     `DESCRIPTION:Pídelo en ${NEGOCIO.nombre}: https://wa.me/${NEGOCIO.whatsapp}`, "BEGIN:VALARM", "TRIGGER:-P3D", "ACTION:DISPLAY", "DESCRIPTION:En 3 días toca cambiar el filtro", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
-  if (!downloads) { msg.textContent = "Para guardar el recordatorio abre la app dentro de Claude."; return; }
-  try { await downloads.save({ filename: "recordatorio-filtro.ics", data: new Blob([ics], { type: "text/calendar" }) }); msg.textContent = "Listo: abre el archivo para agregarlo a tu calendario."; }
-  catch { msg.textContent = "No se guardó el recordatorio."; }
+  abrirCalendario(ymd(fecha), ymd(new Date(fecha.getTime() + DIA)), "Cambiar el filtro de agua del nevecón", msg);
 }
 
 /* ===================== VENDEDOR ===================== */
