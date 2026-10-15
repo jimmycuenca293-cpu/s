@@ -66,6 +66,13 @@ unas semanas en mostrar las páginas, y subir en los resultados depende de la co
 4. **Quiénes somos**: llena la sección `tecnico` de config.php (tu nombre, años de experiencia y tu historia) y sube una foto
    tuya como `public_html/img/tecnico.jpg`. Google confía más en las tiendas atendidas por expertos, y las guías salen firmadas por ti.
 
+## Para que las IA te lean y te recomienden
+La tienda trae `tudominio.com/llms.txt` y `tudominio.com/llms-full.txt`: un texto escrito para asistentes de IA
+(ChatGPT, Gemini, Claude, Perplexity, el resumen con IA de Google) con lo que vendes, precios, equivalencias, envío,
+garantía y dónde está cada página. Se actualiza solo con el catálogo. El robots.txt deja entrar a los lectores de esas IA,
+y cada filtro tiene un cuadro de "Datos rápidos" que ellas pueden citar tal cual.
+Llena `redes` en config.php con tus perfiles (Facebook, Instagram, Perfil de Google, Mercado Libre): ayuda a que reconozcan tu tienda.
+
 ## Opiniones con estrellas
 Siete días después de cada pago, la tienda le pide la opinión al cliente por correo (con la misma tarea programada del paso 5).
 Solo puede opinar quien compró. Las opiniones salen en la página del filtro y Google puede mostrar las estrellas en los resultados.

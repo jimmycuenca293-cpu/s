@@ -39,3 +39,5 @@ input,select,textarea{font:inherit;color:inherit;background:var(--bg);border:1px
 .rate input:checked~label,.rate label:hover,.rate label:hover~label{color:#f5a623}
 .resena{border-top:1px solid var(--line);padding-top:10px}.resena:first-of-type{border-top:0;padding-top:0}
 .autor{display:flex;gap:12px;align-items:center}.autor img{width:64px;height:64px;border-radius:50%;object-fit:cover}
+.dq{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;margin:0;font-size:14.5px}
+.dq dt{color:var(--muted)}.dq dd{margin:0;font-weight:600;overflow-wrap:anywhere}

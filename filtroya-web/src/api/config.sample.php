@@ -38,6 +38,12 @@ return [
         'historia'     => '',            // un párrafo contando cómo empezaste (opcional)
     ],
 
+    // Tus redes y perfiles (Facebook, Instagram, TikTok, Perfil de Google, Mercado Libre...). Ayuda a Google y a las IA a reconocer la tienda.
+    'redes' => [
+        // 'https://www.facebook.com/tutienda',
+        // 'https://www.instagram.com/tutienda',
+    ],
+
     // Google: código de verificación de Search Console (solo lo que va en content="...") y Google Analytics 4 (G-XXXXXXX)
     'google_verificacion' => '',
     'ga4' => '',

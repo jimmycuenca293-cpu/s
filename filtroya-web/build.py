@@ -243,11 +243,12 @@ index_php = f"""<?php require __DIR__ . '/api/sitio.php'; $S = sitio(); $n = $S[
 <?= verificacion_html() . analytics_html() ?>
 <script type="application/ld+json"><?php $ld = <<<'JSON'
 {json.dumps({"@context": "https://schema.org", "@graph": [
-    {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/lg-1000-o.jpg", "address": {"@type": "PostalAddress", "addressLocality": "Cali", "addressRegion": "Valle del Cauca", "addressCountry": "CO"}, "areaServed": "CO", "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi"},
+    {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/lg-1000-o.jpg", "address": {"@type": "PostalAddress", "addressLocality": "Cali", "addressRegion": "Valle del Cauca", "addressCountry": "CO"}, "areaServed": "CO", "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi", "sameAs": "__SAMEAS__"},
     {"@type": "WebSite", "name": "__NOMBRE__", "url": "__BASE__/", "inLanguage": "es-CO"},
     {"@type": "ItemList", "name": "Filtros de agua para nevecón", "itemListElement": marca_ld}]}, ensure_ascii=False)}
 JSON;
-echo str_replace(['__BASE__', '__NOMBRE__'], [$S['base'], addslashes($n['nombre'])], $ld); ?></script>
+echo str_replace(['__BASE__', '__NOMBRE__', '"__SAMEAS__"'], [$S['base'], addslashes($n['nombre']), json_encode(array_values(array_filter((array) (cfg()['redes'] ?? []))), JSON_UNESCAPED_SLASHES)], $ld); ?></script>
+<link rel="alternate" type="text/plain" title="Resumen para asistentes de IA" href="/llms.txt">
 <script>window.FY_WEB = <?= json_encode($S['web'], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) ?>;</script>
 <style>{CSS_WEB}</style>
 </head>
@@ -338,6 +339,13 @@ for p in CATALOGO:
     <span class="m">Pago seguro con Wompi: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span>
   </div>
 </div>
+<section class="caja datos">
+  <h2>Datos rápidos del {esc(p["nombre_largo"])}</h2>
+  <p>El <b>{esc(p["nombre_largo"])}</b> es el filtro de agua {"externo (va en la manguera)" if ubic(p) == "externo" else "interno"} para nevecones {esc(p["marca"])}{(", también conocido como " + esc(", ".join(alias[:5]))) if alias else ""}. Cuesta {cop(p["precio"])} en <?= h(cfg()['negocio']['nombre']) ?> con envío gratis a toda Colombia (2 días hábiles) e instalación gratis en Cali. Se cambia cada 6 meses.</p>
+  <dl class="dq"><dt>Referencia</dt><dd>{esc(p["ref"])}</dd><dt>Marca del nevecón</dt><dd>{esc(p["marca"])}</dd><dt>Tipo</dt><dd>{"Externo, en la manguera" if ubic(p) == "externo" else "Interno"}</dd>
+  <dt>Precio</dt><dd>{cop(p["precio"])} (pack de 2: {cop(p["pack"])})</dd><dt>Envío</dt><dd>Gratis a toda Colombia, 2 días hábiles</dd><dt>Instalación</dt><dd>Gratis en Cali</dd><dt>Duración</dt><dd>6 meses</dd>
+  {f'<dt>Equivalencias</dt><dd>{esc(", ".join(alias))}</dd>' if alias else ""}{f'<dt>Nevecones</dt><dd>{esc(", ".join(p["modelos"]))}</dd>' if p["modelos"] else ""}</dl>
+</section>
 <section class="caja">
   <h2>¿Es el filtro de tu nevecón?</h2>
   <p>Busca esta referencia impresa en tu filtro viejo: <span class="ref">{esc(p["ref"])}</span>. {esc(donde)}</p>
@@ -414,7 +422,10 @@ cat_php = {
     "ciudades": ciudades,
     "marcas": [{"nombre": m, "slug": slug(m)} for m in MARCAS],
     "paginas": extra["paginas"],
-    "productos": {p["id"]: {"nombre": p["nombre_largo"], "ref": p["ref"], "marca": p["marca"], "precio": p["precio"], "pack": p["pack"], "slug": p["slug"], "alias": [r for r in p["refs"] if norm(r) != norm(p["ref"])]} for p in CATALOGO},
+    "guias": [{"ruta": r, "titulo": t} for r, t in extra["guias"]],
+    "productos": {p["id"]: {"nombre": p["nombre_largo"], "ref": p["ref"], "marca": p["marca"], "precio": p["precio"], "pack": p["pack"], "slug": p["slug"], "alias": [r for r in p["refs"] if norm(r) != norm(p["ref"])],
+                       "modelos": p["modelos"], "nota": p.get("nota", ""), "ubic": ubic(p), "rutas_ref": {r: ruta_ref[norm(r)] for r in p["refs"] if norm(r) in ruta_ref},
+                       "rutas_modelo": {m: ruta_modelo[norm(m)] for m in p["modelos"]}} for p in CATALOGO},
 }
 (OUT / "api" / "catalogo.php").write_text("<?php\n// Generado por build.py: no lo edites a mano. Los precios se cambian en la app y se vuelve a generar.\nreturn " + php_val(cat_php) + ";\n", encoding="utf-8")
 
