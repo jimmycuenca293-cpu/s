@@ -36,8 +36,7 @@ def caja_producto(p, titulo=None):
     <h2 style="margin:0">{esc(p["nombre_largo"])}</h2>
     <span class="precio">{cop(p["precio"])}</span>
     <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 días hábiles.</li><li>En Cali: <b>domicilio e instalación gratis</b>.</li><li>Garantía de 30 días: si no encaja, te lo cambiamos.</li></ul>
-    <a class="btn block" href="/?p={p["id"]}">Comprar</a>
-    <a class="btn ghost block" href="/filtro/{p["slug"]}/">Ver todos los detalles</a>
+    <div class="compra"><button class="btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><a class="link" href="/filtro/{p["slug"]}/">Ver todos los detalles del filtro</a></div>
   </div>
 </div>"""
 
@@ -256,7 +255,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta):
         ruta = f"/guia/{s}/"
         mg, mg_ld = miga(("Inicio", "/"), ("Guías", "/guia/"), (titulo, None))
         art = {"@type": "Article", "headline": titulo, "description": desc, "inLanguage": "es-CO", "datePublished": "2026-10-15", "dateModified": "2026-10-15",
-               "author": {"@type": "Organization", "name": "FiltroYa Cali"}, "mainEntityOfPage": f"__BASE__{ruta}"}
+               "author": {"@type": "Organization", "name": "PuroFiltro"}, "mainEntityOfPage": f"__BASE__{ruta}"}
         firma = ('<p class="m">Escrito por <a href="/quienes-somos.php"><?= h(trim((string) (cfg()["tecnico"]["nombre"] ?? "")) ?: cfg()["negocio"]["nombre"]) ?></a>, '
                  'técnico de neveras en Cali · Actualizado el 15 de octubre de 2026</p>')
         escribir(ruta, titulo, desc, [mg_ld, art], f'{mg}\n<article class="legal"><h1>{esc(titulo)}</h1>\n{firma}\n{cuerpo_g}</article>')
@@ -265,9 +264,46 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta):
              f'{mg}<h1>Guías sobre filtros de agua para nevecón</h1><div style="display:flex;flex-direction:column;gap:10px">'
              + "".join(f'<a class="caja" href="/guia/{s}/" style="text-decoration:none;color:inherit"><b>{esc(t)}</b><span class="m">{esc(d)}</span></a>' for s, t, d, _ in GUIAS) + "</div>")
 
+    # ---------- tienda: todos los filtros con filtros por marca y tipo ----------
+    mg, mg_ld = miga(("Inicio", "/"), ("Tienda", None))
+    lista = {"@type": "ItemList", "name": "Filtros de agua para nevecón", "itemListElement": [
+        {"@type": "ListItem", "position": i + 1, "url": f"__BASE__/filtro/{p['slug']}/", "name": p["nombre_largo"]} for i, p in enumerate(CATALOGO)]}
+    tarjetas = "".join(
+        f'<div class="card" data-marca="{esc(p["marca"])}" data-tipo="{ubic(p)}" data-precio="{p["precio"]}">'
+        f'<a href="/filtro/{p["slug"]}/" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px"><span class="im"><picture><source srcset="/img/{p["id"]}-400.webp" type="image/webp"><img src="/img/{p["id"]}.jpg" alt="{esc(p["nombre_largo"])}" loading="lazy"></picture></span>'
+        f'<span class="m">{esc(p["marca"])} · {"Externo" if ubic(p) == "externo" else "Interno"}</span><b>{esc(p["nombre_largo"])}</b><span class="p">{cop(p["precio"])}</span><span class="m">Envío gratis</span></a>'
+        f'<button class="btn sm" type="button" data-add="{p["id"]}">Agregar al carrito</button></div>' for p in CATALOGO)
+    chips = '<button type="button" data-f="todas" aria-pressed="true">Todas</button>' + "".join(f'<button type="button" data-f="{esc(m)}" aria-pressed="false">{esc(m)}</button>' for m in MARCAS)
+    escribir("/tienda/", "Tienda de filtros de agua para nevecón | Envío gratis a toda Colombia",
+             "Todos los filtros de agua para nevecón Samsung, LG, Whirlpool y GE en un solo lugar. Agrega al carrito, paga en línea y recibe con envío gratis.",
+             [mg_ld, lista],
+             f"""{mg}
+<h1>Tienda de filtros de agua para nevecón</h1>
+<p>{len(CATALOGO)} filtros para nevecones Samsung, LG, Whirlpool y GE. <b>Envío gratis</b> a toda Colombia y, en Cali, <b>instalación gratis</b>. Agrega varios al carrito y paga una sola vez.</p>
+<div class="tienda-filtros" id="f-marca">{chips}</div>
+<div class="tienda-filtros" id="f-tipo"><button type="button" data-t="todos" aria-pressed="true">Internos y externos</button><button type="button" data-t="interno" aria-pressed="false">Internos</button><button type="button" data-t="externo" aria-pressed="false">Externos</button>
+<label style="margin-left:auto;font-size:14px">Ordenar <select id="orden"><option value="pop">Más pedidos</option><option value="asc">Menor precio</option><option value="desc">Mayor precio</option></select></label></div>
+<div class="grid" id="tienda">{tarjetas}</div>
+<p class="m">¿No sabes cuál es el tuyo? Búscalo por <a href="/referencias/">referencia</a> o por <a href="/neveras/">modelo de nevecón</a>.</p>
+<script>
+(() => {{
+  let marca = "todas", tipo = "todos";
+  const g = document.getElementById("tienda"), orig = [...g.children];
+  function pintar() {{
+    const o = document.getElementById("orden").value;
+    const l = orig.filter(c => (marca === "todas" || c.dataset.marca === marca) && (tipo === "todos" || c.dataset.tipo === tipo));
+    if (o !== "pop") l.sort((a, b) => (o === "asc" ? 1 : -1) * (a.dataset.precio - b.dataset.precio));
+    g.replaceChildren(...l);
+  }}
+  document.getElementById("f-marca").addEventListener("click", e => {{ const b = e.target.closest("[data-f]"); if (!b) return; marca = b.dataset.f; e.currentTarget.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); pintar(); }});
+  document.getElementById("f-tipo").addEventListener("click", e => {{ const b = e.target.closest("[data-t]"); if (!b) return; tipo = b.dataset.t; e.currentTarget.querySelectorAll("button[data-t]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); pintar(); }});
+  document.getElementById("orden").addEventListener("change", pintar);
+}})();
+</script>""")
+
     # ---------- Cali ----------
     mg, mg_ld = miga(("Inicio", "/"), ("Filtros en Cali", None))
-    cali_ld = {"@type": "Store", "@id": "__BASE__/#tienda", "name": "FiltroYa Cali", "url": "__BASE__/cali/", "image": "__BASE__/img/lg-1000-o.jpg",
+    cali_ld = {"@type": "Store", "@id": "__BASE__/#tienda", "name": "PuroFiltro", "url": "__BASE__/cali/", "image": "__BASE__/img/lg-1000-o.jpg",
                "address": {"@type": "PostalAddress", "addressLocality": "Cali", "addressRegion": "Valle del Cauca", "addressCountry": "CO"},
                "areaServed": {"@type": "City", "name": "Cali"}, "priceRange": "$$"}
     escribir("/cali/", "Filtros de agua para nevecón en Cali | Domicilio e instalación gratis",

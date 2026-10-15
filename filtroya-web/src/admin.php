@@ -66,7 +66,7 @@ $csrf = h($_SESSION['csrf']);
 <?php foreach ($rows as $p): ?>
 <div class="caja">
   <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b><?= h($p['ref']) ?></b><span class="badge <?= h($p['estado']) ?>"><?= h($p['estado']) ?></span></div>
-  <span><?= (int) $p['unidades'] ?> × <?= h($p['producto']) ?> <span class="ref"><?= h($p['refprod']) ?></span><?= $p['pack'] ? ' · pack' : '' ?> · <b><?= cop((int) $p['total']) ?></b></span>
+  <?php foreach (lineas_pedido($p) as $l) echo '<span>' . h(linea_txt($l)) . '</span>'; ?><b><?= cop((int) $p['total']) ?></b>
   <span class="m"><?= h(entrega_txt($p['entrega'])) ?> · <?= h(date('d/m/Y H:i', strtotime($p['creado']))) ?><?= $p['guia'] ? ' · Guía ' . h($p['guia']) : '' ?></span>
   <span><?= h($p['nombre']) ?> · <a href="tel:+57<?= h($p['tel']) ?>"><?= h($p['tel']) ?></a> · <a href="mailto:<?= h($p['email']) ?>"><?= h($p['email']) ?></a></span>
   <span><?= h($p['dir']) ?>, <?= h($p['barrio']) ?>, <?= h($p['ciudad']) ?><?= $p['indicaciones'] ? ' · ' . h($p['indicaciones']) : '' ?><?= $p['modelo'] ? ' · Nevecón ' . h($p['modelo']) : '' ?></span>

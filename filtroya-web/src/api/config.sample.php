@@ -6,7 +6,7 @@ return [
 
     // Datos del negocio (salen en la tienda, en los correos y en los términos)
     'negocio' => [
-        'nombre'    => 'FiltroYa Cali',
+        'nombre'    => 'PuroFiltro',
         'titular'   => 'Nombre del titular',            // persona o empresa dueña del negocio
         'documento' => 'C.C. o NIT 000.000.000-0',
         'direccion' => 'Dirección del negocio, Cali, Valle del Cauca',

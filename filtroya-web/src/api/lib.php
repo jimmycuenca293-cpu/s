@@ -72,6 +72,7 @@ function db(): PDO
         texto TEXT, creado TEXT, visible INTEGER DEFAULT 1)');
     $cols = array_column($pdo->query('PRAGMA table_info(pedidos)')->fetchAll(), 'name');
     if (!in_array('pedida_resena', $cols, true)) $pdo->exec('ALTER TABLE pedidos ADD COLUMN pedida_resena INTEGER DEFAULT 0');
+    if (!in_array('items', $cols, true)) $pdo->exec('ALTER TABLE pedidos ADD COLUMN items TEXT');
     return $pdo;
 }
 
@@ -173,6 +174,39 @@ function aplicar_transaccion(array $tx): ?array
     return $p;
 }
 
+// Líneas del carrito con el precio del servidor. Cada línea: producto suelto (cant 1–10) o pack anual de 2.
+function calcular_items(array $items): array
+{
+    $cat = catalogo()['productos'];
+    $lineas = [];
+    foreach (array_slice($items, 0, 20) as $it) {
+        $pid = (string) ($it['pid'] ?? '');
+        if (!isset($cat[$pid])) continue;
+        $pack = !empty($it['pack']);
+        $cant = max(1, min(10, (int) ($it['cant'] ?? 1)));
+        $p = $cat[$pid];
+        $unit = $pack ? (int) $p['pack'] : (int) $p['precio'];
+        $k = $pid . ($pack ? '#pack' : '');
+        if (isset($lineas[$k])) { $lineas[$k]['cant'] = min(10, $lineas[$k]['cant'] + $cant); }
+        else $lineas[$k] = ['pid' => $pid, 'nombre' => $p['nombre'], 'ref' => $p['ref'], 'pack' => $pack, 'cant' => $cant, 'unit' => $unit];
+    }
+    $total = 0; $unidades = 0;
+    foreach ($lineas as &$l) { $l['subtotal'] = $l['unit'] * $l['cant']; $total += $l['subtotal']; $unidades += $l['cant'] * ($l['pack'] ? 2 : 1); }
+    return ['lineas' => array_values($lineas), 'total' => $total, 'unidades' => $unidades];
+}
+
+function lineas_pedido(array $p): array
+{
+    $it = json_decode((string) ($p['items'] ?? ''), true);
+    if (is_array($it) && $it) return $it;
+    return [['pid' => $p['pid'], 'nombre' => $p['producto'], 'ref' => $p['refprod'], 'pack' => (bool) $p['pack'], 'cant' => $p['pack'] ? 1 : (int) $p['unidades'], 'unit' => 0, 'subtotal' => (int) $p['total']]];
+}
+
+function linea_txt(array $l): string
+{
+    return $l['cant'] . ' × ' . $l['nombre'] . ' (ref. ' . $l['ref'] . ')' . ($l['pack'] ? ' — pack anual de 2' : '');
+}
+
 function entrega_txt(string $e): string
 {
     return ['instalacion' => 'Domicilio + instalación en Cali', 'domicilio' => 'Domicilio en Cali', 'transportadora' => 'Envío por transportadora'][$e] ?? $e;
@@ -198,7 +232,7 @@ function enviar_correo(string $para, string $asunto, string $html): bool
 function tabla_pedido(array $p, bool $completo): string
 {
     $filas = [
-        'Pedido' => $p['ref'], 'Producto' => "{$p['unidades']} × {$p['producto']} (ref. {$p['refprod']})" . ($p['pack'] ? ' — pack anual' : ''),
+        'Pedido' => $p['ref'], 'Productos' => implode("\n", array_map('linea_txt', lineas_pedido($p))),
         'Total pagado' => cop((int) $p['total']), 'Entrega' => entrega_txt($p['entrega']), 'Ciudad' => $p['ciudad'],
     ];
     if ($completo) {
@@ -208,7 +242,7 @@ function tabla_pedido(array $p, bool $completo): string
     }
     $html = '<table style="border-collapse:collapse;width:100%">';
     foreach ($filas as $k => $v) {
-        $html .= '<tr><td style="padding:6px 8px;border-bottom:1px solid #e3e8eb;color:#5a6873;width:38%">' . h($k) . '</td><td style="padding:6px 8px;border-bottom:1px solid #e3e8eb"><b>' . h((string) $v) . '</b></td></tr>';
+        $html .= '<tr><td style="padding:6px 8px;border-bottom:1px solid #e3e8eb;color:#5a6873;width:38%">' . h($k) . '</td><td style="padding:6px 8px;border-bottom:1px solid #e3e8eb"><b>' . nl2br(h((string) $v)) . '</b></td></tr>';
     }
     return $html . '</table>';
 }

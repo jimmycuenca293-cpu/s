@@ -17,9 +17,11 @@ if ($ok && $_SERVER['REQUEST_METHOD'] === 'POST') {
     else {
         $partes = preg_split('/\s+/', trim($p['nombre']));
         $nombre = $partes[0] . (isset($partes[1]) ? ' ' . mb_substr($partes[1], 0, 1) . '.' : '');
+        $pids = array_column(lineas_pedido($p), 'pid');
+        $pid = in_array((string) ($_POST['pid'] ?? ''), $pids, true) ? (string) $_POST['pid'] : $pids[0];
         db()->prepare('INSERT INTO resenas (ref, pid, nombre, ciudad, estrellas, texto, creado) VALUES (?,?,?,?,?,?,?)
-            ON CONFLICT(ref) DO UPDATE SET estrellas = excluded.estrellas, texto = excluded.texto, creado = excluded.creado')
-            ->execute([$ref, $p['pid'], $nombre, $p['ciudad'], $est, $txt, date('c')]);
+            ON CONFLICT(ref) DO UPDATE SET pid = excluded.pid, estrellas = excluded.estrellas, texto = excluded.texto, creado = excluded.creado')
+            ->execute([$ref, $pid, $nombre, $p['ciudad'], $est, $txt, date('c')]);
         $hecha = true;
     }
 }
@@ -31,6 +33,7 @@ if ($hecha) { echo '<h1>¡Gracias por tu opinión!</h1><div class="estado ok">Ya
 <p><?= h($p['producto']) ?> · pedido <?= h($p['ref']) ?></p>
 <form method="post" class="caja">
   <input type="hidden" name="r" value="<?= h($ref) ?>"><input type="hidden" name="t" value="<?= h($tok) ?>">
+  <?php $ls = lineas_pedido($p); if (count($ls) > 1): ?><label>¿Qué filtro quieres calificar?<br><select name="pid" style="width:100%"><?php foreach ($ls as $l) echo '<option value="' . h($l['pid']) . '">' . h($l['nombre']) . '</option>'; ?></select></label><?php endif; ?>
   <b>Califícalo</b>
   <div class="rate"><?php for ($i = 5; $i >= 1; $i--) echo '<input type="radio" name="estrellas" value="' . $i . '" id="e' . $i . '"><label for="e' . $i . '" title="' . $i . ' estrellas">★</label>'; ?></div>
   <label>Cuéntanos (opcional)<br><textarea name="texto" rows="4" maxlength="800" style="width:100%" placeholder="¿Le sirvió a tu nevecón? ¿Cómo fue la entrega?"></textarea></label>

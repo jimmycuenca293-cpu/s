@@ -1,4 +1,4 @@
-# FiltroYa en tu propia página (Hostinger + Wompi)
+# PuroFiltro en tu propia página (Hostinger + Wompi)
 
 La tienda vende sola: el cliente escoge el filtro, paga en Wompi y a ti te llega un correo con el pedido pagado
 y todos los datos para despacharlo. Nada llega a WhatsApp.

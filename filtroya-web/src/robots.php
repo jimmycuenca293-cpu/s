@@ -17,5 +17,6 @@ Disallow: /admin.php
 Disallow: /api/
 Disallow: /gracias.php
 Disallow: /opinion.php
+Disallow: /carrito.php
 
 Sitemap: <?= sitio()['base'] ?>/sitemap.xml

@@ -10,11 +10,12 @@ $b = json_decode($raw, true);
 if (!is_array($b)) fail('Petición no válida.');
 
 $cat = catalogo();
-$p = $cat['productos'][(string) ($b['pid'] ?? '')] ?? null;
-if (!$p) fail('Ese producto ya no está disponible. Recarga la página.');
-$pack = !empty($b['pack']);
-$cant = $pack ? 2 : max(1, min(10, (int) ($b['cantidad'] ?? 1)));
-$total = $pack ? $p['pack'] : $p['precio'] * $cant;
+// Carrito: varias líneas. (Compatibilidad: un solo producto con pid/cantidad/pack.)
+$items = is_array($b['items'] ?? null) ? $b['items']
+    : [['pid' => $b['pid'] ?? '', 'pack' => !empty($b['pack']), 'cant' => !empty($b['pack']) ? 1 : (int) ($b['cantidad'] ?? 1)]];
+$C = calcular_items($items);
+if (!$C['lineas']) fail('Tu carrito está vacío o los productos ya no están disponibles. Recarga la página.');
+$total = $C['total'];
 // Si el cliente tenía la página abierta con un precio viejo, se le avisa en vez de cobrar otro valor
 if ((int) ($b['total'] ?? -1) !== $total) fail('El precio se actualizó. Recarga la página para ver el valor correcto.', 409);
 
@@ -38,11 +39,13 @@ $st = db()->prepare("SELECT COUNT(*) FROM pedidos WHERE ip = ? AND estado = 'pen
 $st->execute([$ip, date('c', time() - 3600)]);
 if ((int) $st->fetchColumn() >= 15) fail('Demasiados intentos. Espera un rato e intenta de nuevo.', 429);
 
-$ref = 'FY-' . date('ymd') . '-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
+$ref = 'PF-' . date('ymd') . '-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
 db()->prepare('INSERT INTO pedidos (ref, creado, pid, producto, refprod, unidades, pack, total, entrega, ciudad, nombre, email, tel, barrio, dir, indicaciones, modelo, recordar, ip)
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
-    $ref, date('c'), (string) $b['pid'], $p['nombre'], $p['ref'], $cant, $pack ? 1 : 0, $total, $entrega, $cli['ciudad'], $cli['nombre'], $cli['email'],
-    $cli['tel'], $cli['barrio'], $cli['dir'], $cli['indicaciones'], $cli['modelo'], !empty($c['recordar']) ? 1 : 0, $ip]);
+    $ref, date('c'), $C['lineas'][0]['pid'], $C['lineas'][0]['nombre'] . (count($C['lineas']) > 1 ? ' y ' . (count($C['lineas']) - 1) . ' más' : ''),
+    implode(', ', array_unique(array_column($C['lineas'], 'ref'))), $C['unidades'], (int) in_array(true, array_column($C['lineas'], 'pack'), true), $total, $entrega,
+    $cli['ciudad'], $cli['nombre'], $cli['email'], $cli['tel'], $cli['barrio'], $cli['dir'], $cli['indicaciones'], $cli['modelo'], !empty($c['recordar']) ? 1 : 0, $ip]);
+db()->prepare('UPDATE pedidos SET items = ? WHERE ref = ?')->execute([json_encode($C['lineas'], JSON_UNESCAPED_UNICODE), $ref]);
 
 $centavos = $total * 100;
 $q = http_build_query([

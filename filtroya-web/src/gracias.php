@@ -17,13 +17,14 @@
         t.textContent = "¡Pago aprobado! Gracias por tu compra";
         try { if (window.gtag && !sessionStorage.getItem("ga-" + j.ref)) { gtag("event", "purchase", { transaction_id: j.ref, value: j.total, currency: "COP", items: [{ item_id: j.pid, item_name: j.producto, quantity: j.unidades }] }); sessionStorage.setItem("ga-" + j.ref, "1"); } } catch {}
         out.className = "estado ok";
-        out.innerHTML = `<b>Pedido ${esc(j.ref)}</b><span>${j.unidades} × ${esc(j.producto)} · ${cop(j.total)}</span><span>${j.entrega === "transportadora" ? "Lo despachamos por transportadora a " + esc(j.ciudad) + " y te llega en unos 2 días hábiles. Te enviamos la guía a tu correo." : "Te llamamos para acordar el día y la hora de la entrega en Cali."}</span><span class="m">Te enviamos el recibo a ${esc(j.email)}.</span>`;
+        try { localStorage.removeItem("fy_carrito"); } catch {}
+        out.innerHTML = `<b>Pedido ${esc(j.ref)} · ${cop(j.total)}</b>${(j.items || []).map(i => `<span>${esc(i.texto)}</span>`).join("")}<span>${j.entrega === "transportadora" ? "Lo despachamos por transportadora a " + esc(j.ciudad) + " y te llega en unos 2 días hábiles. Te enviamos la guía a tu correo." : "Te llamamos para acordar el día y la hora de la entrega en Cali."}</span><span class="m">Te enviamos el recibo a ${esc(j.email)}.</span>`;
         return;
       }
       if (j.estado === "rechazado") {
         t.textContent = "El pago no se aprobó";
         out.className = "estado bad";
-        out.innerHTML = `<span>Wompi no aprobó el pago del pedido ${esc(j.ref)}. No se te cobró nada.</span><a class="btn" href="/?p=${encodeURIComponent(j.pid)}">Intentar de nuevo</a>`;
+        out.innerHTML = `<span>Wompi no aprobó el pago del pedido ${esc(j.ref)}. No se te cobró nada.</span><a class="btn" href="/carrito.php">Volver al carrito e intentar de nuevo</a>`;
         return;
       }
       out.innerHTML = `<span>Tu pago del pedido ${esc(j.ref)} está en proceso (puede pasar con PSE o Nequi). Te avisamos a tu correo apenas se apruebe.</span>`;

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera la tienda FiltroYa para Hostinger (carpeta public_html/) a partir de la app de Claude.
+"""Genera la tienda PuroFiltro para Hostinger (carpeta public_html/) a partir de la app de Claude.
 
 - index.php: la misma tienda, pero el pago es automático con Wompi y no usa WhatsApp.
 - filtro/<referencia>/ y marca/<marca>/: una página por filtro y por marca para Google.
@@ -168,12 +168,26 @@ app = cambiar(app, '<a class="btn wa block" id="c-confirm" href="${waLink(orderM
               '<button class="btn block" type="button" id="c-pagar">${ICON.shield}Pagar ${COP(t.total)} con Wompi</button><p class="err" id="c-perr" aria-live="polite"></p>')
 app = cambiar_re(app, r'<p class="sub" style="font-size:12\.5px;margin:0">Se abre WhatsApp con tu pedido escrito.*?</p>`\);',
                  '<p class="sub" style="font-size:12.5px;margin:0">Te llevamos a la página segura de Wompi (de Bancolombia). Precio final: no hay cobros adicionales. Al pagar aceptas los <a href="/terminos.php" target="_blank">Términos y condiciones</a> y autorizas el tratamiento de tus datos según la <a href="/privacidad.php" target="_blank">Política de datos</a>.</p>`);')
+# Carrito: el paso 1 agrega al carrito; el pago se hace en /carrito.php con todos los productos
+app = cambiar(app, '<button class="btn block" type="button" data-go="2">Continuar: tus datos</button>',
+              '<button class="btn block" type="button" data-cart-add>Agregar al carrito</button><button class="btn ghost block" type="button" data-cart-now>Comprar ahora</button>')
+app = cambiar(app, """        <select id="city" aria-label="Ciudad de entrega"></select>
+      </label>""", """        <select id="city" aria-label="Ciudad de entrega"></select>
+      </label>
+      <a class="cart-top" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a>""")
 # Recordatorio en calendario sin la capacidad de descargas de Claude
 app = cambiar(app, 'if (!downloads) { msg.textContent = "Para guardar el recordatorio abre la app dentro de Claude."; return; }',
               'if (!downloads) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" })); a.download = "recordatorio-filtro.ics"; document.body.append(a); a.click(); a.remove(); msg.textContent = "Listo: abre el archivo para agregarlo a tu calendario."; return; }', 2)
 
 # Pago con Wompi, enlace directo a un producto (?p=) y marca (?marca=)
 WEB_JS = r'''
+/* ===================== TIENDA WEB: CARRITO ===================== */
+document.addEventListener("click", e => {
+  const a = e.target.closest("[data-cart-add], [data-cart-now]"); if (!a || !cart || !window.FYCart) return;
+  FYCart.agregar(cart.p.id, cart.pack, cart.pack ? 1 : cart.qty);
+  if (a.hasAttribute("data-cart-now")) { location.href = "/carrito.php"; return; }
+  closeSheet(); FYCart.aviso((cart.pack ? "Pack anual de " : "") + corto(cart.p) + " agregado al carrito");
+});
 /* ===================== TIENDA WEB: PAGO CON WOMPI ===================== */
 document.addEventListener("click", async e => {
   const b = e.target.closest("#c-pagar"); if (!b || !cart) return;
@@ -208,6 +222,7 @@ for marca in MARCAS:
     ps = [p for p in CATALOGO if p["marca"] == marca]
     enlaces.append(f'<div><a class="mk" href="/marca/{slug(marca)}/">Filtros {esc(marca)}</a>' + "".join(f'<a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a>' for p in ps) + "</div>")
 enlaces.append('<div><a class="mk" href="/guia/">Guías</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cada cuánto cambiar el filtro</a><a href="/guia/como-saber-que-filtro-usa-mi-nevecon/">Qué filtro usa mi nevecón</a><a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">Cómo cambiar el filtro</a><a href="/guia/filtro-interno-o-externo/">Interno o externo</a><a href="/guia/por-que-el-agua-del-nevecon-sabe-mal/">El agua sabe mal</a><a href="/guia/el-dispensador-de-agua-del-nevecon-no-echa-agua/">El dispensador no echa agua</a><a href="/guia/como-reiniciar-la-luz-del-filtro-del-nevecon/">Reiniciar la luz del filtro</a></div>'
+               '<div><a class="mk" href="/tienda/">Tienda: todos los filtros</a><a href="/tienda/">Ver la tienda completa</a><a href="/carrito.php">Mi carrito</a></div>'
                '<div><a class="mk" href="/referencias/">Buscar por referencia o modelo</a><a href="/referencias/">Todas las referencias y equivalencias</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/cali/">Filtros con instalación gratis en Cali</a></div>')
 enlaces.append('</nav><footer class="web-foot"><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/terminos.php#garantia">Garantía y retracto</a><span id="pie-negocio"></span></footer>')
 i = app.index('<details class="faq"><summary>¿Cómo pago?</summary>')
@@ -215,6 +230,12 @@ j = app.index("</div>", i) + len("</div>")
 app = app[:j] + "\n  " + "".join(enlaces) + app[j:]
 
 CSS_WEB = """
+.top .cart-top{position:relative;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);margin-left:auto}
+.top .city{order:3}.top .cart-top{order:2}
+.cart-top svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cart-top span{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--glow);color:#06221d;font-size:11.5px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+.fy-toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,200%);background:#0a2a2e;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:14px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:90;transition:transform .25s;max-width:calc(100% - 32px);font-size:14.5px}
+.fy-toast.on{transform:translate(-50%,0)}.fy-toast a{color:#5fd6c3;font-weight:800;white-space:nowrap}
 #cam,.hero .alt,#ai-off,nav.bnav button[data-tab="vendedor"]{display:none!important}
 nav.bnav{grid-template-columns:repeat(2,1fr)!important}
 #c-pagar svg{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2}
@@ -250,6 +271,7 @@ JSON;
 echo str_replace(['__BASE__', '__NOMBRE__', '"__SAMEAS__"'], [$S['base'], addslashes($n['nombre']), json_encode(array_values(array_filter((array) (cfg()['redes'] ?? []))), JSON_UNESCAPED_SLASHES)], $ld); ?></script>
 <link rel="alternate" type="text/plain" title="Resumen para asistentes de IA" href="/llms.txt">
 <script>window.FY_WEB = <?= json_encode($S['web'], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) ?>;</script>
+<script src="/carrito.js" defer></script>
 <style>{CSS_WEB}</style>
 </head>
 <body>
@@ -312,7 +334,7 @@ for p in CATALOGO:
             + (f'. También aparece como {", ".join(alias[:3])}' if alias else "") + ". En Cali te lo instalamos gratis. Paga con tarjeta, PSE o Nequi.")
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "Product", "name": p["nombre_largo"], "image": f"__BASE__/img/{p['id']}.jpg", "sku": p["ref"], "mpn": p["ref"],
-         "brand": {"@type": "Brand", "name": p["marca"]}, "description": f'Filtro de agua para nevecón {p["marca"]}, referencia {p["ref"]}. {donde}',
+         "brand": {"@type": "Brand", "name": p["marca"]}, "description": f'Filtro de agua para nevecón {p["marca"]}, referencia {p["ref"]}. {p.get("desc") or donde}',
          "offers": {"@type": "Offer", "url": f"__BASE__/filtro/{p['slug']}/", "priceCurrency": "COP", "price": str(p["precio"]),
                     "availability": "https://schema.org/InStock" if p.get("stock") else "https://schema.org/BackOrder", "itemCondition": "https://schema.org/NewCondition",
                     "shippingDetails": {"@type": "OfferShippingDetails", "shippingRate": {"@type": "MonetaryAmount", "value": "0", "currency": "COP"},
@@ -335,12 +357,20 @@ for p in CATALOGO:
     <?php if ($R['n']) echo '<a href="#opiniones" style="text-decoration:none">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span class="m">(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
     <span class="precio">{cop(p["precio"])}</span>
     <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 días hábiles.</li><li>En Cali: <b>domicilio e instalación gratis</b>.</li><li>Pack anual de 2 filtros: {cop(p["pack"])} (ahorras {cop(ahorro)}).</li><li>Garantía de 30 días: si no encaja, te lo cambiamos.</li></ul>
-    <a class="btn block" href="/?p={p["id"]}">Comprar</a>
+    <div class="compra"><button class="btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="link" type="button" data-add="{p["id"]}" data-pack="1">+ Pack anual de 2 por {cop(p["pack"])} (ahorras {cop(ahorro)})</button></div>
     <span class="m">Pago seguro con Wompi: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span>
   </div>
 </div>
+<section class="caja descripcion">
+  <h2>Descripción</h2>
+  <p>{esc(p.get("desc") or ("Filtro de agua para nevecones " + p["marca"] + ". " + donde))}</p>
+  <p>Retiene el cloro, el sedimento y las partículas que le dan mal sabor y mal olor al agua y al hielo, y ayuda a proteger la válvula y la máquina de hielo del nevecón. Rinde unos 6 meses de uso normal; después se satura y conviene cambiarlo.</p>
+  <p>{f"Si tu filtro viejo dice <b>{esc(p['ref'])}</b> o alguna de estas referencias: {esc(', '.join(alias))}, este es el tuyo." if alias else f"Si tu filtro viejo dice <b>{esc(p['ref'])}</b>, este es el tuyo."}</p>
+  <h3 style="margin:6px 0 0;font-size:16px">Qué incluye</h3>
+  <ul class="ok"><li>1 filtro de agua {esc(p["ref"])} nuevo, en su empaque (o 2 si escoges el pack anual).</li><li>Envío gratis a toda Colombia con número de guía.</li><li>En Cali: instalación gratis y revisión del dispensador.</li><li>Garantía de 30 días: si no encaja, te lo cambiamos.</li></ul>
+</section>
 <section class="caja datos">
-  <h2>Datos rápidos del {esc(p["nombre_largo"])}</h2>
+  <h2>Ficha técnica y datos rápidos</h2>
   <p>El <b>{esc(p["nombre_largo"])}</b> es el filtro de agua {"externo (va en la manguera)" if ubic(p) == "externo" else "interno"} para nevecones {esc(p["marca"])}{(", también conocido como " + esc(", ".join(alias[:5]))) if alias else ""}. Cuesta {cop(p["precio"])} en <?= h(cfg()['negocio']['nombre']) ?> con envío gratis a toda Colombia (2 días hábiles) e instalación gratis en Cali. Se cambia cada 6 meses.</p>
   <dl class="dq"><dt>Referencia</dt><dd>{esc(p["ref"])}</dd><dt>Marca del nevecón</dt><dd>{esc(p["marca"])}</dd><dt>Tipo</dt><dd>{"Externo, en la manguera" if ubic(p) == "externo" else "Interno"}</dd>
   <dt>Precio</dt><dd>{cop(p["precio"])} (pack de 2: {cop(p["pack"])})</dd><dt>Envío</dt><dd>Gratis a toda Colombia, 2 días hábiles</dd><dt>Instalación</dt><dd>Gratis en Cali</dd><dt>Duración</dt><dd>6 meses</dd>
@@ -368,6 +398,7 @@ for p in CATALOGO:
   <details><summary>¿Y si no me sirve?</summary><p>Tienes 5 días hábiles para retractarte con el filtro sin instalar, y 30 días de garantía si no encaja o llega con un defecto. Mira los <a href="/terminos.php#garantia">términos</a>.</p></details>
 </section>
 {f'<section style="display:flex;flex-direction:column;gap:10px"><h2>Otros filtros {esc(p["marca"])}</h2><div class="grid">{"".join(tarjeta(x) for x in otros)}</div></section>' if otros else ""}
+<div class="barra-compra"><span><span class="m">{esc(p["nombre_largo"])}</span><b>{cop(p["precio"])}</b></span><button class="btn" type="button" data-add="{p["id"]}">Agregar al carrito</button></div>
 <?php pie(); ?>
 """
     d = OUT / "filtro" / p["slug"]
