@@ -23,4 +23,16 @@ foreach ($st->fetchAll() as $p) {
     db()->prepare('UPDATE pedidos SET recordado = 1 WHERE ref = ?')->execute([$p['ref']]);
     $n++;
 }
-PHP_SAPI === 'cli' ? print("Recordatorios enviados: $n\n") : out(['enviados' => $n]);
+// Pedir opinión unos 7 días después del pago (ya recibió y usó el filtro)
+$st = db()->prepare("SELECT * FROM pedidos WHERE pedida_resena = 0 AND estado IN ('pagado','enviado','entregado') AND pagado_en <= ?");
+$st->execute([date('c', strtotime('-7 days'))]);
+$o = 0;
+foreach ($st->fetchAll() as $p) {
+    enviar_correo($p['email'], '¿Cómo te fue con tu filtro?',
+        '<h2 style="margin:0 0 8px">Hola, ' . h(explode(' ', $p['nombre'])[0]) . '</h2><p>¿Le sirvió el <b>' . h($p['producto']) . '</b> a tu nevecón? Tu opinión le ayuda a otras personas a escoger el filtro correcto. Te toma 20 segundos.</p>'
+        . '<p><a href="' . h(enlace_resena($p['ref'])) . '" style="display:inline-block;background:#0f7f70;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold">Calificar mi filtro</a></p>'
+        . '<p style="color:#5a6873;font-size:13px">Si tuviste algún problema, responde este correo y lo solucionamos.</p>');
+    db()->prepare('UPDATE pedidos SET pedida_resena = 1 WHERE ref = ?')->execute([$p['ref']]);
+    $o++;
+}
+PHP_SAPI === 'cli' ? print("Recordatorios enviados: $n · Opiniones pedidas: $o\n") : out(['enviados' => $n, 'opiniones' => $o]);

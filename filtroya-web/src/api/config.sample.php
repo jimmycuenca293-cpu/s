@@ -30,6 +30,18 @@ return [
         'eventos'    => 'test_events_XXXXXXXXXXXXXXXX',     // "Secreto de eventos"
     ],
 
+    // Quién está detrás de la tienda (sale en "Quiénes somos" y como autor de las guías: Google confía más en expertos)
+    'tecnico' => [
+        'nombre'       => 'Tu nombre',
+        'anos'         => '',            // años de experiencia, ej. '12'
+        'especialidad' => 'neveras, nevecones, lavadoras y secadoras',
+        'historia'     => '',            // un párrafo contando cómo empezaste (opcional)
+    ],
+
+    // Google: código de verificación de Search Console (solo lo que va en content="...") y Google Analytics 4 (G-XXXXXXX)
+    'google_verificacion' => '',
+    'ga4' => '',
+
     // Clave para la tarea programada que manda los recordatorios de cambio de filtro
     'cron_clave' => '',
 ];

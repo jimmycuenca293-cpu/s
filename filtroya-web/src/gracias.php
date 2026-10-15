@@ -15,6 +15,7 @@
       try { const o = JSON.parse(localStorage.getItem("fy_orders") || "[]"); const x = o.find(z => z.id === j.ref); if (x) { x.estado = j.estado === "pagado" ? "Pagado" : j.estado === "rechazado" ? "Pago rechazado" : "Pago pendiente"; localStorage.setItem("fy_orders", JSON.stringify(o)); } } catch {}
       if (j.estado === "pagado" || j.estado === "enviado" || j.estado === "entregado") {
         t.textContent = "¡Pago aprobado! Gracias por tu compra";
+        try { if (window.gtag && !sessionStorage.getItem("ga-" + j.ref)) { gtag("event", "purchase", { transaction_id: j.ref, value: j.total, currency: "COP", items: [{ item_id: j.pid, item_name: j.producto, quantity: j.unidades }] }); sessionStorage.setItem("ga-" + j.ref, "1"); } } catch {}
         out.className = "estado ok";
         out.innerHTML = `<b>Pedido ${esc(j.ref)}</b><span>${j.unidades} × ${esc(j.producto)} · ${cop(j.total)}</span><span>${j.entrega === "transportadora" ? "Lo despachamos por transportadora a " + esc(j.ciudad) + " y te llega en unos 2 días hábiles. Te enviamos la guía a tu correo." : "Te llamamos para acordar el día y la hora de la entrega en Cali."}</span><span class="m">Te enviamos el recibo a ${esc(j.email)}.</span>`;
         return;

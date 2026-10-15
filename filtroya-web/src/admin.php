@@ -38,6 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && hash_equals($_SESSION['csrf'] ?? ''
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && hash_equals($_SESSION['csrf'] ?? '', (string) ($_POST['csrf'] ?? '')) && isset($_POST['resena'])) {
+    db()->prepare('UPDATE resenas SET visible = 1 - visible WHERE id = ?')->execute([(int) $_POST['resena']]);
+    $msg = 'Opinión actualizada.';
+}
 $filtro = (string) ($_GET['ver'] ?? 'activos');
 $where = ['activos' => "estado IN ('pagado','enviado')", 'pendientes' => "estado = 'pendiente'", 'todos' => '1=1'][$filtro] ?? "estado IN ('pagado','enviado')";
 $rows = db()->query("SELECT * FROM pedidos WHERE $where ORDER BY creado DESC LIMIT 300")->fetchAll();
@@ -48,8 +52,17 @@ $csrf = h($_SESSION['csrf']);
 <div class="caja"><b><?= (int) $tot['n'] ?> pedidos pagados · <?= cop((int) $tot['s']) ?> vendidos</b>
 <span class="m">Cada pedido pagado también te llega al correo <?= h(cfg()['correo_avisos']) ?>.</span></div>
 <?= $msg ? '<div class="estado ok">' . h($msg) . '</div>' : '' ?>
-<nav class="chips"><?php foreach (['activos' => 'Por despachar', 'pendientes' => 'Sin pagar', 'todos' => 'Todos'] as $k => $v) echo '<a class="badge" href="?ver=' . $k . '"' . ($k === $filtro ? ' style="outline:2px solid var(--accent)"' : '') . '>' . $v . '</a>'; ?></nav>
-<?php if (!$rows) echo '<p class="m">No hay pedidos aquí.</p>'; ?>
+<nav class="chips"><?php foreach (['activos' => 'Por despachar', 'pendientes' => 'Sin pagar', 'todos' => 'Todos', 'opiniones' => 'Opiniones'] as $k => $v) echo '<a class="badge" href="?ver=' . $k . '"' . ($k === $filtro ? ' style="outline:2px solid var(--accent)"' : '') . '>' . $v . '</a>'; ?></nav>
+<?php if ($filtro === 'opiniones') {
+    $rs = db()->query('SELECT * FROM resenas ORDER BY creado DESC LIMIT 300')->fetchAll();
+    if (!$rs) echo '<p class="m">Todavía no hay opiniones. Se piden solas por correo 7 días después de cada pago.</p>';
+    foreach ($rs as $r) {
+        echo '<div class="caja"><span>' . estrellas_html((float) $r['estrellas']) . ' <b>' . h($r['nombre']) . '</b> · ' . h($r['ciudad']) . ' · ' . h(catalogo()['productos'][$r['pid']]['nombre'] ?? $r['pid']) . '</span>'
+            . '<span>' . h($r['texto']) . '</span><form method="post"><input type="hidden" name="csrf" value="' . $csrf . '"><input type="hidden" name="resena" value="' . (int) $r['id'] . '">'
+            . '<button class="btn ghost sm">' . ($r['visible'] ? 'Ocultar (solo si es ofensiva o falsa)' : 'Mostrar') . '</button></form></div>';
+    }
+    $rows = [];
+} elseif (!$rows) echo '<p class="m">No hay pedidos aquí.</p>'; ?>
 <?php foreach ($rows as $p): ?>
 <div class="caja">
   <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b><?= h($p['ref']) ?></b><span class="badge <?= h($p['estado']) ?>"><?= h($p['estado']) ?></span></div>

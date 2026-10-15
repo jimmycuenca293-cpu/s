@@ -30,7 +30,7 @@ def faq_html(preguntas):
 
 def caja_producto(p, titulo=None):
     return f"""<div class="prod">
-  <a class="foto" href="/filtro/{p["slug"]}/"><img src="/img/{p["id"]}.jpg" alt="{esc(p["nombre_largo"])} para nevecón {esc(p["marca"])}" width="600" height="600"></a>
+  <a class="foto" href="/filtro/{p["slug"]}/"><picture><source srcset="/img/{p["id"]}.webp" type="image/webp"><img src="/img/{p["id"]}.jpg" alt="{esc(p["nombre_largo"])} para nevecón {esc(p["marca"])}" width="600" height="600" fetchpriority="high"></picture></a>
   <div class="caja">
     <span class="m">{esc(titulo or "El filtro que necesitas")}</span>
     <h2 style="margin:0">{esc(p["nombre_largo"])}</h2>
@@ -194,12 +194,72 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta):
 <h2>¿Cuál tiene el mío?</h2>
 <p>Abre el refrigerador y busca una tapa o compartimento con la palabra «Filter». Si lo encuentras, es interno. Si no hay ninguno y tu nevecón tiene dispensador, mira la manguera de atrás: si hay un cilindro conectado en la mitad, es externo.</p>"""),
     ]
+    def link(pid, texto):
+        q = next(p for p in CATALOGO if p["id"] == pid)
+        return f'<a href="/filtro/{q["slug"]}/">{esc(texto)}</a>'
+
+    GUIAS += [
+        ("por-que-el-agua-del-nevecon-sabe-mal", "¿Por qué el agua del nevecón sabe mal o huele raro?",
+         "Las causas más comunes del mal sabor y mal olor del agua del nevecón, explicadas por un técnico, y cómo solucionarlas.",
+         f"""<p>Es una de las consultas que más vemos en el taller. En la gran mayoría de casos la solución es sencilla, pero conviene descartar las causas en orden.</p>
+<h2>1. El filtro está vencido</h2>
+<p>Es la causa número uno. Después de unos 6 meses el carbón activado ya no retiene el cloro ni los olores, y el agua empieza a saber a cloro, a tierra o a encerrado. Si no recuerdas cuándo lo cambiaste, lo más probable es que ya toque. Mira <a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">cada cuánto cambiarlo</a>.</p>
+<h2>2. El filtro es nuevo pero no se purgó</h2>
+<p>Un filtro recién puesto suelta aire y polvillo de carbón. Si no se botan los primeros 2 o 3 litros, el agua puede salir turbia o con sabor raro los primeros días.</p>
+<h2>3. Agua quieta en la manguera o el tanque</h2>
+<p>Si el dispensador se usa poco, el agua se queda quieta en la manguera y el tanque interno y coge sabor. Bota un par de vasos antes de servir y úsalo a diario.</p>
+<h2>4. Alimentos destapados</h2>
+<p>El hielo y el agua absorben olores de la comida. Tapa los alimentos con olor fuerte (cebolla, pescado, quesos) y limpia el nevecón por dentro.</p>
+<h2>5. El agua que llega a la casa</h2>
+<p>Si el agua de la llave ya sabe mal, el filtro se satura más rápido. En ese caso conviene cambiarlo antes de los 6 meses o poner también un <a href="/guia/filtro-interno-o-externo/">filtro externo</a> en la manguera.</p>
+<p><b>En resumen:</b> si el agua sabe mal, empieza por cambiar el filtro y botar los primeros litros. Busca el tuyo por <a href="/referencias/">referencia</a> o por <a href="/neveras/">modelo de nevecón</a>.</p>"""),
+        ("el-dispensador-de-agua-del-nevecon-no-echa-agua", "El dispensador de agua del nevecón no echa agua o sale muy poca",
+         "Por qué el dispensador del nevecón no echa agua o sale con poca presión: filtro tapado, mal instalado, manguera congelada y otras causas.",
+         """<p>Cuando el dispensador deja de echar agua, o sale un chorrito muy delgado, estas son las causas en el orden en que las revisamos los técnicos:</p>
+<h2>1. Filtro tapado o vencido</h2>
+<p>Con el tiempo el filtro se llena de sedimento y deja pasar cada vez menos agua. Si el chorro fue bajando poco a poco durante semanas, casi siempre es el filtro.</p>
+<h2>2. Filtro mal instalado</h2>
+<p>Si el problema empezó justo después de cambiar el filtro, sácalo y vuelve a ponerlo hasta el fondo, girándolo hasta que quede firme. Revisa también que le hayas quitado la tapa protectora.</p>
+<h2>3. Aire en la línea</h2>
+<p>Después de un cambio de filtro queda aire en la manguera. Presiona el dispensador por tandas de 30 segundos hasta que salga un chorro parejo (2 o 3 litros).</p>
+<h2>4. Llave de paso cerrada o con poca presión</h2>
+<p>Revisa la llave que alimenta el nevecón (detrás o debajo del lavaplatos) y que la casa tenga buena presión de agua.</p>
+<h2>5. Manguera congelada en la puerta</h2>
+<p>Si el congelador está muy frío, el agua se puede congelar en la manguera que pasa por la puerta. Sube un poco la temperatura del congelador y espera unas horas.</p>
+<p>Si después de revisar todo esto sigue sin echar agua, puede ser la válvula de entrada o el interruptor del dispensador: ahí sí toca un técnico.</p>"""),
+        ("el-hielo-del-nevecon-sale-turbio-o-con-mal-sabor", "El hielo del nevecón sale turbio, pequeño o con mal sabor",
+         "Causas del hielo turbio, pequeño o con mal sabor en el nevecón y cómo solucionarlo, según un técnico.",
+         """<p>La máquina de hielo usa la misma agua del filtro, así que muchos problemas del hielo empiezan ahí.</p>
+<h2>Hielo con mal sabor u olor</h2>
+<p>Suele ser el filtro vencido o hielo viejo que absorbió olores del congelador. Cambia el filtro, bota todo el hielo de la cubeta y deja que la máquina haga hielo nuevo.</p>
+<h2>Hielo pequeño o en cubos huecos</h2>
+<p>La máquina no recibe suficiente agua en cada ciclo. La causa más común es un filtro tapado; también puede ser poca presión de agua en la casa o aire en la línea después de cambiar el filtro.</p>
+<h2>Hielo turbio o blancuzco</h2>
+<p>Un poco de turbidez es normal (es aire atrapado al congelarse rápido). Si además trae partículas o sabor, el filtro ya no está reteniendo el sedimento.</p>
+<h2>No hace hielo</h2>
+<p>Revisa que la máquina esté encendida (en muchos modelos hay un interruptor o la opción «Ice Off» en el panel) y que el dispensador sí eche agua. Si no echa agua, mira la guía <a href="/guia/el-dispensador-de-agua-del-nevecon-no-echa-agua/">el dispensador no echa agua</a>.</p>"""),
+        ("como-reiniciar-la-luz-del-filtro-del-nevecon", "Cómo apagar o reiniciar la luz del filtro del nevecón",
+         "Cómo reiniciar el aviso o la luz del filtro de agua en nevecones Samsung, LG, Whirlpool y GE después de cambiar el filtro.",
+         """<p>El aviso del filtro no mide el agua: es un contador de tiempo (casi siempre 6 meses). Por eso, después de cambiar el filtro hay que reiniciarlo a mano; si no, la luz sigue prendida aunque el filtro sea nuevo.</p>
+<h2>La forma general</h2>
+<p>En casi todos los modelos se deja presionado el botón del filtro durante unos <b>3 segundos</b>, hasta que la luz cambie o se apague. El botón puede llamarse «Filter», «Filter Reset», «Reset» o «Water Filter».</p>
+<h2>Según la marca</h2>
+<ul class="ok"><li><b>Samsung:</b> en muchos modelos se mantiene presionado «Filter Reset» o el botón «Alarm / Hold 3 sec for Filter Reset».</li>
+<li><b>LG:</b> en muchos modelos se mantiene presionado «Water Filter» o «Filter Condition Reset».</li>
+<li><b>Whirlpool:</b> en muchos modelos se mantiene presionado «Filter» o «Filter Reset».</li>
+<li><b>GE:</b> en muchos modelos se mantiene presionado «Reset Water Filter».</li></ul>
+<p>Si tu panel tiene bloqueo («Lock» o «Control Lock»), desbloquéalo primero. Los nombres cambian según el modelo; si no lo encuentras, busca en el manual la palabra «filter».</p>
+<h2>¿Y si el agua sigue saliendo mal?</h2>
+<p>Reiniciar la luz no cambia el filtro. Si el agua sabe mal o sale despacio, mira <a href="/guia/por-que-el-agua-del-nevecon-sabe-mal/">por qué el agua del nevecón sabe mal</a>.</p>"""),
+    ]
     for s, titulo, desc, cuerpo_g in GUIAS:
         ruta = f"/guia/{s}/"
         mg, mg_ld = miga(("Inicio", "/"), ("Guías", "/guia/"), (titulo, None))
         art = {"@type": "Article", "headline": titulo, "description": desc, "inLanguage": "es-CO", "datePublished": "2026-10-15", "dateModified": "2026-10-15",
                "author": {"@type": "Organization", "name": "FiltroYa Cali"}, "mainEntityOfPage": f"__BASE__{ruta}"}
-        escribir(ruta, titulo, desc, [mg_ld, art], f'{mg}\n<article class="legal"><h1>{esc(titulo)}</h1>\n{cuerpo_g}</article>')
+        firma = ('<p class="m">Escrito por <a href="/quienes-somos.php"><?= h(trim((string) (cfg()["tecnico"]["nombre"] ?? "")) ?: cfg()["negocio"]["nombre"]) ?></a>, '
+                 'técnico de neveras en Cali · Actualizado el 15 de octubre de 2026</p>')
+        escribir(ruta, titulo, desc, [mg_ld, art], f'{mg}\n<article class="legal"><h1>{esc(titulo)}</h1>\n{firma}\n{cuerpo_g}</article>')
     mg, mg_ld = miga(("Inicio", "/"), ("Guías", None))
     escribir("/guia/", "Guías sobre filtros de agua para nevecón", "Guías para escoger, cambiar y cuidar el filtro de agua de tu nevecón.", [mg_ld],
              f'{mg}<h1>Guías sobre filtros de agua para nevecón</h1><div style="display:flex;flex-direction:column;gap:10px">'

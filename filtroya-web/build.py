@@ -93,9 +93,27 @@ shutil.copytree(SRC, OUT, dirs_exist_ok=True)
 # ---------- fotos: de data URL a archivos ----------
 m = re.search(r"\nconst PRODUCT_IMG = (\{.*?\});\n", app)
 imgs = json.loads(m.group(1))
+import io
+from PIL import Image
+TAM = {}
 for pid, url in imgs.items():
-    (OUT / "img" / f"{pid}.jpg").write_bytes(base64.b64decode(url.split(",", 1)[1]))
-app = app.replace(m.group(1), json.dumps({pid: f"/img/{pid}.jpg" for pid in imgs}))
+    datos = base64.b64decode(url.split(",", 1)[1])
+    (OUT / "img" / f"{pid}.jpg").write_bytes(datos)
+    im = Image.open(io.BytesIO(datos)).convert("RGB")
+    TAM[pid] = im.size
+    im.save(OUT / "img" / f"{pid}.webp", "WEBP", quality=82, method=6)
+    mini = im.copy(); mini.thumbnail((400, 400), Image.LANCZOS)
+    mini.save(OUT / "img" / f"{pid}-400.webp", "WEBP", quality=80, method=6)
+# La tienda usa WebP: pesa menos y carga más rápido en el celular
+app = app.replace(m.group(1), json.dumps({pid: f"/img/{pid}.webp" for pid in imgs}))
+
+
+def foto(p, alt, mini=False, lazy=True):
+    """<picture> con WebP y JPG de respaldo, con medidas reales para que la página no salte al cargar."""
+    w, h = TAM.get(p["id"], (600, 600))
+    src = f"/img/{p['id']}-400.webp" if mini else f"/img/{p['id']}.webp"
+    return (f'<picture><source srcset="{src}" type="image/webp"><img src="/img/{p["id"]}.jpg" alt="{esc(alt)}" width="{w}" height="{h}"'
+            + (' loading="lazy"' if lazy else ' fetchpriority="high"') + "></picture>")
 (OUT / "img" / "icono.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#0a2a2e"/><path d="M12 3.5C9.3 7.1 6.6 9.9 6.6 13.4a5.4 5.4 0 0 0 10.8 0c0-3.5-2.7-6.3-5.4-9.9z" fill="#5fd6c3"/></svg>', encoding="utf-8")
 
 # ---------- tienda en modo web ----------
@@ -189,7 +207,7 @@ enlaces = ['<nav class="seo-links" aria-label="Todos los filtros"><h2 style="fon
 for marca in MARCAS:
     ps = [p for p in CATALOGO if p["marca"] == marca]
     enlaces.append(f'<div><a class="mk" href="/marca/{slug(marca)}/">Filtros {esc(marca)}</a>' + "".join(f'<a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a>' for p in ps) + "</div>")
-enlaces.append('<div><a class="mk" href="/guia/">Guías</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cada cuánto cambiar el filtro</a><a href="/guia/como-saber-que-filtro-usa-mi-nevecon/">Qué filtro usa mi nevecón</a><a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">Cómo cambiar el filtro</a><a href="/guia/filtro-interno-o-externo/">Interno o externo</a></div>'
+enlaces.append('<div><a class="mk" href="/guia/">Guías</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cada cuánto cambiar el filtro</a><a href="/guia/como-saber-que-filtro-usa-mi-nevecon/">Qué filtro usa mi nevecón</a><a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">Cómo cambiar el filtro</a><a href="/guia/filtro-interno-o-externo/">Interno o externo</a><a href="/guia/por-que-el-agua-del-nevecon-sabe-mal/">El agua sabe mal</a><a href="/guia/el-dispensador-de-agua-del-nevecon-no-echa-agua/">El dispensador no echa agua</a><a href="/guia/como-reiniciar-la-luz-del-filtro-del-nevecon/">Reiniciar la luz del filtro</a></div>'
                '<div><a class="mk" href="/referencias/">Buscar por referencia o modelo</a><a href="/referencias/">Todas las referencias y equivalencias</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/cali/">Filtros con instalación gratis en Cali</a></div>')
 enlaces.append('</nav><footer class="web-foot"><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/terminos.php#garantia">Garantía y retracto</a><span id="pie-negocio"></span></footer>')
 i = app.index('<details class="faq"><summary>¿Cómo pago?</summary>')
@@ -222,6 +240,7 @@ index_php = f"""<?php require __DIR__ . '/api/sitio.php'; $S = sitio(); $n = $S[
 <link rel="canonical" href="<?= h($S['base']) ?>/">
 <meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevecón | <?= h($n['nombre']) ?>"><meta property="og:description" content="Envío gratis a toda Colombia. Instalación gratis en Cali."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/lg-1000-o.jpg"><meta property="og:locale" content="es_CO">
 <meta name="theme-color" content="#0a2a2e"><link rel="icon" href="/img/icono.svg" type="image/svg+xml">
+<?= verificacion_html() . analytics_html() ?>
 <script type="application/ld+json"><?php $ld = <<<'JSON'
 {json.dumps({"@context": "https://schema.org", "@graph": [
     {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/lg-1000-o.jpg", "address": {"@type": "PostalAddress", "addressLocality": "Cali", "addressRegion": "Valle del Cauca", "addressCountry": "CO"}, "areaServed": "CO", "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi"},
@@ -245,12 +264,26 @@ if "<?" in app:
 
 # ---------- páginas de cada filtro ----------
 def tarjeta(p):
-    return (f'<a class="card" href="/filtro/{p["slug"]}/"><span class="im"><img src="/img/{p["id"]}.jpg" alt="{esc(p["nombre_largo"])}" loading="lazy"></span>'
+    return (f'<a class="card" href="/filtro/{p["slug"]}/"><span class="im">{foto(p, p["nombre_largo"], mini=True)}</span>'
             f'<b>{esc(p["nombre_largo"])}</b><span class="p">{cop(p["precio"])}</span><span class="m">Envío gratis</span></a>')
 
 
 def php_str(s):
     return "'" + str(s).replace("\\", "\\\\").replace("'", "\\'") + "'"
+
+
+def cabeza_producto(partes, titulo, desc, ruta, ld, img, pid):
+    """Como cabeza_php, pero agrega las opiniones reales a los datos de Google (estrellas en los resultados)."""
+    extra = f"<link rel=\"preload\" as=\"image\" href=\"{img}\"><meta property=\"og:image\" content=\"' . sitio()['base'] . '{img.replace('.webp', '.jpg')}\">"
+    return (f"<?php require __DIR__ . '{partes}';\n$ld = json_decode(<<<'JSON'\n{json.dumps(ld, ensure_ascii=False)}\nJSON, true);\n"
+            f"$R = resenas({php_str(pid)});\n"
+            "if ($R['n']) {\n"
+            "    $ld['@graph'][0]['aggregateRating'] = ['@type' => 'AggregateRating', 'ratingValue' => $R['prom'], 'reviewCount' => $R['n'], 'bestRating' => 5, 'worstRating' => 1];\n"
+            "    $ld['@graph'][0]['review'] = array_map(fn($r) => ['@type' => 'Review', 'author' => ['@type' => 'Person', 'name' => $r['nombre']], 'datePublished' => substr($r['creado'], 0, 10),\n"
+            "        'reviewRating' => ['@type' => 'Rating', 'ratingValue' => (int) $r['estrellas'], 'bestRating' => 5], 'reviewBody' => $r['texto']], array_slice($R['lista'], 0, 5));\n"
+            "}\n"
+            "$json = str_replace('__BASE__', sitio()['base'], json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG));\n"
+            f"cabeza({php_str(titulo)}, {php_str(desc)}, {php_str(ruta)}, '{extra}<script type=\"application/ld+json\">' . $json . '</script>'); ?>")
 
 
 def cabeza_php(partes, titulo, desc, ruta, ld, img=None):
@@ -291,13 +324,14 @@ for p in CATALOGO:
             {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "__BASE__/"},
             {"@type": "ListItem", "position": 2, "name": f'Filtros {p["marca"]}', "item": f"__BASE__/marca/{slug(p['marca'])}/"},
             {"@type": "ListItem", "position": 3, "name": p["nombre_largo"], "item": f"__BASE__/filtro/{p['slug']}/"}]}]}
-    pagina = cabeza_php("/../../partes.php", titulo, desc, f'/filtro/{p["slug"]}/', ld, f'/img/{p["id"]}.jpg') + f"""
+    pagina = cabeza_producto("/../../partes.php", titulo, desc, f'/filtro/{p["slug"]}/', ld, f'/img/{p["id"]}.webp', p["id"]) + f"""
 <nav class="miga"><a href="/">Inicio</a> › <a href="/marca/{slug(p["marca"])}/">Filtros {esc(p["marca"])}</a> › {esc(p["nombre_largo"])}</nav>
 <div class="prod">
-  <div class="foto"><img src="/img/{p["id"]}.jpg" alt="{esc(p["nombre_largo"])} para nevecón {esc(p["marca"])}" width="600" height="600"></div>
+  <div class="foto">{foto(p, p["nombre_largo"] + " para nevecón " + p["marca"], lazy=False)}</div>
   <div class="caja">
     <h1>{esc(p["nombre_largo"])}</h1>
     <span class="m">Filtro de agua para nevecón {esc(p["marca"])} · {"Externo" if ubic(p) == "externo" else "Interno"} · Referencia <span class="ref">{esc(p["ref"])}</span></span>
+    <?php if ($R['n']) echo '<a href="#opiniones" style="text-decoration:none">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span class="m">(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
     <span class="precio">{cop(p["precio"])}</span>
     <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 días hábiles.</li><li>En Cali: <b>domicilio e instalación gratis</b>.</li><li>Pack anual de 2 filtros: {cop(p["pack"])} (ahorras {cop(ahorro)}).</li><li>Garantía de 30 días: si no encaja, te lo cambiamos.</li></ul>
     <a class="btn block" href="/?p={p["id"]}">Comprar</a>
@@ -313,6 +347,11 @@ for p in CATALOGO:
   <p>Cámbialo cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión. <a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Más sobre cuándo cambiarlo</a>.</p>
 </section>
 <section class="caja"><h2>Cómo se cambia</h2>{paginas_seo.pasos_cambio(p, ubic)}</section>
+<section class="caja" id="opiniones"><h2>Opiniones de compradores</h2>
+<?php if ($R['n']): ?><span><?= estrellas_html($R['prom']) ?> <b><?= $R['prom'] ?> de 5</b> · <?= $R['n'] ?> <?= $R['n'] === 1 ? 'opinión' : 'opiniones' ?> de compradores reales</span>
+<?php foreach ($R['lista'] as $r): ?><div class="resena"><?= estrellas_html((float) $r['estrellas']) ?> <b><?= h($r['nombre']) ?></b> <span class="m">· <?= h($r['ciudad']) ?> · <?= h(date('d/m/Y', strtotime($r['creado']))) ?></span><?= $r['texto'] !== '' ? '<p style="margin:4px 0 0">' . h($r['texto']) . '</p>' : '' ?></div><?php endforeach; ?>
+<?php else: ?><p class="m">Todavía no hay opiniones de este filtro. Después de tu compra te pediremos la tuya por correo.</p><?php endif; ?>
+</section>
 <section style="display:flex;flex-direction:column;gap:8px">
   <h2>Preguntas frecuentes</h2>
   <details><summary>¿Cuánto cuesta el envío?</summary><p>Nada. El envío es gratis a toda Colombia y llega en unos 2 días hábiles después del pago.</p></details>
@@ -375,7 +414,7 @@ cat_php = {
     "ciudades": ciudades,
     "marcas": [{"nombre": m, "slug": slug(m)} for m in MARCAS],
     "paginas": extra["paginas"],
-    "productos": {p["id"]: {"nombre": p["nombre_largo"], "ref": p["ref"], "marca": p["marca"], "precio": p["precio"], "pack": p["pack"], "slug": p["slug"]} for p in CATALOGO},
+    "productos": {p["id"]: {"nombre": p["nombre_largo"], "ref": p["ref"], "marca": p["marca"], "precio": p["precio"], "pack": p["pack"], "slug": p["slug"], "alias": [r for r in p["refs"] if norm(r) != norm(p["ref"])]} for p in CATALOGO},
 }
 (OUT / "api" / "catalogo.php").write_text("<?php\n// Generado por build.py: no lo edites a mano. Los precios se cambian en la app y se vuelve a generar.\nreturn " + php_val(cat_php) + ";\n", encoding="utf-8")
 

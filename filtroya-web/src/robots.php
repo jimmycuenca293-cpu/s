@@ -4,5 +4,6 @@ Allow: /
 Disallow: /admin.php
 Disallow: /api/
 Disallow: /gracias.php
+Disallow: /opinion.php
 
 Sitemap: <?= sitio()['base'] ?>/sitemap.xml

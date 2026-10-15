@@ -67,7 +67,58 @@ function db(): PDO
         indicaciones TEXT, modelo TEXT, recordar INTEGER DEFAULT 0, ip TEXT,
         tx_id TEXT, tx_estado TEXT, metodo TEXT, pagado_en TEXT, guia TEXT, notas TEXT,
         avisado INTEGER DEFAULT 0, recordado INTEGER DEFAULT 0)');
+    $pdo->exec('CREATE TABLE IF NOT EXISTS resenas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, ref TEXT UNIQUE, pid TEXT, nombre TEXT, ciudad TEXT, estrellas INTEGER,
+        texto TEXT, creado TEXT, visible INTEGER DEFAULT 1)');
+    $cols = array_column($pdo->query('PRAGMA table_info(pedidos)')->fetchAll(), 'name');
+    if (!in_array('pedida_resena', $cols, true)) $pdo->exec('ALTER TABLE pedidos ADD COLUMN pedida_resena INTEGER DEFAULT 0');
     return $pdo;
+}
+
+// Enlace firmado para que solo el comprador opine sobre su pedido
+function token_resena(string $ref): string
+{
+    $c = cfg();
+    return substr(hash_hmac('sha256', 'resena|' . $ref, $c['wompi']['integridad'] . '|' . $c['admin_clave'] . '|' . $c['cron_clave']), 0, 24);
+}
+
+function enlace_resena(string $ref): string
+{
+    return base_url() . '/opinion.php?r=' . rawurlencode($ref) . '&t=' . token_resena($ref);
+}
+
+// Resumen de opiniones visibles de un producto: ['n' => 3, 'prom' => 4.7, 'lista' => [...]]
+function resenas(string $pid, int $max = 20): array
+{
+    try {
+        $st = db()->prepare('SELECT nombre, ciudad, estrellas, texto, creado FROM resenas WHERE pid = ? AND visible = 1 ORDER BY creado DESC');
+        $st->execute([$pid]);
+        $todas = $st->fetchAll();
+    } catch (Throwable $e) {
+        return ['n' => 0, 'prom' => 0, 'lista' => []];
+    }
+    $n = count($todas);
+    return ['n' => $n, 'prom' => $n ? round(array_sum(array_column($todas, 'estrellas')) / $n, 1) : 0, 'lista' => array_slice($todas, 0, $max)];
+}
+
+function estrellas_html(float $v): string
+{
+    $llenas = (int) round($v);
+    return '<span class="stars" aria-label="' . h((string) $v) . ' de 5">' . str_repeat('★', $llenas) . '<span>' . str_repeat('★', 5 - $llenas) . '</span></span>';
+}
+
+// Etiqueta de Google Analytics 4, solo si está configurada
+function analytics_html(): string
+{
+    $id = preg_replace('/[^A-Z0-9\-]/', '', strtoupper((string) (cfg()['ga4'] ?? '')));
+    if ($id === '') return '';
+    return '<script async src="https://www.googletagmanager.com/gtag/js?id=' . $id . '"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' . $id . '");</script>';
+}
+
+function verificacion_html(): string
+{
+    $v = preg_replace('/[^A-Za-z0-9_\-]/', '', (string) (cfg()['google_verificacion'] ?? ''));
+    return $v === '' ? '' : '<meta name="google-site-verification" content="' . $v . '">';
 }
 
 function wompi_api(): string
@@ -139,7 +190,7 @@ function enviar_correo(string $para, string $asunto, string $html): bool
     $ok = filter_var($para, FILTER_VALIDATE_EMAIL) && @mail($para, '=?UTF-8?B?' . base64_encode($asunto) . '?=', $cuerpo, $headers, '-f' . $de);
     if (!$ok) {
         // Sin servidor de correo (o en pruebas) queda guardado aquí para no perderlo
-        @file_put_contents(__DIR__ . '/../data/correos.log', date('c') . " PARA: $para\nASUNTO: $asunto\n" . strip_tags(str_replace(['<br>', '</p>', '</tr>'], "\n", $html)) . "\n----\n", FILE_APPEND);
+        @file_put_contents(__DIR__ . '/../data/correos.log', date('c') . " PARA: $para\nASUNTO: $asunto\n" . strip_tags(preg_replace('/<a [^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/s', '$2 ($1)', str_replace(['<br>', '</p>', '</tr>'], "\n", $html))) . "\n----\n", FILE_APPEND);
     }
     return (bool) $ok;
 }

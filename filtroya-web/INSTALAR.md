@@ -52,9 +52,25 @@ Le escribe por correo, solo a quien lo autorizó al comprar, cuando ya casi le t
 
 La tienda trae 150 páginas para Google: una por cada filtro, **una por cada referencia equivalente** (84, por ejemplo
 `/referencia/ukf8001/` o `/referencia/haf-cin/`), **una por cada modelo de nevecón** (34, por ejemplo `/nevecon/rf28hmedbsr/`),
-4 guías, la página de Cali y los directorios de referencias y de neveras. Además trae todo lo que Google pide: una página por cada filtro con su referencia, precio, envío y devoluciones
+8 guías, la página de Cali y los directorios de referencias y de neveras. Además trae todo lo que Google pide: una página por cada filtro con su referencia, precio, envío y devoluciones
 (datos estructurados de producto), páginas por marca, mapa del sitio y robots.txt. Google tarda de unos días a
 unas semanas en mostrar las páginas, y subir en los resultados depende de la competencia; nadie lo puede garantizar.
+
+## Paso 7. Google Shopping, Analytics y tu perfil (lo que más ayuda a vender)
+1. **Google Merchant Center** (merchants.google.com): crea la cuenta con tu dominio, agrega una fuente de productos
+   "programada" con la dirección `https://tudominio.com/feed.xml` (se actualiza sola) y configura envío gratis a Colombia
+   y devoluciones de 5 días. Así tus filtros salen gratis con foto y precio en Google Shopping.
+2. **Search Console**: si eliges verificar con "etiqueta HTML", copia solo el código de `content="..."` en `google_verificacion` de config.php.
+3. **Google Analytics 4** (opcional): crea la propiedad y pega el código `G-XXXXXXX` en `ga4` de config.php.
+   Mide visitas y compras (cada pago aprobado se registra como venta).
+4. **Quiénes somos**: llena la sección `tecnico` de config.php (tu nombre, años de experiencia y tu historia) y sube una foto
+   tuya como `public_html/img/tecnico.jpg`. Google confía más en las tiendas atendidas por expertos, y las guías salen firmadas por ti.
+
+## Opiniones con estrellas
+Siete días después de cada pago, la tienda le pide la opinión al cliente por correo (con la misma tarea programada del paso 5).
+Solo puede opinar quien compró. Las opiniones salen en la página del filtro y Google puede mostrar las estrellas en los resultados.
+En el panel (`admin.php`, pestaña Opiniones) puedes ocultar una opinión ofensiva o falsa; no ocultes las negativas reales:
+Google lo prohíbe y además responderlas bien genera confianza.
 
 ## Tu día a día
 - Te llega un correo por cada pedido **pagado**, con todos los datos.
