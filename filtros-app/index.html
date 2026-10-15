@@ -426,7 +426,7 @@ footer{color:var(--muted);font-size:12.5px}
     <details class="faq"><summary>¿Lo pueden instalar?</summary><p>En Cali te lo llevamos e instalamos gratis, y de paso revisamos el nevecón. En otras ciudades te lo enviamos gratis por transportadora y te mandamos el video de instalación: es fácil, se hace en minutos.</p></details>
     <details class="faq"><summary>¿Cuánto cuesta el envío?</summary><p>Nada: el envío es gratis a toda Colombia y llega en 2 días hábiles. En Cali la entrega y la instalación también son gratis.</p></details>
     <details class="faq"><summary>¿Cómo se confirma mi pedido?</summary><p>Cuando envías el pedido por WhatsApp, un asesor revisa que el filtro sea el de tu nevecón y te confirma disponibilidad, fecha de entrega y forma de pago. El pedido queda en firme con esa confirmación.</p></details>
-    <details class="faq"><summary>¿Cómo pago?</summary><p>Contra entrega (pagas al recibir), Nequi, transferencia Bancolombia o con nuestra llave Bre-B desde cualquier banco.</p></details>
+    <details class="faq"><summary>¿Cómo pago?</summary><p>Por Nequi, transferencia Bancolombia o con nuestra llave Bre-B desde cualquier banco, después de que el asesor confirme tu pedido.</p></details>
   </div>
 </section>
 
@@ -564,27 +564,27 @@ const CIUDADES = [...CALI_METRO, ...PRINCIPALES, "Otro municipio"];
 
 // Catálogo: filtros Samsung, LG, Whirlpool EveryDrop y GE.
 const CATALOGO = [
-  // Precios: costo + $15.000 de envío + mínimo $50.000 de ganancia por filtro. Envío gratis a toda Colombia.
-  { id: "sam-cin-o", pack: 229900, marca: "Samsung", nombre: "Filtro Samsung HAF-CIN", ref: "DA29-00020B", refs: ["DA29-00020B", "DA29-00020A", "HAF-CIN", "HAF-CIN/EXP", "46-9101"], modelos: ["RF28HMEDBSR", "RF263BEAESR", "RF28HFEDBSR", "RF4287HARS", "RF26J7500SR", "RF23J9011SR"], tipo: "original", precio: 124900, stock: 10, forma: "cin", color: "#2d6cdf" },
-  { id: "sam-qin-o", pack: 229900, marca: "Samsung", nombre: "Filtro Samsung HAF-QIN", ref: "DA97-17376B", refs: ["DA97-17376B", "DA97-08006C", "HAF-QIN", "HAF-QIN/EXP"], modelos: ["RF28R7351SR", "RF22R7351SG", "RF28R7201SR", "RF23M8070SR"], tipo: "original", precio: 124900, stock: 10, forma: "qin", color: "#2d6cdf" },
-  { id: "sam-cu1-o", pack: 229900, marca: "Samsung", nombre: "Filtro Samsung Aqua-Pure Plus", ref: "DA29-00003G", refs: ["DA29-00003G", "DA29-00003B", "DA29-00003F", "HAFCU1", "HAFCU1/XAA", "HAFIN2", "HAFIN2/EXP"], modelos: ["RS2630SH", "RS2530BSH", "RS2555SL", "RS261MDRS"], tipo: "original", precio: 124900, stock: 10, forma: "cu1", color: "#2d6cdf" },
-  { id: "sam-ex-o", pack: 164900, marca: "Samsung", nombre: "Filtro Samsung externo", ref: "DA29-10105J", refs: ["DA29-10105J", "HAFEX", "HAFEX/EXP", "WSF-100"], modelos: [], nota: "Va en la manguera de agua, por fuera del nevecón. Sirve para nevecones con dispensador que no traen filtro interno.", tipo: "original", precio: 89900, stock: 10, forma: "lt", color: "#2d6cdf" },
+  // Precios: costo + $15.000 de envío + comisión de la pasarela (2,65 % + $700 + IVA) + mínimo $40.000 de ganancia por filtro.
+  { id: "sam-cin-o", pack: 214900, marca: "Samsung", nombre: "Filtro Samsung HAF-CIN", ref: "DA29-00020B", refs: ["DA29-00020B", "DA29-00020A", "HAF-CIN", "HAF-CIN/EXP", "46-9101"], modelos: ["RF28HMEDBSR", "RF263BEAESR", "RF28HFEDBSR", "RF4287HARS", "RF26J7500SR", "RF23J9011SR"], tipo: "original", precio: 115900, stock: 10, forma: "cin", color: "#2d6cdf" },
+  { id: "sam-qin-o", pack: 214900, marca: "Samsung", nombre: "Filtro Samsung HAF-QIN", ref: "DA97-17376B", refs: ["DA97-17376B", "DA97-08006C", "HAF-QIN", "HAF-QIN/EXP"], modelos: ["RF28R7351SR", "RF22R7351SG", "RF28R7201SR", "RF23M8070SR"], tipo: "original", precio: 115900, stock: 10, forma: "qin", color: "#2d6cdf" },
+  { id: "sam-cu1-o", pack: 214900, marca: "Samsung", nombre: "Filtro Samsung Aqua-Pure Plus", ref: "DA29-00003G", refs: ["DA29-00003G", "DA29-00003B", "DA29-00003F", "HAFCU1", "HAFCU1/XAA", "HAFIN2", "HAFIN2/EXP"], modelos: ["RS2630SH", "RS2530BSH", "RS2555SL", "RS261MDRS"], tipo: "original", precio: 115900, stock: 10, forma: "cu1", color: "#2d6cdf" },
+  { id: "sam-ex-o", pack: 145900, marca: "Samsung", nombre: "Filtro Samsung externo", ref: "DA29-10105J", refs: ["DA29-10105J", "HAFEX", "HAFEX/EXP", "WSF-100"], modelos: [], nota: "Va en la manguera de agua, por fuera del nevecón. Sirve para nevecones con dispensador que no traen filtro interno.", tipo: "original", precio: 81900, stock: 10, forma: "lt", color: "#2d6cdf" },
   // LG: precios reales.
-  { id: "lg-1000-o", pack: 164900, marca: "LG", nombre: "Filtro LG LT1000P", ref: "LT1000P", refs: ["LT1000P", "LT1000PC", "LT1000PCS", "ADQ74793501", "ADQ74793502", "ADQ747935", "MDJ64844601"], modelos: ["LRMVS3006S", "LRFVS3006S", "LRMVC2306S"], tipo: "original", precio: 89900, stock: 10, forma: "lt", color: "#c2185b" },
-  { id: "lg-700-o", pack: 279900, marca: "LG", nombre: "Filtro LG LT700P", ref: "LT700P", refs: ["LT700P", "LT700PC", "ADQ36006101", "ADQ36006102", "ADQ360061", "46-9690"], modelos: ["LFX28968ST", "LFX25973ST", "LMX25964ST", "LFX31925ST"], tipo: "original", precio: 149900, stock: 10, forma: "lt", color: "#c2185b" },
-  { id: "lg-800-o", pack: 279900, marca: "LG", nombre: "Filtro LG LT800P", ref: "LT800P", refs: ["LT800P", "LT800PC", "LT800PCS", "ADQ73613401", "ADQ73613402", "ADQ75795104"], modelos: ["LFXS26973S", "LFXS28968S", "LMXS28626S"], tipo: "original", precio: 149900, stock: 10, forma: "lt", color: "#c2185b" },
-  { id: "lg-500-o", pack: 279900, marca: "LG", nombre: "Filtro LG LT500P", ref: "LT500P", refs: ["LT500P", "5231JA2002A", "5231JA2002B", "GEN11042F-08", "GEN11042FR-08", "ADQ72910901", "46-9890"], modelos: ["LRSC26925TT", "LSC27925ST", "LSC27910ST"], tipo: "original", precio: 149900, stock: 10, forma: "twist", color: "#c2185b" },
-  { id: "lg-600-o", pack: 299900, marca: "LG", nombre: "Filtro LG LT600P", ref: "5231JA2006", refs: ["5231JA2006", "5231JA2006A", "5231JA2006B", "5231JA2006F", "LT600P", "LT600", "46-9990"], modelos: [], nota: "Filtro interno largo. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 169900, stock: 10, forma: "lt", color: "#c2185b" },
-  { id: "lg-ex-o", pack: 164900, marca: "LG", nombre: "Filtro LG externo", ref: "ADQ73693903", refs: ["ADQ73693903", "FSS-002", "FSS002", "5231JA2012A", "5231JA2012B"], modelos: [], nota: "Va en la manguera de agua, por fuera del nevecón. Sirve para nevecones LG con dispensador que no traen filtro interno.", tipo: "original", precio: 89900, stock: 10, forma: "lt", color: "#c2185b" },
+  { id: "lg-1000-o", pack: 145900, marca: "LG", nombre: "Filtro LG LT1000P", ref: "LT1000P", refs: ["LT1000P", "LT1000PC", "LT1000PCS", "ADQ74793501", "ADQ74793502", "ADQ747935", "MDJ64844601"], modelos: ["LRMVS3006S", "LRFVS3006S", "LRMVC2306S"], tipo: "original", precio: 81900, stock: 10, forma: "lt", color: "#c2185b" },
+  { id: "lg-700-o", pack: 264900, marca: "LG", nombre: "Filtro LG LT700P", ref: "LT700P", refs: ["LT700P", "LT700PC", "ADQ36006101", "ADQ36006102", "ADQ360061", "46-9690"], modelos: ["LFX28968ST", "LFX25973ST", "LMX25964ST", "LFX31925ST"], tipo: "original", precio: 140900, stock: 10, forma: "lt", color: "#c2185b" },
+  { id: "lg-800-o", pack: 264900, marca: "LG", nombre: "Filtro LG LT800P", ref: "LT800P", refs: ["LT800P", "LT800PC", "LT800PCS", "ADQ73613401", "ADQ73613402", "ADQ75795104"], modelos: ["LFXS26973S", "LFXS28968S", "LMXS28626S"], tipo: "original", precio: 140900, stock: 10, forma: "lt", color: "#c2185b" },
+  { id: "lg-500-o", pack: 264900, marca: "LG", nombre: "Filtro LG LT500P", ref: "LT500P", refs: ["LT500P", "5231JA2002A", "5231JA2002B", "GEN11042F-08", "GEN11042FR-08", "ADQ72910901", "46-9890"], modelos: ["LRSC26925TT", "LSC27925ST", "LSC27910ST"], tipo: "original", precio: 140900, stock: 10, forma: "twist", color: "#c2185b" },
+  { id: "lg-600-o", pack: 264900, marca: "LG", nombre: "Filtro LG LT600P", ref: "5231JA2006", refs: ["5231JA2006", "5231JA2006A", "5231JA2006B", "5231JA2006F", "LT600P", "LT600", "46-9990"], modelos: [], nota: "Filtro interno largo. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 140900, stock: 10, forma: "lt", color: "#c2185b" },
+  { id: "lg-ex-o", pack: 145900, marca: "LG", nombre: "Filtro LG externo", ref: "ADQ73693903", refs: ["ADQ73693903", "FSS-002", "FSS002", "5231JA2012A", "5231JA2012B"], modelos: [], nota: "Va en la manguera de agua, por fuera del nevecón. Sirve para nevecones LG con dispensador que no traen filtro interno.", tipo: "original", precio: 81900, stock: 10, forma: "lt", color: "#c2185b" },
   // Whirlpool EveryDrop (costo $85.000–$90.000).
-  { id: "wp-1-o", pack: 299900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 1", ref: "EDR1RXD1", refs: ["EDR1RXD1", "W10295370A", "W10295370", "FILTER1", "P4RFWB", "46-9930"], modelos: ["WRF555SDFZ", "WRF767SDHZ", "WRX735SDHZ", "KRFF305ESS"], tipo: "original", precio: 159900, stock: 10, forma: "push", color: "#6a2c91" },
-  { id: "wp-2-o", pack: 299900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 2", ref: "EDR2RXD1", refs: ["EDR2RXD1", "W10413645A", "W10413645", "FILTER2", "P8RFWB2L", "46-9081"], modelos: [], nota: "Sirve para nevecones Whirlpool, Maytag, KitchenAid y Amana. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 159900, stock: 10, forma: "push", color: "#e2541b" },
-  { id: "wp-3-o", pack: 299900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 3", ref: "EDR3RXD1", refs: ["EDR3RXD1", "4396841", "4396710", "W10193691", "FILTER3", "P1RFWB", "46-9030"], modelos: [], nota: "Sirve para nevecones Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 159900, stock: 10, forma: "push", color: "#1c9bb0" },
-  { id: "wp-4-o", pack: 299900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 4", ref: "EDR4RXD1", refs: ["EDR4RXD1", "UKF8001", "UKF8001AXX", "4396395", "FILTER4", "46-9006"], modelos: ["MFI2570FEZ", "WRF736SDAM", "KRFF507ESS"], tipo: "original", precio: 159900, stock: 10, forma: "push", color: "#2e9d4f" },
-  { id: "wp-5-o", pack: 299900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 5", ref: "EDR5RXD1", refs: ["EDR5RXD1", "4396508", "4396509", "4396510", "FILTER5", "NLC240V", "46-9010"], modelos: [], nota: "Sirve para nevecones Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 159900, stock: 10, forma: "push", color: "#d6247a" },
+  { id: "wp-1-o", pack: 284900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 1", ref: "EDR1RXD1", refs: ["EDR1RXD1", "W10295370A", "W10295370", "FILTER1", "P4RFWB", "46-9930"], modelos: ["WRF555SDFZ", "WRF767SDHZ", "WRX735SDHZ", "KRFF305ESS"], tipo: "original", precio: 150900, stock: 10, forma: "push", color: "#6a2c91" },
+  { id: "wp-2-o", pack: 284900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 2", ref: "EDR2RXD1", refs: ["EDR2RXD1", "W10413645A", "W10413645", "FILTER2", "P8RFWB2L", "46-9081"], modelos: [], nota: "Sirve para nevecones Whirlpool, Maytag, KitchenAid y Amana. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 150900, stock: 10, forma: "push", color: "#e2541b" },
+  { id: "wp-3-o", pack: 284900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 3", ref: "EDR3RXD1", refs: ["EDR3RXD1", "4396841", "4396710", "W10193691", "FILTER3", "P1RFWB", "46-9030"], modelos: [], nota: "Sirve para nevecones Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 150900, stock: 10, forma: "push", color: "#1c9bb0" },
+  { id: "wp-4-o", pack: 284900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 4", ref: "EDR4RXD1", refs: ["EDR4RXD1", "UKF8001", "UKF8001AXX", "4396395", "FILTER4", "46-9006"], modelos: ["MFI2570FEZ", "WRF736SDAM", "KRFF507ESS"], tipo: "original", precio: 150900, stock: 10, forma: "push", color: "#2e9d4f" },
+  { id: "wp-5-o", pack: 284900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 5", ref: "EDR5RXD1", refs: ["EDR5RXD1", "4396508", "4396509", "4396510", "FILTER5", "NLC240V", "46-9010"], modelos: [], nota: "Sirve para nevecones Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 150900, stock: 10, forma: "push", color: "#d6247a" },
   // General Electric (costo $97.000).
-  { id: "ge-mwf-o", pack: 309900, marca: "GE", nombre: "Filtro GE MWF", ref: "MWF", refs: ["MWF", "MWFP", "MWFA", "MWFINT", "GWF", "GWFA", "HWF", "HWFA", "SmartWater MWF", "46-9991"], modelos: [], nota: "El de nevecones GE de dos puertas y French door con filtro adentro, arriba a la derecha. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 164900, stock: 10, forma: "twist", color: "#1d5fae" },
-  { id: "ge-xwf-o", pack: 309900, marca: "GE", nombre: "Filtro GE XWF", ref: "XWF", refs: ["XWF", "XWF-1"], modelos: [], nota: "El de los nevecones GE French door más nuevos. No es igual al XWFE. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 164900, stock: 10, forma: "push", color: "#1d5fae" },
+  { id: "ge-mwf-o", pack: 299900, marca: "GE", nombre: "Filtro GE MWF", ref: "MWF", refs: ["MWF", "MWFP", "MWFA", "MWFINT", "GWF", "GWFA", "HWF", "HWFA", "SmartWater MWF", "46-9991"], modelos: [], nota: "El de nevecones GE de dos puertas y French door con filtro adentro, arriba a la derecha. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 157900, stock: 10, forma: "twist", color: "#1d5fae" },
+  { id: "ge-xwf-o", pack: 299900, marca: "GE", nombre: "Filtro GE XWF", ref: "XWF", refs: ["XWF", "XWF-1"], modelos: [], nota: "El de los nevecones GE French door más nuevos. No es igual al XWFE. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", tipo: "original", precio: 157900, stock: 10, forma: "push", color: "#1d5fae" },
 ];
 const POPULARES = ["DA29-00020B", "LT1000P", "EDR1RXD1", "DA97-17376B", "LT700P", "EDR4RXD1", "MWF", "DA29-10105J", "ADQ73693903", "LT800P", "DA29-00003G", "LT500P", "EDR3RXD1", "EDR2RXD1", "EDR5RXD1", "XWF"];
 // Fotos de los productos (Samsung); las que suba el vendedor las reemplazan.
@@ -900,10 +900,10 @@ function renderTrust() {
   const c = city(), d = delivery(c);
   const garantia = `<div>${ICON.shield}<b>Garantía ${NEGOCIO.garantiaDias} días</b>Si no encaja, te lo cambiamos</div>`;
   $("#trust").innerHTML = !c
-    ? `<div>${ICON.check}<b>Te ayudamos</b>Con una foto sabemos cuál es el tuyo</div><div>${ICON.cash}<b>Paga fácil</b>Contra entrega, Nequi, Bancolombia o llave</div>${garantia}`
+    ? `<div>${ICON.check}<b>Te ayudamos</b>Con una foto sabemos cuál es el tuyo</div><div>${ICON.cash}<b>Paga fácil</b>Nequi, Bancolombia o llave Bre-B</div>${garantia}`
     : d.local
-    ? `<div>${ICON.tool}<b>Instalación gratis</b>Te lo llevamos, instalamos y revisamos el nevecón</div><div>${ICON.cash}<b>Pagas al recibir</b>O Nequi, Bancolombia, llave</div>${garantia}`
-    : `<div>${ICON.truck}<b>Envío gratis</b>Llega en ${NEGOCIO.diasNacional} días hábiles</div><div>${ICON.cash}<b>Contra entrega</b>O Nequi, Bancolombia, llave</div>${garantia}`;
+    ? `<div>${ICON.tool}<b>Instalación gratis</b>Te lo llevamos, instalamos y revisamos el nevecón</div><div>${ICON.cash}<b>Paga fácil</b>Nequi, Bancolombia o llave Bre-B</div>${garantia}`
+    : `<div>${ICON.truck}<b>Envío gratis</b>Llega en ${NEGOCIO.diasNacional} días hábiles</div><div>${ICON.cash}<b>Paga fácil</b>Nequi, Bancolombia o llave Bre-B</div>${garantia}`;
 }
 $("#city").addEventListener("change", () => setCity(city()));
 
@@ -1017,7 +1017,7 @@ document.addEventListener("click", e => {
 function startOrder(id) {
   const p = CATALOGO.find(x => x.id === id); if (!p) return;
   const prev = store.get("fy_cliente", {});
-  cart = { p, qty: 1, pack: false, pago: "contra", entrega: null, step: 1, id: null,
+  cart = { p, qty: 1, pack: false, pago: "nequi", entrega: null, step: 1, id: null,
     cli: { nombre: prev.nombre || "", tel: prev.tel || "", ciudad: city(), dir: prev.dir || "", barrio: prev.barrio || "", indicaciones: "", modelo: modeloBuscado(), recordar: !!prev.recordar } };
   fixEntrega(); renderStep();
 }
@@ -1074,7 +1074,6 @@ function renderStep() {
       </div>
       <div><b>¿Cómo pagas?</b></div>
       <div class="opt" id="o-pago">
-        <label><input type="radio" name="pago" value="contra" ${cart.pago === "contra" ? "checked" : ""}><span><b>Contra entrega</b><small>${d.local ? "Pagas en efectivo o por transferencia cuando lo recibes." : `Pagas a la transportadora al recibir${NEGOCIO.recargoContraEntrega ? ` (recargo de ${COP(NEGOCIO.recargoContraEntrega)})` : ""}.`}</small></span></label>
         ${["nequi", "bancolombia", "llave"].map(k => `<label><input type="radio" name="pago" value="${k}" ${cart.pago === k ? "checked" : ""}><span class="paylbl">${PAGOS[k].logo}<span><b>${PAGOS[k].t}</b><small>${PAGOS[k].sub}</small></span></span></label>`).join("")}
       </div>
       <div id="sum">${sumHTML()}</div>
@@ -1476,7 +1475,7 @@ async function makeOffer() {
   // precio
   x.fillStyle = BRAND.glow; x.font = "800 128px 'Bricolage Grotesque', sans-serif"; x.fillText(COP(p.precio), 70, 830);
   x.fillStyle = "#fff"; x.font = "600 34px Manrope, sans-serif";
-  const puntos = ["Instalación gratis en Cali", "Envío gratis a toda Colombia", "Pagas al recibir o por Nequi"];
+  const puntos = ["Instalación gratis en Cali", "Envío gratis a toda Colombia", "Paga por Nequi o Bancolombia"];
   puntos.forEach((t, i) => { x.fillStyle = BRAND.glow; x.beginPath(); x.arc(86, 905 + i * 58, 9, 0, Math.PI * 2); x.fill(); x.fillStyle = "#fff"; x.fillText(t, 110, 917 + i * 58); });
   if (frase) { x.save(); rr(x, 70, 1100, 640, 86, 43); x.fillStyle = BRAND.glow; x.fill(); x.restore(); x.fillStyle = BRAND.ink; x.font = "800 34px Manrope, sans-serif"; x.fillText(frase.slice(0, 34), 100, 1155); }
   drawQR(x, waLink(`Hola ${NEGOCIO.nombre}, quiero el filtro ${p.ref} que vi en la publicación.`), W - 330, H - 400, 270);
@@ -1499,7 +1498,7 @@ const CANAL = {
 function plantilla(p, canal, zona) {   // texto de respaldo sin IA
   const lugar = zona ? `${zona}, Cali` : "Cali";
   const sirve = p.modelos.length ? `Sirve para ${p.modelos.slice(0, 3).join(", ")} y más.` : (p.nota || "");
-  const base = `Filtro de agua para nevecón ${p.marca} ${p.ref}. ${sirve} ${COP(p.precio)}. Envío GRATIS a toda Colombia (${NEGOCIO.diasNacional} días hábiles). En ${lugar}: domicilio e instalación gratis. Pagas al recibir o por Nequi. Escríbenos por WhatsApp.`;
+  const base = `Filtro de agua para nevecón ${p.marca} ${p.ref}. ${sirve} ${COP(p.precio)}. Envío GRATIS a toda Colombia (${NEGOCIO.diasNacional} días hábiles). En ${lugar}: domicilio e instalación gratis. Pagas por Nequi, Bancolombia o llave Bre-B. Escríbenos por WhatsApp.`;
   return { titulo: `Filtro nevecón ${p.marca} ${p.ref} · ${lugar}`, texto: base, palabras_clave: [p.ref, ...p.refs.slice(1, 3), `filtro nevecón ${p.marca.toLowerCase()}`, "filtro agua nevera Cali"], mejor_momento: "Entre 6 y 9 p. m., cuando la gente revisa el celular en casa.", consejo: "Pon una foto real del filtro y responde rápido los mensajes." };
 }
 $("#pub-go").addEventListener("click", async () => {
@@ -1509,7 +1508,7 @@ $("#pub-go").addEventListener("click", async () => {
   if (sample) {
     btn.disabled = true; out.innerHTML = `<p class="sub"><span class="spin" aria-hidden="true"></span> Escribiendo la publicación…</p>`;
     const prompt = `Escribe una publicación de venta en español de Colombia (cercano, claro, sin exagerar ni inventar) para un negocio de filtros de agua para neveras y nevecones en Cali.
-Negocio: ${NEGOCIO.nombre}. En Cali${zona ? " (zona: " + zona + ")" : ""} domicilio e instalación GRATIS (la instalación solo existe en Cali); envío GRATIS a toda Colombia en ${NEGOCIO.diasNacional} días hábiles por transportadora; pago contra entrega, Nequi, Bancolombia o llave Bre-B; garantía ${NEGOCIO.garantiaDias} días; filtros originales.
+Negocio: ${NEGOCIO.nombre}. En Cali${zona ? " (zona: " + zona + ")" : ""} domicilio e instalación GRATIS (la instalación solo existe en Cali); envío GRATIS a toda Colombia en ${NEGOCIO.diasNacional} días hábiles por transportadora; pago por Nequi, Bancolombia o llave Bre-B; garantía ${NEGOCIO.garantiaDias} días; filtros originales.
 Producto: ${p.nombre}. Referencia: ${p.ref}. Referencias equivalentes: ${p.refs.join(", ")}. Nevecones compatibles: ${p.modelos.join(", ")}. Precio: ${COP(p.precio)}. No uses las palabras "original", "genuino" ni "compatible".
 Canal: ${CANAL[canal]}.
 Reglas: no prometas entrega el mismo día; no digas "el mejor" ni datos que no te di; menciona que el filtro se cambia cada ${NEGOCIO.mesesCambio} meses.
@@ -1543,7 +1542,7 @@ DATOS DEL NEGOCIO (no inventes otros):
 - Envío GRATIS a toda Colombia por transportadora: llega en ${NEGOCIO.diasNacional} días hábiles.
 - En Cali: domicilio e instalación GRATIS (agendamos día y hora por WhatsApp). La instalación SOLO existe en Cali; en otras ciudades se manda el video de instalación.
 - No prometas entrega el mismo día.
-- Pagos: contra entrega, Nequi, Bancolombia o llave Bre-B.
+- Pagos: Nequi, Bancolombia o llave Bre-B, después de que un asesor confirme el pedido. NO hay pago contra entrega.
 - Garantía ${NEGOCIO.garantiaDias} días. El filtro se cambia cada ${NEGOCIO.mesesCambio} meses o cuando el agua cambie de sabor u olor.
 - Pack anual de 2 filtros con descuento.
 CATÁLOGO:
