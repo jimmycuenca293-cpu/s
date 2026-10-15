@@ -20,6 +20,7 @@ import sys
 import unicodedata
 
 import paginas_seo
+import instalacion
 
 AQUI = pathlib.Path(__file__).resolve().parent
 APP = AQUI.parent / "filtros-app" / "index.html"
@@ -207,6 +208,21 @@ document.addEventListener("click", async e => {
 k = app.rindex("\n})();\n</script>")
 app = app[:k] + "\n" + WEB_JS + app[k:]
 
+# Sección visible con las páginas de la tienda (guías, tutoriales, referencias, envíos)
+EXPLORA = """<section class="explora" aria-label="Explora la tienda"><h2 style="font-size:19px">Explora la tienda</h2><div class="ex-grid">
+<a href="/tienda/"><b>🛒 Tienda</b><span>Todos los filtros con precio y envío gratis</span></a>
+<a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/"><b>⏱️ ¿Cuándo cambiar el filtro?</b><span>Las señales de que ya toca cambiarlo</span></a>
+<a href="/instalacion/"><b>🔧 Cómo instalar tu filtro</b><span>Paso a paso para cada referencia</span></a>
+<a href="/referencias/"><b>🔎 Buscar por referencia</b><span>Todas las referencias y equivalencias</span></a>
+<a href="/neveras/"><b>🧊 Por modelo de nevecón</b><span>Qué filtro usa tu nevecón</span></a>
+<a href="/guia/"><b>📘 Guías</b><span>Agua con mal sabor, dispensador, luz del filtro</span></a>
+<a href="/envios/"><b>🚚 Envíos a toda Colombia</b><span>Tiempo de entrega a tu ciudad</span></a>
+<a href="/cali/"><b>📍 Instalación gratis en Cali</b><span>Te lo llevamos e instalamos</span></a>
+</div></section>
+"""
+k = app.index('<div class="check salud" id="salud">')
+app = app[:k] + EXPLORA + "\n  " + app[k:]
+
 # Enlaces fijos a todas las páginas de filtros (Google los sigue aunque no ejecute el JavaScript)
 enlaces = ['<nav class="seo-links" aria-label="Todos los filtros"><h2 style="font-size:19px">Todos nuestros filtros</h2>']
 for marca in MARCAS:
@@ -214,7 +230,7 @@ for marca in MARCAS:
     enlaces.append(f'<div><a class="mk" href="/marca/{slug(marca)}/">Filtros {esc(marca)}</a>' + "".join(f'<a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a>' for p in ps) + "</div>")
 enlaces.append('<div><a class="mk" href="/guia/">Guías</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cada cuánto cambiar el filtro</a><a href="/guia/como-saber-que-filtro-usa-mi-nevecon/">Qué filtro usa mi nevecón</a><a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">Cómo cambiar el filtro</a><a href="/guia/filtro-interno-o-externo/">Interno o externo</a><a href="/guia/por-que-el-agua-del-nevecon-sabe-mal/">El agua sabe mal</a><a href="/guia/el-dispensador-de-agua-del-nevecon-no-echa-agua/">El dispensador no echa agua</a><a href="/guia/como-reiniciar-la-luz-del-filtro-del-nevecon/">Reiniciar la luz del filtro</a></div>'
                '<div><a class="mk" href="/tienda/">Tienda: todos los filtros</a><a href="/tienda/">Ver la tienda completa</a><a href="/carrito.php">Mi carrito</a></div>'
-               '<div><a class="mk" href="/referencias/">Buscar por referencia o modelo</a><a href="/referencias/">Todas las referencias y equivalencias</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/envios/">Envíos a toda Colombia</a><a href="/cali/">Filtros con instalación gratis en Cali</a></div>')
+               '<div><a class="mk" href="/referencias/">Buscar por referencia o modelo</a><a href="/referencias/">Todas las referencias y equivalencias</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/instalacion/">Cómo instalar tu filtro</a><a href="/envios/">Envíos a toda Colombia</a><a href="/cali/">Filtros con instalación gratis en Cali</a></div>')
 enlaces.append('</nav><footer class="web-foot"><div class="medios" aria-label="Medios de pago" style="width:100%"><span>🔒 Pago seguro</span><span>Visa</span><span>Mastercard</span><span>American Express</span><span>PSE</span><span>Nequi</span><span>Bancolombia</span></div><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/terminos.php#garantia">Garantía y retracto</a><span id="pie-negocio"></span></footer>')
 i = app.index('<details class="faq"><summary>¿Cómo pago?</summary>')
 j = app.index("</div>", i) + len("</div>")
@@ -238,6 +254,7 @@ nav.bnav{grid-template-columns:repeat(2,1fr)!important}
 .seo-links a{color:var(--accent)}.seo-links a.mk{font-weight:800;color:var(--ink);width:100%}
 .web-foot{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 .web-foot a{color:var(--accent)}
+.explora{display:flex;flex-direction:column;gap:10px}.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}.ex-grid a{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);text-decoration:none;color:var(--ink)}.ex-grid a span{font-size:13px;color:var(--muted)}.ex-grid a:hover{border-color:var(--accent)}
 .medios{display:flex;flex-wrap:wrap;gap:6px}.medios span{border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--ink);background:var(--panel)}
 """
 
@@ -341,7 +358,8 @@ for p in CATALOGO:
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "__BASE__/"},
             {"@type": "ListItem", "position": 2, "name": f'Filtros {p["marca"]}', "item": f"__BASE__/marca/{slug(p['marca'])}/"},
-            {"@type": "ListItem", "position": 3, "name": p["nombre_largo"], "item": f"__BASE__/filtro/{p['slug']}/"}]}]}
+            {"@type": "ListItem", "position": 3, "name": p["nombre_largo"], "item": f"__BASE__/filtro/{p['slug']}/"}]},
+        instalacion.tutorial_ld(p, f"__BASE__/filtro/{p['slug']}/")]}
     pagina = cabeza_producto("/../../partes.php", titulo, desc, f'/filtro/{p["slug"]}/', ld, f'/img/{p["id"]}.webp', p["id"]) + f"""
 <nav class="miga"><a href="/">Inicio</a> › <a href="/marca/{slug(p["marca"])}/">Filtros {esc(p["marca"])}</a> › {esc(p["nombre_largo"])}</nav>
 <div class="prod">
@@ -380,7 +398,7 @@ for p in CATALOGO:
   <p>Cámbialo cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión. <a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Más sobre cuándo cambiarlo</a>.</p>
 </section>
 {paginas_seo.mas_info(p, ubic)}
-<section class="caja"><h2>Cómo se cambia</h2>{paginas_seo.pasos_cambio(p, ubic)}</section>
+{instalacion.tutorial_html(p)}
 <section class="caja" id="opiniones"><h2>Opiniones de compradores</h2>
 <?php if ($R['n']): ?><span><?= estrellas_html($R['prom']) ?> <b><?= $R['prom'] ?> de 5</b> · <?= $R['n'] ?> <?= $R['n'] === 1 ? 'opinión' : 'opiniones' ?> de compradores reales</span>
 <?php foreach ($R['lista'] as $r): ?><div class="resena"><?= estrellas_html((float) $r['estrellas']) ?> <b><?= h($r['nombre']) ?></b> <span class="m">· <?= h($r['ciudad']) ?> · <?= h(date('d/m/Y', strtotime($r['creado']))) ?></span><?= $r['texto'] !== '' ? '<p style="margin:4px 0 0">' . h($r['texto']) . '</p>' : '' ?></div><?php endforeach; ?>

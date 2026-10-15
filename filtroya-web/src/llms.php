@@ -38,6 +38,8 @@ $o[] = "- [Directorio de referencias y equivalencias]($b/referencias/): cada ref
 $o[] = "- [Filtro por modelo de nevecón]($b/neveras/): qué filtro usa cada modelo Samsung, LG, Whirlpool y GE.";
 foreach ($cat['marcas'] as $m) $o[] = "- [Filtros {$m['nombre']}]($b/marca/{$m['slug']}/)";
 $o[] = "- [Envíos por ciudad]($b/envios/): tiempo de entrega a cada ciudad de Colombia.";
+$o[] = "- [Cómo instalar cada filtro]($b/instalacion/): paso a paso por referencia (dónde va, cómo se cambia, purga y reinicio de la luz).";
+$o[] = "- [Cada cuánto cambiar el filtro]($b/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/): cada 6 meses o antes si el agua sabe raro, sale poca o el hielo sale turbio.";
 if ($completo) foreach ($cat['rutas_ciudad'] ?? [] as $c => $r) $o[] = "  - [Filtros de agua para nevecón en $c]($b$r)";
 $o[] = '';
 $o[] = '## Guías de técnico';

@@ -86,3 +86,5 @@ input,select,textarea{font:inherit;color:inherit;background:var(--bg);border:1px
 .tienda-filtros button{border:1.5px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 13px;font-weight:700;cursor:pointer}
 .tienda-filtros button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .card .btn.sm{margin-top:auto}
+
+.tutorial ol.pasos{display:flex;flex-direction:column;gap:8px;padding-left:22px;margin:4px 0}.tutorial ol.pasos li{line-height:1.5}

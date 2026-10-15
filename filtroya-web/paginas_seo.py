@@ -7,6 +7,8 @@ no solo el nombre cambiado: así Google la toma como útil y no como una copia.
 import html
 import json
 
+import instalacion
+
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
 
@@ -130,9 +132,10 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
   <li>{f"Compara el modelo con estos nevecones que usan este filtro: {modelos}." if modelos else "Si tienes dudas, escríbenos al correo con la foto del filtro viejo o de la etiqueta y te confirmamos antes de comprar."}</li></ol>
 </section>
 {mas_info(p, ubic, r)}
-<section class="caja"><h2>Cómo se cambia</h2>{pasos_cambio(p, ubic)}<p class="m">Más detalles en la guía <a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">cómo cambiar el filtro de agua del nevecón</a>.</p></section>
+{instalacion.tutorial_html(p, r)}
+<p class="m">¿Otro tipo de filtro? Mira <a href="/instalacion/">todos los tutoriales de instalación</a>.</p>
 {faq_html(preguntas)}"""
-            escribir(ruta, titulo, desc, [mg_ld, faq_ld(preguntas)], cuerpo)
+            escribir(ruta, titulo, desc, [mg_ld, faq_ld(preguntas), instalacion.tutorial_ld(p, f"__BASE__{ruta}", r)], cuerpo)
 
     # ---------- modelos de nevecón ----------
     modelos_dir = []  # (marca, modelo, ruta, producto)
@@ -163,7 +166,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
   <p>El modelo está en la etiqueta de adentro del refrigerador (en una pared lateral o en el techo). Tiene que decir <span class="ref">{esc(m)}</span>; a veces trae letras o números de más al final, y es el mismo nevecón.</p>
   <p>El filtro que trae puesto debe decir <span class="ref">{esc(p["ref"])}</span> o una de sus equivalencias: {", ".join(f'<a href="/referencia/{slug(x)}/">{esc(x)}</a>' if norm(x) not in principales else esc(x) for x in p["refs"] if norm(x) != norm(p["ref"])) or "—"}.</p>
 </section>
-<section class="caja"><h2>Cómo cambiar el filtro del {esc(m)}</h2>{pasos_cambio(p, ubic)}</section>
+{instalacion.tutorial_html(p)}
 {f'<section class="caja"><h2>Otros nevecones que usan el mismo filtro</h2><div class="chips">{"".join(f"<a href=\"/nevecon/{slug(x)}/\">{esc(x)}</a>" for x in hermanos)}</div></section>' if hermanos else ""}
 {faq_html(preguntas)}"""
             escribir(ruta, titulo, desc, [mg_ld, faq_ld(preguntas)], cuerpo)
@@ -415,6 +418,19 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 <h1>Enviamos a toda Colombia</h1>
 <p>Envío <b>gratis</b> de filtros de agua para nevecón a {len(CIUDADES_CO) + 1} ciudades y municipios de {len(deptos)} departamentos. Si tu municipio no aparece, también te lo enviamos: escoge «Otro municipio» al pagar.</p>
 {bloques}""")
+
+    # ---------- tutoriales de instalación ----------
+    mg, mg_ld = miga(("Inicio", "/"), ("Cómo instalar tu filtro", None))
+    filas = "".join(f'''<section class="caja"><h2><a href="/filtro/{p["slug"]}/#instalacion">Cómo instalar el {esc(p["nombre_largo"])}</a></h2><p><b>Dónde va:</b> {esc(instalacion.datos(p)["donde"])}</p><p class="m">Tiempo: {esc(instalacion.datos(p)["tiempo"])} · <a href="/filtro/{p["slug"]}/#instalacion">Ver el paso a paso</a></p></section>''' for p in CATALOGO)
+    escribir("/instalacion/", "Cómo instalar el filtro de agua del nevecón | Tutorial por referencia",
+             "Paso a paso para instalar cada filtro de agua de nevecón Samsung, LG, Whirlpool y GE: dónde va, cómo se saca el viejo, cómo se pone el nuevo y cómo reiniciar la luz del filtro.",
+             [mg_ld, {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__/filtro/{p['slug']}/#instalacion", "name": f"Cómo instalar el {p['nombre_largo']}"} for i, p in enumerate(CATALOGO)]}],
+             f"""{mg}
+<h1>Cómo instalar el filtro de agua de tu nevecón</h1>
+<p>Cada filtro se instala distinto: unos van arriba dentro del refrigerador y se giran, otros van en la rejilla de abajo y otros en la manguera de atrás. Busca el tuyo y sigue el paso a paso. Se hace en minutos y sin herramientas; en Cali te lo instalamos gratis.</p>
+<section class="caja"><h2>Antes de empezar</h2><ul><li>Ten a la mano un trapo: al sacar el filtro caen unas gotas.</li><li>Confirma que el filtro nuevo tenga la misma referencia que el viejo o una de sus <a href="/referencias/">equivalencias</a>.</li><li>Después de instalarlo, purga el agua y reinicia la luz del filtro (está en cada tutorial).</li></ul></section>
+{filas}
+<p class="m">¿Cada cuánto se cambia? Mira la guía <a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">cada cuánto cambiar el filtro del nevecón</a>.</p>""")
 
     # ---------- directorios ----------
     mg, mg_ld = miga(("Inicio", "/"), ("Referencias", None))
