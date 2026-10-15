@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/partes.php';
 $cat = catalogo();
-$pub = ['ciudades' => $cat['ciudades'], 'productos' => array_map(fn($p) => ['nombre' => $p['nombre'], 'ref' => $p['ref'], 'marca' => $p['marca'], 'precio' => $p['precio'], 'pack' => $p['pack'], 'slug' => $p['slug']], $cat['productos'])];
+$pub = ['ciudades' => $cat['ciudades'], 'dias' => (object) ($cat['dias'] ?? []), 'productos' => array_map(fn($p) => ['nombre' => $p['nombre'], 'ref' => $p['ref'], 'marca' => $p['marca'], 'precio' => $p['precio'], 'pack' => $p['pack'], 'slug' => $p['slug']], $cat['productos'])];
 cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/carrito.php', '', false);
 ?>
 <h1>Tu carrito</h1>
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }).join("");
     const ciudad = $("#c-ciudad").value, cali = ciudad === "Cali";
     const ops = cali ? [["instalacion", "Te lo llevamos e instalamos", "Te llamamos para acordar el día y la hora."], ["domicilio", "Solo entrega, sin instalación", "Te llamamos para acordar el día y la hora."]]
-      : ciudad ? [["transportadora", "Envío por transportadora", `Llega en unos 2 días hábiles, hacia el ${habiles(2)}. Te enviamos la guía al correo.`]] : [];
+      : ciudad ? [["transportadora", "Envío por transportadora", `Llega en unos ${(C.dias || {})[ciudad] || 2} días hábiles, hacia el ${habiles((C.dias || {})[ciudad] || 2)}. Te enviamos la guía al correo.`]] : [];
     if (!ops.some(o => o[0] === entrega)) entrega = ops[0]?.[0] || null;
     $("#entrega").innerHTML = ciudad ? `<b>Entrega en ${esc(ciudad)}</b>` + ops.map(([k, t, s]) => `<label class="opc"><input type="radio" name="ent" value="${k}" ${k === entrega ? "checked" : ""}><span><b>${t}</b><small>${s}</small></span><span class="gratis">Gratis</span></label>`).join("") : `<span class="m">Escoge tu ciudad para ver la entrega.</span>`;
     const t = total(), n = L.reduce((a, l) => a + l.cant * (l.pack ? 2 : 1), 0);

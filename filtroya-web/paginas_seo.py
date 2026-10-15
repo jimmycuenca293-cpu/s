@@ -35,7 +35,7 @@ def caja_producto(p, titulo=None):
     <span class="m">{esc(titulo or "El filtro que necesitas")}</span>
     <h2 style="margin:0">{esc(p["nombre_largo"])}</h2>
     <span class="precio">{cop(p["precio"])}</span>
-    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 días hábiles.</li><li>En Cali: <b>domicilio e instalación gratis</b>.</li><li>Garantía de 30 días: si no encaja, te lo cambiamos.</li></ul>
+    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li>En Cali: <b>domicilio e instalación gratis</b>.</li><li>Garantía de 30 días: si no encaja, te lo cambiamos.</li></ul>
     <div class="compra"><button class="btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><a class="link" href="/filtro/{p["slug"]}/">Ver todos los detalles del filtro</a></div>
   </div>
 </div>"""
@@ -57,7 +57,26 @@ def pasos_cambio(p, ubic):
     return "<ol>" + "".join(f"<li>{esc(x)}</li>" for x in pasos) + "</ol>"
 
 
-def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta):
+def mas_info(p, ubic, r=None):
+    """Bloque de descripción ampliada: qué hace, cuándo cambiarlo y qué pasa si no se cambia. Sirve en la ficha y en las referencias."""
+    nombre = r or p["ref"]
+    tipo = ("Es un filtro externo: se conecta en la manguera que lleva el agua al nevecón, así que sirve también para nevecones que no traen filtro de fábrica o que lo tienen dañado."
+            if ubic(p) == "externo" else
+            "Es un filtro interno: va dentro del nevecón, en su alojamiento original, y se cambia en menos de un minuto sin cerrar la llave del agua.")
+    return f"""<section class="caja">
+  <h2>Para qué sirve el filtro {esc(nombre)}</h2>
+  <p>{esc(p.get("desc", ""))}</p>
+  <p>{esc(tipo)}</p>
+  <ul class="ok"><li><b>Mejor sabor y olor:</b> retiene el cloro y los compuestos que le dan sabor a tubería al agua y al hielo.</li>
+  <li><b>Hielo más claro:</b> menos sedimento y partículas en los cubos.</li>
+  <li><b>Protege el nevecón:</b> el sedimento tapa la válvula de entrada y la máquina de hielo; un filtro al día las cuida.</li>
+  <li><b>Más barato que el botellón:</b> un filtro rinde unos 6 meses de agua fría filtrada para toda la familia.</li></ul>
+  <h3 style="margin:6px 0 0;font-size:16px">Señales de que ya toca cambiarlo</h3>
+  <ul><li>Se cumplieron 6 meses desde el último cambio, o se prendió la luz de «Filter» o «Replace».</li><li>El agua o el hielo saben u huelen raro.</li><li>El dispensador echa el agua con poca presión o a chorritos.</li><li>El hielo sale pequeño, turbio o la máquina hace menos.</li></ul>
+</section>"""
+
+
+def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDADES_CO=()):
     paginas = []
 
     def escribir(ruta, titulo, desc, ld_items, cuerpo):
@@ -110,6 +129,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta):
   <li>Si no se lee, mira el modelo del nevecón en la etiqueta de adentro (en una pared lateral o en el techo del refrigerador).</li>
   <li>{f"Compara el modelo con estos nevecones que usan este filtro: {modelos}." if modelos else "Si tienes dudas, escríbenos al correo con la foto del filtro viejo o de la etiqueta y te confirmamos antes de comprar."}</li></ol>
 </section>
+{mas_info(p, ubic, r)}
 <section class="caja"><h2>Cómo se cambia</h2>{pasos_cambio(p, ubic)}<p class="m">Más detalles en la guía <a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">cómo cambiar el filtro de agua del nevecón</a>.</p></section>
 {faq_html(preguntas)}"""
             escribir(ruta, titulo, desc, [mg_ld, faq_ld(preguntas)], cuerpo)
@@ -317,6 +337,85 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta):
 <div class="grid">{"".join(tarjeta(p) for p in CATALOGO)}</div>
 <p class="m">¿No estás en Cali? Te lo enviamos gratis a toda Colombia y llega en unos 2 días hábiles.</p>""")
 
+    # ---------- ciudades: una página por ciudad y por departamento ----------
+    rutas_ciudad = {"Cali": "/cali/"}
+    deptos = {}
+    for c in CIUDADES_CO:
+        deptos.setdefault(c[1], []).append(c)
+    precios = [p["precio"] for p in CATALOGO]
+    oferta = {"@type": "AggregateOffer", "priceCurrency": "COP", "lowPrice": str(min(precios)), "highPrice": str(max(precios)), "offerCount": str(len(CATALOGO))}
+    for c in CIUDADES_CO:
+        rutas_ciudad[c[0]] = f"/envios/{slug(c[1])}/{slug(c[0])}/"
+    for c in CIUDADES_CO:
+        ciudad, depto = c[0], c[1]
+        dias = c[2] if len(c) > 2 else 2
+        cerca_cali = depto == "Valle del Cauca"
+        lejos = dias >= 5
+        ruta = rutas_ciudad[ciudad]
+        vecinas = [x for x in deptos[depto] if x[0] != ciudad]
+        mg, mg_ld = miga(("Inicio", "/"), ("Envíos", "/envios/"), (depto, f"/envios/{slug(depto)}/"), (ciudad, None))
+        cuando = f"{dias} días hábiles" if dias > 2 else "2 días hábiles"
+        preguntas = [
+            (f"¿Envían filtros de agua para nevecón a {ciudad}?", f"Sí. Enviamos a {ciudad} ({depto}) los filtros para nevecones Samsung, LG, Whirlpool y GE, con envío gratis y número de guía."),
+            (f"¿Cuánto se demora el envío a {ciudad}?", f"Llega en unos {cuando} después del pago. {'Por la distancia puede tardar un poco más en temporada alta.' if lejos else 'Despachamos el mismo día o el siguiente día hábil.'}"),
+            (f"¿Cuánto cuesta el envío a {ciudad}?", "Nada: el envío es gratis y el precio que ves es el precio final."),
+            (f"¿Me lo instalan en {ciudad}?", "La instalación a domicilio es solo en Cali. Pero el filtro se cambia en menos de 5 minutos y sin herramientas: te dejamos los pasos en la página de cada filtro y en la guía."),
+            (f"¿Cómo pago desde {ciudad}?", "En línea, en página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Te llega el recibo a tu correo."),
+        ]
+        ld = [mg_ld, faq_ld(preguntas), {
+            "@type": "Service", "name": f"Venta y envío de filtros de agua para nevecón a {ciudad}", "serviceType": "Venta de filtros de agua para nevecón",
+            "provider": {"@id": "__BASE__/#tienda"}, "url": f"__BASE__{ruta}",
+            "areaServed": {"@type": "City", "name": ciudad, "containedInPlace": {"@type": "AdministrativeArea", "name": depto, "containedInPlace": {"@type": "Country", "name": "Colombia"}}},
+            "offers": oferta}]
+        cuerpo = f"""{mg}
+<h1>Filtros de agua para nevecón en {esc(ciudad)}</h1>
+<p>Te enviamos el filtro de agua de tu nevecón <b>Samsung, LG, Whirlpool o GE</b> a {esc(ciudad)}, {esc(depto)}, con <b>envío gratis</b>. Llega en unos <b>{cuando}</b> después del pago y te mandamos el número de guía a tu correo.</p>
+<section class="caja">
+  <h2>Envío a {esc(ciudad)}</h2>
+  <dl class="dq"><dt>Ciudad</dt><dd>{esc(ciudad)}</dd><dt>Departamento</dt><dd>{esc(depto)}</dd><dt>Tiempo de entrega</dt><dd>Unos {cuando}</dd><dt>Costo del envío</dt><dd>Gratis</dd>
+  <dt>Instalación</dt><dd>{'Gratis solo en Cali (a ' + esc(ciudad) + ' te lo enviamos listo para instalar)' if cerca_cali else 'La haces tú en 5 minutos, sin herramientas'}</dd><dt>Pago</dt><dd>Tarjeta, PSE, Nequi o botón Bancolombia</dd></dl>
+</section>
+<h2>Filtros que enviamos a {esc(ciudad)}</h2>
+<div class="grid">{"".join(tarjeta(p) for p in CATALOGO)}</div>
+<section class="caja">
+  <h2>Cómo pedir tu filtro desde {esc(ciudad)}</h2>
+  <ol><li>Busca la referencia impresa en tu filtro viejo o el modelo de tu nevecón: mira el <a href="/referencias/">directorio de referencias</a> o el de <a href="/neveras/">modelos de nevecón</a>.</li>
+  <li>Agrégalo al carrito (puedes llevar varios o el pack anual de 2) y escoge {esc(ciudad)} como ciudad de entrega.</li>
+  <li>Paga en línea. Te llega el recibo al correo y despachamos tu pedido con número de guía.</li>
+  <li>Cámbialo en 5 minutos con la guía <a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">cómo cambiar el filtro de agua del nevecón</a>.</li></ol>
+</section>
+{faq_html(preguntas)}
+{f'<section class="caja"><h2>También enviamos en {esc(depto)}</h2><div class="chips">' + "".join(f'<a href="{rutas_ciudad[x[0]]}">{esc(x[0])}</a>' for x in vecinas) + (f'<a href="/cali/">Cali</a>' if cerca_cali else "") + '</div></section>' if vecinas or cerca_cali else ""}
+<p class="m">Mira <a href="/envios/">todas las ciudades a las que enviamos</a>.</p>"""
+        escribir(ruta, f"Filtros de agua para nevecón en {ciudad} | Envío gratis",
+                 f"Filtros de agua para nevecón Samsung, LG, Whirlpool y GE con envío gratis a {ciudad}, {depto}. Llega en unos {cuando}. Paga en línea con tarjeta, PSE o Nequi.",
+                 ld, cuerpo)
+    for depto, cs in deptos.items():
+        mg, mg_ld = miga(("Inicio", "/"), ("Envíos", "/envios/"), (depto, None))
+        lista = sorted(cs, key=lambda x: slug(x[0]))
+        if depto == "Valle del Cauca":
+            lista = [["Cali", depto]] + lista
+        escribir(f"/envios/{slug(depto)}/", f"Filtros de agua para nevecón en {depto} | Envío gratis",
+                 f"Enviamos filtros de agua para nevecón Samsung, LG, Whirlpool y GE a {', '.join(x[0] for x in lista[:6])} y más ciudades de {depto}. Envío gratis.",
+                 [mg_ld, {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__{rutas_ciudad[x[0]]}", "name": x[0]} for i, x in enumerate(lista)]}],
+                 f"""{mg}
+<h1>Filtros de agua para nevecón en {esc(depto)}</h1>
+<p>Enviamos gratis los filtros de agua para nevecones Samsung, LG, Whirlpool y GE a {len(lista)} {"ciudad" if len(lista) == 1 else "ciudades"} de {esc(depto)}. Escoge la tuya para ver el tiempo de entrega:</p>
+<div class="caja" style="overflow-x:auto"><table class="t"><tr><th>Ciudad</th><th>Entrega</th><th>Envío</th></tr>{"".join(f'<tr><td><a href="{rutas_ciudad[x[0]]}">{esc(x[0])}</a></td><td>{"Domicilio e instalación" if x[0] == "Cali" else "Unos " + str(x[2] if len(x) > 2 else 2) + " días hábiles"}</td><td>Gratis</td></tr>' for x in lista)}</table></div>
+<h2>Filtros disponibles</h2>
+<div class="grid">{"".join(tarjeta(p) for p in CATALOGO)}</div>""")
+    mg, mg_ld = miga(("Inicio", "/"), ("Envíos", None))
+    bloques = "".join(f'<section class="caja"><h2><a href="/envios/{slug(d)}/">{esc(d)}</a></h2><div class="chips">'
+                      + ("<a href=\"/cali/\">Cali</a>" if d == "Valle del Cauca" else "")
+                      + "".join(f'<a href="{rutas_ciudad[x[0]]}">{esc(x[0])}</a>' for x in sorted(cs, key=lambda x: slug(x[0]))) + "</div></section>"
+                      for d, cs in sorted(deptos.items(), key=lambda kv: slug(kv[0])))
+    escribir("/envios/", "Envío gratis de filtros para nevecón a toda Colombia | Ciudades",
+             f"Enviamos filtros de agua para nevecón a {len(CIUDADES_CO) + 1} ciudades de los {len(deptos)} departamentos de Colombia y Bogotá. Envío gratis, pago en línea.",
+             [mg_ld], f"""{mg}
+<h1>Enviamos a toda Colombia</h1>
+<p>Envío <b>gratis</b> de filtros de agua para nevecón a {len(CIUDADES_CO) + 1} ciudades y municipios de {len(deptos)} departamentos. Si tu municipio no aparece, también te lo enviamos: escoge «Otro municipio» al pagar.</p>
+{bloques}""")
+
     # ---------- directorios ----------
     mg, mg_ld = miga(("Inicio", "/"), ("Referencias", None))
     filas = "".join(f'<tr><td><a href="{ruta}"><span class="ref">{esc(r)}</span></a></td><td>{esc(p["marca"])}</td><td><a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a></td></tr>'
@@ -336,4 +435,4 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta):
              [mg_ld], f'{mg}<h1>¿Qué filtro usa mi nevecón?</h1><p>Busca el modelo que aparece en la etiqueta de adentro de tu nevecón.</p>{bloques}'
              '<p class="m">¿No está tu modelo? Mira la guía <a href="/guia/como-saber-que-filtro-usa-mi-nevecon/">cómo saber qué filtro usa mi nevecón</a>.</p>')
 
-    return {"paginas": paginas, "refs": refs_dir, "modelos": modelos_dir, "guias": [(f"/guia/{s}/", t) for s, t, _, _ in GUIAS]}
+    return {"paginas": paginas, "rutas_ciudad": rutas_ciudad, "refs": refs_dir, "modelos": modelos_dir, "guias": [(f"/guia/{s}/", t) for s, t, _, _ in GUIAS]}

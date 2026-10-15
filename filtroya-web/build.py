@@ -71,7 +71,8 @@ cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
 # ---------- datos de la app ----------
 CATALOGO = node_eval(js_valor("CATALOGO"))
 POPULARES = node_eval(js_valor("POPULARES"))
-ciudades = node_eval(f'[...{js_valor("CALI_METRO")}, ...{js_valor("PRINCIPALES")}, "Otro municipio"]')
+CIUDADES_CO = node_eval(js_valor("CIUDADES_CO"))  # [ciudad, departamento, días?]
+ciudades = node_eval(js_valor("CALI_METRO")) + [c[0] for c in CIUDADES_CO] + ["Otro municipio"]
 MARCAS = [m[0] for m in node_eval(js_valor("MARCAS"))]
 ubic = lambda p: "externo" if "-ex-" in p["id"] else "interno"
 for p in CATALOGO:
@@ -261,7 +262,7 @@ index_php = f"""<?php require __DIR__ . '/api/sitio.php'; $S = sitio(); $n = $S[
 <?= verificacion_html() . analytics_html() ?>
 <script type="application/ld+json"><?php $ld = <<<'JSON'
 {json.dumps({"@context": "https://schema.org", "@graph": [
-    {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/lg-1000-o.jpg", "address": {"@type": "PostalAddress", "addressLocality": "Cali", "addressRegion": "Valle del Cauca", "addressCountry": "CO"}, "areaServed": "CO", "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi", "sameAs": "__SAMEAS__"},
+    {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/lg-1000-o.jpg", "address": {"@type": "PostalAddress", "addressLocality": "Cali", "addressRegion": "Valle del Cauca", "addressCountry": "CO"}, "areaServed": {"@type": "Country", "name": "Colombia"}, "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi", "sameAs": "__SAMEAS__"},
     {"@type": "WebSite", "name": "__NOMBRE__", "url": "__BASE__/", "inLanguage": "es-CO"},
     {"@type": "ItemList", "name": "Filtros de agua para nevecón", "itemListElement": marca_ld}]}, ensure_ascii=False)}
 JSON;
@@ -313,6 +314,9 @@ def cabeza_php(partes, titulo, desc, ruta, ld, img=None):
             f"cabeza({php_str(titulo)}, {php_str(desc)}, {php_str(ruta)}, '{extra}<script type=\"application/ld+json\">' . str_replace('__BASE__', sitio()['base'], $ld) . '</script>'); ?>")
 
 
+RUTAS_CIUDAD = {"Cali": "/cali/", **{c[0]: f"/envios/{slug(c[1])}/{slug(c[0])}/" for c in CIUDADES_CO}}
+CIUDADES_TOP = ["Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena", "Bucaramanga", "Pereira", "Manizales", "Armenia", "Ibagué", "Cúcuta", "Santa Marta",
+                "Villavicencio", "Neiva", "Pasto", "Popayán", "Montería", "Valledupar", "Sincelejo", "Tunja", "Palmira", "Soacha", "Envigado", "Chía"]
 PRINCIPALES = {norm(p["ref"]) for p in CATALOGO}
 ruta_ref = {}
 for p in CATALOGO:
@@ -353,7 +357,7 @@ for p in CATALOGO:
     <span class="m">Filtro de agua para nevecón {esc(p["marca"])} · {"Externo" if ubic(p) == "externo" else "Interno"} · Referencia <span class="ref">{esc(p["ref"])}</span></span>
     <?php if ($R['n']) echo '<a href="#opiniones" style="text-decoration:none">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span class="m">(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
     <span class="precio">{cop(p["precio"])}</span>
-    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 días hábiles.</li><li>En Cali: <b>domicilio e instalación gratis</b>.</li><li>Pack anual de 2 filtros: {cop(p["pack"])} (ahorras {cop(ahorro)}).</li><li>Garantía de 30 días: si no encaja, te lo cambiamos.</li></ul>
+    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li>En Cali: <b>domicilio e instalación gratis</b>.</li><li>Pack anual de 2 filtros: {cop(p["pack"])} (ahorras {cop(ahorro)}).</li><li>Garantía de 30 días: si no encaja, te lo cambiamos.</li></ul>
     <div class="compra"><button class="btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="link" type="button" data-add="{p["id"]}" data-pack="1">+ Pack anual de 2 por {cop(p["pack"])} (ahorras {cop(ahorro)})</button></div>
     <span class="m">Pago seguro en línea: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span>
   </div>
@@ -368,9 +372,9 @@ for p in CATALOGO:
 </section>
 <section class="caja datos">
   <h2>Ficha técnica y datos rápidos</h2>
-  <p>El <b>{esc(p["nombre_largo"])}</b> es el filtro de agua {"externo (va en la manguera)" if ubic(p) == "externo" else "interno"} para nevecones {esc(p["marca"])}{(", también conocido como " + esc(", ".join(alias[:5]))) if alias else ""}. Cuesta {cop(p["precio"])} en <?= h(cfg()['negocio']['nombre']) ?> con envío gratis a toda Colombia (2 días hábiles) e instalación gratis en Cali. Se cambia cada 6 meses.</p>
+  <p>El <b>{esc(p["nombre_largo"])}</b> es el filtro de agua {"externo (va en la manguera)" if ubic(p) == "externo" else "interno"} para nevecones {esc(p["marca"])}{(", también conocido como " + esc(", ".join(alias[:5]))) if alias else ""}. Cuesta {cop(p["precio"])} en <?= h(cfg()['negocio']['nombre']) ?> con envío gratis a toda Colombia (2 a 3 días hábiles en las principales ciudades) e instalación gratis en Cali. Se cambia cada 6 meses.</p>
   <dl class="dq"><dt>Referencia</dt><dd>{esc(p["ref"])}</dd><dt>Marca del nevecón</dt><dd>{esc(p["marca"])}</dd><dt>Tipo</dt><dd>{"Externo, en la manguera" if ubic(p) == "externo" else "Interno"}</dd>
-  <dt>Precio</dt><dd>{cop(p["precio"])} (pack de 2: {cop(p["pack"])})</dd><dt>Envío</dt><dd>Gratis a toda Colombia, 2 días hábiles</dd><dt>Instalación</dt><dd>Gratis en Cali</dd><dt>Duración</dt><dd>6 meses</dd>
+  <dt>Precio</dt><dd>{cop(p["precio"])} (pack de 2: {cop(p["pack"])})</dd><dt>Envío</dt><dd>Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades</dd><dt>Instalación</dt><dd>Gratis en Cali</dd><dt>Duración</dt><dd>6 meses</dd>
   {f'<dt>Equivalencias</dt><dd>{esc(", ".join(alias))}</dd>' if alias else ""}{f'<dt>Nevecones</dt><dd>{esc(", ".join(p["modelos"]))}</dd>' if p["modelos"] else ""}</dl>
 </section>
 <section class="caja">
@@ -381,6 +385,7 @@ for p in CATALOGO:
   {f'<p>{esc(p["nota"])}</p>' if p.get("nota") else ""}
   <p>Cámbialo cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión. <a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Más sobre cuándo cambiarlo</a>.</p>
 </section>
+{paginas_seo.mas_info(p, ubic)}
 <section class="caja"><h2>Cómo se cambia</h2>{paginas_seo.pasos_cambio(p, ubic)}</section>
 <section class="caja" id="opiniones"><h2>Opiniones de compradores</h2>
 <?php if ($R['n']): ?><span><?= estrellas_html($R['prom']) ?> <b><?= $R['prom'] ?> de 5</b> · <?= $R['n'] ?> <?= $R['n'] === 1 ? 'opinión' : 'opiniones' ?> de compradores reales</span>
@@ -389,11 +394,12 @@ for p in CATALOGO:
 </section>
 <section style="display:flex;flex-direction:column;gap:8px">
   <h2>Preguntas frecuentes</h2>
-  <details><summary>¿Cuánto cuesta el envío?</summary><p>Nada. El envío es gratis a toda Colombia y llega en unos 2 días hábiles después del pago.</p></details>
+  <details><summary>¿Cuánto cuesta el envío?</summary><p>Nada. El envío es gratis a toda Colombia y llega en unos 2 a 3 días hábiles a las principales ciudades. Mira el <a href="/envios/">tiempo de entrega a tu ciudad</a>.</p></details>
   <details><summary>¿Lo instalan?</summary><p>En Cali te lo llevamos e instalamos gratis. En otras ciudades te lo enviamos con las instrucciones: se instala en minutos, sin herramientas.</p></details>
   <details><summary>¿Cómo pago?</summary><p>En línea, en página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Te llega el recibo a tu correo.</p></details>
   <details><summary>¿Y si no me sirve?</summary><p>Tienes 5 días hábiles para retractarte con el filtro sin instalar, y 30 días de garantía si no encaja o llega con un defecto. Mira los <a href="/terminos.php#garantia">términos</a>.</p></details>
 </section>
+<section class="caja"><h2>Enviamos el {esc(p["ref"])} a toda Colombia</h2><p>Envío gratis a {len(CIUDADES_CO) + 1} ciudades y municipios. Estas son algunas:</p><div class="chips">{"".join(f'<a href="{RUTAS_CIUDAD[c]}">{esc(c)}</a>' for c in CIUDADES_TOP)}</div><p class="m"><a href="/envios/">Ver todas las ciudades</a></p></section>
 {f'<section style="display:flex;flex-direction:column;gap:10px"><h2>Otros filtros {esc(p["marca"])}</h2><div class="grid">{"".join(tarjeta(x) for x in otros)}</div></section>' if otros else ""}
 <div class="barra-compra"><span><span class="m">{esc(p["nombre_largo"])}</span><b>{cop(p["precio"])}</b></span><button class="btn" type="button" data-add="{p["id"]}">Agregar al carrito</button></div>
 <?php pie(); ?>
@@ -430,7 +436,7 @@ for marca in MARCAS:
     (d / "index.php").write_text(pagina, encoding="utf-8")
 
 # ---------- referencias, nevecones, guías, Cali y directorios ----------
-extra = paginas_seo.generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta)
+extra = paginas_seo.generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDADES_CO)
 
 # ---------- catálogo del servidor ----------
 def php_val(v):
@@ -448,6 +454,8 @@ def php_val(v):
 cat_php = {
     "fecha": datetime.date.today().isoformat(),
     "ciudades": ciudades,
+    "dias": {c[0]: c[2] for c in CIUDADES_CO if len(c) > 2},
+    "rutas_ciudad": extra["rutas_ciudad"],
     "marcas": [{"nombre": m, "slug": slug(m)} for m in MARCAS],
     "paginas": extra["paginas"],
     "guias": [{"ruta": r, "titulo": t} for r, t in extra["guias"]],
