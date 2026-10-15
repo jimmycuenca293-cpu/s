@@ -566,7 +566,7 @@ const CIUDADES = [...CALI_METRO, ...PRINCIPALES, "Otro municipio"];
 const CATALOGO = [
   // Precios: costo + $15.200 de envío + comisión de la pasarela (2,65 % + $700 + IVA) + mínimo $40.000 de ganancia por filtro.
   { id: "sam-cin-o", pack: 214900, marca: "Samsung", nombre: "Filtro Samsung HAF-CIN", ref: "DA29-00020B", refs: ["DA29-00020B", "DA29-00020A", "HAF-CIN", "HAF-CIN/EXP", "46-9101"], modelos: ["RF28HMEDBSR", "RF263BEAESR", "RF28HFEDBSR", "RF4287HARS", "RF26J7500SR", "RF23J9011SR"], desc: "Es el filtro redondo y alargado de Samsung. Va adentro del refrigerador, en la parte de arriba, y se cambia girándolo un cuarto de vuelta. Lo usan la mayoría de nevecones Samsung French Door y Side by Side con dispensador.", tipo: "original", precio: 115900, stock: 10, forma: "cin", color: "#2d6cdf" },
-  { id: "sam-qin-o", pack: 214900, marca: "Samsung", nombre: "Filtro Samsung HAF-QIN", ref: "DA97-17376B", refs: ["DA97-17376B", "DA97-08006C", "HAF-QIN", "HAF-QIN/EXP"], modelos: ["RF28R7351SR", "RF22R7351SG", "RF28R7201SR", "RF23M8070SR"], desc: "Es el filtro Samsung de cuerpo más ancho y hombros cuadrados. Lo usan los nevecones Samsung más recientes con dispensador, incluidos varios Bespoke y Family Hub. Va adentro del refrigerador y se cambia girándolo.", tipo: "original", precio: 115900, stock: 10, forma: "qin", color: "#2d6cdf" },
+  { id: "sam-qin-o", pack: 214900, marca: "Samsung", nombre: "Filtro Samsung HAF-QIN", ref: "DA97-17376B", linkPago: "https://checkout.wompi.co/l/8oheVS", refs: ["DA97-17376B", "DA97-08006C", "HAF-QIN", "HAF-QIN/EXP"], modelos: ["RF28R7351SR", "RF22R7351SG", "RF28R7201SR", "RF23M8070SR"], desc: "Es el filtro Samsung de cuerpo más ancho y hombros cuadrados. Lo usan los nevecones Samsung más recientes con dispensador, incluidos varios Bespoke y Family Hub. Va adentro del refrigerador y se cambia girándolo.", tipo: "original", precio: 115900, stock: 10, forma: "qin", color: "#2d6cdf" },
   { id: "sam-cu1-o", pack: 214900, marca: "Samsung", nombre: "Filtro Samsung Aqua-Pure Plus", ref: "DA29-00003G", refs: ["DA29-00003G", "DA29-00003B", "DA29-00003F", "HAFCU1", "HAFCU1/XAA", "HAFIN2", "HAFIN2/EXP"], modelos: ["RS2630SH", "RS2530BSH", "RS2555SL", "RS261MDRS"], desc: "Es el filtro Samsung corto y redondo, de tapa azul (Aqua-Pure Plus). Lo usan nevecones Samsung Side by Side de generaciones anteriores. Se cambia girándolo, sin herramientas.", tipo: "original", precio: 115900, stock: 10, forma: "cu1", color: "#2d6cdf" },
   { id: "sam-ex-o", pack: 145900, marca: "Samsung", nombre: "Filtro Samsung externo", ref: "DA29-10105J", refs: ["DA29-10105J", "HAFEX", "HAFEX/EXP", "WSF-100"], modelos: [], nota: "Va en la manguera de agua, por fuera del nevecón. Sirve para nevecones con dispensador que no traen filtro interno.", desc: "Es un filtro externo en línea: un cilindro que se conecta a la manguera del agua por detrás del nevecón, con conexiones rápidas. Sirve para nevecones con dispensador que no traen filtro interno, o como filtro adicional antes del interno.", tipo: "original", precio: 81900, stock: 10, forma: "lt", color: "#2d6cdf" },
   // LG: precios reales.
@@ -626,6 +626,7 @@ const PAGOS = {
   contra: { t: "Contra entrega", sub: "", logo: "" },
   nequi: { t: "Nequi", sub: "Pagas desde la app Nequi y mandas el comprobante.", dato: () => NEGOCIO.nequi, logo: '<span class="paylogo" style="background:#200020;color:#ff5fa2">N</span>' },
   bancolombia: { t: "Bancolombia", sub: "Transferencia a cuenta Bancolombia.", dato: () => NEGOCIO.bancolombia, logo: '<span class="paylogo" style="background:#fdda24;color:#111">B</span>' },
+  linea: { t: "Pago en línea", sub: "Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia, en página de pago segura.", logo: '<span class="paylogo" style="background:#0f7b5f;color:#fff">✓</span>' },
   llave: { t: "Llave (Bre-B)", sub: "Pago inmediato desde cualquier banco con nuestra llave.", dato: () => NEGOCIO.llave, logo: '<span class="paylogo" style="background:#0b5cad;color:#fff">L</span>' }
 };
 function payBoxHTML(k) {
@@ -1027,7 +1028,10 @@ function modeloBuscado() {
   const q = $("#q").value.trim(), h = buscar(q)[0];
   return h && h.por.startsWith("nevecón") ? q.toUpperCase() : "";
 }
+// Producto con link de pago propio: se paga en línea cuando es 1 unidad (el link tiene el valor de 1 filtro)
+const conLink = () => typeof FY_WEB === "undefined" && !!cart && !!cart.p.linkPago && !cart.pack && cart.qty === 1;
 function fixEntrega() {
+  if (conLink()) cart.pago = "linea"; else if (cart.pago === "linea") cart.pago = "nequi";
   const d = delivery(cart.cli.ciudad, cart.p);
   const ok = d.local ? (d.instala && cart.p.stock ? ["instalacion", "domicilio"] : ["domicilio"]) : ["transportadora"];
   if (!ok.includes(cart.entrega)) cart.entrega = ok[0];
@@ -1075,7 +1079,7 @@ function renderStep() {
       </div>
       <div><b>¿Cómo pagas?</b></div>
       <div class="opt" id="o-pago">
-        ${["nequi", "bancolombia", "llave"].map(k => `<label><input type="radio" name="pago" value="${k}" ${cart.pago === k ? "checked" : ""}><span class="paylbl">${PAGOS[k].logo}<span><b>${PAGOS[k].t}</b><small>${PAGOS[k].sub}</small></span></span></label>`).join("")}
+        ${(conLink() ? ["linea"] : ["nequi", "bancolombia", "llave"]).map(k => `<label><input type="radio" name="pago" value="${k}" ${cart.pago === k ? "checked" : ""}><span class="paylbl">${PAGOS[k].logo}<span><b>${PAGOS[k].t}</b><small>${PAGOS[k].sub}</small></span></span></label>`).join("")}
       </div>
       <div id="sum">${sumHTML()}</div>
       <button class="btn block" type="button" data-go="2">Continuar: tus datos</button>
@@ -1114,9 +1118,9 @@ function renderStep() {
         <dt>Recordatorio</dt><dd>${k.recordar ? `Sí, cada ${NEGOCIO.mesesCambio} meses` : "No"}</dd>
       </dl>
       ${sumHTML()}
-      <a class="btn wa block" id="c-confirm" href="${waLink(orderMessage())}" target="_blank" rel="noopener">${ICON.wa}Enviar pedido a un asesor por WhatsApp</a>
+      ${cart.pago === "linea" ? `<a class="btn block" id="c-confirm" href="${esc(p.linkPago)}" target="_blank" rel="noopener">${ICON.shield}Pagar ${COP(t.total)} en línea</a>` : `<a class="btn wa block" id="c-confirm" href="${waLink(orderMessage())}" target="_blank" rel="noopener">${ICON.wa}Enviar pedido a un asesor por WhatsApp</a>`}
       <button class="btn ghost block" type="button" data-go="2">Corregir datos</button>
-      <p class="sub" style="font-size:12.5px;margin:0">Se abre WhatsApp con tu pedido escrito: solo toca Enviar. Un asesor te confirma disponibilidad, fecha de entrega y pago (${esc(NEGOCIO.horario)}). El pedido queda en firme con esa confirmación. Precio final: no hay cobros adicionales.</p>`);
+      <p class="sub" style="font-size:12.5px;margin:0">${cart.pago === "linea" ? "Se abre la página de pago segura: pagas con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Cuando el pago queda aprobado despachamos tu pedido. Precio final: no hay cobros adicionales." : `Se abre WhatsApp con tu pedido escrito: solo toca Enviar. Un asesor te confirma disponibilidad, fecha de entrega y pago (${esc(NEGOCIO.horario)}). El pedido queda en firme con esa confirmación. Precio final: no hay cobros adicionales.`}</p>`);
   }
 }
 function readStep2() {
@@ -1157,7 +1161,7 @@ function orderMessage() {
 }
 $("#sheet").addEventListener("click", e => {
   const q = e.target.closest("[data-q]");
-  if (q && cart) { e.preventDefault(); cart.qty = Math.max(1, Math.min(10, cart.qty + +q.dataset.q)); cart.pack = false; renderStep(); return; }
+  if (q && cart) { e.preventDefault(); cart.qty = Math.max(1, Math.min(10, cart.qty + +q.dataset.q)); cart.pack = false; fixEntrega(); renderStep(); return; }
   if (e.target.closest("[data-close]")) { closeSheet(); return; }
   const go = e.target.closest("[data-go]");
   if (go && cart) {
@@ -1174,7 +1178,7 @@ $("#sheet").addEventListener("change", e => {
   if (!cart) return;
   if (e.target.name === "entrega") cart.entrega = e.target.value;
   if (e.target.name === "pago") cart.pago = e.target.value;
-  if (e.target.name === "cant") cart.pack = e.target.value === "pack";
+  if (e.target.name === "cant") { cart.pack = e.target.value === "pack"; fixEntrega(); renderStep(); return; }
   if (e.target.id === "c-ciudad") { cart.cli.ciudad = e.target.value; fixEntrega(); }
   if (cart.step === 1) { const s = $("#sum"); if (s) s.innerHTML = sumHTML(); }
 });
@@ -1182,9 +1186,10 @@ $("#sheet").addEventListener("change", e => {
 let lastOrder = null;
 function placeOrder() {
   const t = totals(), p = cart.p, k = cart.cli;
+  cart.id = cart.id || "PF-" + Date.now().toString(36).toUpperCase().slice(-6);
   store.set("fy_cliente", { nombre: k.nombre, tel: k.tel, dir: k.dir, barrio: k.barrio, recordar: k.recordar });
   const cambio = new Date(); cambio.setMonth(cambio.getMonth() + NEGOCIO.mesesCambio);
-  const order = { id: cart.id, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: p.nombre, ref: p.ref, pid: p.id, qty: t.unidades, pack: cart.pack, ciudad: k.ciudad, entrega: cart.entrega, pago: cart.pago, total: t.total, eta: delivery(k.ciudad, p).corto, cliente: { ...k }, estado: "Enviado por WhatsApp", msg: orderMessage() };
+  const order = { id: cart.id, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: p.nombre, ref: p.ref, pid: p.id, qty: t.unidades, pack: cart.pack, ciudad: k.ciudad, entrega: cart.entrega, pago: cart.pago, total: t.total, eta: delivery(k.ciudad, p).corto, cliente: { ...k }, estado: cart.pago === "linea" ? "Pago en línea" : "Enviado por WhatsApp", msg: orderMessage(), link: cart.pago === "linea" ? p.linkPago : "" };
   const orders = store.get("fy_orders", []).filter(o => o.id !== order.id); orders.unshift(order); store.set("fy_orders", orders.slice(0, 50));
   lastOrder = order;
   setTimeout(() => {
@@ -1192,15 +1197,21 @@ function placeOrder() {
       <div class="done rise">
         <div class="ok-ico">${ICON.check}</div>
         <span class="sub">Pedido ${esc(order.id)}</span>
-        <div class="big" id="sh-title">Tu pedido está listo para enviar</div>
-        <ol class="steps">
+        <div class="big" id="sh-title">${order.link ? "Completa el pago en la página segura" : "Tu pedido está listo para enviar"}</div>
+        ${order.link ? `<ol class="steps">
+          <li>En la página que se abrió paga ${COP(order.total)} con tarjeta, PSE, Nequi o botón Bancolombia.</li>
+          <li>Envíanos tus datos de entrega por WhatsApp con el botón de abajo para despachar tu pedido.</li>
+          <li>${esc(order.eta)}.</li>
+        </ol>
+        <a class="btn block" href="${esc(order.link)}" target="_blank" rel="noopener">${ICON.shield}Abrir el pago otra vez</a>
+        <a class="btn wa block" href="${waLink(order.msg)}" target="_blank" rel="noopener">${ICON.wa}Enviar mis datos de entrega</a>` : `<ol class="steps">
           <li>En WhatsApp toca <b>Enviar</b> para que el pedido nos llegue.</li>
           <li>Un asesor de ${esc(NEGOCIO.nombre)} revisa que el filtro sea el de tu nevecón y te confirma disponibilidad, ${order.entrega === "transportadora" ? "fecha de envío y número de guía" : "día y hora de entrega"}. Horario: ${fin(esc(NEGOCIO.horario))}</li>
           ${order.pago === "contra" ? `<li>Pagas ${COP(order.total)} cuando lo recibas.</li>` : `<li>Cuando el asesor confirme tu pedido, paga ${COP(order.total)} por ${PAGOS[order.pago].t} y envía el comprobante por WhatsApp:${payBoxHTML(order.pago)}<span class="m">Paga solo a cuentas a nombre de ${esc(NEGOCIO.titular)}. Nunca te pediremos claves ni códigos.</span></li>`}
           <li>${esc(order.eta)}.</li>
-        </ol>
+        </ol>`}
         <div class="note info">Próximo cambio de filtro: <b>${cambio.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" })}</b>. ${k.recordar ? `Te escribimos al ${esc(k.tel)} unos días antes.` : "Guarda el recordatorio en tu calendario para no olvidarlo."}</div>
-        <a class="btn wa block" href="${waLink(order.msg)}" target="_blank" rel="noopener">${ICON.wa}Abrir WhatsApp otra vez</a>
+        ${order.link ? "" : `<a class="btn wa block" href="${waLink(order.msg)}" target="_blank" rel="noopener">${ICON.wa}Abrir WhatsApp otra vez</a>`}
         <div class="row"><button class="btn ghost" type="button" id="ics">Guardar recordatorio en mi calendario</button><button class="btn ghost" type="button" id="done-close">Cerrar</button></div>
         <span class="sub" id="ics-msg"></span>
       </div>`);
@@ -1537,13 +1548,13 @@ let chatTurns = [], chatCtl = null;
 const SUGS = ["¿Qué filtro usa mi nevecón?", "¿Cada cuánto se cambia?", "¿Cuánto cuesta el envío?", "¿Lo instalan?", "¿Cómo pago?"];
 function reglasAsistente() {
   const cat = CATALOGO.filter(p => ["Samsung", "LG", "Whirlpool", "GE"].includes(p.marca)).map(p =>
-    `- id ${p.id} | ${p.nombre} | ref ${p.ref} | también: ${p.refs.join(", ")} | nevecones: ${p.modelos.join(", ") || "(confirmar con foto)"} | ${COP(p.precio)} | pack de 2: ${COP(packPrecio(p))} | ${p.stock ? "disponible" : "por encargo"}${p.nota ? " | " + p.nota : ""}`).join("\n");
+    `- id ${p.id} | ${p.nombre} | ref ${p.ref} | también: ${p.refs.join(", ")} | nevecones: ${p.modelos.join(", ") || "(confirmar con foto)"} | ${COP(p.precio)} | pack de 2: ${COP(packPrecio(p))} | ${p.stock ? "disponible" : "por encargo"}${p.linkPago ? " | pago en línea" : ""}${p.nota ? " | " + p.nota : ""}`).join("\n");
   return `Eres el asistente de ventas de ${NEGOCIO.nombre}, una tienda de filtros de agua para neveras y nevecones (Samsung, LG, Whirlpool EveryDrop y GE General Electric), en Cali, Colombia. Hablas con un cliente desde la app de la tienda.
 DATOS DEL NEGOCIO (no inventes otros):
 - Envío GRATIS a toda Colombia por transportadora: llega en ${NEGOCIO.diasNacional} días hábiles.
 - En Cali: domicilio e instalación GRATIS (agendamos día y hora por WhatsApp). La instalación SOLO existe en Cali; en otras ciudades se manda el video de instalación.
 - No prometas entrega el mismo día.
-- Pagos: Nequi, Bancolombia o llave Bre-B, después de que un asesor confirme el pedido. NO hay pago contra entrega.
+- Pagos: Nequi, Bancolombia o llave Bre-B, después de que un asesor confirme el pedido. Si el producto tiene "pago en línea", 1 unidad se paga al momento con tarjeta, PSE, Nequi o botón Bancolombia. NO hay pago contra entrega.
 - Garantía ${NEGOCIO.garantiaDias} días. El filtro se cambia cada ${NEGOCIO.mesesCambio} meses o cuando el agua cambie de sabor u olor.
 - Pack anual de 2 filtros con descuento.
 CATÁLOGO:

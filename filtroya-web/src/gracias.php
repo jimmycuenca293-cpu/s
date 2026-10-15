@@ -1,6 +1,6 @@
 <?php require __DIR__ . '/partes.php'; cabeza('Estado de tu pago | ' . cfg()['negocio']['nombre'], 'Estado de tu pago.', '/gracias.php', '', false); ?>
 <h1 id="t">Revisando tu pago…</h1>
-<div id="out" class="estado warn"><span class="m">Un momento, estamos consultando a Wompi.</span></div>
+<div id="out" class="estado warn"><span class="m">Un momento, estamos confirmando tu pago.</span></div>
 <a class="btn ghost" href="/">Volver a la tienda</a>
 <script>
 (async () => {
@@ -24,7 +24,7 @@
       if (j.estado === "rechazado") {
         t.textContent = "El pago no se aprobó";
         out.className = "estado bad";
-        out.innerHTML = `<span>Wompi no aprobó el pago del pedido ${esc(j.ref)}. No se te cobró nada.</span><a class="btn" href="/carrito.php">Volver al carrito e intentar de nuevo</a>`;
+        out.innerHTML = `<span>El banco no aprobó el pago del pedido ${esc(j.ref)}. No se te cobró nada.</span><a class="btn" href="/carrito.php">Volver al carrito e intentar de nuevo</a>`;
         return;
       }
       out.innerHTML = `<span>Tu pago del pedido ${esc(j.ref)} está en proceso (puede pasar con PSE o Nequi). Te avisamos a tu correo apenas se apruebe.</span>`;

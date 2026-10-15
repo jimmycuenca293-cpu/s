@@ -19,6 +19,18 @@ $total = $C['total'];
 // Si el cliente tenía la página abierta con un precio viejo, se le avisa en vez de cobrar otro valor
 if ((int) ($b['total'] ?? -1) !== $total) fail('El precio se actualizó. Recarga la página para ver el valor correcto.', 409);
 
+// Sin llaves de Wompi en config.php se usa el link de pago fijo del producto (vale 1 unidad)
+$w = cfg()['wompi'];
+$con_llaves = str_starts_with($w['public_key'], 'pub_') && !str_contains($w['public_key'], 'XXXX') && $w['integridad'] !== '' && !str_contains($w['integridad'], 'XXXX');
+$link = '';
+if (!$con_llaves) {
+    $l0 = $C['lineas'][0];
+    $link = (count($C['lineas']) === 1 && $C['unidades'] === 1) ? (string) ($cat['productos'][$l0['pid']]['link_pago'] ?? '') : '';
+    if ($link === '') fail(count($C['lineas']) === 1 && $C['unidades'] === 1 && empty($cat['productos'][$l0['pid']]['link_pago'])
+        ? 'Este filtro todavía no tiene pago en línea. Escríbenos a ' . cfg()['negocio']['correo'] . ' y te lo vendemos.'
+        : 'Por ahora el pago en línea es de un filtro a la vez. Deja una sola unidad en el carrito.');
+}
+
 $c = is_array($b['cliente'] ?? null) ? $b['cliente'] : [];
 $t = fn(string $k, int $max = 160) => mb_substr(trim((string) ($c[$k] ?? '')), 0, $max);
 $cli = ['nombre' => $t('nombre', 80), 'email' => $t('email', 120), 'tel' => preg_replace('/\D/', '', $t('tel', 20)), 'ciudad' => $t('ciudad', 60),
@@ -46,6 +58,15 @@ db()->prepare('INSERT INTO pedidos (ref, creado, pid, producto, refprod, unidade
     implode(', ', array_unique(array_column($C['lineas'], 'ref'))), $C['unidades'], (int) in_array(true, array_column($C['lineas'], 'pack'), true), $total, $entrega,
     $cli['ciudad'], $cli['nombre'], $cli['email'], $cli['tel'], $cli['barrio'], $cli['dir'], $cli['indicaciones'], $cli['modelo'], !empty($c['recordar']) ? 1 : 0, $ip]);
 db()->prepare('UPDATE pedidos SET items = ? WHERE ref = ?')->execute([json_encode($C['lineas'], JSON_UNESCAPED_UNICODE), $ref]);
+
+if ($link !== '') {
+    // Con link de pago el pedido no se marca solo como pagado: te avisamos para que revises el pago en tu panel de Wompi
+    $st = db()->prepare('SELECT * FROM pedidos WHERE ref = ?'); $st->execute([$ref]);
+    enviar_correo(cfg()['correo_avisos'], "Nuevo pedido {$ref} — revisa el pago de " . cop($total),
+        '<h2 style="margin:0 0 8px">Nuevo pedido con link de pago</h2><p>El cliente fue al link de pago de ' . cop($total) . '. Confirma en tu panel de Wompi que el pago quedó aprobado antes de despachar.</p>'
+        . tabla_pedido($st->fetch(), true) . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>');
+    out(['ref' => $ref, 'total' => $total, 'url' => $link]);
+}
 
 $centavos = $total * 100;
 $q = http_build_query([

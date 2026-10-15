@@ -139,20 +139,20 @@ app = cambiar(app, "${ICON.wa}Preguntar por WhatsApp</a>", "Escríbenos</a>", 2)
 app = cambiar(app, "Mándanos la foto de la etiqueta por WhatsApp", "Mándanos la foto de la etiqueta por correo")
 app = cambiar(app, "${ICON.wa}Preguntar</a>", "Preguntar</a>")
 app = cambiar(app, "<b>Te ayudamos</b>Con una foto sabemos cuál es el tuyo", "<b>Te ayudamos</b>Escribe tu referencia y te mostramos el tuyo")
-app = cambiar(app, "<b>Paga fácil</b>Nequi, Bancolombia o llave Bre-B", "<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia con Wompi", 3)
+app = cambiar(app, "<b>Paga fácil</b>Nequi, Bancolombia o llave Bre-B", "<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea", 3)
 app = cambiar_re(app, r'<details class="faq"><summary>¿Cada cuánto se cambia el filtro\?</summary><p>.*?</p></details>',
                  '<details class="faq"><summary>¿Cada cuánto se cambia el filtro?</summary><p>Cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión. Al comprar te podemos recordar por correo.</p></details>')
 app = cambiar_re(app, r'<details class="faq"><summary>¿Cómo sé cuál es el mío\?</summary><p>.*?</p></details>',
                  '<details class="faq"><summary>¿Cómo sé cuál es el mío?</summary><p>Busca la referencia impresa en tu filtro viejo o el modelo en la etiqueta de adentro del nevecón y escríbela en el buscador. Si no aparece, escríbenos al correo con la foto.</p></details>')
 app = cambiar_re(app, r'<details class="faq"><summary>¿Cómo se confirma mi pedido\?</summary><p>.*?</p></details>',
-                 '<details class="faq"><summary>¿Cómo compro?</summary><p>Escoges tu filtro, pones tus datos de entrega y pagas en línea en la página segura de Wompi. Te llega el recibo a tu correo y despachamos tu pedido.</p></details>')
+                 '<details class="faq"><summary>¿Cómo compro?</summary><p>Escoges tu filtro, pones tus datos de entrega y pagas en línea en nuestra página de pago segura. Te llega el recibo a tu correo y despachamos tu pedido.</p></details>')
 app = cambiar_re(app, r'<details class="faq"><summary>¿Cómo pago\?</summary><p>.*?</p></details>',
-                 '<details class="faq"><summary>¿Cómo pago?</summary><p>En línea con Wompi (de Bancolombia): tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. No guardamos los datos de tu tarjeta.</p></details>')
+                 '<details class="faq"><summary>¿Cómo pago?</summary><p>En línea, en página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. No guardamos los datos de tu tarjeta.</p></details>')
 # Pago: solo Wompi
-app = cambiar(app, 'contra: { t: "Contra entrega", sub: "", logo: "" },', 'wompi: { t: "Pago en línea con Wompi", sub: "", logo: "" },')
+app = cambiar(app, 'contra: { t: "Contra entrega", sub: "", logo: "" },', 'wompi: { t: "Pago en línea", sub: "", logo: "" },')
 app = cambiar(app, 'pago: "nequi", entrega: null', 'pago: "wompi", entrega: null')
-app = cambiar_re(app, r'\$\{\["nequi", "bancolombia", "llave"\]\.map\(k => `<label><input type="radio" name="pago".*?\.join\(""\)\}',
-                 '<div class="paywompi">${ICON.shield}<span><b>Pago seguro en línea con Wompi</b><small>Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Pagas al final, en la página segura de Wompi.</small></span></div>')
+app = cambiar_re(app, r'\$\{\(conLink\(\) \? \["linea"\] : \["nequi", "bancolombia", "llave"\]\)\.map\(k => `<label><input type="radio" name="pago".*?\.join\(""\)\}',
+                 '<div class="paywompi">${ICON.shield}<span><b>Pago seguro en línea</b><small>Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Pagas al final, en nuestra página de pago segura.</small></span></div>')
 # Datos: celular y correo
 app = cambiar(app, '<span><b>WhatsApp</b> · para confirmar el pedido</span>', '<span><b>Celular</b> · para coordinar la entrega</span>')
 i = app.index('<label class="f" id="f-tel">')
@@ -164,10 +164,10 @@ app = cambiar(app, "barrio: !k.barrio, dir: k.dir.length < 5 };", 'barrio: !k.ba
 app = cambiar(app, 'tel: "un WhatsApp válido (10 dígitos que empiezan por 3)"', 'tel: "un celular válido (10 dígitos que empiezan por 3)", email: "un correo válido"')
 app = cambiar(app, 'tel: prev.tel || "",', 'tel: prev.tel || "", email: prev.email || "",')
 app = cambiar(app, "<dt>WhatsApp</dt><dd>${esc(k.tel)}</dd>", "<dt>Celular</dt><dd>${esc(k.tel)}</dd><dt>Correo</dt><dd>${esc(k.email)}</dd>")
-app = cambiar(app, '<a class="btn wa block" id="c-confirm" href="${waLink(orderMessage())}" target="_blank" rel="noopener">${ICON.wa}Enviar pedido a un asesor por WhatsApp</a>',
-              '<button class="btn block" type="button" id="c-pagar">${ICON.shield}Pagar ${COP(t.total)} con Wompi</button><p class="err" id="c-perr" aria-live="polite"></p>')
-app = cambiar_re(app, r'<p class="sub" style="font-size:12\.5px;margin:0">Se abre WhatsApp con tu pedido escrito.*?</p>`\);',
-                 '<p class="sub" style="font-size:12.5px;margin:0">Te llevamos a la página segura de Wompi (de Bancolombia). Precio final: no hay cobros adicionales. Al pagar aceptas los <a href="/terminos.php" target="_blank">Términos y condiciones</a> y autorizas el tratamiento de tus datos según la <a href="/privacidad.php" target="_blank">Política de datos</a>.</p>`);')
+app = cambiar_re(app, r'\$\{cart\.pago === "linea" \? `<a class="btn block" id="c-confirm".*?Enviar pedido a un asesor por WhatsApp</a>`\}',
+              '<button class="btn block" type="button" id="c-pagar">${ICON.shield}Pagar ${COP(t.total)}</button><p class="err" id="c-perr" aria-live="polite"></p>')
+app = cambiar_re(app, r'<p class="sub" style="font-size:12\.5px;margin:0">\$\{cart\.pago === "linea".*?</p>`\);',
+                 '<p class="sub" style="font-size:12.5px;margin:0">Te llevamos a la página de pago segura. Precio final: no hay cobros adicionales. Al pagar aceptas los <a href="/terminos.php" target="_blank">Términos y condiciones</a> y autorizas el tratamiento de tus datos según la <a href="/privacidad.php" target="_blank">Política de datos</a>.</p>`);')
 # Carrito: el paso 1 agrega al carrito; el pago se hace en /carrito.php con todos los productos
 app = cambiar(app, '<button class="btn block" type="button" data-go="2">Continuar: tus datos</button>',
               '<button class="btn block" type="button" data-cart-add>Agregar al carrito</button><button class="btn ghost block" type="button" data-cart-now>Comprar ahora</button>')
@@ -192,7 +192,7 @@ document.addEventListener("click", e => {
 document.addEventListener("click", async e => {
   const b = e.target.closest("#c-pagar"); if (!b || !cart) return;
   const t = totals(), k = cart.cli, old = b.innerHTML;
-  b.disabled = true; b.textContent = "Conectando con Wompi…"; $("#c-perr").textContent = "";
+  b.disabled = true; b.textContent = "Abriendo el pago seguro…"; $("#c-perr").textContent = "";
   try {
     const r = await fetch(FY_WEB.api + "pedido.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
       pid: cart.p.id, cantidad: t.unidades, pack: cart.pack, entrega: cart.entrega, total: t.total,
@@ -358,7 +358,7 @@ for p in CATALOGO:
     <span class="precio">{cop(p["precio"])}</span>
     <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 días hábiles.</li><li>En Cali: <b>domicilio e instalación gratis</b>.</li><li>Pack anual de 2 filtros: {cop(p["pack"])} (ahorras {cop(ahorro)}).</li><li>Garantía de 30 días: si no encaja, te lo cambiamos.</li></ul>
     <div class="compra"><button class="btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="link" type="button" data-add="{p["id"]}" data-pack="1">+ Pack anual de 2 por {cop(p["pack"])} (ahorras {cop(ahorro)})</button></div>
-    <span class="m">Pago seguro con Wompi: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span>
+    <span class="m">Pago seguro en línea: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span>
   </div>
 </div>
 <section class="caja descripcion">
@@ -394,7 +394,7 @@ for p in CATALOGO:
   <h2>Preguntas frecuentes</h2>
   <details><summary>¿Cuánto cuesta el envío?</summary><p>Nada. El envío es gratis a toda Colombia y llega en unos 2 días hábiles después del pago.</p></details>
   <details><summary>¿Lo instalan?</summary><p>En Cali te lo llevamos e instalamos gratis. En otras ciudades te lo enviamos con las instrucciones: se instala en minutos, sin herramientas.</p></details>
-  <details><summary>¿Cómo pago?</summary><p>En línea con Wompi (de Bancolombia): tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Te llega el recibo a tu correo.</p></details>
+  <details><summary>¿Cómo pago?</summary><p>En línea, en página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Te llega el recibo a tu correo.</p></details>
   <details><summary>¿Y si no me sirve?</summary><p>Tienes 5 días hábiles para retractarte con el filtro sin instalar, y 30 días de garantía si no encaja o llega con un defecto. Mira los <a href="/terminos.php#garantia">términos</a>.</p></details>
 </section>
 {f'<section style="display:flex;flex-direction:column;gap:10px"><h2>Otros filtros {esc(p["marca"])}</h2><div class="grid">{"".join(tarjeta(x) for x in otros)}</div></section>' if otros else ""}
@@ -455,7 +455,7 @@ cat_php = {
     "paginas": extra["paginas"],
     "guias": [{"ruta": r, "titulo": t} for r, t in extra["guias"]],
     "productos": {p["id"]: {"nombre": p["nombre_largo"], "ref": p["ref"], "marca": p["marca"], "precio": p["precio"], "pack": p["pack"], "slug": p["slug"], "alias": [r for r in p["refs"] if norm(r) != norm(p["ref"])],
-                       "modelos": p["modelos"], "nota": p.get("nota", ""), "ubic": ubic(p), "rutas_ref": {r: ruta_ref[norm(r)] for r in p["refs"] if norm(r) in ruta_ref},
+                       "modelos": p["modelos"], "nota": p.get("nota", ""), "link_pago": p.get("linkPago", ""), "ubic": ubic(p), "rutas_ref": {r: ruta_ref[norm(r)] for r in p["refs"] if norm(r) in ruta_ref},
                        "rutas_modelo": {m: ruta_modelo[norm(m)] for m in p["modelos"]}} for p in CATALOGO},
 }
 (OUT / "api" / "catalogo.php").write_text("<?php\n// Generado por build.py: no lo edites a mano. Los precios se cambian en la app y se vuelve a generar.\nreturn " + php_val(cat_php) + ";\n", encoding="utf-8")

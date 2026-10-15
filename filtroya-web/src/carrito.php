@@ -29,9 +29,9 @@ cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/ca
     <section class="caja">
       <h2>Resumen</h2>
       <div id="totales"></div>
-      <button class="btn block" type="button" id="pagar">Pagar con Wompi</button>
+      <button class="btn block" type="button" id="pagar">Pagar</button>
       <p class="err" id="err" aria-live="polite"></p>
-      <div class="sellos"><span>🔒 Pago seguro con Wompi (Bancolombia)</span><span>🚚 Envío gratis a toda Colombia</span><span>↩︎ 30 días de garantía</span></div>
+      <div class="sellos"><span>🔒 Pago 100 % seguro</span><span>🚚 Envío gratis a toda Colombia</span><span>↩︎ 30 días de garantía</span></div>
       <p class="m" style="font-size:12.5px;margin:0">Pagas con tarjeta, PSE, Nequi o botón Bancolombia. Al pagar aceptas los <a href="/terminos.php" target="_blank">Términos</a> y autorizas el tratamiento de tus datos según la <a href="/privacidad.php" target="_blank">Política de datos</a>.</p>
     </section>
   </aside>
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#entrega").innerHTML = ciudad ? `<b>Entrega en ${esc(ciudad)}</b>` + ops.map(([k, t, s]) => `<label class="opc"><input type="radio" name="ent" value="${k}" ${k === entrega ? "checked" : ""}><span><b>${t}</b><small>${s}</small></span><span class="gratis">Gratis</span></label>`).join("") : `<span class="m">Escoge tu ciudad para ver la entrega.</span>`;
     const t = total(), n = L.reduce((a, l) => a + l.cant * (l.pack ? 2 : 1), 0);
     $("#totales").innerHTML = `<div class="tl"><span>${n} ${n === 1 ? "filtro" : "filtros"}</span><span>${cop(t)}</span></div><div class="tl"><span>Envío${cali ? " e instalación" : ""}</span><span class="gratis">Gratis</span></div><div class="tl total"><span>Total</span><span>${cop(t)}</span></div>`;
-    $("#pagar").textContent = `Pagar ${cop(t)} con Wompi`;
+    $("#pagar").textContent = `Pagar ${cop(t)}`;
   }
   $("#c-ciudad").innerHTML = `<option value="">Escoge tu ciudad</option>` + C.ciudades.map(c => `<option>${esc(c)}</option>`).join("");
   const prev = ls.get("fy_cliente", {}), cityPrev = ls.get("fy_city", "");
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cli = { nombre: v("c-nombre"), tel: v("c-tel").replace(/\D/g, "").replace(/^57(?=3\d{9}$)/, ""), email: v("c-email"), ciudad: $("#c-ciudad").value, barrio: v("c-barrio"), dir: v("c-dir"), indicaciones: v("c-ind"), modelo: v("c-modelo"), recordar: $("#c-rec").checked };
     const falta = [cli.nombre.length < 3 && "tu nombre", !/^3\d{9}$/.test(cli.tel) && "un celular válido (10 dígitos que empiezan por 3)", !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cli.email) && "un correo válido", !cli.ciudad && "la ciudad", !cli.barrio && "el barrio", cli.dir.length < 5 && "la dirección"].filter(Boolean);
     if (falta.length) { err.textContent = "Falta " + falta.join(", ") + "."; return; }
-    const b = $("#pagar"), old = b.textContent; b.disabled = true; b.textContent = "Conectando con Wompi…"; err.textContent = "";
+    const b = $("#pagar"), old = b.textContent; b.disabled = true; b.textContent = "Abriendo el pago seguro…"; err.textContent = "";
     ls.set("fy_cliente", { nombre: cli.nombre, tel: cli.tel, email: cli.email, barrio: cli.barrio, dir: cli.dir, recordar: cli.recordar });
     try {
       const L = lineas(), t = total();
