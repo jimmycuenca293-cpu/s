@@ -27,13 +27,38 @@
 3. Te ayudamos por WhatsApp a confirmar que es el de tu nevecón antes de comprar. (78)
 4. Paga en línea con tarjeta, PSE, Nequi o botón Bancolombia. Precio final, sin sorpresas. (87)
 
-## Palabras clave (7)
-| Palabra | Frase | Exacta |
-|---|---|---|
-| filtro nevecon cali | "filtro nevecon cali" | [filtro nevecon cali] |
-| filtro nevera cali | "filtro nevera cali" | [filtro nevera cali] |
-| instalacion filtro nevecon cali | "instalacion filtro nevecon cali" | [instalacion filtro nevecon cali] |
-| cambio filtro nevera cali | "cambio filtro nevera cali" | [cambio filtro nevera cali] |
-| tecnico nevecon cali | "tecnico nevecon cali" | [tecnico nevecon cali] |
-| filtro samsung cali | "filtro samsung cali" | [filtro samsung cali] |
-| filtro lg cali | "filtro lg cali" | [filtro lg cali] |
+## Palabras clave (7) — para copiar y pegar en Google Ads
+Copia el bloque completo y pégalo en el cuadro de palabras clave del grupo **Cali instalación**.
+
+**Concordancia de frase:**
+```
+"filtro nevecon cali"
+"filtro nevera cali"
+"instalacion filtro nevecon cali"
+"cambio filtro nevera cali"
+"tecnico nevecon cali"
+"filtro samsung cali"
+"filtro lg cali"
+```
+
+**Concordancia exacta:**
+```
+[filtro nevecon cali]
+[filtro nevera cali]
+[instalacion filtro nevecon cali]
+[cambio filtro nevera cali]
+[tecnico nevecon cali]
+[filtro samsung cali]
+[filtro lg cali]
+```
+
+**Sin símbolos (si las vas a pegar en otro lado):**
+```
+filtro nevecon cali
+filtro nevera cali
+instalacion filtro nevecon cali
+cambio filtro nevera cali
+tecnico nevecon cali
+filtro samsung cali
+filtro lg cali
+```

@@ -26,20 +26,59 @@
 3. Te ayudamos por WhatsApp a confirmar que es el de tu nevecón antes de comprar. (78)
 4. Paga en línea con tarjeta, PSE, Nequi o botón Bancolombia. Precio final, sin sorpresas. (87)
 
-## Palabras clave (14)
-| Palabra | Frase | Exacta |
-|---|---|---|
-| filtro nevecon samsung | "filtro nevecon samsung" | [filtro nevecon samsung] |
-| filtro de agua samsung | "filtro de agua samsung" | [filtro de agua samsung] |
-| filtro nevera samsung | "filtro nevera samsung" | [filtro nevera samsung] |
-| haf-cin | "haf-cin" | [haf-cin] |
-| haf cin | "haf cin" | [haf cin] |
-| da29-00020b | "da29-00020b" | [da29-00020b] |
-| haf-qin | "haf-qin" | [haf-qin] |
-| da97-17376b | "da97-17376b" | [da97-17376b] |
-| da29-00003g | "da29-00003g" | [da29-00003g] |
-| filtro samsung haf-cin | "filtro samsung haf-cin" | [filtro samsung haf-cin] |
-| filtro samsung haf-qin | "filtro samsung haf-qin" | [filtro samsung haf-qin] |
-| filtro externo samsung | "filtro externo samsung" | [filtro externo samsung] |
-| haf-cin/exp | "haf-cin/exp" | [haf-cin/exp] |
-| filtro agua nevera samsung | "filtro agua nevera samsung" | [filtro agua nevera samsung] |
+## Palabras clave (14) — para copiar y pegar en Google Ads
+Copia el bloque completo y pégalo en el cuadro de palabras clave del grupo **Samsung**.
+
+**Concordancia de frase:**
+```
+"filtro nevecon samsung"
+"filtro de agua samsung"
+"filtro nevera samsung"
+"haf-cin"
+"haf cin"
+"da29-00020b"
+"haf-qin"
+"da97-17376b"
+"da29-00003g"
+"filtro samsung haf-cin"
+"filtro samsung haf-qin"
+"filtro externo samsung"
+"haf-cin/exp"
+"filtro agua nevera samsung"
+```
+
+**Concordancia exacta:**
+```
+[filtro nevecon samsung]
+[filtro de agua samsung]
+[filtro nevera samsung]
+[haf-cin]
+[haf cin]
+[da29-00020b]
+[haf-qin]
+[da97-17376b]
+[da29-00003g]
+[filtro samsung haf-cin]
+[filtro samsung haf-qin]
+[filtro externo samsung]
+[haf-cin/exp]
+[filtro agua nevera samsung]
+```
+
+**Sin símbolos (si las vas a pegar en otro lado):**
+```
+filtro nevecon samsung
+filtro de agua samsung
+filtro nevera samsung
+haf-cin
+haf cin
+da29-00020b
+haf-qin
+da97-17376b
+da29-00003g
+filtro samsung haf-cin
+filtro samsung haf-qin
+filtro externo samsung
+haf-cin/exp
+filtro agua nevera samsung
+```

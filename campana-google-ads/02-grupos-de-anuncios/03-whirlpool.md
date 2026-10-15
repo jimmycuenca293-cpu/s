@@ -26,21 +26,62 @@
 3. Te ayudamos por WhatsApp a confirmar que es el de tu nevecón antes de comprar. (78)
 4. Paga en línea con tarjeta, PSE, Nequi o botón Bancolombia. Precio final, sin sorpresas. (87)
 
-## Palabras clave (15)
-| Palabra | Frase | Exacta |
-|---|---|---|
-| filtro whirlpool | "filtro whirlpool" | [filtro whirlpool] |
-| filtro nevecon whirlpool | "filtro nevecon whirlpool" | [filtro nevecon whirlpool] |
-| everydrop | "everydrop" | [everydrop] |
-| filtro everydrop | "filtro everydrop" | [filtro everydrop] |
-| edr1rxd1 | "edr1rxd1" | [edr1rxd1] |
-| edr2rxd1 | "edr2rxd1" | [edr2rxd1] |
-| edr3rxd1 | "edr3rxd1" | [edr3rxd1] |
-| edr4rxd1 | "edr4rxd1" | [edr4rxd1] |
-| edr5rxd1 | "edr5rxd1" | [edr5rxd1] |
-| ukf8001 | "ukf8001" | [ukf8001] |
-| w10295370a | "w10295370a" | [w10295370a] |
-| 4378411rb | "4378411rb" | [4378411rb] |
-| filtro externo whirlpool | "filtro externo whirlpool" | [filtro externo whirlpool] |
-| filtro maytag | "filtro maytag" | [filtro maytag] |
-| filtro kitchenaid | "filtro kitchenaid" | [filtro kitchenaid] |
+## Palabras clave (15) — para copiar y pegar en Google Ads
+Copia el bloque completo y pégalo en el cuadro de palabras clave del grupo **Whirlpool**.
+
+**Concordancia de frase:**
+```
+"filtro whirlpool"
+"filtro nevecon whirlpool"
+"everydrop"
+"filtro everydrop"
+"edr1rxd1"
+"edr2rxd1"
+"edr3rxd1"
+"edr4rxd1"
+"edr5rxd1"
+"ukf8001"
+"w10295370a"
+"4378411rb"
+"filtro externo whirlpool"
+"filtro maytag"
+"filtro kitchenaid"
+```
+
+**Concordancia exacta:**
+```
+[filtro whirlpool]
+[filtro nevecon whirlpool]
+[everydrop]
+[filtro everydrop]
+[edr1rxd1]
+[edr2rxd1]
+[edr3rxd1]
+[edr4rxd1]
+[edr5rxd1]
+[ukf8001]
+[w10295370a]
+[4378411rb]
+[filtro externo whirlpool]
+[filtro maytag]
+[filtro kitchenaid]
+```
+
+**Sin símbolos (si las vas a pegar en otro lado):**
+```
+filtro whirlpool
+filtro nevecon whirlpool
+everydrop
+filtro everydrop
+edr1rxd1
+edr2rxd1
+edr3rxd1
+edr4rxd1
+edr5rxd1
+ukf8001
+w10295370a
+4378411rb
+filtro externo whirlpool
+filtro maytag
+filtro kitchenaid
+```

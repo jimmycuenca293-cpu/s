@@ -26,16 +26,47 @@
 3. Te ayudamos por WhatsApp a confirmar que es el de tu nevecón antes de comprar. (78)
 4. Paga en línea con tarjeta, PSE, Nequi o botón Bancolombia. Precio final, sin sorpresas. (87)
 
-## Palabras clave (10)
-| Palabra | Frase | Exacta |
-|---|---|---|
-| filtro de agua para nevecon | "filtro de agua para nevecon" | [filtro de agua para nevecon] |
-| filtro nevecon | "filtro nevecon" | [filtro nevecon] |
-| filtro de agua nevera | "filtro de agua nevera" | [filtro de agua nevera] |
-| filtro para nevera | "filtro para nevera" | [filtro para nevera] |
-| filtro nevera dispensador | "filtro nevera dispensador" | [filtro nevera dispensador] |
-| filtro refrigerador | "filtro refrigerador" | [filtro refrigerador] |
-| filtro de agua refrigerador | "filtro de agua refrigerador" | [filtro de agua refrigerador] |
-| cambiar filtro nevecon | "cambiar filtro nevecon" | [cambiar filtro nevecon] |
-| filtro agua nevecon | "filtro agua nevecon" | [filtro agua nevecon] |
-| repuesto filtro nevera | "repuesto filtro nevera" | [repuesto filtro nevera] |
+## Palabras clave (10) — para copiar y pegar en Google Ads
+Copia el bloque completo y pégalo en el cuadro de palabras clave del grupo **Genérico**.
+
+**Concordancia de frase:**
+```
+"filtro de agua para nevecon"
+"filtro nevecon"
+"filtro de agua nevera"
+"filtro para nevera"
+"filtro nevera dispensador"
+"filtro refrigerador"
+"filtro de agua refrigerador"
+"cambiar filtro nevecon"
+"filtro agua nevecon"
+"repuesto filtro nevera"
+```
+
+**Concordancia exacta:**
+```
+[filtro de agua para nevecon]
+[filtro nevecon]
+[filtro de agua nevera]
+[filtro para nevera]
+[filtro nevera dispensador]
+[filtro refrigerador]
+[filtro de agua refrigerador]
+[cambiar filtro nevecon]
+[filtro agua nevecon]
+[repuesto filtro nevera]
+```
+
+**Sin símbolos (si las vas a pegar en otro lado):**
+```
+filtro de agua para nevecon
+filtro nevecon
+filtro de agua nevera
+filtro para nevera
+filtro nevera dispensador
+filtro refrigerador
+filtro de agua refrigerador
+cambiar filtro nevecon
+filtro agua nevecon
+repuesto filtro nevera
+```

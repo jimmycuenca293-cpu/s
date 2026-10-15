@@ -1,0 +1,193 @@
+===== SAMSUNG (frase) =====
+"filtro nevecon samsung"
+"filtro de agua samsung"
+"filtro nevera samsung"
+"haf-cin"
+"haf cin"
+"da29-00020b"
+"haf-qin"
+"da97-17376b"
+"da29-00003g"
+"filtro samsung haf-cin"
+"filtro samsung haf-qin"
+"filtro externo samsung"
+"haf-cin/exp"
+"filtro agua nevera samsung"
+
+===== SAMSUNG (exacta) =====
+[filtro nevecon samsung]
+[filtro de agua samsung]
+[filtro nevera samsung]
+[haf-cin]
+[haf cin]
+[da29-00020b]
+[haf-qin]
+[da97-17376b]
+[da29-00003g]
+[filtro samsung haf-cin]
+[filtro samsung haf-qin]
+[filtro externo samsung]
+[haf-cin/exp]
+[filtro agua nevera samsung]
+
+===== LG (frase) =====
+"filtro nevecon lg"
+"filtro de agua lg"
+"filtro nevera lg"
+"lt1000p"
+"lt1000pc"
+"lt700p"
+"lt800p"
+"lt500p"
+"lt600p"
+"adq747935"
+"adq36006101"
+"filtro lg lt1000p"
+"filtro externo lg"
+"filtro agua nevera lg"
+
+===== LG (exacta) =====
+[filtro nevecon lg]
+[filtro de agua lg]
+[filtro nevera lg]
+[lt1000p]
+[lt1000pc]
+[lt700p]
+[lt800p]
+[lt500p]
+[lt600p]
+[adq747935]
+[adq36006101]
+[filtro lg lt1000p]
+[filtro externo lg]
+[filtro agua nevera lg]
+
+===== WHIRLPOOL (frase) =====
+"filtro whirlpool"
+"filtro nevecon whirlpool"
+"everydrop"
+"filtro everydrop"
+"edr1rxd1"
+"edr2rxd1"
+"edr3rxd1"
+"edr4rxd1"
+"edr5rxd1"
+"ukf8001"
+"w10295370a"
+"4378411rb"
+"filtro externo whirlpool"
+"filtro maytag"
+"filtro kitchenaid"
+
+===== WHIRLPOOL (exacta) =====
+[filtro whirlpool]
+[filtro nevecon whirlpool]
+[everydrop]
+[filtro everydrop]
+[edr1rxd1]
+[edr2rxd1]
+[edr3rxd1]
+[edr4rxd1]
+[edr5rxd1]
+[ukf8001]
+[w10295370a]
+[4378411rb]
+[filtro externo whirlpool]
+[filtro maytag]
+[filtro kitchenaid]
+
+===== GE (frase) =====
+"filtro ge mwf"
+"mwf"
+"mwfp"
+"smartwater mwf"
+"filtro xwf"
+"xwf"
+"filtro nevecon ge"
+"filtro general electric"
+"filtro nevera general electric"
+"filtro de agua ge"
+
+===== GE (exacta) =====
+[filtro ge mwf]
+[mwf]
+[mwfp]
+[smartwater mwf]
+[filtro xwf]
+[xwf]
+[filtro nevecon ge]
+[filtro general electric]
+[filtro nevera general electric]
+[filtro de agua ge]
+
+===== GENÉRICO (frase) =====
+"filtro de agua para nevecon"
+"filtro nevecon"
+"filtro de agua nevera"
+"filtro para nevera"
+"filtro nevera dispensador"
+"filtro refrigerador"
+"filtro de agua refrigerador"
+"cambiar filtro nevecon"
+"filtro agua nevecon"
+"repuesto filtro nevera"
+
+===== GENÉRICO (exacta) =====
+[filtro de agua para nevecon]
+[filtro nevecon]
+[filtro de agua nevera]
+[filtro para nevera]
+[filtro nevera dispensador]
+[filtro refrigerador]
+[filtro de agua refrigerador]
+[cambiar filtro nevecon]
+[filtro agua nevecon]
+[repuesto filtro nevera]
+
+===== CALI INSTALACIÓN (frase) =====
+"filtro nevecon cali"
+"filtro nevera cali"
+"instalacion filtro nevecon cali"
+"cambio filtro nevera cali"
+"tecnico nevecon cali"
+"filtro samsung cali"
+"filtro lg cali"
+
+===== CALI INSTALACIÓN (exacta) =====
+[filtro nevecon cali]
+[filtro nevera cali]
+[instalacion filtro nevecon cali]
+[cambio filtro nevera cali]
+[tecnico nevecon cali]
+[filtro samsung cali]
+[filtro lg cali]
+
+===== NEGATIVAS (toda la campaña) =====
+"gratis"
+"pdf"
+"como hacer"
+"casero"
+"usado"
+"segunda"
+"olx"
+"empleo"
+"trabajo"
+"curso"
+"piscina"
+"acuario"
+"aire acondicionado"
+"lavadora"
+"carro"
+"moto"
+"jarra"
+"brita"
+"grifo"
+"ducha"
+"osmosis"
+"purificador de agua para casa"
+"filtro de aceite"
+"filtro de aire"
+"manual"
+"que es"
+"imagenes"
+"dibujo"

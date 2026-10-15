@@ -21,6 +21,7 @@ Revisa los archivos en este orden:
 | 5 | `05-archivos-para-importar/` | `anuncios.csv` y `palabras-clave.csv` para Google Ads Editor |
 | 6 | `06-conversiones-tag-manager.md` | Cómo medir las ventas (pago_wompi) y los clics a WhatsApp |
 | 7 | `07-como-subirla.md` | Paso a paso para publicar la campaña |
+| 8 | `08-palabras-clave-para-copiar.txt` | Todas las palabras clave, una por línea, listas para copiar y pegar |
 
 **Resumen:** {len(GRUPOS)} grupos de anuncios · {len(GRUPOS)} anuncios con 15 títulos y 4 descripciones cada uno · {sum(len(x['kw']) for x in GRUPOS)} palabras clave (en frase y exacta: {sum(len(x['kw']) for x in GRUPOS)*2}) · {len(NEG)} negativas.
 
@@ -57,13 +58,26 @@ for i, x in enumerate(GRUPOS, 1):
 ## Descripciones (máx. 90 caracteres)
 {d}
 
-## Palabras clave ({len(x['kw'])})
-| Palabra | Frase | Exacta |
-|---|---|---|
-{kw}
+## Palabras clave ({len(x['kw'])}) — para copiar y pegar en Google Ads
+Copia el bloque completo y pégalo en el cuadro de palabras clave del grupo **{x['nombre']}**.
+
+**Concordancia de frase:**
+```
+{chr(10).join(f'"{k}"' for k in x['kw'])}
+```
+
+**Concordancia exacta:**
+```
+{chr(10).join(f'[{k}]' for k in x['kw'])}
+```
+
+**Sin símbolos (si las vas a pegar en otro lado):**
+```
+{chr(10).join(x['kw'])}
+```
 """)
 
-w("03-palabras-negativas.md", "# 3. Palabras clave negativas (toda la campaña)\n\nSe agregan como \"concordancia de frase\" a nivel de campaña.\n\n" + "\n".join(f"- {n}" for n in NEG) +
+w("03-palabras-negativas.md", "# 3. Palabras clave negativas (toda la campaña)\n\nCopia el bloque y pégalo en Palabras clave → Palabras clave negativas → a nivel de campaña.\n\n```\n" + "\n".join(f'"{n}"' for n in NEG) + "\n```" +
   "\n\nRevisa cada semana el informe **Términos de búsqueda** y agrega como negativas las búsquedas que no tienen que ver con filtros de nevecón.")
 
 w("04-recursos-extensiones.md", f"""# 4. Recursos (extensiones)
@@ -126,6 +140,11 @@ w("07-como-subirla.md", f"""# 7. Cómo subir la campaña
 Samsung, LG, Whirlpool y GE son marcas registradas. Google deja que los revendedores las usen cuando la página vende ese producto, pero a veces el anuncio queda "Aprobado (limitado)". Si alguno sale rechazado por marca, pide revisión o cambia el título por la referencia (por ejemplo "Filtro LT1000P"). No uses «original» ni «genuino».
 """)
 
+todas = []
+for x in GRUPOS:
+    todas += [f"===== {x['nombre'].upper()} (frase) =====", *[f'"{k}"' for k in x['kw']], "", f"===== {x['nombre'].upper()} (exacta) =====", *[f"[{k}]" for k in x['kw']], ""]
+todas += ["===== NEGATIVAS (toda la campaña) =====", *[f'"{n}"' for n in NEG]]
+w("08-palabras-clave-para-copiar.txt", "\n".join(todas))
 shutil.copy("anuncios.csv", OUT / "05-archivos-para-importar" / "anuncios.csv")
 shutil.copy("palabras-clave.csv", OUT / "05-archivos-para-importar" / "palabras-clave.csv")
 print("listo")
