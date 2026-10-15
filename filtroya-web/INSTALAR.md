@@ -50,7 +50,9 @@ Le escribe por correo, solo a quien lo autorizó al comprar, cuando ya casi le t
 2. En **Sitemaps** escribe `sitemap.xml` y envía.
 3. Crea tu **Perfil de Empresa en Google** (business.google.com) con la dirección en Cali y el link de la tienda.
 
-La tienda ya trae todo lo que Google pide: una página por cada filtro con su referencia, precio, envío y devoluciones
+La tienda trae 150 páginas para Google: una por cada filtro, **una por cada referencia equivalente** (84, por ejemplo
+`/referencia/ukf8001/` o `/referencia/haf-cin/`), **una por cada modelo de nevecón** (34, por ejemplo `/nevecon/rf28hmedbsr/`),
+4 guías, la página de Cali y los directorios de referencias y de neveras. Además trae todo lo que Google pide: una página por cada filtro con su referencia, precio, envío y devoluciones
 (datos estructurados de producto), páginas por marca, mapa del sitio y robots.txt. Google tarda de unos días a
 unas semanas en mostrar las páginas, y subir en los resultados depende de la competencia; nadie lo puede garantizar.
 

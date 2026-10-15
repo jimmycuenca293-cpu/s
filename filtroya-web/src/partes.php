@@ -23,6 +23,7 @@ function pie(): void
     $marcas = catalogo()['marcas'];
     echo '</main><footer class="pie"><div class="wrap"><nav><b>Filtros por marca</b>';
     foreach ($marcas as $m) echo '<a href="/marca/' . h($m['slug']) . '/">Filtros ' . h($m['nombre']) . '</a>';
+    echo '</nav><nav><b>Ayuda</b><a href="/referencias/">Buscar por referencia</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/guia/">Guías</a><a href="/cali/">Instalación gratis en Cali</a>';
     echo '</nav><nav><b>Información</b><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/terminos.php#garantia">Garantía y retracto</a></nav>'
         . '<p>' . h($n['nombre']) . ' · ' . h($n['titular']) . ' · ' . h($n['documento']) . '<br>' . h($n['direccion']) . ' · ' . h($n['telefono']) . ' · ' . h($n['correo']) . '<br>'
         . 'Precios en pesos colombianos, con envío incluido. Las marcas mencionadas pertenecen a sus dueños; somos un comercio independiente.</p></div></footer></body></html>';

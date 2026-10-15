@@ -19,6 +19,8 @@ import subprocess
 import sys
 import unicodedata
 
+import paginas_seo
+
 AQUI = pathlib.Path(__file__).resolve().parent
 APP = AQUI.parent / "filtros-app" / "index.html"
 SRC = AQUI / "src"
@@ -187,6 +189,8 @@ enlaces = ['<nav class="seo-links" aria-label="Todos los filtros"><h2 style="fon
 for marca in MARCAS:
     ps = [p for p in CATALOGO if p["marca"] == marca]
     enlaces.append(f'<div><a class="mk" href="/marca/{slug(marca)}/">Filtros {esc(marca)}</a>' + "".join(f'<a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a>' for p in ps) + "</div>")
+enlaces.append('<div><a class="mk" href="/guia/">Guías</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cada cuánto cambiar el filtro</a><a href="/guia/como-saber-que-filtro-usa-mi-nevecon/">Qué filtro usa mi nevecón</a><a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">Cómo cambiar el filtro</a><a href="/guia/filtro-interno-o-externo/">Interno o externo</a></div>'
+               '<div><a class="mk" href="/referencias/">Buscar por referencia o modelo</a><a href="/referencias/">Todas las referencias y equivalencias</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/cali/">Filtros con instalación gratis en Cali</a></div>')
 enlaces.append('</nav><footer class="web-foot"><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/terminos.php#garantia">Garantía y retracto</a><span id="pie-negocio"></span></footer>')
 i = app.index('<details class="faq"><summary>¿Cómo pago?</summary>')
 j = app.index("</div>", i) + len("</div>")
@@ -249,18 +253,27 @@ def php_str(s):
     return "'" + str(s).replace("\\", "\\\\").replace("'", "\\'") + "'"
 
 
-def cabeza_php(partes, titulo, desc, ruta, ld):
+def cabeza_php(partes, titulo, desc, ruta, ld, img=None):
     """Inicio de una página PHP: datos estructurados para Google con el dominio real."""
+    extra = f"<link rel=\"preload\" as=\"image\" href=\"{img}\"><meta property=\"og:image\" content=\"' . sitio()['base'] . '{img}\">" if img else ""
     return (f"<?php require __DIR__ . '{partes}';\n$ld = <<<'JSON'\n{json.dumps(ld, ensure_ascii=False)}\nJSON;\n"
-            f"cabeza({php_str(titulo)}, {php_str(desc)}, {php_str(ruta)}, '<script type=\"application/ld+json\">' . str_replace('__BASE__', sitio()['base'], $ld) . '</script>'); ?>")
+            f"cabeza({php_str(titulo)}, {php_str(desc)}, {php_str(ruta)}, '{extra}<script type=\"application/ld+json\">' . str_replace('__BASE__', sitio()['base'], $ld) . '</script>'); ?>")
 
+
+PRINCIPALES = {norm(p["ref"]) for p in CATALOGO}
+ruta_ref = {}
+for p in CATALOGO:
+    for r in p["refs"]:
+        if norm(r) not in PRINCIPALES and norm(r) not in ruta_ref:
+            ruta_ref[norm(r)] = f"/referencia/{slug(r)}/"
+ruta_modelo = {norm(m): f"/nevecon/{slug(m)}/" for p in CATALOGO for m in p["modelos"]}
 
 for p in CATALOGO:
     alias = [r for r in p["refs"] if norm(r) != norm(p["ref"])]
     otros = [x for x in CATALOGO if x["marca"] == p["marca"] and x["id"] != p["id"]][:6]
     donde = "Va en la manguera de agua, por fuera del nevecón." if ubic(p) == "externo" else "Va por dentro del nevecón."
     ahorro = p["precio"] * 2 - p["pack"]
-    titulo = f'{p["nombre_largo"]} | Envío gratis a toda Colombia'
+    titulo = f'{p["nombre_largo"]} | Envío gratis a toda Colombia' if len(p['nombre_largo']) < 34 else f'{p["nombre_largo"]} | Envío gratis'
     desc = (f'Compra el {p["nombre_largo"]} a {cop(p["precio"])} con envío gratis a toda Colombia en 2 días hábiles'
             + (f'. También aparece como {", ".join(alias[:3])}' if alias else "") + ". En Cali te lo instalamos gratis. Paga con tarjeta, PSE o Nequi.")
     ld = {"@context": "https://schema.org", "@graph": [
@@ -278,7 +291,7 @@ for p in CATALOGO:
             {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "__BASE__/"},
             {"@type": "ListItem", "position": 2, "name": f'Filtros {p["marca"]}', "item": f"__BASE__/marca/{slug(p['marca'])}/"},
             {"@type": "ListItem", "position": 3, "name": p["nombre_largo"], "item": f"__BASE__/filtro/{p['slug']}/"}]}]}
-    pagina = cabeza_php("/../../partes.php", titulo, desc, f'/filtro/{p["slug"]}/', ld) + f"""
+    pagina = cabeza_php("/../../partes.php", titulo, desc, f'/filtro/{p["slug"]}/', ld, f'/img/{p["id"]}.jpg') + f"""
 <nav class="miga"><a href="/">Inicio</a> › <a href="/marca/{slug(p["marca"])}/">Filtros {esc(p["marca"])}</a> › {esc(p["nombre_largo"])}</nav>
 <div class="prod">
   <div class="foto"><img src="/img/{p["id"]}.jpg" alt="{esc(p["nombre_largo"])} para nevecón {esc(p["marca"])}" width="600" height="600"></div>
@@ -294,11 +307,12 @@ for p in CATALOGO:
 <section class="caja">
   <h2>¿Es el filtro de tu nevecón?</h2>
   <p>Busca esta referencia impresa en tu filtro viejo: <span class="ref">{esc(p["ref"])}</span>. {esc(donde)}</p>
-  {f'<p>También aparece como:</p><div class="chips">{"".join(f"<span>{esc(r)}</span>" for r in alias)}</div>' if alias else ""}
-  {f'<p>Sirve para estos nevecones, entre otros: <b>{esc(", ".join(p["modelos"]))}</b>.</p>' if p["modelos"] else ""}
+  {f'<p>También aparece como:</p><div class="chips">{"".join(f"<a href=\"{ruta_ref[norm(r)]}\">{esc(r)}</a>" if norm(r) in ruta_ref else f"<span>{esc(r)}</span>" for r in alias)}</div>' if alias else ""}
+  {f'<p>Sirve para estos nevecones, entre otros:</p><div class="chips">{"".join(f"<a href=\"{ruta_modelo[norm(m)]}\">{esc(m)}</a>" for m in p["modelos"])}</div>' if p["modelos"] else ""}
   {f'<p>{esc(p["nota"])}</p>' if p.get("nota") else ""}
-  <p>Cámbialo cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión.</p>
+  <p>Cámbialo cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión. <a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Más sobre cuándo cambiarlo</a>.</p>
 </section>
+<section class="caja"><h2>Cómo se cambia</h2>{paginas_seo.pasos_cambio(p, ubic)}</section>
 <section style="display:flex;flex-direction:column;gap:8px">
   <h2>Preguntas frecuentes</h2>
   <details><summary>¿Cuánto cuesta el envío?</summary><p>Nada. El envío es gratis a toda Colombia y llega en unos 2 días hábiles después del pago.</p></details>
@@ -340,6 +354,9 @@ for marca in MARCAS:
     d.mkdir(parents=True, exist_ok=True)
     (d / "index.php").write_text(pagina, encoding="utf-8")
 
+# ---------- referencias, nevecones, guías, Cali y directorios ----------
+extra = paginas_seo.generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta)
+
 # ---------- catálogo del servidor ----------
 def php_val(v):
     if isinstance(v, bool):
@@ -357,8 +374,10 @@ cat_php = {
     "fecha": datetime.date.today().isoformat(),
     "ciudades": ciudades,
     "marcas": [{"nombre": m, "slug": slug(m)} for m in MARCAS],
+    "paginas": extra["paginas"],
     "productos": {p["id"]: {"nombre": p["nombre_largo"], "ref": p["ref"], "marca": p["marca"], "precio": p["precio"], "pack": p["pack"], "slug": p["slug"]} for p in CATALOGO},
 }
 (OUT / "api" / "catalogo.php").write_text("<?php\n// Generado por build.py: no lo edites a mano. Los precios se cambian en la app y se vuelve a generar.\nreturn " + php_val(cat_php) + ";\n", encoding="utf-8")
 
-print(f"Listo: {OUT.relative_to(AQUI)}/ con {len(CATALOGO)} filtros, {len(MARCAS)} marcas y {len(imgs)} fotos")
+print(f"Listo: {OUT.relative_to(AQUI)}/ con {len(CATALOGO)} filtros, {len(MARCAS)} marcas, {len(extra['refs']) - len(CATALOGO)} referencias equivalentes, "
+      f"{len(extra['modelos'])} nevecones, {len(extra['guias'])} guías y {len(imgs)} fotos")
