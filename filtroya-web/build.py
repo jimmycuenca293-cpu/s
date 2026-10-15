@@ -220,8 +220,8 @@ EXPLORA = """<section class="explora" aria-label="Explora la tienda"><h2 style="
 <a href="/cali/"><b>📍 Instalación gratis en Cali</b><span>Te lo llevamos e instalamos</span></a>
 </div></section>
 """
-k = app.index('<div class="check salud" id="salud">')
-app = app[:k] + EXPLORA + "\n  " + app[k:]
+# En la web, las guías rápidas de la app se cambian por enlaces a las páginas completas
+app = cambiar_re(app, r'<div class="guias-rapidas" id="guias-rapidas">.*?</div></div>\n', EXPLORA)
 
 # Enlaces fijos a todas las páginas de filtros (Google los sigue aunque no ejecute el JavaScript)
 enlaces = ['<nav class="seo-links" aria-label="Todos los filtros"><h2 style="font-size:19px">Todos nuestros filtros</h2>']
