@@ -406,7 +406,7 @@ for p in CATALOGO:
 INTRO = {
     "Samsung": "Filtros de agua para nevecones Samsung de dos puertas y French door: internos (HAF-CIN, HAF-QIN, Aqua-Pure) y el externo de manguera.",
     "LG": "Filtros de agua para nevecones LG: LT1000P, LT700P, LT800P, LT500P, LT600P y el externo de manguera.",
-    "Whirlpool": "Filtros EveryDrop para nevecones Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana: del 1 al 5.",
+    "Whirlpool": "Filtros EveryDrop para nevecones Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana: del 1 al 5, y el filtro externo de manguera.",
     "GE": "Filtros de agua para nevecones GE General Electric: MWF y XWF.",
 }
 for marca in MARCAS:
