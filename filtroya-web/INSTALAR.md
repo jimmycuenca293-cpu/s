@@ -88,3 +88,20 @@ Google lo prohíbe y además responderlas bien genera confianza.
 ## Cambiar precios o agregar filtros
 Los precios salen de la app de Claude. Pídeme el cambio y te genero un paquete nuevo
 (se sube igual; tu `config.php` y tus pedidos en `data/` no se tocan).
+
+## Google Tag Manager y conversiones de Google Ads
+
+La tienda ya trae tu contenedor **GTM-N39G66VJ** y la verificación de Search Console (en `api/config.php`: `gtm` y `google_verificacion`). Manda estos eventos al `dataLayer`:
+
+| Evento | Cuándo pasa | Datos |
+|---|---|---|
+| `whatsapp` | El cliente toca el botón verde de WhatsApp (o cualquier enlace de WhatsApp) | `ubicacion` (boton_flotante o enlace), `pagina` |
+| `pago_wompi` | El cliente toca "Pagar" y va a la página de pago | `value` (total en pesos), `currency` (COP), `transaction_id` (número de pedido) |
+
+En Tag Manager, para cada uno:
+1. **Activadores → Nuevo → Evento personalizado**, nombre del evento: `whatsapp` (y otro con `pago_wompi`).
+2. **Etiquetas → Nueva → Seguimiento de conversiones de Google Ads**, con el ID y la etiqueta de conversión que te da Google Ads. En la de `pago_wompi` pon como valor la variable de capa de datos `value` y moneda `COP`.
+3. Agrega también la etiqueta **Vinculador de conversiones** (Conversion Linker) con el activador "All Pages".
+4. **Enviar → Publicar.**
+
+El número de WhatsApp del botón flotante se cambia en `api/config.php` → `whatsapp`.

@@ -80,6 +80,7 @@ input,select,textarea{font:inherit;color:inherit;background:var(--bg);border:1px
 .check2{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted)}.check2 input{width:20px;height:20px;flex:0 0 auto}
 .tl{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line)}.tl.total{border:0;font-size:22px;font-weight:800}
 .err{color:var(--bad);font-size:14px;margin:0;min-height:1em}
+.wa-flot{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:8px;background:#25d366;color:#fff;border-radius:999px;padding:12px 18px 12px 14px;font-weight:800;font-size:15px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.22);transition:transform .15s}.wa-flot:hover{transform:translateY(-2px)}.wa-flot svg{width:28px;height:28px;flex:0 0 auto}body:has(.barra-compra) .wa-flot{bottom:calc(92px + env(safe-area-inset-bottom))}@media (max-width:520px){.wa-flot span{display:none}.wa-flot{padding:14px}}
 .medios{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.medios span{border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--ink);background:var(--panel)}
 .sellos{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
 .tienda-filtros{display:flex;flex-wrap:wrap;gap:6px}

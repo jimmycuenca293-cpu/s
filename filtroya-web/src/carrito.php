@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const o = ls.get("fy_orders", []).filter(x => x.id !== j.ref);
       o.unshift({ id: j.ref, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: P[L[0].pid].nombre + (L.length > 1 ? ` y ${L.length - 1} más` : ""), ref: P[L[0].pid].ref, pid: L[0].pid, total: j.total, ciudad: cli.ciudad, entrega, pago: "wompi", estado: "Pago pendiente", cliente: { recordar: cli.recordar } });
       ls.set("fy_orders", o.slice(0, 50));
-      location.href = j.url;
+      window.FYPago ? FYPago(j.url, j.total, j.ref) : (location.href = j.url);
     } catch (x) { err.textContent = x.message; b.disabled = false; b.textContent = old; }
   });
   pintar();

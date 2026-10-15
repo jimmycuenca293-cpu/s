@@ -2,7 +2,7 @@
 // Copia este archivo como config.php y llena tus datos. config.php nunca se muestra en la web.
 return [
     // Tu dominio, con https (se usa en los correos automáticos)
-    'dominio' => 'https://tudominio.com',
+    'dominio' => 'https://filtrosdeaguanevecon.com',
 
     // Datos del negocio (salen en la tienda, en los correos y en los términos)
     'negocio' => [
@@ -10,15 +10,15 @@ return [
         'titular'   => 'Nombre del titular',            // persona o empresa dueña del negocio
         'documento' => 'C.C. o NIT 000.000.000-0',
         'direccion' => 'Dirección del negocio, Cali, Valle del Cauca',
-        'telefono'  => '300 000 0000',                   // para la transportadora y la SIC; no sale como WhatsApp
-        'correo'    => 'pedidos@tudominio.com',          // correo de atención al cliente
+        'telefono'  => '321 799 6144',                   // sale en la tienda, en los términos y en los correos
+        'correo'    => 'pedidos@filtrosdeaguanevecon.com',          // correo de atención al cliente
         'horario'   => 'lunes a sábado, de 8:00 a. m. a 6:00 p. m.',
     ],
 
     // A este correo te llega cada pedido PAGADO, con todos los datos para despacharlo
     'correo_avisos'    => 'tucorreo@gmail.com',
     // Correo desde el que salen los mensajes. Créalo en Hostinger (Correos) con tu dominio.
-    'correo_remitente' => 'pedidos@tudominio.com',
+    'correo_remitente' => 'pedidos@filtrosdeaguanevecon.com',
 
     // Clave para entrar a tudominio.com/admin.php y ver los pedidos. Pon una larga.
     'admin_clave' => '',
@@ -45,8 +45,12 @@ return [
     ],
 
     // Google: código de verificación de Search Console (solo lo que va en content="...") y Google Analytics 4 (G-XXXXXXX)
-    'google_verificacion' => '',
+    'google_verificacion' => 'HN_wbFxOz4Yeyfr0Oao1VfSO6mPB_I4k_uMqoVR5jZo',
     'ga4' => '',
+    // Google Tag Manager: carga Analytics y Google Ads. Eventos que manda la tienda: "whatsapp" (clic en WhatsApp) y "pago_wompi" (va a pagar)
+    'gtm' => 'GTM-N39G66VJ',
+    // WhatsApp de atención (botón flotante en toda la tienda), 10 dígitos
+    'whatsapp' => '3217996144',
 
     // Clave para la tarea programada que manda los recordatorios de cambio de filtro
     'cron_clave' => '',

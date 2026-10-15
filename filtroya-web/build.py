@@ -196,7 +196,7 @@ document.addEventListener("click", async e => {
     const orders = store.get("fy_orders", []).filter(o => o.id !== j.ref);
     orders.unshift({ id: j.ref, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: cart.p.nombre, ref: cart.p.ref, pid: cart.p.id, qty: t.unidades, pack: cart.pack, ciudad: k.ciudad, entrega: cart.entrega, pago: "linea", total: j.total, eta: delivery(k.ciudad, cart.p).corto, estado: "Pago pendiente", cliente: { recordar: !!k.recordar } });
     store.set("fy_orders", orders.slice(0, 50));
-    location.href = j.url;
+    window.FYPago ? FYPago(j.url, j.total, j.ref) : (location.href = j.url);
   } catch (err) { $("#c-perr").textContent = err.message; b.disabled = false; b.innerHTML = old; }
 });
 (() => {
@@ -208,6 +208,7 @@ document.addEventListener("click", async e => {
 k = app.rindex("\n})();\n</script>")
 app = app[:k] + "\n" + WEB_JS + app[k:]
 
+app = cambiar(app, 'whatsapp: "573217996144",', 'whatsapp: window.FY_WA || "573217996144",')
 # Sección visible con las páginas de la tienda (guías, tutoriales, referencias, envíos)
 EXPLORA = """<section class="explora" aria-label="Explora la tienda"><h2 style="font-size:19px">Explora la tienda</h2><div class="ex-grid">
 <a href="/tienda/"><b>🛒 Tienda</b><span>Todos los filtros con precio y envío gratis</span></a>
@@ -254,6 +255,7 @@ nav.bnav{grid-template-columns:repeat(2,1fr)!important}
 .seo-links a{color:var(--accent)}.seo-links a.mk{font-weight:800;color:var(--ink);width:100%}
 .web-foot{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 .web-foot a{color:var(--accent)}
+#wa-flot{left:auto!important;right:max(16px,env(safe-area-inset-right,0px))!important}@media (max-width:520px){#wa-flot span{display:none}#wa-flot{padding:14px!important}}
 .explora{display:flex;flex-direction:column;gap:10px}.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}.ex-grid a{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);text-decoration:none;color:var(--ink)}.ex-grid a span{font-size:13px;color:var(--muted)}.ex-grid a:hover{border-color:var(--accent)}
 .medios{display:flex;flex-wrap:wrap;gap:6px}.medios span{border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--ink);background:var(--panel)}
 """
@@ -271,6 +273,7 @@ index_php = f"""<?php require __DIR__ . '/api/sitio.php'; $S = sitio(); $n = $S[
 <meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevecón | <?= h($n['nombre']) ?>"><meta property="og:description" content="Envío gratis a toda Colombia. Instalación gratis en Cali."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/lg-1000-o.jpg"><meta property="og:locale" content="es_CO">
 <meta name="theme-color" content="#0a2a2e"><link rel="icon" href="/img/icono.svg" type="image/svg+xml">
 <?= verificacion_html() . analytics_html() ?>
+<script>window.FY_WA = <?= json_encode((strlen($w = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? ''))) === 10 ? '57' : '') . $w) ?>;</script>
 <script type="application/ld+json"><?php $ld = <<<'JSON'
 {json.dumps({"@context": "https://schema.org", "@graph": [
     {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/lg-1000-o.jpg", "address": {"@type": "PostalAddress", "addressLocality": "Cali", "addressRegion": "Valle del Cauca", "addressCountry": "CO"}, "areaServed": {"@type": "Country", "name": "Colombia"}, "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi", "sameAs": "__SAMEAS__"},
@@ -284,6 +287,7 @@ echo str_replace(['__BASE__', '__NOMBRE__', '"__SAMEAS__"'], [$S['base'], addsla
 <style>{CSS_WEB}</style>
 </head>
 <body>
+<?= gtm_body_html() ?>
 {app}
 <script>document.getElementById("pie-negocio").textContent = <?= json_encode($n['nombre'] . ' · ' . $n['titular'] . ' · ' . $n['documento'] . ' · ' . $n['correo'], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) ?>;</script>
 </body>

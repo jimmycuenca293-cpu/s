@@ -306,6 +306,7 @@ nav.bnav button[aria-selected="true"]{color:var(--accent);background:var(--accen
 nav.bnav button[data-badge]:not([data-badge=""])::after{content:attr(data-badge);position:absolute;top:2px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font-size:11px;line-height:18px;text-align:center;padding:0 5px}
 @media (min-width:900px){nav.bnav{max-width:520px;margin:0 auto;border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0}}
 footer{color:var(--muted);font-size:12.5px}
+.wa-flot{position:fixed;z-index:25;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:8px;border-radius:999px;padding:12px 16px 12px 13px;background:#25d366;color:#fff;font-weight:800;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.25)}.wa-flot svg{width:26px;height:26px;flex:0 0 auto}
 .fab{position:fixed;z-index:25;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:12px 16px 12px 13px;background:var(--deep);color:#fff;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.25);cursor:pointer}
 .fab svg{width:22px;height:22px;stroke:var(--glow);fill:none;stroke-width:1.9;stroke-linejoin:round}
 .chat{display:flex;flex-direction:column;gap:10px;min-height:120px}
@@ -514,6 +515,7 @@ footer{color:var(--muted);font-size:12.5px}
   <button role="tab" data-tab="vendedor" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Vendedor</button>
 </nav>
 
+<a class="wa-flot" id="wa-flot" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-4-.6-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg><span>Asesor</span></a>
 <button class="fab" id="fab" type="button" hidden aria-label="Pregúntale al asistente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg><span>Pregúntame</span></button>
 <div class="zoom" id="zoom" hidden role="dialog" aria-modal="true" aria-labelledby="z-name">
   <div class="zbar"><span class="zhint">Pellizca, usa la rueda o toca dos veces para acercar</span><button class="zx" type="button" id="z-close" aria-label="Cerrar">✕</button></div>
@@ -552,7 +554,7 @@ const ICON = {
 // Cambia estos datos por los reales antes de compartir la app.
 const NEGOCIO = {
   nombre: "PuroFiltro",
-  whatsapp: "573000000000",            // número con 57 adelante, sin espacios
+  whatsapp: "573217996144",            // número con 57 adelante, sin espacios
   horario: "lunes a sábado, de 8:00 a. m. a 6:00 p. m.",
   domicilioCali: 0, domicilioArea: 0,   // domicilio gratis en Cali
   instalacion: 0,                      // instalación gratis, solo en Cali
@@ -1781,6 +1783,15 @@ $("#sheet").addEventListener("click", e => {
   const b = e.target.closest("[data-buy]"); if (b && !cart) { chatCtl?.abort(); startOrder(b.dataset.buy); }
 });
 (async () => { for (let i = 0; i < 40 && !sample; i++) await new Promise(r => setTimeout(r, 250)); $("#fab").hidden = !sample || !$("#v-buscar").style.display.includes("flex") || $("#v-buscar").hidden; })();
+
+/* Botón flotante de WhatsApp: abre el chat con un asesor y avisa a Google Tag Manager ("whatsapp") */
+window.dataLayer = window.dataLayer || [];
+$("#wa-flot").href = waTo(NEGOCIO.whatsapp, `Hola, ${NEGOCIO.nombre}. Quiero asesoría con un filtro de agua para mi nevecón.`);
+document.addEventListener("click", e => {
+  if (window.FYPago) return; // en la tienda web estos eventos los manda carrito.js
+  const a = e.target.closest('a[href*="wa.me/"]'); if (a) dataLayer.push({ event: "whatsapp", ubicacion: a.id === "wa-flot" ? "boton_flotante" : "enlace" });
+  const w = e.target.closest('a[href*="checkout.wompi.co"]'); if (w && cart) dataLayer.push({ event: "pago_wompi", value: totals().total, currency: "COP" });
+}, true);
 
 renderTrust(); showPopular(); renderOrders(); renderSeller();
 })();

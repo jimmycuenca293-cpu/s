@@ -1,6 +1,18 @@
 /* Carrito de la tienda: se guarda en el navegador y se ve en todas las páginas. */
 (() => {
   "use strict";
+  // Eventos para Google Tag Manager: "whatsapp" al tocar cualquier enlace de WhatsApp y "pago_wompi" al ir a la página de pago
+  window.dataLayer = window.dataLayer || [];
+  document.addEventListener("click", e => {
+    const a = e.target.closest('a[href*="wa.me/"]');
+    if (a) dataLayer.push({ event: "whatsapp", ubicacion: a.classList.contains("wa-flot") ? "boton_flotante" : "enlace", pagina: location.pathname });
+  }, true);
+  // Avisa del pago y luego abre la página de pago (máximo 1 segundo de espera para no demorar al cliente)
+  window.FYPago = (url, total, ref) => {
+    let ido = false; const ir = () => { if (!ido) { ido = true; location.href = url; } };
+    dataLayer.push({ event: "pago_wompi", value: total, currency: "COP", transaction_id: ref, eventCallback: ir, eventTimeout: 1000 });
+    setTimeout(ir, 1100);
+  };
   const K = "fy_carrito";
   const leer = () => { try { const v = JSON.parse(localStorage.getItem(K) || "[]"); return Array.isArray(v) ? v.filter(l => l && l.pid) : []; } catch { return []; } };
   const guardar = c => { try { localStorage.setItem(K, JSON.stringify(c)); } catch {} pintar(); };
