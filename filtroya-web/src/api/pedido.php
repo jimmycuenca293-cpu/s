@@ -16,12 +16,9 @@ $items = is_array($b['items'] ?? null) ? $b['items']
 $C = calcular_items($items);
 if (!$C['lineas']) fail('Tu carrito está vacío o los productos ya no están disponibles. Recarga la página.');
 $total = $C['total'];
-// Si el cliente tenía la página abierta con un precio viejo, se le avisa en vez de cobrar otro valor
-if ((int) ($b['total'] ?? -1) !== $total) fail('El precio se actualizó. Recarga la página para ver el valor correcto.', 409);
 
 // Sin llaves de Wompi en config.php se usa el link de pago fijo del producto (vale 1 unidad)
-$w = cfg()['wompi'];
-$con_llaves = str_starts_with($w['public_key'], 'pub_') && !str_contains($w['public_key'], 'XXXX') && $w['integridad'] !== '' && !str_contains($w['integridad'], 'XXXX');
+$con_llaves = con_llaves();
 $link = '';
 if (!$con_llaves) {
     $l0 = $C['lineas'][0];
@@ -45,6 +42,12 @@ $entrega = (string) ($b['entrega'] ?? '');
 $ok = $cli['ciudad'] === 'Cali' ? ['instalacion', 'domicilio'] : ['transportadora'];
 if (!in_array($entrega, $ok, true)) $entrega = $ok[0];
 
+// Instalación de filtros externos en Cali: con llaves se cobra en el pago; con links de pago se paga el día de la instalación
+$instalacion = costo_instalacion($C['lineas'], $entrega);
+if ($con_llaves) $total += $instalacion;
+// Si el cliente tenía la página abierta con un precio viejo, se le avisa en vez de cobrar otro valor
+if ((int) ($b['total'] ?? -1) !== $total) fail('El precio se actualizó. Recarga la página para ver el valor correcto.', 409);
+
 $ip = $_SERVER['REMOTE_ADDR'] ?? '';
 // Freno simple contra abusos: máximo 15 pedidos sin pagar por hora desde la misma conexión
 $st = db()->prepare("SELECT COUNT(*) FROM pedidos WHERE ip = ? AND estado = 'pendiente' AND creado > ?");
@@ -64,6 +67,7 @@ if ($link !== '') {
     $st = db()->prepare('SELECT * FROM pedidos WHERE ref = ?'); $st->execute([$ref]);
     enviar_correo(cfg()['correo_avisos'], "Nuevo pedido {$ref} — revisa el pago de " . cop($total),
         '<h2 style="margin:0 0 8px">Nuevo pedido con link de pago</h2><p>El cliente fue al link de pago de ' . cop($total) . '. Confirma en tu panel de Wompi que el pago quedó aprobado antes de despachar.</p>'
+        . ($instalacion ? '<p><b>Instalación de filtro externo:</b> cobra ' . cop($instalacion) . ' el día de la instalación (no va en el link de pago).</p>' : '')
         . tabla_pedido($st->fetch(), true) . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>');
     out(['ref' => $ref, 'total' => $total, 'url' => $link]);
 }

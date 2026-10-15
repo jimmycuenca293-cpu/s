@@ -435,8 +435,8 @@ footer{color:var(--muted);font-size:12.5px}
     <h2 style="font-size:19px">Preguntas frecuentes</h2>
     <details class="faq"><summary>¿Cada cuánto se cambia el filtro?</summary><p>Cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión. Al comprar te podemos recordar por WhatsApp.</p></details>
     <details class="faq"><summary>¿Cómo sé cuál es el mío?</summary><p>Toma la foto del filtro viejo (la referencia viene impresa) o de la etiqueta de adentro del nevecón. Si no aparece, escríbenos por WhatsApp con la foto.</p></details>
-    <details class="faq"><summary>¿Lo pueden instalar?</summary><p>En Cali te lo llevamos e instalamos gratis, y de paso revisamos el nevecón. En otras ciudades te lo enviamos gratis por transportadora y te mandamos el video de instalación: es fácil, se hace en minutos.</p></details>
-    <details class="faq"><summary>¿Cuánto cuesta el envío?</summary><p>Nada: el envío es gratis a toda Colombia y llega en 2 días hábiles. En Cali la entrega y la instalación también son gratis.</p></details>
+    <details class="faq"><summary>¿Lo pueden instalar?</summary><p>En Cali te lo llevamos y te lo instalamos: <b>gratis</b> los filtros internos y <b>$30.000</b> los externos (de manguera), porque hay que cortar y conectar la manguera. De paso revisamos el nevecón. En otras ciudades te lo enviamos gratis por transportadora y te mandamos el video de instalación: es fácil, se hace en minutos.</p></details>
+    <details class="faq"><summary>¿Cuánto cuesta el envío?</summary><p>Nada: el envío es gratis a toda Colombia y llega en 2 días hábiles. En Cali la entrega también es gratis.</p></details>
     <details class="faq"><summary>¿Cómo compro?</summary><p>Escoges tu filtro, pones tus datos de entrega y pagas en línea en nuestra página de pago segura. Despachamos tu pedido apenas se aprueba el pago.</p></details>
     <details class="faq"><summary>¿Cómo pago?</summary><p>En línea, en página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. No guardamos los datos de tu tarjeta.</p></details>
   </div>
@@ -557,7 +557,8 @@ const NEGOCIO = {
   whatsapp: "573217996144",            // número con 57 adelante, sin espacios
   horario: "lunes a sábado, de 8:00 a. m. a 6:00 p. m.",
   domicilioCali: 0, domicilioArea: 0,   // domicilio gratis en Cali
-  instalacion: 0,                      // instalación gratis, solo en Cali
+  instalacion: 0,                      // instalación de filtros internos: gratis, solo en Cali
+  instalacionExterno: 30000,           // instalación de filtros externos (de manguera) en Cali
   envioPrincipal: 0, envioOtros: 0,    // envío gratis a toda Colombia (ya va incluido en el precio)
   diasNacional: 2, diasEncargo: 5,
   descuentoPack: 0.10,                 // pack anual de 2 filtros
@@ -720,8 +721,8 @@ const CATALOGO = [
   { id: "wp-5-o", pack: 274900, marca: "Whirlpool", nombre: "Filtro Whirlpool EveryDrop 5", ref: "EDR5RXD1", linkPago: "https://checkout.wompi.co/l/QsMY8D", linkMonto: 145900, refs: ["EDR5RXD1", "4396508", "4396509", "4396510", "FILTER5", "NLC240V", "46-9010"], modelos: [], nota: "Sirve para nevecones Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", desc: "Es el filtro EveryDrop número 5 de Whirlpool. Lo usan nevecones Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana con dispensador. Se cambia sin herramientas.", tipo: "original", precio: 145900, stock: 10, forma: "push", color: "#d6247a" },
   { id: "wp-ex-o", pack: 155900, marca: "Whirlpool", nombre: "Filtro Whirlpool externo", ref: "4378411RB", linkPago: "https://checkout.wompi.co/l/Qxx9ye", linkMonto: 85900, refs: ["4378411RB", "4378411", "WHKF-IMPL"], modelos: [], nota: "Va en la manguera de agua, por fuera del nevecón. Funciona con nevecones y máquinas de hielo de todas las marcas, incluidas Whirlpool, KitchenAid, Maytag, Amana y Estate.", desc: "Es el filtro externo Whirlpool 4378411RB: un cilindro blanco que se instala en la manguera del agua, por detrás del nevecón. Le da agua filtrada al dispensador y a la máquina de hielo, y reduce el sabor y el olor a cloro. Funciona con nevecones y máquinas de hielo de todas las marcas, incluidas Whirlpool, KitchenAid, Maytag, Amana y Estate. Se cambia cada 6 meses.", tipo: "original", precio: 85900, stock: 10, forma: "lt", color: "#7b3fa8" },
   // General Electric (costo $97.000).
-  { id: "ge-mwf-o", pack: 299900, marca: "GE", nombre: "Filtro GE MWF", ref: "MWF", refs: ["MWF", "MWFP", "MWFA", "MWFINT", "GWF", "GWFA", "HWF", "HWFA", "SmartWater MWF", "46-9991"], modelos: [], nota: "El de nevecones GE de dos puertas y French door con filtro adentro, arriba a la derecha. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", desc: "Es el filtro GE MWF: un cilindro corto y ancho de rosca. Lo usan nevecones GE de dos puertas y French Door con filtro adentro. Se cambia girándolo, sin herramientas.", tipo: "original", precio: 158900, stock: 10, forma: "twist", color: "#1d5fae" },
-  { id: "ge-xwf-o", pack: 299900, marca: "GE", nombre: "Filtro GE XWF", ref: "XWF", refs: ["XWF", "XWF-1"], modelos: [], nota: "El de los nevecones GE French door más nuevos. No es igual al XWFE. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", desc: "Es el filtro GE XWF, alargado, de los nevecones GE French Door más recientes. Se cambia sin herramientas. Ojo: no es igual al XWFE.", tipo: "original", precio: 158900, stock: 10, forma: "push", color: "#1d5fae" },
+  { id: "ge-mwf-o", pack: 299900, marca: "GE", nombre: "Filtro GE MWF", ref: "MWF", linkPago: "https://checkout.wompi.co/l/u0SGwW", linkMonto: 158900, refs: ["MWF", "MWFP", "MWFA", "MWFINT", "GWF", "GWFA", "HWF", "HWFA", "SmartWater MWF", "46-9991"], modelos: [], nota: "El de nevecones GE de dos puertas y French door con filtro adentro, arriba a la derecha. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", desc: "Es el filtro GE MWF: un cilindro corto y ancho de rosca. Lo usan nevecones GE de dos puertas y French Door con filtro adentro. Se cambia girándolo, sin herramientas.", tipo: "original", precio: 158900, stock: 10, forma: "twist", color: "#1d5fae" },
+  { id: "ge-xwf-o", pack: 299900, marca: "GE", nombre: "Filtro GE XWF", ref: "XWF", linkPago: "https://checkout.wompi.co/l/aKeyGY", linkMonto: 158900, refs: ["XWF", "XWF-1"], modelos: [], nota: "El de los nevecones GE French door más nuevos. No es igual al XWFE. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.", desc: "Es el filtro GE XWF, alargado, de los nevecones GE French Door más recientes. Se cambia sin herramientas. Ojo: no es igual al XWFE.", tipo: "original", precio: 158900, stock: 10, forma: "push", color: "#1d5fae" },
 ];
 const POPULARES = ["DA29-00020B", "LT1000P", "EDR1RXD1", "DA97-17376B", "LT700P", "EDR4RXD1", "MWF", "DA29-10105J", "ADQ73693903", "LT800P", "DA29-00003G", "LT500P", "EDR3RXD1", "EDR2RXD1", "EDR5RXD1", "XWF", "4378411RB"];
 // Fotos de los productos (Samsung); las que suba el vendedor las reemplazan.
@@ -778,7 +779,7 @@ function delivery(city, p) {
   if (CALI_METRO.includes(city)) {
     const envio = city === "Cali" ? NEGOCIO.domicilioCali : NEGOCIO.domicilioArea;
     return { local: true, instala: INSTALA_EN.includes(city), envio,
-      corto: sinStock ? `Por encargo: ${NEGOCIO.diasEncargo} días hábiles` : "Domicilio e instalación gratis",
+      corto: sinStock ? `Por encargo: ${NEGOCIO.diasEncargo} días hábiles` : costoInst(p) ? `Domicilio gratis · instalación ${COP(costoInst(p))}` : "Domicilio e instalación gratis",
       largo: sinStock ? `Lo pedimos al proveedor y llega en unos ${NEGOCIO.diasEncargo} días hábiles. Te avisamos por WhatsApp.` : "Agendamos contigo el día y la hora por WhatsApp." };
   }
   const n = sinStock ? Math.max(NEGOCIO.diasEncargo, diasCiudad(city)) : diasCiudad(city);
@@ -807,6 +808,7 @@ function stockBadge(p) {
   return '<span class="badge ok">Disponible</span>';
 }
 const ubic = p => /-ex-/.test(p.id) ? "externo" : "interno";
+const costoInst = p => p && ubic(p) === "externo" ? NEGOCIO.instalacionExterno : NEGOCIO.instalacion;
 const UBIC = { interno: "Interno", externo: "Externo" };
 const corto = p => p.nombre.replace(/^Filtro /, "");
 const fotoHTML = (p, lazy) => IMGS[p.id] ? `<img src="${IMGS[p.id]}" alt="${esc(p.nombre)}"${lazy ? ' loading="lazy"' : ""}>` : cartSVG(p);
@@ -825,7 +827,7 @@ function cardHTML(p, por) {
 // Lo de la entrega solo aparece cuando el cliente dice a qué ciudad va
 function subCiudad() {
   const c = city(); if (!c) return "";
-  if (INSTALA_EN.includes(c)) return "En Cali te lo llevamos e instalamos gratis. Agendamos el día contigo por WhatsApp.";
+  if (INSTALA_EN.includes(c)) return "En Cali te lo llevamos gratis y te lo instalamos: gratis los filtros internos y $30.000 los externos. Agendamos el día contigo por WhatsApp.";
   return `Te llega a ${c === "Otro municipio" ? "tu municipio" : c} el ${fmtDay(addBusinessDays(NEGOCIO.diasNacional))}, con envío gratis.`;
 }
 function renderCityBox() {
@@ -1030,11 +1032,11 @@ document.addEventListener("click", e => {
 });
 function renderTrust() {
   const c = city(), d = delivery(c);
-  const garantia = `<div>${ICON.shield}<b>Garantía ${NEGOCIO.garantiaDias} días</b>Si no encaja, te lo cambiamos</div>`;
+  const garantia = `<div>${ICON.check}<b>Asesor por WhatsApp</b>Te ayudamos a escoger el tuyo</div>`;
   $("#trust").innerHTML = !c
     ? `<div>${ICON.check}<b>Te ayudamos</b>Con una foto sabemos cuál es el tuyo</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`
     : d.local
-    ? `<div>${ICON.tool}<b>Instalación gratis</b>Te lo llevamos, instalamos y revisamos el nevecón</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`
+    ? `<div>${ICON.tool}<b>Instalación en Cali</b>Gratis en filtros internos; externos $30.000</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`
     : `<div>${ICON.truck}<b>Envío gratis</b>Llega en ${NEGOCIO.diasNacional} días hábiles</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`;
 }
 $("#city").addEventListener("change", () => setCity(city()));
@@ -1055,7 +1057,7 @@ function tutoHTML(p) {
   const d = INSTALACION[p.id]; if (!d) return "";
   return `<dl class="tdl"><dt>Dónde va</dt><dd>${esc(d.donde)}</dd><dt>Tiempo</dt><dd>${esc(d.tiempo)}</dd><dt>Herramientas</dt><dd>${esc(d.herramientas)}</dd></dl>
     <ol class="tpasos">${d.pasos.map(x => `<li>${esc(x)}</li>`).join("")}</ol><p style="margin:6px 0 0"><b>Último paso:</b> ${esc(d.reset)}</p>
-    <p class="m" style="font-size:12.5px;margin:6px 0 0">El agua de los primeros vasos puede salir turbia o con burbujas: es normal. Bota el primer hielo. En Cali te lo instalamos gratis.</p>`;
+    <p class="m" style="font-size:12.5px;margin:6px 0 0">El agua de los primeros vasos puede salir turbia o con burbujas: es normal. Bota el primer hielo. En Cali te lo instalamos ${costoInst(p) ? "por " + COP(costoInst(p)) : "gratis"}.</p>`;
 }
 const GUIAS = {
   cambio: () => `<h3 id="sh-title">¿Cuándo cambiar el filtro de agua del nevecón?</h3>
@@ -1197,7 +1199,7 @@ function modeloBuscado() {
 }
 // Producto con link de pago propio: se paga en línea cuando es 1 unidad (el link tiene el valor de 1 filtro)
 // El link solo se usa si su monto (linkMonto) es igual al precio actual: así nunca se cobra un valor viejo
-const conLink = () => typeof FY_WEB === "undefined" && !!cart && !!cart.p.linkPago && cart.p.linkMonto === cart.p.precio && !cart.pack && cart.qty === 1;
+const conLink = () => typeof FY_WEB === "undefined" && !!cart && !!cart.p.linkPago && cart.p.linkMonto === cart.p.precio && !cart.pack && cart.qty === 1 && !(cart.entrega === "instalacion" && costoInst(cart.p));
 function fixEntrega() {
   const d = delivery(cart.cli.ciudad, cart.p);
   const ok = d.local ? (d.instala && cart.p.stock ? ["instalacion", "domicilio"] : ["domicilio"]) : ["transportadora"];
@@ -1207,7 +1209,7 @@ function totals() {
   const d = delivery(cart.cli.ciudad, cart.p), p = cart.p;
   const unidades = cart.pack ? 2 : cart.qty;
   const bruto = p.precio * unidades, desc = cart.pack ? bruto - packPrecio(p) : 0;
-  const ent = cart.entrega === "instalacion" ? NEGOCIO.instalacion : d.envio;
+  const ent = cart.entrega === "instalacion" ? costoInst(p) : d.envio;
   return { d, unidades, bruto, desc, ent, total: bruto - desc + ent };
 }
 const progress = n => `<div class="progress" aria-label="Paso ${n} de 3"><div class="${n >= 1 ? "on" : ""}">1. Pedido</div><div class="${n >= 2 ? "on" : ""}">2. Tus datos</div><div class="${n >= 3 ? "on" : ""}">3. Confirmar</div></div>`;
@@ -1239,7 +1241,7 @@ function renderStep() {
       <button class="btn ghost block" type="button" data-close>Seguir buscando</button>` : `
       <div><b>¿Cómo lo recibes en ${esc(c)}?</b></div>
       <div class="opt" id="o-entrega">
-        ${d.instala && p.stock ? `<label><input type="radio" name="entrega" value="instalacion" ${cart.entrega === "instalacion" ? "checked" : ""}><span><b>Te lo llevamos e instalamos</b><small>${esc(d.largo)} Incluye revisión del nevecón y purga del filtro.</small></span><span class="amt save">${gratis(NEGOCIO.instalacion)}</span></label>` : ""}
+        ${d.instala && p.stock ? `<label><input type="radio" name="entrega" value="instalacion" ${cart.entrega === "instalacion" ? "checked" : ""}><span><b>Te lo llevamos e instalamos</b><small>${esc(d.largo)} ${costoInst(p) ? "El filtro externo se instala en la manguera del agua: incluye racores, prueba de fugas y purga." : "Incluye revisión del nevecón y purga del filtro."}</small></span><span class="amt${costoInst(p) ? "" : " save"}">${gratis(costoInst(p))}</span></label>` : ""}
         ${d.local ? `<label><input type="radio" name="entrega" value="domicilio" ${cart.entrega === "domicilio" ? "checked" : ""}><span><b>Solo entrega, sin instalación</b><small>${esc(d.largo)} Tú lo instalas: te mandamos el video.</small></span><span class="amt save">${gratis(d.envio)}</span></label>`
                   : `<label><input type="radio" name="entrega" value="transportadora" checked><span><b>Envío por transportadora</b><small>${esc(d.largo)}</small></span><span class="amt save">${gratis(d.envio)}</span></label>`}
       </div>
@@ -1654,7 +1656,7 @@ async function makeOffer() {
   // precio
   x.fillStyle = BRAND.glow; x.font = "800 128px 'Bricolage Grotesque', sans-serif"; x.fillText(COP(p.precio), 70, 830);
   x.fillStyle = "#fff"; x.font = "600 34px Manrope, sans-serif";
-  const puntos = ["Instalación gratis en Cali", "Envío gratis a toda Colombia", "Pago seguro en línea"];
+  const puntos = ["Instalación en Cali", "Envío gratis a toda Colombia", "Pago seguro en línea"];
   puntos.forEach((t, i) => { x.fillStyle = BRAND.glow; x.beginPath(); x.arc(86, 905 + i * 58, 9, 0, Math.PI * 2); x.fill(); x.fillStyle = "#fff"; x.fillText(t, 110, 917 + i * 58); });
   if (frase) { x.save(); rr(x, 70, 1100, 640, 86, 43); x.fillStyle = BRAND.glow; x.fill(); x.restore(); x.fillStyle = BRAND.ink; x.font = "800 34px Manrope, sans-serif"; x.fillText(frase.slice(0, 34), 100, 1155); }
   drawQR(x, waLink(`Hola ${NEGOCIO.nombre}, quiero el filtro ${p.ref} que vi en la publicación.`), W - 330, H - 400, 270);
@@ -1677,7 +1679,7 @@ const CANAL = {
 function plantilla(p, canal, zona) {   // texto de respaldo sin IA
   const lugar = zona ? `${zona}, Cali` : "Cali";
   const sirve = p.modelos.length ? `Sirve para ${p.modelos.slice(0, 3).join(", ")} y más.` : (p.nota || "");
-  const base = `Filtro de agua para nevecón ${p.marca} ${p.ref}. ${sirve} ${COP(p.precio)}. Envío GRATIS a toda Colombia (${NEGOCIO.diasNacional} días hábiles). En ${lugar}: domicilio e instalación gratis. Pago seguro en línea: tarjeta, PSE, Nequi o botón Bancolombia. Escríbenos por WhatsApp.`;
+  const base = `Filtro de agua para nevecón ${p.marca} ${p.ref}. ${sirve} ${COP(p.precio)}. Envío GRATIS a toda Colombia (${NEGOCIO.diasNacional} días hábiles). En ${lugar}: domicilio gratis e instalación ${costoInst(p) ? "por " + COP(costoInst(p)) : "gratis"}. Pago seguro en línea: tarjeta, PSE, Nequi o botón Bancolombia. Escríbenos por WhatsApp.`;
   return { titulo: `Filtro nevecón ${p.marca} ${p.ref} · ${lugar}`, texto: base, palabras_clave: [p.ref, ...p.refs.slice(1, 3), `filtro nevecón ${p.marca.toLowerCase()}`, "filtro agua nevera Cali"], mejor_momento: "Entre 6 y 9 p. m., cuando la gente revisa el celular en casa.", consejo: "Pon una foto real del filtro y responde rápido los mensajes." };
 }
 $("#pub-go").addEventListener("click", async () => {
@@ -1687,7 +1689,7 @@ $("#pub-go").addEventListener("click", async () => {
   if (sample) {
     btn.disabled = true; out.innerHTML = `<p class="sub"><span class="spin" aria-hidden="true"></span> Escribiendo la publicación…</p>`;
     const prompt = `Escribe una publicación de venta en español de Colombia (cercano, claro, sin exagerar ni inventar) para un negocio de filtros de agua para neveras y nevecones en Cali.
-Negocio: ${NEGOCIO.nombre}. En Cali${zona ? " (zona: " + zona + ")" : ""} domicilio e instalación GRATIS (la instalación solo existe en Cali); envío GRATIS a toda Colombia en ${NEGOCIO.diasNacional} días hábiles por transportadora; pago solo en línea, en página segura (tarjeta, PSE, Nequi o botón Bancolombia); garantía ${NEGOCIO.garantiaDias} días; filtros originales.
+Negocio: ${NEGOCIO.nombre}. En Cali${zona ? " (zona: " + zona + ")" : ""} domicilio GRATIS e instalación GRATIS para filtros internos y de $30.000 para filtros externos (la instalación solo existe en Cali); envío GRATIS a toda Colombia en ${NEGOCIO.diasNacional} días hábiles por transportadora; pago solo en línea, en página segura (tarjeta, PSE, Nequi o botón Bancolombia).
 Producto: ${p.nombre}. Referencia: ${p.ref}. Referencias equivalentes: ${p.refs.join(", ")}. Nevecones compatibles: ${p.modelos.join(", ")}. Precio: ${COP(p.precio)}. No uses las palabras "original", "genuino" ni "compatible".
 Canal: ${CANAL[canal]}.
 Reglas: no prometas entrega el mismo día; no digas "el mejor" ni datos que no te di; menciona que el filtro se cambia cada ${NEGOCIO.mesesCambio} meses.
@@ -1719,10 +1721,10 @@ function reglasAsistente() {
   return `Eres el asistente de ventas de ${NEGOCIO.nombre}, una tienda de filtros de agua para neveras y nevecones (Samsung, LG, Whirlpool EveryDrop y GE General Electric), en Cali, Colombia. Hablas con un cliente desde la app de la tienda.
 DATOS DEL NEGOCIO (no inventes otros):
 - Envío GRATIS a toda Colombia por transportadora: llega en ${NEGOCIO.diasNacional} días hábiles.
-- En Cali: domicilio e instalación GRATIS (agendamos día y hora por WhatsApp). La instalación SOLO existe en Cali; en otras ciudades se manda el video de instalación.
+- En Cali: domicilio GRATIS; instalación GRATIS en filtros internos y $30.000 en externos (agendamos día y hora por WhatsApp). La instalación SOLO existe en Cali; en otras ciudades se manda el video de instalación.
 - No prometas entrega el mismo día.
 - Pagos: solo en línea, en página de pago segura (tarjeta débito o crédito, PSE, Nequi o botón Bancolombia). No hay pago contra entrega ni transferencias.
-- Garantía ${NEGOCIO.garantiaDias} días. El filtro se cambia cada ${NEGOCIO.mesesCambio} meses o cuando el agua cambie de sabor u olor.
+- Asesoría por WhatsApp al ${NEGOCIO.whatsapp.replace(/^57/, "")}. El filtro se cambia cada ${NEGOCIO.mesesCambio} meses o cuando el agua cambie de sabor u olor.
 - Pack anual de 2 filtros con descuento.
 CATÁLOGO:
 ${cat}
@@ -1787,6 +1789,7 @@ $("#sheet").addEventListener("click", e => {
 /* Botón flotante de WhatsApp: abre el chat con un asesor y avisa a Google Tag Manager ("whatsapp") */
 window.dataLayer = window.dataLayer || [];
 $("#wa-flot").href = waTo(NEGOCIO.whatsapp, `Hola, ${NEGOCIO.nombre}. Quiero asesoría con un filtro de agua para mi nevecón.`);
+document.querySelectorAll("[data-wa-asesor]").forEach(x => { x.href = $("#wa-flot").href; x.target = "_blank"; x.rel = "noopener"; });
 document.addEventListener("click", e => {
   if (window.FYPago) return; // en la tienda web estos eventos los manda carrito.js
   const a = e.target.closest('a[href*="wa.me/"]'); if (a) dataLayer.push({ event: "whatsapp", ubicacion: a.id === "wa-flot" ? "boton_flotante" : "enlace" });

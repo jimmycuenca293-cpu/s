@@ -49,6 +49,8 @@ return [
     'ga4' => '',
     // Google Tag Manager: carga Analytics y Google Ads. Eventos que manda la tienda: "whatsapp" (clic en WhatsApp) y "pago_wompi" (va a pagar)
     'gtm' => 'GTM-N39G66VJ',
+    // Instalación en Cali de filtros externos (de manguera). Los internos se instalan gratis.
+    'instalacion_externo' => 30000,
     // WhatsApp de atención (botón flotante en toda la tienda), 10 dígitos
     'whatsapp' => '3217996144',
 

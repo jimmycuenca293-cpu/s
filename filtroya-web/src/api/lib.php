@@ -61,6 +61,18 @@ function datos_sin_llenar(): array
     return $falta;
 }
 
+// "PuroFiltro, de Nombre, C.C. ..." solo con los datos que ya están llenos (nunca muestra datos de ejemplo)
+function identificacion(): string
+{
+    $n = cfg()['negocio']; $ok = fn($k, $ej) => trim((string) ($n[$k] ?? '')) !== '' && !str_contains((string) $n[$k], $ej);
+    $p = [h($n['nombre'])];
+    if ($ok('titular', 'Nombre del titular')) $p[] = 'de ' . h($n['titular']);
+    if ($ok('documento', '000.000.000')) $p[] = h($n['documento']);
+    $txt = implode(', ', $p) . '.';
+    if ($ok('direccion', 'Dirección del negocio')) $txt .= ' Dirección: ' . h($n['direccion']) . '.';
+    return $txt;
+}
+
 function h(?string $s): string
 {
     return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
@@ -238,6 +250,22 @@ function calcular_items(array $items): array
     $total = 0; $unidades = 0;
     foreach ($lineas as &$l) { $l['subtotal'] = $l['unit'] * $l['cant']; $total += $l['subtotal']; $unidades += $l['cant'] * ($l['pack'] ? 2 : 1); }
     return ['lineas' => array_values($lineas), 'total' => $total, 'unidades' => $unidades];
+}
+
+// ¿Hay llaves de Wompi configuradas? Sin ellas se usan los links de pago de cada producto
+function con_llaves(): bool
+{
+    $w = cfg()['wompi'];
+    return str_starts_with($w['public_key'], 'pub_') && !str_contains($w['public_key'], 'XXXX') && $w['integridad'] !== '' && !str_contains($w['integridad'], 'XXXX');
+}
+
+// Instalación en Cali: gratis para filtros internos; los externos (de manguera) tienen costo, una sola vez por visita
+function costo_instalacion(array $lineas, string $entrega): int
+{
+    if ($entrega !== 'instalacion') return 0;
+    $cat = catalogo()['productos'];
+    foreach ($lineas as $l) if (($cat[$l['pid']]['ubic'] ?? '') === 'externo') return (int) (cfg()['instalacion_externo'] ?? 30000);
+    return 0;
 }
 
 function lineas_pedido(array $p): array

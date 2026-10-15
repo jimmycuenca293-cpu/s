@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/partes.php';
 $cat = catalogo();
-$pub = ['ciudades' => $cat['ciudades'], 'dias' => (object) ($cat['dias'] ?? []), 'productos' => array_map(fn($p) => ['nombre' => $p['nombre'], 'ref' => $p['ref'], 'marca' => $p['marca'], 'precio' => $p['precio'], 'pack' => $p['pack'], 'slug' => $p['slug']], $cat['productos'])];
+$pub = ['ciudades' => $cat['ciudades'], 'dias' => (object) ($cat['dias'] ?? []), 'productos' => array_map(fn($p) => ['nombre' => $p['nombre'], 'ref' => $p['ref'], 'marca' => $p['marca'], 'precio' => $p['precio'], 'pack' => $p['pack'], 'slug' => $p['slug'], 'ubic' => $p['ubic']], $cat['productos']), 'inst_ext' => (int) (cfg()['instalacion_externo'] ?? 30000), 'pago_link' => !con_llaves()];
 cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/carrito.php', '', false);
 ?>
 <h1>Tu carrito</h1>
@@ -31,7 +31,7 @@ cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/ca
       <div id="totales"></div>
       <button class="btn block" type="button" id="pagar">Pagar</button>
       <p class="err" id="err" aria-live="polite"></p>
-      <div class="sellos"><span>🔒 Pago 100 % seguro</span><span>🚚 Envío gratis a toda Colombia</span><span>↩︎ 30 días de garantía</span></div><?= medios_pago_html() ?>
+      <div class="sellos"><span>🔒 Pago 100 % seguro</span><span>🚚 Envío gratis a toda Colombia</span><span>💬 Asesoría por WhatsApp</span></div><?= medios_pago_html() ?>
       <p class="m" style="font-size:12.5px;margin:0">Pagas con tarjeta, PSE, Nequi o botón Bancolombia. Al pagar aceptas los <a href="/terminos.php" target="_blank">Términos</a> y autorizas el tratamiento de tus datos según la <a href="/privacidad.php" target="_blank">Política de datos</a>.</p>
     </section>
   </aside>
@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let entrega = null;
   function lineas() { return FYCart.leer().filter(l => P[l.pid]); }
   function total() { return lineas().reduce((a, l) => a + (l.pack ? P[l.pid].pack : P[l.pid].precio) * l.cant, 0); }
+  function instalacion() { return entrega === "instalacion" && lineas().some(l => P[l.pid].ubic === "externo") ? C.inst_ext : 0; }
   function habiles(n) { const d = new Date(); let k = 0; while (k < n) { d.setDate(d.getDate() + 1); const w = d.getDay(); if (w && w < 6) k++; } return d.toLocaleDateString("es-CO", { weekday: "long", day: "numeric", month: "long" }); }
   function pintar() {
     const L = lineas();
@@ -63,12 +64,15 @@ document.addEventListener("DOMContentLoaded", () => {
         <b class="lprecio">${cop(unit * l.cant)}</b></div>`;
     }).join("");
     const ciudad = $("#c-ciudad").value, cali = ciudad === "Cali";
-    const ops = cali ? [["instalacion", "Te lo llevamos e instalamos", "Te llamamos para acordar el día y la hora."], ["domicilio", "Solo entrega, sin instalación", "Te llamamos para acordar el día y la hora."]]
-      : ciudad ? [["transportadora", "Envío por transportadora", `Llega en unos ${(C.dias || {})[ciudad] || 2} días hábiles, hacia el ${habiles((C.dias || {})[ciudad] || 2)}. Te enviamos la guía al correo.`]] : [];
+    const ext = L.some(l => P[l.pid].ubic === "externo"), cInst = ext ? C.inst_ext : 0;
+    const ops = cali ? [["instalacion", "Te lo llevamos e instalamos", ext ? `Te llamamos para acordar el día y la hora. La instalación del filtro externo (en la manguera) cuesta ${cop(C.inst_ext)}${C.pago_link ? " y se paga el día de la instalación" : ""}; los internos se instalan gratis.` : "Te llamamos para acordar el día y la hora.", cInst], ["domicilio", "Solo entrega, sin instalación", "Te llamamos para acordar el día y la hora.", 0]]
+      : ciudad ? [["transportadora", "Envío por transportadora", `Llega en unos ${(C.dias || {})[ciudad] || 2} días hábiles, hacia el ${habiles((C.dias || {})[ciudad] || 2)}. Te enviamos la guía al correo.`, 0]] : [];
     if (!ops.some(o => o[0] === entrega)) entrega = ops[0]?.[0] || null;
-    $("#entrega").innerHTML = ciudad ? `<b>Entrega en ${esc(ciudad)}</b>` + ops.map(([k, t, s]) => `<label class="opc"><input type="radio" name="ent" value="${k}" ${k === entrega ? "checked" : ""}><span><b>${t}</b><small>${s}</small></span><span class="gratis">Gratis</span></label>`).join("") : `<span class="m">Escoge tu ciudad para ver la entrega.</span>`;
-    const t = total(), n = L.reduce((a, l) => a + l.cant * (l.pack ? 2 : 1), 0);
-    $("#totales").innerHTML = `<div class="tl"><span>${n} ${n === 1 ? "filtro" : "filtros"}</span><span>${cop(t)}</span></div><div class="tl"><span>Envío${cali ? " e instalación" : ""}</span><span class="gratis">Gratis</span></div><div class="tl total"><span>Total</span><span>${cop(t)}</span></div>`;
+    $("#entrega").innerHTML = ciudad ? `<b>Entrega en ${esc(ciudad)}</b>` + ops.map(([k, t, s, v]) => `<label class="opc"><input type="radio" name="ent" value="${k}" ${k === entrega ? "checked" : ""}><span><b>${t}</b><small>${s}</small></span><span class="${v ? "" : "gratis"}">${v ? cop(v) : "Gratis"}</span></label>`).join("") : `<span class="m">Escoge tu ciudad para ver la entrega.</span>`;
+    const n = L.reduce((a, l) => a + l.cant * (l.pack ? 2 : 1), 0), inst = instalacion(), t = total() + (C.pago_link ? 0 : inst);
+    $("#totales").innerHTML = `<div class="tl"><span>${n} ${n === 1 ? "filtro" : "filtros"}</span><span>${cop(total())}</span></div><div class="tl"><span>Envío${cali ? " a domicilio" : ""}</span><span class="gratis">Gratis</span></div>`
+      + (inst ? `<div class="tl"><span>Instalación del filtro externo${C.pago_link ? " (se paga al instalar)" : ""}</span><span>${cop(inst)}</span></div>` : "")
+      + `<div class="tl total"><span>${C.pago_link && inst ? "Total a pagar ahora" : "Total"}</span><span>${cop(t)}</span></div>`;
     $("#pagar").textContent = `Pagar ${cop(t)}`;
   }
   $("#c-ciudad").innerHTML = `<option value="">Escoge tu ciudad</option>` + C.ciudades.map(c => `<option>${esc(c)}</option>`).join("");
@@ -77,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (C.ciudades.includes(cityPrev)) $("#c-ciudad").value = cityPrev;
   $("#c-rec").checked = !!prev.recordar;
   $("#c-ciudad").addEventListener("change", e => { ls.set("fy_city", e.target.value); pintar(); });
-  document.addEventListener("change", e => { if (e.target.name === "ent") entrega = e.target.value; });
+  document.addEventListener("change", e => { if (e.target.name === "ent") { entrega = e.target.value; pintar(); } });
   document.addEventListener("click", e => {
     const q = e.target.closest("[data-q]"), d = e.target.closest("[data-del]"), tp = e.target.closest("[data-topack]");
     if (!q && !d && !tp) return;
@@ -96,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const b = $("#pagar"), old = b.textContent; b.disabled = true; b.textContent = "Abriendo el pago seguro…"; err.textContent = "";
     ls.set("fy_cliente", { nombre: cli.nombre, tel: cli.tel, email: cli.email, barrio: cli.barrio, dir: cli.dir, recordar: cli.recordar });
     try {
-      const L = lineas(), t = total();
+      const L = lineas(), t = total() + (C.pago_link ? 0 : instalacion());
       const r = await fetch("/api/pedido.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: L.map(l => ({ pid: l.pid, pack: !!l.pack, cant: l.cant })), total: t, entrega, cliente: cli }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.url) throw new Error(j.mensaje || "No se pudo crear el pedido. Intenta de nuevo.");

@@ -23,7 +23,7 @@ cabeza('Quiénes somos | ' . $n['nombre'], $n['nombre'] . ': filtros de agua par
 <?php if (!empty($t['historia'])): ?><p><?= nl2br(h($t['historia'])) ?></p><?php endif; ?>
 <p>Por eso armamos una tienda sencilla: buscas la referencia de tu filtro o el modelo de tu nevecón, te mostramos el que le sirve con todas sus equivalencias, pagas en línea y te llega a la casa. En Cali, además, lo instalamos nosotros mismos sin costo y de paso revisamos el nevecón.</p>
 <section class="caja"><h2>Lo que nos importa</h2>
-<ul class="ok"><li><b>La referencia correcta.</b> Cada página explica cómo confirmar que el filtro es el tuyo antes de comprar.</li><li><b>Precios claros.</b> El precio que ves es el que pagas, con el envío incluido.</li><li><b>Respaldo.</b> Si no encaja, te lo cambiamos. Tienes 5 días para retractarte y 30 días de garantía.</li></ul></section>
-<section class="caja"><h2>Contacto</h2><p><?= h($n['nombre']) ?> · <?= h($n['titular']) ?> · <?= h($n['documento']) ?><br><?= h($n['direccion']) ?><br>Teléfono <?= h($n['telefono']) ?> · <?= h($n['correo']) ?><br>Atención: <?= h($n['horario']) ?></p></section>
+<ul class="ok"><li><b>La referencia correcta.</b> Cada página explica cómo confirmar que el filtro es el tuyo antes de comprar.</li><li><b>Precios claros.</b> El precio que ves es el que pagas, con el envío incluido.</li><li><b>Respaldo.</b> Te asesoramos por WhatsApp antes de comprar. Tienes 5 días para retractarte y la garantía legal.</li></ul></section>
+<section class="caja"><h2>Contacto</h2><p><?= identificacion() ?><br>Teléfono <?= h($n['telefono']) ?> · <?= h($n['correo']) ?><br>Atención: <?= h($n['horario']) ?></p></section>
 <p><a href="/guia/">Lee nuestras guías</a> · <a href="/#catalogo">Ver los filtros</a></p>
 <?php pie(); ?>
