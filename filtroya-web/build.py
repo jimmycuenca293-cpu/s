@@ -454,7 +454,7 @@ cat_php = {
     "paginas": extra["paginas"],
     "guias": [{"ruta": r, "titulo": t} for r, t in extra["guias"]],
     "productos": {p["id"]: {"nombre": p["nombre_largo"], "ref": p["ref"], "marca": p["marca"], "precio": p["precio"], "pack": p["pack"], "slug": p["slug"], "alias": [r for r in p["refs"] if norm(r) != norm(p["ref"])],
-                       "modelos": p["modelos"], "nota": p.get("nota", ""), "link_pago": p.get("linkPago", ""), "ubic": ubic(p), "rutas_ref": {r: ruta_ref[norm(r)] for r in p["refs"] if norm(r) in ruta_ref},
+                       "modelos": p["modelos"], "nota": p.get("nota", ""), "link_pago": p.get("linkPago", "") if p.get("linkMonto") == p["precio"] else "", "ubic": ubic(p), "rutas_ref": {r: ruta_ref[norm(r)] for r in p["refs"] if norm(r) in ruta_ref},
                        "rutas_modelo": {m: ruta_modelo[norm(m)] for m in p["modelos"]}} for p in CATALOGO},
 }
 (OUT / "api" / "catalogo.php").write_text("<?php\n// Generado por build.py: no lo edites a mano. Los precios se cambian en la app y se vuelve a generar.\nreturn " + php_val(cat_php) + ";\n", encoding="utf-8")
