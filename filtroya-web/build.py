@@ -195,6 +195,7 @@ app = app[:j] + "\n  " + "".join(enlaces) + app[j:]
 CSS_WEB = """
 #cam,.hero .alt,#ai-off,nav.bnav button[data-tab="vendedor"]{display:none!important}
 nav.bnav{grid-template-columns:repeat(2,1fr)!important}
+#c-pagar svg{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2}
 .paywompi{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:14px;padding:12px}
 .paywompi svg{width:24px;height:24px;flex:0 0 auto;fill:none;stroke:var(--accent);stroke-width:2}
 .paywompi small{display:block;color:var(--muted);font-size:13px}
