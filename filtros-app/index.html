@@ -321,6 +321,9 @@ footer{color:var(--muted);font-size:12.5px}
 .chatform input{flex:1 1 auto;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;color:var(--ink)}
 .paylbl{display:flex;gap:10px;align-items:flex-start}
 .paylogo{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:17px;flex:0 0 auto}
+.paywompi{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:14px;padding:12px}
+.paywompi svg{width:24px;height:24px;flex:0 0 auto;fill:none;stroke:var(--accent);stroke-width:2}
+.paywompi small{display:block;color:var(--muted);font-size:13px}
 .paybox{display:flex;gap:10px;align-items:center;background:var(--bg);border-radius:12px;padding:10px 12px;margin-top:8px}
 .paydato{font-family:var(--f-mono);font-size:16px;user-select:all;word-break:break-all}
 .paybox .btn{padding:8px 12px;margin-left:auto}
@@ -426,8 +429,8 @@ footer{color:var(--muted);font-size:12.5px}
     <details class="faq"><summary>¿Cómo sé cuál es el mío?</summary><p>Toma la foto del filtro viejo (la referencia viene impresa) o de la etiqueta de adentro del nevecón. Si no aparece, escríbenos por WhatsApp con la foto.</p></details>
     <details class="faq"><summary>¿Lo pueden instalar?</summary><p>En Cali te lo llevamos e instalamos gratis, y de paso revisamos el nevecón. En otras ciudades te lo enviamos gratis por transportadora y te mandamos el video de instalación: es fácil, se hace en minutos.</p></details>
     <details class="faq"><summary>¿Cuánto cuesta el envío?</summary><p>Nada: el envío es gratis a toda Colombia y llega en 2 días hábiles. En Cali la entrega y la instalación también son gratis.</p></details>
-    <details class="faq"><summary>¿Cómo se confirma mi pedido?</summary><p>Cuando envías el pedido por WhatsApp, un asesor revisa que el filtro sea el de tu nevecón y te confirma disponibilidad, fecha de entrega y forma de pago. El pedido queda en firme con esa confirmación.</p></details>
-    <details class="faq"><summary>¿Cómo pago?</summary><p>Por Nequi, transferencia Bancolombia o con nuestra llave Bre-B desde cualquier banco, después de que el asesor confirme tu pedido.</p></details>
+    <details class="faq"><summary>¿Cómo compro?</summary><p>Escoges tu filtro, pones tus datos de entrega y pagas en línea en nuestra página de pago segura. Despachamos tu pedido apenas se aprueba el pago.</p></details>
+    <details class="faq"><summary>¿Cómo pago?</summary><p>En línea, en página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. No guardamos los datos de tu tarjeta.</p></details>
   </div>
 </section>
 
@@ -543,16 +546,10 @@ const ICON = {
 const NEGOCIO = {
   nombre: "PuroFiltro",
   whatsapp: "573000000000",            // número con 57 adelante, sin espacios
-  // Datos de pago (cámbialos por los reales)
-  titular: "Nombre del titular",
-  nequi: "300 000 0000",
-  bancolombia: "Ahorros 000-000000-00",
-  llave: "@tunegocio",                 // tu llave Bre-B (celular, cédula, correo o alias)
   horario: "lunes a sábado, de 8:00 a. m. a 6:00 p. m.",
   domicilioCali: 0, domicilioArea: 0,   // domicilio gratis en Cali
   instalacion: 0,                      // instalación gratis, solo en Cali
   envioPrincipal: 0, envioOtros: 0,    // envío gratis a toda Colombia (ya va incluido en el precio)
-  recargoContraEntrega: 0,             // si la transportadora cobra por recaudar, ponlo aquí
   diasNacional: 2, diasEncargo: 5,
   descuentoPack: 0.10,                 // pack anual de 2 filtros
   garantiaDias: 30,
@@ -753,16 +750,8 @@ const packPrecio = p => p.pack || Math.round(p.precio * 2 * (1 - NEGOCIO.descuen
 const packAhorro = p => Math.round((1 - packPrecio(p) / (p.precio * 2)) * 100);
 /* Medios de pago */
 const PAGOS = {
-  contra: { t: "Contra entrega", sub: "", logo: "" },
-  nequi: { t: "Nequi", sub: "Pagas desde la app Nequi y mandas el comprobante.", dato: () => NEGOCIO.nequi, logo: '<span class="paylogo" style="background:#200020;color:#ff5fa2">N</span>' },
-  bancolombia: { t: "Bancolombia", sub: "Transferencia a cuenta Bancolombia.", dato: () => NEGOCIO.bancolombia, logo: '<span class="paylogo" style="background:#fdda24;color:#111">B</span>' },
-  linea: { t: "Pago en línea", sub: "Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia, en página de pago segura.", logo: '<span class="paylogo" style="background:#0f7b5f;color:#fff">✓</span>' },
-  llave: { t: "Llave (Bre-B)", sub: "Pago inmediato desde cualquier banco con nuestra llave.", dato: () => NEGOCIO.llave, logo: '<span class="paylogo" style="background:#0b5cad;color:#fff">L</span>' }
+  linea: { t: "Pago seguro en línea", sub: "Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.", logo: "" }
 };
-function payBoxHTML(k) {
-  const p = PAGOS[k]; if (!p || !p.dato) return "";
-  return `<div class="paybox">${p.logo}<div style="min-width:0"><b>${esc(p.t)}</b><div class="paydato">${esc(p.dato())}</div><div class="m">A nombre de ${esc(NEGOCIO.titular)}</div></div><button class="btn ghost" type="button" data-copy="${esc(p.dato())}">Copiar</button></div>`;
-}
 document.addEventListener("click", async e => {
   const b = e.target.closest("[data-copy]"); if (!b) return;
   try { await navigator.clipboard.writeText(b.dataset.copy.replace(/^Ahorros\s+/, "")); b.textContent = "Copiado"; }
@@ -1031,10 +1020,10 @@ function renderTrust() {
   const c = city(), d = delivery(c);
   const garantia = `<div>${ICON.shield}<b>Garantía ${NEGOCIO.garantiaDias} días</b>Si no encaja, te lo cambiamos</div>`;
   $("#trust").innerHTML = !c
-    ? `<div>${ICON.check}<b>Te ayudamos</b>Con una foto sabemos cuál es el tuyo</div><div>${ICON.cash}<b>Paga fácil</b>Nequi, Bancolombia o llave Bre-B</div>${garantia}`
+    ? `<div>${ICON.check}<b>Te ayudamos</b>Con una foto sabemos cuál es el tuyo</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`
     : d.local
-    ? `<div>${ICON.tool}<b>Instalación gratis</b>Te lo llevamos, instalamos y revisamos el nevecón</div><div>${ICON.cash}<b>Paga fácil</b>Nequi, Bancolombia o llave Bre-B</div>${garantia}`
-    : `<div>${ICON.truck}<b>Envío gratis</b>Llega en ${NEGOCIO.diasNacional} días hábiles</div><div>${ICON.cash}<b>Paga fácil</b>Nequi, Bancolombia o llave Bre-B</div>${garantia}`;
+    ? `<div>${ICON.tool}<b>Instalación gratis</b>Te lo llevamos, instalamos y revisamos el nevecón</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`
+    : `<div>${ICON.truck}<b>Envío gratis</b>Llega en ${NEGOCIO.diasNacional} días hábiles</div><div>${ICON.shield}<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div>${garantia}`;
 }
 $("#city").addEventListener("change", () => setCity(city()));
 
@@ -1149,7 +1138,7 @@ document.addEventListener("click", e => {
 function startOrder(id) {
   const p = CATALOGO.find(x => x.id === id); if (!p) return;
   const prev = store.get("fy_cliente", {});
-  cart = { p, qty: 1, pack: false, pago: "nequi", entrega: null, step: 1, id: null,
+  cart = { p, qty: 1, pack: false, pago: "linea", entrega: null, step: 1, id: null,
     cli: { nombre: prev.nombre || "", tel: prev.tel || "", ciudad: city(), dir: prev.dir || "", barrio: prev.barrio || "", indicaciones: "", modelo: modeloBuscado(), recordar: !!prev.recordar } };
   fixEntrega(); renderStep();
 }
@@ -1161,7 +1150,6 @@ function modeloBuscado() {
 // Producto con link de pago propio: se paga en línea cuando es 1 unidad (el link tiene el valor de 1 filtro)
 const conLink = () => typeof FY_WEB === "undefined" && !!cart && !!cart.p.linkPago && !cart.pack && cart.qty === 1;
 function fixEntrega() {
-  if (conLink()) cart.pago = "linea"; else if (cart.pago === "linea") cart.pago = "nequi";
   const d = delivery(cart.cli.ciudad, cart.p);
   const ok = d.local ? (d.instala && cart.p.stock ? ["instalacion", "domicilio"] : ["domicilio"]) : ["transportadora"];
   if (!ok.includes(cart.entrega)) cart.entrega = ok[0];
@@ -1171,8 +1159,7 @@ function totals() {
   const unidades = cart.pack ? 2 : cart.qty;
   const bruto = p.precio * unidades, desc = cart.pack ? bruto - packPrecio(p) : 0;
   const ent = cart.entrega === "instalacion" ? NEGOCIO.instalacion : d.envio;
-  const rec = cart.pago === "contra" && cart.entrega === "transportadora" ? NEGOCIO.recargoContraEntrega : 0;
-  return { d, unidades, bruto, desc, ent, rec, total: bruto - desc + ent + rec };
+  return { d, unidades, bruto, desc, ent, total: bruto - desc + ent };
 }
 const progress = n => `<div class="progress" aria-label="Paso ${n} de 3"><div class="${n >= 1 ? "on" : ""}">1. Pedido</div><div class="${n >= 2 ? "on" : ""}">2. Tus datos</div><div class="${n >= 3 ? "on" : ""}">3. Confirmar</div></div>`;
 const entregaTxt = e => e === "instalacion" ? "Domicilio + instalación" : e === "domicilio" ? "Domicilio" : "Envío por transportadora";
@@ -1181,7 +1168,6 @@ function sumHTML() {
   return `<div class="sum"><span>${t.unidades} × ${esc(cart.p.ref)}</span><span>${COP(t.bruto)}</span>
     ${t.desc ? `<span class="save">Descuento pack anual</span><span class="save">− ${COP(t.desc)}</span>` : ""}
     <span>${entregaTxt(cart.entrega)}</span><span${t.ent ? "" : ' class="save"'}>${gratis(t.ent)}</span>
-    ${t.rec ? `<span>Recargo contra entrega</span><span>${COP(t.rec)}</span>` : ""}
     <span class="t">Total</span><span class="t">${COP(t.total)}</span></div>`;
 }
 function renderStep() {
@@ -1208,8 +1194,8 @@ function renderStep() {
                   : `<label><input type="radio" name="entrega" value="transportadora" checked><span><b>Envío por transportadora</b><small>${esc(d.largo)}</small></span><span class="amt save">${gratis(d.envio)}</span></label>`}
       </div>
       <div><b>¿Cómo pagas?</b></div>
-      <div class="opt" id="o-pago">
-        ${(conLink() ? ["linea"] : ["nequi", "bancolombia", "llave"]).map(k => `<label><input type="radio" name="pago" value="${k}" ${cart.pago === k ? "checked" : ""}><span class="paylbl">${PAGOS[k].logo}<span><b>${PAGOS[k].t}</b><small>${PAGOS[k].sub}</small></span></span></label>`).join("")}
+      <div id="o-pago">
+        <div class="paywompi">${ICON.shield}<span><b>Pago seguro en línea</b><small>Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Pagas al final, en nuestra página de pago segura.</small></span></div>
       </div>
       <div id="sum">${sumHTML()}</div>
       <button class="btn block" type="button" data-go="2">Continuar: tus datos</button>
@@ -1248,9 +1234,9 @@ function renderStep() {
         <dt>Recordatorio</dt><dd>${k.recordar ? `Sí, cada ${NEGOCIO.mesesCambio} meses` : "No"}</dd>
       </dl>
       ${sumHTML()}
-      ${cart.pago === "linea" ? `<a class="btn block" id="c-confirm" href="${esc(p.linkPago)}" target="_blank" rel="noopener">${ICON.shield}Pagar ${COP(t.total)} en línea</a>` : `<a class="btn wa block" id="c-confirm" href="${waLink(orderMessage())}" target="_blank" rel="noopener">${ICON.wa}Enviar pedido a un asesor por WhatsApp</a>`}
+      ${conLink() ? `<a class="btn block" id="c-confirm" href="${esc(p.linkPago)}" target="_blank" rel="noopener">${ICON.shield}Pagar ${COP(t.total)}</a>` : `<a class="btn block" id="c-confirm" href="${waLink(orderMessage())}" target="_blank" rel="noopener">${ICON.shield}Confirmar y recibir el link de pago</a>`}
       <button class="btn ghost block" type="button" data-go="2">Corregir datos</button>
-      <p class="sub" style="font-size:12.5px;margin:0">${cart.pago === "linea" ? "Se abre la página de pago segura: pagas con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Cuando el pago queda aprobado despachamos tu pedido. Precio final: no hay cobros adicionales." : `Se abre WhatsApp con tu pedido escrito: solo toca Enviar. Un asesor te confirma disponibilidad, fecha de entrega y pago (${esc(NEGOCIO.horario)}). El pedido queda en firme con esa confirmación. Precio final: no hay cobros adicionales.`}</p>`);
+      <p class="sub" style="font-size:12.5px;margin:0">${conLink() ? "Se abre nuestra página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Despachamos apenas se aprueba el pago. Precio final, sin cobros adicionales." : `Te enviamos por WhatsApp el link de nuestra página de pago segura por ${COP(t.total)} (tarjeta débito o crédito, PSE, Nequi o botón Bancolombia). Despachamos apenas se aprueba el pago. Precio final, sin cobros adicionales.`}</p>`);
   }
 }
 function readStep2() {
@@ -1271,13 +1257,12 @@ function orderMessage() {
   const t = totals(), p = cart.p, k = cart.cli;
   cart.id = cart.id || "PF-" + Date.now().toString(36).toUpperCase().slice(-6);
   return [
-    `Hola, ${NEGOCIO.nombre}. Quiero hacer este pedido y quedo atento a la confirmación de un asesor.`,
+    (conLink() ? `Hola, ${NEGOCIO.nombre}. Pagué en línea este pedido; estos son mis datos de entrega.` : `Hola, ${NEGOCIO.nombre}. Quiero pagar este pedido: por favor envíenme el link de pago seguro.`),
     "\u00a0",
     `*Pedido N.º ${cart.id}*`,
     `• ${t.unidades} × ${p.nombre} (ref. ${p.ref}): ${COP(t.bruto)}`,
     t.desc ? `• Descuento pack anual: −${COP(t.desc)}` : "",
     `• ${entregaTxt(cart.entrega)}: ${gratis(t.ent)}`,
-    t.rec ? `• Recargo contra entrega: ${COP(t.rec)}` : "",
     `*Total: ${COP(t.total)}*`,
     `Forma de pago: ${PAGOS[cart.pago].t}`,
     "\u00a0",
@@ -1319,7 +1304,7 @@ function placeOrder() {
   cart.id = cart.id || "PF-" + Date.now().toString(36).toUpperCase().slice(-6);
   store.set("fy_cliente", { nombre: k.nombre, tel: k.tel, dir: k.dir, barrio: k.barrio, recordar: k.recordar });
   const cambio = new Date(); cambio.setMonth(cambio.getMonth() + NEGOCIO.mesesCambio);
-  const order = { id: cart.id, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: p.nombre, ref: p.ref, pid: p.id, qty: t.unidades, pack: cart.pack, ciudad: k.ciudad, entrega: cart.entrega, pago: cart.pago, total: t.total, eta: delivery(k.ciudad, p).corto, cliente: { ...k }, estado: cart.pago === "linea" ? "Pago en línea" : "Enviado por WhatsApp", msg: orderMessage(), link: cart.pago === "linea" ? p.linkPago : "" };
+  const order = { id: cart.id, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: p.nombre, ref: p.ref, pid: p.id, qty: t.unidades, pack: cart.pack, ciudad: k.ciudad, entrega: cart.entrega, pago: cart.pago, total: t.total, eta: delivery(k.ciudad, p).corto, cliente: { ...k }, estado: conLink() ? "Pago en línea" : "Esperando link de pago", msg: orderMessage(), link: conLink() ? p.linkPago : "" };
   const orders = store.get("fy_orders", []).filter(o => o.id !== order.id); orders.unshift(order); store.set("fy_orders", orders.slice(0, 50));
   lastOrder = order;
   setTimeout(() => {
@@ -1327,7 +1312,7 @@ function placeOrder() {
       <div class="done rise">
         <div class="ok-ico">${ICON.check}</div>
         <span class="sub">Pedido ${esc(order.id)}</span>
-        <div class="big" id="sh-title">${order.link ? "Completa el pago en la página segura" : "Tu pedido está listo para enviar"}</div>
+        <div class="big" id="sh-title">${order.link ? "Completa el pago en la página segura" : "Confirma tu pedido para recibir el link de pago"}</div>
         ${order.link ? `<ol class="steps">
           <li>En la página que se abrió paga ${COP(order.total)} con tarjeta, PSE, Nequi o botón Bancolombia.</li>
           <li>Envíanos tus datos de entrega por WhatsApp con el botón de abajo para despachar tu pedido.</li>
@@ -1336,9 +1321,8 @@ function placeOrder() {
         <a class="btn block" href="${esc(order.link)}" target="_blank" rel="noopener">${ICON.shield}Abrir el pago otra vez</a>
         <a class="btn wa block" href="${waLink(order.msg)}" target="_blank" rel="noopener">${ICON.wa}Enviar mis datos de entrega</a>` : `<ol class="steps">
           <li>En WhatsApp toca <b>Enviar</b> para que el pedido nos llegue.</li>
-          <li>Un asesor de ${esc(NEGOCIO.nombre)} revisa que el filtro sea el de tu nevecón y te confirma disponibilidad, ${order.entrega === "transportadora" ? "fecha de envío y número de guía" : "día y hora de entrega"}. Horario: ${fin(esc(NEGOCIO.horario))}</li>
-          ${order.pago === "contra" ? `<li>Pagas ${COP(order.total)} cuando lo recibas.</li>` : `<li>Cuando el asesor confirme tu pedido, paga ${COP(order.total)} por ${PAGOS[order.pago].t} y envía el comprobante por WhatsApp:${payBoxHTML(order.pago)}<span class="m">Paga solo a cuentas a nombre de ${esc(NEGOCIO.titular)}. Nunca te pediremos claves ni códigos.</span></li>`}
-          <li>${esc(order.eta)}.</li>
+          <li>Te respondemos con el link de nuestra página de pago segura por ${COP(order.total)} (tarjeta débito o crédito, PSE, Nequi o botón Bancolombia). Horario: ${fin(esc(NEGOCIO.horario))}</li>
+          <li>Apenas se aprueba el pago despachamos tu pedido. ${esc(order.eta)}.</li>
         </ol>`}
         <div class="note info">Próximo cambio de filtro: <b>${cambio.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" })}</b>. ${k.recordar ? `Te escribimos al ${esc(k.tel)} unos días antes.` : "Guarda el recordatorio en tu calendario para no olvidarlo."}</div>
         ${order.link ? "" : `<a class="btn wa block" href="${waLink(order.msg)}" target="_blank" rel="noopener">${ICON.wa}Abrir WhatsApp otra vez</a>`}
@@ -1620,7 +1604,7 @@ async function makeOffer() {
   // precio
   x.fillStyle = BRAND.glow; x.font = "800 128px 'Bricolage Grotesque', sans-serif"; x.fillText(COP(p.precio), 70, 830);
   x.fillStyle = "#fff"; x.font = "600 34px Manrope, sans-serif";
-  const puntos = ["Instalación gratis en Cali", "Envío gratis a toda Colombia", "Paga por Nequi o Bancolombia"];
+  const puntos = ["Instalación gratis en Cali", "Envío gratis a toda Colombia", "Pago seguro en línea"];
   puntos.forEach((t, i) => { x.fillStyle = BRAND.glow; x.beginPath(); x.arc(86, 905 + i * 58, 9, 0, Math.PI * 2); x.fill(); x.fillStyle = "#fff"; x.fillText(t, 110, 917 + i * 58); });
   if (frase) { x.save(); rr(x, 70, 1100, 640, 86, 43); x.fillStyle = BRAND.glow; x.fill(); x.restore(); x.fillStyle = BRAND.ink; x.font = "800 34px Manrope, sans-serif"; x.fillText(frase.slice(0, 34), 100, 1155); }
   drawQR(x, waLink(`Hola ${NEGOCIO.nombre}, quiero el filtro ${p.ref} que vi en la publicación.`), W - 330, H - 400, 270);
@@ -1643,7 +1627,7 @@ const CANAL = {
 function plantilla(p, canal, zona) {   // texto de respaldo sin IA
   const lugar = zona ? `${zona}, Cali` : "Cali";
   const sirve = p.modelos.length ? `Sirve para ${p.modelos.slice(0, 3).join(", ")} y más.` : (p.nota || "");
-  const base = `Filtro de agua para nevecón ${p.marca} ${p.ref}. ${sirve} ${COP(p.precio)}. Envío GRATIS a toda Colombia (${NEGOCIO.diasNacional} días hábiles). En ${lugar}: domicilio e instalación gratis. Pagas por Nequi, Bancolombia o llave Bre-B. Escríbenos por WhatsApp.`;
+  const base = `Filtro de agua para nevecón ${p.marca} ${p.ref}. ${sirve} ${COP(p.precio)}. Envío GRATIS a toda Colombia (${NEGOCIO.diasNacional} días hábiles). En ${lugar}: domicilio e instalación gratis. Pago seguro en línea: tarjeta, PSE, Nequi o botón Bancolombia. Escríbenos por WhatsApp.`;
   return { titulo: `Filtro nevecón ${p.marca} ${p.ref} · ${lugar}`, texto: base, palabras_clave: [p.ref, ...p.refs.slice(1, 3), `filtro nevecón ${p.marca.toLowerCase()}`, "filtro agua nevera Cali"], mejor_momento: "Entre 6 y 9 p. m., cuando la gente revisa el celular en casa.", consejo: "Pon una foto real del filtro y responde rápido los mensajes." };
 }
 $("#pub-go").addEventListener("click", async () => {
@@ -1653,7 +1637,7 @@ $("#pub-go").addEventListener("click", async () => {
   if (sample) {
     btn.disabled = true; out.innerHTML = `<p class="sub"><span class="spin" aria-hidden="true"></span> Escribiendo la publicación…</p>`;
     const prompt = `Escribe una publicación de venta en español de Colombia (cercano, claro, sin exagerar ni inventar) para un negocio de filtros de agua para neveras y nevecones en Cali.
-Negocio: ${NEGOCIO.nombre}. En Cali${zona ? " (zona: " + zona + ")" : ""} domicilio e instalación GRATIS (la instalación solo existe en Cali); envío GRATIS a toda Colombia en ${NEGOCIO.diasNacional} días hábiles por transportadora; pago por Nequi, Bancolombia o llave Bre-B; garantía ${NEGOCIO.garantiaDias} días; filtros originales.
+Negocio: ${NEGOCIO.nombre}. En Cali${zona ? " (zona: " + zona + ")" : ""} domicilio e instalación GRATIS (la instalación solo existe en Cali); envío GRATIS a toda Colombia en ${NEGOCIO.diasNacional} días hábiles por transportadora; pago solo en línea, en página segura (tarjeta, PSE, Nequi o botón Bancolombia); garantía ${NEGOCIO.garantiaDias} días; filtros originales.
 Producto: ${p.nombre}. Referencia: ${p.ref}. Referencias equivalentes: ${p.refs.join(", ")}. Nevecones compatibles: ${p.modelos.join(", ")}. Precio: ${COP(p.precio)}. No uses las palabras "original", "genuino" ni "compatible".
 Canal: ${CANAL[canal]}.
 Reglas: no prometas entrega el mismo día; no digas "el mejor" ni datos que no te di; menciona que el filtro se cambia cada ${NEGOCIO.mesesCambio} meses.
@@ -1687,7 +1671,7 @@ DATOS DEL NEGOCIO (no inventes otros):
 - Envío GRATIS a toda Colombia por transportadora: llega en ${NEGOCIO.diasNacional} días hábiles.
 - En Cali: domicilio e instalación GRATIS (agendamos día y hora por WhatsApp). La instalación SOLO existe en Cali; en otras ciudades se manda el video de instalación.
 - No prometas entrega el mismo día.
-- Pagos: Nequi, Bancolombia o llave Bre-B, después de que un asesor confirme el pedido. Si el producto tiene "pago en línea", 1 unidad se paga al momento con tarjeta, PSE, Nequi o botón Bancolombia. NO hay pago contra entrega.
+- Pagos: solo en línea, en página de pago segura (tarjeta débito o crédito, PSE, Nequi o botón Bancolombia). No hay pago contra entrega ni transferencias.
 - Garantía ${NEGOCIO.garantiaDias} días. El filtro se cambia cada ${NEGOCIO.mesesCambio} meses o cuando el agua cambie de sabor u olor.
 - Pack anual de 2 filtros con descuento.
 CATÁLOGO:

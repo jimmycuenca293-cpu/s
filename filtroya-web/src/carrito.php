@@ -31,7 +31,7 @@ cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/ca
       <div id="totales"></div>
       <button class="btn block" type="button" id="pagar">Pagar</button>
       <p class="err" id="err" aria-live="polite"></p>
-      <div class="sellos"><span>🔒 Pago 100 % seguro</span><span>🚚 Envío gratis a toda Colombia</span><span>↩︎ 30 días de garantía</span></div>
+      <div class="sellos"><span>🔒 Pago 100 % seguro</span><span>🚚 Envío gratis a toda Colombia</span><span>↩︎ 30 días de garantía</span></div><?= medios_pago_html() ?>
       <p class="m" style="font-size:12.5px;margin:0">Pagas con tarjeta, PSE, Nequi o botón Bancolombia. Al pagar aceptas los <a href="/terminos.php" target="_blank">Términos</a> y autorizas el tratamiento de tus datos según la <a href="/privacidad.php" target="_blank">Política de datos</a>.</p>
     </section>
   </aside>

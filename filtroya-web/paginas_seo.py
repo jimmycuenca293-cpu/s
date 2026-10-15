@@ -111,7 +111,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
                 (f"¿Cuánto cuesta el envío del {r}?", "Nada. El envío es gratis a toda Colombia y llega en unos 2 días hábiles después del pago. En Cali también lo instalamos gratis."),
             ]
             mg, mg_ld = miga(("Inicio", "/"), ("Referencias", "/referencias/"), (f"Filtro {r}", None))
-            modelos = "".join(f'<a href="/nevecon/{slug(m)}/">{esc(m)}</a>' for m in p["modelos"])
+            modelos = ", ".join(f'<a href="/nevecon/{slug(m)}/">{esc(m)}</a>' for m in p["modelos"])
             cuerpo = f"""{mg}
 <h1>Filtro {esc(r)} para nevecón {esc(p["marca"])}</h1>
 <p>El filtro <b>{esc(r)}</b> es la misma referencia que el <b>{esc(p["nombre_largo"])}</b>: {donde}. Lo tenemos a <b>{cop(p["precio"])}</b> con envío gratis a toda Colombia, y en Cali te lo instalamos gratis.</p>

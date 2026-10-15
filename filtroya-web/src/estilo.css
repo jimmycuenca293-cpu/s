@@ -80,6 +80,7 @@ input,select,textarea{font:inherit;color:inherit;background:var(--bg);border:1px
 .check2{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted)}.check2 input{width:20px;height:20px;flex:0 0 auto}
 .tl{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line)}.tl.total{border:0;font-size:22px;font-weight:800}
 .err{color:var(--bad);font-size:14px;margin:0;min-height:1em}
+.medios{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.medios span{border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--ink);background:var(--panel)}
 .sellos{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
 .tienda-filtros{display:flex;flex-wrap:wrap;gap:6px}
 .tienda-filtros button{border:1.5px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 13px;font-weight:700;cursor:pointer}

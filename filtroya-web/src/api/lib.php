@@ -42,6 +42,25 @@ function fail(string $mensaje, int $code = 400): never
     out(['error' => true, 'mensaje' => $mensaje], $code);
 }
 
+// Medios de pago que acepta la pasarela (se muestran como sellos de confianza)
+function medios_pago_html(): string
+{
+    $m = ['Visa', 'Mastercard', 'American Express', 'PSE', 'Nequi', 'Bancolombia'];
+    return '<div class="medios" aria-label="Medios de pago">' . implode('', array_map(fn($x) => '<span>' . $x . '</span>', $m)) . '</div>';
+}
+
+// Datos de ejemplo de config.sample.php que no se pueden quedar en la tienda publicada
+function datos_sin_llenar(): array
+{
+    $c = cfg(); $n = $c['negocio']; $falta = [];
+    $ej = ['titular' => 'Nombre del titular', 'documento' => '000.000.000', 'direccion' => 'Dirección del negocio', 'telefono' => '300 000 0000', 'correo' => 'tudominio'];
+    foreach ($ej as $k => $v) if (str_contains((string) ($n[$k] ?? ''), $v)) $falta[] = "negocio → $k";
+    if (str_contains($c['dominio'], 'tudominio')) $falta[] = 'dominio';
+    if (str_contains($c['correo_avisos'], 'tucorreo')) $falta[] = 'correo_avisos';
+    if (str_contains($c['correo_remitente'], 'tudominio')) $falta[] = 'correo_remitente';
+    return $falta;
+}
+
 function h(?string $s): string
 {
     return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');

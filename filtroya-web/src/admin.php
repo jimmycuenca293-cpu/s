@@ -48,6 +48,7 @@ $rows = db()->query("SELECT * FROM pedidos WHERE $where ORDER BY creado DESC LIM
 $tot = db()->query("SELECT COUNT(*) n, COALESCE(SUM(total),0) s FROM pedidos WHERE estado IN ('pagado','enviado','entregado')")->fetch();
 $csrf = h($_SESSION['csrf']);
 ?>
+<?php if ($f = datos_sin_llenar()): ?><div class="estado bad"><b>Tu tienda todavía muestra datos de ejemplo.</b> Cámbialos en api/config.php antes de anunciar en Google Ads: <?= h(implode(', ', $f)) ?>.</div><?php endif; ?>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h1>Pedidos</h1><form method="post"><button class="btn ghost sm" name="salir" value="1">Salir</button></form></div>
 <div class="caja"><b><?= (int) $tot['n'] ?> pedidos pagados · <?= cop((int) $tot['s']) ?> vendidos</b>
 <span class="m">Cada pedido pagado también te llega al correo <?= h(cfg()['correo_avisos']) ?>.</span></div>

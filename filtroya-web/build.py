@@ -140,20 +140,13 @@ app = cambiar(app, "${ICON.wa}Preguntar por WhatsApp</a>", "Escríbenos</a>", 2)
 app = cambiar(app, "Mándanos la foto de la etiqueta por WhatsApp", "Mándanos la foto de la etiqueta por correo")
 app = cambiar(app, "${ICON.wa}Preguntar</a>", "Preguntar</a>")
 app = cambiar(app, "<b>Te ayudamos</b>Con una foto sabemos cuál es el tuyo", "<b>Te ayudamos</b>Escribe tu referencia y te mostramos el tuyo")
-app = cambiar(app, "<b>Paga fácil</b>Nequi, Bancolombia o llave Bre-B", "<b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea", 3)
 app = cambiar_re(app, r'<details class="faq"><summary>¿Cada cuánto se cambia el filtro\?</summary><p>.*?</p></details>',
                  '<details class="faq"><summary>¿Cada cuánto se cambia el filtro?</summary><p>Cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión. Al comprar te podemos recordar por correo.</p></details>')
 app = cambiar_re(app, r'<details class="faq"><summary>¿Cómo sé cuál es el mío\?</summary><p>.*?</p></details>',
                  '<details class="faq"><summary>¿Cómo sé cuál es el mío?</summary><p>Busca la referencia impresa en tu filtro viejo o el modelo en la etiqueta de adentro del nevecón y escríbela en el buscador. Si no aparece, escríbenos al correo con la foto.</p></details>')
-app = cambiar_re(app, r'<details class="faq"><summary>¿Cómo se confirma mi pedido\?</summary><p>.*?</p></details>',
-                 '<details class="faq"><summary>¿Cómo compro?</summary><p>Escoges tu filtro, pones tus datos de entrega y pagas en línea en nuestra página de pago segura. Te llega el recibo a tu correo y despachamos tu pedido.</p></details>')
 app = cambiar_re(app, r'<details class="faq"><summary>¿Cómo pago\?</summary><p>.*?</p></details>',
                  '<details class="faq"><summary>¿Cómo pago?</summary><p>En línea, en página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. No guardamos los datos de tu tarjeta.</p></details>')
 # Pago: solo Wompi
-app = cambiar(app, 'contra: { t: "Contra entrega", sub: "", logo: "" },', 'wompi: { t: "Pago en línea", sub: "", logo: "" },')
-app = cambiar(app, 'pago: "nequi", entrega: null', 'pago: "wompi", entrega: null')
-app = cambiar_re(app, r'\$\{\(conLink\(\) \? \["linea"\] : \["nequi", "bancolombia", "llave"\]\)\.map\(k => `<label><input type="radio" name="pago".*?\.join\(""\)\}',
-                 '<div class="paywompi">${ICON.shield}<span><b>Pago seguro en línea</b><small>Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Pagas al final, en nuestra página de pago segura.</small></span></div>')
 # Datos: celular y correo
 app = cambiar(app, '<span><b>WhatsApp</b> · para confirmar el pedido</span>', '<span><b>Celular</b> · para coordinar la entrega</span>')
 i = app.index('<label class="f" id="f-tel">')
@@ -165,9 +158,9 @@ app = cambiar(app, "barrio: !k.barrio, dir: k.dir.length < 5 };", 'barrio: !k.ba
 app = cambiar(app, 'tel: "un WhatsApp válido (10 dígitos que empiezan por 3)"', 'tel: "un celular válido (10 dígitos que empiezan por 3)", email: "un correo válido"')
 app = cambiar(app, 'tel: prev.tel || "",', 'tel: prev.tel || "", email: prev.email || "",')
 app = cambiar(app, "<dt>WhatsApp</dt><dd>${esc(k.tel)}</dd>", "<dt>Celular</dt><dd>${esc(k.tel)}</dd><dt>Correo</dt><dd>${esc(k.email)}</dd>")
-app = cambiar_re(app, r'\$\{cart\.pago === "linea" \? `<a class="btn block" id="c-confirm".*?Enviar pedido a un asesor por WhatsApp</a>`\}',
+app = cambiar_re(app, r'\$\{conLink\(\) \? `<a class="btn block" id="c-confirm".*?Confirmar y recibir el link de pago</a>`\}',
               '<button class="btn block" type="button" id="c-pagar">${ICON.shield}Pagar ${COP(t.total)}</button><p class="err" id="c-perr" aria-live="polite"></p>')
-app = cambiar_re(app, r'<p class="sub" style="font-size:12\.5px;margin:0">\$\{cart\.pago === "linea".*?</p>`\);',
+app = cambiar_re(app, r'<p class="sub" style="font-size:12\.5px;margin:0">\$\{conLink\(\).*?</p>`\);',
                  '<p class="sub" style="font-size:12.5px;margin:0">Te llevamos a la página de pago segura. Precio final: no hay cobros adicionales. Al pagar aceptas los <a href="/terminos.php" target="_blank">Términos y condiciones</a> y autorizas el tratamiento de tus datos según la <a href="/privacidad.php" target="_blank">Política de datos</a>.</p>`);')
 # Carrito: el paso 1 agrega al carrito; el pago se hace en /carrito.php con todos los productos
 app = cambiar(app, '<button class="btn block" type="button" data-go="2">Continuar: tus datos</button>',
@@ -200,7 +193,7 @@ document.addEventListener("click", async e => {
     store.set("fy_cliente", { nombre: k.nombre, tel: k.tel, email: k.email, dir: k.dir, barrio: k.barrio, recordar: k.recordar });
     const cambio = new Date(); cambio.setMonth(cambio.getMonth() + NEGOCIO.mesesCambio);
     const orders = store.get("fy_orders", []).filter(o => o.id !== j.ref);
-    orders.unshift({ id: j.ref, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: cart.p.nombre, ref: cart.p.ref, pid: cart.p.id, qty: t.unidades, pack: cart.pack, ciudad: k.ciudad, entrega: cart.entrega, pago: "wompi", total: j.total, eta: delivery(k.ciudad, cart.p).corto, estado: "Pago pendiente", cliente: { recordar: !!k.recordar } });
+    orders.unshift({ id: j.ref, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: cart.p.nombre, ref: cart.p.ref, pid: cart.p.id, qty: t.unidades, pack: cart.pack, ciudad: k.ciudad, entrega: cart.entrega, pago: "linea", total: j.total, eta: delivery(k.ciudad, cart.p).corto, estado: "Pago pendiente", cliente: { recordar: !!k.recordar } });
     store.set("fy_orders", orders.slice(0, 50));
     location.href = j.url;
   } catch (err) { $("#c-perr").textContent = err.message; b.disabled = false; b.innerHTML = old; }
@@ -221,8 +214,8 @@ for marca in MARCAS:
     enlaces.append(f'<div><a class="mk" href="/marca/{slug(marca)}/">Filtros {esc(marca)}</a>' + "".join(f'<a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a>' for p in ps) + "</div>")
 enlaces.append('<div><a class="mk" href="/guia/">Guías</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cada cuánto cambiar el filtro</a><a href="/guia/como-saber-que-filtro-usa-mi-nevecon/">Qué filtro usa mi nevecón</a><a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">Cómo cambiar el filtro</a><a href="/guia/filtro-interno-o-externo/">Interno o externo</a><a href="/guia/por-que-el-agua-del-nevecon-sabe-mal/">El agua sabe mal</a><a href="/guia/el-dispensador-de-agua-del-nevecon-no-echa-agua/">El dispensador no echa agua</a><a href="/guia/como-reiniciar-la-luz-del-filtro-del-nevecon/">Reiniciar la luz del filtro</a></div>'
                '<div><a class="mk" href="/tienda/">Tienda: todos los filtros</a><a href="/tienda/">Ver la tienda completa</a><a href="/carrito.php">Mi carrito</a></div>'
-               '<div><a class="mk" href="/referencias/">Buscar por referencia o modelo</a><a href="/referencias/">Todas las referencias y equivalencias</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/cali/">Filtros con instalación gratis en Cali</a></div>')
-enlaces.append('</nav><footer class="web-foot"><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/terminos.php#garantia">Garantía y retracto</a><span id="pie-negocio"></span></footer>')
+               '<div><a class="mk" href="/referencias/">Buscar por referencia o modelo</a><a href="/referencias/">Todas las referencias y equivalencias</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/envios/">Envíos a toda Colombia</a><a href="/cali/">Filtros con instalación gratis en Cali</a></div>')
+enlaces.append('</nav><footer class="web-foot"><div class="medios" aria-label="Medios de pago" style="width:100%"><span>🔒 Pago seguro</span><span>Visa</span><span>Mastercard</span><span>American Express</span><span>PSE</span><span>Nequi</span><span>Bancolombia</span></div><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/terminos.php#garantia">Garantía y retracto</a><span id="pie-negocio"></span></footer>')
 i = app.index('<details class="faq"><summary>¿Cómo pago?</summary>')
 j = app.index("</div>", i) + len("</div>")
 app = app[:j] + "\n  " + "".join(enlaces) + app[j:]
@@ -245,6 +238,7 @@ nav.bnav{grid-template-columns:repeat(2,1fr)!important}
 .seo-links a{color:var(--accent)}.seo-links a.mk{font-weight:800;color:var(--ink);width:100%}
 .web-foot{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 .web-foot a{color:var(--accent)}
+.medios{display:flex;flex-wrap:wrap;gap:6px}.medios span{border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--ink);background:var(--panel)}
 """
 
 marca_ld = [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__/filtro/{p['slug']}/", "name": p["nombre_largo"]} for i, p in enumerate(CATALOGO)]
@@ -359,7 +353,7 @@ for p in CATALOGO:
     <span class="precio">{cop(p["precio"])}</span>
     <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li>En Cali: <b>domicilio e instalación gratis</b>.</li><li>Pack anual de 2 filtros: {cop(p["pack"])} (ahorras {cop(ahorro)}).</li><li>Garantía de 30 días: si no encaja, te lo cambiamos.</li></ul>
     <div class="compra"><button class="btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="link" type="button" data-add="{p["id"]}" data-pack="1">+ Pack anual de 2 por {cop(p["pack"])} (ahorras {cop(ahorro)})</button></div>
-    <span class="m">Pago seguro en línea: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span>
+    <span class="m">Pago seguro en línea: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span><?= medios_pago_html() ?>
   </div>
 </div>
 <section class="caja descripcion">
