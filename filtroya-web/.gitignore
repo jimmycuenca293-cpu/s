@@ -1,0 +1,5 @@
+# Se genera con: python3 build.py
+public_html/
+# Claves y pedidos: nunca al repositorio
+src/api/config.php
+*.zip

@@ -1,0 +1,35 @@
+<?php
+// Copia este archivo como config.php y llena tus datos. config.php nunca se muestra en la web.
+return [
+    // Tu dominio, con https (se usa en los correos automáticos)
+    'dominio' => 'https://tudominio.com',
+
+    // Datos del negocio (salen en la tienda, en los correos y en los términos)
+    'negocio' => [
+        'nombre'    => 'FiltroYa Cali',
+        'titular'   => 'Nombre del titular',            // persona o empresa dueña del negocio
+        'documento' => 'C.C. o NIT 000.000.000-0',
+        'direccion' => 'Dirección del negocio, Cali, Valle del Cauca',
+        'telefono'  => '300 000 0000',                   // para la transportadora y la SIC; no sale como WhatsApp
+        'correo'    => 'pedidos@tudominio.com',          // correo de atención al cliente
+        'horario'   => 'lunes a sábado, de 8:00 a. m. a 6:00 p. m.',
+    ],
+
+    // A este correo te llega cada pedido PAGADO, con todos los datos para despacharlo
+    'correo_avisos'    => 'tucorreo@gmail.com',
+    // Correo desde el que salen los mensajes. Créalo en Hostinger (Correos) con tu dominio.
+    'correo_remitente' => 'pedidos@tudominio.com',
+
+    // Clave para entrar a tudominio.com/admin.php y ver los pedidos. Pon una larga.
+    'admin_clave' => '',
+
+    // Wompi: panel de Wompi > Desarrolladores. Con llaves de prueba (pub_test_) no se cobra de verdad.
+    'wompi' => [
+        'public_key' => 'pub_test_XXXXXXXXXXXXXXXX',
+        'integridad' => 'test_integrity_XXXXXXXXXXXXXXXX',  // "Secreto de integridad"
+        'eventos'    => 'test_events_XXXXXXXXXXXXXXXX',     // "Secreto de eventos"
+    ],
+
+    // Clave para la tarea programada que manda los recordatorios de cambio de filtro
+    'cron_clave' => '',
+];

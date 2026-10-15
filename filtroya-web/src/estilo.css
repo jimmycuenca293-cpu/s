@@ -1,0 +1,35 @@
+:root{--bg:#f4f7f6;--panel:#fff;--ink:#0f2a2e;--muted:#587074;--line:#dbe4e2;--accent:#0f7f70;--accent-ink:#fff;--accent-soft:#e0f2ee;--deep:#0a2a2e;--glow:#5fd6c3;--ok:#1e7a46;--ok-soft:#e1f3e8;--warn:#a35c00;--warn-soft:#fbefd9;--bad:#b3261e;--bad-soft:#f9e1df;--f:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0c1a1c;--panel:#132427;--ink:#e2eeec;--muted:#93acaa;--line:#25393c;--accent:#3fc1ae;--accent-ink:#04211d;--accent-soft:#143a35;--ok:#6cc790;--ok-soft:#16301f;--warn:#f0a73a;--warn-soft:#33270f;--bad:#f2857b;--bad-soft:#3a1c1a;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--f)}
+a{color:var(--accent)}img{max-width:100%}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px}
+header.top{background:var(--deep);color:#fff}header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-block:12px}
+.logo{display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:800;font-size:22px}.logo span{color:var(--glow)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);border-radius:12px;padding:13px 18px;font-weight:800;text-decoration:none;cursor:pointer;font-size:16px}
+.btn.ghost{background:transparent;color:var(--accent)}.btn.sm{padding:8px 12px;font-size:14px}.btn.block{width:100%}
+main.wrap{padding-block:18px 40px;display:flex;flex-direction:column;gap:18px}
+.miga{font-size:13px;color:var(--muted)}.miga a{color:var(--muted)}
+h1{font-size:clamp(24px,6vw,34px);line-height:1.15;margin:0}h2{font-size:20px;margin:6px 0 0}
+.prod{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:640px){.prod{grid-template-columns:1fr}}
+.foto{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;place-items:center;aspect-ratio:1/1}
+.foto img{max-height:100%;object-fit:contain}
+.caja{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.ref{font-family:var(--mono);color:var(--accent);font-weight:700}
+.precio{font-size:32px;font-weight:800;line-height:1}
+.m{color:var(--muted);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chips span{font-family:var(--mono);font-size:13px;border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--muted)}
+ul.ok{padding-left:20px;margin:0}ul.ok li{margin:3px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:6px}
+.card .im{background:#fff;border-radius:10px;height:150px;display:grid;place-items:center;padding:6px}.card .im img{max-height:138px;object-fit:contain}
+.card b{font-size:15px;line-height:1.2}.card .p{font-weight:800}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}summary{cursor:pointer;font-weight:700}
+footer.pie{border-top:1px solid var(--line);background:var(--panel);font-size:13.5px;color:var(--muted)}
+footer.pie .wrap{display:flex;flex-wrap:wrap;gap:18px 40px;padding-block:22px}footer.pie nav{display:flex;flex-direction:column;gap:4px}footer.pie b{color:var(--ink)}
+.legal h2{font-size:17px;margin-top:14px}.legal p,.legal li{margin:6px 0}
+.estado{border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px}.estado.ok{background:var(--ok-soft)}.estado.warn{background:var(--warn-soft)}.estado.bad{background:var(--bad-soft)}
+table.t{border-collapse:collapse;width:100%;font-size:14px}table.t td,table.t th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+input,select,textarea{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px}
+.badge{display:inline-block;font-size:12px;font-weight:800;border-radius:999px;padding:2px 9px;background:var(--accent-soft)}
+.badge.pagado{background:var(--ok-soft);color:var(--ok)}.badge.pendiente{background:var(--warn-soft);color:var(--warn)}.badge.rechazado,.badge.anulado{background:var(--bad-soft);color:var(--bad)}

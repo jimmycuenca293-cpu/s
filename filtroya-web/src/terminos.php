@@ -1,0 +1,16 @@
+<?php require __DIR__ . '/partes.php'; $n = cfg()['negocio']; cabeza('Términos y condiciones | ' . $n['nombre'], 'Términos y condiciones de compra, envíos, garantía y derecho de retracto de ' . $n['nombre'] . '.', '/terminos.php'); ?>
+<article class="legal">
+<h1>Términos y condiciones</h1>
+<p class="m">Ley 1480 de 2011 (Estatuto del Consumidor). Vigentes desde el 15 de octubre de 2026.</p>
+<h2>1. Quiénes somos</h2><p><?= h($n['nombre']) ?>, de <?= h($n['titular']) ?>, <?= h($n['documento']) ?>. Dirección: <?= h($n['direccion']) ?>. Teléfono: <?= h($n['telefono']) ?>. Correo: <?= h($n['correo']) ?>. Atención: <?= h($n['horario']) ?>.</p>
+<h2>2. Cómo se compra</h2><p>Escoges el filtro, escribes tus datos de entrega y pagas en línea en la página segura de Wompi (de Bancolombia) con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Cuando Wompi aprueba el pago, te llega el recibo a tu correo y despachamos el pedido. No guardamos datos de tarjetas: el pago lo procesa Wompi.</p>
+<h2>3. Precios</h2><p>Están en pesos colombianos y son el valor total a pagar, con los impuestos aplicables y el envío incluidos. No hay cobros adicionales.</p>
+<h2>4. Antes de comprar, confirma tu referencia</h2><p>Compara la referencia impresa en tu filtro viejo o el modelo de tu nevecón con la del producto. Las fotos son de referencia. Si tienes dudas, escríbenos al correo antes de pagar.</p>
+<h2>5. Entregas</h2><p>En Cali: domicilio e instalación sin costo, en el día y la hora que acordemos contigo por teléfono. Resto del país: envío sin costo por transportadora; llega en unos 2 días hábiles después de aprobado el pago. Son tiempos estimados que pueden variar por la transportadora; te enviamos el número de guía a tu correo. Solo instalamos en Cali.</p>
+<h2 id="garantia">6. Garantía</h2><p>Todos los productos tienen la garantía legal de la Ley 1480 de 2011. Además, si el filtro llega con un defecto, falla por defecto de fabricación o no encaja en tu nevecón, avísanos dentro de los 30 días siguientes a la entrega y te lo cambiamos o te devolvemos el dinero.</p>
+<h2>7. Derecho de retracto</h2><p>Como es una compra a distancia, tienes <b>5 días hábiles desde que recibes el filtro</b> para retractarte, sin dar explicaciones. El filtro debe estar sin instalar y en su empaque. El transporte de la devolución corre por tu cuenta y te devolvemos el dinero en máximo 30 días calendario.</p>
+<h2>8. Reversión del pago</h2><p>Si pagaste por un medio electrónico y fuiste víctima de fraude, la compra no fue autorizada por ti, o el producto no llegó, no es el que pediste o está defectuoso, puedes pedir la reversión del pago dentro de los 5 días hábiles siguientes a que lo sepas o lo recibas. Avísanos al correo y avisa a tu banco o entidad de pago.</p>
+<h2>9. Marcas</h2><p>Samsung, LG, Whirlpool, EveryDrop, GE y General Electric son marcas de sus respectivos dueños. <?= h($n['nombre']) ?> es un comercio independiente y no es distribuidor oficial de esas marcas. Los nombres se usan solo para indicar en qué neveras sirve cada filtro.</p>
+<h2>10. Peticiones, quejas y reclamos</h2><p>Escríbenos a <?= h($n['correo']) ?>. Respondemos en máximo 15 días hábiles. También puedes acudir a la Superintendencia de Industria y Comercio: <a href="https://www.sic.gov.co" rel="nofollow">www.sic.gov.co</a>.</p>
+</article>
+<?php pie(); ?>
