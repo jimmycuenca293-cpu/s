@@ -587,7 +587,12 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     for f in (d / (PREFIJO + "img")).iterdir():  # solo las fotos de la marca
         if f.name != "icono.svg" and f.name.split(".")[0].removesuffix("-400") not in ids:
             f.unlink()
-    rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO)
+    logo = None
+    if (AQUI / "logos" / f"{s}.png").exists():  # somos distribuidor autorizado: cada sitio lleva el logo de su marca
+        shutil.copy(AQUI / "logos" / f"{s}.png", d / (PREFIJO + "img") / f"logo-{s}.png")
+        lw, lh = Image.open(AQUI / "logos" / f"{s}.png").size
+        logo = {"logo": f"/{PREFIJO}img/logo-{s}.png", "logo_w": lw, "logo_h": lh}
+    rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo)
     (d / "purofiltro-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
     cat_m = dict(cat_php, paginas=rutas, guias=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],

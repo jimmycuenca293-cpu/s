@@ -35,6 +35,15 @@ p{margin:0}
 .m-cart{position:relative;display:grid;place-items:center;width:44px;height:44px;padding:0!important;border:1px solid var(--line)}
 .m-cart svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .m-cart span{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--pri);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center;padding:0 5px}
+.m-logo-marca{height:30px;width:auto;display:block}
+.m-sello:has(.m-logo-marca){gap:3px;align-items:flex-start}.m-sello .m-logo-marca{flex:0 0 auto}
+@media (max-width:760px){.m-logo-marca{height:22px}body.m-ge .m-logo-marca{height:30px}.m-sello small{font-size:9px}}
+.m-pie .m-sello,.m-hero-logo{background:#fff;border-radius:10px;padding:8px 12px;align-self:flex-start}
+.m-pie .m-sello small{color:var(--pri)!important}
+.m-hero-logo{display:flex;width:fit-content;margin-bottom:18px;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.m-hero-logo .m-logo-marca{height:44px}
+.m-prod-logo{display:flex;align-items:center;gap:12px}.m-prod-logo .m-logo-marca{height:36px}.m-prod-logo small{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--pri);border-left:1px solid var(--line);padding-left:12px}
+body.m-ge .m-logo-marca{height:40px}body.m-ge .m-hero-logo .m-logo-marca{height:64px}body.m-ge .m-prod-logo .m-logo-marca{height:48px}
 @media (max-width:760px){.m-ancho{display:none}.m-anuncio span+span{display:none}.m-pf{font-size:17px}.m-sello b{font-size:13px}.m-sello small{font-size:10px}.m-logo{gap:7px}}
 @media (max-width:420px){.m-nav a:not(.m-cart){display:none}}
 

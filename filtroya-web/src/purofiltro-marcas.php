@@ -17,12 +17,19 @@ function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, stri
         . '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="' . h($M['fuentes']) . '">'
         . ($legado ? '<link rel="stylesheet" href="/estilo.css">' : '') . '<link rel="stylesheet" href="/purofiltro-marcas.css"><script src="/carrito.js" defer></script>'
         . verificacion_html() . analytics_html() . $extra . '</head><body class="m-' . h($M['clase']) . ($legado ? ' m-legado' : '') . '">' . gtm_body_html()
-        . '<div class="m-anuncio"><span>✔ Filtros ' . h($M['nombre']) . ' 100 % originales</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
+        . '<div class="m-anuncio"><span>✔ Distribuidor autorizado ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
         . '<header class="m-top"><div class="m-wrap">'
-        . '<a class="m-logo" href="' . h($b) . '" aria-label="Filtros ' . h($M['nombre']) . ' originales · ' . h($n) . '"><img src="/img/icono.svg" alt="" width="28" height="28"><span class="m-pf">Puro<b>Filtro</b></span><i aria-hidden="true"></i><span class="m-sello"><b>' . h($M['nombre']) . '</b><small>Filtros originales</small></span></a>'
+        . '<a class="m-logo" href="' . h($b) . '" aria-label="' . h($n) . ', distribuidor autorizado ' . h($M['nombre']) . '"><img src="/img/icono.svg" alt="" width="28" height="28"><span class="m-pf">Puro<b>Filtro</b></span><i aria-hidden="true"></i><span class="m-sello">' . logo_marca_html($M) . '<small>Distribuidor autorizado</small></span></a>'
         . '<nav class="m-nav"><a href="' . h($b) . '#filtros">Filtros</a><a href="' . h($b) . 'cual-es-mi-filtro/" class="m-ancho">¿Cuál es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/" class="m-ancho">Instalación</a>'
         . '<a class="m-cart" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a></nav>'
         . '</div></header><main' . ($legado ? ' class="wrap m-legado-main"' : '') . '>';
+}
+
+// Logo de la marca (somos distribuidor autorizado); si no hay logo, el nombre en texto
+function logo_marca_html(array $M, string $clase = 'm-logo-marca'): string
+{
+    if (empty($M['logo'])) return '<b>' . h($M['nombre']) . '</b>';
+    return '<img class="' . h($clase) . '" src="' . h($M['logo']) . '" alt="' . h($M['nombre']) . '" width="' . (int) $M['logo_w'] . '" height="' . (int) $M['logo_h'] . '">';
 }
 
 function pie_marca(array $M): void
@@ -32,8 +39,8 @@ function pie_marca(array $M): void
     $b = $M['base'];
     $tel = preg_replace('/\D/', '', (string) (cfg()['whatsapp'] ?? ''));
     $h = '<footer class="m-pie"><div class="m-wrap m-pie-top">'
-        . '<div><a class="m-logo" href="' . h($b) . '"><img src="/img/icono.svg" alt="" width="28" height="28"><span class="m-pf">Puro<b>Filtro</b></span><i aria-hidden="true"></i><span class="m-sello"><b>' . h($M['nombre']) . '</b><small>Filtros originales</small></span></a>'
-        . '<p>Filtros de agua ' . h($M['nombre']) . ' originales para tu nevecón, con envío gratis a toda Colombia y pago seguro en línea.</p>'
+        . '<div><a class="m-logo" href="' . h($b) . '"><img src="/img/icono.svg" alt="" width="28" height="28"><span class="m-pf">Puro<b>Filtro</b></span><i aria-hidden="true"></i><span class="m-sello">' . logo_marca_html($M) . '<small>Distribuidor autorizado</small></span></a>'
+        . '<p>Distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' originales en Colombia, con envío gratis a todo el país y pago seguro en línea.</p>'
         . ($tel ? '<a class="m-pie-wa" href="https://wa.me/57' . substr($tel, -10) . '" target="_blank" rel="noopener">💬 WhatsApp ' . h($n['telefono']) . '</a>' : '')
         . '<span class="m-pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
         . '<nav><b>Filtros ' . h($M['nombre']) . '</b>';
@@ -42,6 +49,6 @@ function pie_marca(array $M): void
         . '<nav><b>Compra segura</b><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a><a href="/quienes-somos.php">Quiénes somos</a></nav>'
         . '</div><div class="m-wrap m-pie-medios"><span>🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'
         . '<div class="m-wrap m-pie-base"><span>© ' . date('Y') . ' ' . h($n['nombre']) . '. Precios en pesos colombianos con envío incluido.</span>'
-        . '<span>' . h($M['nombre']) . ' es una marca registrada de su dueño. ' . h($n['nombre']) . ' es un comercio independiente que vende filtros ' . h($M['nombre']) . ' originales; no somos la tienda oficial de la marca.</span></div></footer>';
+        . '<span>' . h($n['nombre']) . ' es distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia. ' . h($M['nombre']) . ' y su logo son marcas registradas de su dueño y se usan con autorización.</span></div></footer>';
     echo $h . whatsapp_html() . '</body></html>';
 }
