@@ -45,6 +45,8 @@ function pie_marca(array $M): void
         . '<span class="m-pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
         . '<nav><b>Filtros ' . h($M['nombre']) . '</b>';
     foreach ($M['productos'] as $p) $h .= '<a href="' . h($b . $p[1]) . '/">' . h($p[0]) . '</a>';
+    $h .= '</nav><nav><b>Guías</b>';
+    foreach ($M['guias'] ?? [] as $g) $h .= '<a href="' . h($g[0]) . '">' . h($g[1]) . '</a>';
     $h .= '</nav><nav><b>Ayuda</b><a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál filtro es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Cuándo cambiarlo y cómo instalarlo</a><a href="' . h($b) . '#preguntas">Preguntas frecuentes</a><a href="/carrito.php">Mi carrito</a></nav>'
         . '<nav><b>Compra segura</b><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a><a href="/quienes-somos.php">Quiénes somos</a></nav>'
         . '</div><div class="m-wrap m-pie-medios"><span>🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'

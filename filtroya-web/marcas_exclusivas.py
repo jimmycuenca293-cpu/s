@@ -14,6 +14,9 @@ Páginas de cada marca:
 """
 import html
 import json
+import sys
+
+import marcas_seo
 
 import instalacion
 
@@ -64,13 +67,16 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
         p["slug_o"] = p["slug"] + "-original"
     M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], **(logo or {}),
          "productos": [[p["nombre_largo"] + " original", p["slug_o"]] for p in ps]}
-    ctx = dict(marca=marca, info=info, ps=ps, base=base, M=M, slug=slug, norm=norm, ubic=ubic, foto=foto, php_str=php_str, ciudades=[c[0] for c in CIUDADES_CO[:30]])
+    R = marcas_seo.rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO)
+    M["guias"] = [[r, n] for r, n in R["temas"]]
+    ctx = dict(marca=marca, info=info, ps=ps, base=base, M=M, slug=slug, norm=norm, ubic=ubic, foto=foto, php_str=php_str, ciudades=[c[0] for c in CIUDADES_CO[:30]], R=R, datos=instalacion.datos)
     rutas = [base]
     escribir(dir_ / "index.php", portada(**ctx))
     for p in ps:
         escribir(dir_ / p["slug_o"] / "index.php", producto(p, **ctx)); rutas.append(base + p["slug_o"] + "/")
     escribir(dir_ / "cual-es-mi-filtro" / "index.php", cual(**ctx)); rutas.append(base + "cual-es-mi-filtro/")
     escribir(dir_ / "cambio-e-instalacion" / "index.php", guia(**ctx)); rutas.append(base + "cambio-e-instalacion/")
+    rutas += marcas_seo.generar(R, escribir, dir_, ctx, sys.modules[__name__])
     return rutas, M
 
 
@@ -107,6 +113,27 @@ def tarjeta(p, base, foto, ubic):
             f'<div class="tx"><h3><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></h3><span class="ref">Referencia {esc(p["ref"])}</span>'
             f'<span class="pr">{cop(p["precio"])}<small>Envío gratis</small></span>'
             f'<button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button></div></article>')
+
+
+def caja(p, base, foto):
+    """Bloque de compra de un filtro dentro de una subpágina."""
+    ahorro = p["precio"] * 2 - p["pack"]
+    return (f'<div class="m-caja-prod"><a class="foto" href="{base}{p["slug_o"]}/"><span class="m-badge">✔ Original</span>{foto(p, p["nombre_largo"] + " original", mini=True)}</a>'
+            f'<div class="tx"><h2><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])} original</a></h2><span class="m-mut">Referencia {esc(p["ref"])}</span>'
+            f'<span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>'
+            f'<div class="compra"><button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>'
+            f'<button class="m-link" type="button" data-add="{p["id"]}" data-pack="1">+ Pack de 2 por {cop(p["pack"])} (ahorras {cop(ahorro)})</button></div></div>')
+
+
+def enlace(mapa, clave, texto):
+    """Texto enlazado a su subpágina si existe (mapa: clave → (nombre, filtro, ruta))."""
+    return f'<a href="{mapa[clave][2]}">{texto}</a>' if clave in mapa else texto
+
+
+def producto_ld(p, ruta, nombre, marca):
+    return {"@type": "Product", "name": nombre, "image": f"__BASE__/img/{p['id']}.jpg", "sku": p["ref"], "mpn": p["ref"], "brand": {"@type": "Brand", "name": marca},
+            "offers": {"@type": "Offer", "url": f"__BASE__{ruta}", "priceCurrency": "COP", "price": str(p["precio"]), "itemCondition": "https://schema.org/NewCondition",
+                       "availability": "https://schema.org/InStock" if p.get("stock") else "https://schema.org/BackOrder"}}
 
 
 def verificar(marca):
@@ -153,7 +180,7 @@ def cab(eyebrow, titulo, texto="", h="h2"):
 
 
 # ---------- portada de la marca ----------
-def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades):
+def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades, R=None, datos=None):
     destacados = sorted(ps, key=lambda p: ubic(p) == "externo")[:3]
     preg = preguntas_marca(marca, ps)
     faq_h, faq_ld = faq(preg)
@@ -162,7 +189,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades)
          "about": {"@type": "Brand", "name": marca},
          "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__{base}{p['slug_o']}/", "name": p["nombre_largo"] + " original"} for i, p in enumerate(ps)]}},
         faq_ld]}
-    titulo = f"Filtros de agua {marca} originales para nevecón | Envío gratis Colombia"
+    titulo = f"Filtros de agua {marca} originales para nevera | Envío gratis"
     desc = f"{info['intro']} Envío gratis a toda Colombia y pago seguro con tarjeta, PSE o Nequi."
     fotos = "".join(f'<span class="f f{i + 1}">{foto(p, p["nombre_largo"] + " original", lazy=False)}</span>' for i, p in enumerate(destacados))
     pasos = [("Encuentra tu filtro", f"Por la referencia del filtro viejo o el modelo de tu nevecón {marca}."), ("Paga en línea", "Con tarjeta, PSE o Nequi en página segura."), ("Recíbelo en casa", "Envío gratis a toda Colombia con número de guía.")]
@@ -170,8 +197,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades)
     return inicio(M, php_str, titulo, desc, base, ld) + f"""
 <section class="m-hero"><div class="m-wrap">
   <div>
-    <span class="m-hero-logo"><?= logo_marca_html($M) ?></span>
-    <span class="eyebrow">Distribuidor autorizado {esc(marca)} en Colombia</span>
+    <span class="m-hero-logo"><?= logo_marca_html($M) ?><span><b>Distribuidor autorizado</b>Filtros originales en Colombia</span></span>
     <h1>Filtros de agua {esc(marca)} originales para tu nevecón</h1>
     <p class="lead">{esc(info["intro"])}</p>
     <div class="acc"><a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a><a class="m-btn sec" href="{base}cual-es-mi-filtro/">¿Cuál es el mío?</a></div>
@@ -186,7 +212,8 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades)
 {sec(cab("Mantenimiento", f"¿Cuándo cambiar el filtro de tu nevecón {marca}?", esc(info["aviso"])) + '<ul class="m-ok">' + "".join(f"<li>{esc(x)}</li>" for x in senales) + f'</ul><p style="margin-top:18px"><a href="{base}cambio-e-instalacion/">Cómo instalar cada filtro {esc(marca)}, paso a paso →</a></p>', alt=True)}
 {sec(cab("Así de fácil", "Compra en 3 pasos") + '<div class="m-cols m-num">' + "".join(f'<div class="m-bloque"><h3>{esc(t)}</h3><p>{esc(d)}</p></div>' for t, d in pasos) + "</div>")}
 {sec(cab("Resolvemos tus dudas", f"Preguntas frecuentes sobre filtros {marca}") + faq_h, alt=True, id_="preguntas")}
-{sec(cab("Envíos", f"Enviamos filtros {marca} originales a toda Colombia", "Envío gratis con número de guía. Llega en 2 a 3 días hábiles a las principales ciudades.") + '<div class="m-chips">' + "".join(f"<span>{esc(c)}</span>" for c in ciudades) + '<span>y más municipios</span></div>')}
+{sec(cab("Envíos", f"Enviamos filtros {marca} originales a toda Colombia", "Envío gratis con número de guía. Llega en 2 a 3 días hábiles a las principales ciudades.") + '<div class="m-chips">' + "".join(f'<a href="{r}">{esc(n)}</a>' for n, (_, r) in R["ciudades"].items()) + '<span>y más municipios</span></div>')}
+{sec(cab("Guías " + marca, f"Lo que más buscan sobre filtros {marca}") + '<div class="m-cols">' + "".join(f'<a class="m-bloque m-guia" href="{r}"><h3>{esc(n)}</h3><p>Leer →</p></a>' for r, n in R["temas"]) + "</div>", alt=True)}
 {sec(cta_wa(marca))}
 </main>
 <?php pie_marca($M); ?>
@@ -194,7 +221,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades)
 
 
 # ---------- página de cada filtro ----------
-def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades):
+def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades, R=None, datos=None):
     url = f"{base}{p['slug_o']}/"
     nombre = p["nombre_largo"] + " original"
     alias = [r for r in p["refs"] if norm(r) != norm(p["ref"])]
@@ -254,9 +281,9 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
   </div>
 </div>
 </div>
-{sec('<div class="m-texto">' + cab("Descripción", f"Filtro de agua {marca} {p['ref']} original") + f'<p>{esc(p.get("desc") or ("Filtro de agua original para nevecones " + marca + "."))}</p><p>Retiene el cloro, el sedimento y las partículas que le dan mal sabor y mal olor al agua y al hielo, y protege la válvula y la máquina de hielo de tu nevecón {esc(marca)}. Al ser original, encaja exacto, no gotea y el nevecón lo reconoce sin problema. Rinde unos 6 meses de uso normal.</p>' + (f'<p>Si tu filtro viejo dice <b>{esc(p["ref"])}</b> o alguna de estas referencias: <b>{esc(", ".join(alias))}</b>, este es el tuyo.</p>' if alias else f'<p>Si tu filtro viejo dice <b>{esc(p["ref"])}</b>, este es el tuyo.</p>') + (f'<p>{esc(p["nota"])}</p>' if p.get("nota") else "") + "</div>", alt=True)}
+{sec('<div class="m-texto">' + cab("Descripción", f"Filtro de agua {marca} {p['ref']} original") + f'<p>{esc(p.get("desc") or ("Filtro de agua original para nevecones " + marca + "."))}</p><p>Retiene el cloro, el sedimento y las partículas que le dan mal sabor y mal olor al agua y al hielo, y protege la válvula y la máquina de hielo de tu nevecón {esc(marca)}. Al ser original, encaja exacto, no gotea y el nevecón lo reconoce sin problema. Rinde unos 6 meses de uso normal.</p>' + (f'<p>Si tu filtro viejo dice <b>{esc(p["ref"])}</b> o alguna de estas referencias, este es el tuyo:</p><div class="m-chips">' + "".join(f'<a href="{R["refs"][norm(r)][2]}">{esc(r)}</a>' if norm(r) in R["refs"] else f"<span>{esc(r)}</span>" for r in alias) + "</div>" if alias else f'<p>Si tu filtro viejo dice <b>{esc(p["ref"])}</b>, este es el tuyo.</p>') + (f'<p>{esc(p["nota"])}</p>' if p.get("nota") else "") + "</div>", alt=True)}
 {sec(cab("Ficha técnica", f"Datos del {p['nombre_largo']}") + '<dl class="m-ficha">' + "".join(f"<dt>{esc(a)}</dt><dd>{esc(b)}</dd>" for a, b in ficha) + "</dl>")}
-{sec(cab("Compatibilidad", f"Nevecones {marca} que usan este filtro", esc(info["etiqueta"])) + ('<div class="m-chips">' + "".join(f"<span>{esc(m)}</span>" for m in p["modelos"]) + "</div><p class=\"m-mut\" style=\"margin-top:12px\">Y otros modelos. Si el tuyo no aparece, compara la referencia del filtro viejo o escríbenos.</p>" if p["modelos"] else '<p>Compara la referencia impresa en tu filtro viejo o escríbenos por WhatsApp con el modelo de tu nevecón.</p>'), alt=True)}
+{sec(cab("Compatibilidad", f"Nevecones {marca} que usan este filtro", esc(info["etiqueta"])) + ('<div class="m-chips">' + "".join(f'<a href="{R["modelos"][norm(m)][2]}">{esc(m)}</a>' for m in p["modelos"]) + "</div><p class=\"m-mut\" style=\"margin-top:12px\">Y otros modelos. Si el tuyo no aparece, compara la referencia del filtro viejo o escríbenos.</p>" if p["modelos"] else '<p>Compara la referencia impresa en tu filtro viejo o escríbenos por WhatsApp con el modelo de tu nevecón.</p>'), alt=True)}
 {sec(instalacion.tutorial_html(p, p["nombre_largo"]))}
 {sec(cab("Compra con confianza", "Cómo verificar que es original") + '<div class="m-cols">' + "".join(f'<div class="m-bloque"><div class="ic">{i}</div><h3>{esc(t)}</h3><p>{esc(dd)}</p></div>' for i, t, dd in verificar(marca)) + "</div>", alt=True)}
 <section class="m-sec" id="opiniones"><div class="m-wrap">{cab("Opiniones", "Lo que dicen los compradores")}
@@ -274,12 +301,12 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
 
 
 # ---------- ¿cuál es mi filtro? ----------
-def cual(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades):
+def cual(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades, R=None, datos=None):
     url = base + "cual-es-mi-filtro/"
     miga_h, miga_ld = miga([(f"Filtros {marca} originales", base), ("¿Cuál es mi filtro?", None)])
-    filas_mod = "".join(f'<tr><td><b>{esc(m)}</b></td><td><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></td><td>{cop(p["precio"])}</td></tr>'
+    filas_mod = "".join(f'<tr><td><a href="{R["modelos"][norm(m)][2]}"><b>{esc(m)}</b></a></td><td><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></td><td>{cop(p["precio"])}</td></tr>'
                         for p in ps for m in p["modelos"])
-    filas_ref = "".join(f'<tr><td><b>{esc(r)}</b></td><td><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></td><td>{"Externo" if ubic(p) == "externo" else "Interno"}</td></tr>'
+    filas_ref = "".join(f'<tr><td>{enlace(R["refs"], norm(r), f"<b>{esc(r)}</b>")}</td><td><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></td><td>{"Externo" if ubic(p) == "externo" else "Interno"}</td></tr>'
                         for p in ps for r in p["refs"])
     preg = [(f"¿Dónde está el modelo de mi nevecón {marca}?", info["etiqueta"]),
             (f"¿Dónde está la referencia del filtro {marca}?", "Impresa en el filtro viejo, en la etiqueta o grabada en el cuerpo. Sácalo y míralo con buena luz."),
@@ -301,7 +328,7 @@ def cual(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades):
 
 
 # ---------- cuándo cambiarlo y cómo instalarlo ----------
-def guia(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades):
+def guia(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades, R=None, datos=None):
     url = base + "cambio-e-instalacion/"
     miga_h, miga_ld = miga([(f"Filtros {marca} originales", base), ("Cambio e instalación", None)])
     senales = [("👅", "Sabor u olor raro", "El agua o el hielo saben a cloro, a tierra o a encerrado."), ("💧", "Menos presión", "El dispensador bota menos agua o tarda más en llenar el vaso."),
