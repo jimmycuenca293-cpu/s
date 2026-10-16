@@ -266,3 +266,7 @@ body.m-legado{color-scheme:light;--bg:var(--fondo);--accent:var(--pri);--accent-
 .m-pasos li::before{content:counter(p);position:absolute;left:16px;top:13px;width:30px;height:30px;border-radius:50%;background:var(--pri);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
 body.m-whirlpool .m-pasos li::before{background:#eeb111;color:#231f20}
 .m-fecha{margin-top:18px;font-size:13px}
+/* logo de la marca grande en el pie */
+.m-pie .m-sello:has(.m-logo-marca){flex-direction:column;align-items:flex-start;gap:8px;padding:14px 18px}
+.m-pie .m-logo-marca{height:56px}
+body.m-ge .m-pie .m-logo-marca{height:76px}
