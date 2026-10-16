@@ -19,6 +19,7 @@ import subprocess
 import sys
 import unicodedata
 
+import marcas_exclusivas
 import paginas_seo
 import instalacion
 
@@ -471,6 +472,7 @@ for marca in MARCAS:
 <h1>Filtros de agua para nevecón {esc(marca)}</h1>
 <p>{esc(INTRO.get(marca, ""))} Todos con <b>envío gratis</b> a toda Colombia y pago seguro en línea.</p>
 <div class="grid">{"".join(tarjeta(p) for p in ps)}</div>
+<section class="caja"><h2>Tienda exclusiva de filtros {esc(marca)} originales</h2><p>Mira todos los filtros {esc(marca)} originales, la tabla de compatibilidad por modelo y la guía de instalación en nuestra <a href="/{PREFIJO}{s}/">tienda exclusiva {esc(marca)}</a>.</p></section>
 <section class="caja"><h2>¿Cuál es el mío?</h2><p>Saca el filtro viejo y busca la referencia impresa, o mira el modelo en la etiqueta de adentro del nevecón. Escríbelo en el <a href="/#catalogo">buscador de la tienda</a> y te mostramos el filtro que le sirve.</p></section>
 <?php pie(); ?>
 """
@@ -480,6 +482,9 @@ for marca in MARCAS:
 
 # ---------- referencias, nevecones, guías, envíos y directorios ----------
 extra = paginas_seo.generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDADES_CO)
+
+# ---------- tiendas exclusivas por marca (diseño propio, solo filtros de esa marca) ----------
+extra["paginas"] += marcas_exclusivas.generar(OUT, CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO)
 
 # ---------- catálogo del servidor ----------
 def php_val(v):

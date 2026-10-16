@@ -35,7 +35,7 @@ def tutorial_html(p, nombre=None):
   <dl class="dq"><dt>Dónde va</dt><dd>{esc(d["donde"])}</dd><dt>Tiempo</dt><dd>{esc(d["tiempo"])}</dd><dt>Herramientas</dt><dd>{esc(d["herramientas"])}</dd></dl>
   <ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in d["pasos"])}</ol>
   <p><b>Último paso:</b> {esc(d["reset"])}</p>
-  <p class="m">Consejos: el agua de los primeros vasos puede salir turbia o con burbujas, es normal y se aclara en unos minutos. Bota el primer hielo que salga después del cambio. Si gotea, saca el filtro y vuelve a meterlo derecho hasta que quede firme. En Cali te lo instalamos {"por $ 30.000" if "-ex-" in p["id"] else "gratis"}.</p>
+  <p class="m">Consejos: el agua de los primeros vasos puede salir turbia o con burbujas, es normal y se aclara en unos minutos. Bota el primer hielo que salga después del cambio. Si gotea, saca el filtro y vuelve a meterlo derecho hasta que quede firme. Si tienes dudas, escríbenos por WhatsApp y te guiamos.</p>
 </section>"""
 
 
