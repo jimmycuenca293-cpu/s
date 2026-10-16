@@ -185,36 +185,53 @@ body:has(.m-barra) .wa-flot{bottom:calc(86px + env(safe-area-inset-bottom))}
 .fy-toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,160%);background:var(--pie);color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:14px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:90;transition:transform .25s;max-width:calc(100% - 32px)}
 .fy-toast.on{transform:translate(-50%,0)}.fy-toast a{color:var(--hero-acento);font-weight:800;white-space:nowrap}
 
-/* ===== Samsung: azul profundo, líneas limpias, portada oscura ===== */
+/* Colores tomados de cada logo. El logo no se usa: el nombre va en texto junto al de PuroFiltro. */
+/* ===== Samsung: azul del logo #1428A0 sobre blanco ===== */
 body.m-samsung{--f-titulo:"Plus Jakarta Sans",system-ui,sans-serif;--f-texto:"Plus Jakarta Sans",system-ui,sans-serif;--ls-marca:.22em;
-  --pri:#1a46d6;--ink:#0b1530;--muted:#56607a;--fondo:#ffffff;--panel:#f3f6fc;--card:#ffffff;--suave:#e8eefc;--line:#dfe5f2;--ok:#0f8a5f;
-  --anuncio:#071338;--pie:#071338;--hero-bg:radial-gradient(1200px 500px at 80% -10%,#2a5cf0 0%,transparent 60%),linear-gradient(160deg,#071338 0%,#0d2479 100%);--hero-ink:#fff;--hero-acento:#8fb0ff;
+  --pri:#1428a0;--ink:#0b1440;--muted:#545c78;--fondo:#ffffff;--panel:#f2f4fb;--card:#ffffff;--suave:#e6eaf8;--line:#dde2f1;--ok:#0f8a5f;
+  --anuncio:#1428a0;--pie:#0a1460;--hero-bg:radial-gradient(1100px 480px at 85% -10%,#2f4fd0 0%,transparent 60%),linear-gradient(160deg,#0a1460 0%,#1428a0 100%);--hero-ink:#fff;--hero-acento:#a9b8ff;
   --r-btn:999px;--r-card:18px;--r-foto:24px;--r-ic:12px;--card-borde:1px solid var(--line);--card-sombra:none}
+body.m-samsung .m-sello b{color:#1428a0}
+body.m-samsung .m-hero .m-btn:not(.sec){background:#fff;color:#1428a0}
 
-/* ===== LG: magenta y gris cálido, portada clara ===== */
+/* ===== LG: rojo del logo #A50034 y gris #6B6B6B ===== */
 body.m-lg{--f-titulo:"Outfit",system-ui,sans-serif;--f-texto:"Outfit",system-ui,sans-serif;--ls-titulo:-.02em;--ls-marca:.06em;
-  --pri:#a50034;--ink:#2a2a2e;--muted:#6b6670;--fondo:#ffffff;--panel:#f6f2f3;--card:#ffffff;--suave:#fbe9ef;--line:#ebe3e6;--ok:#11834f;
-  --anuncio:#a50034;--pie:#2a2a2e;--hero-bg:linear-gradient(120deg,#fbf6f7 0%,#f3e6ea 55%,#ecd3dc 100%);--hero-ink:#2a2a2e;--hero-acento:#a50034;
-  --r-btn:12px;--r-card:22px;--r-foto:50%;--r-ic:50%;--card-borde:0;--card-sombra:0 6px 24px rgba(80,20,40,.08)}
-body.m-lg .m-fotos .f{border-radius:50%;padding:11%}
+  --pri:#a50034;--ink:#333335;--muted:#6b6b6b;--fondo:#ffffff;--panel:#f5f5f5;--card:#ffffff;--suave:#f8e6ec;--line:#e6e6e6;--ok:#11834f;
+  --anuncio:#a50034;--pie:#3d3d3f;--hero-bg:linear-gradient(120deg,#ffffff 0%,#f4f4f4 50%,#f6e3ea 100%);--hero-ink:#333335;--hero-acento:#a50034;
+  --r-btn:12px;--r-card:22px;--r-foto:50%;--r-ic:50%;--card-borde:0;--card-sombra:0 6px 24px rgba(60,60,60,.09)}
+body.m-lg .m-sello b{color:#6b6b6b;font-weight:800}
+body.m-lg .m-fotos .f{border-radius:50%}
 body.m-lg .m-hero .m-btn.sec{color:#a50034}
-body.m-lg .m-pie .m-pf b,body.m-lg .m-pie .m-sello small{color:#ff7aa5}
-body.m-lg .m-cta{background:linear-gradient(120deg,#a50034,#6e0024);color:#fff}body.m-lg .m-cta h2{color:#fff}
+body.m-lg .m-pie .m-pf b,body.m-lg .m-pie .m-sello small{color:#ff6f9a}
+body.m-lg .m-cta{background:linear-gradient(120deg,#a50034,#7a0026);color:#fff}body.m-lg .m-cta h2{color:#fff}
 
-/* ===== Whirlpool: grafito y ámbar, elegante con letra de revista ===== */
+/* ===== Whirlpool: negro del logo #231F20 y amarillo #EEB111 ===== */
 body.m-whirlpool{--f-titulo:"Fraunces",Georgia,serif;--f-texto:"DM Sans",system-ui,sans-serif;--f-marca:"DM Sans",system-ui,sans-serif;--ls-titulo:-.015em;--ls-marca:.16em;
-  --pri:#b57c0e;--ink:#1b1c1f;--muted:#64625d;--fondo:#fdfcf9;--panel:#f5f1e8;--card:#ffffff;--suave:#f6ecd6;--line:#e7e1d3;--ok:#2f7d4f;
-  --anuncio:#1b1c1f;--pie:#17181b;--hero-bg:linear-gradient(135deg,#17181b 0%,#2b2a27 100%);--hero-ink:#fbf7ee;--hero-acento:#f0b440;
+  --pri:#231f20;--ink:#231f20;--muted:#5f5b58;--fondo:#ffffff;--panel:#faf6ea;--card:#ffffff;--suave:#fcefc9;--line:#ebe5d6;--ok:#2f7d4f;
+  --anuncio:#231f20;--pie:#231f20;--hero-bg:linear-gradient(135deg,#231f20 0%,#38322a 100%);--hero-ink:#ffffff;--hero-acento:#eeb111;
   --r-btn:4px;--r-card:6px;--r-foto:6px;--r-ic:4px;--card-borde:1px solid var(--line);--card-sombra:none}
 body.m-whirlpool h1,body.m-whirlpool h2{font-weight:600}
-body.m-whirlpool .m-btn{text-transform:uppercase;letter-spacing:.08em;font-size:14px}
-body.m-whirlpool .m-hero .m-btn:not(.sec){background:#f0b440;color:#17181b}
+body.m-whirlpool .m-btn{text-transform:uppercase;letter-spacing:.08em;font-size:14px;background:#eeb111;color:#231f20}
+body.m-whirlpool .m-btn.sec{background:transparent;color:#231f20}
+body.m-whirlpool .m-hero .m-btn.sec{color:#fff}
+body.m-whirlpool .m-badge,body.m-whirlpool .m-num .m-bloque::before,body.m-whirlpool .tutorial ol.pasos li::before,body.m-whirlpool .m-cart span{background:#eeb111;color:#231f20}
+body.m-whirlpool .m-sello small,body.m-whirlpool .m-cab .eyebrow{color:#a87a00}
+body.m-whirlpool .m-pf b{color:#d39b00}
+body.m-whirlpool .m-fotos .sello-o{background:#eeb111;color:#231f20}
+body.m-whirlpool .m-cta .m-btn{background:#25d366;color:#fff}
+body.m-whirlpool.m-legado{--accent:#eeb111;--accent-ink:#231f20}
 
-/* ===== GE: azul cielo, formas redondeadas y amables ===== */
+/* ===== GE: azul del logo #3B73B9 ===== */
 body.m-ge{--f-titulo:"Lexend",system-ui,sans-serif;--f-texto:"Lexend",system-ui,sans-serif;--ls-titulo:-.02em;--ls-marca:.12em;
-  --pri:#1559b0;--ink:#0f2440;--muted:#5a6b80;--fondo:#ffffff;--panel:#eef5fd;--card:#ffffff;--suave:#e1eefb;--line:#d9e6f4;--ok:#11834f;
-  --anuncio:#0f3d7a;--pie:#0c2c56;--hero-bg:linear-gradient(180deg,#e3f0fc 0%,#f4f9ff 100%);--hero-ink:#0f2440;--hero-acento:#1559b0;
-  --r-btn:16px;--r-card:28px;--r-foto:32px;--r-ic:16px;--card-borde:1px solid var(--line);--card-sombra:0 4px 18px rgba(21,89,176,.07)}
-body.m-ge .m-hero .m-btn.sec{color:#1559b0}
-body.m-ge .m-pie .m-pf b,body.m-ge .m-pie .m-sello small{color:#8cc2ff}
-body.m-ge .m-cta{background:linear-gradient(120deg,#1559b0,#0c2c56);color:#fff}body.m-ge .m-cta h2{color:#fff}
+  --pri:#3b73b9;--ink:#13294a;--muted:#5a6b80;--fondo:#ffffff;--panel:#eef4fb;--card:#ffffff;--suave:#e2ecf8;--line:#d8e3f1;--ok:#11834f;
+  --anuncio:#3b73b9;--pie:#1d3f6e;--hero-bg:linear-gradient(180deg,#3b73b9 0%,#2c5d9e 100%);--hero-ink:#ffffff;--hero-acento:#cfe2ff;
+  --r-btn:16px;--r-card:28px;--r-foto:32px;--r-ic:16px;--card-borde:1px solid var(--line);--card-sombra:0 4px 18px rgba(59,115,185,.08)}
+body.m-ge .m-sello b{color:#3b73b9}
+body.m-ge .m-hero .m-btn:not(.sec){background:#fff;color:#3b73b9}
+body.m-ge .m-fotos .sello-o{background:#fff;color:#3b73b9;border-color:#3b73b9}
+body.m-ge .m-pie .m-pf b,body.m-ge .m-pie .m-sello small{color:#9cc4ff}
+body.m-ge .m-cta{background:linear-gradient(120deg,#3b73b9,#1d3f6e);color:#fff}body.m-ge .m-cta h2{color:#fff}
+
+/* Páginas comunes (carrito, pago, legales) dentro del sitio de una marca: colores de la marca y siempre claro */
+body.m-legado{color-scheme:light;--bg:var(--fondo);--accent:var(--pri);--accent-ink:#fff;--accent-soft:var(--suave);--deep:var(--pie);--glow:var(--hero-acento);--f:var(--f-texto);--f-display:var(--f-titulo)}
+.m-legado-main{padding-top:24px;padding-bottom:48px;display:flex;flex-direction:column;gap:16px}

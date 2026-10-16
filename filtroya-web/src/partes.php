@@ -3,8 +3,24 @@ declare(strict_types=1);
 // Encabezado y pie de las páginas de producto, marca, legales y de pago.
 require_once __DIR__ . '/api/sitio.php';
 
+// En los sitios de una sola marca (purofiltro-marca.json existe) el encabezado y el pie son los de la marca
+function marca_sitio(): ?array
+{
+    static $m = false;
+    if ($m === false) {
+        $f = __DIR__ . '/purofiltro-marca.json';
+        $m = is_file($f) ? json_decode((string) file_get_contents($f), true) : null;
+        if ($m) require_once __DIR__ . '/purofiltro-marcas.php';
+    }
+    return $m ?: null;
+}
+
 function cabeza(string $titulo, string $desc, string $ruta, string $extra = '', bool $indexar = true): void
 {
+    if ($M = marca_sitio()) {
+        cabeza_marca($M, $titulo, $desc, $ruta, $extra, $indexar, true);
+        return;
+    }
     $S = sitio();
     $canon = $S['base'] . $ruta;
     $n = $S['negocio'];
@@ -49,5 +65,10 @@ function pie_html(): string
 
 function pie(): void
 {
+    if ($M = marca_sitio()) {
+        echo '</main>';
+        pie_marca($M);
+        return;
+    }
     echo '</main>' . pie_html() . whatsapp_html() . '</body></html>';
 }

@@ -109,3 +109,15 @@ En Tag Manager, para cada uno:
 4. **Enviar → Publicar.**
 
 El número de WhatsApp del botón flotante se cambia en `purofiltro-api/config.php` → `whatsapp`.
+
+## Sitios por marca (Samsung, LG, Whirlpool y GE)
+Además de la tienda principal hay un zip por marca: `purofiltro-samsung.zip`, `purofiltro-lg.zip`,
+`purofiltro-whirlpool.zip` y `purofiltro-ge.zip`. Cada uno es una tienda completa (carrito, pago, pedidos)
+que solo vende esa marca, con su propio diseño. Cada una va en **su propio dominio**:
+1. En Hostinger agrega el dominio de la marca como sitio nuevo y sube el zip de esa marca a su `public_html` (paso 1).
+2. Crea su `purofiltro-api/config.php` igual que en el paso 3: puedes copiar el de la tienda principal,
+   pero cambia `dominio` por el dominio de esa marca. Las llaves de Wompi y tu correo pueden ser los mismos.
+3. Wompi solo deja poner **una** URL de eventos: déjala con la tienda principal. En los sitios de marca el pago se
+   confirma cuando el cliente vuelve de la página de pago. Si un pedido queda «pendiente», míralo en tu panel de Wompi.
+4. En Search Console agrega cada dominio como propiedad nueva, verifícalo y envía `https://dominiodelamarca.com/sitemap.xml`.
+5. Cada sitio guarda sus pedidos aparte: entra a `https://dominiodelamarca.com/admin.php` para verlos.

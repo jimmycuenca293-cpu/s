@@ -472,7 +472,6 @@ for marca in MARCAS:
 <h1>Filtros de agua para nevecón {esc(marca)}</h1>
 <p>{esc(INTRO.get(marca, ""))} Todos con <b>envío gratis</b> a toda Colombia y pago seguro en línea.</p>
 <div class="grid">{"".join(tarjeta(p) for p in ps)}</div>
-<section class="caja"><h2>Tienda exclusiva de filtros {esc(marca)} originales</h2><p>Mira todos los filtros {esc(marca)} originales, la tabla de compatibilidad por modelo y la guía de instalación en nuestra <a href="/{PREFIJO}{s}/">tienda exclusiva {esc(marca)}</a>.</p></section>
 <section class="caja"><h2>¿Cuál es el mío?</h2><p>Saca el filtro viejo y busca la referencia impresa, o mira el modelo en la etiqueta de adentro del nevecón. Escríbelo en el <a href="/#catalogo">buscador de la tienda</a> y te mostramos el filtro que le sirve.</p></section>
 <?php pie(); ?>
 """
@@ -482,9 +481,6 @@ for marca in MARCAS:
 
 # ---------- referencias, nevecones, guías, envíos y directorios ----------
 extra = paginas_seo.generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDADES_CO)
-
-# ---------- tiendas exclusivas por marca (diseño propio, solo filtros de esa marca) ----------
-extra["paginas"] += marcas_exclusivas.generar(OUT, CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO)
 
 # ---------- catálogo del servidor ----------
 def php_val(v):
@@ -544,3 +540,78 @@ for f in OUT.rglob("*"):
 
 print(f"Listo: {OUT.relative_to(AQUI)}/ con {len(CATALOGO)} filtros, {len(MARCAS)} marcas, {len(extra['refs']) - len(CATALOGO)} referencias equivalentes, "
       f"{len(extra['modelos'])} nevecones, {len(extra['guias'])} guías y {len(imgs)} fotos")
+
+
+# ---------- un sitio por marca (cada uno va en su propio dominio) ----------
+# sitios/<marca>/ es una tienda completa (carrito, pago, pedidos, legales) que solo vende esa marca.
+# Lleva todo lo de la tienda principal menos sus páginas, y la portada y las fichas de la marca en la raíz.
+SITIOS = AQUI / "sitios"
+QUITAR = {"index.php", "llms.php", "sitemap.php"} | {PREFIJO + c for c in CARPETAS if c not in ("img", "api", "data")}
+SITEMAP_MARCA = """<?php
+require __DIR__ . '/%sapi/sitio.php';
+header('Content-Type: application/xml; charset=utf-8');
+$b = sitio()['base'];
+$cat = catalogo();
+$fotos = [];
+foreach ($cat['productos'] as $id => $p) $fotos['/' . $p['slug'] . '-original/'] = "/%simg/$id.jpg";
+$urls = array_fill_keys($cat['paginas'], '0.9') + ['/quienes-somos.php' => '0.4', '/terminos.php' => '0.2', '/privacidad.php' => '0.2', '/garantia-y-retracto.php' => '0.3'];
+$urls['/'] = '1.0';
+echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
+foreach ($urls as $u => $pr) echo '  <url><loc>' . htmlspecialchars($b . $u) . '</loc><lastmod>' . $cat['fecha'] . '</lastmod><priority>' . $pr . '</priority>'
+    . (isset($fotos[$u]) ? '<image:image><image:loc>' . htmlspecialchars($b . $fotos[$u]) . '</image:loc></image:image>' : '') . "</url>\n";
+echo '</urlset>';
+""" % (PREFIJO, PREFIJO)
+CAMBIOS_MARCA = {  # rutas de la tienda principal que en el sitio de la marca son otras
+    "carrito.php": [("/purofiltro-filtro/${p.slug}/", "/${p.slug}-original/"), ('href="/purofiltro-tienda/"', 'href="/#filtros"')],
+    "404.php": [('href="/#catalogo"', 'href="/#filtros"'), ('href="/purofiltro-referencias/"', 'href="/cual-es-mi-filtro/"'), ('href="/purofiltro-neveras/">Buscar por modelo', 'href="/cambio-e-instalacion/">Cómo instalarlo')],
+    "quienes-somos.php": [('href="/purofiltro-guia/">Lee nuestras guías', 'href="/cambio-e-instalacion/">Cómo cambiar tu filtro'), ('href="/#catalogo"', 'href="/#filtros"')],
+    "feed.php": [("$b/purofiltro-filtro/{$p['slug']}/", "$b/{$p['slug']}-original/"), ("$p['nombre'] . ' para nevecón '", "$p['nombre'] . ' original para nevecón '"), ("Filtro de agua para nevecón {$p['marca']}", "Filtro de agua original para nevecón {$p['marca']}")],
+    PREFIJO + "api/recordatorios.php": [("'" + PREFIJO + "filtro/' . $cat[$p['pid']]['slug'] . '/'", "$cat[$p['pid']]['slug'] . '-original/'")],
+}
+for marca in marcas_exclusivas.MARCAS_INFO:
+    s = slug(marca)
+    d = SITIOS / s
+    ids = {p["id"] for p in CATALOGO if p["marca"] == marca}
+    if d.exists():  # los pedidos de purofiltro-data/ nunca se borran
+        for hijo in d.iterdir():
+            if hijo.name != PREFIJO + "data":
+                shutil.rmtree(hijo) if hijo.is_dir() else hijo.unlink()
+    d.mkdir(parents=True, exist_ok=True)
+    for f in OUT.iterdir():
+        if f.name in QUITAR or f.name == PREFIJO + "data" and (d / f.name).exists():
+            continue
+        if f.is_dir():
+            shutil.copytree(f, d / f.name, dirs_exist_ok=True, ignore=shutil.ignore_patterns("pedidos.sqlite*", "correos.log", "config.php") if f.name in (PREFIJO + "data", PREFIJO + "api") else None)
+        else:
+            shutil.copy2(f, d / f.name)
+    for f in (d / (PREFIJO + "img")).iterdir():  # solo las fotos de la marca
+        if f.name != "icono.svg" and f.name.split(".")[0].removesuffix("-400") not in ids:
+            f.unlink()
+    rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO)
+    (d / "purofiltro-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
+    (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
+    cat_m = dict(cat_php, paginas=rutas, guias=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
+                 productos={k: v for k, v in cat_php["productos"].items() if k in ids})
+    (d / (PREFIJO + "api") / "catalogo.php").write_text("<?php\n// Generado por build.py para el sitio de " + marca + ": no lo edites a mano.\nreturn " + php_val(cat_m) + ";\n", encoding="utf-8")
+    for nombre, cambios in CAMBIOS_MARCA.items():
+        f = d / nombre
+        txt = f.read_text(encoding="utf-8")
+        for a, b_ in cambios:
+            if a not in txt:
+                sys.exit(f"{nombre}: no encontré {a!r}")
+            txt = txt.replace(a, b_)
+        f.write_text(txt, encoding="utf-8")
+    # rutas sin prefijo de las páginas nuevas (img, carrito.js) igual que en la tienda principal
+    for f in d.rglob("*.php"):
+        if PREFIJO + "data" in f.parts:
+            continue
+        txt = f.read_text(encoding="utf-8")
+        t2 = re.sub(r"/(img|api)/", lambda m: "/" + PREFIJO + m.group(1) + "/", txt).replace('"/carrito.js"', '"/' + PREFIJO + 'carrito.js"').replace("'/estilo.css'", "'/" + PREFIJO + "estilo.css'").replace('href="/estilo.css"', 'href="/' + PREFIJO + 'estilo.css"')
+        if t2 != txt:
+            f.write_text(t2, encoding="utf-8")
+    # la hoja de estilo solo lleva los colores de esta marca
+    css = (d / "purofiltro-marcas.css").read_text(encoding="utf-8")
+    bloques = re.split(r"(?=/\* ===== )|(?=/\* Páginas comunes)", css)
+    css = "".join(x for x in bloques if not x.startswith("/* ===== ") or x.startswith(f"/* ===== {marca}:"))
+    (d / "purofiltro-marcas.css").write_text(css, encoding="utf-8")
+    print(f"Sitio {marca}: sitios/{s}/ con {len(rutas)} páginas")

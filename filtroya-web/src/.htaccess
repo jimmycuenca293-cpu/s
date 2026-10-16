@@ -11,7 +11,7 @@ RewriteRule ^robots\.txt$ robots.php [L]
 RewriteRule ^feed\.xml$ feed.php [L]
 RewriteRule ^llms\.txt$ llms.php [L]
 RewriteRule ^llms-full\.txt$ llms.php?completo=1 [L]
-<FilesMatch "^(partes\.php|.*\.md)$">
+<FilesMatch "^(partes\.php|purofiltro-marcas\.php|purofiltro-marca\.json|.*\.md)$">
   Require all denied
 </FilesMatch>
 <IfModule mod_expires.c>

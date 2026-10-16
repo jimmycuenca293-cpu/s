@@ -1,5 +1,5 @@
-"""Tiendas exclusivas por marca para posicionamiento orgánico: /purofiltro-samsung/, /purofiltro-lg/,
-/purofiltro-whirlpool/ y /purofiltro-ge/.
+"""Tiendas exclusivas por marca para posicionamiento orgánico: cada marca es un sitio aparte, con su
+propio dominio (build.py las deja en sitios/<marca>/).
 
 Cada tienda tiene su propio diseño (colores, letra y formas), solo muestra filtros de su marca y solo
 enlaza a sus propias páginas. Usa el mismo carrito, los mismos precios y el mismo pago que la tienda.
@@ -7,10 +7,10 @@ Los filtros son originales de fábrica (lo confirmó el dueño), por eso aquí s
 No se usan logos de las marcas: el nombre va en texto y el pie aclara que somos un comercio independiente.
 
 Páginas de cada marca:
-  /purofiltro-<marca>/                       portada
-  /purofiltro-<marca>/<filtro>-original/     una por filtro
-  /purofiltro-<marca>/cual-es-mi-filtro/     buscar por modelo de nevecón o referencia
-  /purofiltro-<marca>/cambio-e-instalacion/  cuándo cambiarlo y cómo instalar cada filtro
+  /                        portada
+  /<filtro>-original/      una por filtro
+  /cual-es-mi-filtro/      buscar por modelo de nevecón o referencia
+  /cambio-e-instalacion/   cuándo cambiarlo y cómo instalar cada filtro
 """
 import html
 import json
@@ -54,29 +54,24 @@ MARCAS_INFO = {
 }
 
 
-def generar(OUT, CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO):
-    """Escribe las cuatro tiendas. Devuelve las rutas para el mapa del sitio."""
-    rutas = []
-    ciudades = [c[0] for c in CIUDADES_CO[:30]]
-    for marca, info in MARCAS_INFO.items():
-        ps = [p for p in CATALOGO if p["marca"] == marca]
-        if not ps:
-            continue
-        s = slug(marca)
-        base = f"/{PREFIJO}{s}/"
-        for p in ps:
-            p["slug_o"] = p["slug"] + "-original"
-        M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"],
-             "productos": [[p["nombre_largo"] + " original", p["slug_o"]] for p in ps]}
-        dir_ = OUT / (PREFIJO + s)
-        ctx = dict(marca=marca, info=info, ps=ps, base=base, M=M, slug=slug, norm=norm, ubic=ubic, foto=foto, php_str=php_str, ciudades=ciudades)
-
-        escribir(dir_ / "index.php", portada(**ctx)); rutas.append(base)
-        for p in ps:
-            escribir(dir_ / p["slug_o"] / "index.php", producto(p, **ctx)); rutas.append(base + p["slug_o"] + "/")
-        escribir(dir_ / "cual-es-mi-filtro" / "index.php", cual(**ctx)); rutas.append(base + "cual-es-mi-filtro/")
-        escribir(dir_ / "cambio-e-instalacion" / "index.php", guia(**ctx)); rutas.append(base + "cambio-e-instalacion/")
-    return rutas
+def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO):
+    """Escribe la tienda de una marca en dir_, con sus páginas colgando de base ("/" en su propio dominio).
+    Devuelve las rutas para el mapa del sitio y los datos de la marca para el encabezado."""
+    info = MARCAS_INFO[marca]
+    ps = [p for p in CATALOGO if p["marca"] == marca]
+    s = slug(marca)
+    for p in ps:
+        p["slug_o"] = p["slug"] + "-original"
+    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"],
+         "productos": [[p["nombre_largo"] + " original", p["slug_o"]] for p in ps]}
+    ctx = dict(marca=marca, info=info, ps=ps, base=base, M=M, slug=slug, norm=norm, ubic=ubic, foto=foto, php_str=php_str, ciudades=[c[0] for c in CIUDADES_CO[:30]])
+    rutas = [base]
+    escribir(dir_ / "index.php", portada(**ctx))
+    for p in ps:
+        escribir(dir_ / p["slug_o"] / "index.php", producto(p, **ctx)); rutas.append(base + p["slug_o"] + "/")
+    escribir(dir_ / "cual-es-mi-filtro" / "index.php", cual(**ctx)); rutas.append(base + "cual-es-mi-filtro/")
+    escribir(dir_ / "cambio-e-instalacion" / "index.php", guia(**ctx)); rutas.append(base + "cambio-e-instalacion/")
+    return rutas, M
 
 
 def escribir(f, texto):
@@ -87,7 +82,7 @@ def escribir(f, texto):
 # ---------- piezas comunes ----------
 def inicio(M, php_str, titulo, desc, ruta, ld, extra_php="", extra_head=""):
     """Comienzo de la página: datos de la marca, datos estructurados y encabezado propio."""
-    return (f"<?php require __DIR__ . '/{'../' * ruta.strip('/').count('/')}../purofiltro-marcas.php';\n"
+    return (f"<?php require __DIR__ . '/{'../' * len([x for x in ruta.split('/') if x])}purofiltro-marcas.php';\n"
             f"$M = json_decode(<<<'JSON'\n{json.dumps(M, ensure_ascii=False)}\nJSON, true);\n"
             f"$ld = json_decode(<<<'JSON'\n{json.dumps(ld, ensure_ascii=False)}\nJSON, true);\n{extra_php}"
             "$json = str_replace('__BASE__', sitio()['base'], json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG));\n"
@@ -192,6 +187,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades)
 {sec(cab("Resolvemos tus dudas", f"Preguntas frecuentes sobre filtros {marca}") + faq_h, alt=True, id_="preguntas")}
 {sec(cab("Envíos", f"Enviamos filtros {marca} originales a toda Colombia", "Envío gratis con número de guía. Llega en 2 a 3 días hábiles a las principales ciudades.") + '<div class="m-chips">' + "".join(f"<span>{esc(c)}</span>" for c in ciudades) + '<span>y más municipios</span></div>')}
 {sec(cta_wa(marca))}
+</main>
 <?php pie_marca($M); ?>
 """
 
@@ -270,6 +266,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
 {sec(cab("Más de " + marca, f"Otros filtros {marca} originales") + '<div class="m-grid">' + "".join(tarjeta(x, base, foto, ubic) for x in otros) + "</div>") if otros else ""}
 {sec(cta_wa(marca))}
 <div class="m-barra"><span><small>{esc(nombre)}</small><b>{cop(p["precio"])}</b></span><button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button></div>
+</main>
 <?php pie_marca($M); ?>
 """
 
@@ -296,6 +293,7 @@ def cual(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades):
 {sec(cab("Catálogo", f"Todos los filtros {marca} originales") + '<div class="m-grid">' + "".join(tarjeta(p, base, foto, ubic) for p in ps) + "</div>", alt=True)}
 {sec(cab("Preguntas", "Preguntas frecuentes") + faq_h)}
 {sec(cta_wa(marca), alt=True)}
+</main>
 <?php pie_marca($M); ?>
 """
 
@@ -316,5 +314,6 @@ def guia(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades):
 {sec(cab("Guía " + marca, f"Cómo cambiar el filtro de agua de tu nevecón {marca}", esc(info["aviso"]) + " Abajo tienes el paso a paso de cada filtro.", h="h1") + '<div class="m-cols">' + "".join(f'<div class="m-bloque"><div class="ic">{i}</div><h3>{esc(t)}</h3><p>{esc(dd)}</p></div>' for i, t, dd in senales) + "</div>" + '<div class="m-chips" style="margin-top:24px">' + "".join(f'<a href="#{p["slug_o"]}">{esc(p["nombre_largo"])}</a>' for p in ps) + "</div>")}
 {tutoriales}
 {sec(cta_wa(marca))}
+</main>
 <?php pie_marca($M); ?>
 """
