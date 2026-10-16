@@ -259,3 +259,10 @@ body.m-ge .m-cta{background:linear-gradient(120deg,#3b73b9,#1d3f6e);color:#fff}b
 /* Páginas comunes (carrito, pago, legales) dentro del sitio de una marca: colores de la marca y siempre claro */
 body.m-legado{color-scheme:light;--bg:var(--fondo);--accent:var(--pri);--accent-ink:#fff;--accent-soft:var(--suave);--deep:var(--pie);--glow:var(--hero-acento);--f:var(--f-texto);--f-display:var(--f-titulo)}
 .m-legado-main{padding-top:24px;padding-bottom:48px;display:flex;flex-direction:column;gap:16px}
+
+/* listas numeradas de las páginas de problemas y fecha de actualización */
+.m-pasos{margin:6px 0 0;padding:0;list-style:none;counter-reset:p;display:flex;flex-direction:column;gap:12px;max-width:820px}
+.m-pasos li{counter-increment:p;position:relative;padding:14px 16px 14px 60px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card)}
+.m-pasos li::before{content:counter(p);position:absolute;left:16px;top:13px;width:30px;height:30px;border-radius:50%;background:var(--pri);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
+body.m-whirlpool .m-pasos li::before{background:#eeb111;color:#231f20}
+.m-fecha{margin-top:18px;font-size:13px}

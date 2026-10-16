@@ -18,7 +18,9 @@ import html
 
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
-CIUDADES_SEO = 20  # ciudades con página propia por marca (las más grandes)
+CIUDADES_SEO = 20
+MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+hoy = datetime.date.today()  # ciudades con página propia por marca (las más grandes)
 
 
 def rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO):
@@ -30,6 +32,9 @@ def rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO):
              (f"{base}cada-cuanto-cambiar-filtro-{s}/", "Cada cuánto cambiar el filtro"),
              (f"{base}donde-comprar-filtro-{s}/", f"Dónde comprar filtros {marca} originales"),
              (f"{base}filtro-{s}-original-o-generico/", "Original o genérico: diferencias")]
+    temas += [(f"{base}nevera-{s}-no-sale-agua-despues-de-cambiar-el-filtro/", "No sale agua después de cambiar el filtro"),
+              (f"{base}filtro-nevera-{s}-gotea/", "El filtro gotea: causas y solución"),
+              (f"{base}agua-o-hielo-con-mal-sabor-nevera-{s}/", "Agua o hielo con mal sabor")]
     if any(ubic(p) == "externo" for p in ps):
         temas.append((f"{base}filtro-externo-nevera-{s}/", f"Filtro externo para nevera {marca}"))
     principales = {norm(p["ref"]) for p in ps}
@@ -51,7 +56,7 @@ def generar(R, escribir, dir_, ctx, h):
 
     def pagina(ruta, titulo, desc, h1, eyebrow, intro, cuerpo, preguntas=(), miga_nombre=None, ld_extra=None):
         miga_h, miga_ld = h.miga([(f"Filtros {marca} originales", base), (miga_nombre or h1, None)])
-        graf = [{"@type": "WebPage", "name": h1, "url": f"__BASE__{ruta}", "inLanguage": "es-CO", "description": desc}, miga_ld]
+        graf = [{"@type": "WebPage", "name": h1, "url": f"__BASE__{ruta}", "inLanguage": "es-CO", "description": desc, "dateModified": hoy.isoformat()}, miga_ld]
         faq_h = ""
         if preguntas:
             faq_h, faq_ld = h.faq(list(preguntas))
@@ -60,7 +65,7 @@ def generar(R, escribir, dir_, ctx, h):
             graf.append(ld_extra)
         texto = (h.inicio(M, php_str, titulo, desc, ruta, {"@context": "https://schema.org", "@graph": graf})
                  + f'<div class="m-wrap">{miga_h}</div>'
-                 + h.sec(h.cab(eyebrow, h1, intro, h="h1") + cuerpo)
+                 + h.sec(h.cab(eyebrow, h1, intro, h="h1") + cuerpo + f'<p class="m-mut m-fecha">Actualizado: {MESES[hoy.month - 1]} de {hoy.year}</p>')
                  + h.sec(h.cab("Catálogo " + marca, f"Filtros {marca} originales con envío gratis") + '<div class="m-grid">' + "".join(h.tarjeta(p, base, ctx["foto"], ubic) for p in ps) + "</div>", alt=True)
                  + (h.sec(h.cab("Preguntas", "Preguntas frecuentes") + faq_h) if faq_h else "")
                  + h.sec(relacionadas(R, ruta, marca), alt=not faq_h)
@@ -171,6 +176,49 @@ def generar(R, escribir, dir_, ctx, h):
                h.caja(e, base, ctx["foto"]) + f'<p style="margin-top:16px"><a href="{base}{e["slug_o"]}/#instalacion">Cómo se instala, paso a paso</a> (10 a 15 minutos, sin herramientas especiales).</p>',
                [("¿Mi nevera necesita filtro externo?", "Si tu nevera tiene dispensador o máquina de hielo y no trae filtro adentro, sí. Si ya trae filtro interno, el externo es opcional."),
                 ("¿El filtro externo prende la luz del filtro?", "No. Anota la fecha de instalación en el filtro y cámbialo a los 6 meses.")])
+
+    # 7b. problemas comunes (la gente los busca justo antes de comprar o al cambiar el filtro)
+    def lista(items):
+        return '<ol class="m-pasos">' + "".join(f"<li><b>{esc(a)}</b> {esc(b)}</li>" for a, b in items) + "</ol>"
+    pagina(f"{base}nevera-{s}-no-sale-agua-despues-de-cambiar-el-filtro/", f"Nevera {marca} no sale agua después de cambiar el filtro: solución",
+           f"¿Cambiaste el filtro de tu nevera {marca} y no sale agua? Las 6 causas más comunes y cómo solucionarlo tú mismo en minutos.",
+           f"Mi nevera {marca} no saca agua después de cambiar el filtro", "Solución paso a paso",
+           f"Es lo más común después de un cambio de filtro y casi siempre se arregla en minutos, sin técnico. Revisa en este orden:",
+           lista([("El filtro no quedó encajado.", "Sácalo y vuelve a meterlo derecho, hasta el fondo, y gíralo hasta que haga clic o quede firme."),
+                  ("Quedó la tapa protectora puesta.", "Algunos filtros traen un capuchón en la punta: quítalo antes de instalar."),
+                  ("Hay aire en la línea.", "Presiona el dispensador 5 segundos y suelta, varias veces, hasta sacar unos 4 litros. Al principio sale con burbujas o a chorros."),
+                  ("La llave de paso está cerrada.", "Revisa la llave del agua que alimenta la nevera, por detrás o debajo del lavaplatos."),
+                  ("La manguera está doblada o congelada.", "Al mover la nevera la manguera se puede doblar. Si hace mucho frío en la puerta, la línea se congela: sube un poco la temperatura."),
+                  ("El filtro es de imitación.", f"Algunos genéricos no abren bien la válvula de la nevera {marca}. Con el original no pasa.")])
+           + f'<p style="margin-top:16px">Mira el <a href="{base}cambio-e-instalacion/">paso a paso de instalación de cada filtro {esc(marca)}</a>. ¿Sigue sin salir agua? Escríbenos por WhatsApp y te ayudamos.</p>',
+           [("¿Cuánta agua hay que sacar después de cambiar el filtro?", "Unos 4 litros, para sacar el aire y el carbón suelto. Bota también el primer hielo."),
+            ("¿Es normal que el agua salga turbia o blanca?", "Sí, los primeros vasos salen con aire o carbón suelto. Se aclara en unos minutos.")],
+           miga_nombre="No sale agua")
+    pagina(f"{base}filtro-nevera-{s}-gotea/", f"El filtro de la nevera {marca} gotea: causas y solución",
+           f"¿Gotea el filtro de tu nevera {marca}? Por qué pasa (mal encajado, empaque dañado, filtro genérico) y cómo solucionarlo antes de que dañe el piso.",
+           f"El filtro de mi nevera {marca} gotea: ¿qué hago?", "Solución paso a paso",
+           "Una gota al cambiar el filtro es normal. Si sigue goteando, revisa esto:",
+           lista([("Encájalo de nuevo.", "Sácalo y vuelve a meterlo derecho hasta el fondo: un filtro torcido es la causa número uno."),
+                  ("Revisa los empaques (o-rings).", "Los anillos de caucho de la punta deben estar completos y sin cortes."),
+                  ("Revisa la tapa o el soporte.", "Si la carcasa del filtro o la tapa tienen una grieta, el agua sale por ahí."),
+                  ("Filtro externo: revisa los racores.", "La manguera debe entrar hasta el fondo del racor rápido y estar cortada derecha."),
+                  ("Filtros genéricos.", f"Muchas fugas vienen de filtros de imitación que no encajan exacto. El {marca} original sella bien.")])
+           + '<p style="margin-top:16px">Mientras lo revisas, cierra la llave de paso del agua para no mojar el piso.</p>',
+           [("¿Puedo usar la nevera si el filtro gotea?", "Mejor no. Cierra la llave del agua hasta encajarlo bien o cambiarlo: el agua puede dañar el piso o la nevera."),
+            ("¿Por qué gotea un filtro nuevo?", "Casi siempre porque quedó torcido o le falta un empaque. Si es genérico, puede que no encaje exacto.")],
+           miga_nombre="El filtro gotea")
+    pagina(f"{base}agua-o-hielo-con-mal-sabor-nevera-{s}/", f"Agua o hielo con mal sabor en la nevera {marca}: solución",
+           f"¿El agua o el hielo de tu nevera {marca} saben raro? Las causas más comunes (filtro saturado, hielo viejo, dispensador sucio) y cómo solucionarlo.",
+           f"El agua o el hielo de mi nevera {marca} saben mal", "Solución paso a paso",
+           "Si el agua o el hielo saben a cloro, a tierra, a plástico o a encerrado, revisa esto:",
+           lista([("El filtro está saturado.", "Si tiene más de 6 meses, ya no retiene el cloro ni el sedimento. Es la causa más común."),
+                  ("El hielo es viejo.", "El hielo guardado coge el olor de los alimentos. Bota el hielo del depósito y deja que se haga nuevo."),
+                  ("Acabas de cambiar el filtro.", "Saca 4 litros de agua y bota el primer hielo: al principio puede salir con carbón suelto."),
+                  ("El dispensador está sucio.", "Limpia la boquilla y la bandeja con agua tibia y bicarbonato."),
+                  ("Alimentos destapados.", "Los olores fuertes pasan al hielo: tapa los alimentos y usa un poco de bicarbonato en la nevera.")]),
+           [("¿El filtro quita el mal sabor del agua?", "Sí: el carbón activado retiene el cloro y los olores mientras no esté saturado."),
+            ("¿Cada cuánto debo cambiar el filtro para que no sepa mal?", "Cada 6 meses, o antes si notas el sabor raro.")],
+           miga_nombre="Mal sabor")
 
     # 8. referencias equivalentes
     for r, p, ruta in R["refs"].values():

@@ -546,7 +546,7 @@ print(f"Listo: {OUT.relative_to(AQUI)}/ con {len(CATALOGO)} filtros, {len(MARCAS
 # sitios/<marca>/ es una tienda completa (carrito, pago, pedidos, legales) que solo vende esa marca.
 # Lleva todo lo de la tienda principal menos sus páginas, y la portada y las fichas de la marca en la raíz.
 SITIOS = AQUI / "sitios"
-QUITAR = {"index.php", "llms.php", "sitemap.php"} | {PREFIJO + c for c in CARPETAS if c not in ("img", "api", "data")}
+QUITAR = {"index.php", "llms.php", "sitemap.php"} | {PREFIJO + c for c in CARPETAS if c not in ("img", "api", "data")}  # llms.php y sitemap.php se escriben aparte para cada marca
 SITEMAP_MARCA = """<?php
 require __DIR__ . '/%sapi/sitio.php';
 header('Content-Type: application/xml; charset=utf-8');
@@ -588,9 +588,9 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         if f.name != "icono.svg" and f.name.split(".")[0].removesuffix("-400") not in ids:
             f.unlink()
     logo = None
-    if (AQUI / "logos" / f"{s}.png").exists():  # somos distribuidor autorizado: cada sitio lleva el logo de su marca
-        shutil.copy(AQUI / "logos" / f"{s}.png", d / (PREFIJO + "img") / f"logo-{s}.png")
-        lw, lh = Image.open(AQUI / "logos" / f"{s}.png").size
+    if (AQUI / "logos" / f"{s}-web.png").exists():  # somos distribuidor autorizado: cada sitio lleva el logo de su marca
+        shutil.copy(AQUI / "logos" / f"{s}-web.png", d / (PREFIJO + "img") / f"logo-{s}.png")
+        lw, lh = Image.open(AQUI / "logos" / f"{s}-web.png").size
         logo = {"logo": f"/{PREFIJO}img/logo-{s}.png", "logo_w": lw, "logo_h": lh}
         if (AQUI / "logos" / f"{s}-icono.png").exists():
             shutil.copy(AQUI / "logos" / f"{s}-icono.png", d / (PREFIJO + "img") / f"icono-{s}.png")
@@ -598,6 +598,19 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo)
     (d / "purofiltro-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
+    # resumen en texto para asistentes de IA (ChatGPT, Gemini, Claude, Perplexity): tudominio.com/llms.txt
+    ps_m = [p for p in CATALOGO if p["marca"] == marca]
+    llms = (f"# Filtros {marca} originales en Colombia\n\n"
+            f"> Distribuidor autorizado de filtros de agua {marca} originales para nevera/nevecón. Envío gratis a toda Colombia "
+            "(2 a 3 días hábiles en las principales ciudades), pago en línea con tarjeta, PSE o Nequi, asesoría por WhatsApp.\n\n"
+            "## Filtros y precios (COP, envío incluido)\n"
+            + "".join(f"- [{p['nombre_largo']} original](__BASE__/{p['slug']}-original/): {cop(p['precio'])}; pack de 2 {cop(p['pack'])}. "
+                      f"Referencias equivalentes: {', '.join(p['refs'])}." + (f" Neveras: {', '.join(p['modelos'])}." if p["modelos"] else "") + "\n" for p in ps_m)
+            + "\n## Guías\n" + "".join(f"- [{n}](__BASE__{r})\n" for r, n in M["guias"])
+            + "- [¿Cuál filtro es el mío? (por modelo o referencia)](__BASE__/cual-es-mi-filtro/)\n- [Cómo cambiar e instalar cada filtro](__BASE__/cambio-e-instalacion/)\n"
+            + "\n## Compra\n- Envío gratis a toda Colombia con número de guía.\n- Pago en línea seguro; no hay pago contra entrega.\n- 5 días hábiles de retracto con el filtro sin instalar.\n"
+              "- Términos: __BASE__/terminos.php\n")
+    (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + llms + "TXT);\n", encoding="utf-8")
     cat_m = dict(cat_php, paginas=rutas, guias=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
                  productos={k: v for k, v in cat_php["productos"].items() if k in ids})
     (d / (PREFIJO + "api") / "catalogo.php").write_text("<?php\n// Generado por build.py para el sitio de " + marca + ": no lo edites a mano.\nreturn " + php_val(cat_m) + ";\n", encoding="utf-8")
@@ -622,4 +635,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     bloques = re.split(r"(?=/\* ===== )|(?=/\* Páginas comunes)", css)
     css = "".join(x for x in bloques if not x.startswith("/* ===== ") or x.startswith(f"/* ===== {marca}:"))
     (d / "purofiltro-marcas.css").write_text(css, encoding="utf-8")
+    sobran = [x.name for x in d.iterdir() if x.name in QUITAR and x.name not in ("index.php", "llms.php", "sitemap.php")]
+    if sobran:  # el sitio de una marca nunca debe llevar páginas de la tienda principal (tienen las otras marcas)
+        sys.exit(f"Sitio {marca}: sobran {sobran}")
     print(f"Sitio {marca}: sitios/{s}/ con {len(rutas)} páginas")

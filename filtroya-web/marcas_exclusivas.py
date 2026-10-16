@@ -92,7 +92,9 @@ def inicio(M, php_str, titulo, desc, ruta, ld, extra_php="", extra_head=""):
     return (f"<?php require __DIR__ . '/{'../' * len([x for x in ruta.split('/') if x])}purofiltro-marcas.php';\n"
             f"$M = json_decode(<<<'JSON'\n{json.dumps(M, ensure_ascii=False)}\nJSON, true);\n"
             f"$ld = json_decode(<<<'JSON'\n{json.dumps(ld, ensure_ascii=False)}\nJSON, true);\n{extra_php}"
-            "$json = str_replace('__BASE__', sitio()['base'], json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG));\n"
+            "foreach ($ld['@graph'] ?? [] as $i => $g) if (($g['sameAs'] ?? null) === '__REDES__') { $r = array_values(array_filter((array) (cfg()['redes'] ?? []))); if ($r) $ld['@graph'][$i]['sameAs'] = $r; else unset($ld['@graph'][$i]['sameAs']); }\n"
+            "$tel = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? ''));\n"
+            "$json = str_replace(['__BASE__', '__NOMBRE__', '__TEL__'], [sitio()['base'], addslashes(cfg()['negocio']['nombre']), $tel ? '+57' . substr($tel, -10) : ''], json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG));\n"
             f"cabeza_marca($M, {php_str(titulo)}, {php_str(desc)}, {php_str(ruta)}, str_replace('__BASE__', sitio()['base'], {php_str(extra_head)}) . '<script type=\"application/ld+json\">' . $json . '</script>'); ?>\n")
 
 
@@ -189,7 +191,12 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
         {"@type": "CollectionPage", "name": f"Filtros de agua {marca} originales", "url": f"__BASE__{base}", "description": info["intro"], "inLanguage": "es-CO",
          "about": {"@type": "Brand", "name": marca},
          "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__{base}{p['slug_o']}/", "name": p["nombre_largo"] + " original"} for i, p in enumerate(ps)]}},
-        faq_ld]}
+        faq_ld,
+        {"@type": "OnlineStore", "@id": f"__BASE__{base}#tienda", "name": "__NOMBRE__", "alternateName": f"Filtros {marca} originales Colombia", "url": f"__BASE__{base}",
+         "logo": f"__BASE__{M.get('logo', '')}", "description": f"Distribuidor autorizado de filtros de agua {marca} originales en Colombia.",
+         "areaServed": {"@type": "Country", "name": "Colombia"}, "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi",
+         "contactPoint": {"@type": "ContactPoint", "telephone": "__TEL__", "contactType": "customer service", "areaServed": "CO", "availableLanguage": "es"}, "sameAs": "__REDES__"},
+        {"@type": "WebSite", "name": f"Filtros {marca} originales", "url": f"__BASE__{base}", "inLanguage": "es-CO", "publisher": {"@id": f"__BASE__{base}#tienda"}}]}
     titulo = f"Filtros de agua {marca} originales para nevera | Envío gratis"
     desc = f"{info['intro']} Envío gratis a toda Colombia y pago seguro con tarjeta, PSE o Nequi."
     fotos = "".join(f'<span class="f f{i + 1}">{foto(p, p["nombre_largo"] + " original", lazy=False)}</span>' for i, p in enumerate(destacados))
@@ -294,6 +301,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
 </div></section>
 {sec(cab("Preguntas", f"Preguntas sobre el {p['nombre_largo']}") + faq_h, alt=True)}
 {sec(cab("Más de " + marca, f"Otros filtros {marca} originales") + '<div class="m-grid">' + "".join(tarjeta(x, base, foto, ubic) for x in otros) + "</div>") if otros else ""}
+{sec(marcas_seo.relacionadas(R, url, marca), alt=True)}
 {sec(cta_wa(marca))}
 <div class="m-barra"><span><small>{esc(nombre)}</small><b>{cop(p["precio"])}</b></span><button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button></div>
 </main>

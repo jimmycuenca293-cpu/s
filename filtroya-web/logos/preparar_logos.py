@@ -93,3 +93,9 @@ for marca in ("lg", "whirlpool", "samsung", "ge"):
     cuadro = Image.new("RGBA", (lado, lado), (0, 0, 0, 0))
     cuadro.alpha_composite(im, ((lado - im.width) // 2, (lado - im.height) // 2))
     cuadro.resize((192, 192), Image.LANCZOS).save(AQUI / f"{marca}-icono.png", optimize=True)
+
+# Versión para la página: 140 px de alto (nítida al doble del tamaño más grande que se muestra) y liviana
+for marca in ("lg", "whirlpool", "samsung", "ge"):
+    im = Image.open(AQUI / f"{marca}.png")
+    im = im.resize((round(im.width * 140 / im.height), 140), Image.LANCZOS)
+    im.quantize(256, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.NONE).save(AQUI / f"{marca}-web.png", optimize=True)  # PNG de paleta: pesa una fracción

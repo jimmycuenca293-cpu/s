@@ -1,8 +1,8 @@
-# Páginas de cada sitio por marca y la búsqueda que atacan
+# Páginas de cada sitio por marca
 
-Generado desde los sitios. Copia estas direcciones en Search Console (Inspección de URLs) cuando subas cada sitio; cambia `tudominio.com` por el dominio de la marca.
+Copia estas direcciones en Search Console (Inspección de URLs) cuando subas cada sitio; cambia `tudominio.com` por el dominio de la marca.
 
-## Samsung (64 páginas)
+## Samsung (67 páginas)
 
 - `tudominio.com/` — Filtros de agua Samsung originales para nevera | Envío gratis
 - `tudominio.com/filtro-samsung-haf-cin-da29-00020b-original/` — Filtro Samsung HAF-CIN DA29-00020B original
@@ -18,6 +18,9 @@ Generado desde los sitios. Copia estas direcciones en Search Console (Inspecció
 - `tudominio.com/donde-comprar-filtro-samsung/` — Dónde comprar filtros Samsung originales en Colombia
 - `tudominio.com/filtro-samsung-original-o-generico/` — Filtro Samsung original o genérico: diferencias
 - `tudominio.com/filtro-externo-nevera-samsung/` — Filtro externo para nevera Samsung original | $ 81.900
+- `tudominio.com/nevera-samsung-no-sale-agua-despues-de-cambiar-el-filtro/` — Nevera Samsung no sale agua después de cambiar el filtro: solución
+- `tudominio.com/filtro-nevera-samsung-gotea/` — El filtro de la nevera Samsung gotea: causas y solución
+- `tudominio.com/agua-o-hielo-con-mal-sabor-nevera-samsung/` — Agua o hielo con mal sabor en la nevera Samsung: solución
 - `tudominio.com/filtro-da29-00020a/` — Filtro DA29-00020A original Samsung | Envío gratis Colombia
 - `tudominio.com/filtro-haf-cin/` — Filtro HAF-CIN original Samsung | Envío gratis Colombia
 - `tudominio.com/filtro-haf-cin-exp/` — Filtro HAF-CIN/EXP original Samsung | Envío gratis Colombia
@@ -69,7 +72,7 @@ Generado desde los sitios. Copia estas direcciones en Search Console (Inspecció
 - `tudominio.com/filtro-nevera-samsung-acacias/` — Filtro nevera Samsung en Acacías | Original, envío gratis
 - `tudominio.com/filtro-nevera-samsung-aguachica/` — Filtro nevera Samsung en Aguachica | Original, envío gratis
 
-## LG (80 páginas)
+## LG (83 páginas)
 
 - `tudominio.com/` — Filtros de agua LG originales para nevera | Envío gratis
 - `tudominio.com/filtro-lg-lt1000p-original/` — Filtro LG LT1000P original | Envío gratis Colombia
@@ -87,6 +90,9 @@ Generado desde los sitios. Copia estas direcciones en Search Console (Inspecció
 - `tudominio.com/donde-comprar-filtro-lg/` — Dónde comprar filtros LG originales en Colombia
 - `tudominio.com/filtro-lg-original-o-generico/` — Filtro LG original o genérico: diferencias
 - `tudominio.com/filtro-externo-nevera-lg/` — Filtro externo para nevera LG original | $ 81.900
+- `tudominio.com/nevera-lg-no-sale-agua-despues-de-cambiar-el-filtro/` — Nevera LG no sale agua después de cambiar el filtro: solución
+- `tudominio.com/filtro-nevera-lg-gotea/` — El filtro de la nevera LG gotea: causas y solución
+- `tudominio.com/agua-o-hielo-con-mal-sabor-nevera-lg/` — Agua o hielo con mal sabor en la nevera LG: solución
 - `tudominio.com/filtro-lt1000pc/` — Filtro LT1000PC original LG | Envío gratis Colombia
 - `tudominio.com/filtro-lt1000pcs/` — Filtro LT1000PCS original LG | Envío gratis Colombia
 - `tudominio.com/filtro-adq74793501/` — Filtro ADQ74793501 original LG | Envío gratis Colombia
@@ -152,7 +158,7 @@ Generado desde los sitios. Copia estas direcciones en Search Console (Inspecció
 - `tudominio.com/filtro-nevera-lg-acacias/` — Filtro nevera LG en Acacías | Original, envío gratis
 - `tudominio.com/filtro-nevera-lg-aguachica/` — Filtro nevera LG en Aguachica | Original, envío gratis
 
-## Whirlpool (72 páginas)
+## Whirlpool (75 páginas)
 
 - `tudominio.com/` — Filtros de agua Whirlpool originales para nevera | Envío gratis
 - `tudominio.com/filtro-whirlpool-everydrop-1-edr1rxd1-original/` — Filtro Whirlpool EveryDrop 1 EDR1RXD1 original
@@ -170,6 +176,9 @@ Generado desde los sitios. Copia estas direcciones en Search Console (Inspecció
 - `tudominio.com/donde-comprar-filtro-whirlpool/` — Dónde comprar filtros Whirlpool originales en Colombia
 - `tudominio.com/filtro-whirlpool-original-o-generico/` — Filtro Whirlpool original o genérico: diferencias
 - `tudominio.com/filtro-externo-nevera-whirlpool/` — Filtro externo para nevera Whirlpool original | $ 85.900
+- `tudominio.com/nevera-whirlpool-no-sale-agua-despues-de-cambiar-el-filtro/` — Nevera Whirlpool no sale agua después de cambiar el filtro: solución
+- `tudominio.com/filtro-nevera-whirlpool-gotea/` — El filtro de la nevera Whirlpool gotea: causas y solución
+- `tudominio.com/agua-o-hielo-con-mal-sabor-nevera-whirlpool/` — Agua o hielo con mal sabor en la nevera Whirlpool: solución
 - `tudominio.com/filtro-w10295370a/` — Filtro W10295370A original Whirlpool | Envío gratis Colombia
 - `tudominio.com/filtro-w10295370/` — Filtro W10295370 original Whirlpool | Envío gratis Colombia
 - `tudominio.com/filtro-filter1/` — Filtro FILTER1 original Whirlpool | Envío gratis Colombia
@@ -227,7 +236,7 @@ Generado desde los sitios. Copia estas direcciones en Search Console (Inspecció
 - `tudominio.com/filtro-nevera-whirlpool-acacias/` — Filtro nevera Whirlpool en Acacías | Original, envío gratis
 - `tudominio.com/filtro-nevera-whirlpool-aguachica/` — Filtro nevera Whirlpool en Aguachica | Original, envío gratis
 
-## GE (41 páginas)
+## GE (44 páginas)
 
 - `tudominio.com/` — Filtros de agua GE originales para nevera | Envío gratis
 - `tudominio.com/filtro-ge-mwf-original/` — Filtro GE MWF original | Envío gratis Colombia
@@ -240,6 +249,9 @@ Generado desde los sitios. Copia estas direcciones en Search Console (Inspecció
 - `tudominio.com/cada-cuanto-cambiar-filtro-ge/` — ¿Cada cuánto cambiar el filtro de la nevera GE?
 - `tudominio.com/donde-comprar-filtro-ge/` — Dónde comprar filtros GE originales en Colombia
 - `tudominio.com/filtro-ge-original-o-generico/` — Filtro GE original o genérico: diferencias
+- `tudominio.com/nevera-ge-no-sale-agua-despues-de-cambiar-el-filtro/` — Nevera GE no sale agua después de cambiar el filtro: solución
+- `tudominio.com/filtro-nevera-ge-gotea/` — El filtro de la nevera GE gotea: causas y solución
+- `tudominio.com/agua-o-hielo-con-mal-sabor-nevera-ge/` — Agua o hielo con mal sabor en la nevera GE: solución
 - `tudominio.com/filtro-mwfp/` — Filtro MWFP original GE | Envío gratis Colombia
 - `tudominio.com/filtro-mwfa/` — Filtro MWFA original GE | Envío gratis Colombia
 - `tudominio.com/filtro-mwfint/` — Filtro MWFINT original GE | Envío gratis Colombia
