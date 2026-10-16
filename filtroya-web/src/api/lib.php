@@ -8,6 +8,9 @@ function cfg(): array
     if ($c === null) {
         $f = __DIR__ . '/config.php';
         $c = is_file($f) ? require $f : require __DIR__ . '/config.sample.php';
+        // En el sitio de una marca el nombre que ve el cliente es el de la tienda de la marca (ej. «Filtros GE Originales»)
+        $m = dirname(__DIR__) . '/purofiltro-marca.json';
+        if (is_file($m) && ($j = json_decode((string) file_get_contents($m), true)) && !empty($j['tienda'])) $c['negocio']['nombre'] = $j['tienda'];
     }
     return $c;
 }

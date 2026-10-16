@@ -574,11 +574,11 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     ids = {p["id"] for p in CATALOGO if p["marca"] == marca}
     if d.exists():  # los pedidos de purofiltro-data/ nunca se borran
         for hijo in d.iterdir():
-            if hijo.name != PREFIJO + "data":
+            if hijo.name not in ("data", PREFIJO + "data"):
                 shutil.rmtree(hijo) if hijo.is_dir() else hijo.unlink()
     d.mkdir(parents=True, exist_ok=True)
     for f in OUT.iterdir():
-        if f.name in QUITAR or f.name == PREFIJO + "data" and (d / f.name).exists():
+        if f.name in QUITAR or f.name == PREFIJO + "data" and ((d / "data").exists() or (d / f.name).exists()):
             continue
         if f.is_dir():
             shutil.copytree(f, d / f.name, dirs_exist_ok=True, ignore=shutil.ignore_patterns("pedidos.sqlite*", "correos.log", "config.php") if f.name in (PREFIJO + "data", PREFIJO + "api") else None)
@@ -638,4 +638,17 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     sobran = [x.name for x in d.iterdir() if x.name in QUITAR and x.name not in ("index.php", "llms.php", "sitemap.php")]
     if sobran:  # el sitio de una marca nunca debe llevar páginas de la tienda principal (tienen las otras marcas)
         sys.exit(f"Sitio {marca}: sobran {sobran}")
+    # En su propio dominio no hace falta el prefijo: img/, api/, data/, carrito.js... (el negocio ya no se llama PuroFiltro)
+    for x in list(d.iterdir()):
+        if x.name.startswith(PREFIJO):
+            destino = d / x.name[len(PREFIJO):]
+            if x.name == PREFIJO + "data" and destino.exists():
+                shutil.rmtree(x)
+            else:
+                x.rename(destino)
+    for f in d.rglob("*"):
+        if f.is_file() and "data" not in f.relative_to(d).parts[:1] and f.suffix in (".php", ".js", ".css", ".json", ".txt", ".xml", ".html", "") :
+            txt = f.read_text(encoding="utf-8")
+            if PREFIJO in txt or "PuroFiltro" in txt:
+                f.write_text(txt.replace(PREFIJO, "").replace("PuroFiltro", M["tienda"]), encoding="utf-8")
     print(f"Sitio {marca}: sitios/{s}/ con {len(rutas)} páginas")

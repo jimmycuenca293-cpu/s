@@ -51,6 +51,6 @@ function pie_marca(array $M): void
         . '<nav><b>Compra segura</b><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a><a href="/quienes-somos.php">Quiénes somos</a></nav>'
         . '</div><div class="m-wrap m-pie-medios"><span>🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'
         . '<div class="m-wrap m-pie-base"><span>© ' . date('Y') . ' ' . h($n['nombre']) . '. Precios en pesos colombianos con envío incluido.</span>'
-        . '<span>Vende ' . h($n['nombre']) . ', distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia. ' . h($M['nombre']) . ' y su logo son marcas registradas de su dueño y se usan con autorización.</span></div></footer>';
+        . '<span>Distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia. ' . h($M['nombre']) . ' y su logo son marcas registradas de su dueño y se usan con autorización.</span></div></footer>';
     echo $h . whatsapp_html() . '</body></html>';
 }

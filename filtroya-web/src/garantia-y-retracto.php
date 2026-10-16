@@ -7,7 +7,7 @@
 <h2>Derecho de retracto: 5 días hábiles</h2><p>Como es una compra por internet, tienes <b>5 días hábiles desde que recibes el filtro</b> para arrepentirte, sin dar explicaciones. El filtro debe estar <b>sin instalar y en su empaque</b>. El transporte de la devolución corre por tu cuenta y te devolvemos el dinero en máximo 30 días calendario.</p>
 <h2>Reversión del pago</h2><p>Si pagaste con un medio electrónico y fuiste víctima de fraude, no autorizaste la compra, el producto no llegó, no es el que pediste o está defectuoso, puedes pedir la reversión del pago dentro de los 5 días hábiles siguientes a que lo sepas o lo recibas. Escríbenos y también avísale a tu banco.</p>
 <h2>Cómo pedir la garantía, el retracto o la reversión</h2>
-<ol><li>Escríbenos por WhatsApp al <?= h($n['telefono']) ?> o al correo <?= h($n['correo']) ?> con tu número de pedido (empieza por PF-).</li><li>Cuéntanos qué pasó y manda una foto del filtro y de la etiqueta.</li><li>Te respondemos en máximo 15 días hábiles con la solución y, si hay que devolverlo, cómo enviarlo.</li></ol>
+<ol><li>Escríbenos por WhatsApp al <?= h($n['telefono']) ?> o al correo <?= h($n['correo']) ?> con tu número de pedido (te llega en el correo de confirmación).</li><li>Cuéntanos qué pasó y manda una foto del filtro y de la etiqueta.</li><li>Te respondemos en máximo 15 días hábiles con la solución y, si hay que devolverlo, cómo enviarlo.</li></ol>
 <p>Si no quedas conforme, puedes acudir a la Superintendencia de Industria y Comercio: <a href="https://www.sic.gov.co" rel="nofollow">www.sic.gov.co</a>. Lee también los <a href="/terminos.php">Términos y condiciones</a>.</p>
 </article>
 <?php pie(); ?>

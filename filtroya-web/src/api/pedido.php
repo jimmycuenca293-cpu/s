@@ -52,7 +52,10 @@ $st = db()->prepare("SELECT COUNT(*) FROM pedidos WHERE ip = ? AND estado = 'pen
 $st->execute([$ip, date('c', time() - 3600)]);
 if ((int) $st->fetchColumn() >= 15) fail('Demasiados intentos. Espera un rato e intenta de nuevo.', 429);
 
-$ref = 'PF-' . date('ymd') . '-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
+// Prefijo del número de pedido: PF en la tienda principal, las iniciales de la marca en su sitio (GE, LG, SA, WH)
+$mj = dirname(__DIR__) . '/purofiltro-marca.json';
+$pre = is_file($mj) ? strtoupper(substr((string) (json_decode((string) file_get_contents($mj), true)['clase'] ?? 'pf'), 0, 2)) : 'PF';
+$ref = $pre . '-' . date('ymd') . '-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
 db()->prepare('INSERT INTO pedidos (ref, creado, pid, producto, refprod, unidades, pack, total, entrega, ciudad, nombre, email, tel, barrio, dir, indicaciones, modelo, recordar, ip)
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
     $ref, date('c'), $C['lineas'][0]['pid'], $C['lineas'][0]['nombre'] . (count($C['lineas']) > 1 ? ' y ' . (count($C['lineas']) - 1) . ' más' : ''),

@@ -209,7 +209,7 @@ body:has(.m-barra) .wa-flot{bottom:calc(86px + env(safe-area-inset-bottom))}
 .fy-toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,160%);background:var(--pie);color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:14px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:90;transition:transform .25s;max-width:calc(100% - 32px)}
 .fy-toast.on{transform:translate(-50%,0)}.fy-toast a{color:var(--hero-acento);font-weight:800;white-space:nowrap}
 
-/* Colores tomados de cada logo. El logo no se usa: el nombre va en texto junto al de PuroFiltro. */
+/* Colores tomados del logo de cada marca. */
 /* ===== Samsung: azul del logo #1428A0 sobre blanco ===== */
 body.m-samsung{--f-titulo:"Plus Jakarta Sans",system-ui,sans-serif;--f-texto:"Plus Jakarta Sans",system-ui,sans-serif;--ls-marca:.22em;
   --pri:#1428a0;--ink:#0b1440;--muted:#545c78;--fondo:#ffffff;--panel:#f2f4fb;--card:#ffffff;--suave:#e6eaf8;--line:#dde2f1;--ok:#0f8a5f;
