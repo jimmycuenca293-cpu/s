@@ -36,6 +36,7 @@ p{margin:0}
 .m-cart svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .m-cart span{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--pri);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center;padding:0 5px}
 .m-logo-marca{height:32px;width:auto;max-width:none;display:block}
+.m-top .m-logo-marca{height:42px}body.m-ge .m-top .m-logo-marca{height:50px}
 .m-sello:has(.m-logo-marca){flex-direction:row;align-items:center;gap:10px}
 .m-sello:has(.m-logo-marca) small{border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
 body.m-ge .m-logo-marca{height:40px}
@@ -57,7 +58,7 @@ body.m-ge .m-hero-logo .m-logo-marca{height:62px}
 .m-caja-prod .compra{display:flex;flex-wrap:wrap;gap:10px}
 @media (max-width:620px){.m-caja-prod{grid-template-columns:1fr}.m-caja-prod .foto{max-width:240px}}
 a.m-guia{text-decoration:none;color:inherit;transition:transform .15s}a.m-guia:hover{transform:translateY(-2px)}a.m-guia p{color:var(--pri);font-weight:700}
-@media (max-width:760px){.m-logo-marca{height:28px}body.m-ge .m-logo-marca{height:34px}.m-sello:has(.m-logo-marca) small{display:none}.m-hero-logo .m-logo-marca{height:36px}body.m-ge .m-hero-logo .m-logo-marca{height:50px}.m-hero-logo{padding:10px 14px;gap:12px}.m-hero-logo>span{padding-left:12px;font-size:12px}}
+@media (max-width:760px){.m-logo-marca,.m-top .m-logo-marca{height:32px}body.m-ge .m-logo-marca,body.m-ge .m-top .m-logo-marca{height:40px}.m-sello:has(.m-logo-marca) small{font-size:9.5px;padding:2px 7px}.m-hero-logo .m-logo-marca{height:36px}body.m-ge .m-hero-logo .m-logo-marca{height:50px}.m-hero-logo{padding:10px 14px;gap:12px}.m-hero-logo>span{padding-left:12px;font-size:12px}}
 @media (max-width:760px){.m-ancho{display:none}.m-anuncio span+span{display:none}.m-pf{font-size:17px}.m-sello b{font-size:13px}.m-sello small{font-size:10px}.m-logo{gap:7px}}
 @media (max-width:420px){.m-nav a:not(.m-cart){display:none}}
 

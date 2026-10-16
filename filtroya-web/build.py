@@ -592,6 +592,9 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         shutil.copy(AQUI / "logos" / f"{s}.png", d / (PREFIJO + "img") / f"logo-{s}.png")
         lw, lh = Image.open(AQUI / "logos" / f"{s}.png").size
         logo = {"logo": f"/{PREFIJO}img/logo-{s}.png", "logo_w": lw, "logo_h": lh}
+        if (AQUI / "logos" / f"{s}-icono.png").exists():
+            shutil.copy(AQUI / "logos" / f"{s}-icono.png", d / (PREFIJO + "img") / f"icono-{s}.png")
+            logo["icono"] = f"/{PREFIJO}img/icono-{s}.png"
     rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo)
     (d / "purofiltro-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")

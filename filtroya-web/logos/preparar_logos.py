@@ -83,3 +83,13 @@ for marca, metodo in [("lg", None), ("whirlpool", None), ("samsung", fondo_por_o
         im = im.resize((round(im.width * ALTO_MAX / im.height), ALTO_MAX), Image.LANCZOS)
     im.save(AQUI / f"{marca}.png", optimize=True)
     print(marca, im.size)
+
+# Ícono de la pestaña del navegador: el logo centrado en un cuadrado transparente
+for marca in ("lg", "whirlpool", "samsung", "ge"):
+    im = Image.open(AQUI / f"{marca}.png")
+    if marca == "lg":  # el círculo del logo LG solo, se lee mejor en tamaño pequeño
+        im = im.crop((0, 0, im.height, im.height))
+    lado = max(im.size)
+    cuadro = Image.new("RGBA", (lado, lado), (0, 0, 0, 0))
+    cuadro.alpha_composite(im, ((lado - im.width) // 2, (lado - im.height) // 2))
+    cuadro.resize((192, 192), Image.LANCZOS).save(AQUI / f"{marca}-icono.png", optimize=True)
