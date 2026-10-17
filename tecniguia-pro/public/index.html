@@ -81,6 +81,30 @@ textarea{min-height:88px;resize:vertical}
 .cap input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
 .cap.on{border-style:solid;border-color:var(--accent);background:var(--accent-soft)}
 .thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.galrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--muted)}
+.galrow label,.galbtn{position:relative;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.galbtn{align-self:flex-start;margin-top:-4px}
+.galbtn svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:1.8}
+.galrow input,.galbtn input,.cam-side input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+/* Cámara propia con linterna */
+.camv{position:fixed;inset:0;z-index:80;background:#000;color:#fff;display:flex;flex-direction:column}
+.camv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cam-top,.cam-bot{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px}
+.cam-bot{margin-top:auto;padding:16px 18px calc(22px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,rgba(0,0,0,.65))}
+.cam-ic{min-width:46px;height:46px;border-radius:999px;border:0;background:rgba(0,0,0,.5);color:#fff;font-size:18px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 14px;cursor:pointer;font-weight:700}
+.cam-torch svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.8}
+.cam-torch[aria-pressed="true"]{background:#ffd54a;color:#1a1400}
+.cam-torch[aria-pressed="true"] svg{stroke:#1a1400;fill:#ffe98a}
+.cam-rec{background:#d32f2f;border-radius:999px;padding:6px 12px;font-weight:700;font-variant-numeric:tabular-nums}
+.cam-msg{position:relative;z-index:1;margin:0 14px;background:rgba(0,0,0,.72);border-radius:12px;padding:12px 14px;font-size:14px;display:flex;flex-direction:column;gap:10px}
+.cam-msg .btn{align-self:flex-start;position:relative}
+.cam-msg .btn input{position:absolute;inset:0;opacity:0;width:100%}
+.cam-side{position:relative;min-width:76px;font-size:13px;font-weight:700;text-align:center;color:#fff}
+label.cam-side{background:rgba(0,0,0,.5);border-radius:999px;padding:10px 12px;cursor:pointer}
+.shutter{width:78px;height:78px;border-radius:50%;border:5px solid #fff;background:transparent;display:grid;place-items:center;cursor:pointer;padding:0;flex:0 0 auto}
+.shutter i{width:58px;height:58px;border-radius:50%;background:#e53935;transition:all .2s}
+.shutter.foto i{background:#fff}
+.shutter.rec i{width:30px;height:30px;border-radius:6px}
 .thumb{position:relative;width:76px;height:76px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
 .thumb img{width:100%;height:100%;object-fit:cover}
 .thumb button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);cursor:pointer;font-size:13px;line-height:1}
@@ -177,6 +201,11 @@ details.mini summary{cursor:pointer;color:var(--accent);font-weight:600;font-siz
 #opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
 #opts button{padding:14px 12px;font-size:16px;font-weight:600;text-align:left;border-radius:10px}
 #opts button:active{background:var(--accent-soft)}
+#opts button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+#opts button{touch-action:manipulation;-webkit-tap-highlight-color:rgba(11,110,138,.18);cursor:pointer}
+#answer.busy #opts button,#answer.busy #send,#answer.busy #cant{opacity:.55;pointer-events:none}
+.ans-status{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;border-radius:8px;padding:12px 14px;background:var(--accent-soft);color:var(--ink)}
+.ans-status.err{background:var(--red-soft);font-weight:500}
 .why{font-size:14px;color:var(--muted);margin:0;max-width:65ch}
 .hist-row{display:flex;align-items:stretch;gap:6px;border-top:1px solid var(--line)}
 .hist-row:first-child{border-top:0}
@@ -319,19 +348,21 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
       <span><strong id="scan-title">Tomar foto</strong><small id="scan-sub">La etiqueta con el modelo (dentro de la nevera, en la puerta o atrás de la lavadora). Con eso sé qué equipo es.</small></span>
       <input type="file" id="in-placa" accept="image/*" capture="environment">
     </label>
+    <label class="galbtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>Elegir foto de la galería<input type="file" data-to="in-placa" accept="image/*"></label>
     <div id="placa-out" hidden></div>
     <div id="resume" hidden></div>
 
     <div class="panel">
       <div class="st-h" id="st2"><span class="num">2</span>Muéstrame el daño</div>
       <div class="capture main3">
-        <label class="cap main" data-cap="video"><strong>Video</strong><small>Graba el equipo funcionando 15 a 30 s, con el sonido. Es lo que más me dice.</small>
+        <label class="cap main" data-cap="video"><strong>Video</strong><small>Graba el equipo funcionando 15 a 30 s, con el sonido. La linterna se prende sola.</small>
           <input type="file" class="in-video" accept="video/*" capture="environment"></label>
         <label class="cap main" data-cap="audio"><strong>Sonido</strong><small>Teléfono pegado a la pieza que suena, sin hablar</small>
           <input type="file" class="in-audio" accept="audio/*,video/*" capture></label>
-        <label class="cap" data-cap="foto"><strong>Fotos</strong><small>Tarjeta, pantalla, pieza, hielo</small>
+        <label class="cap" data-cap="foto"><strong>Fotos</strong><small>Tarjeta, pantalla, pieza, hielo. Con linterna</small>
           <input type="file" class="in-foto" accept="image/*" multiple></label>
       </div>
+      <div class="galrow"><span>Desde la galería:</span><label>Video<input type="file" class="in-video" accept="video/*"></label><label>Fotos<input type="file" class="in-foto" accept="image/*" multiple></label><label>Audio<input type="file" class="in-audio" accept="audio/*,video/*"></label></div>
       <div class="thumbs"></div>
       <div class="audio-box" hidden></div>
       <label class="f" style="font-size:15px;color:var(--ink);font-weight:600">¿Qué daño tiene? <span style="font-weight:400;color:var(--muted);font-size:13px">(si no grabaste, escríbelo)</span>
@@ -374,7 +405,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
     <div class="row" style="justify-content:space-between">
       <button class="btn go" id="go" type="button"><span class="num">3</span>Empezar diagnóstico</button>
       <label class="row" style="gap:8px;font-size:13px;cursor:pointer;color:var(--muted)">
-        <input type="checkbox" id="precise" checked style="width:18px;height:18px">
+        <input type="checkbox" id="precise" style="width:18px;height:18px">
         <span>Precisión máxima (más lento)</span>
       </label>
     </div>
@@ -393,6 +424,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
       <h3 id="answer-title">Tu respuesta</h3>
       <p class="sync" style="margin:0" id="opts-hint">Toca una respuesta y se envía. O escribe, dicta, toma foto o graba abajo.</p>
       <div class="seg" id="opts"></div>
+      <div id="ans-status" class="ans-status" aria-live="polite" hidden></div>
       <label class="f">Lo que encontraste (valor medido, lo que viste u oíste)
         <textarea id="ans" placeholder="Ej. No hay continuidad / el ventilador no gira y tiene hielo. (Puedes dictar con el micrófono del teclado)" style="min-height:70px"></textarea>
       </label>
@@ -401,6 +433,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
         <span><strong style="font-size:17px">Foto del multímetro</strong><small>Leo la pantalla y escribo la medida por ti</small></span>
         <input type="file" id="in-multi" accept="image/*" capture="environment">
       </label>
+      <label class="galbtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>Foto del multímetro de la galería<input type="file" data-to="in-multi" accept="image/*"></label>
       <div id="multi-out" hidden></div>
       <div class="capture">
         <label class="cap" data-cap="foto"><strong>Foto</strong><small>De lo que te pedí</small>
@@ -410,6 +443,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
         <label class="cap" data-cap="audio"><strong>Sonido</strong><small>Graba de cerca</small>
           <input type="file" class="in-audio" accept="audio/*,video/*" capture></label>
       </div>
+      <div class="galrow"><span>Desde la galería:</span><label>Video<input type="file" class="in-video" accept="video/*"></label><label>Fotos<input type="file" class="in-foto" accept="image/*" multiple></label><label>Audio<input type="file" class="in-audio" accept="audio/*,video/*"></label></div>
       <div class="thumbs"></div>
       <div class="audio-box" hidden></div>
       <div class="row">
@@ -580,6 +614,20 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
 <footer>TecniGuía orienta el diagnóstico; la decisión final es del técnico tras medir. Voltajes de referencia para Colombia: 110–120 V / 60 Hz (secadoras eléctricas a 220 V). <a href="terminos.html">Términos de uso</a>.</footer>
 </main>
 
+<div class="camv" id="camv" hidden role="dialog" aria-modal="true" aria-label="Cámara">
+  <video id="cam-v" playsinline muted autoplay></video>
+  <div class="cam-top">
+    <button type="button" class="cam-ic" id="cam-x" aria-label="Cerrar">✕</button>
+    <span class="cam-rec" id="cam-rec" hidden>● <b id="cam-t">0:00</b></span>
+    <button type="button" class="cam-ic cam-torch" id="cam-torch" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10v4l-3 4v12h-4V10L7 6z"/><path d="M11 13h2"/></svg><span>Linterna</span></button>
+  </div>
+  <div class="cam-msg" id="cam-msg" hidden></div>
+  <div class="cam-bot">
+    <label class="cam-side">Galería<input type="file" id="cam-gal"></label>
+    <button type="button" class="shutter" id="cam-shot" aria-label="Grabar"><i></i></button>
+    <span class="cam-side" id="cam-hint"></span>
+  </div>
+</div>
 <script>
 /* =====================================================================
    TecniGuía Pro — puente entre la app y el servidor propio.
@@ -1276,16 +1324,16 @@ document.addEventListener("click", e => {
 });
 document.addEventListener("change", async e => {
   const inp = e.target; if (!(inp instanceof HTMLInputElement) || inp.type !== "file") return;
+  if (inp.closest("#camv") && inp.id !== "cam-gal") camClose();
+  // Botones de galería: pasan el archivo al lector de etiqueta o de multímetro
+  if (inp.dataset.to) { const dst = $("#" + inp.dataset.to); dst.files = inp.files; dst.dispatchEvent(new Event("change", { bubbles: true })); inp.value = ""; return; }
+  if (inp.id === "cam-gal") return;
   const files = [...inp.files]; inp.value = ""; if (!files.length) return;
   if (inp.classList.contains("in-foto")) {
     files.forEach(f => pend.photos.push({ blob: f, url: URL.createObjectURL(f), label: "foto" }));
     renderPend();
   } else if (inp.classList.contains("in-video")) {
-    setStatus("Procesando video…", true);
-    pend.frames.forEach(p => URL.revokeObjectURL(p.url)); pend.frames = [];
-    try { pend.frames = await extractFrames(files[0], 6); } catch { flash("No pude sacar imágenes de este video. Usa fotos."); }
-    const a = await analyzeAudioFile(files[0], "sonido del video"); if (a) pend.audio = a;
-    renderPend(); setStatus("");
+    await addVideo(files[0]);
   } else if (inp.classList.contains("in-audio")) {
     setStatus("Analizando sonido…", true);
     const a = await analyzeAudioFile(files[0], "grabación");
@@ -1295,7 +1343,21 @@ document.addEventListener("change", async e => {
 });
 function flash(t) { const el = $("#session").hidden ? $("#code-quick") : $("#result"); el.hidden = false; el.innerHTML = `<div class="note">${esc(t)}</div>`; }
 
-function extractFrames(file, n) {
+// Video: imágenes y sonido al mismo tiempo, en tamaño justo para la IA (más rápido de procesar y de enviar)
+async function addVideo(file) {
+  const t0 = Date.now(), mb = file.size / 1048576;
+  setStatus("Procesando video…", true);
+  pend.frames.forEach(p => URL.revokeObjectURL(p.url)); pend.frames = [];
+  const fr = extractFrames(file, 5, k => setStatus(`Procesando video… imagen ${k} de 5`, true))
+    .catch(() => { flash("No pude sacar imágenes de este video. Usa fotos."); return []; });
+  // Un video muy pesado tarda mucho en sacar el sonido; ahí mejor grabarlo con la cámara de la app
+  const au = mb > 150 ? Promise.resolve(null) : analyzeAudioFile(file, "sonido del video");
+  const [frames, a] = await Promise.all([fr, au]);
+  pend.frames = frames; if (a) pend.audio = a;
+  if (mb > 150) flash("El video es muy pesado (" + Math.round(mb) + " MB): tomé las imágenes pero no el sonido. Grábalo con el botón Video de la app (sale más liviano) o graba el sonido aparte.");
+  renderPend(); setStatus(frames.length ? `Video listo en ${Math.max(1, Math.round((Date.now() - t0) / 1000))} s` : "");
+}
+function extractFrames(file, n, onStep) {
   return new Promise((resolve, reject) => {
     const v = document.createElement("video"), url = URL.createObjectURL(file), out = [];
     v.muted = true; v.playsInline = true; v.preload = "auto"; v.src = url;
@@ -1304,20 +1366,133 @@ function extractFrames(file, n) {
     v.onloadedmetadata = async () => {
       const d = isFinite(v.duration) ? v.duration : 0;
       if (!d || !v.videoWidth) return fail();
-      const c = document.createElement("canvas"), scale = Math.min(1, 1280 / Math.max(v.videoWidth, v.videoHeight));
+      const c = document.createElement("canvas"), scale = Math.min(1, 1024 / Math.max(v.videoWidth, v.videoHeight));
       c.width = Math.round(v.videoWidth * scale); c.height = Math.round(v.videoHeight * scale);
       const ctx = c.getContext("2d");
       for (let i = 0; i < n; i++) {
         const t = d * (i + 0.5) / n;
-        await new Promise(r => { v.onseeked = r; v.currentTime = t; });
+        // Si el teléfono no responde al buscar ese segundo, sigue con el siguiente
+        const ok = await new Promise(r => { const to = setTimeout(() => r(false), 4000); v.onseeked = () => { clearTimeout(to); r(true); }; v.currentTime = t; });
+        if (!ok) continue;
         ctx.drawImage(v, 0, 0, c.width, c.height);
-        const blob = await new Promise(r => c.toBlob(r, "image/jpeg", 0.85));
+        const blob = await new Promise(r => c.toBlob(r, "image/jpeg", 0.8));
         if (blob) out.push({ blob, url: URL.createObjectURL(blob), label: `video ${t.toFixed(1)} s` });
+        onStep && onStep(i + 1);
       }
-      URL.revokeObjectURL(url); resolve(out);
+      URL.revokeObjectURL(url); out.length ? resolve(out) : reject(new Error("video"));
     };
   });
 }
+
+/* ---- Cámara de la app: linterna prendida sola, video liviano ---- */
+const CAM = { stream: null, mode: "video", to: null, rec: null, chunks: [], frames: [], tick: null, grab: null, t0: 0, torch: false };
+const camOK = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) && !(document.featurePolicy && document.featurePolicy.allowsFeature && !document.featurePolicy.allowsFeature("camera"));
+// to: "video" | "foto" | "in-placa" | "in-multi"
+async function camOpen(mode, to) {
+  Object.assign(CAM, { mode, to, chunks: [], frames: [] });
+  $("#camv").hidden = false; document.body.style.overflow = "hidden";
+  $("#cam-msg").hidden = true; $("#cam-rec").hidden = true; $("#cam-torch").hidden = true;
+  const shot = $("#cam-shot"); shot.className = "shutter" + (mode === "video" ? "" : " foto"); shot.disabled = true; shot.hidden = false;
+  shot.setAttribute("aria-label", mode === "video" ? "Grabar" : "Tomar foto");
+  $("#cam-hint").textContent = mode === "video" ? "Máx. 30 s" : "";
+  const gal = $("#cam-gal"); gal.accept = mode === "video" ? "video/*" : "image/*"; gal.multiple = mode === "foto";
+  try {
+    CAM.stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" }, width: { ideal: mode === "video" ? 1280 : 1920 }, height: { ideal: mode === "video" ? 720 : 1080 } },
+      audio: mode === "video" });
+  } catch (e) { return camFallback(); }
+  const v = $("#cam-v"); v.srcObject = CAM.stream; try { await v.play(); } catch {}
+  shot.disabled = false;
+  await camTorch(true);
+}
+async function camTorch(on) {
+  const t = CAM.stream?.getVideoTracks()[0], caps = t?.getCapabilities ? t.getCapabilities() : {};
+  const btn = $("#cam-torch");
+  if (!caps.torch) {
+    CAM.torch = false; btn.hidden = true;
+    camMsg("Este teléfono no deja prender la linterna desde la app. Alumbra con otra luz, o usa la cámara del teléfono y prende ahí el flash.", true);
+    return;
+  }
+  try { await t.applyConstraints({ advanced: [{ torch: on }] }); CAM.torch = on; } catch { CAM.torch = false; }
+  btn.hidden = false; btn.setAttribute("aria-pressed", String(CAM.torch));
+}
+function camMsg(t, conCamaraNativa) {
+  const m = $("#cam-msg"); m.hidden = false;
+  const nat = { video: '<input type="file" class="in-video" accept="video/*" capture="environment">', foto: '<input type="file" class="in-foto" accept="image/*" capture="environment">',
+    "in-placa": '<input type="file" data-to="in-placa" accept="image/*" capture="environment">', "in-multi": '<input type="file" data-to="in-multi" accept="image/*" capture="environment">' }[CAM.to];
+  m.innerHTML = `<span>${esc(t)}</span>${conCamaraNativa ? `<label class="btn ghost" style="color:#fff;border-color:#fff">Usar la cámara del teléfono${nat}</label>` : ""}`;
+}
+function camFallback() {
+  $("#cam-shot").disabled = true; $("#cam-shot").hidden = true; $("#cam-hint").textContent = "";
+  camMsg("No se pudo abrir la cámara dentro de la app (falta el permiso o el navegador no deja). Usa la cámara del teléfono o elige de la galería.", true);
+}
+function camClose() {
+  clearInterval(CAM.tick); clearInterval(CAM.grab);
+  if (CAM.rec && CAM.rec.state !== "inactive") { CAM.rec.onstop = null; CAM.rec.stop(); }
+  CAM.rec = null;
+  CAM.stream?.getTracks().forEach(t => t.stop()); CAM.stream = null;
+  $("#cam-v").srcObject = null; $("#camv").hidden = true; document.body.style.overflow = "";
+}
+// Imagen del video en vivo (para la IA no hace falta buscar en el archivo después)
+function camFrame(max, q) {
+  const v = $("#cam-v"); if (!v.videoWidth) return Promise.resolve(null);
+  const k = Math.min(1, max / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement("canvas");
+  c.width = Math.round(v.videoWidth * k); c.height = Math.round(v.videoHeight * k);
+  c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+  return new Promise(r => c.toBlob(r, "image/jpeg", q));
+}
+async function camShot() {
+  if (CAM.mode !== "video") {
+    const blob = await camFrame(2048, 0.9); if (!blob) return;
+    const file = new File([blob], "foto.jpg", { type: "image/jpeg" }), to = CAM.to;
+    camClose();
+    if (to === "foto") { pend.photos.push({ blob: file, url: URL.createObjectURL(file), label: "foto" }); renderPend(); }
+    else { const dt = new DataTransfer(); dt.items.add(file); const dst = $("#" + to); dst.files = dt.files; dst.dispatchEvent(new Event("change", { bubbles: true })); }
+    return;
+  }
+  if (CAM.rec) { CAM.rec.stop(); return; }
+  const type = ["video/mp4", "video/webm;codecs=vp8,opus", "video/webm"].find(t => MediaRecorder.isTypeSupported(t)) || "";
+  try { CAM.rec = new MediaRecorder(CAM.stream, { mimeType: type || undefined, videoBitsPerSecond: 2000000 }); } catch { return camFallback(); }
+  CAM.chunks = []; CAM.frames = []; CAM.t0 = Date.now();
+  CAM.rec.ondataavailable = e => { if (e.data && e.data.size) CAM.chunks.push(e.data); };
+  CAM.rec.onstop = camDone;
+  CAM.rec.start(1000);
+  $("#cam-shot").classList.add("rec"); $("#cam-shot").setAttribute("aria-label", "Parar"); $("#cam-rec").hidden = false; $("#cam-hint").textContent = "Toca para parar";
+  const grab = async () => { const b = await camFrame(1024, 0.8); if (b) CAM.frames.push({ b, t: (Date.now() - CAM.t0) / 1000 }); };
+  setTimeout(grab, 500); CAM.grab = setInterval(grab, 2000);
+  CAM.tick = setInterval(() => { const s = Math.floor((Date.now() - CAM.t0) / 1000); $("#cam-t").textContent = `0:${String(s).padStart(2, "0")}`; if (s >= 30) CAM.rec?.stop(); }, 250);
+}
+async function camDone() {
+  clearInterval(CAM.tick); clearInterval(CAM.grab);
+  const blob = new Blob(CAM.chunks, { type: CAM.rec?.mimeType || "video/webm" }), all = CAM.frames;
+  camClose();
+  if (!all.length) { flash("El video quedó muy corto. Graba por lo menos 3 segundos."); return; }
+  setStatus("Analizando el sonido del video…", true);
+  pend.frames.forEach(p => URL.revokeObjectURL(p.url));
+  const pick = all.length <= 5 ? all : [0, 1, 2, 3, 4].map(i => all[Math.round(i * (all.length - 1) / 4)]);
+  pend.frames = pick.map(f => ({ blob: f.b, url: URL.createObjectURL(f.b), label: `video ${f.t.toFixed(1)} s` }));
+  const a = await analyzeAudioFile(blob, "sonido del video"); if (a) pend.audio = a;
+  renderPend(); setStatus("Video listo");
+}
+$("#cam-shot").addEventListener("click", camShot);
+$("#cam-x").addEventListener("click", camClose);
+$("#cam-torch").addEventListener("click", () => camTorch(!CAM.torch));
+$("#cam-gal").addEventListener("change", e => {
+  const files = [...e.target.files], to = CAM.to; e.target.value = ""; if (!files.length) return;
+  camClose();
+  if (to === "video") addVideo(files[0]);
+  else if (to === "foto") { files.forEach(f => pend.photos.push({ blob: f, url: URL.createObjectURL(f), label: "foto" })); renderPend(); }
+  else { const dst = $("#" + to); const dt = new DataTransfer(); dt.items.add(files[0]); dst.files = dt.files; dst.dispatchEvent(new Event("change", { bubbles: true })); }
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#camv").hidden) camClose(); });
+// Los botones de cámara abren la cámara de la app (con linterna); si no se puede, queda la del teléfono
+document.addEventListener("click", e => {
+  if (!camOK() || e.target.closest(".galrow, .galbtn, #camv")) return;
+  const cap = e.target.closest('.cap[data-cap="video"], .cap[data-cap="foto"], #scan-box, #multi-box'); if (!cap) return;
+  e.preventDefault();
+  const to = cap.id === "scan-box" ? "in-placa" : cap.id === "multi-box" ? "in-multi" : cap.dataset.cap;
+  camOpen(to === "video" ? "video" : "foto", to);
+}, true);
 
 /* ---- Análisis de sonido (local, en el teléfono) ---- */
 function fft(re, im) {
@@ -1720,9 +1895,12 @@ ${n >= 10 ? `\nYa van ${n} pruebas. Si la evidencia ya confirma la falla, entreg
 Decide ahora el siguiente paso (o el diagnóstico si ya está confirmado).`;
 
   ctl = new AbortController();
-  $("#answer").hidden = true; $("#stop").hidden = false;
-  const t0 = Date.now(); const tick = setInterval(() => setStatus(`Pensando el siguiente paso… ${Math.round((Date.now() - t0) / 1000)} s`, true), 1000);
-  setStatus("Pensando el siguiente paso…", true);
+  enviando = true; $("#stop").hidden = false;
+  const enPanel = !$("#answer").hidden;  // si el técnico respondió desde el panel, el aviso sale ahí mismo
+  $("#answer").classList.add("busy");
+  const aviso = s => { setStatus(s, true); if (enPanel) ansStatus(s, true); };
+  const t0 = Date.now(); const tick = setInterval(() => aviso(`${answerText ? "Respuesta enviada. " : ""}Pensando el siguiente paso… ${Math.round((Date.now() - t0) / 1000)} s`), 1000);
+  aviso(answerText ? "Respuesta enviada. Pensando el siguiente paso…" : "Pensando el siguiente paso…");
   $("#result").innerHTML = "";
   try {
     const opts = { signal: ctl.signal, modelTier: $("#precise").checked ? "complex" : "default", cache: false };
@@ -1734,7 +1912,7 @@ Decide ahora el siguiente paso (o el diagnóstico si ya está confirmado).`;
     if (d.estado === "diagnostico" && !d.diagnostico) d.estado = "investigando";
     let auditoria = null;
     if (d.estado === "diagnostico") {
-      clearInterval(tick); setStatus("Doble verificación del diagnóstico…", true);
+      clearInterval(tick); aviso("Doble verificación del diagnóstico…");
       try {
         const audit = await sample.json(`${AUDIT}
 
@@ -1748,7 +1926,7 @@ ${respuesta ? "ÚLTIMA RESPUESTA DEL TÉCNICO: " + respuesta : ""}
 ${d.lo_que_veo ? "Lo observado en las imágenes de este turno: " + d.lo_que_veo : ""}
 
 DIAGNÓSTICO PROPUESTO:
-${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: "complex", cache: false });
+${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: $("#precise").checked ? "complex" : "default", cache: false });
         if (audit && audit.aprobado === false && audit.paso && audit.paso.instruccion) {
           auditoria = audit.motivo || "Falta una prueba que confirme la falla.";
           d.estado = "investigando"; d.diagnostico = null; d.paso = audit.paso;
@@ -1766,12 +1944,17 @@ ${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: "complex", c
   } catch (e) {
     // revertir la respuesta para poder reenviar
     if (visit.turns.length) visit.turns[visit.turns.length - 1].respuesta = undefined;
-    if (e?.code !== "cancelled") $("#result").innerHTML = `<div class="note">${esc(errText(e))}</div>`;
+    if (e?.code !== "cancelled") {
+      $("#result").innerHTML = `<div class="note">${esc(errText(e))}</div>`;
+      ansStatus(errText(e) + " Toca otra vez la respuesta para reintentar.", false, true);
+    }
     if (e?.code === "not_granted" || e?.code === "sampling_disabled") { sample = null; $("#ai-off").hidden = false; }
+    $$("#opts button").forEach(x => x.setAttribute("aria-pressed", "false"));
     if (visit.turns.length) $("#answer").hidden = !visit.turns[visit.turns.length - 1].paso && !visit.turns[visit.turns.length - 1].diagnostico;
     else { $("#session").hidden = true; $("#start").hidden = false; }
   } finally {
     clearInterval(tick); setStatus(""); $("#stop").hidden = true;
+    enviando = false; $("#answer").classList.remove("busy");
   }
 }
 $("#stop").addEventListener("click", () => ctl?.abort());
@@ -1824,7 +2007,7 @@ function dxHTML(d) {
 }
 function renderVisit(readOnly) {
   const last = visit.turns[visit.turns.length - 1]; if (!last) return;
-  stopTimer(true); $("#multi-out").hidden = true;
+  stopTimer(true); $("#multi-out").hidden = true; ansStatus("");
   $("#hyp-box").hidden = !(last.hipotesis || []).length || !!last.diagnostico;
   $("#hyp").innerHTML = hypHTML(last.hipotesis);
   $("#casos").innerHTML = casosHTML(similarCases(visit.caso, visit.id));
@@ -1851,13 +2034,42 @@ function renderVisit(readOnly) {
   $("#step").scrollIntoView({ behavior: "smooth", block: "start" });
   if (!readOnly && voiceOn()) speakStep(last);
 }
+// Aviso junto a los botones de respuesta (el técnico lo ve donde tocó)
+function ansStatus(txt, busy, err) {
+  const el = $("#ans-status"); if (!el) return;
+  el.hidden = !txt; el.classList.toggle("err", !!err);
+  el.innerHTML = txt ? (busy ? '<span class="spin" aria-hidden="true"></span>' : "") + `<span>${esc(txt)}</span>` : "";
+}
+// Si la conexión con Claude se perdió (permiso, red, sesión), se intenta de nuevo antes de rendirse
+async function ensureSample() {
+  if (sample) return true;
+  try {
+    if (window.claude && claude.use) { sample = await claude.use("sample"); if (sample) limits = await sample.limits().catch(() => limits); }
+  } catch { sample = null; }
+  $("#ai-off").hidden = !!sample;
+  return !!sample;
+}
+let enviando = false;
 $("#opts").addEventListener("click", e => {
-  const b = e.target.closest("button"); if (!b) return;
+  const b = e.target.closest("button"); if (!b || enviando) return;
+  const sinAdjunto = !pend.photos.length && !pend.frames.length && !pend.audio;
+  const quiere = /\b(mando|env[ií]o|tomo|subo)\b.*\bfoto/i.test(b.dataset.o) ? "foto" : /\b(mando|env[ií]o|grabo)\b.*\bvideo/i.test(b.dataset.o) ? "video" : /\b(mando|env[ií]o|grabo)\b.*\b(sonido|audio)/i.test(b.dataset.o) ? "audio" : "";
+  if (quiere && sinAdjunto) {  // «Mando foto»: abre la cámara y luego se toca Enviar
+    ansStatus(`Toma ${quiere === "foto" ? "la foto" : quiere === "video" ? "el video" : "el sonido"} y luego toca «Enviar lo que escribí o grabé».`);
+    $(`#answer .cap[data-cap="${quiere}"]`)?.click();
+    return;
+  }
+  $$("#opts button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
   sendAnswer(b.dataset.o);   // un toque = enviar
 });
-$("#send").addEventListener("click", () => sendAnswer(""));
-function sendAnswer(opt) {
-  if (!visit || !sample) return;
+$("#send").addEventListener("click", () => { if (!enviando) sendAnswer(""); });
+async function sendAnswer(opt) {
+  if (!visit) { ansStatus("No hay una visita abierta. Toca «Nueva visita» y empieza de nuevo.", false, true); return; }
+  if (!await ensureSample()) {
+    $$("#opts button").forEach(x => x.setAttribute("aria-pressed", "false"));
+    ansStatus("No hay conexión con Claude en este momento. Revisa el internet y que la app esté abierta dentro de Claude con tu cuenta, y toca otra vez. Mientras tanto puedes usar Códigos y Síntomas.", false, true);
+    return;
+  }
   const txt = $("#ans").value.trim();
   const last = visit.turns[visit.turns.length - 1];
   if (last?.diagnostico && opt === "Reparé y quedó funcionando") {
@@ -1865,15 +2077,16 @@ function sendAnswer(opt) {
     showClose();
     return;
   }
-  if (!opt && !txt && !pend.photos.length && !pend.frames.length && !pend.audio) { $("#result").innerHTML = `<div class="note">Elige una opción, escribe lo que encontraste o adjunta una foto o un sonido.</div>`; return; }
+  if (!opt && !txt && !pend.photos.length && !pend.frames.length && !pend.audio) { ansStatus("Elige una opción, escribe lo que encontraste o adjunta una foto o un sonido.", false, true); return; }
   if (last?.diagnostico && opt === "La reparación no funcionó") {
     visit.resultado = null;
     visit.descartados = [...(visit.descartados || []), last.diagnostico.falla_principal];
   }
   askNext([opt, txt].filter(Boolean).join(". "));
 }
-$("#cant").addEventListener("click", () => {
-  if (!visit || !sample) return;
+$("#cant").addEventListener("click", async () => {
+  if (!visit || enviando) return;
+  if (!await ensureSample()) { ansStatus("No hay conexión con Claude en este momento. Revisa el internet y toca otra vez.", false, true); return; }
   const txt = $("#ans").value.trim();
   askNext("No puedo hacer esta prueba" + (txt ? ": " + txt : "") + ". Dame otra forma de distinguir las mismas hipótesis.");
 });
@@ -2077,7 +2290,7 @@ function offerResume() {
   $("#resume-go").onclick = () => {
     visit = v; clearPend(); keepAwake(true);
     $("#start").hidden = true; $("#session").hidden = false; $("#result").innerHTML = ""; box.hidden = true;
-    setCaseHeader(v.caso); renderVisit(!sample);
+    setCaseHeader(v.caso); renderVisit(false);
   };
 }
 
@@ -2273,7 +2486,7 @@ $("#hist").addEventListener("click", e => {
   showTab("diag");
   $("#start").hidden = true; $("#session").hidden = false; $("#result").innerHTML = "";
   setCaseHeader(v.caso);
-  renderVisit(!sample || v.resultado === "ok");
+  renderVisit(v.resultado === "ok");
 });
 
 const t0tab = store.get("tg_tab", "diag"); if (t0tab !== "diag") showTab(t0tab);

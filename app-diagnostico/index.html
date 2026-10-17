@@ -187,6 +187,11 @@ details.mini summary{cursor:pointer;color:var(--accent);font-weight:600;font-siz
 #opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
 #opts button{padding:14px 12px;font-size:16px;font-weight:600;text-align:left;border-radius:10px}
 #opts button:active{background:var(--accent-soft)}
+#opts button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+#opts button{touch-action:manipulation;-webkit-tap-highlight-color:rgba(11,110,138,.18);cursor:pointer}
+#answer.busy #opts button,#answer.busy #send,#answer.busy #cant{opacity:.55;pointer-events:none}
+.ans-status{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;border-radius:8px;padding:12px 14px;background:var(--accent-soft);color:var(--ink)}
+.ans-status.err{background:var(--red-soft);font-weight:500}
 .why{font-size:14px;color:var(--muted);margin:0;max-width:65ch}
 .hist-row{display:flex;align-items:stretch;gap:6px;border-top:1px solid var(--line)}
 .hist-row:first-child{border-top:0}
@@ -320,7 +325,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
     <div class="row" style="justify-content:space-between">
       <button class="btn go" id="go" type="button"><span class="num">3</span>Empezar diagnóstico</button>
       <label class="row" style="gap:8px;font-size:13px;cursor:pointer;color:var(--muted)">
-        <input type="checkbox" id="precise" checked style="width:18px;height:18px">
+        <input type="checkbox" id="precise" style="width:18px;height:18px">
         <span>Precisión máxima (más lento)</span>
       </label>
     </div>
@@ -339,6 +344,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
       <h3 id="answer-title">Tu respuesta</h3>
       <p class="sync" style="margin:0" id="opts-hint">Toca una respuesta y se envía. O escribe, dicta, toma foto o graba abajo.</p>
       <div class="seg" id="opts"></div>
+      <div id="ans-status" class="ans-status" aria-live="polite" hidden></div>
       <label class="f">Lo que encontraste (valor medido, lo que viste u oíste)
         <textarea id="ans" placeholder="Ej. No hay continuidad / el ventilador no gira y tiene hielo. (Puedes dictar con el micrófono del teclado)" style="min-height:70px"></textarea>
       </label>
@@ -1596,9 +1602,12 @@ ${n >= 10 ? `\nYa van ${n} pruebas. Si la evidencia ya confirma la falla, entreg
 Decide ahora el siguiente paso (o el diagnóstico si ya está confirmado).`;
 
   ctl = new AbortController();
-  $("#answer").hidden = true; $("#stop").hidden = false;
-  const t0 = Date.now(); const tick = setInterval(() => setStatus(`Pensando el siguiente paso… ${Math.round((Date.now() - t0) / 1000)} s`, true), 1000);
-  setStatus("Pensando el siguiente paso…", true);
+  enviando = true; $("#stop").hidden = false;
+  const enPanel = !$("#answer").hidden;  // si el técnico respondió desde el panel, el aviso sale ahí mismo
+  $("#answer").classList.add("busy");
+  const aviso = s => { setStatus(s, true); if (enPanel) ansStatus(s, true); };
+  const t0 = Date.now(); const tick = setInterval(() => aviso(`${answerText ? "Respuesta enviada. " : ""}Pensando el siguiente paso… ${Math.round((Date.now() - t0) / 1000)} s`), 1000);
+  aviso(answerText ? "Respuesta enviada. Pensando el siguiente paso…" : "Pensando el siguiente paso…");
   $("#result").innerHTML = "";
   try {
     const opts = { signal: ctl.signal, modelTier: $("#precise").checked ? "complex" : "default", cache: false };
@@ -1610,7 +1619,7 @@ Decide ahora el siguiente paso (o el diagnóstico si ya está confirmado).`;
     if (d.estado === "diagnostico" && !d.diagnostico) d.estado = "investigando";
     let auditoria = null;
     if (d.estado === "diagnostico") {
-      clearInterval(tick); setStatus("Doble verificación del diagnóstico…", true);
+      clearInterval(tick); aviso("Doble verificación del diagnóstico…");
       try {
         const audit = await sample.json(`${AUDIT}
 
@@ -1624,7 +1633,7 @@ ${respuesta ? "ÚLTIMA RESPUESTA DEL TÉCNICO: " + respuesta : ""}
 ${d.lo_que_veo ? "Lo observado en las imágenes de este turno: " + d.lo_que_veo : ""}
 
 DIAGNÓSTICO PROPUESTO:
-${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: "complex", cache: false });
+${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: $("#precise").checked ? "complex" : "default", cache: false });
         if (audit && audit.aprobado === false && audit.paso && audit.paso.instruccion) {
           auditoria = audit.motivo || "Falta una prueba que confirme la falla.";
           d.estado = "investigando"; d.diagnostico = null; d.paso = audit.paso;
@@ -1642,12 +1651,17 @@ ${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: "complex", c
   } catch (e) {
     // revertir la respuesta para poder reenviar
     if (visit.turns.length) visit.turns[visit.turns.length - 1].respuesta = undefined;
-    if (e?.code !== "cancelled") $("#result").innerHTML = `<div class="note">${esc(errText(e))}</div>`;
+    if (e?.code !== "cancelled") {
+      $("#result").innerHTML = `<div class="note">${esc(errText(e))}</div>`;
+      ansStatus(errText(e) + " Toca otra vez la respuesta para reintentar.", false, true);
+    }
     if (e?.code === "not_granted" || e?.code === "sampling_disabled") { sample = null; $("#ai-off").hidden = false; }
+    $$("#opts button").forEach(x => x.setAttribute("aria-pressed", "false"));
     if (visit.turns.length) $("#answer").hidden = !visit.turns[visit.turns.length - 1].paso && !visit.turns[visit.turns.length - 1].diagnostico;
     else { $("#session").hidden = true; $("#start").hidden = false; }
   } finally {
     clearInterval(tick); setStatus(""); $("#stop").hidden = true;
+    enviando = false; $("#answer").classList.remove("busy");
   }
 }
 $("#stop").addEventListener("click", () => ctl?.abort());
@@ -1700,7 +1714,7 @@ function dxHTML(d) {
 }
 function renderVisit(readOnly) {
   const last = visit.turns[visit.turns.length - 1]; if (!last) return;
-  stopTimer(true); $("#multi-out").hidden = true;
+  stopTimer(true); $("#multi-out").hidden = true; ansStatus("");
   $("#hyp-box").hidden = !(last.hipotesis || []).length || !!last.diagnostico;
   $("#hyp").innerHTML = hypHTML(last.hipotesis);
   $("#casos").innerHTML = casosHTML(similarCases(visit.caso, visit.id));
@@ -1727,13 +1741,42 @@ function renderVisit(readOnly) {
   $("#step").scrollIntoView({ behavior: "smooth", block: "start" });
   if (!readOnly && voiceOn()) speakStep(last);
 }
+// Aviso junto a los botones de respuesta (el técnico lo ve donde tocó)
+function ansStatus(txt, busy, err) {
+  const el = $("#ans-status"); if (!el) return;
+  el.hidden = !txt; el.classList.toggle("err", !!err);
+  el.innerHTML = txt ? (busy ? '<span class="spin" aria-hidden="true"></span>' : "") + `<span>${esc(txt)}</span>` : "";
+}
+// Si la conexión con Claude se perdió (permiso, red, sesión), se intenta de nuevo antes de rendirse
+async function ensureSample() {
+  if (sample) return true;
+  try {
+    if (window.claude && claude.use) { sample = await claude.use("sample"); if (sample) limits = await sample.limits().catch(() => limits); }
+  } catch { sample = null; }
+  $("#ai-off").hidden = !!sample;
+  return !!sample;
+}
+let enviando = false;
 $("#opts").addEventListener("click", e => {
-  const b = e.target.closest("button"); if (!b) return;
+  const b = e.target.closest("button"); if (!b || enviando) return;
+  const sinAdjunto = !pend.photos.length && !pend.frames.length && !pend.audio;
+  const quiere = /\b(mando|env[ií]o|tomo|subo)\b.*\bfoto/i.test(b.dataset.o) ? "foto" : /\b(mando|env[ií]o|grabo)\b.*\bvideo/i.test(b.dataset.o) ? "video" : /\b(mando|env[ií]o|grabo)\b.*\b(sonido|audio)/i.test(b.dataset.o) ? "audio" : "";
+  if (quiere && sinAdjunto) {  // «Mando foto»: abre la cámara y luego se toca Enviar
+    ansStatus(`Toma ${quiere === "foto" ? "la foto" : quiere === "video" ? "el video" : "el sonido"} y luego toca «Enviar lo que escribí o grabé».`);
+    $(`#answer .cap[data-cap="${quiere}"]`)?.click();
+    return;
+  }
+  $$("#opts button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
   sendAnswer(b.dataset.o);   // un toque = enviar
 });
-$("#send").addEventListener("click", () => sendAnswer(""));
-function sendAnswer(opt) {
-  if (!visit || !sample) return;
+$("#send").addEventListener("click", () => { if (!enviando) sendAnswer(""); });
+async function sendAnswer(opt) {
+  if (!visit) { ansStatus("No hay una visita abierta. Toca «Nueva visita» y empieza de nuevo.", false, true); return; }
+  if (!await ensureSample()) {
+    $$("#opts button").forEach(x => x.setAttribute("aria-pressed", "false"));
+    ansStatus("No hay conexión con Claude en este momento. Revisa el internet y que la app esté abierta dentro de Claude con tu cuenta, y toca otra vez. Mientras tanto puedes usar Códigos y Síntomas.", false, true);
+    return;
+  }
   const txt = $("#ans").value.trim();
   const last = visit.turns[visit.turns.length - 1];
   if (last?.diagnostico && opt === "Reparé y quedó funcionando") {
@@ -1741,15 +1784,16 @@ function sendAnswer(opt) {
     showClose();
     return;
   }
-  if (!opt && !txt && !pend.photos.length && !pend.frames.length && !pend.audio) { $("#result").innerHTML = `<div class="note">Elige una opción, escribe lo que encontraste o adjunta una foto o un sonido.</div>`; return; }
+  if (!opt && !txt && !pend.photos.length && !pend.frames.length && !pend.audio) { ansStatus("Elige una opción, escribe lo que encontraste o adjunta una foto o un sonido.", false, true); return; }
   if (last?.diagnostico && opt === "La reparación no funcionó") {
     visit.resultado = null;
     visit.descartados = [...(visit.descartados || []), last.diagnostico.falla_principal];
   }
   askNext([opt, txt].filter(Boolean).join(". "));
 }
-$("#cant").addEventListener("click", () => {
-  if (!visit || !sample) return;
+$("#cant").addEventListener("click", async () => {
+  if (!visit || enviando) return;
+  if (!await ensureSample()) { ansStatus("No hay conexión con Claude en este momento. Revisa el internet y toca otra vez.", false, true); return; }
   const txt = $("#ans").value.trim();
   askNext("No puedo hacer esta prueba" + (txt ? ": " + txt : "") + ". Dame otra forma de distinguir las mismas hipótesis.");
 });
@@ -1953,7 +1997,7 @@ function offerResume() {
   $("#resume-go").onclick = () => {
     visit = v; clearPend(); keepAwake(true);
     $("#start").hidden = true; $("#session").hidden = false; $("#result").innerHTML = ""; box.hidden = true;
-    setCaseHeader(v.caso); renderVisit(!sample);
+    setCaseHeader(v.caso); renderVisit(false);
   };
 }
 
@@ -2149,7 +2193,7 @@ $("#hist").addEventListener("click", e => {
   showTab("diag");
   $("#start").hidden = true; $("#session").hidden = false; $("#result").innerHTML = "";
   setCaseHeader(v.caso);
-  renderVisit(!sample || v.resultado === "ok");
+  renderVisit(v.resultado === "ok");
 });
 
 const t0tab = store.get("tg_tab", "diag"); if (t0tab !== "diag") showTab(t0tab);
