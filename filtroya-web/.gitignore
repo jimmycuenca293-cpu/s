@@ -1,6 +1,7 @@
 # Se genera con: python3 build.py
 public_html/
 sitios/
+sitios-ads/
 *.zip
 # Claves y pedidos: nunca al repositorio
 src/api/config.php
