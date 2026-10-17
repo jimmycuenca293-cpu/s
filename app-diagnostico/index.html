@@ -191,7 +191,12 @@ details.mini summary{cursor:pointer;color:var(--accent);font-weight:600;font-siz
 #opts button{touch-action:manipulation;-webkit-tap-highlight-color:rgba(11,110,138,.18);cursor:pointer}
 #answer.busy #opts button,#answer.busy #send,#answer.busy #cant{opacity:.55;pointer-events:none}
 .ans-status{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;border-radius:8px;padding:12px 14px;background:var(--accent-soft);color:var(--ink)}
-.ans-status.err{background:var(--red-soft);font-weight:500}
+.ans-status.err{background:var(--red-soft);font-weight:500;flex-wrap:wrap}
+.ans-status .btn{padding:8px 14px}
+.ia-box{display:flex;flex-direction:column;gap:10px;border-radius:var(--r);padding:14px 16px;background:var(--red-soft);border-left:4px solid var(--red)}
+.ia-box.ok{background:var(--green-soft);border-left-color:var(--green)}
+.ia-box b{font-size:16px}.ia-box p{margin:0;font-size:14px}
+.costo{font-size:12.5px;color:var(--muted);margin:0}
 .why{font-size:14px;color:var(--muted);margin:0;max-width:65ch}
 .hist-row{display:flex;align-items:stretch;gap:6px;border-top:1px solid var(--line)}
 .hist-row:first-child{border-top:0}
@@ -259,6 +264,7 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
   </div>
 
   <div class="note info" id="ai-off" hidden>La visita guiada funciona cuando abres esta app dentro de Claude. Sin conexión puedes usar <b>Códigos de error</b> y <b>Por síntoma</b>, y el análisis de sonido funciona igual.</div>
+  <div class="ia-box" id="ia-box" hidden></div>
 
   <!-- Inicio de la visita -->
   <div id="start" style="display:flex;flex-direction:column;gap:14px">
@@ -324,9 +330,10 @@ footer{color:var(--muted);font-size:12.5px;padding-top:28px;max-width:65ch}
 
     <div class="row" style="justify-content:space-between">
       <button class="btn go" id="go" type="button"><span class="num">3</span>Empezar diagnóstico</button>
+      <p class="costo" style="flex-basis:100%">Cada consulta usa tu cuenta de Claude (tu plan). El diagnóstico final siempre lo revisa la IA más potente.</p>
       <label class="row" style="gap:8px;font-size:13px;cursor:pointer;color:var(--muted)">
         <input type="checkbox" id="precise" style="width:18px;height:18px">
-        <span>Precisión máxima (más lento)</span>
+        <span>IA más potente en cada paso (más lenta, gasta más de tu cuenta Claude)</span>
       </label>
     </div>
   </div>
@@ -1444,22 +1451,60 @@ let VISITS = store.get("tg_visits", []);
   } catch { sample = null; }
   offerResume();
   syncVisits();
+  iaEstado();
   $("#ai-off").hidden = !!sample;
   $("#go").textContent = sample ? "Empezar diagnóstico" : "Buscar en la base local";
 })();
 
+// Permiso de la IA: Claude pide permiso la primera vez; si se negó, todas las consultas se rechazan
+let perms = null;
+async function iaEstado(tras_error) {
+  const box = $("#ia-box"); if (!box) return;
+  try { if (!perms && window.claude && claude.use) perms = await claude.use("permissions"); } catch { perms = null; }
+  let st = null;
+  try { st = perms ? await perms.state("sample") : null; } catch {}
+  if (st === "granted" && !tras_error) { box.hidden = true; return; }
+  if (st === "prompt" && !tras_error) {
+    box.hidden = false; box.className = "ia-box ok";
+    box.innerHTML = `<b>Antes de la primera consulta</b><p>Claude te va a pedir permiso para que TecniGuía use tu cuenta. Toca <b>Permitir</b>, o actívalo ya:</p><button class="btn" type="button" id="ia-activar">Activar IA</button>`;
+  } else if (st === "denied" || tras_error) {
+    box.hidden = false; box.className = "ia-box";
+    box.innerHTML = `<b>La IA está bloqueada para esta app</b><p>Por eso los botones de respuesta no avanzan. Toca <b>Activar IA</b> y prende «Claude» en los permisos. Si no se abre, toca los tres puntos (⋯) arriba a la derecha → Permisos.</p><button class="btn" type="button" id="ia-activar">Activar IA</button>`;
+  } else if (st === "unavailable") {
+    box.hidden = false; box.className = "ia-box";
+    box.innerHTML = `<b>La IA no está disponible aquí</b><p>Abre TecniGuía desde la app de Claude o desde claude.ai con tu cuenta. Mientras tanto puedes usar Códigos, Síntomas y Medir.</p>`;
+  } else { box.hidden = true; }
+  const b = $("#ia-activar");
+  if (b) b.onclick = async () => {
+    b.disabled = true;
+    try {
+      const r = perms ? await perms.request(["sample"]) : null;
+      if (r?.sample !== "granted") await perms.manage().catch(() => { box.querySelector("p").innerHTML = "No se pudo abrir el panel. Toca los tres puntos (⋯) arriba a la derecha → <b>Permisos</b> → prende <b>Claude</b>, y vuelve a abrir la app."; });
+    } catch {}
+    b.disabled = false;
+    sample = null; await ensureSample();
+    const ahora = perms ? await perms.state("sample").catch(() => null) : null;
+    if (ahora === "granted") { box.hidden = false; box.className = "ia-box ok"; box.innerHTML = "<b>IA activada</b><p>Ya puedes tocar las respuestas. Si sigue sin avanzar, cierra la app y ábrela de nuevo.</p>"; ansStatus(""); }
+    else iaEstado(true);
+  };
+}
+
 function setStatus(t, busy) { $("#status").innerHTML = (busy ? '<span class="spin" aria-hidden="true"></span> ' : "") + esc(t); }
 const ERR = {
-  not_granted: "No se dio permiso para usar Claude. Puedes seguir con Códigos y Por síntoma.",
-  sampling_disabled: "Claude no está disponible en esta cuenta.",
-  rate_limited: "Demasiadas consultas seguidas o llegaste al límite de uso. Espera un momento y vuelve a enviar.",
+  not_granted: "La IA está bloqueada para esta app: falta darle permiso de usar tu cuenta de Claude. Toca «Activar IA».",
+  sampling_disabled: "Tu cuenta de Claude no tiene la IA disponible para apps. Revisa tu plan en claude.ai.",
+  rate_limited: "Llegaste al límite de uso de tu cuenta de Claude (tus créditos del plan) o hubo muchas consultas seguidas. Espera unos minutos y vuelve a tocar.",
+  capability_disabled: "La IA no se puede usar en esta vista. Cierra la app y ábrela de nuevo desde Claude.",
+  not_declared: "La IA no está activada en esta versión de la app. Cierra y vuelve a abrir.",
+  empty_completion: "La IA no devolvió respuesta. Toca otra vez.",
+  upstream_error: "Se cortó la conexión con Claude. Revisa el internet y toca otra vez.",
   session_expired: "Tu sesión expiró. Vuelve a iniciar sesión en Claude.",
   image_rejected: "Una imagen no se pudo usar (formato o tamaño). Quítala y envía de nuevo.",
   images_unavailable: "En esta vista no se pueden enviar imágenes. Quítalas y describe lo que ves.",
   invalid_json: "La respuesta llegó incompleta. Toca Enviar de nuevo.",
   refused: "El guía no pudo responder esa consulta. Reformula lo que escribiste.",
 };
-const errText = e => ERR[e?.code] || "No se pudo completar el paso. Revisa la conexión y vuelve a enviar.";
+const errText = e => (ERR[e?.code] || "No se pudo completar el paso. Revisa la conexión y vuelve a enviar.") + (e?.code && e.code !== "cancelled" ? ` (código: ${e.code})` : "");
 
 const RULES = `Eres un técnico de línea blanca con 25 años de experiencia en neveras, nevecones, lavadoras y secadoras de todas las marcas que se venden en Colombia y Latinoamérica. Estás guiando EN VIVO a otro técnico profesional que está frente al equipo en casa del cliente, con multímetro y herramientas. Tu trabajo es encontrar la falla real con pruebas, no adivinar. Un diagnóstico equivocado le hace perder plata y al cliente.
 
@@ -1633,7 +1678,7 @@ ${respuesta ? "ÚLTIMA RESPUESTA DEL TÉCNICO: " + respuesta : ""}
 ${d.lo_que_veo ? "Lo observado en las imágenes de este turno: " + d.lo_que_veo : ""}
 
 DIAGNÓSTICO PROPUESTO:
-${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: $("#precise").checked ? "complex" : "default", cache: false });
+${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: "complex", cache: false });
         if (audit && audit.aprobado === false && audit.paso && audit.paso.instruccion) {
           auditoria = audit.motivo || "Falta una prueba que confirme la falla.";
           d.estado = "investigando"; d.diagnostico = null; d.paso = audit.paso;
@@ -1653,7 +1698,8 @@ ${JSON.stringify(d.diagnostico)}`, { signal: ctl.signal, modelTier: $("#precise"
     if (visit.turns.length) visit.turns[visit.turns.length - 1].respuesta = undefined;
     if (e?.code !== "cancelled") {
       $("#result").innerHTML = `<div class="note">${esc(errText(e))}</div>`;
-      ansStatus(errText(e) + " Toca otra vez la respuesta para reintentar.", false, true);
+      ansStatus(errText(e) + (["not_granted", "sampling_disabled"].includes(e?.code) ? "" : " Toca otra vez la respuesta para reintentar."), false, true);
+      if (["not_granted", "capability_disabled"].includes(e?.code)) iaEstado(true);
     }
     if (e?.code === "not_granted" || e?.code === "sampling_disabled") { sample = null; $("#ai-off").hidden = false; }
     $$("#opts button").forEach(x => x.setAttribute("aria-pressed", "false"));
