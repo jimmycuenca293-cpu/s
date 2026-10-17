@@ -28,10 +28,15 @@ HORARIO = "Lunes a sábado, 8:00 a. m. a 6:00 p. m."
 GTM = "GTM-N39G66VJ"                      # mismo contenedor: evento «whatsapp» al tocar cualquier botón de WhatsApp
 ENVIO_GRATIS = True                       # False si el envío contra entrega lo paga el cliente
 MARCAS = {  # número de WhatsApp de cada página (10 dígitos, sin +57)
-    "Samsung": {"whatsapp": "3217996144", "fuente": "Plus Jakarta Sans", "pri": "#1428a0", "pri2": "#0a1460", "acento": "#a9b8ff", "suave": "#e8ecfb",
+    "Samsung": {"whatsapp": "3054796329", "fuente": "Plus Jakarta Sans", "pri": "#1428a0", "pri2": "#0a1460", "acento": "#a9b8ff", "suave": "#e8ecfb",
                 "lineas": "French door, side by side, Bespoke y Family Hub", "etiqueta": "dentro de la nevera, en una pared lateral o en el techo; empieza por RF, RS o RH"},
-    "LG": {"whatsapp": "3217996144", "fuente": "Outfit", "pri": "#a50034", "pri2": "#4f4f53", "acento": "#ff9bb8", "suave": "#fbe8ee", "gris": "#6b6b6b",
+    "LG": {"whatsapp": "3205102995", "fuente": "Outfit", "pri": "#a50034", "pri2": "#4f4f53", "acento": "#ff9bb8", "suave": "#fbe8ee", "gris": "#6b6b6b",
            "lineas": "French door, side by side e InstaView", "etiqueta": "dentro de la nevera, en la pared lateral o detrás del cajón de las verduras; empieza por LF, LM, LR, LS o GR"},
+    "Whirlpool": {"whatsapp": "3217996144", "fuente": "DM Sans", "pri": "#2b2724", "pri2": "#141211", "acento": "#eeb111", "suave": "#fcefc9", "gris": "#5f5b58",
+                  "eye": "#8a6400", "chip": "#eeb111", "chip_ink": "#231f20", "gota": "#eeb111", "subrayado": "#eeb111",
+                  "lineas": "French door, side by side y congelador abajo", "etiqueta": "dentro de la nevera, en la pared lateral de arriba; empieza por WRF, WRS o WRX"},
+    "GE": {"whatsapp": "3217996144", "fuente": "Lexend", "pri": "#3b73b9", "pri2": "#1d3f6e", "acento": "#cfe2ff", "suave": "#e2ecf8", "gris": "#5a6b80",
+           "lineas": "French door y side by side", "etiqueta": "dentro de la nevera, en la pared lateral o en el techo; empieza por GFE, GNE, GSS, PFE, PYE o CFE"},
 }
 
 esc = lambda s: html.escape(str(s), quote=True)
@@ -71,12 +76,13 @@ def pagina(marca, cfg, ps, ciud):
     tarjetas = "".join(f'''
       <article class="card">
         <span class="tipo">{"Externo · manguera" if externo(p) else "Interno"}</span>
-        <div class="im"><picture><source srcset="img/{p["id"]}-400.webp" type="image/webp"><img src="img/{p["id"]}.jpg" alt="{esc(nombre(p))} para nevecón {esc(marca)}" width="400" height="400" loading="lazy"></picture></div>
+        <div class="im"><picture><source srcset="img/{p["id"]}-400.webp" type="image/webp"><img src="img/{p["id"]}.jpg" alt="{esc(nombre(p))} para nevecón {esc(marca)}" width="400" height="400" loading="lazy"></picture><span class="cod-card">💵 Paga contra entrega</span></div>
         <div class="tx">
           <h3>{esc(nombre(p))}</h3>
           <span class="ref">Ref. {esc(p["ref"])}{(" · también " + esc(", ".join([r for r in p["refs"] if r != p["ref"]][:2]))) if len(p["refs"]) > 1 else ""}</span>
           <p>{esc((p.get("desc") or "").split(". ")[0])}.</p>
           <a class="btn wa" data-wa="tarjeta" href="{esc(wa(n, f'Hola, quiero el precio de hoy del {nombre(p)} para mi nevecón {marca}, con pago contra entrega.'))}" target="_blank" rel="noopener">{ICONO_WA}Precio de hoy por WhatsApp</a>
+          <div class="pie-card"><span>💵 Pagas al recibir</span><span>🚚 {envio}</span></div>
         </div>
       </article>''' for p in ps)
     elegir = "".join(f'''<button type="button" class="pick" data-msg="{esc(f'Hola, mi filtro se parece al {nombre(p)}. ¿Me confirman si es el de mi nevecón {marca} y el precio de hoy con pago contra entrega?')}"><img src="img/{p["id"]}-400.webp" alt="" width="120" height="120" loading="lazy"><b>{esc(p["ref"])}</b><small>{"Va en la manguera" if externo(p) else "Va adentro"}</small></button>''' for p in ps)
@@ -209,13 +215,15 @@ footer .leg{{font-size:12.5px;color:rgba(255,255,255,.55);border-top:1px solid r
 .fija span{{flex:1;font-size:13.5px;line-height:1.25;font-weight:600}}.fija span small{{display:block;color:var(--muted);font-weight:500}}
 .fija .btn{{padding:12px 18px;min-height:48px;font-size:15px}}
 @media (min-width:861px){{.fija{{left:auto;right:22px;bottom:22px;border-radius:18px;border:1px solid var(--line);max-width:430px}}}}
+:root{{--eye:{cfg.get('eye', cfg['pri'])};--chip:{cfg.get('chip', cfg['pri'])};--chip-ink:{cfg.get('chip_ink', '#fff')};--linea:{cfg.get('subrayado', cfg['pri'])}}}
+{PULIDO}
 </style>
 </head>
 <body>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="barra"><span>💵 Pagas al recibir</span><span>🚚 {envio} a toda Colombia</span><span>💬 Te respondemos en minutos</span></div>
 <header><div class="w">
-  <a class="marca" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="7" fill="{cfg['pri']}"/><path d="M12 4.2C9.4 7.6 6.9 10.3 6.9 13.5a5.1 5.1 0 0 0 10.2 0c0-3.2-2.5-5.9-5.1-9.3z" fill="#fff"/></svg><span style="color:var(--ink);text-transform:none;letter-spacing:-.01em"><b>{esc(NEGOCIO)}</b><span>Nevecones {esc(marca)}</span></span></a>
+  <a class="marca" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="7" fill="{cfg['pri']}"/><path d="M12 4.2C9.4 7.6 6.9 10.3 6.9 13.5a5.1 5.1 0 0 0 10.2 0c0-3.2-2.5-5.9-5.1-9.3z" fill="{cfg.get('gota', '#fff')}"/></svg><span style="color:var(--ink);text-transform:none;letter-spacing:-.01em"><b>{esc(NEGOCIO)}</b><span>Nevecones {esc(marca)}</span></span></a>
   <a class="btn wa" data-wa="encabezado" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}<span>Escríbenos</span></a>
 </div></header>
 
@@ -333,6 +341,55 @@ footer .leg{{font-size:12.5px;color:rgba(255,255,255,.55);border-top:1px solid r
 """
 
 
+PULIDO = """
+/* ===== pulido profesional ===== */
+:root{--wa:#148c48;--wa2:#0f7a3d;--sombra:0 1px 2px rgba(18,23,38,.05),0 12px 28px -14px rgba(18,23,38,.22)}
+body{text-rendering:optimizeLegibility;font-feature-settings:"kern","liga"}
+h1,h2,h3{text-wrap:balance}p,summary{text-wrap:pretty}
+#cual,#filtros{scroll-margin-top:84px}
+.sec{padding:clamp(52px,7vw,92px) 0}.sec.alt{border-block:1px solid var(--line)}
+.eye{color:var(--eye)}
+.cab h2::after{content:"";display:block;width:56px;height:4px;border-radius:4px;background:var(--linea);margin-top:16px}.cab.c h2::after{margin-inline:auto}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--pri) 55%,#fff);outline-offset:3px;border-radius:12px}
+/* botones */
+.btn{letter-spacing:.005em}.btn:active{transform:translateY(0)}
+.btn.wa{background:linear-gradient(180deg,#19a057,var(--wa));box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 12px 24px -8px rgba(20,140,72,.55)}
+.btn.wa:hover{background:linear-gradient(180deg,#169650,var(--wa2))}
+.btn.borde{box-shadow:inset 0 0 0 2px var(--pri)}
+/* encabezado */
+header{box-shadow:0 1px 0 var(--line),0 8px 24px -18px rgba(18,23,38,.4)}
+.barra{letter-spacing:.01em}
+/* portada */
+.hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.16) 1.2px,transparent 1.6px);background-size:24px 24px;-webkit-mask-image:linear-gradient(115deg,#000 0,transparent 62%);mask-image:linear-gradient(115deg,#000 0,transparent 62%)}
+.hero h1{letter-spacing:-.03em;line-height:1.04}
+.hero .lead{line-height:1.55}
+.vis .f{box-shadow:0 40px 70px -20px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.4) inset}
+.franja .w>div{box-shadow:0 30px 60px -24px rgba(18,23,38,.35)}
+.franja .ic{background:var(--suave)}
+/* tarjetas de producto */
+.card{border-radius:22px;border-color:color-mix(in srgb,var(--line) 70%,#fff);box-shadow:var(--sombra)}
+.card:hover{box-shadow:0 1px 2px rgba(18,23,38,.05),0 28px 50px -18px rgba(18,23,38,.3)}
+.card .im{background:radial-gradient(circle at 50% 38%,#fff 52%,var(--panel))}
+.card .im picture{inset:7% 9% 17% 9%}
+.card .tipo{top:14px;left:14px;background:#fff;color:var(--pri2);box-shadow:0 4px 12px rgba(18,23,38,.12)}
+.cod-card{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;align-items:center;justify-content:center;gap:6px;background:#0d5c36;color:#fff;font-size:13.5px;font-weight:800;letter-spacing:.01em;padding:9px 12px}
+.card h3{font-size:19px;letter-spacing:-.015em}
+.pie-card{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;font-weight:700;color:#0d5c36;border-top:1px dashed var(--line);padding-top:12px;margin-top:8px}
+/* otros bloques */
+.pick,.paso,details,.elegido{box-shadow:var(--sombra)}
+.paso::before{background:var(--chip);color:var(--chip-ink)}
+.promo .sello{background:var(--chip);color:var(--chip-ink)}
+.promo{box-shadow:var(--sombra)}
+details[open]{border-color:color-mix(in srgb,var(--pri) 45%,var(--line))}
+.veredicto{box-shadow:0 30px 60px -28px rgba(18,23,38,.55)}
+.final{box-shadow:0 30px 60px -28px rgba(18,23,38,.55)}
+footer{border-top:4px solid var(--acento)}
+footer .w{gap:12px}
+.fija .btn.wa{animation:pulso 2.6s ease-out infinite}
+@keyframes pulso{0%{box-shadow:0 0 0 0 rgba(20,140,72,.5)}70%{box-shadow:0 0 0 14px rgba(20,140,72,0)}100%{box-shadow:0 0 0 0 rgba(20,140,72,0)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+"""
+
 ICONO_WA = '<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-4-.6-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>'
 
 
@@ -372,7 +429,7 @@ def main():
         for p in ps:
             for suf in (".jpg", ".webp", "-400.webp"):
                 shutil.copy(FOTOS / f"{p['id']}{suf}", d / "img" / f"{p['id']}{suf}")
-        (d / "img" / "icono.svg").write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="7" fill="{cfg["pri"]}"/><path d="M12 4.2C9.4 7.6 6.9 10.3 6.9 13.5a5.1 5.1 0 0 0 10.2 0c0-3.2-2.5-5.9-5.1-9.3z" fill="#fff"/></svg>', encoding="utf-8")
+        (d / "img" / "icono.svg").write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="7" fill="{cfg["pri"]}"/><path d="M12 4.2C9.4 7.6 6.9 10.3 6.9 13.5a5.1 5.1 0 0 0 10.2 0c0-3.2-2.5-5.9-5.1-9.3z" fill="{cfg.get("gota", "#fff")}"/></svg>', encoding="utf-8")
         (d / "index.html").write_text(pagina(marca, cfg, ps, ciud), encoding="utf-8")
         (d / "privacidad.html").write_text(legal(marca, cfg, "privacidad"), encoding="utf-8")
         (d / "terminos.html").write_text(legal(marca, cfg, "terminos"), encoding="utf-8")
