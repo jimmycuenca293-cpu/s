@@ -1,4 +1,4 @@
-# PuroFiltro en tu propia página (Hostinger + Wompi)
+# Filtros Nevecones en tu propia página (Hostinger + Wompi)
 
 La tienda vende sola: el cliente escoge el filtro, paga en Wompi y a ti te llega un correo con el pedido pagado
 y todos los datos para despacharlo. Nada llega a WhatsApp.
@@ -12,8 +12,14 @@ y todos los datos para despacharlo. Nada llega a WhatsApp.
 2. Sube el archivo `filtroya-web.zip` y descomprímelo ahí (clic derecho > Extraer).
    Debe quedar `public_html/index.php`, `public_html/purofiltro-filtro/`, `public_html/purofiltro-api/`, etc.
 
-## Paso 2. Crear el correo de la tienda
-En Hostinger: **Correos > Cuentas de correo** y crea `pedidos@tudominio.com`. Desde ahí salen los recibos.
+## Paso 2. Crear el correo de la tienda y conectarlo (para que SÍ te lleguen los pedidos)
+En Hostinger: **Correos > Cuentas de correo** y crea `pedidos@tudominio.com` con una clave.
+Luego, en `config.php` (paso 3), en el bloque **smtp** pon esa misma clave en `clave`
+(host `smtp.hostinger.com`, puerto `465`, usuario `pedidos@tudominio.com`). Con eso los correos salen por el servidor de correo real
+y llegan a `correo_avisos` con **todos los datos del cliente** (nombre, celular, dirección, ciudad, productos).
+Recibes dos correos por compra: «esperando pago» cuando el cliente va a pagar y «Nuevo pedido pagado» cuando Wompi confirma.
+Si no llegan, entra a `tudominio.com/admin.php > Diagnóstico de pagos` y toca **Enviar correo de prueba**: te dice el motivo exacto.
+También puedes ver todos los pedidos y los datos de tus clientes en `tudominio.com/admin.php`.
 
 ## Paso 3. Poner tus datos y llaves
 1. Dentro de `public_html/purofiltro-api/` copia `config.sample.php` y ponle de nombre `config.php`.

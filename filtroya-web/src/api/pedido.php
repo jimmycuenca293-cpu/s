@@ -78,6 +78,12 @@ if ($link !== '') {
     out(['ref' => $ref, 'total' => $total, 'url' => $link]);
 }
 
+// Aviso inmediato con los datos del cliente (así no se pierden aunque el cliente no termine de pagar o falle el aviso de Wompi)
+$st = db()->prepare('SELECT * FROM pedidos WHERE ref = ?'); $st->execute([$ref]);
+enviar_correo(cfg()['correo_avisos'], "Pedido {$ref} esperando pago — " . cop($total),
+    '<h2 style="margin:0 0 8px">Nuevo pedido, esperando el pago</h2><p>El cliente acaba de ir a pagar. <b>No lo despaches todavía</b>: te llega otro correo «Nuevo pedido pagado» cuando Wompi confirme el pago. Estos son sus datos:</p>'
+    . tabla_pedido($st->fetch(), true) . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>');
+
 $centavos = $total * 100;
 $q = http_build_query([
     'public-key' => cfg()['wompi']['public_key'], 'currency' => 'COP', 'amount-in-cents' => $centavos, 'reference' => $ref,

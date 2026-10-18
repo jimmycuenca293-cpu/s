@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera la tienda PuroFiltro para Hostinger (carpeta public_html/) a partir de la app de Claude.
+"""Genera la tienda Filtros Nevecones para Hostinger (carpeta public_html/) a partir de la app de Claude.
 
 - index.php: la misma tienda, pero el pago es automático con Wompi y no usa WhatsApp.
 - filtro/<referencia>/ y marca/<marca>/: una página por filtro y por marca para Google.
@@ -677,6 +677,6 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     for f in d.rglob("*"):
         if f.is_file() and "data" not in f.relative_to(d).parts[:1] and f.suffix in (".php", ".js", ".css", ".json", ".txt", ".xml", ".html", "") :
             txt = f.read_text(encoding="utf-8")
-            if PREFIJO in txt or "PuroFiltro" in txt:
-                f.write_text(txt.replace(PREFIJO, "").replace("PuroFiltro", M["tienda"]), encoding="utf-8")
+            if PREFIJO in txt or "Filtros Nevecones" in txt:
+                f.write_text(txt.replace(PREFIJO, "").replace("Filtros Nevecones", M["tienda"]), encoding="utf-8")
     print(f"Sitio {marca}: sitios/{s}/ con {len(rutas)} páginas")

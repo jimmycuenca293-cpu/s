@@ -6,7 +6,7 @@ return [
 
     // Datos del negocio (salen en la tienda, en los correos y en los términos)
     'negocio' => [
-        'nombre'    => 'PuroFiltro',
+        'nombre'    => 'Filtros Nevecones',
         'titular'   => 'Nombre del titular',            // persona o empresa dueña del negocio
         'documento' => 'C.C. o NIT 000.000.000-0',
         'direccion' => 'Dirección del negocio',     // opcional: si la dejas así no sale en la tienda
@@ -16,9 +16,17 @@ return [
     ],
 
     // A este correo te llega cada pedido PAGADO, con todos los datos para despacharlo
-    'correo_avisos'    => 'tucorreo@gmail.com',
+    'correo_avisos'    => 'serviciotecnicoyrepuestoscali@gmail.com',
     // Correo desde el que salen los mensajes. Créalo en Hostinger (Correos) con tu dominio.
     'correo_remitente' => 'pedidos@filtrosnevecones.com',
+    // Envío de correos por SMTP con el buzón que creaste en Hostinger (Correos). Es lo que hace que SÍ te lleguen los datos del cliente.
+    // Usuario = el correo completo del buzón (pedidos@filtrosnevecones.com) y clave = la del buzón. Host de Hostinger: smtp.hostinger.com, puerto 465.
+    'smtp' => [
+        'host'    => 'smtp.hostinger.com',
+        'puerto'  => 465,
+        'usuario' => 'pedidos@filtrosnevecones.com',
+        'clave'   => '',
+    ],
 
     // Clave para entrar a tudominio.com/admin.php y ver los pedidos. Pon una larga.
     'admin_clave' => '',

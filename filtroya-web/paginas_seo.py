@@ -286,7 +286,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
         ruta = f"/guia/{s}/"
         mg, mg_ld = miga(("Inicio", "/"), ("Guías", "/guia/"), (titulo, None))
         art = {"@type": "Article", "headline": titulo, "description": desc, "inLanguage": "es-CO", "datePublished": "2026-10-15", "dateModified": "2026-10-15",
-               "author": {"@type": "Organization", "name": "PuroFiltro"}, "mainEntityOfPage": f"__BASE__{ruta}"}
+               "author": {"@id": "__BASE__/#tienda"}, "mainEntityOfPage": f"__BASE__{ruta}"}
         firma = ('<p class="m">Escrito por <a href="/quienes-somos.php"><?= h(trim((string) (cfg()["tecnico"]["nombre"] ?? "")) ?: cfg()["negocio"]["nombre"]) ?></a>, '
                  'técnico de neveras · Actualizado el 15 de octubre de 2026</p>')
         escribir(ruta, titulo, desc, [mg_ld, art], f'{mg}\n<article class="legal"><h1>{esc(titulo)}</h1>\n{firma}\n{seo_busquedas.figura(FOTO_GUIA[s]) if s in FOTO_GUIA else ""}\n{cuerpo_g}</article>')

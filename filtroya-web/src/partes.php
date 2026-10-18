@@ -30,7 +30,7 @@ function cabeza(string $titulo, string $desc, string $ruta, string $extra = '', 
         . '<meta property="og:type" content="website"><meta property="og:title" content="' . h($titulo) . '"><meta property="og:description" content="' . h($desc) . '"><meta property="og:url" content="' . h($canon) . '"><meta property="og:locale" content="es_CO">'
         . '<script src="/carrito.js" defer></script><meta name="theme-color" content="#0a2a2e"><link rel="icon" href="/img/icono.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap"><link rel="stylesheet" href="/estilo.css">' . verificacion_html() . analytics_html() . $extra . '</head><body>' . gtm_body_html()
         . anuncio_html()
-        . '<header class="top"><div class="wrap"><a class="logo" href="/"><img src="/img/icono.svg" alt="" width="26" height="26"><span>Puro<b>Filtro</b></span></a>'
+        . '<header class="top"><div class="wrap"><a class="logo" href="/"><img src="/img/icono.svg" alt="" width="26" height="26"><span>Filtros<b>Nevecones</b></span></a>'
         . '<nav class="topnav"><a href="/tienda/">Tienda</a><span class="marcas-nav solo-ancho"><a href="/marca/samsung/">Samsung</a><a href="/marca/lg/">LG</a><a href="/marca/whirlpool/">Whirlpool</a><a href="/marca/ge/">GE</a></span><a href="/instalacion/" class="solo-ancho">Instalación</a><a href="/guia/">Guías</a>'
         . '<a class="cartbtn" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a></nav>'
         . '</div></header><main class="wrap">';
@@ -49,7 +49,7 @@ function pie_html(): string
     $n = $S['negocio'];
     $tel = preg_replace('/\D/', '', (string) (cfg()['whatsapp'] ?? ''));
     $h = '<footer class="pie"><div class="wrap pie-top">'
-        . '<div class="pie-marca"><a class="logo" href="/"><img src="/img/icono.svg" alt="" width="26" height="26"><span>Puro<b>Filtro</b></span></a>'
+        . '<div class="pie-marca"><a class="logo" href="/"><img src="/img/icono.svg" alt="" width="26" height="26"><span>Filtros<b>Nevecones</b></span></a>'
         . '<p>Filtros de agua para nevecones Samsung, LG, Whirlpool y GE. Te ayudamos a encontrar el tuyo y te llega a la puerta de tu casa en toda Colombia.</p>'
         . ($tel ? '<a class="pie-wa" href="https://wa.me/57' . substr($tel, -10) . '" target="_blank" rel="noopener">💬 WhatsApp ' . h($n['telefono']) . '</a>' : '')
         . '<span class="pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'

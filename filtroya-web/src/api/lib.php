@@ -64,7 +64,7 @@ function datos_sin_llenar(): array
     return $falta;
 }
 
-// "PuroFiltro, de Nombre, C.C. ..." solo con los datos que ya están llenos (nunca muestra datos de ejemplo)
+// "Filtros Nevecones, de Nombre, C.C. ..." solo con los datos que ya están llenos (nunca muestra datos de ejemplo)
 function identificacion(): string
 {
     $n = cfg()['negocio']; $ok = fn($k, $ej) => trim((string) ($n[$k] ?? '')) !== '' && !str_contains((string) $n[$k], $ej);
@@ -290,21 +290,67 @@ function entrega_txt(string $e): string
     return ['instalacion' => 'Domicilio + instalación', 'domicilio' => 'Domicilio', 'transportadora' => 'Envío por transportadora'][$e] ?? $e;
 }
 
-function enviar_correo(string $para, string $asunto, string $html): bool
+// Envío por SMTP (el buzón de tu dominio en Hostinger). Es mucho más confiable que mail(), que muchos hosting bloquean o mandan a spam.
+// Devuelve '' si salió bien o el motivo del error.
+function smtp_enviar(string $para, string $asunto, string $html, string $de, string $nombre, string $responder): string
+{
+    $s = cfg()['smtp'] ?? [];
+    $host = (string) ($s['host'] ?? ''); $puerto = (int) ($s['puerto'] ?? 465); $user = (string) ($s['usuario'] ?? ''); $clave = (string) ($s['clave'] ?? '');
+    if ($host === '' || $user === '' || $clave === '') return 'SMTP sin configurar';
+    $ctx = stream_context_create(['ssl' => ['verify_peer' => true, 'verify_peer_name' => true]]);
+    $fp = @stream_socket_client(($puerto === 465 ? 'ssl://' : 'tcp://') . $host . ':' . $puerto, $en, $es, 15, STREAM_CLIENT_CONNECT, $ctx);
+    if (!$fp) return "No se pudo conectar a $host:$puerto ($es)";
+    stream_set_timeout($fp, 15);
+    $leer = function () use ($fp): string { $r = ''; while (($l = fgets($fp, 515)) !== false) { $r .= $l; if (strlen($l) < 4 || $l[3] === ' ') break; } return $r; };
+    $cmd = function (string $c, string $esp) use ($fp, $leer): ?string { fwrite($fp, $c . "\r\n"); $r = $leer(); return str_starts_with($r, $esp) ? null : trim($r); };
+    $r = $leer();
+    if (!str_starts_with($r, '220')) { fclose($fp); return 'Respuesta inesperada: ' . trim($r); }
+    $dom = parse_url(base_url(), PHP_URL_HOST) ?: 'localhost';
+    if ($e = $cmd("EHLO $dom", '250')) { fclose($fp); return "EHLO: $e"; }
+    if ($puerto === 587) {
+        if ($e = $cmd('STARTTLS', '220')) { fclose($fp); return "STARTTLS: $e"; }
+        if (!@stream_socket_enable_crypto($fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) { fclose($fp); return 'No se pudo activar TLS'; }
+        if ($e = $cmd("EHLO $dom", '250')) { fclose($fp); return "EHLO: $e"; }
+    }
+    if ($e = $cmd('AUTH LOGIN', '334') ?? $cmd(base64_encode($user), '334') ?? $cmd(base64_encode($clave), '235')) { fclose($fp); return "Usuario o clave del correo incorrectos: $e"; }
+    if ($e = $cmd("MAIL FROM:<$de>", '250')) { fclose($fp); return "MAIL FROM: $e"; }
+    if ($e = $cmd("RCPT TO:<$para>", '25')) { fclose($fp); return "RCPT TO: $e"; }
+    if ($e = $cmd('DATA', '354')) { fclose($fp); return "DATA: $e"; }
+    $cab = ['Date: ' . date('r'), 'From: =?UTF-8?B?' . base64_encode($nombre) . "?= <$de>", "To: <$para>", "Reply-To: $responder", 'Subject: =?UTF-8?B?' . base64_encode($asunto) . '?=',
+        'Message-ID: <' . bin2hex(random_bytes(8)) . "@$dom>", 'MIME-Version: 1.0', 'Content-Type: text/html; charset=UTF-8', 'Content-Transfer-Encoding: base64'];
+    $cuerpo = chunk_split(base64_encode($html));
+    if ($e = $cmd(implode("\r\n", $cab) . "\r\n\r\n" . $cuerpo . "\r\n.", '250')) { fclose($fp); return "Envío: $e"; }
+    $cmd('QUIT', '221');
+    fclose($fp);
+    return '';
+}
+
+// $motivo (opcional) recibe por qué falló, para mostrarlo en el diagnóstico
+function enviar_correo(string $para, string $asunto, string $html, ?string &$motivo = null): bool
 {
     $c = cfg();
     $de = $c['correo_remitente'];
-    $nombre = '=?UTF-8?B?' . base64_encode($c['negocio']['nombre']) . '?=';
-    $headers = implode("\r\n", [
-        'MIME-Version: 1.0', 'Content-Type: text/html; charset=UTF-8', "From: $nombre <$de>", 'Reply-To: ' . $c['negocio']['correo'],
-    ]);
+    $nombre = $c['negocio']['nombre'];
     $cuerpo = '<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.5;color:#15212b;max-width:560px">' . $html . '</div>';
-    $ok = filter_var($para, FILTER_VALIDATE_EMAIL) && @mail($para, '=?UTF-8?B?' . base64_encode($asunto) . '?=', $cuerpo, $headers, '-f' . $de);
+    $ok = false;
+    $motivo = '';
+    if (!filter_var($para, FILTER_VALIDATE_EMAIL)) $motivo = 'El correo de destino no es válido: «' . $para . '»';
+    else {
+        $e = smtp_enviar($para, $asunto, $cuerpo, $de, $nombre, $c['negocio']['correo']);
+        if ($e === '') $ok = true;
+        else {
+            $motivo = $e;
+            $headers = implode("\r\n", ['MIME-Version: 1.0', 'Content-Type: text/html; charset=UTF-8', 'From: =?UTF-8?B?' . base64_encode($nombre) . "?= <$de>", 'Reply-To: ' . $c['negocio']['correo']]);
+            $ok = (bool) @mail($para, '=?UTF-8?B?' . base64_encode($asunto) . '?=', $cuerpo, $headers, '-f' . $de);
+            if ($ok) $motivo = ($e === 'SMTP sin configurar' ? '' : $e . ' — se envió con mail()');
+            elseif ($e === 'SMTP sin configurar') $motivo = 'mail() no pudo enviarlo y el SMTP no está configurado';
+        }
+    }
     if (!$ok) {
         // Sin servidor de correo (o en pruebas) queda guardado aquí para no perderlo
-        @file_put_contents(__DIR__ . '/../data/correos.log', date('c') . " PARA: $para\nASUNTO: $asunto\n" . strip_tags(preg_replace('/<a [^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/s', '$2 ($1)', str_replace(['<br>', '</p>', '</tr>'], "\n", $html))) . "\n----\n", FILE_APPEND);
+        @file_put_contents(__DIR__ . '/../data/correos.log', date('c') . " PARA: $para\nASUNTO: $asunto\nMOTIVO: $motivo\n" . strip_tags(preg_replace('/<a [^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/s', '$2 ($1)', str_replace(['<br>', '</p>', '</tr>'], "\n", $html))) . "\n----\n", FILE_APPEND);
     }
-    return (bool) $ok;
+    return $ok;
 }
 
 function tabla_pedido(array $p, bool $completo): string
