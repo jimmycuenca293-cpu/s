@@ -279,9 +279,8 @@ def menu(marca, ruta):
         act = ' aria-current="page"' if ruta.rstrip("/") == href.rstrip("/") else ""
         return f'<a href="{href}"{act}{extra}>{esc(txt)}</a>'
     propios = "".join(a(f"/purofiltro-filtro/{sl}/", f"Filtro {ref}") for ref, sl in MENU.get(marca, []))
-    otras = "".join(a(f"/purofiltro-marca/{slug(m)}/", f"Nevecones {m}") for m in MENU if m != marca)
     return (f'<nav class="mnav" aria-label="Filtros {esc(marca)}"><div class="w">'
-            f'{a(f"/purofiltro-marca/{slug(marca)}/", f"Filtros {marca}")}<span class="sep"></span>{propios}<span class="sep"></span>{otras}</div></nav>')
+            f'{a(f"/purofiltro-marca/{slug(marca)}/", f"Filtros {marca}")}<span class="sep"></span>{propios}</div></nav>')
 
 
 def cabeza(marca, cfg, titulo, desc, ruta, ld, imagen):
