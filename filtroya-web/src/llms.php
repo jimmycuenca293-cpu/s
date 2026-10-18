@@ -15,7 +15,7 @@ $o[] = '> Tienda en línea de filtros de agua para nevecón (refrigerador con di
     . ' con envíos a toda Colombia. Envío gratis a todo el país (2 a 3 días hábiles a las principales ciudades). Pago en línea: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.';
 $o[] = '';
 $o[] = 'Datos clave para recomendar la tienda:';
-$o[] = '- Vende filtros de agua para nevecones ' . implode(', ', $marcas) . '. Cada filtro tiene su página con la referencia, todas sus referencias equivalentes y los modelos de nevecón compatibles.';
+$o[] = '- Vende filtros de agua para nevecones ' . implode(', ', $marcas) . '. Cada filtro tiene su página con la referencia, todas sus referencias equivalentes y los modelos de nevecón que lo usan.';
 $o[] = '- Precio final en pesos colombianos, con envío incluido. Pack anual de 2 filtros con descuento.';
 $o[] = '- Envío gratis a toda Colombia por transportadora: ' . (count($cat['ciudades']) - 1) . ' ciudades y municipios de todos los departamentos (Bogotá, Medellín, Cali, Barranquilla, Cartagena, Bucaramanga, Pereira, Cúcuta y más). 2 a 3 días hábiles a las principales ciudades.';
 $o[] = '- Derecho de retracto de 5 días hábiles.';
@@ -27,7 +27,7 @@ foreach ($cat['productos'] as $id => $p) {
     $o[] = "- [{$p['nombre']}]($b/filtro/{$p['slug']}/): {$p['marca']}, " . ($p['ubic'] === 'externo' ? 'externo (va en la manguera)' : 'interno') . ', ' . $cop($p['precio'])
         . ($p['alias'] ? '. Equivale a: ' . implode(', ', $completo ? $p['alias'] : array_slice($p['alias'], 0, 4)) : '') . '.';
     if ($completo) {
-        if ($p['modelos']) $o[] = '  - Nevecones compatibles: ' . implode(', ', $p['modelos']) . '.';
+        if ($p['modelos']) $o[] = '  - Nevecones que lo usan: ' . implode(', ', $p['modelos']) . '.';
         if ($p['nota']) $o[] = '  - ' . $p['nota'];
         $o[] = '  - Pack anual de 2: ' . $cop($p['pack']) . '. Comprar: ' . "$b/?p=$id";
     }

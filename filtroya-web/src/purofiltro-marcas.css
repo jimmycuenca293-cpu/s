@@ -159,8 +159,8 @@ details.m-faq p{padding:0 0 18px;color:var(--muted)}
 .m-prod .precio{font-family:var(--f-titulo);font-size:38px;font-weight:800;line-height:1}
 .m-prod .precio small{display:block;font-family:var(--f-texto);font-size:14px;font-weight:600;color:var(--ok);margin-top:6px}
 .m-prod .compra{display:flex;flex-direction:column;gap:10px}
-.m-original{display:flex;gap:12px;align-items:flex-start;background:var(--suave);border-radius:var(--r-card);padding:14px 16px;font-size:14px}
-.m-original b{display:block;font-size:15px}
+.m-aviso{display:flex;gap:12px;align-items:flex-start;background:var(--suave);border-radius:var(--r-card);padding:14px 16px;font-size:14px}
+.m-aviso b{display:block;font-size:15px}
 .medios{display:flex;flex-wrap:wrap;gap:6px}.medios span{border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--muted);background:var(--card)}
 @media (max-width:860px){.m-prod{grid-template-columns:1fr;gap:22px}.m-prod .foto{position:relative;top:0;padding:20px}}
 .m-ficha{display:grid;grid-template-columns:minmax(120px,200px) 1fr;margin:0;border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--card)}

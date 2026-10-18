@@ -510,7 +510,7 @@ def pagina_marca(marca, cfg, ps, ciud):
     c += bloque_alerta(marca, cfg, ps)
     c += sec(f'<div class="dos"><div>{cab("Paso a paso", f"Cómo instalar cada filtro de nevecón {marca}", "Toca tu referencia y sigue los pasos. Cada una trae dónde va, cuánto tarda, qué necesitas y cómo apagar la alerta. Al terminar, el agua y el hielo salen limpios otra vez.")}</div>{figura("agua")}</div>'
              + "".join(detalle_instalacion(p, marca, cfg) for p in ps), alt=True, id_="instalar")
-    c += sec(cab("Compatibilidad", f"Referencias, equivalencias y nevecones {marca}", f"Busca la referencia impresa en tu filtro viejo o el modelo de tu nevecón. La etiqueta del modelo está {esc(cfg['etiqueta'])}.") + tabla_compat(ps))
+    c += sec(cab("Referencias", f"Referencias, equivalencias y nevecones {marca}", f"Busca la referencia impresa en tu filtro viejo o el modelo de tu nevecón. La etiqueta del modelo está {esc(cfg['etiqueta'])}.") + tabla_compat(ps))
     c += bloque_entrega()
     c += sec(f'''<div class="promo"><span class="sello"><span><b>2x</b>Pack anual</span></span>
     <div><h3>Pregunta por el pack de 2 filtros</h3><p>Un filtro dura 6 meses: con el pack tienes agua limpia todo el año y pagas menos por cada uno. El precio especial te lo damos por WhatsApp.</p></div>
@@ -580,7 +580,7 @@ def pagina_producto(p, marca, cfg, ps):
     <p class="nota" style="margin:0">Los primeros vasos de agua pueden salir turbios o con burbujas: es normal y se aclara en unos minutos. Bota el primer hielo que salga después del cambio. Si gotea, saca el filtro y vuelve a meterlo derecho hasta que quede firme.</p>
     <div class="acc2"><a class="btn wa" data-wa="instalacion" href="{esc(wa(n, msg))}" target="_blank" rel="noopener">{ICONO_WA}Pedirlo contra entrega</a></div></div>''', alt=True)
     if p["modelos"] or alias:
-        c += sec(cab("Compatibilidad", f"Nevecones y referencias del {p['ref']}") + (f'<p style="margin-bottom:10px;font-weight:700">Nevecones {esc(marca)} que lo usan, entre otros:</p><div class="chips">{"".join(f"<span>{esc(m)}</span>" for m in p["modelos"])}</div>' if p["modelos"] else "")
+        c += sec(cab("Nevecones", f"Nevecones y referencias del {p['ref']}") + (f'<p style="margin-bottom:10px;font-weight:700">Nevecones {esc(marca)} que lo usan, entre otros:</p><div class="chips">{"".join(f"<span>{esc(m)}</span>" for m in p["modelos"])}</div>' if p["modelos"] else "")
                  + (f'<p style="margin:22px 0 10px;font-weight:700">También aparece como:</p><div class="chips">{"".join(f"<span>{esc(r)}</span>" for r in alias)}</div>' if alias else "")
                  + f'<p class="nota">La etiqueta con el modelo de tu nevecón está {esc(cfg["etiqueta"])}.</p>')
     c += bloque_entrega()

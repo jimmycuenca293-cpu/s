@@ -553,7 +553,7 @@ header('Content-Type: application/xml; charset=utf-8');
 $b = sitio()['base'];
 $cat = catalogo();
 $fotos = [];
-foreach ($cat['productos'] as $id => $p) $fotos['/' . $p['slug'] . '-original/'] = "/%simg/$id.jpg";
+foreach ($cat['productos'] as $id => $p) $fotos['/' . $p['slug'] . '/'] = "/%simg/$id.jpg";
 $urls = array_fill_keys($cat['paginas'], '0.9') + ['/quienes-somos.php' => '0.4', '/terminos.php' => '0.2', '/privacidad.php' => '0.2', '/garantia-y-retracto.php' => '0.3'];
 $urls['/'] = '1.0';
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
@@ -562,11 +562,11 @@ foreach ($urls as $u => $pr) echo '  <url><loc>' . htmlspecialchars($b . $u) . '
 echo '</urlset>';
 """ % (PREFIJO, PREFIJO)
 CAMBIOS_MARCA = {  # rutas de la tienda principal que en el sitio de la marca son otras
-    "carrito.php": [("/purofiltro-filtro/${p.slug}/", "/${p.slug}-original/"), ('href="/purofiltro-tienda/"', 'href="/#filtros"')],
+    "carrito.php": [("/purofiltro-filtro/${p.slug}/", "/${p.slug}/"), ('href="/purofiltro-tienda/"', 'href="/#filtros"')],
     "404.php": [('href="/#catalogo"', 'href="/#filtros"'), ('href="/purofiltro-referencias/"', 'href="/cual-es-mi-filtro/"'), ('href="/purofiltro-neveras/">Buscar por modelo', 'href="/cambio-e-instalacion/">Cómo instalarlo')],
     "quienes-somos.php": [('href="/purofiltro-guia/">Lee nuestras guías', 'href="/cambio-e-instalacion/">Cómo cambiar tu filtro'), ('href="/#catalogo"', 'href="/#filtros"')],
-    "feed.php": [("$b/purofiltro-filtro/{$p['slug']}/", "$b/{$p['slug']}-original/"), ("$p['nombre'] . ' para nevecón '", "$p['nombre'] . ' original para nevecón '"), ("Filtro de agua para nevecón {$p['marca']}", "Filtro de agua original para nevecón {$p['marca']}")],
-    PREFIJO + "api/recordatorios.php": [("'" + PREFIJO + "filtro/' . $cat[$p['pid']]['slug'] . '/'", "$cat[$p['pid']]['slug'] . '-original/'")],
+    "feed.php": [("$b/purofiltro-filtro/{$p['slug']}/", "$b/{$p['slug']}/")],
+    PREFIJO + "api/recordatorios.php": [("'" + PREFIJO + "filtro/' . $cat[$p['pid']]['slug'] . '/'", "$cat[$p['pid']]['slug'] . '/'")],
 }
 for marca in marcas_exclusivas.MARCAS_INFO:
     s = slug(marca)
@@ -600,11 +600,11 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
     # resumen en texto para asistentes de IA (ChatGPT, Gemini, Claude, Perplexity): tudominio.com/llms.txt
     ps_m = [p for p in CATALOGO if p["marca"] == marca]
-    llms = (f"# Filtros {marca} originales en Colombia\n\n"
-            f"> Distribuidor autorizado de filtros de agua {marca} originales para nevera/nevecón. Envío gratis a toda Colombia "
+    llms = (f"# Filtros {marca} en Colombia\n\n"
+            f"> Distribuidor autorizado de filtros de agua {marca} para nevera/nevecón. Envío gratis a toda Colombia "
             "(2 a 3 días hábiles en las principales ciudades), pago en línea con tarjeta, PSE o Nequi, asesoría por WhatsApp.\n\n"
             "## Filtros y precios (COP, envío incluido)\n"
-            + "".join(f"- [{p['nombre_largo']} original](__BASE__/{p['slug']}-original/): {cop(p['precio'])}; pack de 2 {cop(p['pack'])}. "
+            + "".join(f"- [{p['nombre_largo']}](__BASE__/{p['slug']}/): {cop(p['precio'])}; pack de 2 {cop(p['pack'])}. "
                       f"Referencias equivalentes: {', '.join(p['refs'])}." + (f" Neveras: {', '.join(p['modelos'])}." if p["modelos"] else "") + "\n" for p in ps_m)
             + "\n## Guías\n" + "".join(f"- [{n}](__BASE__{r})\n" for r, n in M["guias"])
             + "- [¿Cuál filtro es el mío? (por modelo o referencia)](__BASE__/cual-es-mi-filtro/)\n- [Cómo cambiar e instalar cada filtro](__BASE__/cambio-e-instalacion/)\n"

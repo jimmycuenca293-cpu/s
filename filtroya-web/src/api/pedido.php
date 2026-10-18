@@ -10,7 +10,7 @@ $b = json_decode($raw, true);
 if (!is_array($b)) fail('Petición no válida.');
 
 $cat = catalogo();
-// Carrito: varias líneas. (Compatibilidad: un solo producto con pid/cantidad/pack.)
+// Carrito: varias líneas. (Un solo producto con pid/cantidad/pack.)
 $items = is_array($b['items'] ?? null) ? $b['items']
     : [['pid' => $b['pid'] ?? '', 'pack' => !empty($b['pack']), 'cant' => !empty($b['pack']) ? 1 : (int) ($b['cantidad'] ?? 1)]];
 $C = calcular_items($items);
