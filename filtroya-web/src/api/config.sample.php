@@ -28,6 +28,10 @@ return [
         'clave'   => '',
     ],
 
+    // Datos del pedido a tu correo «como un formulario» (servicio FormSubmit), además del correo normal. Funciona aunque el correo del hosting falle.
+    // La primera vez te llega un correo de FormSubmit para activarlo: toca el botón «Activate Form». Pon 'activo' => false para apagarlo.
+    'formulario' => ['activo' => true],
+
     // Clave para entrar a tudominio.com/admin.php y ver los pedidos. Pon una larga.
     'admin_clave' => '',
 

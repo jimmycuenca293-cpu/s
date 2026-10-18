@@ -125,7 +125,7 @@ def foto(p, alt, mini=False, lazy=True):
     src = f"/img/{p['id']}-400.webp" if mini else f"/img/{p['id']}.webp"
     return (f'<picture><source srcset="{src}" type="image/webp"><img src="/img/{p["id"]}.jpg" alt="{esc(alt)}" width="{w}" height="{h}"'
             + (' loading="lazy"' if lazy else ' fetchpriority="high"') + "></picture>")
-(OUT / "img" / "icono.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#0a2a2e"/><path d="M12 3.5C9.3 7.1 6.6 9.9 6.6 13.4a5.4 5.4 0 0 0 10.8 0c0-3.5-2.7-6.3-5.4-9.9z" fill="#5fd6c3"/><path d="M12 11.2v4.8M9.9 12.4l4.2 2.4M14.1 12.4l-4.2 2.4" stroke="#0a2a2e" stroke-width="1.15" stroke-linecap="round" fill="none"/></svg>', encoding="utf-8")
+(OUT / "img" / "icono.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#0b1f6b"/><path d="M12 3.5C9.3 7.1 6.6 9.9 6.6 13.4a5.4 5.4 0 0 0 10.8 0c0-3.5-2.7-6.3-5.4-9.9z" fill="#38d6ff"/><path d="M12 11.2v4.8M9.9 12.4l4.2 2.4M14.1 12.4l-4.2 2.4" stroke="#0b1f6b" stroke-width="1.15" stroke-linecap="round" fill="none"/></svg>', encoding="utf-8")
 
 # ---------- tienda en modo web ----------
 app = app.replace('<meta charset="utf-8">\n', "", 1)
@@ -267,8 +267,8 @@ CSS_WEB = """
 .hero-nav{display:none}@media (min-width:980px){.hero-nav{display:flex;gap:2px;order:1;margin-left:auto}.hero-nav a{color:#dfeeea;text-decoration:none;font-weight:600;font-size:15px;padding:8px 11px;border-radius:10px}.hero-nav a:hover{background:rgba(255,255,255,.1);color:#fff}}
 .cart-top svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cart-top span{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--glow);color:#06221d;font-size:11.5px;font-weight:800;display:grid;place-items:center;padding:0 4px}
-.fy-toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,200%);background:#0a2a2e;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:14px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:90;transition:transform .25s;max-width:calc(100% - 32px);font-size:14.5px}
-.fy-toast.on{transform:translate(-50%,0)}.fy-toast a{color:#5fd6c3;font-weight:800;white-space:nowrap}
+.fy-toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,200%);background:#0b1f6b;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:14px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:90;transition:transform .25s;max-width:calc(100% - 32px);font-size:14.5px}
+.fy-toast.on{transform:translate(-50%,0)}.fy-toast a{color:#38d6ff;font-weight:800;white-space:nowrap}
 #cam,.hero .alt,#ai-off,nav.bnav button[data-tab="vendedor"]{display:none!important}
 nav.bnav{grid-template-columns:repeat(2,1fr)!important}
 #c-pagar svg{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2}
@@ -287,7 +287,7 @@ nav.bnav{grid-template-columns:repeat(2,1fr)!important}
 .p3-grid p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
 .marcas-tira{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 26px;padding:16px;border-radius:16px;background:var(--panel);border:1px solid var(--line)}
 .marcas-tira span{color:var(--muted);font-size:13px;width:100%;text-align:center}.marcas-tira b{font-family:var(--f-display);font-size:20px;letter-spacing:.02em;color:var(--ink);opacity:.72}
-.ex-grid a{transition:transform .18s,box-shadow .18s,border-color .18s}.ex-grid a:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(15,42,46,.45)}
+.ex-grid a{transition:transform .18s,box-shadow .18s,border-color .18s}.ex-grid a:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(11,26,69,.45)}
 #wa-flot{left:auto!important;right:max(16px,env(safe-area-inset-right,0px))!important}@media (max-width:520px){#wa-flot span{display:none}#wa-flot{padding:14px!important}}
 .explora{display:flex;flex-direction:column;gap:10px}.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}.ex-grid a{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);text-decoration:none;color:var(--ink)}.ex-grid a span{font-size:13px;color:var(--muted)}.ex-grid a:hover{border-color:var(--accent)}
 .medios{display:flex;flex-wrap:wrap;gap:6px}.medios span{border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--ink);background:var(--panel)}
@@ -306,7 +306,7 @@ index_php = f"""<?php require __DIR__ . '/partes.php'; $S = sitio(); $n = $S['ne
 <meta name="keywords" content="filtro de agua para nevera, filtro de nevecón, filtro nevera Samsung, filtro nevera LG, filtro Whirlpool EveryDrop, filtro GE MWF, precio filtro de nevera, cada cuánto cambiar el filtro de la nevera, luz del filtro, filtro de refrigerador Colombia">
 <link rel="canonical" href="<?= h($S['base']) ?>/">
 <meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevera y nevecón | Envío gratis a toda Colombia"><meta property="og:description" content="Envío gratis a toda Colombia. Pago seguro en línea."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/lg-1000-o.jpg"><meta property="og:locale" content="es_CO">
-<meta name="theme-color" content="#0a2a2e"><link rel="icon" href="/img/icono.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0b1f6b"><link rel="icon" href="/img/icono.svg" type="image/svg+xml">
 <?= verificacion_html() . analytics_html() ?>
 <script>window.FY_WA = <?= json_encode((strlen($w = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? ''))) === 10 ? '57' : '') . $w) ?>;</script>
 <script type="application/ld+json"><?php $ld = <<<'JSON'

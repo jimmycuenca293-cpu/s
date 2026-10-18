@@ -46,6 +46,10 @@ try { db()->query('SELECT 1'); is_writable(__DIR__ . '/purofiltro-data') || is_w
 catch (Throwable $e) { $mal('Base de pedidos', h($e->getMessage())); }
 function_exists('curl_init') ? $ok('cURL disponible', 'Necesario para consultar a Wompi.') : $mal('Falta cURL', 'Pide a Hostinger activar la extensión cURL de PHP.');
 $prueba = null;
+$formulario = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && hash_equals($_SESSION['csrf'] ?? '', (string) ($_POST['csrf'] ?? '')) && isset($_POST['probar_formulario'])) {
+    $formulario = enviar_formulario('Prueba del formulario de pedidos — ' . $c['negocio']['nombre'], ['Pedido' => 'PRUEBA', 'Nombre' => 'Cliente de prueba', 'Celular' => '3000000000', 'Ciudad' => 'Cali', 'Direccion' => 'Calle de prueba', 'Productos' => '1 × Filtro de prueba']);
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && hash_equals($_SESSION['csrf'] ?? '', (string) ($_POST['csrf'] ?? '')) && isset($_POST['probar_correo'])) {
     $r = enviar_correo($c['correo_avisos'], 'Prueba de correo — ' . $c['negocio']['nombre'], '<h2 style="margin:0 0 8px">Prueba de correo</h2><p>Si lees esto, los pedidos con los datos del cliente te van a llegar a este correo.</p>', $motivo);
     $prueba = [$r, (string) $motivo];
@@ -69,6 +73,8 @@ foreach ($filas as [$tipo, $t, $d]) {
 }
 echo '</div><h2>Prueba de correo</h2><form method="post" class="caja"><input type="hidden" name="csrf" value="' . h($_SESSION['csrf'] ?? '') . '"><p class="m">Manda un correo de prueba a <b>' . h((string) $c['correo_avisos']) . '</b>.</p><button class="btn sm" name="probar_correo" value="1">Enviar correo de prueba</button>'
     . ($prueba ? '<p style="margin-top:10px">' . ($prueba[0] ? '✅ Enviado' . ($prueba[1] ? ' (' . h($prueba[1]) . ')' : '') . '. Revisa la bandeja y el spam.' : '❌ No se pudo enviar: <b>' . h($prueba[1]) . '</b>') . '</p>' : '') . '</form>';
+echo '<h2>Datos del pedido como formulario (FormSubmit)</h2><form method="post" class="caja"><input type="hidden" name="csrf" value="' . h($_SESSION['csrf'] ?? '') . '"><p class="m">Cada pedido también se manda a <b>' . h((string) $c['correo_avisos']) . '</b> como un formulario. La primera vez FormSubmit te manda un correo para activarlo: toca <b>Activate Form</b>. Después de eso llegan solos.</p><button class="btn sm" name="probar_formulario" value="1">Enviar formulario de prueba</button>'
+    . ($formulario ? '<p style="margin-top:10px">' . ($formulario['ok'] ? '✅ Enviado: ' : '❌ ') . h($formulario['mensaje']) . '</p>' : '') . '</form>';
 echo '<h2>Tareas programadas (Hostinger > Avanzado > Cron Jobs)</h2><div class="caja"><p class="m">Cada 15 minutos (revisa pagos que no llegaron por aviso):</p><code>/usr/bin/php /home/USUARIO/public_html/purofiltro-api/reconciliar.php</code>'
     . '<p class="m" style="margin-top:12px">Una vez al día (recordatorios y opiniones):</p><code>/usr/bin/php /home/USUARIO/public_html/purofiltro-api/recordatorios.php</code></div>';
 echo '<h2>Últimos avisos de Wompi</h2>';

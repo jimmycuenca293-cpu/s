@@ -78,6 +78,8 @@ if ($link !== '') {
     out(['ref' => $ref, 'total' => $total, 'url' => $link]);
 }
 
+$st = db()->prepare('SELECT * FROM pedidos WHERE ref = ?'); $st->execute([$ref]);
+enviar_formulario("Pedido {$ref} esperando pago — " . cop($total), campos_pedido($st->fetch()));
 // Aviso inmediato con los datos del cliente (así no se pierden aunque el cliente no termine de pagar o falle el aviso de Wompi)
 $st = db()->prepare('SELECT * FROM pedidos WHERE ref = ?'); $st->execute([$ref]);
 enviar_correo(cfg()['correo_avisos'], "Pedido {$ref} esperando pago — " . cop($total),

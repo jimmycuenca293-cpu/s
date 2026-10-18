@@ -353,6 +353,38 @@ function enviar_correo(string $para, string $asunto, string $html, ?string &$mot
     return $ok;
 }
 
+// Segundo camino para que los datos del pedido lleguen a tu correo: como si fuera un formulario web (servicio FormSubmit).
+// No depende del correo del hosting. La primera vez FormSubmit manda un correo de activación a correo_avisos: hay que tocar «Activate».
+// Devuelve ['ok' => bool, 'mensaje' => texto].
+function enviar_formulario(string $asunto, array $campos): array
+{
+    $f = cfg()['formulario'] ?? [];
+    if (isset($f['activo']) && !$f['activo']) return ['ok' => false, 'mensaje' => 'El envío por formulario está apagado en config.php'];
+    $para = (string) cfg()['correo_avisos'];
+    if (!filter_var($para, FILTER_VALIDATE_EMAIL)) return ['ok' => false, 'mensaje' => 'correo_avisos no es un correo válido'];
+    $url = (string) ($f['url'] ?? 'https://formsubmit.co/ajax/') . rawurlencode($para);
+    $datos = ['_subject' => $asunto, '_template' => 'table', '_captcha' => 'false'] + array_map(fn($v) => (string) $v, $campos);
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($datos, JSON_UNESCAPED_UNICODE), CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Accept: application/json', 'Referer: ' . base_url() . '/', 'Origin: ' . base_url()]]);
+    $res = curl_exec($ch);
+    $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $err = curl_error($ch);
+    curl_close($ch);
+    $j = json_decode((string) $res, true);
+    $ok = $code >= 200 && $code < 300 && is_array($j) && (($j['success'] ?? '') === 'true' || ($j['success'] ?? '') === true);
+    $msg = is_array($j) ? (string) ($j['message'] ?? '') : ($err ?: "Respuesta $code");
+    if (!$ok) @file_put_contents(__DIR__ . '/../data/correos.log', date('c') . " FORMULARIO FALLÓ ($asunto): $msg\n----\n", FILE_APPEND);
+    return ['ok' => $ok, 'mensaje' => $msg];
+}
+
+function campos_pedido(array $p): array
+{
+    return ['Pedido' => $p['ref'], 'Estado' => $p['estado'], 'Productos' => implode(' | ', array_map('linea_txt', lineas_pedido($p))), 'Total' => cop((int) $p['total']),
+        'Entrega' => entrega_txt($p['entrega']), 'Nombre' => $p['nombre'], 'Celular' => $p['tel'], 'Correo del cliente' => $p['email'], 'Ciudad' => $p['ciudad'],
+        'Barrio' => $p['barrio'], 'Direccion' => $p['dir'], 'Indicaciones' => $p['indicaciones'] ?: '-', 'Modelo del nevecon' => $p['modelo'] ?: '-'];
+}
+
 function tabla_pedido(array $p, bool $completo): string
 {
     $filas = [
@@ -374,6 +406,7 @@ function tabla_pedido(array $p, bool $completo): string
 function avisar_pago(array $p): void
 {
     $c = cfg();
+    enviar_formulario("Nuevo pedido PAGADO {$p['ref']} — " . cop((int) $p['total']), campos_pedido($p));
     $n = $c['negocio'];
     enviar_correo($c['correo_avisos'], "Nuevo pedido pagado {$p['ref']} — " . cop((int) $p['total']),
         '<h2 style="margin:0 0 8px">Nuevo pedido pagado</h2><p>Ya está pagado en Wompi. Despáchalo con estos datos:</p>' . tabla_pedido($p, true)
