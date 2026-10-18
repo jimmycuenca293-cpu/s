@@ -2,7 +2,7 @@
 // Copia este archivo como config.php y llena tus datos. config.php nunca se muestra en la web.
 return [
     // Tu dominio, con https (se usa en los correos automáticos)
-    'dominio' => 'https://filtrosnevecones.com',
+    'dominio' => 'https://filtrosaguanevecones.com',
 
     // Datos del negocio (salen en la tienda, en los correos y en los términos)
     'negocio' => [
@@ -11,20 +11,20 @@ return [
         'documento' => 'C.C. o NIT 000.000.000-0',
         'direccion' => 'Dirección del negocio',     // opcional: si la dejas así no sale en la tienda
         'telefono'  => '321 799 6144',                   // sale en la tienda, en los términos y en los correos
-        'correo'    => 'pedidos@filtrosnevecones.com',          // correo de atención al cliente
+        'correo'    => 'pedidos@filtrosaguanevecones.com',          // correo de atención al cliente
         'horario'   => 'lunes a sábado, de 8:00 a. m. a 6:00 p. m.',
     ],
 
     // A este correo te llega cada pedido PAGADO, con todos los datos para despacharlo
     'correo_avisos'    => 'serviciotecnicoyrepuestoscali@gmail.com',
     // Correo desde el que salen los mensajes. Créalo en Hostinger (Correos) con tu dominio.
-    'correo_remitente' => 'pedidos@filtrosnevecones.com',
+    'correo_remitente' => 'pedidos@filtrosaguanevecones.com',
     // Envío de correos por SMTP con el buzón que creaste en Hostinger (Correos). Es lo que hace que SÍ te lleguen los datos del cliente.
-    // Usuario = el correo completo del buzón (pedidos@filtrosnevecones.com) y clave = la del buzón. Host de Hostinger: smtp.hostinger.com, puerto 465.
+    // Usuario = el correo completo del buzón (pedidos@filtrosaguanevecones.com) y clave = la del buzón. Host de Hostinger: smtp.hostinger.com, puerto 465.
     'smtp' => [
         'host'    => 'smtp.hostinger.com',
         'puerto'  => 465,
-        'usuario' => 'pedidos@filtrosnevecones.com',
+        'usuario' => 'pedidos@filtrosaguanevecones.com',
         'clave'   => '',
     ],
 
@@ -53,10 +53,10 @@ return [
     ],
 
     // Google: código de verificación de Search Console (solo lo que va en content="...") y Google Analytics 4 (G-XXXXXXX)
-    'google_verificacion' => 'w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4',
+    'google_verificacion' => '83CeRlNdLlIQY2bOYhTwdcPxK-nVHtYoSOJNtNVKr84',
     'ga4' => '',
     // Google Tag Manager: carga Analytics y Google Ads. Eventos que manda la tienda: "whatsapp" (clic en WhatsApp) y "pago_wompi" (va a pagar)
-    'gtm' => 'GTM-N39G66VJ',
+    'gtm' => 'GTM-5WSNHV66',
     // WhatsApp de atención (botón flotante en toda la tienda), 10 dígitos
     'whatsapp' => '3217996144',
 
