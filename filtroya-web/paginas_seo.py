@@ -8,6 +8,7 @@ import html
 import json
 
 import instalacion
+import marcas_contenido
 import seo_busquedas
 
 esc = lambda s: html.escape(str(s), quote=True)
@@ -441,4 +442,43 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 
     temas = seo_busquedas.generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, MARCAS, slug, norm, ubic, CIUDADES_CO, rutas_ciudad, modelos_dir)
 
-    return {"temas": temas, "paginas": paginas, "rutas_ciudad": rutas_ciudad, "refs": refs_dir, "modelos": modelos_dir, "guias": [(f"/guia/{s}/", t) for s, t, _, _ in GUIAS]}
+    # ---------- marcas compatibles, preguntas frecuentes y blog (misma información que la tienda Whirlpool) ----------
+    wp = [x for x in CATALOGO if x["marca"] == "Whirlpool"]
+    for x in wp:
+        x.setdefault("slug_o", x["slug"])
+    base_c = "/compatible/"
+
+    def pagina_c(ruta, titulo, desc, h1, eyebrow, intro, cuerpo, preguntas=(), miga_nombre=None, ld_extra=None):
+        mg, mg_ld = miga(("Inicio", "/"), ("Marcas compatibles", base_c), (miga_nombre or h1, None))
+        ld = [mg_ld] + ([faq_ld(list(preguntas))] if preguntas else []) + ([ld_extra] if ld_extra else [])
+        enlaces = ('<section class="caja"><h2>Más información</h2><div class="m-chips"><a href="/compatible/">Filtros por marca de nevera</a><a href="/compatible/preguntas-frecuentes/">Preguntas frecuentes</a>'
+                   '<a href="/compatible/blog/">Blog</a><a href="/tienda/">Toda la tienda</a><a href="/referencias/">Buscar por referencia</a><a href="/neveras/">Buscar por modelo</a></div></section>')
+        escribir(ruta, titulo, desc, ld, f'{mg}\n<span class="m-eyebrow">{esc(eyebrow)}</span>\n<h1>{esc(h1)}</h1>' + (f"<p>{intro}</p>" if intro else "") + f"\n{cuerpo}\n"
+                 + (faq_html(list(preguntas)) if preguntas else "") + "\n" + enlaces)
+
+    class _H:
+        @staticmethod
+        def caja(prod, base, foto):
+            return caja_producto(prod, "Filtro compatible")
+
+        @staticmethod
+        def producto_ld(*a, **k):
+            return None
+
+    otras = []
+    for m_ in MARCAS:
+        if m_ == "Whirlpool":
+            continue
+        ps_m = [x for x in CATALOGO if x["marca"] == m_]
+        otras.append((f"Otras marcas: {m_}", [
+            (f"¿Qué filtro usa una nevera {m_}?", f"Depende del modelo. Las referencias que vendemos para {m_} son {', '.join(x['ref'] for x in ps_m)}."),
+            (f"¿Cuánto cuesta un filtro para nevera {m_}?", f"Entre {cop(min(x['precio'] for x in ps_m))} y {cop(max(x['precio'] for x in ps_m))}, con envío gratis a toda Colombia.")]))
+    ctx_c = dict(marca="Whirlpool", ps=wp, base=base_c, M={}, ubic=ubic, slug=slug, datos=instalacion.datos, foto=None,
+                 rp=lambda x: f"/filtro/{x['slug']}/", inst="/instalacion/", faq_extra=otras)
+    R_c = {"extra": marcas_contenido.rutas(base_c, slug, hub=base_c)}
+    marcas_contenido.generar(pagina_c, ctx_c, _H, R_c)
+    compat_enlaces = [(r, t) for l in R_c["extra"]["familia"].values() for r, t in l[:1]] + [(R_c["extra"]["kenmore"][0][0], "Filtro para nevera Kenmore"), (R_c["extra"]["hub"], "Filtros por marca de nevera"),
+                                                                                           (R_c["extra"]["faq"], "Preguntas frecuentes"), (R_c["extra"]["blog"], "Blog")]
+    blog_lista = [(f"{base_c}blog/{a_[0]}/", a_[1]) for a_ in marcas_contenido.articulos(wp, base_c, "/instalacion/")]
+
+    return {"compat": compat_enlaces, "blog": blog_lista, "temas": temas, "paginas": paginas, "rutas_ciudad": rutas_ciudad, "refs": refs_dir, "modelos": modelos_dir, "guias": [(f"/guia/{s}/", t) for s, t, _, _ in GUIAS]}

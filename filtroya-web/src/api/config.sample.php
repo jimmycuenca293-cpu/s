@@ -6,7 +6,7 @@ return [
 
     // Datos del negocio (salen en la tienda, en los correos y en los términos)
     'negocio' => [
-        'nombre'    => 'Filtros Nevecones',
+        'nombre'    => 'Filtros Nevecones Colombia',
         'titular'   => 'Nombre del titular',            // persona o empresa dueña del negocio
         'documento' => 'C.C. o NIT 000.000.000-0',
         'direccion' => 'Dirección del negocio',     // opcional: si la dejas así no sale en la tienda

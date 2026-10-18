@@ -35,9 +35,9 @@ def _modelos_de(ps, marca):
     return [(m, p) for p in ps for m in p["modelos"] if m.upper().startswith(pref)]
 
 
-def rutas(base, slug):
+def rutas(base, slug, hub=None):
     """Rutas de todo el contenido extra (para menús, mapa del sitio y enlaces)."""
-    r = {"familia": {}, "kenmore": [], "externas": {}, "hub": f"{base}filtros-para-nevera-por-marca/", "faq": f"{base}preguntas-frecuentes/", "blog": f"{base}blog/"}
+    r = {"familia": {}, "kenmore": [], "externas": {}, "hub": hub or f"{base}filtros-para-nevera-por-marca/", "faq": f"{base}preguntas-frecuentes/", "blog": f"{base}blog/"}
     for m in FAMILIA:
         s = slug(m)
         r["familia"][m] = [(f"{base}filtro-para-nevera-{s}/", f"Filtro para nevera {m}"), (f"{base}precio-filtro-nevera-{s}/", f"Precio del filtro {m}"),
@@ -48,7 +48,7 @@ def rutas(base, slug):
     return r
 
 
-def articulos(ps):
+def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
     """Blog: [(slug, titulo, descripcion, resumen, cuerpo_html, preguntas)]."""
     por = {p["ref"]: p for p in ps}
     e1, e2, e3, e4, e5, ex = (por[k] for k in ("EDR1RXD1", "EDR2RXD1", "EDR3RXD1", "EDR4RXD1", "EDR5RXD1", "4378411RB"))
@@ -57,6 +57,7 @@ def articulos(ps):
     A = []
 
     def a(slug_, titulo, desc, resumen, cuerpo, preguntas):
+        cuerpo = cuerpo.replace('href="/filtro-para-nevera-', f'href="{base}filtro-para-nevera-').replace('/cambio-e-instalacion/', inst)
         A.append((slug_, titulo, desc, resumen, cuerpo, preguntas))
 
     a("como-saber-que-filtro-everydrop-necesita-tu-nevera-whirlpool", "Cómo saber qué filtro EveryDrop necesita tu nevera Whirlpool",
@@ -211,6 +212,8 @@ def generar(pagina, ctx, h, R):
     slug = ctx["slug"]
     X = R["extra"]
     datos = ctx["datos"]
+    rp = ctx.get("rp") or (lambda p: f'{base}{p["slug_o"]}/')
+    inst = ctx.get("inst", "/cambio-e-instalacion/")
     internos = [p for p in ps if ubic(p) == "interno"]
     externo = next(p for p in ps if ubic(p) == "externo")
     n_pag = []
@@ -221,7 +224,7 @@ def generar(pagina, ctx, h, R):
             sirve = _marcas_de(p)
             aplica = (marca_filtro is None) or (marca_filtro in sirve) or ubic(p) == "externo"
             equiv = ", ".join(x for x in p["refs"] if x != p["ref"])
-            filas += (f'<tr><td><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></td><td><span class="ref">{esc(p["ref"])}</span><br><small>{esc(equiv)}</small></td>'
+            filas += (f'<tr><td><a href="{rp(p)}">{esc(p["nombre_largo"])}</a></td><td><span class="ref">{esc(p["ref"])}</span><br><small>{esc(equiv)}</small></td>'
                       f'<td>{"Externo" if ubic(p) == "externo" else "Interno"}</td><td><b>{cop(p["precio"])}</b></td><td>{"Compatible" if aplica else "No aplica"}</td></tr>')
         return ('<div class="m-tabla-wrap"><table class="m-tabla"><thead><tr><th>Filtro</th><th>Referencia y equivalentes</th><th>Tipo</th><th>Precio</th>'
                 f'<th>{esc(marca_filtro) if marca_filtro else "Neveras"}</th></tr></thead><tbody>{filas}</tbody></table></div>')
@@ -264,7 +267,7 @@ def generar(pagina, ctx, h, R):
                respuesta(f"El filtro para nevera {esc(m)} cuesta entre {cop(min(p['precio'] for p in lista))} y {cop(max(p['precio'] for p in lista))} con envío gratis.") + tabla(lista, m) + nota,
                [(f"¿Cuánto cuesta el filtro de una nevera {m}?", f"Entre {cop(min(p['precio'] for p in lista))} y {cop(max(p['precio'] for p in lista))}, según la referencia."),
                 ("¿El envío tiene costo?", "No, es gratis a toda Colombia.")], miga_nombre=f"Precio filtro {m}")
-        pasos = "".join(f'<div class="m-bloque"><h3><a href="{base}{p["slug_o"]}/#instalacion">{esc(p["nombre_largo"])}</a></h3><p><b>Dónde va:</b> {esc(datos(p)["donde"])}</p><ol>'
+        pasos = "".join(f'<div class="m-bloque"><h3><a href="{rp(p)}#instalacion">{esc(p["nombre_largo"])}</a></h3><p><b>Dónde va:</b> {esc(datos(p)["donde"])}</p><ol>'
                         + "".join(f"<li>{esc(x)}</li>" for x in datos(p)["pasos"]) + f'</ol><p><b>Último paso:</b> {esc(datos(p)["reset"])}</p></div>' for p in lista if ubic(p) == "interno")
         pagina(f"{base}como-cambiar-filtro-nevera-{s}/", f"Cómo cambiar el filtro de la nevera {m} paso a paso",
                f"Paso a paso para cambiar el filtro de agua de una nevera {m}, referencia por referencia (EveryDrop {refs}).",
@@ -283,7 +286,7 @@ def generar(pagina, ctx, h, R):
     # ---------- Kenmore ----------
     ken = [(p, [x for x in p["refs"] if x.startswith("46-")]) for p in internos]
     ken = [(p, k[0]) for p, k in ken if k]
-    filas_k = "".join(f'<tr><td><span class="ref">{esc(k)}</span></td><td><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></td><td>{cop(p["precio"])}</td></tr>' for p, k in ken)
+    filas_k = "".join(f'<tr><td><span class="ref">{esc(k)}</span></td><td><a href="{rp(p)}">{esc(p["nombre_largo"])}</a></td><td>{cop(p["precio"])}</td></tr>' for p, k in ken)
     tk = f'<div class="m-tabla-wrap"><table class="m-tabla"><thead><tr><th>Referencia Kenmore</th><th>Filtro equivalente</th><th>Precio</th></tr></thead><tbody>{filas_k}</tbody></table></div>'
     faqk = [("¿Qué filtro equivale al Kenmore 46-9930?", "El EveryDrop 1 (EDR1RXD1)."), ("¿Qué filtro equivale al Kenmore 46-9006?", "El EveryDrop 4 (EDR4RXD1), igual al UKF8001."),
             ("¿Qué filtro equivale al Kenmore 46-9081?", "El EveryDrop 2 (EDR2RXD1)."), ("¿Y al 46-9030?", "El EveryDrop 3 (EDR3RXD1)."), ("¿Y al 46-9010?", "El EveryDrop 5 (EDR5RXD1).")]
@@ -325,7 +328,7 @@ def generar(pagina, ctx, h, R):
            [("¿Qué marcas de nevera usan los filtros Whirlpool?", "Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana usan los EveryDrop; Kenmore tiene referencias equivalentes; el filtro externo sirve en neveras de varias marcas."),
             ("¿Cómo busco por marca?", "Entra a la página de tu marca y compara la referencia del filtro viejo con la tabla.")], miga_nombre="Filtros por marca")
     # ---------- preguntas frecuentes (para Google y asistentes de IA) ----------
-    grupos = preguntas_ia(ps, slug)
+    grupos = preguntas_ia(ps, slug) + list(ctx.get("faq_extra", []))
     todas = [qa for _, l in grupos for qa in l]
     cuerpo = "".join(f'<h2 id="{slug(g)}" style="font-size:22px;margin:26px 0 12px">{esc(g)}</h2>' + "".join(f'<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>' for q, a in l) for g, l in grupos)
     pagina(X["faq"], f"Preguntas frecuentes sobre filtros de nevera Whirlpool y marcas compatibles ({len(todas)} respuestas)",
@@ -333,7 +336,7 @@ def generar(pagina, ctx, h, R):
            "Preguntas frecuentes sobre filtros de nevera", "Respuestas rápidas",
            "Respuestas directas sobre qué filtro usar, para qué marcas sirve, cuánto cuesta, cómo pagar y cómo cambiarlo.", cuerpo, todas, miga_nombre="Preguntas frecuentes")
     # ---------- blog ----------
-    arts = articulos(ps)
+    arts = articulos(ps, base, inst)
     for sl, titulo, desc, resumen, cuerpo_a, preguntas in arts:
         art = {"@type": "Article", "headline": titulo, "description": desc, "inLanguage": "es-CO", "datePublished": "2026-10-18", "dateModified": "2026-10-18",
                "author": {"@type": "Organization", "name": "__NOMBRE__"}, "publisher": {"@id": f"__BASE__{base}#tienda"}, "mainEntityOfPage": f"__BASE__{base}blog/{sl}/"}

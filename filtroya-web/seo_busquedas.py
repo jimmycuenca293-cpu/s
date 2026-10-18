@@ -350,7 +350,11 @@ def home_bloque(CATALOGO, MARCAS, slug, ubic, CIUDADES_CO):
                  ("/guia/el-hielo-del-nevecon-sale-turbio-o-con-mal-sabor/", "Hielo turbio o con mal sabor"), ("/guia/filtro-interno-o-externo/", "Filtro interno o externo"),
                  ("/guia/precio-de-los-filtros-de-agua-para-nevera-en-colombia/", "Precio de los filtros"), ("/guia/mejor-filtro-de-agua-para-nevera/", "Mejor filtro de agua para nevera"),
                  ("/guia/diferencia-entre-nevera-nevecon-y-refrigerador/", "Nevera, nevecón o refrigerador"), ("/guia/se-puede-usar-la-nevera-sin-filtro-de-agua/", "Nevera sin filtro de agua"),
-                 ("/guia/nevera-no-hace-hielo-revisar-el-filtro/", "La nevera no hace hielo"), ("/referencias/", "Buscar por referencia"), ("/neveras/", "Buscar por modelo"), ("/instalacion/", "Instalación por referencia")]
+                 ("/guia/nevera-no-hace-hielo-revisar-el-filtro/", "La nevera no hace hielo"),
+                 ("/compatible/filtro-para-nevera-kitchenaid/", "Filtro para nevera KitchenAid"), ("/compatible/filtro-para-nevera-maytag/", "Filtro para nevera Maytag (MyTag)"),
+                 ("/compatible/filtro-para-nevera-jenn-air/", "Filtro para nevera Jenn-Air"), ("/compatible/filtro-para-nevera-amana/", "Filtro para nevera Amana"),
+                 ("/compatible/filtro-para-nevera-kenmore/", "Filtro para nevera Kenmore"), ("/compatible/", "Filtros por marca de nevera"),
+                 ("/compatible/preguntas-frecuentes/", "Preguntas frecuentes"), ("/compatible/blog/", "Blog de filtros de nevera"), ("/referencias/", "Buscar por referencia"), ("/neveras/", "Buscar por modelo"), ("/instalacion/", "Instalación por referencia")]
     ciudades = "".join(f'<a href="/envios/{slug(c[1])}/{slug(c[0])}/">Filtros de nevera en {esc(c[0])}</a>' for c in CIUDADES_CO[:16])
     faq = [("¿Qué filtro de agua usa mi nevera o nevecón?", "Depende de la marca y del modelo. Busca la referencia impresa en el filtro viejo (por ejemplo DA29-00020B, LT1000P, EDR1RXD1 o MWF) o el modelo en la etiqueta interna de la nevera, y búscalo en esta tienda."),
            ("¿Cada cuánto se cambia el filtro de agua de la nevera?", "Cada 6 meses, o antes si el agua o el hielo cambian de sabor, el dispensador bota menos agua o se prende la luz del filtro."),

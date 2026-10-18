@@ -14,6 +14,6 @@ for m in samsung lg whirlpool ge; do
   rm -f "tienda-$m.zip"
   (cd "sitios/$m" && zip -qr "../../tienda-$m.zip" . -x 'api/config.php' -x 'data/pedidos.sqlite*' -x 'data/correos.log')
   # en los sitios de marca las carpetas no llevan el prefijo purofiltro-
-  sed -e 's/purofiltro-//g' -e 's/Filtros Nevecones/Tu tienda/g' INSTALAR.md > "sitios/INSTALAR.md" && zip -qj "tienda-$m.zip" "sitios/INSTALAR.md"
+  sed -e 's/purofiltro-//g' -e 's/Filtros Nevecones Colombia/Tu tienda/g' INSTALAR.md > "sitios/INSTALAR.md" && zip -qj "tienda-$m.zip" "sitios/INSTALAR.md"
   echo "Listo: tienda-$m.zip ($(du -h "tienda-$m.zip" | cut -f1))"
 done

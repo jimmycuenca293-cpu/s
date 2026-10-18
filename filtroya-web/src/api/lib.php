@@ -64,7 +64,7 @@ function datos_sin_llenar(): array
     return $falta;
 }
 
-// "Filtros Nevecones, de Nombre, C.C. ..." solo con los datos que ya están llenos (nunca muestra datos de ejemplo)
+// "Filtros Nevecones Colombia, de Nombre, C.C. ..." solo con los datos que ya están llenos (nunca muestra datos de ejemplo)
 function identificacion(): string
 {
     $n = cfg()['negocio']; $ok = fn($k, $ej) => trim((string) ($n[$k] ?? '')) !== '' && !str_contains((string) $n[$k], $ej);

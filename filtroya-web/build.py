@@ -125,7 +125,7 @@ def foto(p, alt, mini=False, lazy=True):
     src = f"/img/{p['id']}-400.webp" if mini else f"/img/{p['id']}.webp"
     return (f'<picture><source srcset="{src}" type="image/webp"><img src="/img/{p["id"]}.jpg" alt="{esc(alt)}" width="{w}" height="{h}"'
             + (' loading="lazy"' if lazy else ' fetchpriority="high"') + "></picture>")
-(OUT / "img" / "icono.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#0a2a2e"/><path d="M12 3.5C9.3 7.1 6.6 9.9 6.6 13.4a5.4 5.4 0 0 0 10.8 0c0-3.5-2.7-6.3-5.4-9.9z" fill="#5fd6c3"/></svg>', encoding="utf-8")
+(OUT / "img" / "icono.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#0a2a2e"/><path d="M12 3.5C9.3 7.1 6.6 9.9 6.6 13.4a5.4 5.4 0 0 0 10.8 0c0-3.5-2.7-6.3-5.4-9.9z" fill="#5fd6c3"/><path d="M12 11.2v4.8M9.9 12.4l4.2 2.4M14.1 12.4l-4.2 2.4" stroke="#0a2a2e" stroke-width="1.15" stroke-linecap="round" fill="none"/></svg>', encoding="utf-8")
 
 # ---------- tienda en modo web ----------
 app = app.replace('<meta charset="utf-8">\n', "", 1)
@@ -521,6 +521,8 @@ cat_php = {
     "marcas": [{"nombre": m, "slug": slug(m)} for m in MARCAS],
     "paginas": extra["paginas"],
     "guias": [{"ruta": r, "titulo": t} for r, t in extra["guias"]],
+    "compat": [{"ruta": r, "titulo": t} for r, t in extra["compat"]],
+    "blog": [{"ruta": r, "titulo": t} for r, t in extra["blog"]],
     "productos": {p["id"]: {"nombre": p["nombre_largo"], "ref": p["ref"], "marca": p["marca"], "precio": p["precio"], "pack": p["pack"], "slug": p["slug"], "alias": [r for r in p["refs"] if norm(r) != norm(p["ref"])],
                        "modelos": p["modelos"], "nota": p.get("nota", ""), "link_pago": p.get("linkPago", "") if p.get("linkMonto") == p["precio"] else "", "ubic": ubic(p), "rutas_ref": {r: ruta_ref[norm(r)] for r in p["refs"] if norm(r) in ruta_ref},
                        "rutas_modelo": {m: ruta_modelo[norm(m)] for m in p["modelos"]}} for p in CATALOGO},
@@ -530,7 +532,7 @@ cat_php = {
 # ---------- carpetas con el nombre del proyecto ----------
 # Todas las carpetas (y la hoja de estilos y el carrito) llevan "purofiltro-" adelante para no chocar
 # con archivos que ya existan en el hosting. Se renombran al final y se corrigen todas las rutas.
-CARPETAS = ["img", "api", "data", "filtro", "referencia", "referencias", "nevecon", "neveras", "marca", "guia", "envios", "tienda", "instalacion"]
+CARPETAS = ["img", "api", "data", "filtro", "referencia", "referencias", "nevecon", "neveras", "marca", "guia", "envios", "tienda", "instalacion", "compatible"]
 for c in CARPETAS:
     viejo, nuevo = OUT / c, OUT / (PREFIJO + c)
     if not viejo.exists():
@@ -639,7 +641,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
                  + f"\n## Blog\n- [Blog de filtros Whirlpool](__BASE__{X['blog']})\n" + "".join(f"- [{t}](__BASE__/blog/{sl}/): {d_}\n" for sl, t, d_, _, _, _ in marcas_contenido.articulos(ps_m))
                  + f"- [Preguntas frecuentes](__BASE__{X['faq']})\n")
     (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + llms + "TXT);\n", encoding="utf-8")
-    cat_m = dict(cat_php, paginas=rutas, guias=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
+    cat_m = dict(cat_php, paginas=rutas, guias=[], compat=[], blog=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
                  productos={k: v for k, v in cat_php["productos"].items() if k in ids})
     (d / (PREFIJO + "api") / "catalogo.php").write_text("<?php\n// Generado por build.py para el sitio de " + marca + ": no lo edites a mano.\nreturn " + php_val(cat_m) + ";\n", encoding="utf-8")
     for nombre, cambios in CAMBIOS_MARCA.items():
@@ -677,6 +679,6 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     for f in d.rglob("*"):
         if f.is_file() and "data" not in f.relative_to(d).parts[:1] and f.suffix in (".php", ".js", ".css", ".json", ".txt", ".xml", ".html", "") :
             txt = f.read_text(encoding="utf-8")
-            if PREFIJO in txt or "Filtros Nevecones" in txt:
-                f.write_text(txt.replace(PREFIJO, "").replace("Filtros Nevecones", M["tienda"]), encoding="utf-8")
+            if PREFIJO in txt or "Filtros Nevecones Colombia" in txt:
+                f.write_text(txt.replace(PREFIJO, "").replace("Filtros Nevecones Colombia", M["tienda"]), encoding="utf-8")
     print(f"Sitio {marca}: sitios/{s}/ con {len(rutas)} páginas")

@@ -44,6 +44,13 @@ if ($completo) foreach ($cat['rutas_ciudad'] ?? [] as $c => $r) $o[] = "  - [Fil
 $o[] = '';
 $o[] = '## Guías de técnico';
 foreach ($cat['guias'] ?? [] as $g) $o[] = "- [{$g['titulo']}]($b{$g['ruta']})";
+if (!empty($cat['compat'])) {
+    $o[] = ''; $o[] = '## Marcas de nevera a las que les sirven los filtros (compatibilidad)';
+    $o[] = '- Los filtros EveryDrop 1 a 5 sirven en neveras Whirlpool, Maytag (MyTag), KitchenAid, Jenn-Air y Amana según el modelo; Kenmore tiene referencias equivalentes (46-9930, 46-9081, 46-9030, 46-9006, 46-9010). El filtro externo 4378411RB sirve en neveras con dispensador de varias marcas.';
+    foreach ($cat['compat'] as $g) $o[] = "- [{$g['titulo']}]($b{$g['ruta']})";
+    $o[] = ''; $o[] = '## Blog';
+    foreach ($cat['blog'] ?? [] as $g) $o[] = "- [{$g['titulo']}]($b{$g['ruta']})";
+}
 $o[] = '';
 $o[] = '## Información';
 $o[] = "- [Quiénes somos]($b/quienes-somos.php)";
