@@ -134,6 +134,11 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.93);backdro
 header .w{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:68px}
 .marca{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
 .marca svg{width:34px;height:34px;flex:0 0 auto}.marca b{display:block;font-size:18px;letter-spacing:-.01em;line-height:1.1}.marca small{display:block;font-size:12px;font-weight:700;color:var(--eye);letter-spacing:.04em;text-transform:uppercase;line-height:1.2}
+header .mnav{border-top:1px solid var(--line)}
+.mnav .w{display:flex;align-items:center;gap:6px;overflow-x:auto;white-space:nowrap;padding-top:8px;padding-bottom:8px;scrollbar-width:thin}
+.mnav a{flex:none;text-decoration:none;color:var(--ink);font-size:14px;font-weight:600;padding:7px 13px;border-radius:999px;background:#fff;border:1px solid var(--line)}
+.mnav a:hover{border-color:var(--pri)}.mnav a[aria-current]{background:var(--pri);color:#fff;border-color:var(--pri)}
+.mnav .sep{flex:none;width:1px;height:22px;background:var(--line);margin:0 6px}
 header .btn{padding:10px 16px;min-height:44px;font-size:15px}
 @media (max-width:560px){header .btn span{display:none}header .btn{padding:10px 12px}.barra span+span+span{display:none}}
 .hero{position:relative;overflow:hidden;color:#fff;background:radial-gradient(900px 420px at 85% 0%,color-mix(in srgb,var(--acento) 45%,transparent),transparent 60%),linear-gradient(150deg,var(--pri2),var(--pri))}
@@ -266,6 +271,19 @@ def gota(cfg):
     return f'<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="7" fill="{cfg["pri"]}"/><path d="M12 4.2C9.4 7.6 6.9 10.3 6.9 13.5a5.1 5.1 0 0 0 10.2 0c0-3.2-2.5-5.9-5.1-9.3z" fill="{cfg.get("gota", "#fff")}"/></svg>'
 
 
+MENU = {}  # marca -> [(referencia, slug)]; se llena en main()
+
+
+def menu(marca, ruta):
+    def a(href, txt, extra=""):
+        act = ' aria-current="page"' if ruta.rstrip("/") == href.rstrip("/") else ""
+        return f'<a href="{href}"{act}{extra}>{esc(txt)}</a>'
+    propios = "".join(a(f"/purofiltro-filtro/{sl}/", f"Filtro {ref}") for ref, sl in MENU.get(marca, []))
+    otras = "".join(a(f"/purofiltro-marca/{slug(m)}/", f"Nevecones {m}") for m in MENU if m != marca)
+    return (f'<nav class="mnav" aria-label="Filtros {esc(marca)}"><div class="w">'
+            f'{a(f"/purofiltro-marca/{slug(marca)}/", f"Filtros {marca}")}<span class="sep"></span>{propios}<span class="sep"></span>{otras}</div></nav>')
+
+
 def cabeza(marca, cfg, titulo, desc, ruta, ld, imagen):
     n = cfg["whatsapp"]
     envio = "Envío gratis" if ENVIO_GRATIS else "Envío"
@@ -296,7 +314,7 @@ def cabeza(marca, cfg, titulo, desc, ruta, ld, imagen):
 <header><div class="w">
   <a class="marca" href="/purofiltro-marca/{slug(marca)}/">{gota(cfg)}<span><b>{esc(NEGOCIO)}</b><small>Nevecones {esc(marca)}</small></span></a>
   <a class="btn wa" data-wa="encabezado" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}<span>Escríbenos</span></a>
-</div></header>
+</div>{menu(marca, ruta)}</header>
 """
 
 
@@ -307,6 +325,7 @@ def pie(marca, cfg, fija_texto="Te decimos cuál es tu filtro"):
     return f"""
 <footer><div class="w">
   <b>{esc(NEGOCIO)}</b>
+  <span>Filtros {esc(marca)}: {" · ".join(f'<a href="/purofiltro-filtro/{sl}/">{esc(r)}</a>' for r, sl in MENU.get(marca, []))}</span>
   <span>WhatsApp: <a data-wa="pie" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{tel}</a> · {esc(HORARIO)}</span>
   <span><a href="/purofiltro-contraentrega/datos.html">Tratamiento de datos</a> · <a href="/purofiltro-contraentrega/terminos.html">Términos del pago contra entrega</a></span>
   <span class="leg">© <span id="anio">2026</span> {esc(NEGOCIO)}. {esc(marca)} es una marca registrada de su dueño; la usamos solo para indicar en qué nevecones sirven los filtros.</span>
@@ -631,6 +650,8 @@ def main():
         shutil.rmtree(SALIDA)
     (SALIDA / "purofiltro-img").mkdir(parents=True)
     paginas = 0
+    for m in MARCAS:
+        MENU[m] = [(p["ref"], p["slug"]) for p in cat if p["marca"] == m]
     for marca, cfg in MARCAS.items():
         ps = [p for p in cat if p["marca"] == marca]
         for p in ps:
