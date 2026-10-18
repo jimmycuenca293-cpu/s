@@ -46,11 +46,11 @@ MARCAS = {  # número de WhatsApp de cada marca (10 dígitos, sin +57)
     "LG": {"whatsapp": "3205102995", "fuente": "Outfit", "pri": "#a50034", "pri2": "#4f4f53", "acento": "#ff9bb8", "suave": "#fbe8ee", "gris": "#6b6b6b",
            "display": ("Replace Filter", "Cambiar filtro"),
            "lineas": "French door, side by side e InstaView", "etiqueta": "dentro de la nevera, en la pared lateral o detrás del cajón de las verduras; empieza por LF, LM, LR, LS o GR"},
-    "Whirlpool": {"whatsapp": "3217996144", "fuente": "DM Sans", "pri": "#2b2724", "pri2": "#141211", "acento": "#eeb111", "suave": "#fcefc9", "gris": "#5f5b58",
+    "Whirlpool": {"whatsapp": "3107147299", "fuente": "DM Sans", "pri": "#2b2724", "pri2": "#141211", "acento": "#eeb111", "suave": "#fcefc9", "gris": "#5f5b58",
                   "eye": "#8a6400", "chip": "#eeb111", "chip_ink": "#231f20", "gota": "#eeb111", "subrayado": "#eeb111",
                   "display": ("Order  →  Replace", "Pide el filtro  →  cámbialo"),
                   "lineas": "French door, side by side y congelador abajo", "etiqueta": "dentro de la nevera, en la pared lateral de arriba; empieza por WRF, WRS o WRX"},
-    "GE": {"whatsapp": "3217996144", "fuente": "Lexend", "pri": "#3b73b9", "pri2": "#1d3f6e", "acento": "#cfe2ff", "suave": "#e2ecf8", "gris": "#5a6b80",
+    "GE": {"whatsapp": "3107147299", "fuente": "Lexend", "pri": "#3b73b9", "pri2": "#1d3f6e", "acento": "#cfe2ff", "suave": "#e2ecf8", "gris": "#5a6b80",
            "display": ("Replace Filter", "Cambiar filtro"),
            "lineas": "French door y side by side", "etiqueta": "dentro de la nevera, en la pared lateral o en el techo; empieza por GFE, GNE, GSS, PFE, PYE o CFE"},
 }
@@ -244,6 +244,12 @@ ol.pasos2 li::before{content:counter(q);position:absolute;left:0;top:0;width:36p
 .chips{display:flex;flex-wrap:wrap;gap:8px}.chips span,.chips a{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600;color:var(--ink);text-decoration:none}.chips a:hover{border-color:var(--pri);color:var(--pri)}
 .final{background:linear-gradient(150deg,var(--pri2),var(--pri));color:#fff;border-radius:30px;padding:44px 32px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 30px 60px -28px rgba(18,23,38,.55)}
 .final h2{color:#fff}.final p{opacity:.9;max-width:560px}
+.todas{margin-top:18px;text-align:center;background:none;border:0;box-shadow:none;padding:0}.todas summary::after{display:none}.todas summary{display:inline-block;cursor:pointer;font-weight:800;color:var(--pri);padding:10px 20px;border:2px solid var(--pri);border-radius:999px;list-style:none}
+.todas summary::-webkit-details-marker{display:none}.todas[open] summary{margin-bottom:16px}
+.cab h2{letter-spacing:-.02em;text-wrap:balance}.cab p{max-width:62ch}.cab.c p{margin-inline:auto}
+footer .cols3{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:28px}footer .cols3>div{display:flex;flex-direction:column;gap:8px;min-width:0}
+footer h4{margin:0 0 4px;color:#fff;font-size:13px;letter-spacing:.09em;text-transform:uppercase;opacity:.75}
+@media (max-width:760px){footer .cols3{grid-template-columns:1fr}}
 footer{background:#0f1320;color:rgba(255,255,255,.75);padding:44px 0 110px;font-size:14px;border-top:4px solid var(--acento)}
 footer .w{display:flex;flex-direction:column;gap:12px}footer a{color:#fff}footer b{color:#fff;font-size:17px}
 footer .leg{font-size:12.5px;color:rgba(255,255,255,.55);border-top:1px solid rgba(255,255,255,.12);padding-top:14px}
@@ -335,10 +341,11 @@ def pie(marca, cfg, fija_texto="Te decimos cuál es tu filtro"):
     hola = f"Hola, quiero un filtro de agua para mi nevecón {marca} con pago contra entrega."
     return f"""
 <footer><div class="w">
-  <b>{esc(NEGOCIO)}</b>
-  <span>Filtros {esc(marca)}: {" · ".join(f'<a href="/purofiltro-filtro/{sl}/">{esc(r)}</a>' for r, sl in MENU.get(marca, []))}</span>
-  <span>WhatsApp: <a data-wa="pie" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{tel}</a> · {esc(HORARIO)}</span>
-  <span><a href="/purofiltro-contraentrega/datos.html">Tratamiento de datos</a> · <a href="/purofiltro-contraentrega/terminos.html">Términos del pago contra entrega</a></span>
+  <div class="cols3">
+    <div><b>{esc(NEGOCIO)}</b><span>Distribuidor autorizado de filtros de agua para nevecones {esc(marca)}. Pagas al recibir, en toda Colombia.</span></div>
+    <div><h4>Filtros {esc(marca)}</h4>{"".join(f'<a href="/purofiltro-filtro/{sl}/">Filtro {esc(r)}</a>' for r, sl in MENU.get(marca, []))}</div>
+    <div><h4>Contacto</h4><span>WhatsApp: <a data-wa="pie" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{tel}</a></span><span>{esc(HORARIO)}</span><a href="/purofiltro-contraentrega/datos.html">Tratamiento de datos</a><a href="/purofiltro-contraentrega/terminos.html">Términos del pago contra entrega</a></div>
+  </div>
   <span class="leg">© <span id="anio">2026</span> {esc(NEGOCIO)}. {esc(marca)} es una marca registrada de su dueño; la usamos solo para indicar en qué nevecones sirven los filtros.</span>
 </div></footer>
 <div class="fija"><span>Pagas al recibir<small>{esc(fija_texto)}</small></span><a class="btn wa" data-wa="barra" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}WhatsApp</a></div>
@@ -406,6 +413,15 @@ def sec(cuerpo, alt=False, id_="", estilo=""):
 
 def cab(eye, titulo, texto="", centrado=False, h="h2"):
     return f'<div class="cab{" c" if centrado else ""}"><span class="eye">{esc(eye)}</span><{h}>{esc(titulo)}</{h}>{f"<p>{texto}</p>" if texto else ""}</div>'
+
+
+def bloque_porque(marca):
+    items = [("💵", "Pagas cuando lo recibes", "Sin transferencias ni adelantos: el pago es en efectivo al recibir tu pedido."),
+             ("📸", "Te decimos cuál es el tuyo", f"Con una foto del filtro viejo o el modelo de tu nevecón {marca} confirmamos la referencia correcta."),
+             ("🔧", "Lo instalas tú, sin técnico", "Cada filtro trae su paso a paso: se cambia en 2 minutos los internos y en 10 a 15 los externos."),
+             ("💬", "Atención directa por WhatsApp", "Resolvemos tus dudas antes y después de recibir el filtro, sin llamadas ni formularios.")]
+    return sec(cab("Por qué pedir con nosotros", "Pedir tu filtro es simple y sin riesgo", "Distribuidor autorizado. Tú solo escoges, nosotros nos encargamos del resto.", True)
+               + '<div class="cols">' + "".join(f'<div class="bloque"><div class="ic">{i}</div><h3>{esc(t)}</h3><p>{esc(d)}</p></div>' for i, t, d in items) + "</div>")
 
 
 def bloque_cuando(marca, cfg):
@@ -520,7 +536,7 @@ def pagina_marca(marca, cfg, ps, ciud):
           <span class="ref">Ref. {esc(p["ref"])}{(" · también " + esc(", ".join([r for r in p["refs"] if r != p["ref"]][:2]))) if len(p["refs"]) > 1 else ""}</span>
           <p>{esc((p.get("desc") or "").split(". ")[0])}.</p>
           <a class="btn wa" data-wa="tarjeta" href="{esc(wa(n, f'Hola, quiero el precio de hoy del {p["largo"]} para mi nevecón {marca}, con pago contra entrega.'))}" target="_blank" rel="noopener">{ICONO_WA}Precio de hoy por WhatsApp</a>
-          <a class="mas" href="/purofiltro-filtro/{p["slug"]}/">Cómo se instala y cuándo cambiarlo →</a>
+          <a class="mas" href="/purofiltro-filtro/{p["slug"]}/">Ver ficha, instalación y cuándo cambiarlo →</a>
           <div class="pie-card"><span>💵 Pagas al recibir</span><span>🚚 {envio}</span></div>
         </div>
         {lupa_dialog(p, marca, cfg)}
@@ -544,9 +560,9 @@ def pagina_marca(marca, cfg, ps, ciud):
     c += f"""
 <section class="hero"><div class="w">
   <div>
-    <span class="cod"><i>💵</i>Pago contra entrega en toda Colombia</span>
+    <span class="cod"><i>💵</i>Distribuidor autorizado · Pago contra entrega</span>
     <h1>Filtro de agua para tu nevecón <em>{esc(marca)}</em></h1>
-    <p class="lead">No pagas nada por adelantado: te lo llevamos a la casa y le pagas en efectivo al mensajero cuando lo recibes. Te decimos cuál es el tuyo por WhatsApp.</p>
+    <p class="lead">Recibe el filtro en tu casa y págalo en efectivo cuando llegue. No adelantas nada. Por WhatsApp te confirmamos cuál es el que necesita tu nevecón.</p>
     <div class="acc"><a class="btn wa" data-wa="portada" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}Pedir por WhatsApp</a><a class="btn claro" href="#cual">¿Cuál es mi filtro?</a></div>
     <ul><li>Pagas al recibir</li><li>{envio}</li><li>Asesoría gratis</li><li>Para {esc(cfg["lineas"])}</li></ul>
   </div>
@@ -558,16 +574,17 @@ def pagina_marca(marca, cfg, ps, ciud):
 </div></section>
 
 <section class="franja"><div class="w"><div>
-  <div class="it"><span class="ic">💵</span><span><b>Pagas al recibir</b><small>Efectivo al mensajero</small></span></div>
+  <div class="it"><span class="ic">💵</span><span><b>Pagas al recibir</b><small>Efectivo, sin adelantos</small></span></div>
   <div class="it"><span class="ic">🚚</span><span><b>{envio}</b><small>A toda Colombia</small></span></div>
-  <div class="it"><span class="ic">📸</span><span><b>Te decimos cuál es</b><small>Con una foto</small></span></div>
+  <div class="it"><span class="ic">📸</span><span><b>Te asesoramos</b><small>Mándanos una foto del filtro</small></span></div>
   <div class="it"><span class="ic">⏱️</span><span><b>Llega en 2 a 3 días</b><small>Principales ciudades</small></span></div>
 </div></div></section>
 """
-    c += sec(cab("Encuéntralo en 10 segundos", "¿A cuál se parece tu filtro?", f"Toca el que se parece al de tu nevecón {esc(marca)} y te confirmamos por WhatsApp si es ese y el precio de hoy. ¿No sabes? Mándanos una foto.", True)
+    c += sec(cab("Encuéntralo en 10 segundos", "¿A cuál se parece tu filtro?", f"Toca el que se parece al de tu nevecón {esc(marca)}. Te confirmamos por WhatsApp que sea el correcto y te damos el precio de hoy. Si no sabes cuál es, mándanos una foto.", True)
              + f'<div class="picks">{elegir}<button type="button" class="pick nose" data-msg="{esc(f"Hola, no sé cuál es el filtro de mi nevecón {marca}. Les mando una foto del filtro viejo o de la etiqueta para que me digan cuál es y el precio contra entrega.")}"><span>📷</span><b>No sé cuál es</b><small>Te mando una foto</small></button></div>'
              + f'<div class="elegido" id="elegido" hidden><p id="elegido-txt"></p><a class="btn wa" data-wa="elegir" id="elegido-btn" href="#" target="_blank" rel="noopener">{ICONO_WA}Confirmar por WhatsApp</a></div>', id_="cual")
-    c += sec(cab(f"Filtros para nevecones {marca}", "Escoge el tuyo y pregunta el precio de hoy", f"Internos y externos para {esc(cfg['lineas'])}. Todos con pago contra entrega.") + f'<div class="grid">{tarjetas}</div>', alt=True, id_="filtros")
+    c += sec(cab(f"Catálogo {marca}", "Escoge tu filtro y pide el precio de hoy", f"Internos y externos para {esc(cfg['lineas'])}. Toca la lupa de cada foto para ver sus especificaciones y cómo se instala. Todos con pago contra entrega.") + f'<div class="grid">{tarjetas}</div>', alt=True, id_="filtros")
+    c += bloque_porque(marca)
     c += bloque_cuando(marca, cfg)
     c += sec(f'''<div class="sint"><div>{cab("Revisa en 20 segundos", "¿Ya le toca el cambio a tu filtro?", "Marca lo que le pasa a tu nevecón.")}
     <div class="checks" id="checks">{"".join(f'<label><input type="checkbox" value="{esc(s)}">{esc(s)}</label>' for s in SINTOMAS)}</div></div>
@@ -582,7 +599,7 @@ def pagina_marca(marca, cfg, ps, ciud):
     <div><h3>Pregunta por el pack de 2 filtros</h3><p>Un filtro dura 6 meses: con el pack tienes agua limpia todo el año y pagas menos por cada uno. El precio especial te lo damos por WhatsApp.</p></div>
     <a class="btn wa" data-wa="pack" href="{esc(wa(n, f'Hola, quiero el precio del pack de 2 filtros para mi nevecón {marca} con pago contra entrega.'))}" target="_blank" rel="noopener">{ICONO_WA}Precio del pack</a></div>''')
     c += sec(cab("Preguntas frecuentes", "Resolvemos tus dudas", centrado=True) + faq_html(preguntas), alt=True)
-    c += sec(cab("Envíos contra entrega", "Llegamos a tu ciudad", f"Toca tu ciudad para ver cómo recibir tu filtro {esc(marca)} y pagar al recibir. Y llegamos a más municipios de Colombia.", True) + '<div class="chips" style="justify-content:center">' + "".join(f'<a href="/purofiltro-marca/{slug(marca)}/{slug(x)}/">{esc(x)}</a>' for x, _ in ciud) + "<span>y más municipios</span></div>")
+    c += sec(cab("Envíos contra entrega", "Llegamos a tu ciudad", f"Toca tu ciudad para ver cómo recibir tu filtro {esc(marca)} y pagar al recibir. Y llegamos a más municipios de Colombia.", True) + '<div class="chips" style="justify-content:center">' + "".join(f'<a href="/purofiltro-marca/{slug(marca)}/{slug(x)}/">{esc(x)}</a>' for x, _ in ciud[:24]) + '</div><details class="todas"><summary>Ver las ' + str(len(ciud)) + ' ciudades</summary><div class="chips" style="justify-content:center">' + "".join(f'<a href="/purofiltro-marca/{slug(marca)}/{slug(x)}/">{esc(x)}</a>' for x, _ in ciud[24:]) + "<span>y más municipios</span></div></details>")
     c += sec(f'''<div class="final"><h2>¿Listo para tener agua limpia otra vez?</h2><p>Escríbenos y te decimos cuál es tu filtro y el precio de hoy. Pagas cuando te llega.</p>
     <a class="btn wa" data-wa="final" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}Escribir por WhatsApp</a></div>''', estilo="padding-top:0")
     return c + pie(marca, cfg) + script(marca, cfg, con_picks=True, con_sintomas=True, total_sintomas=len(SINTOMAS))
@@ -611,7 +628,7 @@ def pagina_ciudad(marca, cfg, ps, ciudad, depto, ciud):
           <h3><a href="/purofiltro-filtro/{p["slug"]}/">{esc(p["largo"])}</a></h3>
           <span class="ref">Ref. {esc(p["ref"])}</span>
           <a class="btn wa" data-wa="tarjeta" href="{esc(wa(n, f'Hola, quiero el precio de hoy del {p["largo"]} para mi nevecón {marca}, con pago contra entrega en {ciudad}.'))}" target="_blank" rel="noopener">{ICONO_WA}Pedir en {esc(ciudad)}</a>
-          <a class="mas" href="/purofiltro-filtro/{p["slug"]}/">Cómo se instala y cuándo cambiarlo →</a>
+          <a class="mas" href="/purofiltro-filtro/{p["slug"]}/">Ver ficha, instalación y cuándo cambiarlo →</a>
           <div class="pie-card"><span>💵 Pagas al recibir</span><span>🚚 {envio}</span></div>
         </div>
         {lupa_dialog(p, marca, cfg)}
@@ -625,7 +642,7 @@ def pagina_ciudad(marca, cfg, ps, ciudad, depto, ciud):
   <div>
     <span class="cod"><i>💵</i>Pago contra entrega en {esc(ciudad)}</span>
     <h1>Filtro de agua para tu nevecón <em>{esc(marca)}</em> en {esc(ciudad)}</h1>
-    <p class="lead">Te lo llevamos a {esc(ciudad)} ({esc(depto)}) y le pagas en efectivo al mensajero cuando lo recibes. Te decimos cuál es el tuyo por WhatsApp.</p>
+    <p class="lead">Recibe el filtro en {esc(ciudad)} ({esc(depto)}) y págalo en efectivo cuando llegue. No adelantas nada. Por WhatsApp te confirmamos cuál es el que necesita tu nevecón.</p>
     <div class="acc"><a class="btn wa" data-wa="portada" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}Pedir por WhatsApp</a><a class="btn claro" href="{base}">Ver todos los filtros {esc(marca)}</a></div>
     <ul><li>Pagas al recibir</li><li>{envio}</li><li>Llega en {dias}</li><li>Para {esc(cfg["lineas"])}</li></ul>
   </div>
@@ -635,7 +652,7 @@ def pagina_ciudad(marca, cfg, ps, ciudad, depto, ciud):
   </div>
 </div></section>
 """
-    c += sec(cab(f"Filtros {marca} en {ciudad}", "Escoge el tuyo y pregunta el precio de hoy", f"Internos y externos para {esc(cfg['lineas'])}. Todos con pago contra entrega en {esc(ciudad)}.") + f'<div class="grid">{tarjetas}</div>')
+    c += sec(cab(f"Catálogo {marca} en {ciudad}", "Escoge tu filtro y pide el precio de hoy", f"Internos y externos para {esc(cfg['lineas'])}. Toca la lupa de cada foto para ver sus especificaciones y cómo se instala. Pagas al recibir en {esc(ciudad)}.") + f'<div class="grid">{tarjetas}</div>')
     c += bloque_entrega()
     c += sec(cab("Preguntas frecuentes", f"Filtros {marca} en {ciudad}", centrado=True) + faq_html(preguntas), alt=True)
     otras = "".join(f'<a href="{base}{slug(x)}/">{esc(x)}</a>' for x, _ in ciud if x != ciudad)
