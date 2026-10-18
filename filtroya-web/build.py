@@ -628,6 +628,16 @@ for marca in marcas_exclusivas.MARCAS_INFO:
             + "- [¿Cuál filtro es el mío? (por modelo o referencia)](__BASE__/cual-es-mi-filtro/)\n- [Cómo cambiar e instalar cada filtro](__BASE__/cambio-e-instalacion/)\n"
             + "\n## Compra\n- Envío gratis a toda Colombia con número de guía.\n- Pago en línea seguro; no hay pago contra entrega.\n- 5 días hábiles de retracto con el filtro sin instalar.\n"
               "- Términos: __BASE__/terminos.php\n")
+    if marca == "Whirlpool":
+        import marcas_contenido
+        X = marcas_contenido.rutas("/", slug)
+        llms += ("\n## Marcas de nevera a las que les sirven estos filtros (compatibilidad)\n"
+                 "- Filtros EveryDrop 1 a 5: neveras Whirlpool, Maytag (también escrito MyTag), KitchenAid (Kitchen Aid), Jenn-Air y Amana, según el modelo; Kenmore tiene referencias equivalentes (46-9930, 46-9081, 46-9030, 46-9006, 46-9010).\n"
+                 "- Filtro externo 4378411RB: se conecta a la manguera del agua y sirve en neveras con dispensador de varias marcas (Samsung, LG, GE, Mabe, Haceb, Challenger, Electrolux, Frigidaire, Bosch, Hisense, Midea, Panasonic, Daewoo, Estate).\n"
+                 + "".join(f"- [{t}](__BASE__{r})\n" for m_, l in X["familia"].items() for r, t in l[:1]) + f"- [Todas las marcas](__BASE__{X['hub']})\n"
+                 "\n## Preguntas y respuestas\n" + "".join(f"- **{q}** {a_}\n" for _, l in marcas_contenido.preguntas_ia(ps_m, slug) for q, a_ in l)
+                 + f"\n## Blog\n- [Blog de filtros Whirlpool](__BASE__{X['blog']})\n" + "".join(f"- [{t}](__BASE__/blog/{sl}/): {d_}\n" for sl, t, d_, _, _, _ in marcas_contenido.articulos(ps_m))
+                 + f"- [Preguntas frecuentes](__BASE__{X['faq']})\n")
     (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + llms + "TXT);\n", encoding="utf-8")
     cat_m = dict(cat_php, paginas=rutas, guias=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
                  productos={k: v for k, v in cat_php["productos"].items() if k in ids})

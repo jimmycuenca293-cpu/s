@@ -107,6 +107,8 @@ function db(): PDO
     $cols = array_column($pdo->query('PRAGMA table_info(pedidos)')->fetchAll(), 'name');
     if (!in_array('pedida_resena', $cols, true)) $pdo->exec('ALTER TABLE pedidos ADD COLUMN pedida_resena INTEGER DEFAULT 0');
     if (!in_array('items', $cols, true)) $pdo->exec('ALTER TABLE pedidos ADD COLUMN items TEXT');
+    if (!in_array('acepto_en', $cols, true)) $pdo->exec('ALTER TABLE pedidos ADD COLUMN acepto_en TEXT');
+    $pdo->exec('CREATE TABLE IF NOT EXISTS eventos_wompi (id INTEGER PRIMARY KEY AUTOINCREMENT, recibido TEXT, evento TEXT, ref TEXT, estado TEXT, resultado TEXT)');
     return $pdo;
 }
 

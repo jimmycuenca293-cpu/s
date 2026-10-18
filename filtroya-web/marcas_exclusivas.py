@@ -79,6 +79,10 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     M["guias"] = [[r, n] for r, n in R["temas"]]
     M["ciudades"] = [[n, r] for n, (_, r) in list(R["ciudades"].items())[:14]]
     M["hub"] = R["hub"]
+    if R.get("extra"):
+        X = R["extra"]
+        M["compat"] = [[n, X["familia"][n][0][0]] for n in X["familia"]] + [["Kenmore", X["kenmore"][0][0]], ["Todas las marcas", X["hub"]]]
+        M["extra"] = [["Preguntas frecuentes", X["faq"]], ["Blog", X["blog"]]]
     M["externos"] = [[n, u] for n, u, _ in info.get("externos", [])]
     ctx = dict(marca=marca, info=info, ps=ps, base=base, M=M, slug=slug, norm=norm, ubic=ubic, foto=foto, php_str=php_str, ciudades=[c[0] for c in CIUDADES_CO[:30]], R=R, datos=instalacion.datos)
     rutas = [base]

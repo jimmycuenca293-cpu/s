@@ -34,12 +34,35 @@ En el panel de Wompi, entra a **Desarrolladores**:
 4. En **URL de eventos** pon: `https://filtrosnevecones.com/purofiltro-api/wompi.php`
    (así Wompi avisa a tu tienda apenas el cliente paga, aunque cierre el navegador).
 
+### Cómo probar la pasarela antes de cobrar de verdad
+1. Con las llaves de **prueba** (`pub_test_`, `test_integrity_`, `test_events_`) haz una compra desde tu tienda. Con una tarjeta de prueba de Wompi
+   (en su documentación, sección «Datos de prueba») el pago se aprueba y también puedes probar uno rechazado.
+2. Entra a `tudominio.com/admin.php` y toca **Diagnóstico de pagos**. Te marca con ✅, ⚠️ o ❌: si el sitio tiene HTTPS, si las tres llaves son del mismo modo,
+   si Wompi reconoce tu llave, la URL de eventos que debes pegar, la base de pedidos, el correo y los últimos avisos que mandó Wompi.
+3. Verifica que te llegó el correo del pedido pagado y que el cliente recibió su recibo.
+4. Cuando todo esté en ✅, cambia las **tres** llaves a producción (`pub_prod_`, `prod_integrity_`, `prod_events_`) y vuelve a abrir el diagnóstico.
+
+### Cómo está protegido el pago
+- El precio lo calcula el servidor; si cambias un precio en la página del navegador, el pedido se rechaza.
+- Cada pedido lleva una **firma de integridad** que Wompi comprueba: nadie puede cambiar el monto en el camino.
+- Wompi avisa a `wompi.php` y la tienda **verifica la firma del aviso**, que el monto sea exactamente el del pedido y que el aviso no sea viejo.
+  Solo entonces marca el pedido como pagado. Cada aviso queda anotado (y lo ves en el diagnóstico).
+- Si un aviso nunca llegó (el cliente cerró el navegador, se cayó el servidor), la tarea **reconciliar** (paso 5) consulta a Wompi cada 15 minutos y corrige el pedido.
+- El cliente tiene que aceptar los términos, la garantía y el tratamiento de datos antes de pagar; queda guardada la fecha de aceptación.
+- La tienda nunca ve ni guarda los datos de la tarjeta: se pagan en la página de Wompi.
+- Solo hay pago en línea (no hay contra entrega).
+
 Primero prueba con las llaves de prueba (`pub_test_`): haz una compra con los datos de prueba que da Wompi
 y revisa que te llegue el correo. Cuando todo esté bien, cambia a las llaves de producción (`pub_prod_`).
 
-## Paso 5. Recordatorios automáticos (cada 6 meses)
-En Hostinger: **Avanzado > Cron Jobs**, crea una tarea **una vez al día** con este comando
-(cambia USUARIO por el tuyo; Hostinger te muestra la ruta):
+## Paso 5. Tareas automáticas
+En Hostinger: **Avanzado > Cron Jobs** (cambia USUARIO por el tuyo; Hostinger te muestra la ruta).
+
+**Cada 15 minutos**, para revisar en Wompi los pagos que no llegaron por aviso:
+
+    /usr/bin/php /home/USUARIO/public_html/purofiltro-api/reconciliar.php
+
+**Una vez al día**, para los recordatorios de cambio de filtro:
 
     /usr/bin/php /home/USUARIO/public_html/purofiltro-api/recordatorios.php
 

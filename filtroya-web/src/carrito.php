@@ -22,6 +22,7 @@ cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/ca
         <label class="f2 ancho"><span>Modelo del nevecón (opcional)</span><input id="c-modelo" maxlength="40" placeholder="Nos ayuda a confirmar que le sirve"></label>
       </div>
       <div id="entrega" class="entrega"></div>
+      <label class="check2"><input type="checkbox" id="c-acepto" required><span><b>Acepto los <a href="/terminos.php" target="_blank" rel="noopener">términos y condiciones</a>, la <a href="/garantia-y-retracto.php" target="_blank" rel="noopener">garantía y el derecho de retracto</a> y autorizo el tratamiento de mis datos</b> según la <a href="/privacidad.php" target="_blank" rel="noopener">política de privacidad</a>.</span></label>
       <label class="check2"><input type="checkbox" id="c-rec"><span><b>Recuérdame por correo cuando toque cambiar el filtro</b> (cada 6 meses). Opcional.</span></label>
     </section>
   </div>
@@ -95,13 +96,13 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#pagar").addEventListener("click", async () => {
     const v = id => $("#" + id).value.trim(), err = $("#err");
     const cli = { nombre: v("c-nombre"), tel: v("c-tel").replace(/\D/g, "").replace(/^57(?=3\d{9}$)/, ""), email: v("c-email"), ciudad: $("#c-ciudad").value, barrio: v("c-barrio"), dir: v("c-dir"), indicaciones: v("c-ind"), modelo: v("c-modelo"), recordar: $("#c-rec").checked };
-    const falta = [cli.nombre.length < 3 && "tu nombre", !/^3\d{9}$/.test(cli.tel) && "un celular válido (10 dígitos que empiezan por 3)", !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cli.email) && "un correo válido", !cli.ciudad && "la ciudad", !cli.barrio && "el barrio", cli.dir.length < 5 && "la dirección"].filter(Boolean);
+    const falta = [cli.nombre.length < 3 && "tu nombre", !/^3\d{9}$/.test(cli.tel) && "un celular válido (10 dígitos que empiezan por 3)", !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cli.email) && "un correo válido", !cli.ciudad && "la ciudad", !cli.barrio && "el barrio", cli.dir.length < 5 && "la dirección", !$("#c-acepto").checked && "aceptar los términos y la política de datos"].filter(Boolean);
     if (falta.length) { err.textContent = "Falta " + falta.join(", ") + "."; return; }
     const b = $("#pagar"), old = b.textContent; b.disabled = true; b.textContent = "Abriendo el pago seguro…"; err.textContent = "";
     ls.set("fy_cliente", { nombre: cli.nombre, tel: cli.tel, email: cli.email, barrio: cli.barrio, dir: cli.dir, recordar: cli.recordar });
     try {
       const L = lineas(), t = total() + (C.pago_link ? 0 : instalacion());
-      const r = await fetch("/api/pedido.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: L.map(l => ({ pid: l.pid, pack: !!l.pack, cant: l.cant })), total: t, entrega, cliente: cli }) });
+      const r = await fetch("/api/pedido.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ acepto: true, items: L.map(l => ({ pid: l.pid, pack: !!l.pack, cant: l.cant })), total: t, entrega, cliente: cli }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.url) throw new Error(j.mensaje || "No se pudo crear el pedido. Intenta de nuevo.");
       const cambio = new Date(); cambio.setMonth(cambio.getMonth() + 6);

@@ -9,6 +9,11 @@ if ($raw === false || strlen($raw) > 20000) fail('Petición no válida.');
 $b = json_decode($raw, true);
 if (!is_array($b)) fail('Petición no válida.');
 
+// Solo se aceptan pedidos que salen de esta misma página (evita que otro sitio los cree por ti)
+$origen = (string) ($_SERVER['HTTP_ORIGIN'] ?? '');
+if ($origen !== '' && parse_url($origen, PHP_URL_HOST) !== parse_url(base_url(), PHP_URL_HOST)) fail('Origen no permitido.', 403);
+if (empty($b['acepto'])) fail('Acepta los términos y la política de datos para continuar.');
+
 $cat = catalogo();
 // Carrito: varias líneas. (Un solo producto con pid/cantidad/pack.)
 $items = is_array($b['items'] ?? null) ? $b['items']
@@ -61,7 +66,7 @@ db()->prepare('INSERT INTO pedidos (ref, creado, pid, producto, refprod, unidade
     $ref, date('c'), $C['lineas'][0]['pid'], $C['lineas'][0]['nombre'] . (count($C['lineas']) > 1 ? ' y ' . (count($C['lineas']) - 1) . ' más' : ''),
     implode(', ', array_unique(array_column($C['lineas'], 'ref'))), $C['unidades'], (int) in_array(true, array_column($C['lineas'], 'pack'), true), $total, $entrega,
     $cli['ciudad'], $cli['nombre'], $cli['email'], $cli['tel'], $cli['barrio'], $cli['dir'], $cli['indicaciones'], $cli['modelo'], !empty($c['recordar']) ? 1 : 0, $ip]);
-db()->prepare('UPDATE pedidos SET items = ? WHERE ref = ?')->execute([json_encode($C['lineas'], JSON_UNESCAPED_UNICODE), $ref]);
+db()->prepare('UPDATE pedidos SET items = ?, acepto_en = ? WHERE ref = ?')->execute([json_encode($C['lineas'], JSON_UNESCAPED_UNICODE), date('c'), $ref]);
 
 if ($link !== '') {
     // Con link de pago el pedido no se marca solo como pagado: te avisamos para que revises el pago en tu panel de Wompi

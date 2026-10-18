@@ -15,6 +15,8 @@ Las usa marcas_exclusivas.generar_marca.
 import datetime
 import html
 
+import marcas_contenido
+
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
 CIUDADES_SEO = 999  # todas las ciudades de la lista
@@ -45,7 +47,8 @@ def rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO):
             modelos.setdefault(norm(m), (m, p, f"{base}filtro-nevera-{slug(m)}/"))
     ciudades = {c[0]: (c, f"{base}filtro-nevera-{s}-{slug(c[0])}/") for c in CIUDADES_CO[:CIUDADES_SEO]}
     hub = f"{base}filtros-{s}-por-ciudad/"
-    return {"temas": temas, "refs": refs, "modelos": modelos, "ciudades": ciudades, "hub": hub}
+    extra = marcas_contenido.rutas(base, slug) if marca == "Whirlpool" else None
+    return {"temas": temas, "refs": refs, "modelos": modelos, "ciudades": ciudades, "hub": hub, "extra": extra}
 
 
 def generar(R, escribir, dir_, ctx, h):
@@ -267,6 +270,8 @@ def generar(R, escribir, dir_, ctx, h):
             ("¿El envío tiene costo?", "No, el envío es gratis y llega con número de guía.")],
            miga_nombre="Envíos por ciudad")
 
+    if R.get("extra"):
+        marcas_contenido.generar(pagina, ctx, h, R)
     return hechas
 
 
