@@ -134,6 +134,18 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.93);backdro
 header .w{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:68px}
 .marca{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
 .marca svg{width:34px;height:34px;flex:0 0 auto}.marca b{display:block;font-size:18px;letter-spacing:-.01em;line-height:1.1}.marca small{display:block;font-size:12px;font-weight:700;color:var(--eye);letter-spacing:.04em;text-transform:uppercase;line-height:1.2}
+
+.card .im,.foto{position:relative}
+.lupa-btn{position:absolute;right:12px;top:12px;z-index:2;width:46px;height:46px;border-radius:50%;border:0;background:var(--pri);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 20px -6px rgba(18,23,38,.55);transition:transform .15s}
+.lupa-btn:hover{transform:scale(1.08)}.lupa-btn:focus-visible,.lupa-x:focus-visible{outline:3px solid var(--acento);outline-offset:2px}
+dialog.lupa{border:0;padding:0;border-radius:24px;width:min(680px,calc(100% - 24px));max-height:calc(100dvh - 24px);background:#fff;color:var(--ink);box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+dialog.lupa::backdrop{background:rgba(10,14,24,.62);backdrop-filter:blur(3px)}
+.lupa-in{padding:26px 24px 24px;display:flex;flex-direction:column;gap:14px;overflow:auto;max-height:calc(100dvh - 24px)}
+.lupa-x{position:sticky;top:0;align-self:flex-end;margin-bottom:-34px;z-index:3;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:26px;line-height:1;cursor:pointer;color:var(--ink)}
+.lupa-top{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:center}.lupa-top img{width:130px;height:130px;object-fit:contain;background:var(--panel);border-radius:18px}
+.lupa-top h3{margin:2px 0 6px;font-size:21px}.lupa-top p{margin:0;color:var(--muted);font-size:14.5px}
+.lupa-in h4{margin:6px 0 0;font-size:16px}
+@media (max-width:520px){.lupa-top{grid-template-columns:90px 1fr}.lupa-top img{width:90px;height:90px}.lupa-in{padding:22px 16px 18px}}
 header .mnav{border-top:1px solid var(--line)}
 .mnav .w{display:flex;align-items:center;gap:6px;overflow-x:auto;white-space:nowrap;padding-top:8px;padding-bottom:8px;scrollbar-width:thin}
 .mnav a{flex:none;text-decoration:none;color:var(--ink);font-size:14px;font-weight:600;padding:7px 13px;border-radius:999px;background:#fff;border:1px solid var(--line)}
@@ -344,6 +356,8 @@ def script(marca, cfg, con_picks=False, con_sintomas=False, total_sintomas=0):
   // Conversión «whatsapp» (la misma de la tienda) en Google Tag Manager, con el botón que se tocó
   document.addEventListener("click", e => {{ const a = e.target.closest('a[href*="wa.me/"]'); if (a) dataLayer.push({{ event: "whatsapp", ubicacion: a.dataset.wa || "enlace", marca: MARCA, pagina: location.pathname }}); }}, true);
   document.getElementById("anio").textContent = new Date().getFullYear();
+  document.querySelectorAll("[data-lupa]").forEach(b => b.addEventListener("click", () => {{ const d = document.getElementById(b.dataset.lupa); if (d && d.showModal) d.showModal(); }}));
+  document.querySelectorAll("dialog.lupa").forEach(d => {{ d.addEventListener("click", e => {{ if (e.target === d || e.target.closest("[data-cerrar]")) d.close(); }}); }});
 """
     if con_picks:
         s += """
@@ -439,6 +453,39 @@ def detalle_instalacion(p, marca, cfg):
   </details>'''
 
 
+ICONO_LUPA = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/><path d="M10.5 8v5M8 10.5h5" stroke-width="2"/></svg>'
+
+
+def lupa_btn(p):
+    return f'<button type="button" class="lupa-btn" data-lupa="lupa-{p["id"]}" aria-label="Ver especificaciones y cómo se instala el {esc(p["largo"])}">{ICONO_LUPA}</button>'
+
+
+def lupa_dialog(p, marca, cfg):
+    d = p["datos"]
+    n = cfg["whatsapp"]
+    msg = f'Hola, quiero el precio de hoy del {p["largo"]} para mi nevecón {marca}, con pago contra entrega.'
+    otras = [r for r in p["refs"] if r != p["ref"]]
+    filas = [("Marca", marca), ("Referencia", p["ref"])]
+    if otras:
+        filas.append(("También aparece como", ", ".join(otras)))
+    filas += [("Tipo", "Externo, va en la manguera del agua" if p["externo"] else "Interno, va dentro del nevecón"),
+              ("Dónde va", d["donde"]), ("Tiempo de cambio", d["tiempo"]), ("Herramientas", d["herramientas"]), ("Se cambia", "Cada 6 meses, o antes si el agua cambia de sabor")]
+    if p.get("modelos"):
+        filas.append(("Nevecones que lo usan", ", ".join(p["modelos"][:8]) + (" y otros" if len(p["modelos"]) > 8 else "")))
+    dl = "".join(f"<dt>{esc(a)}</dt><dd>{esc(b)}</dd>" for a, b in filas)
+    return f'''<dialog class="lupa" id="lupa-{p["id"]}" aria-label="{esc(p["largo"])}">
+    <div class="lupa-in">
+      <button type="button" class="lupa-x" data-cerrar aria-label="Cerrar">&times;</button>
+      <div class="lupa-top"><picture><source srcset="/purofiltro-img/{p["id"]}-400.webp" type="image/webp"><img src="/purofiltro-img/{p["id"]}.jpg" alt="{esc(p["largo"])}" width="400" height="400" loading="lazy"></picture>
+        <div><span class="eye">Para nevecón {esc(marca)}</span><h3>{esc(p["largo"])}</h3><p>{esc((p.get("desc") or "").split(". ")[0])}.</p></div></div>
+      <h4>Especificaciones</h4><dl class="datos">{dl}</dl>
+      <h4>Cómo se instala</h4><ol class="pasos2">{"".join(f"<li>{esc(x)}</li>" for x in d["pasos"])}</ol>
+      <div class="reset"><b>Último paso:</b> {esc(d["reset"])}</div>
+      <div class="acc2"><a class="btn borde" href="/purofiltro-filtro/{p["slug"]}/">Ver la ficha completa</a><a class="btn wa" data-wa="lupa" href="{esc(wa(n, msg))}" target="_blank" rel="noopener">{ICONO_WA}Pedirlo contra entrega</a></div>
+    </div>
+  </dialog>'''
+
+
 def bloque_entrega():
     return sec(f'''<div class="entrega">{figura("entrega")}<div>{cab("Así de fácil", "Pides hoy, pagas cuando te llega")}<div class="pasos">
     <div class="paso"><h3>Escríbenos</h3><p>Por WhatsApp, con el filtro que tocaste o una foto del tuyo.</p></div>
@@ -467,7 +514,7 @@ def pagina_marca(marca, cfg, ps, ciud):
     tarjetas = "".join(f'''
       <article class="card">
         <span class="tipo">{"Externo · manguera" if p["externo"] else "Interno"}</span>
-        <div class="im"><picture><source srcset="/purofiltro-img/{p["id"]}-400.webp" type="image/webp"><img src="/purofiltro-img/{p["id"]}.jpg" alt="{esc(p["largo"])} para nevecón {esc(marca)}" width="400" height="400" loading="lazy"></picture><span class="cod-card">💵 Paga contra entrega</span></div>
+        <div class="im"><picture><source srcset="/purofiltro-img/{p["id"]}-400.webp" type="image/webp"><img src="/purofiltro-img/{p["id"]}.jpg" alt="{esc(p["largo"])} para nevecón {esc(marca)}" width="400" height="400" loading="lazy"></picture>{lupa_btn(p)}<span class="cod-card">💵 Paga contra entrega</span></div>
         <div class="tx">
           <h3><a href="/purofiltro-filtro/{p["slug"]}/">{esc(p["largo"])}</a></h3>
           <span class="ref">Ref. {esc(p["ref"])}{(" · también " + esc(", ".join([r for r in p["refs"] if r != p["ref"]][:2]))) if len(p["refs"]) > 1 else ""}</span>
@@ -476,6 +523,7 @@ def pagina_marca(marca, cfg, ps, ciud):
           <a class="mas" href="/purofiltro-filtro/{p["slug"]}/">Cómo se instala y cuándo cambiarlo →</a>
           <div class="pie-card"><span>💵 Pagas al recibir</span><span>🚚 {envio}</span></div>
         </div>
+        {lupa_dialog(p, marca, cfg)}
       </article>''' for p in ps)
     elegir = "".join(f'''<button type="button" class="pick" data-msg="{esc(f'Hola, mi filtro se parece al {p["largo"]}. ¿Me confirman si es el de mi nevecón {marca} y el precio de hoy con pago contra entrega?')}"><img src="/purofiltro-img/{p["id"]}-400.webp" alt="" width="120" height="120" loading="lazy"><b>{esc(p["ref"])}</b><small>{"Va en la manguera" if p["externo"] else "Va adentro"}</small></button>''' for p in ps)
     preguntas = [
@@ -558,7 +606,7 @@ def pagina_ciudad(marca, cfg, ps, ciudad, depto, ciud):
     tarjetas = "".join(f'''
       <article class="card">
         <span class="tipo">{"Externo · manguera" if p["externo"] else "Interno"}</span>
-        <div class="im"><picture><source srcset="/purofiltro-img/{p["id"]}-400.webp" type="image/webp"><img src="/purofiltro-img/{p["id"]}.jpg" alt="{esc(p["largo"])} para nevecón {esc(marca)}" width="400" height="400" loading="lazy"></picture></div>
+        <div class="im"><picture><source srcset="/purofiltro-img/{p["id"]}-400.webp" type="image/webp"><img src="/purofiltro-img/{p["id"]}.jpg" alt="{esc(p["largo"])} para nevecón {esc(marca)}" width="400" height="400" loading="lazy"></picture>{lupa_btn(p)}</div>
         <div class="tx">
           <h3><a href="/purofiltro-filtro/{p["slug"]}/">{esc(p["largo"])}</a></h3>
           <span class="ref">Ref. {esc(p["ref"])}</span>
@@ -566,6 +614,7 @@ def pagina_ciudad(marca, cfg, ps, ciudad, depto, ciud):
           <a class="mas" href="/purofiltro-filtro/{p["slug"]}/">Cómo se instala y cuándo cambiarlo →</a>
           <div class="pie-card"><span>💵 Pagas al recibir</span><span>🚚 {envio}</span></div>
         </div>
+        {lupa_dialog(p, marca, cfg)}
       </article>''' for p in ps)
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "WebPage", "name": titulo, "url": BASE + ruta, "inLanguage": "es-CO", "description": desc},
@@ -626,7 +675,7 @@ def pagina_producto(p, marca, cfg, ps):
     c = cabeza(marca, cfg, titulo, desc, ruta, ld, f"/purofiltro-img/{p['id']}.jpg")
     c += f'''<div class="w"><nav class="migas"><a href="/">Inicio</a> › <a href="/purofiltro-marca/{slug(marca)}/">Filtros {esc(marca)}</a> › {esc(p["largo"])}</nav></div>
 <section class="sec" style="padding-top:22px"><div class="w pdp">
-  <div class="foto"><picture><source srcset="/purofiltro-img/{p["id"]}.webp" type="image/webp"><img src="/purofiltro-img/{p["id"]}.jpg" alt="{esc(p["largo"])} para nevecón {esc(marca)}" width="600" height="600" fetchpriority="high"></picture></div>
+  <div class="foto"><picture><source srcset="/purofiltro-img/{p["id"]}.webp" type="image/webp"><img src="/purofiltro-img/{p["id"]}.jpg" alt="{esc(p["largo"])} para nevecón {esc(marca)}" width="600" height="600" fetchpriority="high"></picture>{lupa_btn(p)}{lupa_dialog(p, marca, cfg)}</div>
   <div class="info">
     <span class="eye">Filtro de agua para nevecón {esc(marca)} · {"Externo, va en la manguera" if p["externo"] else "Interno"}</span>
     <h1>{esc(p["largo"])}</h1>
