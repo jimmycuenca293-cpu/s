@@ -21,6 +21,7 @@ import unicodedata
 
 import marcas_exclusivas
 import paginas_seo
+import seo_busquedas
 import instalacion
 
 AQUI = pathlib.Path(__file__).resolve().parent
@@ -286,6 +287,7 @@ nav.bnav{grid-template-columns:repeat(2,1fr)!important}
 .medios{display:flex;flex-wrap:wrap;gap:6px}.medios span{border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--ink);background:var(--panel)}
 """
 
+home_seo, home_faq = seo_busquedas.home_bloque(CATALOGO, MARCAS, slug, ubic, CIUDADES_CO)
 marca_ld = [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__/filtro/{p['slug']}/", "name": p["nombre_largo"]} for i, p in enumerate(CATALOGO)]
 index_php = f"""<?php require __DIR__ . '/partes.php'; $S = sitio(); $n = $S['negocio']; ?>
 <!doctype html>
@@ -293,10 +295,11 @@ index_php = f"""<?php require __DIR__ . '/partes.php'; $S = sitio(); $n = $S['ne
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Filtros de agua para nevecón Samsung, LG, Whirlpool y GE | Envío gratis | <?= h($n['nombre']) ?></title>
-<meta name="description" content="Filtros de agua para nevecón Samsung, LG, Whirlpool EveryDrop y GE. Envío gratis a toda Colombia en 2 a 3 días hábiles. Paga con tarjeta, PSE o Nequi.">
+<title>Filtros de agua para nevera y nevecón Samsung, LG, Whirlpool y GE | Envío gratis Colombia</title>
+<meta name="description" content="Compra el filtro de agua de tu nevera o nevecón Samsung, LG, Whirlpool EveryDrop y GE. Precios, referencias, cómo instalarlo y cada cuánto cambiarlo. Envío gratis a toda Colombia. Paga con tarjeta, PSE o Nequi.">
+<meta name="keywords" content="filtro de agua para nevera, filtro de nevecón, filtro nevera Samsung, filtro nevera LG, filtro Whirlpool EveryDrop, filtro GE MWF, precio filtro de nevera, cada cuánto cambiar el filtro de la nevera, luz del filtro, filtro de refrigerador Colombia">
 <link rel="canonical" href="<?= h($S['base']) ?>/">
-<meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevecón | <?= h($n['nombre']) ?>"><meta property="og:description" content="Envío gratis a toda Colombia. Pago seguro en línea."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/lg-1000-o.jpg"><meta property="og:locale" content="es_CO">
+<meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevera y nevecón | Envío gratis a toda Colombia"><meta property="og:description" content="Envío gratis a toda Colombia. Pago seguro en línea."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/lg-1000-o.jpg"><meta property="og:locale" content="es_CO">
 <meta name="theme-color" content="#0a2a2e"><link rel="icon" href="/img/icono.svg" type="image/svg+xml">
 <?= verificacion_html() . analytics_html() ?>
 <script>window.FY_WA = <?= json_encode((strlen($w = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? ''))) === 10 ? '57' : '') . $w) ?>;</script>
@@ -304,7 +307,8 @@ index_php = f"""<?php require __DIR__ . '/partes.php'; $S = sitio(); $n = $S['ne
 {json.dumps({"@context": "https://schema.org", "@graph": [
     {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/lg-1000-o.jpg", "areaServed": {"@type": "Country", "name": "Colombia"}, "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi", "sameAs": "__SAMEAS__"},
     {"@type": "WebSite", "name": "__NOMBRE__", "url": "__BASE__/", "inLanguage": "es-CO"},
-    {"@type": "ItemList", "name": "Filtros de agua para nevecón", "itemListElement": marca_ld}]}, ensure_ascii=False)}
+    {"@type": "ItemList", "name": "Filtros de agua para nevecón", "itemListElement": marca_ld},
+    paginas_seo.faq_ld(home_faq)]}, ensure_ascii=False)}
 JSON;
 echo str_replace(['__BASE__', '__NOMBRE__', '"__SAMEAS__"'], [$S['base'], addslashes($n['nombre']), json_encode(array_values(array_filter((array) (cfg()['redes'] ?? []))), JSON_UNESCAPED_SLASHES)], $ld); ?></script>
 <link rel="alternate" type="text/plain" title="Resumen para asistentes de IA" href="/llms.txt">
@@ -312,11 +316,13 @@ echo str_replace(['__BASE__', '__NOMBRE__', '"__SAMEAS__"'], [$S['base'], addsla
 <script src="/carrito.js" defer></script>
 <style>{CSS_WEB}
 {CSS_COMUN}
+{seo_busquedas.CSS_HOME}
 footer.pie{{margin:24px 0 0;padding-bottom:84px}}footer.pie .medios{{display:flex;flex-wrap:wrap;gap:6px}}footer.pie .medios span{{border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700}}</style>
 </head>
 <body>
 <?= gtm_body_html() . anuncio_html() ?>
 {app}
+{home_seo}
 <?= pie_html() ?>
 </body>
 </html>
@@ -373,7 +379,7 @@ for p in CATALOGO:
     otros = [x for x in CATALOGO if x["marca"] == p["marca"] and x["id"] != p["id"]][:6]
     donde = "Va en la manguera de agua, por fuera del nevecón." if ubic(p) == "externo" else "Va por dentro del nevecón."
     ahorro = p["precio"] * 2 - p["pack"]
-    titulo = f'{p["nombre_largo"]} | Envío gratis a toda Colombia' if len(p['nombre_largo']) < 34 else f'{p["nombre_largo"]} | Envío gratis'
+    titulo = f'{p["nombre_largo"]} para nevera | Precio y envío gratis' if len(p['nombre_largo']) < 38 else f'{p["nombre_largo"]} | Precio y envío gratis'
     desc = (f'Compra el {p["nombre_largo"]} a {cop(p["precio"])} con envío gratis a toda Colombia en 2 días hábiles'
             + (f'. También aparece como {", ".join(alias[:3])}' if alias else "") + ". Paga con tarjeta, PSE o Nequi.")
     ld = {"@context": "https://schema.org", "@graph": [
@@ -472,6 +478,11 @@ for marca in MARCAS:
 <h1>Filtros de agua para nevecón {esc(marca)}</h1>
 <p>{esc(INTRO.get(marca, ""))} Todos con <b>envío gratis</b> a toda Colombia y pago seguro en línea.</p>
 <div class="grid">{"".join(tarjeta(p) for p in ps)}</div>
+<section class="caja"><h2>Filtro de agua para nevera {esc(marca)}: lo que debes saber</h2>
+<p>Las neveras y nevecones {esc(marca)} con dispensador de agua o máquina de hielo usan un filtro que se cambia <b>cada 6 meses</b>. Cada modelo usa una referencia propia ({esc(", ".join(p["ref"] for p in ps))}), así que lo importante es comprar la que corresponde a tu nevera: la encuentras impresa en el filtro viejo o por el modelo del refrigerador.</p>
+<p>Aquí tienes los precios, cómo cambiarlo paso a paso, cómo apagar la luz del filtro y las causas de los problemas más comunes.</p>
+<div class="chips">{"".join(f'<a href="{r}">{esc(t)}</a>' for r, t in seo_busquedas.temas(marca, s, any(ubic(p) == "externo" for p in ps)))}</div></section>
+{seo_busquedas.ciudades_chips(marca, s, slug, CIUDADES_CO)}
 <section class="caja"><h2>¿Cuál es el mío?</h2><p>Saca el filtro viejo y busca la referencia impresa, o mira el modelo en la etiqueta de adentro del nevecón. Escríbelo en el <a href="/#catalogo">buscador de la tienda</a> y te mostramos el filtro que le sirve.</p></section>
 <?php pie(); ?>
 """

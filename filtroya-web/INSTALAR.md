@@ -4,7 +4,7 @@ La tienda vende sola: el cliente escoge el filtro, paga en Wompi y a ti te llega
 y todos los datos para despacharlo. Nada llega a WhatsApp.
 
 ## Lo que necesitas
-1. **Hostinger** con un plan que tenga PHP (cualquier plan de hosting web) y **un dominio** (ej. filtrosdeaguanevecon.com).
+1. **Hostinger** con un plan que tenga PHP (cualquier plan de hosting web) y **un dominio** (ej. filtrosnevecones.com).
 2. **Cuenta de comercio en Wompi** (wompi.com): la abres con tu cédula o RUT y tu cuenta bancaria.
 
 ## Paso 1. Subir la tienda
@@ -18,7 +18,7 @@ En Hostinger: **Correos > Cuentas de correo** y crea `pedidos@tudominio.com`. De
 ## Paso 3. Poner tus datos y llaves
 1. Dentro de `public_html/purofiltro-api/` copia `config.sample.php` y ponle de nombre `config.php`.
 2. Ábrelo (clic derecho > Editar) y llena:
-   - `dominio`: tu dominio con https, ej. `https://filtrosdeaguanevecon.com`
+   - `dominio`: tu dominio con https, ej. `https://filtrosnevecones.com`
    - `negocio`: tu nombre o el de la empresa, cédula o NIT, dirección, teléfono, correo y horario.
    - `correo_avisos`: el correo donde quieres recibir los pedidos pagados (puede ser tu Gmail).
    - `correo_remitente`: `pedidos@tudominio.com` (el del paso 2).
@@ -31,7 +31,7 @@ En el panel de Wompi, entra a **Desarrolladores**:
 1. Copia la **llave pública** (`pub_test_...` para pruebas, `pub_prod_...` para cobrar de verdad) en `public_key`.
 2. Copia el **secreto de integridad** en `integridad`.
 3. Copia el **secreto de eventos** en `eventos`.
-4. En **URL de eventos** pon: `https://filtrosdeaguanevecon.com/purofiltro-api/wompi.php`
+4. En **URL de eventos** pon: `https://filtrosnevecones.com/purofiltro-api/wompi.php`
    (así Wompi avisa a tu tienda apenas el cliente paga, aunque cierre el navegador).
 
 Primero prueba con las llaves de prueba (`pub_test_`): haz una compra con los datos de prueba que da Wompi

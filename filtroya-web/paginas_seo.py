@@ -8,6 +8,7 @@ import html
 import json
 
 import instalacion
+import seo_busquedas
 
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
@@ -272,6 +273,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 <h2>¿Y si el agua sigue saliendo mal?</h2>
 <p>Reiniciar la luz no cambia el filtro. Si el agua sabe mal o sale despacio, mira <a href="/guia/por-que-el-agua-del-nevecon-sabe-mal/">por qué el agua del nevecón sabe mal</a>.</p>"""),
     ]
+    GUIAS += seo_busquedas.guias(CATALOGO, MARCAS, slug, ubic)
     for s, titulo, desc, cuerpo_g in GUIAS:
         ruta = f"/guia/{s}/"
         mg, mg_ld = miga(("Inicio", "/"), ("Guías", "/guia/"), (titulo, None))
@@ -429,4 +431,6 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
              [mg_ld], f'{mg}<h1>¿Qué filtro usa mi nevecón?</h1><p>Busca el modelo que aparece en la etiqueta de adentro de tu nevecón.</p>{bloques}'
              '<p class="m">¿No está tu modelo? Mira la guía <a href="/guia/como-saber-que-filtro-usa-mi-nevecon/">cómo saber qué filtro usa mi nevecón</a>.</p>')
 
-    return {"paginas": paginas, "rutas_ciudad": rutas_ciudad, "refs": refs_dir, "modelos": modelos_dir, "guias": [(f"/guia/{s}/", t) for s, t, _, _ in GUIAS]}
+    temas = seo_busquedas.generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, MARCAS, slug, norm, ubic, CIUDADES_CO, rutas_ciudad, modelos_dir)
+
+    return {"temas": temas, "paginas": paginas, "rutas_ciudad": rutas_ciudad, "refs": refs_dir, "modelos": modelos_dir, "guias": [(f"/guia/{s}/", t) for s, t, _, _ in GUIAS]}
