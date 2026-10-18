@@ -33,6 +33,7 @@ MARCAS_INFO = {
         "etiqueta": "El modelo está en una etiqueta dentro del refrigerador, en una pared lateral o en el techo. En los nevecones Samsung suele empezar por RF, RS o RH (por ejemplo, RF28HMEDBSR).",
         "aviso": "En los nevecones Samsung el indicador del filtro cambia de color o aparece «Filter» o «Replace Filter» en el panel o en la pantalla cuando ya toca cambiarlo.",
         "lineas": "French door, side by side, Bespoke y Family Hub",
+        "externos": [('Samsung Colombia', 'https://www.samsung.com/co/', 'productos y soporte de la marca'), ('Superintendencia de Industria y Comercio', 'https://www.sic.gov.co/', 'derechos del consumidor en Colombia')],
     },
     "LG": {
         "tema": "#a50034", "fuentes": FUENTES + "family=Outfit:wght@400;500;600;700;800&display=swap",
@@ -40,6 +41,7 @@ MARCAS_INFO = {
         "etiqueta": "El modelo está en una etiqueta dentro del refrigerador, en la pared lateral o detrás del cajón de las verduras. En los nevecones LG suele empezar por LF, LM, LR, LS o GR.",
         "aviso": "En los nevecones LG se prende la luz «Replace Filter» o «Filter» en el panel cuando ya toca cambiarlo.",
         "lineas": "French door, side by side e InstaView",
+        "externos": [('LG Colombia', 'https://www.lg.com/co/', 'productos y soporte de la marca'), ('Superintendencia de Industria y Comercio', 'https://www.sic.gov.co/', 'derechos del consumidor en Colombia')],
     },
     "Whirlpool": {
         "tema": "#17181b", "fuentes": FUENTES + "family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600;700;800&display=swap",
@@ -47,6 +49,7 @@ MARCAS_INFO = {
         "etiqueta": "El modelo está en una etiqueta dentro del refrigerador, en la pared lateral de arriba. En los nevecones Whirlpool suele empezar por WRF, WRS o WRX; en Maytag por MFI o MSS y en KitchenAid por KRF.",
         "aviso": "En los nevecones Whirlpool la luz del filtro pasa a «Order» (pide el filtro) y luego a «Replace» (cámbialo ya).",
         "lineas": "French door, side by side y de congelador abajo",
+        "externos": [('Whirlpool Colombia', 'https://www.whirlpool.com.co/', 'productos y soporte de la marca'), ('EveryDrop', 'https://www.everydropwater.com/', 'los filtros de agua EveryDrop'), ('Superintendencia de Industria y Comercio', 'https://www.sic.gov.co/', 'derechos del consumidor en Colombia')],
     },
     "GE": {
         "tema": "#0f3d7a", "fuentes": FUENTES + "family=Lexend:wght@400;500;600;700;800&display=swap",
@@ -54,6 +57,7 @@ MARCAS_INFO = {
         "etiqueta": "El modelo está en una etiqueta dentro del refrigerador, en la pared lateral o en el techo. En los nevecones GE suele empezar por GFE, GNE, GSS, PFE, PYE o CFE.",
         "aviso": "En los nevecones GE se prende la luz «Replace Filter» o «Reset Water Filter» en el panel cuando ya toca cambiarlo.",
         "lineas": "French door y side by side",
+        "externos": [('GE Appliances', 'https://www.geappliances.com/', 'electrodomésticos GE'), ('Superintendencia de Industria y Comercio', 'https://www.sic.gov.co/', 'derechos del consumidor en Colombia')],
     },
 }
 
@@ -73,6 +77,9 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     _dup = {x for x in _rutas if _rutas.count(x) > 1}
     assert not _dup, f"rutas repetidas en {marca}: {_dup}"
     M["guias"] = [[r, n] for r, n in R["temas"]]
+    M["ciudades"] = [[n, r] for n, (_, r) in list(R["ciudades"].items())[:14]]
+    M["hub"] = R["hub"]
+    M["externos"] = [[n, u] for n, u, _ in info.get("externos", [])]
     ctx = dict(marca=marca, info=info, ps=ps, base=base, M=M, slug=slug, norm=norm, ubic=ubic, foto=foto, php_str=php_str, ciudades=[c[0] for c in CIUDADES_CO[:30]], R=R, datos=instalacion.datos)
     rutas = [base]
     escribir(dir_ / "index.php", portada(**ctx))
@@ -152,7 +159,7 @@ def verificar(marca):
 def preguntas_marca(marca, ps):
     refs = ", ".join(p["ref"] if norm_ok(p) else p["nombre_largo"] for p in ps)
     return [
-        (f"¿Los filtros {marca} son?", f"Sí. Somos distribuidor autorizado {marca} en Colombia: todos los filtros son de fábrica, nuevos y en su empaque sellado. Si quieres, antes de pagar te mandamos fotos reales por WhatsApp."),
+        (f"¿Quién vende estos filtros {marca}?", f"Somos distribuidor autorizado {marca} en Colombia: todos los filtros son de fábrica, nuevos y en su empaque sellado. Si quieres, antes de pagar te mandamos fotos reales por WhatsApp."),
         (f"¿Qué filtro {marca} necesito?", f"Busca la referencia impresa en tu filtro viejo o el modelo de tu nevecón en la etiqueta de adentro y compáralo en la página «¿Cuál es el mío?». Si tienes dudas, mándanos una foto por WhatsApp. Referencias disponibles: {refs}."),
         ("¿Cuánto cuesta el envío?", "Nada. El envío es gratis a toda Colombia y llega en 2 a 3 días hábiles a las principales ciudades; a otros municipios puede tardar un poco más."),
         ("¿Cómo pago?", "En línea, en una página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. El pedido se despacha cuando se confirma el pago."),
@@ -223,7 +230,8 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
 {sec(cab("Mantenimiento", f"¿Cuándo cambiar el filtro de tu nevecón {marca}?", esc(info["aviso"])) + '<ul class="m-ok">' + "".join(f"<li>{esc(x)}</li>" for x in senales) + f'</ul><p style="margin-top:18px"><a href="{base}cambio-e-instalacion/">Cómo instalar cada filtro {esc(marca)}, paso a paso →</a></p>', alt=True)}
 {sec(cab("Así de fácil", "Compra en 3 pasos") + '<div class="m-cols m-num">' + "".join(f'<div class="m-bloque"><h3>{esc(t)}</h3><p>{esc(d)}</p></div>' for t, d in pasos) + "</div>")}
 {sec(cab("Resolvemos tus dudas", f"Preguntas frecuentes sobre filtros {marca}") + faq_h, alt=True, id_="preguntas")}
-{sec(cab("Envíos", f"Enviamos filtros {marca} a toda Colombia", "Envío gratis con número de guía. Llega en 2 a 3 días hábiles a las principales ciudades.") + '<div class="m-chips">' + "".join(f'<a href="{r}">{esc(n)}</a>' for n, (_, r) in R["ciudades"].items()) + '<span>y más municipios</span></div>')}
+{sec(cab("Envíos", f"Enviamos filtros {marca} a toda Colombia", "Envío gratis con número de guía. Llega en 2 a 3 días hábiles a las principales ciudades.") + '<div class="m-chips">' + "".join(f'<a href="{r}">{esc(n)}</a>' for n, (_, r) in list(R["ciudades"].items())[:40]) + f'<a href="{R["hub"]}"><b>Ver las {len(R["ciudades"])} ciudades →</b></a></div>')}
+{sec(cab("Para consultar", f"Fuentes oficiales sobre filtros y nevecones {marca}", "Sitios de la marca y de la autoridad de consumo en Colombia.") + '<div class="m-cols">' + "".join(f'<a class="m-bloque m-guia" href="{esc(u)}" target="_blank" rel="noopener"><h3>{esc(n)} ↗</h3><p>{esc(d[0].upper() + d[1:])}.</p></a>' for n, u, d in info.get("externos", [])) + "</div>")}
 {sec(cab("Guías " + marca, f"Lo que más buscan sobre filtros {marca}") + '<div class="m-cols">' + "".join(f'<a class="m-bloque m-guia" href="{r}"><h3>{esc(n)}</h3><p>Leer →</p></a>' for r, n in R["temas"]) + "</div>", alt=True)}
 {sec(cta_wa(marca))}
 </main>
@@ -304,7 +312,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
 </div></section>
 {sec(cab("Preguntas", f"Preguntas sobre el {p['nombre_largo']}") + faq_h, alt=True)}
 {sec(cab("Más de " + marca, f"Otros filtros {marca}") + '<div class="m-grid">' + "".join(tarjeta(x, base, foto, ubic) for x in otros) + "</div>") if otros else ""}
-{sec(marcas_seo.relacionadas(R, url, marca), alt=True)}
+{sec(marcas_seo.relacionadas(R, url, marca, M, base), alt=True)}
 {sec(cta_wa(marca))}
 <div class="m-barra"><span><small>{esc(nombre)}</small><b>{cop(p["precio"])}</b></span><button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button></div>
 </main>

@@ -20,9 +20,28 @@ function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, stri
         . '<div class="m-anuncio"><span>✔ Distribuidor autorizado ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
         . '<header class="m-top"><div class="m-wrap">'
         . '<a class="m-logo" href="' . h($b) . '" aria-label="Filtros ' . h($M['nombre']) . ', distribuidor autorizado"><span class="m-sello">' . logo_marca_html($M) . '<small>Distribuidor autorizado</small></span></a>'
-        . '<nav class="m-nav"><a href="' . h($b) . '#filtros">Filtros</a><a href="' . h($b) . 'cual-es-mi-filtro/" class="m-ancho">¿Cuál es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/" class="m-ancho">Instalación</a>'
-        . '<a class="m-cart" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a></nav>'
+        . menu_marca($M)
         . '</div></header><main' . ($legado ? ' class="wrap m-legado-main"' : '') . '>';
+}
+
+// Menú del encabezado: desplegables (filtros, guías, ciudades) en computador y menú «hamburguesa» en el celular
+function menu_marca(array $M): string
+{
+    $b = $M['base'];
+    $filtros = '';
+    foreach ($M['productos'] as $p) $filtros .= '<a href="' . h($b . $p[1]) . '/">' . h($p[0]) . '</a>';
+    $guias = '';
+    foreach ($M['guias'] ?? [] as $g) $guias .= '<a href="' . h($g[0]) . '">' . h($g[1]) . '</a>';
+    $ciudades = '';
+    foreach ($M['ciudades'] ?? [] as $c) $ciudades .= '<a href="' . h($c[1]) . '">' . h($c[0]) . '</a>';
+    if (!empty($M['hub'])) $ciudades .= '<a class="m-todas" href="' . h($M['hub']) . '">Ver todas las ciudades →</a>';
+    $cart = '<a class="m-cart" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a>';
+    $dd = fn(string $t, string $links) => $links === '' ? '' : '<div class="m-dd"><a href="#" onclick="return false" aria-haspopup="true">' . $t . ' <i aria-hidden="true">▾</i></a><div class="m-panel">' . $links . '</div></div>';
+    return '<nav class="m-nav" aria-label="Principal">' . $dd('Filtros', $filtros) . $dd('Guías', $guias) . $dd('Ciudades', $ciudades)
+        . '<a class="m-ancho" href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a class="m-ancho" href="' . h($b) . 'cambio-e-instalacion/">Instalación</a>' . $cart
+        . '<details class="m-burger"><summary aria-label="Abrir el menú"><span></span></summary><div class="m-bmenu">'
+        . '<b>Filtros</b>' . $filtros . '<b>Guías</b>' . $guias . '<b>Ciudades</b>' . $ciudades
+        . '<b>Ayuda</b><a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Instalación</a></div></details></nav>';
 }
 
 // Logo de la marca (somos distribuidor autorizado); si no hay logo, el nombre en texto
@@ -47,7 +66,12 @@ function pie_marca(array $M): void
     foreach ($M['productos'] as $p) $h .= '<a href="' . h($b . $p[1]) . '/">' . h($p[0]) . '</a>';
     $h .= '</nav><nav><b>Guías</b>';
     foreach ($M['guias'] ?? [] as $g) $h .= '<a href="' . h($g[0]) . '">' . h($g[1]) . '</a>';
-    $h .= '</nav><nav><b>Ayuda</b><a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál filtro es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Cuándo cambiarlo y cómo instalarlo</a><a href="' . h($b) . '#preguntas">Preguntas frecuentes</a><a href="/carrito.php">Mi carrito</a></nav>'
+    $h .= '</nav><nav><b>Envíos</b>';
+    foreach (array_slice($M['ciudades'] ?? [], 0, 8) as $c) $h .= '<a href="' . h($c[1]) . '">Filtros ' . h($M['nombre']) . ' en ' . h($c[0]) . '</a>';
+    if (!empty($M['hub'])) $h .= '<a href="' . h($M['hub']) . '"><b>Todas las ciudades →</b></a>';
+    $h .= '</nav><nav><b>Ayuda</b><a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál filtro es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Cuándo cambiarlo y cómo instalarlo</a><a href="' . h($b) . '#preguntas">Preguntas frecuentes</a><a href="/carrito.php">Mi carrito</a>';
+    foreach ($M['externos'] ?? [] as $e) $h .= '<a href="' . h($e[1]) . '" target="_blank" rel="noopener">' . h($e[0]) . ' ↗</a>';
+    $h .= '</nav>'
         . '<nav><b>Compra segura</b><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a><a href="/quienes-somos.php">Quiénes somos</a></nav>'
         . '</div><div class="m-wrap m-pie-medios"><span>🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'
         . '<div class="m-wrap m-pie-base"><span>© ' . date('Y') . ' ' . h($n['nombre']) . '. Precios en pesos colombianos con envío incluido.</span>'

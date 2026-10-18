@@ -17,7 +17,7 @@ import html
 
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
-CIUDADES_SEO = 20
+CIUDADES_SEO = 999  # todas las ciudades de la lista
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
 hoy = datetime.date.today()  # ciudades con página propia por marca (las más grandes)
 
@@ -44,7 +44,8 @@ def rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO):
         for m in p["modelos"]:
             modelos.setdefault(norm(m), (m, p, f"{base}filtro-nevera-{slug(m)}/"))
     ciudades = {c[0]: (c, f"{base}filtro-nevera-{s}-{slug(c[0])}/") for c in CIUDADES_CO[:CIUDADES_SEO]}
-    return {"temas": temas, "refs": refs, "modelos": modelos, "ciudades": ciudades}
+    hub = f"{base}filtros-{s}-por-ciudad/"
+    return {"temas": temas, "refs": refs, "modelos": modelos, "ciudades": ciudades, "hub": hub}
 
 
 def generar(R, escribir, dir_, ctx, h):
@@ -63,10 +64,11 @@ def generar(R, escribir, dir_, ctx, h):
             graf.append(ld_extra)
         texto = (h.inicio(M, php_str, titulo, desc, ruta, {"@context": "https://schema.org", "@graph": graf})
                  + f'<div class="m-wrap">{miga_h}</div>'
-                 + h.sec(h.cab(eyebrow, h1, intro, h="h1") + cuerpo + f'<p class="m-mut m-fecha">Actualizado: {MESES[hoy.month - 1]} de {hoy.year}</p>')
+                 + h.sec('<div class="m-layout"><div class="m-main">' + logo_pagina(M, marca) + h.cab(eyebrow, h1, intro, h="h1") + cuerpo
+                         + f'<p class="m-mut m-fecha">Actualizado: {MESES[hoy.month - 1]} de {hoy.year}</p>' + seguir(R, ruta, marca, M, base) + '</div>' + aside(R, M, base, marca, info, ruta) + '</div>')
                  + h.sec(h.cab("Catálogo " + marca, f"Filtros {marca} con envío gratis") + '<div class="m-grid">' + "".join(h.tarjeta(p, base, ctx["foto"], ubic) for p in ps) + "</div>", alt=True)
                  + (h.sec(h.cab("Preguntas", "Preguntas frecuentes") + faq_h) if faq_h else "")
-                 + h.sec(relacionadas(R, ruta, marca), alt=not faq_h)
+                 + h.sec(relacionadas(R, ruta, marca, M, base), alt=not faq_h)
                  + h.sec(h.cta_wa(marca))
                  + "</main>\n<?php pie_marca($M); ?>\n")
         escribir(dir_ / ruta.strip("/") / "index.php", texto)
@@ -142,7 +144,9 @@ def generar(R, escribir, dir_, ctx, h):
            f"Dónde comprar filtros de agua {marca} en Colombia", "Distribuidor autorizado",
            f"Aquí mismo. Somos <b>distribuidor autorizado {esc(marca)}</b> y enviamos filtros a cualquier ciudad o municipio de Colombia, con envío gratis.",
            '<div class="m-cols">' + "".join(f'<div class="m-bloque"><div class="ic">{i}</div><h3>{esc(t)}</h3><p>{esc(d)}</p></div>' for i, t, d in h.verificar(marca)) + "</div>"
-           + f'<h2 style="font-size:22px;margin:28px 0 12px">Cómo reconocer un filtro {esc(marca)} de imitación</h2><ul class="m-ok"><li>El precio es mucho más bajo que el normal.</li><li>La caja viene sin sellar, con letras borrosas o errores de ortografía.</li><li>El filtro no encaja firme o gotea al ponerlo.</li><li>El vendedor no da factura ni datos de contacto.</li></ul>',
+           + f'<h2 style="font-size:22px;margin:28px 0 12px">Cómo reconocer un filtro {esc(marca)} de imitación</h2><ul class="m-ok"><li>El precio es mucho más bajo que el normal.</li><li>La caja viene sin sellar, con letras borrosas o errores de ortografía.</li><li>El filtro no encaja firme o gotea al ponerlo.</li><li>El vendedor no da factura ni datos de contacto.</li></ul>' +
+           '<p class="m-mut" style="margin-top:20px">Fuentes oficiales: ' + ", ".join(f'<a href="{esc(u)}" target="_blank" rel="noopener">{esc(n)}</a> ({esc(d)})' for n, u, d in info.get("externos", [])) + ".</p>"
+           + '<p class="m-mut">Llegamos a <a href="' + R["hub"] + '">todas las ciudades</a>.</p>',
            [(f"¿Venden filtros {marca} en mi ciudad?", "Enviamos a toda Colombia con envío gratis. A las principales ciudades llega en 2 a 3 días hábiles."),
             ("¿Cómo llega el filtro?", "Llega en su caja de fábrica sellada, con la referencia y el código de barras. Si quieres, antes de pagar te mandamos fotos reales por WhatsApp."),
             ("¿Puedo pagar contra entrega?", "No. El pago es en línea, en una página de pago segura, con tarjeta, PSE o Nequi.")])
@@ -225,26 +229,90 @@ def generar(R, escribir, dir_, ctx, h):
                miga_nombre=f"Nevera {m}", ld_extra=h.producto_ld(p, ruta, f"Filtro para nevera {marca} {m}", marca))
 
     # 10. ciudades
+    por_depto = {}
     for nombre, (c, ruta) in R["ciudades"].items():
+        por_depto.setdefault(c[1], []).append((nombre, ruta))
+    for nombre, (c, ruta) in R["ciudades"].items():
+        depto = c[1]
         dias = f"{c[2]} días hábiles" if len(c) > 2 and c[2] else "2 a 3 días hábiles"
+        vecinas = [(n, r) for n, r in por_depto[depto] if n != nombre]
+        refs_txt = ", ".join(p["ref"] for p in ps)
+        servicio = {"@type": "Service", "name": f"Filtros de agua {marca} con envío a {nombre}", "serviceType": "Venta de filtros de agua para nevera",
+                    "provider": {"@id": f"__BASE__{base}#tienda"}, "areaServed": {"@type": "City", "name": nombre, "containedInPlace": {"@type": "AdministrativeArea", "name": depto}}}
         pagina(ruta, f"Filtro nevera {marca} en {nombre} | Envío gratis",
-               f"Filtros de agua {marca} en {nombre}, {c[1]}: llegan en {dias} con envío gratis. Distribuidor autorizado. Paga con tarjeta, PSE o Nequi.",
-               f"Filtro para nevera {marca} en {nombre}", f"{nombre}, {c[1]}",
-               f"Te enviamos el filtro {esc(marca)} a tu casa u oficina en <b>{esc(nombre)}</b>. Llega en <b>{esc(dias)}</b> con envío gratis y número de guía para que sigas el paquete.",
-               '<div class="m-cols m-num">' + "".join(f'<div class="m-bloque"><h3>{esc(t)}</h3><p>{esc(d)}</p></div>' for t, d in [
-                   ("Escoge tu filtro", f"Por la referencia del filtro viejo o el modelo de tu nevera {marca}."),
+               f"Filtros de agua {marca} en {nombre}, {depto}: llegan en {dias} con envío gratis. Distribuidor autorizado. Paga con tarjeta, PSE o Nequi.",
+               f"Filtro para nevera {marca} en {nombre}", f"{nombre}, {depto}",
+               f"Te enviamos el filtro {esc(marca)} a tu casa u oficina en <b>{esc(nombre)}</b> ({esc(depto)}). Llega en <b>{esc(dias)}</b> con envío gratis y número de guía para que sigas el paquete.",
+               '<div class="m-tabla-wrap"><table class="m-tabla"><tbody>'
+               + "".join(f"<tr><th>{esc(a)}</th><td>{esc(b)}</td></tr>" for a, b in [("Ciudad", nombre), ("Departamento", depto), ("Tiempo de entrega", f"Unos {dias}"), ("Costo del envío", "Gratis"),
+                                                                                    ("Referencias disponibles", refs_txt), ("Pago", "Tarjeta, PSE, Nequi o botón Bancolombia")])
+               + '</tbody></table></div><div class="m-cols m-num" style="margin-top:20px">' + "".join(f'<div class="m-bloque"><h3>{esc(t)}</h3><p>{d}</p></div>' for t, d in [
+                   ("Escoge tu filtro", f"Por la referencia del filtro viejo o el modelo de tu nevera {esc(marca)}: mira el <a href=\"{base}cual-es-mi-filtro/\">buscador</a>."),
                    ("Paga en línea", "Con tarjeta, PSE o Nequi en página segura."),
-                   (f"Recíbelo en {nombre}", f"En {dias}, con envío gratis.")]) + "</div>",
+                   (f"Recíbelo en {nombre}", f"En {dias}, con envío gratis. Luego cámbialo con la guía de <a href=\"{base}cambio-e-instalacion/\">instalación</a>.")]) + "</div>"
+               + (f'<h2 style="font-size:22px;margin:28px 0 12px">También enviamos en {esc(depto)}</h2><div class="m-chips">'
+                  + "".join(f'<a href="{r}">{esc(n)}</a>' for n, r in vecinas) + "</div>" if vecinas else ""),
                [(f"¿Cuánto tarda el envío a {nombre}?", f"Unos {dias} después de confirmar el pago."),
                 (f"¿Cuánto cuesta el envío a {nombre}?", "Nada, el envío es gratis."),
+                (f"¿Qué filtro {marca} necesito en {nombre}?", f"El que corresponde a tu nevera: las referencias son {refs_txt}. Con el modelo o con el filtro viejo te confirmamos cuál es."),
                 (f"¿Tienen tienda física en {nombre}?", "Vendemos en línea y enviamos a toda Colombia; te asesoramos por WhatsApp.")],
-               miga_nombre=f"Envíos a {nombre}")
+               miga_nombre=f"Envíos a {nombre}", ld_extra=servicio)
+    pagina(R["hub"], f"Filtros para nevera {marca} por ciudad | Envío gratis a toda Colombia",
+           f"Enviamos filtros de agua {marca} con envío gratis a {len(R['ciudades'])} ciudades de Colombia: busca la tuya y mira el tiempo de entrega.",
+           f"Filtros {marca} con envío gratis a toda Colombia", "Cobertura",
+           f"Escoge tu ciudad: enviamos el filtro de tu nevera {esc(marca)} a {len(R['ciudades'])} ciudades y municipios, y también a otros lugares de Colombia.",
+           "".join(f'<h2 style="font-size:20px;margin:22px 0 10px">{esc(d)}</h2><div class="m-chips">' + "".join(f'<a href="{r}">{esc(n)}</a>' for n, r in sorted(v)) + "</div>"
+                   for d, v in sorted(por_depto.items())),
+           [(f"¿Envían filtros {marca} a mi ciudad?", "Sí, a toda Colombia. Si tu municipio no aparece, escríbenos y lo enviamos igual."),
+            ("¿El envío tiene costo?", "No, el envío es gratis y llega con número de guía.")],
+           miga_nombre="Envíos por ciudad")
+
     return hechas
 
 
-def relacionadas(R, actual, marca):
+def logo_pagina(M, marca):
+    """Logo de la marca arriba de cada subpágina, con el sello de distribuidor autorizado."""
+    if M.get("logo"):
+        img = f'<img src="{esc(M["logo"])}" alt="{esc(marca)}" width="{int(M.get("logo_w", 200))}" height="{int(M.get("logo_h", 60))}">'
+    else:
+        img = f"<b>{esc(marca)}</b>"
+    return f'<div class="m-pagelogo"><a href="{esc(M["base"])}" aria-label="Filtros {esc(marca)}">{img}</a><span>Distribuidor autorizado en Colombia</span></div>'
+
+
+def aside(R, M, base, marca, info, actual):
+    """Columna lateral de las subpáginas: marca, filtros, guías, ciudades y fuentes oficiales."""
+    filtros = "".join(f'<a href="{esc(base + sl)}/">{esc(n)}</a>' for n, sl in M["productos"])
+    temas = "".join(f'<a href="{r}"{" aria-current=\"page\"" if r == actual else ""}>{esc(t)}</a>' for r, t in R["temas"])
+    ciudades = "".join(f'<a href="{r}">{esc(n)}</a>' for n, (_, r) in list(R["ciudades"].items())[:12])
+    externos = "".join(f'<a href="{esc(u)}" target="_blank" rel="noopener">{esc(n)} ↗</a>' for n, u, _ in info.get("externos", []))
+    return (f'<aside class="m-aside" aria-label="Más sobre filtros {esc(marca)}">'
+            f'<div class="m-acard m-acta">{logo_pagina(M, marca)}<p>Filtros de agua para tu nevecón {esc(marca)}, con envío gratis y pago seguro.</p>'
+            f'<a class="m-btn" href="{esc(base)}#filtros">Ver los filtros {esc(marca)}</a><a class="m-btn sec" href="{esc(base)}cual-es-mi-filtro/">¿Cuál es el mío?</a></div>'
+            f'<div class="m-acard"><h3>Filtros {esc(marca)}</h3><nav>{filtros}</nav></div>'
+            f'<div class="m-acard"><h3>Guías y temas</h3><nav>{temas}</nav></div>'
+            f'<div class="m-acard"><h3>Envíos por ciudad</h3><nav>{ciudades}<a href="{R["hub"]}"><b>Ver todas las ciudades →</b></a></nav></div>'
+            + (f'<div class="m-acard"><h3>Fuentes oficiales</h3><nav>{externos}</nav></div>' if externos else "") + '</aside>')
+
+
+def seguir(R, actual, marca, M, base):
+    """«Sigue leyendo»: tres temas, tres filtros y tres ciudades relacionados con la página."""
+    temas = [t for t in R["temas"] if t[0] != actual]
+    i = [t[0] for t in R["temas"]].index(actual) if actual in [t[0] for t in R["temas"]] else 0
+    tres = [temas[(i + k) % len(temas)] for k in range(3)]
+    prods = M["productos"][:3]
+    ciu = [(n, r) for n, (_, r) in R["ciudades"].items() if r != actual][:3]
+    c = "".join(f'<a class="m-bloque m-guia" href="{r}"><h3>{esc(t)}</h3><p>Leer →</p></a>' for r, t in tres)
+    f = " · ".join(f'<a href="{esc(base + sl)}/">{esc(n)}</a>' for n, sl in prods)
+    ci = " · ".join(f'<a href="{r}">Filtro {esc(marca)} en {esc(n)}</a>' for n, r in ciu)
+    return (f'<div class="m-seguir"><h2>Sigue leyendo</h2><div class="m-cols">{c}</div>'
+            f'<p class="m-mut" style="margin-top:14px">Filtros: {f}. Envíos: {ci}.</p></div>')
+
+
+def relacionadas(R, actual, marca, M, base):
     """Enlaces a las demás subpáginas: ayudan a Google a encontrarlas todas y al cliente a seguir buscando."""
     temas = "".join(f'<a href="{r}">{esc(t)}</a>' for r, t in R["temas"] if r != actual)
-    ciudades = "".join(f'<a href="{r}">{esc(n)}</a>' for n, (_, r) in R["ciudades"].items() if r != actual)
+    ciudades = "".join(f'<a href="{r}">{esc(n)}</a>' for n, (_, r) in list(R["ciudades"].items())[:36] if r != actual)
+    prods = "".join(f'<a href="{esc(base + sl)}/">{esc(n)}</a>' for n, sl in M["productos"])
     return (f'<div class="m-cab"><span class="eyebrow">Te puede servir</span><h2>Más sobre filtros {esc(marca)}</h2></div>'
-            f'<div class="m-chips">{temas}</div><h3 style="margin:22px 0 10px">Envíos por ciudad</h3><div class="m-chips">{ciudades}</div>')
+            f'<div class="m-chips">{temas}</div><h3 style="margin:22px 0 10px">Los filtros {esc(marca)}</h3><div class="m-chips">{prods}</div>'
+            f'<h3 style="margin:22px 0 10px">Envíos por ciudad</h3><div class="m-chips">{ciudades}<a href="{R["hub"]}"><b>Ver las {len(R["ciudades"])} ciudades →</b></a></div>')
