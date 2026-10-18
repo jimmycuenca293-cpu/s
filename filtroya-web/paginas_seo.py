@@ -213,7 +213,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
          "Diferencias entre el filtro de agua interno y el externo del nevecón, y cómo saber cuál lleva el tuyo.",
          f"""<p>Los nevecones con dispensador de agua y hielo usan un filtro <b>interno</b> (va dentro del refrigerador) o uno <b>externo</b> (va en la manguera que trae el agua, por detrás del nevecón).</p>
 <h2>Filtro interno</h2>
-<p>Es el más común en Samsung, LG, Whirlpool y GE. Cada marca y modelo usa una referencia propia, así que hay que comprar exactamente la que corresponde. Ejemplos: <a href="/filtro/{next(p["slug"] for p in CATALOGO if p["id"] == "sam-cin-o")}/">Samsung HAF-CIN</a>, <a href="/filtro/{next(p["slug"] for p in CATALOGO if p["id"] == "lg-1000-o")}/">LG LT1000P</a>, <a href="/filtro/{next(p["slug"] for p in CATALOGO if p["id"] == "ge-mwf-o")}/">GE MWF</a>.</p>
+<p>Es el más común en Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas. Cada marca y modelo usa una referencia propia, así que hay que comprar exactamente la que corresponde. Ejemplos: <a href="/filtro/{next(p["slug"] for p in CATALOGO if p["id"] == "sam-cin-o")}/">Samsung HAF-CIN</a>, <a href="/filtro/{next(p["slug"] for p in CATALOGO if p["id"] == "lg-1000-o")}/">LG LT1000P</a>, <a href="/filtro/{next(p["slug"] for p in CATALOGO if p["id"] == "ge-mwf-o")}/">GE MWF</a>.</p>
 <h2>Filtro externo</h2>
 <p>Se usa en nevecones con dispensador que no traen filtro adentro, o para filtrar el agua antes de que entre. Va conectado a la manguera con racores rápidos. Ejemplos: <a href="/filtro/{next(p["slug"] for p in CATALOGO if p["id"] == "sam-ex-o")}/">Samsung externo</a> y <a href="/filtro/{next(p["slug"] for p in CATALOGO if p["id"] == "lg-ex-o")}/">LG externo</a>.</p>
 <h2>¿Cuál tiene el mío?</h2>
@@ -264,7 +264,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 <h2>No hace hielo</h2>
 <p>Revisa que la máquina esté encendida (en muchos modelos hay un interruptor o la opción «Ice Off» en el panel) y que el dispensador sí eche agua. Si no echa agua, mira la guía <a href="/guia/el-dispensador-de-agua-del-nevecon-no-echa-agua/">el dispensador no echa agua</a>.</p>"""),
         ("como-reiniciar-la-luz-del-filtro-del-nevecon", "Cómo apagar o reiniciar la luz del filtro del nevecón",
-         "Cómo reiniciar el aviso o la luz del filtro de agua en nevecones Samsung, LG, Whirlpool y GE después de cambiar el filtro.",
+         "Cómo reiniciar el aviso o la luz del filtro de agua en nevecones Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas después de cambiar el filtro.",
          """<p>El aviso del filtro no mide el agua: es un contador de tiempo (casi siempre 6 meses). Por eso, después de cambiar el filtro hay que reiniciarlo a mano; si no, la luz sigue prendida aunque el filtro sea nuevo.</p>
 <h2>La forma general</h2>
 <p>En casi todos los modelos se deja presionado el botón del filtro durante unos <b>3 segundos</b>, hasta que la luz cambie o se apague. El botón puede llamarse «Filter», «Filter Reset», «Reset» o «Water Filter».</p>
@@ -307,11 +307,11 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
         f'<button class="btn sm" type="button" data-add="{p["id"]}">Agregar al carrito</button></div>' for p in CATALOGO)
     chips = '<button type="button" data-f="todas" aria-pressed="true">Todas</button>' + "".join(f'<button type="button" data-f="{esc(m)}" aria-pressed="false">{esc(m)}</button>' for m in MARCAS)
     escribir("/tienda/", "Tienda de filtros de agua para nevecón | Envío gratis a toda Colombia",
-             "Todos los filtros de agua para nevecón Samsung, LG, Whirlpool y GE en un solo lugar. Agrega al carrito, paga en línea y recibe con envío gratis.",
+             "Todos los filtros de agua para nevecón Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas en un solo lugar. Agrega al carrito, paga en línea y recibe con envío gratis.",
              [mg_ld, lista],
              f"""{mg}
 <h1>Tienda de filtros de agua para nevecón</h1>
-<p>{len(CATALOGO)} filtros para nevecones Samsung, LG, Whirlpool y GE. <b>Envío gratis</b> a toda Colombia y pago seguro en línea. Agrega varios al carrito y paga una sola vez.</p>
+<p>{len(CATALOGO)} filtros para nevecones Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas. <b>Envío gratis</b> a toda Colombia y pago seguro en línea. Agrega varios al carrito y paga una sola vez.</p>
 <div class="tienda-filtros" id="f-marca">{chips}</div>
 <div class="tienda-filtros" id="f-tipo"><button type="button" data-t="todos" aria-pressed="true">Internos y externos</button><button type="button" data-t="interno" aria-pressed="false">Internos</button><button type="button" data-t="externo" aria-pressed="false">Externos</button>
 <label style="margin-left:auto;font-size:14px">Ordenar <select id="orden"><option value="pop">Más pedidos</option><option value="asc">Menor precio</option><option value="desc">Mayor precio</option></select></label></div>
@@ -351,7 +351,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
         mg, mg_ld = miga(("Inicio", "/"), ("Envíos", "/envios/"), (depto, f"/envios/{slug(depto)}/"), (ciudad, None))
         cuando = f"{dias} días hábiles" if dias > 2 else "2 días hábiles"
         preguntas = [
-            (f"¿Envían filtros de agua para nevecón a {ciudad}?", f"Sí. Enviamos a {ciudad} ({depto}) los filtros para nevecones Samsung, LG, Whirlpool y GE, con envío gratis y número de guía."),
+            (f"¿Envían filtros de agua para nevecón a {ciudad}?", f"Sí. Enviamos a {ciudad} ({depto}) los filtros para nevecones Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas, con envío gratis y número de guía."),
             (f"¿Cuánto se demora el envío a {ciudad}?", f"Llega en unos {cuando} después del pago. {'Por la distancia puede tardar un poco más en temporada alta.' if lejos else 'Despachamos el mismo día o el siguiente día hábil.'}"),
             (f"¿Cuánto cuesta el envío a {ciudad}?", "Nada: el envío es gratis y el precio que ves es el precio final."),
             (f"¿Es difícil de instalar?", "No. El filtro se cambia en menos de 5 minutos y sin herramientas: te dejamos los pasos en la página de cada filtro y te asesoramos por WhatsApp."),
@@ -383,17 +383,17 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 {f'<section class="caja"><h2>También enviamos en {esc(depto)}</h2><div class="chips">' + "".join(f'<a href="{rutas_ciudad[x[0]]}">{esc(x[0])}</a>' for x in vecinas)  + '</div></section>' if vecinas else ""}
 <p class="m">Mira <a href="/envios/">todas las ciudades a las que enviamos</a>.</p>"""
         escribir(ruta, f"Filtros de agua para nevecón en {ciudad} | Envío gratis",
-                 f"Filtros de agua para nevecón Samsung, LG, Whirlpool y GE con envío gratis a {ciudad}, {depto}. Llega en unos {cuando}. Paga en línea con tarjeta, PSE o Nequi.",
+                 f"Filtros de agua para nevecón Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas con envío gratis a {ciudad}, {depto}. Llega en unos {cuando}. Paga en línea con tarjeta, PSE o Nequi.",
                  ld, cuerpo)
     for depto, cs in deptos.items():
         mg, mg_ld = miga(("Inicio", "/"), ("Envíos", "/envios/"), (depto, None))
         lista = sorted(cs, key=lambda x: slug(x[0]))
         escribir(f"/envios/{slug(depto)}/", f"Filtros de agua para nevecón en {depto} | Envío gratis",
-                 f"Enviamos filtros de agua para nevecón Samsung, LG, Whirlpool y GE a {', '.join(x[0] for x in lista[:6])} y más ciudades de {depto}. Envío gratis.",
+                 f"Enviamos filtros de agua para nevecón Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas a {', '.join(x[0] for x in lista[:6])} y más ciudades de {depto}. Envío gratis.",
                  [mg_ld, {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__{rutas_ciudad[x[0]]}", "name": x[0]} for i, x in enumerate(lista)]}],
                  f"""{mg}
 <h1>Filtros de agua para nevecón en {esc(depto)}</h1>
-<p>Enviamos gratis los filtros de agua para nevecones Samsung, LG, Whirlpool y GE a {len(lista)} {"ciudad" if len(lista) == 1 else "ciudades"} de {esc(depto)}. Escoge la tuya para ver el tiempo de entrega:</p>
+<p>Enviamos gratis los filtros de agua para nevecones Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas a {len(lista)} {"ciudad" if len(lista) == 1 else "ciudades"} de {esc(depto)}. Escoge la tuya para ver el tiempo de entrega:</p>
 <div class="caja" style="overflow-x:auto"><table class="t"><tr><th>Ciudad</th><th>Entrega</th><th>Envío</th></tr>{"".join(f'<tr><td><a href="{rutas_ciudad[x[0]]}">{esc(x[0])}</a></td><td>{"Unos " + str(x[2] if len(x) > 2 else 2) + " días hábiles"}</td><td>Gratis</td></tr>' for x in lista)}</table></div>
 <h2>Filtros disponibles</h2>
 <div class="grid">{"".join(tarjeta(p) for p in CATALOGO)}</div>""")
@@ -412,7 +412,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
     mg, mg_ld = miga(("Inicio", "/"), ("Cómo instalar tu filtro", None))
     filas = "".join(f'''<section class="caja"><h2><a href="/filtro/{p["slug"]}/#instalacion">Cómo instalar el {esc(p["nombre_largo"])}</a></h2><p><b>Dónde va:</b> {esc(instalacion.datos(p)["donde"])}</p><p class="m">Tiempo: {esc(instalacion.datos(p)["tiempo"])} · <a href="/filtro/{p["slug"]}/#instalacion">Ver el paso a paso</a></p></section>''' for p in CATALOGO)
     escribir("/instalacion/", "Cómo instalar el filtro de agua del nevecón | Tutorial por referencia",
-             "Paso a paso para instalar cada filtro de agua de nevecón Samsung, LG, Whirlpool y GE: dónde va, cómo se saca el viejo, cómo se pone el nuevo y cómo reiniciar la luz del filtro.",
+             "Paso a paso para instalar cada filtro de agua de nevecón Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas: dónde va, cómo se saca el viejo, cómo se pone el nuevo y cómo reiniciar la luz del filtro.",
              [mg_ld, {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__/filtro/{p['slug']}/#instalacion", "name": f"Cómo instalar el {p['nombre_largo']}"} for i, p in enumerate(CATALOGO)]}],
              f"""{mg}
 <h1>Cómo instalar el filtro de agua de tu nevecón</h1>
@@ -426,7 +426,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
     filas = "".join(f'<tr><td><a href="{ruta}"><span class="ref">{esc(r)}</span></a></td><td>{esc(p["marca"])}</td><td><a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a></td></tr>'
                     for r, ruta, p in sorted(refs_dir, key=lambda x: norm(x[0])))
     escribir("/referencias/", "Referencias de filtros de agua para nevecón y sus equivalencias",
-             "Directorio de referencias de filtros de agua para nevecón Samsung, LG, Whirlpool y GE, con sus equivalencias. Envío gratis a toda Colombia.",
+             "Directorio de referencias de filtros de agua para nevecón Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas, con sus equivalencias. Envío gratis a toda Colombia.",
              [mg_ld], f'{mg}<h1>Referencias de filtros y sus equivalencias</h1><p>Busca la referencia impresa en tu filtro viejo. Cada una te lleva al filtro que le sirve.</p>'
              f'<div class="caja" style="overflow-x:auto"><table class="t"><tr><th>Referencia</th><th>Marca</th><th>Filtro</th></tr>{filas}</table></div>')
     mg, mg_ld = miga(("Inicio", "/"), ("Neveras", None))

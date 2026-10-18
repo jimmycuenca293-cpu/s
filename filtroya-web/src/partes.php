@@ -50,7 +50,7 @@ function pie_html(): string
     $tel = preg_replace('/\D/', '', (string) (cfg()['whatsapp'] ?? ''));
     $h = '<footer class="pie"><div class="wrap pie-top">'
         . '<div class="pie-marca"><a class="logo" href="/"><img src="/img/icono.svg" alt="" width="34" height="34"><span class="lg-t">Filtros<b>Nevecones</b><small>Colombia</small></span></a>'
-        . '<p>Filtros de agua para nevecones Samsung, LG, Whirlpool y GE. Te ayudamos a encontrar el tuyo y te llega a la puerta de tu casa en toda Colombia.</p>'
+        . '<p>Filtros de agua para nevecones Samsung, LG, Whirlpool, GE, KitchenAid, Maytag, Jenn-Air, Amana, Kenmore y más marcas. Te ayudamos a encontrar el tuyo y te llega a la puerta de tu casa en toda Colombia.</p>'
         . ($tel ? '<a class="pie-wa" href="https://wa.me/57' . substr($tel, -10) . '" target="_blank" rel="noopener">💬 WhatsApp ' . h($n['telefono']) . '</a>' : '')
         . '<span class="pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
         . '<nav><b>Filtros</b>';

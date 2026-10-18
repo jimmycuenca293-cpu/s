@@ -140,7 +140,7 @@ app = cambiar(app, "const waLink = txt => waTo(NEGOCIO.whatsapp, txt);",
               'const waLink = txt => `mailto:${FY_WEB.correo}?subject=${encodeURIComponent("Consulta " + NEGOCIO.nombre)}&body=${encodeURIComponent(txt)}`;')
 app = cambiar(app, "<h1>El filtro exacto de tu nevecón, con una foto</h1>", "<h1>Filtros de agua para nevecón, con envío gratis a toda Colombia</h1>")
 app = cambiar(app, '<p class="lead">Tómale una foto al filtro que vas a cambiar y te decimos cuál es, cuánto cuesta y cuándo te llega.</p>',
-              '<p class="lead">Samsung, LG, Whirlpool y GE. Escribe la referencia de tu filtro o el modelo de tu nevecón, paga en línea de forma segura y te llega en 2 a 3 días hábiles.</p>')
+              '<p class="lead">Samsung, LG, Whirlpool, GE, KitchenAid, Maytag, Jenn-Air, Amana, Kenmore y más marcas. Escribe la referencia de tu filtro o el modelo de tu nevecón, paga en línea de forma segura y te llega en 2 a 3 días hábiles.</p>')
 app = cambiar(app, '<h2 id="list-title" class="cat-title">', '<span id="catalogo"></span><h2 id="list-title" class="cat-title">')
 # Textos de entrega y contacto
 app = cambiar(app, "Te avisamos por WhatsApp.` : \"Agendamos contigo el día y la hora por WhatsApp.\"", "Te avisamos por correo.` : \"Te llamamos para acordar el día y la hora.\"")
@@ -301,8 +301,8 @@ index_php = f"""<?php require __DIR__ . '/partes.php'; $S = sitio(); $n = $S['ne
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Filtros de agua para nevera y nevecón Samsung, LG, Whirlpool y GE | Envío gratis Colombia</title>
-<meta name="description" content="Compra el filtro de agua de tu nevera o nevecón Samsung, LG, Whirlpool EveryDrop y GE. Precios, referencias, cómo instalarlo y cada cuánto cambiarlo. Envío gratis a toda Colombia. Paga con tarjeta, PSE o Nequi.">
+<title>Filtros de agua para nevera y nevecón: Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas | Envío gratis</title>
+<meta name="description" content="Compra el filtro de agua de tu nevera o nevecón Samsung, LG, Whirlpool, GE, KitchenAid, Maytag, Jenn-Air, Amana, Kenmore y más marcas. Precios, referencias, cómo instalarlo y cada cuánto cambiarlo. Envío gratis a toda Colombia. Paga con tarjeta, PSE o Nequi.">
 <meta name="keywords" content="filtro de agua para nevera, filtro de nevecón, filtro nevera Samsung, filtro nevera LG, filtro Whirlpool EveryDrop, filtro GE MWF, precio filtro de nevera, cada cuánto cambiar el filtro de la nevera, luz del filtro, filtro de refrigerador Colombia">
 <link rel="canonical" href="<?= h($S['base']) ?>/">
 <meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevera y nevecón | Envío gratis a toda Colombia"><meta property="og:description" content="Envío gratis a toda Colombia. Pago seguro en línea."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/lg-1000-o.jpg"><meta property="og:locale" content="es_CO">

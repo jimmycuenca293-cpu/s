@@ -263,7 +263,7 @@ def guias(CATALOGO, MARCAS, slug, ubic):
     g("diferencia-entre-nevera-nevecon-y-refrigerador", "Nevera, nevecón o refrigerador: ¿cambia el filtro?",
       "Nevera, nevecón, refrigerador y frigorífico son el mismo electrodoméstico. Qué filtro de agua usa según la marca y el modelo.",
       "<p>En Colombia se le dice <b>nevera</b>, <b>nevecón</b> (la nevera grande, de dos puertas o French door), <b>refrigerador</b> o, en otros países, <b>frigorífico</b> o <b>heladera</b>. Para el filtro de agua no cambia nada: lo que decide cuál sirve es la <b>marca</b> y el <b>modelo</b>.</p>"
-      "<h2>¿Qué neveras tienen filtro de agua?</h2><p>Las que traen dispensador de agua en la puerta o máquina de hielo: Samsung, LG, Whirlpool y GE de dos puertas, side by side y French door. Una nevera sencilla sin dispensador normalmente no usa filtro.</p>"
+      "<h2>¿Qué neveras tienen filtro de agua?</h2><p>Las que traen dispensador de agua en la puerta o máquina de hielo: Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas de dos puertas, side by side y French door. Una nevera sencilla sin dispensador normalmente no usa filtro.</p>"
       "<h2>Cómo saber cuál es el mío</h2><p>Busca la referencia en el filtro viejo o el modelo en la etiqueta interna. Mira la guía <a href=\"/guia/como-saber-que-filtro-usa-mi-nevecon/\">cómo saber qué filtro usa mi nevecón</a>.</p>")
     g("mejor-filtro-de-agua-para-nevera", "¿Cuál es el mejor filtro de agua para la nevera?",
       "El mejor filtro de agua para tu nevera es el que corresponde a su marca y modelo. Cómo escogerlo, cada cuánto cambiarlo y qué evitar.",
@@ -277,9 +277,9 @@ def guias(CATALOGO, MARCAS, slug, ubic):
       + "".join(f'<li><a href="/marca/{slug(m)}/precio-filtro-nevera-{slug(m)}/">Filtro nevera {esc(m)}</a>: de {cop(min(p["precio"] for p in ps))} a {cop(max(p["precio"] for p in ps))}.</li>' for m, ps in por_marca.items())
       + "</ul><h2>¿Se puede ahorrar?</h2><p>Sí: el pack anual de 2 filtros sale más barato por unidad y te cubre los 12 meses.</p>")
     g("donde-comprar-filtros-de-agua-para-nevera-en-colombia", "Dónde comprar filtros de agua para nevera en Colombia",
-      "Dónde comprar filtros de agua para nevera Samsung, LG, Whirlpool y GE en Colombia con envío gratis y pago seguro.",
+      "Dónde comprar filtros de agua para nevera Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas en Colombia con envío gratis y pago seguro.",
       "<p>Puedes comprar el filtro de tu nevera en línea y recibirlo en tu casa en cualquier ciudad de Colombia. Aquí enviamos con <b>envío gratis</b> a las principales ciudades y municipios.</p>"
-      "<h2>Qué ofrecemos</h2><ul class=\"ok\"><li>Filtros para neveras Samsung, LG, Whirlpool y GE.</li><li>Asesoría para encontrar la referencia por modelo.</li><li>Pago con tarjeta, PSE, Nequi o botón Bancolombia.</li><li>Número de guía para seguir el paquete.</li></ul>"
+      "<h2>Qué ofrecemos</h2><ul class=\"ok\"><li>Filtros para neveras Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas.</li><li>Asesoría para encontrar la referencia por modelo.</li><li>Pago con tarjeta, PSE, Nequi o botón Bancolombia.</li><li>Número de guía para seguir el paquete.</li></ul>"
       "<p>Mira las <a href=\"/envios/\">ciudades a las que enviamos</a> y escoge tu marca abajo.</p>")
     g("filtro-de-nevera-con-dispensador-de-agua-y-hielo", "Filtro para nevera con dispensador de agua y máquina de hielo",
       "Qué filtro usa una nevera con dispensador de agua y máquina de hielo, cómo se cambia y cada cuánto, según la marca.",
@@ -365,7 +365,7 @@ def home_bloque(CATALOGO, MARCAS, slug, ubic, CIUDADES_CO):
            ("¿Cómo pago?", "En línea, en una página segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.")]
     h = f"""<section class="seo-home" id="info">
 <div><h2>Filtros de agua para nevera y nevecón en Colombia</h2>
-<p>Aquí encuentras el <b>filtro de agua de tu nevera, nevecón o refrigerador</b> Samsung, LG, Whirlpool y GE, con <b>envío gratis</b> a toda Colombia y pago seguro en línea. Tenemos {len(CATALOGO)} referencias entre {rango}: filtros internos que van dentro del refrigerador y filtros externos de manguera.</p>
+<p>Aquí encuentras el <b>filtro de agua de tu nevera, nevecón o refrigerador</b> Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas, con <b>envío gratis</b> a toda Colombia y pago seguro en línea. Tenemos {len(CATALOGO)} referencias entre {rango}: filtros internos que van dentro del refrigerador y filtros externos de manguera.</p>
 <p>Si no sabes cuál es el tuyo, búscalo por la <a href="/referencias/">referencia del filtro viejo</a> o por el <a href="/neveras/">modelo de tu nevera</a>. Te ayudamos a confirmarlo antes de comprar.</p></div>
 <div><h2>Filtros por marca de nevera</h2><div class="sh-grid">{tarjetas}</div></div>
 <div><h2>Cuándo cambiar el filtro y cómo queda el agua</h2><div class="foto-par">{figura("alerta")}{figura("agua")}</div><p>Cuando el nevecón muestra la alerta del filtro, ya pasaron unos 6 meses de uso: cámbialo y reinicia el aviso. Con el filtro nuevo, el agua y el hielo salen limpios otra vez.</p></div>
