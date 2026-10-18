@@ -9,6 +9,7 @@ if (PHP_SAPI !== 'cli') {
     $clave = (string) cfg()['cron_clave'];
     if ($clave === '' || !hash_equals($clave, (string) ($_GET['clave'] ?? ''))) fail('No autorizado.', 403);
 }
+$reenvios = reintentar_avisos();
 if (!con_llaves()) { $m = 'Sin llaves de Wompi en config.php: no hay nada que reconciliar.'; PHP_SAPI === 'cli' ? print($m . "\n") : out(['ok' => true, 'mensaje' => $m]); exit; }
 
 // Pedidos sin pagar de entre 5 minutos y 7 días (los muy recientes pueden seguir en pago)
@@ -33,5 +34,5 @@ foreach ($st->fetchAll(PDO::FETCH_COLUMN) as $ref) {
     $revisados++;
     if ($p && $p['estado'] !== $antes) $cambios[] = $ref . ': ' . $antes . ' → ' . $p['estado'];
 }
-$resumen = ['ok' => true, 'revisados' => $revisados, 'cambios' => $cambios];
+$resumen = ['ok' => true, 'revisados' => $revisados, 'cambios' => $cambios, 'avisos_reenviados' => $reenvios];
 PHP_SAPI === 'cli' ? print(json_encode($resumen, JSON_UNESCAPED_UNICODE) . "\n") : out($resumen);

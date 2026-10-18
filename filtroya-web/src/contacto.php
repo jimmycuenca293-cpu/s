@@ -22,6 +22,6 @@ cabeza('Contacto | ' . $n['nombre'], 'Escríbenos por WhatsApp o al correo: te a
   <section class="caja"><h2>Horario</h2><p><?= h(ucfirst($n['horario'])) ?></p><p class="m">Pedidos en línea las 24 horas.</p></section>
 </div>
 <section class="caja"><h2>Antes de escribirnos</h2>
-  <ul class="ok"><li>Tenemos <a href="/compatible/preguntas-frecuentes/">preguntas frecuentes</a> con respuestas rápidas.</li><li>Busca tu filtro por <a href="/referencias/">referencia</a> o por <a href="/neveras/">modelo de nevera</a>.</li><li>Mira cómo <a href="/instalacion/">instalar tu filtro</a> paso a paso.</li><li>Consulta los <a href="/envios/">tiempos de envío por ciudad</a>.</li></ul></section>
+  <ul class="ok"><li>Tenemos <a href="/otras-marcas/preguntas-frecuentes/">preguntas frecuentes</a> con respuestas rápidas.</li><li>Busca tu filtro por <a href="/referencias/">referencia</a> o por <a href="/neveras/">modelo de nevera</a>.</li><li>Mira cómo <a href="/instalacion/">instalar tu filtro</a> paso a paso.</li><li>Consulta los <a href="/envios/">tiempos de envío por ciudad</a>.</li></ul></section>
 <section class="caja"><h2>Datos del negocio</h2><p><?= identificacion() ?></p></section>
 <?php pie(); ?>

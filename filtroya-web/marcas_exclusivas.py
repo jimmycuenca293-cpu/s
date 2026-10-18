@@ -3,7 +3,7 @@ propio dominio (build.py las deja en sitios/<marca>/).
 
 Cada tienda tiene su propio diseño (colores, letra y formas), solo muestra filtros de su marca y solo
 enlaza a sus propias páginas. Usa el mismo carrito, los mismos precios y el mismo pago que la tienda.
-Sin las palabras original ni compatible (Google Ads).
+Sin términos de marca prohibidos en Google Ads.
 El negocio es distribuidor autorizado de cada marca: cada sitio lleva solo el logo de su marca (carpeta logos/);
 el nombre del negocio sale de config.php y solo aparece donde la ley lo pide (pie, términos, recibos).
 

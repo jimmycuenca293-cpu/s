@@ -71,20 +71,21 @@ db()->prepare('UPDATE pedidos SET items = ?, acepto_en = ? WHERE ref = ?')->exec
 if ($link !== '') {
     // Con link de pago el pedido no se marca solo como pagado: te avisamos para que revises el pago en tu panel de Wompi
     $st = db()->prepare('SELECT * FROM pedidos WHERE ref = ?'); $st->execute([$ref]);
-    enviar_correo(cfg()['correo_avisos'], "Nuevo pedido {$ref} — revisa el pago de " . cop($total),
+    $ped0 = $st->fetch();
+    avisar_por_todos($ped0, 'pendiente', "Nuevo pedido {$ref} — revisa el pago de " . cop($total),
         '<h2 style="margin:0 0 8px">Nuevo pedido con link de pago</h2><p>El cliente fue al link de pago de ' . cop($total) . '. Confirma en tu panel de Wompi que el pago quedó aprobado antes de despachar.</p>'
         . ($instalacion ? '<p><b>Instalación de filtro externo:</b> cobra ' . cop($instalacion) . ' el día de la instalación (no va en el link de pago).</p>' : '')
-        . tabla_pedido($st->fetch(), true) . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>');
-    out(['ref' => $ref, 'total' => $total, 'url' => $link]);
+        . tabla_pedido($ped0, true) . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>');
+    out(['ref' => $ref, 'total' => $total, 'url' => $link] + respaldo_form($ped0));
 }
 
+// Aviso inmediato con los datos del cliente, por correo y como formulario (así no se pierden aunque el cliente no termine de pagar o falle el aviso de Wompi)
 $st = db()->prepare('SELECT * FROM pedidos WHERE ref = ?'); $st->execute([$ref]);
-enviar_formulario("Pedido {$ref} esperando pago — " . cop($total), campos_pedido($st->fetch()));
-// Aviso inmediato con los datos del cliente (así no se pierden aunque el cliente no termine de pagar o falle el aviso de Wompi)
-$st = db()->prepare('SELECT * FROM pedidos WHERE ref = ?'); $st->execute([$ref]);
-enviar_correo(cfg()['correo_avisos'], "Pedido {$ref} esperando pago — " . cop($total),
+$ped = $st->fetch();
+avisar_por_todos($ped, 'pendiente', "Pedido {$ref} esperando pago — " . cop($total),
     '<h2 style="margin:0 0 8px">Nuevo pedido, esperando el pago</h2><p>El cliente acaba de ir a pagar. <b>No lo despaches todavía</b>: te llega otro correo «Nuevo pedido pagado» cuando Wompi confirme el pago. Estos son sus datos:</p>'
-    . tabla_pedido($st->fetch(), true) . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>');
+    . tabla_pedido($ped, true) . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>');
+
 
 $centavos = $total * 100;
 $q = http_build_query([
@@ -93,4 +94,4 @@ $q = http_build_query([
     'customer-data:email' => $cli['email'], 'customer-data:full-name' => $cli['nombre'],
     'customer-data:phone-number' => $cli['tel'], 'customer-data:phone-number-prefix' => '+57',
 ]);
-out(['ref' => $ref, 'total' => $total, 'url' => 'https://checkout.wompi.co/p/?' . $q]);
+out(['ref' => $ref, 'total' => $total, 'url' => 'https://checkout.wompi.co/p/?' . $q] + respaldo_form($ped));

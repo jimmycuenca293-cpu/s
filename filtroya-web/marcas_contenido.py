@@ -4,8 +4,8 @@
   Amana, Kenmore, Estate) y por cada marca a la que le sirve el filtro externo.
 - Preguntas frecuentes completas y blog, pensados para Google y para las respuestas de asistentes de IA.
 
-Aquí SÍ se usa la palabra «compatible»: el dueño lo pidió para que lo encuentren quienes buscan por esas marcas.
-No usar este texto en anuncios de Google Ads. Las marcas citadas son de sus dueños y se nombran solo para indicar compatibilidad.
+Sin términos de marca prohibidos en Google Ads.
+No usar este texto en anuncios de Google Ads. Las marcas citadas son de sus dueños y se nombran solo para indicar para qué neveras sirven.
 """
 import html
 import re
@@ -80,7 +80,7 @@ def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
       [("¿Cuál EveryDrop es el más común?", "Depende de tu modelo: cada número es para una familia de neveras. El EveryDrop 4 (EDR4RXD1) es el mismo UKF8001."),
        ("¿Se pueden usar en cualquier nevera?", "No. Solo en las que usan ese número; para neveras sin filtro de fábrica existe el filtro externo.")])
     a("filtro-para-nevera-kitchenaid-guia-de-compra", "Filtro para nevera KitchenAid: guía para comprar el correcto",
-      "Qué filtros EveryDrop son compatibles con neveras KitchenAid, cómo saber cuál usa tu modelo y cuánto cuestan.",
+      "Qué filtros EveryDrop sirven en neveras KitchenAid, cómo saber cuál usa tu modelo y cuánto cuestan.",
       "Las neveras KitchenAid usan filtros EveryDrop: el 1, 2, 3, 4 o 5 según el modelo. Los KRFF305ESS y KRFF507ESS son ejemplos conocidos.",
       "<p>KitchenAid y Whirlpool son de la misma familia de electrodomésticos, y por eso comparten filtros. Si tu nevera es KitchenAid, lo más probable es que use un <b>EveryDrop</b>.</p>"
       f"<h2>Ejemplos de modelos</h2><ul class=\"m-ok\"><li>KRFF305ESS usa el {esc(e1['nombre_largo'])}.</li><li>KRFF507ESS usa el {esc(e4['nombre_largo'])}.</li></ul>"
@@ -89,7 +89,7 @@ def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
       [("¿Cada cuánto se cambia el filtro de una KitchenAid?", "Cada 6 meses, o antes si el agua cambia de sabor."),
        ("¿Qué pasa si escribo mal el nombre, como Kitchen Aid?", "No importa: es la misma marca. Aquí está con las formas más comunes de escribirla.")])
     a("filtro-para-nevera-maytag-cual-es-y-como-cambiarlo", "Filtro para nevera Maytag: cuál es y cómo cambiarlo",
-      "El filtro de agua de las neveras Maytag (también escrito MyTag o Maitag): referencias EveryDrop compatibles y cambio paso a paso.",
+      "El filtro de agua de las neveras Maytag (también escrito MyTag o Maitag): referencias EveryDrop y cambio paso a paso.",
       "Las neveras Maytag usan filtros EveryDrop. El MFI2570FEZ, por ejemplo, usa el EveryDrop 4 (UKF8001).",
       "<p>Si buscas el filtro de una nevera <b>Maytag</b> (a veces escrita «MyTag» o «Maitag»), casi siempre es un EveryDrop de Whirlpool.</p>"
       f"<ul class=\"m-ok\"><li>MFI2570FEZ: {esc(e4['nombre_largo'])}.</li></ul><h2>Cómo cambiarlo</h2><ol>"
@@ -164,8 +164,8 @@ def preguntas_ia(ps, slug):
     precios = sorted({p["precio"] for p in ps})
     rango = f"{cop(precios[0])} a {cop(precios[-1])}"
     G = []
-    G.append(("Marcas y compatibilidad", [
-        ("¿Qué filtro de agua es compatible con una nevera Whirlpool?", f"Los EveryDrop 1 a 5 ({', '.join(por[k]['ref'] for k in ('EDR1RXD1','EDR2RXD1','EDR3RXD1','EDR4RXD1','EDR5RXD1'))}). Cuál usa tu nevera depende del modelo y de la referencia del filtro viejo."),
+    G.append(("Marcas de nevera", [
+        ("¿Qué filtro de agua le sirve a una nevera Whirlpool?", f"Los EveryDrop 1 a 5 ({', '.join(por[k]['ref'] for k in ('EDR1RXD1','EDR2RXD1','EDR3RXD1','EDR4RXD1','EDR5RXD1'))}). Cuál usa tu nevera depende del modelo y de la referencia del filtro viejo."),
         ("¿El filtro Whirlpool EveryDrop sirve para neveras KitchenAid?", "Sí. Las neveras KitchenAid usan filtros EveryDrop; por ejemplo, la KRFF305ESS usa el EveryDrop 1 y la KRFF507ESS el EveryDrop 4."),
         ("¿Qué filtro usa una nevera Maytag (MyTag)?", "También un EveryDrop. La Maytag MFI2570FEZ, por ejemplo, usa el EveryDrop 4 (UKF8001)."),
         ("¿Sirve para neveras Jenn-Air y Amana?", "Para Jenn-Air sirven los EveryDrop 1, 3, 4 y 5; para Amana, del 1 al 5. El EveryDrop 2 es para Whirlpool, Maytag, KitchenAid y Amana."),
@@ -207,7 +207,7 @@ def preguntas_ia(ps, slug):
 
 
 def generar(pagina, ctx, h, R):
-    """Escribe las páginas de marcas compatibles, preguntas frecuentes y blog. Devuelve las rutas."""
+    """Escribe las páginas de más marcas, preguntas frecuentes y blog. Devuelve las rutas."""
     marca, ps, base, M, ubic = ctx["marca"], ctx["ps"], ctx["base"], ctx["M"], ctx["ubic"]
     slug = ctx["slug"]
     X = R["extra"]
@@ -225,7 +225,7 @@ def generar(pagina, ctx, h, R):
             aplica = (marca_filtro is None) or (marca_filtro in sirve) or ubic(p) == "externo"
             equiv = ", ".join(x for x in p["refs"] if x != p["ref"])
             filas += (f'<tr><td><a href="{rp(p)}">{esc(p["nombre_largo"])}</a></td><td><span class="ref">{esc(p["ref"])}</span><br><small>{esc(equiv)}</small></td>'
-                      f'<td>{"Externo" if ubic(p) == "externo" else "Interno"}</td><td><b>{cop(p["precio"])}</b></td><td>{"Compatible" if aplica else "No aplica"}</td></tr>')
+                      f'<td>{"Externo" if ubic(p) == "externo" else "Interno"}</td><td><b>{cop(p["precio"])}</b></td><td>{"Sirve" if aplica else "No aplica"}</td></tr>')
         return ('<div class="m-tabla-wrap"><table class="m-tabla"><thead><tr><th>Filtro</th><th>Referencia y equivalentes</th><th>Tipo</th><th>Precio</th>'
                 f'<th>{esc(marca_filtro) if marca_filtro else "Neveras"}</th></tr></thead><tbody>{filas}</tbody></table></div>')
 
@@ -243,27 +243,27 @@ def generar(pagina, ctx, h, R):
         refs = ", ".join(p["ref"] for p in lista if ubic(p) == "interno")
         alias = ", ".join(f["alias"])
         modelos_txt = (", ".join(f"{mo} (usa el {p['ref']})" for mo, p in modelos)) if modelos else "Aún no tenemos un modelo publicado: escríbenos el tuyo y te confirmamos"
-        faq = [(f"¿Qué filtro de agua es compatible con una nevera {m}?", f"Los filtros EveryDrop {refs}. Cuál usa tu nevera {m} depende del modelo; con la referencia del filtro viejo o el modelo te confirmamos."),
+        faq = [(f"¿Qué filtro de agua le sirve a una nevera {m}?", f"Los filtros EveryDrop {refs}. Cuál usa tu nevera {m} depende del modelo; con la referencia del filtro viejo o el modelo te confirmamos."),
                (f"¿{m} también se escribe {f['alias'][0]}?", f"Sí. Muchas personas buscan {alias}. Es la misma marca."),
                (f"¿El filtro EveryDrop de Whirlpool sirve en {m}?", f"Sí: {m} es de la familia Whirlpool y usa filtros EveryDrop según el modelo."),
                (f"¿Cada cuánto cambio el filtro de mi nevera {m}?", "Cada 6 meses, o antes si el agua cambia de sabor o el dispensador bota menos agua."),
                (f"¿Cómo ubico el modelo de mi nevera {m}?", f"Busca la etiqueta dentro del refrigerador, en una pared lateral de arriba; el modelo {f['prefijo']}."),
                ("¿Puedo pagar contra entrega?", "No. El pago es solo en línea, con tarjeta, PSE, Nequi o botón Bancolombia.")]
         nota = f'<p class="m-mut" style="margin-top:18px">{esc(m)} es una marca registrada de su dueño; se nombra aquí solo para indicar para qué neveras sirven estos filtros.</p>'
-        pagina(f"{base}filtro-para-nevera-{s}/", f"Filtro para nevera {m} | Filtros compatibles EveryDrop, envío gratis",
-               f"Filtros de agua compatibles con neveras {m} ({alias}): EveryDrop {refs}. Equivalencias, precios y cómo cambiarlo. Envío gratis a toda Colombia.",
-               f"Filtro de agua para nevera {m}", f"Compatible con {m}",
-               f"Los filtros EveryDrop de Whirlpool son compatibles con neveras {esc(m)}. Aquí ves cuál le sirve a tu modelo, sus equivalencias y el precio, con envío gratis.",
-               respuesta(f"Una nevera {esc(m)} usa un filtro <b>EveryDrop</b>. Los compatibles son: {esc(refs)}. Se cambia cada 6 meses.")
-               + "<h2 style=\"font-size:22px;margin:22px 0 12px\">Filtros compatibles con " + esc(m) + "</h2>" + tabla(lista, m)
+        pagina(f"{base}filtro-para-nevera-{s}/", f"Filtro para nevera {m} | Filtros EveryDrop, envío gratis",
+               f"Filtros de agua para neveras {m} ({alias}): EveryDrop {refs}. Equivalencias, precios y cómo cambiarlo. Envío gratis a toda Colombia.",
+               f"Filtro de agua para nevera {m}", f"Para neveras {m}",
+               f"Los filtros EveryDrop de Whirlpool sirven en neveras {esc(m)}. Aquí ves cuál le sirve a tu modelo, sus equivalencias y el precio, con envío gratis.",
+               respuesta(f"Una nevera {esc(m)} usa un filtro <b>EveryDrop</b>. Los que sirven son: {esc(refs)}. Se cambia cada 6 meses.")
+               + "<h2 style=\"font-size:22px;margin:22px 0 12px\">Filtros que le sirven a " + esc(m) + "</h2>" + tabla(lista, m)
                + f'<h2 style="font-size:22px;margin:26px 0 12px">Modelos {esc(m)} y su filtro</h2><p>{esc(modelos_txt)}.</p>'
                + f'<h2 style="font-size:22px;margin:26px 0 12px">Otras formas de buscarlo</h2><p>Mucha gente lo busca como: {esc(alias)}. También puedes buscar por la referencia del filtro: {esc(", ".join(x for p in lista for x in p["refs"][:3]))}.</p>' + nota,
                faq, miga_nombre=f"Filtro para nevera {m}")
         precios = ", ".join(f"{p['ref']}: {cop(p['precio'])}" for p in lista)
-        pagina(f"{base}precio-filtro-nevera-{s}/", f"Precio del filtro de nevera {m} en Colombia 2026 | Compatible EveryDrop",
+        pagina(f"{base}precio-filtro-nevera-{s}/", f"Precio del filtro de nevera {m} en Colombia 2026 | EveryDrop",
                f"Cuánto cuesta el filtro de agua para nevera {m} en Colombia: {precios}. Envío gratis y pago seguro en línea.",
                f"Precio del filtro de nevera {m} en Colombia", "Precios 2026",
-               f"Precios de los filtros compatibles con neveras {esc(m)}, con el envío incluido a toda Colombia. El pack de 2 filtros sale más barato por unidad.",
+               f"Precios de los filtros para neveras {esc(m)}, con el envío incluido a toda Colombia. El pack de 2 filtros sale más barato por unidad.",
                respuesta(f"El filtro para nevera {esc(m)} cuesta entre {cop(min(p['precio'] for p in lista))} y {cop(max(p['precio'] for p in lista))} con envío gratis.") + tabla(lista, m) + nota,
                [(f"¿Cuánto cuesta el filtro de una nevera {m}?", f"Entre {cop(min(p['precio'] for p in lista))} y {cop(max(p['precio'] for p in lista))}, según la referencia."),
                 ("¿El envío tiene costo?", "No, es gratis a toda Colombia.")], miga_nombre=f"Precio filtro {m}")
@@ -281,7 +281,7 @@ def generar(pagina, ctx, h, R):
                f"La respuesta corta: <b>cada 6 meses</b>. Si usan mucho hielo o el agua trae sedimento, antes.",
                respuesta(f"El filtro de una nevera {esc(m)} se cambia cada 6 meses.")
                + '<ul class="m-ok"><li>Pasaron 6 meses.</li><li>El agua o el hielo saben a cloro, a tierra o a plástico.</li><li>El dispensador bota menos agua.</li><li>Se prendió la luz del filtro.</li></ul>'
-               + f'<p>Filtros compatibles: <a href="{base}filtro-para-nevera-{s}/">ver la lista para {esc(m)}</a>.</p>' + nota,
+               + f'<p>Filtros que sirven: <a href="{base}filtro-para-nevera-{s}/">ver la lista para {esc(m)}</a>.</p>' + nota,
                faq[3:5], miga_nombre=f"Cada cuánto cambiar {m}")
     # ---------- Kenmore ----------
     ken = [(p, [x for x in p["refs"] if x.startswith("46-")]) for p in internos]
@@ -293,7 +293,7 @@ def generar(pagina, ctx, h, R):
     nota_k = '<p class="m-mut" style="margin-top:18px">Kenmore es una marca registrada de su dueño; se nombra aquí solo para indicar equivalencias de referencias.</p>'
     pagina(f"{base}filtro-para-nevera-kenmore/", "Filtro para nevera Kenmore | Equivalencias 46-9930, 46-9081, 46-9030, 46-9006, 46-9010",
            "Filtros de agua para nevera Kenmore: qué EveryDrop equivale a cada referencia Kenmore 46-9xxx. Envío gratis a toda Colombia.",
-           "Filtro de agua para nevera Kenmore", "Compatible con Kenmore",
+           "Filtro de agua para nevera Kenmore", "Para neveras Kenmore",
            "Si el filtro de tu nevera Kenmore dice 46-9930, 46-9081, 46-9030, 46-9006 o 46-9010, este es el filtro equivalente.",
            respuesta("Cada referencia Kenmore 46-9xxx tiene un EveryDrop equivalente: mira la tabla.") + tk + nota_k, faqk, miga_nombre="Filtro para nevera Kenmore")
     pagina(f"{base}filtros-kenmore-46-9930-46-9081-46-9030-46-9006-46-9010/", "Filtros Kenmore 46-9930, 46-9081, 46-9030, 46-9006 y 46-9010: equivalencias",
@@ -306,13 +306,13 @@ def generar(pagina, ctx, h, R):
                (f"¿Reemplaza el filtro interno de mi nevera {m}?", "No. Si tu nevera ya trae filtro adentro, el externo es adicional."),
                ("¿Se instala sin técnico?", "Sí, con racores rápidos y sin herramientas especiales, en 10 a 15 minutos."),
                ("¿Cada cuánto se cambia?", "Cada 6 meses.")]
-        pagina(X["externas"][m], f"Filtro externo para nevera {m} | Compatible, envío gratis",
-               f"Filtro externo de manguera compatible con neveras {m}, referencia {externo['ref']}: {cop(externo['precio'])} con envío gratis. Cómo se instala.",
-               f"Filtro externo para nevera {m}", f"Compatible con {m}",
+        pagina(X["externas"][m], f"Filtro externo para nevera {m} | Envío gratis",
+               f"Filtro externo de manguera para neveras {m}, referencia {externo['ref']}: {cop(externo['precio'])} con envío gratis. Cómo se instala.",
+               f"Filtro externo para nevera {m}", f"Para neveras {m}",
                f"El filtro externo {esc(externo['ref'])} se conecta a la manguera del agua y sirve en neveras con dispensador o máquina de hielo, incluidas las {esc(m)}.",
                respuesta(f"El filtro externo {esc(externo['ref'])} va en la manguera del agua por detrás de la nevera {esc(m)}. Cuesta {cop(externo['precio'])} con envío gratis.") + h.caja(externo, base, ctx["foto"])
                + "<h2 style=\"font-size:22px;margin:24px 0 12px\">Cómo se instala</h2><ol>" + "".join(f"<li>{esc(x)}</li>" for x in datos(externo)["pasos"]) + "</ol>"
-               + f'<p class="m-mut" style="margin-top:18px">{esc(m)} es una marca registrada de su dueño; se nombra solo para indicar compatibilidad. Si tienes dudas, mándanos una foto de la manguera o del modelo.</p>',
+               + f'<p class="m-mut" style="margin-top:18px">{esc(m)} es una marca registrada de su dueño; se nombra solo para indicar para qué neveras sirven. Si tienes dudas, mándanos una foto de la manguera o del modelo.</p>',
                faq, miga_nombre=f"Filtro externo {m}", ld_extra=h.producto_ld(externo, X["externas"][m], f"Filtro externo para nevera {m}", marca))
     # ---------- hub de marcas ----------
     fam = "".join(f'<div class="m-bloque"><h3><a href="{lista[0][0]}">{esc(m)}</a></h3><p>{esc(", ".join(FAMILIA[m]["alias"][:3]))}</p><p>' + " · ".join(f'<a href="{r}">{esc(t)}</a>' for r, t in lista[1:]) + "</p></div>" for m, lista in X["familia"].items())
@@ -331,8 +331,8 @@ def generar(pagina, ctx, h, R):
     grupos = preguntas_ia(ps, slug) + list(ctx.get("faq_extra", []))
     todas = [qa for _, l in grupos for qa in l]
     cuerpo = "".join(f'<h2 id="{slug(g)}" style="font-size:22px;margin:26px 0 12px">{esc(g)}</h2>' + "".join(f'<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>' for q, a in l) for g, l in grupos)
-    pagina(X["faq"], f"Preguntas frecuentes sobre filtros de nevera Whirlpool y marcas compatibles ({len(todas)} respuestas)",
-           f"{len(todas)} respuestas sobre filtros de agua para nevera: compatibilidad con KitchenAid, Maytag, Jenn-Air, Amana y Kenmore, precios, envíos, pagos y cómo cambiarlos.",
+    pagina(X["faq"], f"Preguntas frecuentes sobre filtros de nevera Whirlpool y más marcas ({len(todas)} respuestas)",
+           f"{len(todas)} respuestas sobre filtros de agua para nevera: equivalencias con KitchenAid, Maytag, Jenn-Air, Amana y Kenmore, precios, envíos, pagos y cómo cambiarlos.",
            "Preguntas frecuentes sobre filtros de nevera", "Respuestas rápidas",
            "Respuestas directas sobre qué filtro usar, para qué marcas sirve, cuánto cuesta, cómo pagar y cómo cambiarlo.", cuerpo, todas, miga_nombre="Preguntas frecuentes")
     # ---------- blog ----------

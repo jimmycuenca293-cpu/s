@@ -283,7 +283,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
                  "como-saber-si-el-filtro-de-la-nevera-esta-vencido": "alerta", "filtro-de-nevera-con-dispensador-de-agua-y-hielo": "agua", "agua-turbia-o-con-burbujas-en-la-nevera": "agua",
                  "nevera-no-hace-hielo-revisar-el-filtro": "agua", "se-puede-usar-la-nevera-sin-filtro-de-agua": "agua", "cuantos-litros-filtra-un-filtro-de-nevera": "alerta",
                  "como-escoger-el-filtro-de-agua-para-la-nevera": "asesoria", "mejor-filtro-de-agua-para-nevera": "familia",
-                 "donde-comprar-filtros-de-agua-para-nevera-en-colombia": "entrega", "como-comprar-un-filtro-de-nevera-por-internet-sin-equivocarte": "asesoria",
+                 "donde-comprar-filtros-de-agua-para-nevera-en-colombia": "asesoria", "como-comprar-un-filtro-de-nevera-por-internet-sin-equivocarte": "asesoria",
                  "precio-de-los-filtros-de-agua-para-nevera-en-colombia": "familia"}
     for s, titulo, desc, cuerpo_g in GUIAS:
         ruta = f"/guia/{s}/"
@@ -408,7 +408,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
              [mg_ld], f"""{mg}
 <h1>Enviamos a toda Colombia</h1>
 <p>Envío <b>gratis</b> de filtros de agua para nevecón a {len(CIUDADES_CO)} ciudades y municipios de {len(deptos)} departamentos. Si tu municipio no aparece, también te lo enviamos: escoge «Otro municipio» al pagar.</p>
-{seo_busquedas.figura('entrega')}
+{seo_busquedas.figura('asesoria')}
 {bloques}""")
 
     # ---------- tutoriales de instalación ----------
@@ -445,24 +445,24 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 
     temas = seo_busquedas.generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, MARCAS, slug, norm, ubic, CIUDADES_CO, rutas_ciudad, modelos_dir)
 
-    # ---------- marcas compatibles, preguntas frecuentes y blog (misma información que la tienda Whirlpool) ----------
+    # ---------- más marcas, preguntas frecuentes y blog (misma información que la tienda Whirlpool) ----------
     wp = [x for x in CATALOGO if x["marca"] == "Whirlpool"]
     for x in wp:
         x.setdefault("slug_o", x["slug"])
-    base_c = "/compatible/"
+    base_c = "/otras-marcas/"
 
     def pagina_c(ruta, titulo, desc, h1, eyebrow, intro, cuerpo, preguntas=(), miga_nombre=None, ld_extra=None):
-        mg, mg_ld = miga(("Inicio", "/"), ("Marcas compatibles", base_c), (miga_nombre or h1, None))
+        mg, mg_ld = miga(("Inicio", "/"), ("Más marcas", base_c), (miga_nombre or h1, None))
         ld = [mg_ld] + ([faq_ld(list(preguntas))] if preguntas else []) + ([ld_extra] if ld_extra else [])
-        enlaces = ('<section class="caja"><h2>Más información</h2><div class="m-chips"><a href="/compatible/">Filtros por marca de nevera</a><a href="/compatible/preguntas-frecuentes/">Preguntas frecuentes</a>'
-                   '<a href="/compatible/blog/">Blog</a><a href="/tienda/">Toda la tienda</a><a href="/referencias/">Buscar por referencia</a><a href="/neveras/">Buscar por modelo</a></div></section>')
+        enlaces = ('<section class="caja"><h2>Más información</h2><div class="m-chips"><a href="/otras-marcas/">Filtros por marca de nevera</a><a href="/otras-marcas/preguntas-frecuentes/">Preguntas frecuentes</a>'
+                   '<a href="/otras-marcas/blog/">Blog</a><a href="/tienda/">Toda la tienda</a><a href="/referencias/">Buscar por referencia</a><a href="/neveras/">Buscar por modelo</a></div></section>')
         escribir(ruta, titulo, desc, ld, f'{mg}\n<span class="m-eyebrow">{esc(eyebrow)}</span>\n<h1>{esc(h1)}</h1>' + (f"<p>{intro}</p>" if intro else "") + f"\n{cuerpo}\n"
                  + (faq_html(list(preguntas)) if preguntas else "") + "\n" + enlaces)
 
     class _H:
         @staticmethod
         def caja(prod, base, foto):
-            return caja_producto(prod, "Filtro compatible")
+            return caja_producto(prod, "Filtro para tu nevera")
 
         @staticmethod
         def producto_ld(*a, **k):

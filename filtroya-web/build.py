@@ -116,7 +116,7 @@ for src_, dst_ in (("compartir.jpg", "compartir.jpg"), ("icono-512.png", "icono-
     "background_color": "#f1f5ff", "theme_color": "#0b1f6b", "lang": "es-CO",
     "icons": [{"src": "/img/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}, {"src": "/img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}]}, ensure_ascii=False), encoding="utf-8")
 # fotos de las secciones (las que envió el dueño): se recortan a 16:9 y salen en JPG y WebP livianos
-for nombre, (y0, caja) in {"alerta": (None, (0, 200, 1145, 845)), "agua": (60, None), "familia": (20, None), "asesoria": (20, None), "entrega": (100, None)}.items():
+for nombre, (y0, caja) in {"alerta": (None, (0, 200, 1145, 845)), "agua": (60, None), "familia": (20, None), "asesoria": (20, None)}.items():
     im = Image.open(AQUI / "imagenes-tienda" / f"{nombre}.jpg").convert("RGB")
     if caja is None:
         h = round(im.width * 9 / 16)
@@ -260,12 +260,12 @@ ABAJO = """<section class="explora" aria-label="Información"><h2 style="font-si
 <a href="/marca/lg/"><b>LG</b><span>LT1000P, LT700P, LT800P</span></a>
 <a href="/marca/whirlpool/"><b>Whirlpool</b><span>EveryDrop 1 al 5</span></a>
 <a href="/marca/ge/"><b>GE</b><span>MWF y XWF</span></a>
-<a href="/compatible/filtro-para-nevera-kitchenaid/"><b>KitchenAid</b><span>Filtros EveryDrop</span></a>
-<a href="/compatible/filtro-para-nevera-maytag/"><b>Maytag</b><span>También MyTag</span></a>
-<a href="/compatible/filtro-para-nevera-jenn-air/"><b>Jenn-Air</b><span>Filtros EveryDrop</span></a>
-<a href="/compatible/filtro-para-nevera-amana/"><b>Amana</b><span>Filtros EveryDrop</span></a>
-<a href="/compatible/filtro-para-nevera-kenmore/"><b>Kenmore</b><span>Equivalencias 46-9xxx</span></a>
-<a class="ms-mas" href="/compatible/"><b>Y más marcas →</b><span>Filtro externo para Mabe, Haceb y otras</span></a>
+<a href="/otras-marcas/filtro-para-nevera-kitchenaid/"><b>KitchenAid</b><span>Filtros EveryDrop</span></a>
+<a href="/otras-marcas/filtro-para-nevera-maytag/"><b>Maytag</b><span>También MyTag</span></a>
+<a href="/otras-marcas/filtro-para-nevera-jenn-air/"><b>Jenn-Air</b><span>Filtros EveryDrop</span></a>
+<a href="/otras-marcas/filtro-para-nevera-amana/"><b>Amana</b><span>Filtros EveryDrop</span></a>
+<a href="/otras-marcas/filtro-para-nevera-kenmore/"><b>Kenmore</b><span>Equivalencias 46-9xxx</span></a>
+<a class="ms-mas" href="/otras-marcas/"><b>Y más marcas →</b><span>Filtro externo para Mabe, Haceb y otras</span></a>
 </div></div></section>
 """
 # En la web, las guías rápidas de la app se cambian por enlaces a las páginas completas
@@ -567,7 +567,7 @@ cat_php = {
 # ---------- carpetas con el nombre del proyecto ----------
 # Todas las carpetas (y la hoja de estilos y el carrito) llevan "filtrosnevecones-" adelante para no chocar
 # con archivos que ya existan en el hosting. Se renombran al final y se corrigen todas las rutas.
-CARPETAS = ["img", "api", "data", "filtro", "referencia", "referencias", "nevecon", "neveras", "marca", "guia", "envios", "tienda", "instalacion", "compatible"]
+CARPETAS = ["img", "api", "data", "filtro", "referencia", "referencias", "nevecon", "neveras", "marca", "guia", "envios", "tienda", "instalacion", "otras-marcas"]
 for c in CARPETAS:
     viejo, nuevo = OUT / c, OUT / (PREFIJO + c)
     if not viejo.exists():
@@ -601,7 +601,7 @@ print(f"Listo: {OUT.relative_to(AQUI)}/ con {len(CATALOGO)} filtros, {len(MARCAS
 # sitios/<marca>/ es una tienda completa (carrito, pago, pedidos, legales) que solo vende esa marca.
 # Lleva todo lo de la tienda principal menos sus páginas, y la portada y las fichas de la marca en la raíz.
 SITIOS = AQUI / "sitios"
-QUITAR = {"index.php", "llms.php", "sitemap.php", "manifest.webmanifest", "contacto.php"} | {PREFIJO + c for c in CARPETAS if c not in ("img", "api", "data")}  # llms.php y sitemap.php se escriben aparte para cada marca
+QUITAR = {"index.php", "llms.php", "sitemap.php", "manifest.webmanifest", "contacto.php", "politica-de-envios.php"} | {PREFIJO + c for c in CARPETAS if c not in ("img", "api", "data")}  # llms.php y sitemap.php se escriben aparte para cada marca
 SITEMAP_MARCA = """<?php
 require __DIR__ . '/%sapi/sitio.php';
 header('Content-Type: application/xml; charset=utf-8');
@@ -668,7 +668,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     if marca == "Whirlpool":
         import marcas_contenido
         X = marcas_contenido.rutas("/", slug)
-        llms += ("\n## Marcas de nevera a las que les sirven estos filtros (compatibilidad)\n"
+        llms += ("\n## Marcas de nevera a las que les sirven estos filtros (para qué neveras sirven)\n"
                  "- Filtros EveryDrop 1 a 5: neveras Whirlpool, Maytag (también escrito MyTag), KitchenAid (Kitchen Aid), Jenn-Air y Amana, según el modelo; Kenmore tiene referencias equivalentes (46-9930, 46-9081, 46-9030, 46-9006, 46-9010).\n"
                  "- Filtro externo 4378411RB: se conecta a la manguera del agua y sirve en neveras con dispensador de varias marcas (Samsung, LG, GE, Mabe, Haceb, Challenger, Electrolux, Frigidaire, Bosch, Hisense, Midea, Panasonic, Daewoo, Estate).\n"
                  + "".join(f"- [{t}](__BASE__{r})\n" for m_, l in X["familia"].items() for r, t in l[:1]) + f"- [Todas las marcas](__BASE__{X['hub']})\n"

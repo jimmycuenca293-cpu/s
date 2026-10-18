@@ -32,7 +32,7 @@ cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/ca
       <div id="totales"></div>
       <button class="btn block" type="button" id="pagar">Pagar</button>
       <p class="err" id="err" aria-live="polite"></p>
-      <div class="sellos"><span>🔒 Pago 100 % seguro</span><span>🚚 Envío gratis a toda Colombia</span><span>💬 Asesoría por WhatsApp</span></div><?= medios_pago_html() ?>
+      <div class="sellos"><span>🔒 Pago seguro</span><span>🚚 Envío gratis a toda Colombia</span><span>💬 Asesoría por WhatsApp</span></div><?= medios_pago_html() ?>
       <p class="m" style="font-size:12.5px;margin:0">Pagas con tarjeta, PSE, Nequi o botón Bancolombia. Al pagar aceptas los <a href="/terminos.php" target="_blank">Términos</a> y autorizas el tratamiento de tus datos según la <a href="/privacidad.php" target="_blank">Política de datos</a>.</p>
     </section>
   </aside>
@@ -105,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const r = await fetch("/api/pedido.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ acepto: true, items: L.map(l => ({ pid: l.pid, pack: !!l.pack, cant: l.cant })), total: t, entrega, cliente: cli }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.url) throw new Error(j.mensaje || "No se pudo crear el pedido. Intenta de nuevo.");
+      if (j.form_url) { try { const ac = new AbortController(); setTimeout(() => ac.abort(), 5000); await fetch(j.form_url, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(j.form_datos), signal: ac.signal }); } catch {} }
       const cambio = new Date(); cambio.setMonth(cambio.getMonth() + 6);
       const o = ls.get("fy_orders", []).filter(x => x.id !== j.ref);
       o.unshift({ id: j.ref, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: P[L[0].pid].nombre + (L.length > 1 ? ` y ${L.length - 1} más` : ""), ref: P[L[0].pid].ref, pid: L[0].pid, total: j.total, ciudad: cli.ciudad, entrega, pago: "wompi", estado: "Pago pendiente", cliente: { recordar: cli.recordar } });

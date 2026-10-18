@@ -108,6 +108,7 @@ function db(): PDO
     if (!in_array('pedida_resena', $cols, true)) $pdo->exec('ALTER TABLE pedidos ADD COLUMN pedida_resena INTEGER DEFAULT 0');
     if (!in_array('items', $cols, true)) $pdo->exec('ALTER TABLE pedidos ADD COLUMN items TEXT');
     if (!in_array('acepto_en', $cols, true)) $pdo->exec('ALTER TABLE pedidos ADD COLUMN acepto_en TEXT');
+    $pdo->exec('CREATE TABLE IF NOT EXISTS avisos (id INTEGER PRIMARY KEY AUTOINCREMENT, creado TEXT, ref TEXT, tipo TEXT, canal TEXT, ok INTEGER, mensaje TEXT)');
     $pdo->exec('CREATE TABLE IF NOT EXISTS eventos_wompi (id INTEGER PRIMARY KEY AUTOINCREMENT, recibido TEXT, evento TEXT, ref TEXT, estado TEXT, resultado TEXT)');
     return $pdo;
 }
@@ -356,12 +357,37 @@ function enviar_correo(string $para, string $asunto, string $html, ?string &$mot
 // Segundo camino para que los datos del pedido lleguen a tu correo: como si fuera un formulario web (servicio FormSubmit).
 // No depende del correo del hosting. La primera vez FormSubmit manda un correo de activación a correo_avisos: hay que tocar «Activate».
 // Devuelve ['ok' => bool, 'mensaje' => texto].
+// Correo donde llegan los pedidos. Si en config.php quedó vacío o con el ejemplo, se usa el de la tienda.
+function correo_destino(): string
+{
+    $v = trim((string) (cfg()['correo_avisos'] ?? ''));
+    if (filter_var($v, FILTER_VALIDATE_EMAIL) && !str_contains($v, 'tucorreo')) return $v;
+    return 'serviciotecnicoyrepuestoscali@gmail.com';
+}
+
+// Anota cada intento de aviso (para verlo en el diagnóstico y reintentar los que fallaron)
+function anotar_aviso(string $ref, string $tipo, string $canal, bool $ok, string $mensaje): void
+{
+    try { db()->prepare('INSERT INTO avisos (creado, ref, tipo, canal, ok, mensaje) VALUES (?,?,?,?,?,?)')->execute([date('c'), $ref, $tipo, $canal, (int) $ok, mb_substr($mensaje, 0, 300)]); } catch (Throwable $e) {}
+}
+
+// Avisa de un pedido por los dos caminos (correo y formulario). tipo: 'pendiente' o 'pagado'.
+// Devuelve true si llegó por al menos uno.
+function avisar_por_todos(array $p, string $tipo, string $asunto, string $html): bool
+{
+    $ok1 = enviar_correo(correo_destino(), $asunto, $html, $m1);
+    anotar_aviso($p['ref'], $tipo, 'correo', $ok1, (string) $m1);
+    $r = enviar_formulario($asunto, campos_pedido($p));
+    anotar_aviso($p['ref'], $tipo, 'formulario', $r['ok'], $r['mensaje']);
+    $GLOBALS['ult_aviso'] = ['correo' => $ok1, 'form' => $r['ok']];
+    return $ok1 || $r['ok'];
+}
+
 function enviar_formulario(string $asunto, array $campos): array
 {
     $f = cfg()['formulario'] ?? [];
     if (isset($f['activo']) && !$f['activo']) return ['ok' => false, 'mensaje' => 'El envío por formulario está apagado en config.php'];
-    $para = (string) cfg()['correo_avisos'];
-    if (!filter_var($para, FILTER_VALIDATE_EMAIL)) return ['ok' => false, 'mensaje' => 'correo_avisos no es un correo válido'];
+    $para = correo_destino();
     $url = (string) ($f['url'] ?? 'https://formsubmit.co/ajax/') . rawurlencode($para);
     $datos = ['_subject' => $asunto, '_template' => 'table', '_captcha' => 'false'] + array_map(fn($v) => (string) $v, $campos);
     $ch = curl_init($url);
@@ -385,6 +411,34 @@ function campos_pedido(array $p): array
         'Barrio' => $p['barrio'], 'Direccion' => $p['dir'], 'Indicaciones' => $p['indicaciones'] ?: '-', 'Modelo del nevecon' => $p['modelo'] ?: '-'];
 }
 
+// Si el formulario no salió desde el servidor, el navegador del cliente lo manda (respaldo): así el pedido llega sí o sí
+function respaldo_form(array $p): array
+{
+    if (($GLOBALS['ult_aviso']['form'] ?? true)) return [];
+    return ['form_url' => 'https://formsubmit.co/ajax/' . rawurlencode(correo_destino()),
+        'form_datos' => ['_subject' => 'Pedido ' . $p['ref'] . ' (respaldo)', '_template' => 'table', '_captcha' => 'false'] + array_map('strval', campos_pedido($p))];
+}
+
+// Reintenta los avisos que no llegaron por ningún camino (se llama desde reconciliar.php cada 15 minutos)
+function reintentar_avisos(): int
+{
+    $n = 0;
+    $st = db()->query("SELECT * FROM pedidos WHERE creado >= '" . date('c', time() - 3 * 86400) . "' ORDER BY creado DESC LIMIT 40");
+    foreach ($st->fetchAll() as $p) {
+        foreach (['pendiente', 'pagado'] as $tipo) {
+            if ($tipo === 'pagado' && !in_array($p['estado'], ['pagado', 'enviado', 'entregado'], true)) continue;
+            $q = db()->prepare('SELECT COUNT(*) FROM avisos WHERE ref = ? AND tipo = ? AND ok = 1'); $q->execute([$p['ref'], $tipo]);
+            if ((int) $q->fetchColumn() > 0) continue;
+            $f = db()->prepare('SELECT COUNT(*) FROM avisos WHERE ref = ? AND tipo = ?'); $f->execute([$p['ref'], $tipo]);
+            if ((int) $f->fetchColumn() >= 12) continue;  // máximo unos reintentos por pedido
+            $asunto = ($tipo === 'pagado' ? 'Nuevo pedido PAGADO ' : 'Pedido esperando pago ') . $p['ref'] . ' — ' . cop((int) $p['total']) . ' (reenviado)';
+            avisar_por_todos($p, $tipo, $asunto, '<h2 style="margin:0 0 8px">' . ($tipo === 'pagado' ? 'Pedido pagado' : 'Pedido esperando pago') . '</h2><p>Reenvío de un aviso que no había llegado:</p>' . tabla_pedido($p, true));
+            $n++;
+        }
+    }
+    return $n;
+}
+
 function tabla_pedido(array $p, bool $completo): string
 {
     $filas = [
@@ -406,9 +460,9 @@ function tabla_pedido(array $p, bool $completo): string
 function avisar_pago(array $p): void
 {
     $c = cfg();
-    enviar_formulario("Nuevo pedido PAGADO {$p['ref']} — " . cop((int) $p['total']), campos_pedido($p));
+
     $n = $c['negocio'];
-    enviar_correo($c['correo_avisos'], "Nuevo pedido pagado {$p['ref']} — " . cop((int) $p['total']),
+    avisar_por_todos($p, 'pagado', "Nuevo pedido PAGADO {$p['ref']} — " . cop((int) $p['total']),
         '<h2 style="margin:0 0 8px">Nuevo pedido pagado</h2><p>Ya está pagado en Wompi. Despáchalo con estos datos:</p>' . tabla_pedido($p, true)
         . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>');
     $que = $p['entrega'] === 'transportadora'

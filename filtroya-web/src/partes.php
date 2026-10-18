@@ -41,7 +41,7 @@ function cabeza(string $titulo, string $desc, string $ruta, string $extra = '', 
 // Barra superior con los beneficios (la usan todas las páginas, también la de inicio)
 function anuncio_html(): string
 {
-    return '<div class="anuncio"><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago 100 % seguro en línea</span><span>💬 Asesoría por WhatsApp</span></div>';
+    return '<div class="anuncio"><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span><span>💬 Asesoría por WhatsApp</span></div>';
 }
 
 // Pie de página (también lo usa la página de inicio)
@@ -60,9 +60,9 @@ function pie_html(): string
     $h .= '<a href="/tienda/">Ver toda la tienda</a></nav>'
         . '<nav><b>Ayuda</b><a href="/referencias/">Buscar por referencia</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cuándo cambiar el filtro</a><a href="/instalacion/">Cómo instalar tu filtro</a><a href="/guia/">Guías</a><a href="/envios/">Envíos a toda Colombia</a></nav>'
         . '<nav><b>Marcas y blog</b>' . implode('', array_map(fn($c) => '<a href="' . h($c['ruta']) . '">' . h($c['titulo']) . '</a>', catalogo()['compat'] ?? [])) . '</nav>'
-        . '<nav><b>Empresa</b><a href="/quienes-somos.php">Quiénes somos</a><a href="/contacto.php">Contacto</a><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a></nav>'
+        . '<nav><b>Empresa</b><a href="/quienes-somos.php">Quiénes somos</a><a href="/contacto.php">Contacto</a><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a><a href="/politica-de-envios.php">Política de envíos</a></nav>'
         . '</div><div class="wrap pie-medios"><span class="pie-seguro">🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'
-        . '<div class="wrap pie-base"><span>© ' . date('Y') . ' ' . h($n['nombre']) . '. Precios en pesos colombianos con envío incluido.</span><span>Las marcas mencionadas pertenecen a sus dueños; somos un comercio independiente.</span></div></footer>';
+        . '<div class="wrap pie-base"><span>© ' . date('Y') . ' ' . h($n['nombre']) . '. Precios en pesos colombianos con envío incluido.</span><span>Las marcas mencionadas pertenecen a sus dueños y se usan solo para indicar para qué neveras sirve cada filtro; somos un comercio independiente. Autoridad de protección al consumidor: <a href="https://www.sic.gov.co/" target="_blank" rel="noopener">Superintendencia de Industria y Comercio</a>.</span></div></footer>';
     return $h;
 }
 

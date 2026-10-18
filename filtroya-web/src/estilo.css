@@ -169,7 +169,7 @@ footer.pie .logo{display:flex;align-items:center;gap:8px;color:#fff;text-decorat
 .foto-sec figcaption{font-size:14px;color:var(--muted)}
 .foto-par{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 
-/* marcas compatibles, preguntas frecuentes y blog */
+/* más marcas, preguntas frecuentes y blog */
 .m-tabla-wrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px}
 .m-tabla{border-collapse:collapse;width:100%;font-size:14.5px}.m-tabla th,.m-tabla td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.m-tabla small{color:var(--muted)}
 .m-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}

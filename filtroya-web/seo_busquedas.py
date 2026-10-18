@@ -5,7 +5,7 @@
 - guías generales con términos de búsqueda (nevera, nevecón, refrigerador, con dispensador, precio, dónde comprar…)
 
 Las usa paginas_seo.generar() (que ya sabe escribir páginas en la tienda) y build.py (portada de cada marca y portada).
-Sin las palabras «original» ni «compatible»: Google Ads las revisa.
+Sin términos de marca prohibidos en Google Ads.
 """
 import html
 
@@ -20,8 +20,7 @@ ANIO = 2026
 FOTOS = {"alerta": ("tienda-alerta", "Pantalla del nevecón que dice «Cambie el filtro de agua»", "🔔 Así avisa el nevecón cuando toca cambiar el filtro"),
          "agua": ("tienda-agua", "Mujer sirviéndose agua con hielo del dispensador del nevecón", "💧 Con el filtro nuevo, el agua y el hielo salen limpios otra vez"),
          "familia": ("tienda-familia", "Familia sirviéndose agua con hielo del dispensador del nevecón", "👨‍👩‍👧 Agua y hielo limpios para toda la familia"),
-         "asesoria": ("tienda-asesoria", "Asesora de la tienda mostrando en el celular cómo pedir el filtro de agua", "💬 Te ayudamos a escoger tu filtro y a pedirlo"),
-         "entrega": ("tienda-entrega", "Mensajero entregando la caja del filtro de agua a una clienta en su puerta", "📦 Te lo llevamos a tu casa con envío gratis")}
+         "asesoria": ("tienda-asesoria", "Asesora de la tienda mostrando en el celular cómo pedir el filtro de agua", "💬 Te ayudamos a escoger tu filtro y a pedirlo"),}
 
 
 def figura(clave, pie=None):
@@ -354,10 +353,10 @@ def home_bloque(CATALOGO, MARCAS, slug, ubic, CIUDADES_CO):
                  ("/guia/precio-de-los-filtros-de-agua-para-nevera-en-colombia/", "Precio de los filtros"), ("/guia/mejor-filtro-de-agua-para-nevera/", "Mejor filtro de agua para nevera"),
                  ("/guia/diferencia-entre-nevera-nevecon-y-refrigerador/", "Nevera, nevecón o refrigerador"), ("/guia/se-puede-usar-la-nevera-sin-filtro-de-agua/", "Nevera sin filtro de agua"),
                  ("/guia/nevera-no-hace-hielo-revisar-el-filtro/", "La nevera no hace hielo"),
-                 ("/compatible/filtro-para-nevera-kitchenaid/", "Filtro para nevera KitchenAid"), ("/compatible/filtro-para-nevera-maytag/", "Filtro para nevera Maytag (MyTag)"),
-                 ("/compatible/filtro-para-nevera-jenn-air/", "Filtro para nevera Jenn-Air"), ("/compatible/filtro-para-nevera-amana/", "Filtro para nevera Amana"),
-                 ("/compatible/filtro-para-nevera-kenmore/", "Filtro para nevera Kenmore"), ("/compatible/", "Filtros por marca de nevera"),
-                 ("/compatible/preguntas-frecuentes/", "Preguntas frecuentes"), ("/compatible/blog/", "Blog de filtros de nevera"), ("/referencias/", "Buscar por referencia"), ("/neveras/", "Buscar por modelo"), ("/instalacion/", "Instalación por referencia")]
+                 ("/otras-marcas/filtro-para-nevera-kitchenaid/", "Filtro para nevera KitchenAid"), ("/otras-marcas/filtro-para-nevera-maytag/", "Filtro para nevera Maytag (MyTag)"),
+                 ("/otras-marcas/filtro-para-nevera-jenn-air/", "Filtro para nevera Jenn-Air"), ("/otras-marcas/filtro-para-nevera-amana/", "Filtro para nevera Amana"),
+                 ("/otras-marcas/filtro-para-nevera-kenmore/", "Filtro para nevera Kenmore"), ("/otras-marcas/", "Filtros por marca de nevera"),
+                 ("/otras-marcas/preguntas-frecuentes/", "Preguntas frecuentes"), ("/otras-marcas/blog/", "Blog de filtros de nevera"), ("/referencias/", "Buscar por referencia"), ("/neveras/", "Buscar por modelo"), ("/instalacion/", "Instalación por referencia")]
     ciudades = "".join(f'<a href="/envios/{slug(c[1])}/{slug(c[0])}/">Filtros de nevera en {esc(c[0])}</a>' for c in CIUDADES_CO[:16])
     faq = [("¿Qué filtro de agua usa mi nevera o nevecón?", "Depende de la marca y del modelo. Busca la referencia impresa en el filtro viejo (por ejemplo DA29-00020B, LT1000P, EDR1RXD1 o MWF) o el modelo en la etiqueta interna de la nevera, y búscalo en esta tienda."),
            ("¿Cada cuánto se cambia el filtro de agua de la nevera?", "Cada 6 meses, o antes si el agua o el hielo cambian de sabor, el dispensador bota menos agua o se prende la luz del filtro."),

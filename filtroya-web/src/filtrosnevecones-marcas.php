@@ -44,7 +44,7 @@ function menu_marca(array $M): string
     return '<nav class="m-nav" aria-label="Principal">' . $dd('Filtros', $filtros) . $dd('Guías', $guias) . $dd('Ciudades', $ciudades) . $dd('Marcas', $compat) . $dd('Más', $mas)
         . '<a class="m-ancho" href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a class="m-ancho" href="' . h($b) . 'cambio-e-instalacion/">Instalación</a>' . $cart
         . '<details class="m-burger"><summary aria-label="Abrir el menú"><span></span></summary><div class="m-bmenu">'
-        . '<b>Filtros</b>' . $filtros . '<b>Guías</b>' . $guias . '<b>Ciudades</b>' . $ciudades . ($compat ? '<b>Marcas compatibles</b>' . $compat : '') . ($mas ? '<b>Más</b>' . $mas : '')
+        . '<b>Filtros</b>' . $filtros . '<b>Guías</b>' . $guias . '<b>Ciudades</b>' . $ciudades . ($compat ? '<b>Más marcas</b>' . $compat : '') . ($mas ? '<b>Más</b>' . $mas : '')
         . '<b>Ayuda</b><a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Instalación</a></div></details></nav>';
 }
 
@@ -71,7 +71,7 @@ function pie_marca(array $M): void
     $h .= '</nav><nav><b>Guías</b>';
     foreach ($M['guias'] ?? [] as $g) $h .= '<a href="' . h($g[0]) . '">' . h($g[1]) . '</a>';
     if (!empty($M['compat'])) {
-        $h .= '</nav><nav><b>Marcas compatibles</b>';
+        $h .= '</nav><nav><b>Más marcas</b>';
         foreach ($M['compat'] as $c) $h .= '<a href="' . h($c[1]) . '">' . (str_starts_with($c[0], 'Todas') ? '' : 'Neveras ') . h($c[0]) . '</a>';
         foreach ($M['extra'] ?? [] as $c) $h .= '<a href="' . h($c[1]) . '"><b>' . h($c[0]) . '</b></a>';
     }

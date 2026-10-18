@@ -63,7 +63,7 @@ $csrf = h($_SESSION['csrf']);
 <?php if ($f = datos_sin_llenar()): ?><div class="estado bad"><b>Tu tienda todavía muestra datos de ejemplo.</b> Cámbialos en api/config.php antes de anunciar en Google Ads: <?= h(implode(', ', $f)) ?>.</div><?php endif; ?>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h1>Pedidos</h1><span><a class="btn ghost sm" href="/diagnostico.php">Diagnóstico de pagos</a> <a class="btn ghost sm" href="/admin.php?csv=1">Descargar pedidos (Excel)</a> </span><form method="post"><button class="btn ghost sm" name="salir" value="1">Salir</button></form></div>
 <div class="caja"><b><?= (int) $tot['n'] ?> pedidos pagados · <?= cop((int) $tot['s']) ?> vendidos</b>
-<span class="m">Cada pedido pagado también te llega al correo <?= h(cfg()['correo_avisos']) ?>.</span></div>
+<span class="m">Cada pedido pagado también te llega al correo <?= h(correo_destino()) ?>.</span></div>
 <?= $msg ? '<div class="estado ok">' . h($msg) . '</div>' : '' ?>
 <nav class="chips"><?php foreach (['activos' => 'Por despachar', 'pendientes' => 'Sin pagar', 'todos' => 'Todos', 'opiniones' => 'Opiniones'] as $k => $v) echo '<a class="badge" href="?ver=' . $k . '"' . ($k === $filtro ? ' style="outline:2px solid var(--accent)"' : '') . '>' . $v . '</a>'; ?></nav>
 <?php if ($filtro === 'opiniones') {
