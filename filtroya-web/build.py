@@ -109,12 +109,16 @@ for pid, url in imgs.items():
     im.save(OUT / "img" / f"{pid}.webp", "WEBP", quality=82, method=6)
     mini = im.copy(); mini.thumbnail((400, 400), Image.LANCZOS)
     mini.save(OUT / "img" / f"{pid}-400.webp", "WEBP", quality=80, method=6)
-# fotos del dueño para las secciones de texto (alerta del display y agua del dispensador)
-for archivo, nombre in (("alerta-display", "guia-alerta-display"), ("agua-dispensador", "guia-agua-dispensador")):
-    im = Image.open(AQUI / "imagenes-ads" / f"{archivo}.jpg").convert("RGB")
-    im.save(OUT / "img" / f"{nombre}.jpg", quality=84, optimize=True, progressive=True)
-    im.save(OUT / "img" / f"{nombre}.webp", "WEBP", quality=80, method=6)
-    im.resize((640, round(640 * im.height / im.width)), Image.LANCZOS).save(OUT / "img" / f"{nombre}-640.webp", "WEBP", quality=80, method=6)
+# fotos de las secciones (las que envió el dueño): se recortan a 16:9 y salen en JPG y WebP livianos
+for nombre, (y0, caja) in {"alerta": (None, (0, 200, 1145, 845)), "agua": (60, None), "familia": (20, None), "asesoria": (20, None), "entrega": (100, None)}.items():
+    im = Image.open(AQUI / "imagenes-tienda" / f"{nombre}.jpg").convert("RGB")
+    if caja is None:
+        h = round(im.width * 9 / 16)
+        caja = (0, min(y0, im.height - h), im.width, min(y0, im.height - h) + h)
+    im = im.crop(caja).resize((1024, 576), Image.LANCZOS)
+    im.save(OUT / "img" / f"tienda-{nombre}.jpg", quality=84, optimize=True, progressive=True)
+    im.save(OUT / "img" / f"tienda-{nombre}.webp", "WEBP", quality=80, method=6)
+    im.resize((640, 360), Image.LANCZOS).save(OUT / "img" / f"tienda-{nombre}-640.webp", "WEBP", quality=80, method=6)
 # La tienda usa WebP: pesa menos y carga más rápido en el celular
 app = app.replace(m.group(1), json.dumps({pid: f"/img/{pid}.webp" for pid in imgs}))
 
@@ -240,7 +244,23 @@ ABAJO = """<section class="explora" aria-label="Información"><h2 style="font-si
 <div><span>1</span><b>Encuentra tu filtro</b><p>Escribe la referencia de tu filtro viejo o el modelo de tu nevecón y te mostramos el que le sirve.</p></div>
 <div><span>2</span><b>Paga seguro en línea</b><p>Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia, en página de pago segura.</p></div>
 <div><span>3</span><b>Recíbelo en tu casa</b><p>Envío gratis a toda Colombia en 2 a 3 días hábiles. Lo instalas en minutos con nuestro paso a paso.</p></div>
-</div><div class="marcas-tira"><span>Filtros para</span><b>SAMSUNG</b><b>LG</b><b>Whirlpool</b><b>GE</b><b>KitchenAid</b><b>Maytag</b></div></section>
+</div></section>
+<section class="marcas-sec" aria-label="Filtros por marca de nevera">
+<figure class="ms-foto"><picture><source srcset="/img/tienda-familia-640.webp 640w, /img/tienda-familia.webp 1024w" sizes="(max-width:700px) 100vw, 520px" type="image/webp"><img src="/img/tienda-familia.jpg" alt="Familia sirviéndose agua con hielo del dispensador del nevecón" width="1024" height="576" loading="lazy"></picture><figcaption>Agua y hielo limpios para toda la familia</figcaption></figure>
+<div class="ms-txt"><span class="ms-eye">Para tu marca de nevera</span><h2>Filtros para Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más</h2>
+<p>Escoge la marca de tu nevera o nevecón y mira qué filtro le sirve, cuánto cuesta y cómo cambiarlo. Envío gratis a toda Colombia.</p>
+<div class="ms-grid">
+<a href="/marca/samsung/"><b>Samsung</b><span>HAF-CIN, HAF-QIN, Aqua-Pure</span></a>
+<a href="/marca/lg/"><b>LG</b><span>LT1000P, LT700P, LT800P</span></a>
+<a href="/marca/whirlpool/"><b>Whirlpool</b><span>EveryDrop 1 al 5</span></a>
+<a href="/marca/ge/"><b>GE</b><span>MWF y XWF</span></a>
+<a href="/compatible/filtro-para-nevera-kitchenaid/"><b>KitchenAid</b><span>Filtros EveryDrop</span></a>
+<a href="/compatible/filtro-para-nevera-maytag/"><b>Maytag</b><span>También MyTag</span></a>
+<a href="/compatible/filtro-para-nevera-jenn-air/"><b>Jenn-Air</b><span>Filtros EveryDrop</span></a>
+<a href="/compatible/filtro-para-nevera-amana/"><b>Amana</b><span>Filtros EveryDrop</span></a>
+<a href="/compatible/filtro-para-nevera-kenmore/"><b>Kenmore</b><span>Equivalencias 46-9xxx</span></a>
+<a class="ms-mas" href="/compatible/"><b>Y más marcas →</b><span>Filtro externo para Mabe, Haceb y otras</span></a>
+</div></div></section>
 """
 # En la web, las guías rápidas de la app se cambian por enlaces a las páginas completas
 app = cambiar_re(app, r'<div class="guias-rapidas" id="guias-rapidas">.*?</div></div>\n', EXPLORA)
@@ -285,8 +305,17 @@ nav.bnav{grid-template-columns:repeat(2,1fr)!important}
 .p3-grid div{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px}
 .p3-grid span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-weight:800;font-family:var(--f-display)}
 .p3-grid p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
-.marcas-tira{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 26px;padding:16px;border-radius:16px;background:var(--panel);border:1px solid var(--line)}
-.marcas-tira span{color:var(--muted);font-size:13px;width:100%;text-align:center}.marcas-tira b{font-family:var(--f-display);font-size:20px;letter-spacing:.02em;color:var(--ink);opacity:.72}
+.marcas-sec{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:22px;align-items:center;margin-top:10px}
+.ms-foto{margin:0;position:relative;border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}.ms-foto img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;display:block}
+.ms-foto figcaption{position:absolute;left:12px;bottom:12px;background:rgba(11,31,107,.88);color:#fff;font-weight:700;font-size:13px;padding:7px 12px;border-radius:999px}
+.ms-eye{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.ms-txt h2{margin:6px 0 8px;font-size:clamp(21px,3vw,28px);line-height:1.12}.ms-txt p{color:var(--muted);margin:0 0 14px}
+.ms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.ms-grid a{display:flex;flex-direction:column;gap:2px;padding:11px 13px;border-radius:14px;background:var(--panel);border:1px solid var(--line);text-decoration:none;color:var(--ink);transition:transform .15s,border-color .15s,box-shadow .15s}
+.ms-grid a:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 10px 24px -14px rgba(26,92,255,.5)}
+.ms-grid b{font-family:var(--f-display);font-size:17px}.ms-grid span{font-size:12.5px;color:var(--muted)}
+.ms-grid .ms-mas{background:linear-gradient(135deg,#ff8a1f,#ff4d2e);border-color:transparent;color:#fff}.ms-grid .ms-mas span{color:rgba(255,255,255,.9)}
+@media (max-width:760px){.marcas-sec{grid-template-columns:1fr}}
 .ex-grid a{transition:transform .18s,box-shadow .18s,border-color .18s}.ex-grid a:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(11,26,69,.45)}
 #wa-flot{left:auto!important;right:max(16px,env(safe-area-inset-right,0px))!important}@media (max-width:520px){#wa-flot span{display:none}#wa-flot{padding:14px!important}}
 .explora{display:flex;flex-direction:column;gap:10px}.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}.ex-grid a{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);text-decoration:none;color:var(--ink)}.ex-grid a span{font-size:13px;color:var(--muted)}.ex-grid a:hover{border-color:var(--accent)}

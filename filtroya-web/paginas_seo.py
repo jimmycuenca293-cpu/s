@@ -282,7 +282,9 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
                  "por-que-el-agua-del-nevecon-sabe-mal": "agua", "el-dispensador-de-agua-del-nevecon-no-echa-agua": "agua", "el-hielo-del-nevecon-sale-turbio-o-con-mal-sabor": "agua",
                  "como-saber-si-el-filtro-de-la-nevera-esta-vencido": "alerta", "filtro-de-nevera-con-dispensador-de-agua-y-hielo": "agua", "agua-turbia-o-con-burbujas-en-la-nevera": "agua",
                  "nevera-no-hace-hielo-revisar-el-filtro": "agua", "se-puede-usar-la-nevera-sin-filtro-de-agua": "agua", "cuantos-litros-filtra-un-filtro-de-nevera": "alerta",
-                 "como-escoger-el-filtro-de-agua-para-la-nevera": "agua", "mejor-filtro-de-agua-para-nevera": "agua"}
+                 "como-escoger-el-filtro-de-agua-para-la-nevera": "asesoria", "mejor-filtro-de-agua-para-nevera": "familia",
+                 "donde-comprar-filtros-de-agua-para-nevera-en-colombia": "entrega", "como-comprar-un-filtro-de-nevera-por-internet-sin-equivocarte": "asesoria",
+                 "precio-de-los-filtros-de-agua-para-nevera-en-colombia": "familia"}
     for s, titulo, desc, cuerpo_g in GUIAS:
         ruta = f"/guia/{s}/"
         mg, mg_ld = miga(("Inicio", "/"), ("Guías", "/guia/"), (titulo, None))
@@ -406,6 +408,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
              [mg_ld], f"""{mg}
 <h1>Enviamos a toda Colombia</h1>
 <p>Envío <b>gratis</b> de filtros de agua para nevecón a {len(CIUDADES_CO)} ciudades y municipios de {len(deptos)} departamentos. Si tu municipio no aparece, también te lo enviamos: escoge «Otro municipio» al pagar.</p>
+{seo_busquedas.figura('entrega')}
 {bloques}""")
 
     # ---------- tutoriales de instalación ----------

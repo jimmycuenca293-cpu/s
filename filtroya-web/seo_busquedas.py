@@ -17,14 +17,17 @@ cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
 ANIO = 2026
 
 
-FOTOS = {"alerta": ("guia-alerta-display", "Pantalla del nevecón con la alerta «Cambiar filtro» encendida", "🔔 Así avisa el nevecón cuando toca cambiar el filtro"),
-         "agua": ("guia-agua-dispensador", "Hombre sirviéndose un vaso de agua del dispensador del nevecón", "💧 Con el filtro nuevo, el agua y el hielo salen limpios otra vez")}
+FOTOS = {"alerta": ("tienda-alerta", "Pantalla del nevecón que dice «Cambie el filtro de agua»", "🔔 Así avisa el nevecón cuando toca cambiar el filtro"),
+         "agua": ("tienda-agua", "Mujer sirviéndose agua con hielo del dispensador del nevecón", "💧 Con el filtro nuevo, el agua y el hielo salen limpios otra vez"),
+         "familia": ("tienda-familia", "Familia sirviéndose agua con hielo del dispensador del nevecón", "👨‍👩‍👧 Agua y hielo limpios para toda la familia"),
+         "asesoria": ("tienda-asesoria", "Asesora de la tienda mostrando en el celular cómo pedir el filtro de agua", "💬 Te ayudamos a escoger tu filtro y a pedirlo"),
+         "entrega": ("tienda-entrega", "Mensajero entregando la caja del filtro de agua a una clienta en su puerta", "📦 Te lo llevamos a tu casa con envío gratis")}
 
 
 def figura(clave, pie=None):
     n, alt, leyenda = FOTOS[clave]
     return (f'<figure class="foto-sec"><picture><source srcset="/img/{n}-640.webp 640w, /img/{n}.webp 1024w" sizes="(max-width:700px) 100vw, 700px" type="image/webp">'
-            f'<img src="/img/{n}.jpg" alt="{esc(alt)}" width="1024" height="572" loading="lazy"></picture><figcaption>{esc(pie or leyenda)}</figcaption></figure>')
+            f'<img src="/img/{n}.jpg" alt="{esc(alt)}" width="1024" height="576" loading="lazy"></picture><figcaption>{esc(pie or leyenda)}</figcaption></figure>')
 
 
 def temas(marca, s, tiene_externo):

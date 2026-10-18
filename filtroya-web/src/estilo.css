@@ -165,7 +165,7 @@ footer.pie .logo{display:flex;align-items:center;gap:8px;color:#fff;text-decorat
 
 /* fotos de las secciones */
 .foto-sec{max-width:760px;margin:14px 0 18px;display:flex;flex-direction:column;gap:8px}
-.foto-sec img{width:100%;height:auto;aspect-ratio:1024/572;object-fit:cover;border-radius:18px;border:1px solid var(--line);display:block}
+.foto-sec img{width:100%;height:auto;aspect-ratio:1024/576;object-fit:cover;border-radius:18px;border:1px solid var(--line);display:block}
 .foto-sec figcaption{font-size:14px;color:var(--muted)}
 .foto-par{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 
