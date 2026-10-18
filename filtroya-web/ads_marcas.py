@@ -100,10 +100,13 @@ IMAGENES = {
 }
 
 
+LEYENDAS = {"alerta": "🔔 Así avisa tu nevecón", "agua": "💧 Listo: agua limpia otra vez", "entrega": "💵 Pagas al recibir"}
+
+
 def figura(clave, eager=False):
     _, nombre, alt = IMAGENES[clave]
     return (f'<figure class="foto-ads"><picture><source srcset="/purofiltro-img/{nombre}-640.webp 640w, /purofiltro-img/{nombre}.webp 1024w" sizes="(max-width:860px) 92vw, 560px" type="image/webp">'
-            f'<img src="/purofiltro-img/{nombre}.jpg" alt="{esc(alt)}" width="1024" height="572" {"fetchpriority=" + chr(34) + "high" + chr(34) if eager else "loading=" + chr(34) + "lazy" + chr(34)}></picture></figure>')
+            f'<img src="/purofiltro-img/{nombre}.jpg" alt="{esc(alt)}" width="1024" height="572" {"fetchpriority=" + chr(34) + "high" + chr(34) if eager else "loading=" + chr(34) + "lazy" + chr(34)}></picture><figcaption>{LEYENDAS[clave]}</figcaption></figure>')
 
 
 ICONO_WA = '<svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-4-.6-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>'
@@ -236,7 +239,8 @@ footer .leg{font-size:12.5px;color:rgba(255,255,255,.55);border-top:1px solid rg
 .cod-big{display:flex;gap:14px;align-items:center;background:#e8f5ee;border:1px solid #bfe3cf;color:#0d5c36;border-radius:18px;padding:14px 16px}.cod-big>span:first-child{font-size:30px}.cod-big b{display:block;font-size:17px}.cod-big small{font-size:14px;color:#25704b}
 .lista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}.lista li{position:relative;padding-left:28px}.lista li::before{content:"✓";position:absolute;left:0;top:2px;width:20px;height:20px;border-radius:50%;background:var(--suave);color:var(--pri);font-weight:900;font-size:12px;display:grid;place-items:center}
 @media (max-width:860px){.pdp{grid-template-columns:1fr}.pdp .foto{position:relative;top:0;max-width:420px;width:100%;justify-self:center}}
-.foto-ads{margin:0;border-radius:24px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--sombra);background:#fff}.foto-ads img{width:100%;height:auto;display:block}
+.foto-ads{position:relative;margin:0;border-radius:24px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--sombra);background:#fff}.foto-ads img{width:100%;height:auto;display:block}
+.foto-ads figcaption{position:absolute;left:14px;bottom:14px;background:rgba(255,255,255,.95);color:var(--ink);font-weight:700;font-size:14px;line-height:1.2;padding:9px 15px;border-radius:999px;box-shadow:0 8px 22px rgba(0,0,0,.22)}
 .dos{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center;margin-bottom:34px}.dos .cab{margin-bottom:0}
 .entrega{display:grid;grid-template-columns:.95fr 1.05fr;gap:36px;align-items:center}.entrega .cab{margin-bottom:22px}.entrega .pasos{grid-template-columns:1fr;gap:12px}
 .entrega .paso{display:grid;grid-template-columns:auto 1fr;column-gap:16px;align-items:center;padding:18px 20px}.entrega .paso::before{margin:0;grid-row:span 2}.entrega .paso h3{font-size:18px;margin:0}.entrega .paso p{font-size:15px}
@@ -374,7 +378,7 @@ def cab(eye, titulo, texto="", centrado=False, h="h2"):
 
 def bloque_cuando(marca, cfg):
     info = marcas_exclusivas.MARCAS_INFO[marca]
-    return sec(f'<div class="dos"><div>{cab("Mantenimiento", f"¿Cuándo cambiar el filtro de tu nevecón {marca}?", "Un filtro de agua se cambia <b>cada 6 meses</b>. Antes, si tu familia es grande, usan mucho hielo o el agua de tu ciudad trae sedimento.")}</div>{figura("agua")}</div>' + f'''
+    return sec(f'<div class="dos"><div>{cab("Mantenimiento", f"¿Cuándo cambiar el filtro de tu nevecón {marca}?", "Un filtro de agua se cambia <b>cada 6 meses</b>. Antes, si tu familia es grande, usan mucho hielo o el agua de tu ciudad trae sedimento.")}</div>{figura("alerta")}</div>' + f'''
   <div class="cols">
     <div class="bloque"><div class="stat">6</div><h3>meses de uso normal</h3><p>Pasado ese tiempo el carbón del filtro se satura y ya no retiene el cloro, los olores ni el sedimento, aunque el agua se vea transparente.</p></div>
     <div class="bloque"><div class="ic">👀</div><h3>Señales de que ya toca</h3><ul><li>El agua o el hielo saben o huelen raro (cloro, tierra, encerrado).</li><li>El dispensador bota menos agua o tarda más en llenar el vaso.</li><li>El hielo sale turbio, pequeño o se produce menos.</li><li>Apareció la alerta del filtro en la pantalla.</li></ul></div>
@@ -385,9 +389,9 @@ def bloque_cuando(marca, cfg):
 
 def display_mock(cfg, marca):
     en, es = cfg["display"]
-    return (figura("alerta")
-            + f'<p class="nota">Ejemplo de la alerta en la pantalla. En tu nevecón {esc(marca)} puede salir como «{esc(en.replace("  ", " "))}» ({esc(es.replace("  ", " "))}); '
-              'el texto exacto cambia según el modelo y a veces es solo una luz o un ícono de gota.</p>')
+    return (f'<div class="display" role="img" aria-label="Ejemplo de la alerta del filtro en la pantalla del nevecón {esc(marca)}"><span class="led"></span>'
+            f'<div><small>Así suele salir en tu {esc(marca)}</small><b>{esc(en)}</b><em>{esc(es)}</em></div></div>'
+            '<p class="nota">El texto exacto cambia según el modelo; a veces es solo una luz o un ícono de gota.</p>')
 
 
 def bloque_alerta(marca, cfg, ps):
@@ -504,7 +508,7 @@ def pagina_marca(marca, cfg, ps, ciud):
     <div class="veredicto"><span class="n" id="v-n">0/{len(SINTOMAS)}</span><b id="v-t" style="font-size:20px">Marca lo que te pasa</b><p id="v-p">Si marcas una o más, tu filtro ya está saturado y el agua y el hielo no se están filtrando bien.</p>
       <a class="btn wa" data-wa="sintomas" id="v-btn" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}Quiero cambiarlo</a></div></div>''')
     c += bloque_alerta(marca, cfg, ps)
-    c += sec(cab("Paso a paso", f"Cómo instalar cada filtro de nevecón {marca}", "Toca tu referencia y sigue los pasos. Cada una trae dónde va, cuánto tarda, qué necesitas y cómo apagar la alerta.")
+    c += sec(f'<div class="dos"><div>{cab("Paso a paso", f"Cómo instalar cada filtro de nevecón {marca}", "Toca tu referencia y sigue los pasos. Cada una trae dónde va, cuánto tarda, qué necesitas y cómo apagar la alerta. Al terminar, el agua y el hielo salen limpios otra vez.")}</div>{figura("agua")}</div>'
              + "".join(detalle_instalacion(p, marca, cfg) for p in ps), alt=True, id_="instalar")
     c += sec(cab("Compatibilidad", f"Referencias, equivalencias y nevecones {marca}", f"Busca la referencia impresa en tu filtro viejo o el modelo de tu nevecón. La etiqueta del modelo está {esc(cfg['etiqueta'])}.") + tabla_compat(ps))
     c += bloque_entrega()
@@ -561,7 +565,7 @@ def pagina_producto(p, marca, cfg, ps):
   </div>
 </div></section>
 '''
-    c += sec(f'<div class="dos"><div>{cab("Mantenimiento", f"¿Cuándo cambiar el {p['ref']}?", "Cada <b>6 meses</b> de uso normal, o antes si notas alguna de estas señales.")}</div>{figura("agua")}</div>' + f'''<div class="cols">
+    c += sec(f'<div class="dos"><div>{cab("Mantenimiento", f"¿Cuándo cambiar el {p['ref']}?", "Cada <b>6 meses</b> de uso normal, o antes si notas alguna de estas señales.")}</div>{figura("alerta")}</div>' + f'''<div class="cols">
     <div class="bloque"><div class="ic">👅</div><h3>Sabor u olor raro</h3><p>El agua o el hielo saben a cloro, a tierra o a encerrado.</p></div>
     <div class="bloque"><div class="ic">💧</div><h3>Menos presión</h3><p>El dispensador bota menos agua o tarda más en llenar el vaso.</p></div>
     <div class="bloque"><div class="ic">🧊</div><h3>Hielo turbio</h3><p>El hielo sale turbio, pequeño o la máquina produce menos.</p></div>
@@ -569,7 +573,7 @@ def pagina_producto(p, marca, cfg, ps):
     c += sec(f'''<div class="alerta"><div>{display_mock(cfg, marca)}</div>
     <div>{cab("Pantalla del nevecón", "Cómo apagar la alerta del filtro", "Después de cambiar el filtro hay que reiniciar el aviso, porque el nevecón cuenta el tiempo de uso y no sabe que ya pusiste uno nuevo.")}
     <div class="reset"><b>Para el {esc(p["ref"])}:</b> {esc(d["reset"])}</div></div></div>''', id_="alerta")
-    c += sec(cab("Paso a paso", f"Cómo instalar el filtro {p['ref']}", esc(d["donde"])) + f'''<div class="bloque" id="instalacion" style="display:flex;flex-direction:column;gap:16px">
+    c += sec(f'<div class="dos"><div>{cab("Paso a paso", f"Cómo instalar el filtro {p['ref']}", esc(d["donde"]) + " Al terminar, el agua y el hielo salen limpios otra vez.")}</div>{figura("agua")}</div>' + f'''<div class="bloque" id="instalacion" style="display:flex;flex-direction:column;gap:16px">
     <dl class="datos"><dt>Dónde va</dt><dd>{esc(d["donde"])}</dd><dt>Tiempo</dt><dd>{esc(d["tiempo"])}</dd><dt>Herramientas</dt><dd>{esc(d["herramientas"])}</dd></dl>
     <ol class="pasos2">{"".join(f"<li>{esc(x)}</li>" for x in d["pasos"])}</ol>
     <div class="reset"><b>Último paso:</b> {esc(d["reset"])}</div>
