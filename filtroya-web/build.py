@@ -109,6 +109,12 @@ for pid, url in imgs.items():
     im.save(OUT / "img" / f"{pid}.webp", "WEBP", quality=82, method=6)
     mini = im.copy(); mini.thumbnail((400, 400), Image.LANCZOS)
     mini.save(OUT / "img" / f"{pid}-400.webp", "WEBP", quality=80, method=6)
+# fotos del dueño para las secciones de texto (alerta del display y agua del dispensador)
+for archivo, nombre in (("alerta-display", "guia-alerta-display"), ("agua-dispensador", "guia-agua-dispensador")):
+    im = Image.open(AQUI / "imagenes-ads" / f"{archivo}.jpg").convert("RGB")
+    im.save(OUT / "img" / f"{nombre}.jpg", quality=84, optimize=True, progressive=True)
+    im.save(OUT / "img" / f"{nombre}.webp", "WEBP", quality=80, method=6)
+    im.resize((640, round(640 * im.height / im.width)), Image.LANCZOS).save(OUT / "img" / f"{nombre}-640.webp", "WEBP", quality=80, method=6)
 # La tienda usa WebP: pesa menos y carga más rápido en el celular
 app = app.replace(m.group(1), json.dumps({pid: f"/img/{pid}.webp" for pid in imgs}))
 
@@ -437,6 +443,7 @@ for p in CATALOGO:
 </section>
 {paginas_seo.mas_info(p, ubic)}
 {instalacion.tutorial_html(p)}
+{seo_busquedas.figura('agua')}
 <section class="caja" id="opiniones"><h2>Opiniones de compradores</h2>
 <?php if ($R['n']): ?><span><?= estrellas_html($R['prom']) ?> <b><?= $R['prom'] ?> de 5</b> · <?= $R['n'] ?> <?= $R['n'] === 1 ? 'opinión' : 'opiniones' ?> de compradores reales</span>
 <?php foreach ($R['lista'] as $r): ?><div class="resena"><?= estrellas_html((float) $r['estrellas']) ?> <b><?= h($r['nombre']) ?></b> <span class="m">· <?= h($r['ciudad']) ?> · <?= h(date('d/m/Y', strtotime($r['creado']))) ?></span><?= $r['texto'] !== '' ? '<p style="margin:4px 0 0">' . h($r['texto']) . '</p>' : '' ?></div><?php endforeach; ?>

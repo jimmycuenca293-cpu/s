@@ -17,6 +17,16 @@ cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
 ANIO = 2026
 
 
+FOTOS = {"alerta": ("guia-alerta-display", "Pantalla del nevecón con la alerta «Cambiar filtro» encendida", "🔔 Así avisa el nevecón cuando toca cambiar el filtro"),
+         "agua": ("guia-agua-dispensador", "Hombre sirviéndose un vaso de agua del dispensador del nevecón", "💧 Con el filtro nuevo, el agua y el hielo salen limpios otra vez")}
+
+
+def figura(clave, pie=None):
+    n, alt, leyenda = FOTOS[clave]
+    return (f'<figure class="foto-sec"><picture><source srcset="/img/{n}-640.webp 640w, /img/{n}.webp 1024w" sizes="(max-width:700px) 100vw, 700px" type="image/webp">'
+            f'<img src="/img/{n}.jpg" alt="{esc(alt)}" width="1024" height="572" loading="lazy"></picture><figcaption>{esc(pie or leyenda)}</figcaption></figure>')
+
+
 def temas(marca, s, tiene_externo):
     """[(ruta, titulo corto)] de los temas de una marca. Se usa para escribirlas y para enlazarlas."""
     b = f"/marca/{s}/"
@@ -62,12 +72,12 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
                  + "".join(f'<tr><td><a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a></td><td><span class="ref">{esc(p["ref"])}</span></td>'
                            f'<td>{"Externo" if ubic(p) == "externo" else "Interno"}</td><td><b>{cop(p["precio"])}</b></td><td>{cop(p["pack"])}</td></tr>' for p in ps) + "</table></div>")
 
-        def pagina(ruta, titulo, desc, h1, intro, cuerpo, preguntas, nombre_miga):
+        def pagina(ruta, titulo, desc, h1, intro, cuerpo, preguntas, nombre_miga, foto=None):
             mg, mg_ld = mg0(nombre_miga)
             art = {"@type": "Article", "headline": h1, "description": desc, "inLanguage": "es-CO", "datePublished": "2026-10-18", "dateModified": "2026-10-18",
                    "author": {"@id": "__BASE__/#tienda"}, "mainEntityOfPage": f"__BASE__{ruta}"}
             escribir(ruta, titulo, desc, [mg_ld, art, faq_ld(preguntas)],
-                     f'{mg}\n<h1>{esc(h1)}</h1>\n<p>{intro}</p>\n{cuerpo}\n{grid}\n{faq_html(preguntas)}\n{otros}')
+                     f'{mg}\n<h1>{esc(h1)}</h1>\n<p>{intro}</p>\n{figura(foto) if foto else ""}\n{cuerpo}\n{grid}\n{faq_html(preguntas)}\n{otros}')
 
         # 1. filtro de agua para nevera {marca}
         pagina(f"{b}filtro-de-agua-para-nevera-{s}/", f"Filtro de agua para nevera {marca} | {len(ps)} referencias, envío gratis",
@@ -82,7 +92,7 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
                [(f"¿Qué filtro de agua usa una nevera {marca}?", f"Depende del modelo. Las referencias más comunes son {refs_txt}. Con el modelo o con la referencia del filtro viejo te confirmamos cuál es."),
                 (f"¿El filtro de nevera y el de nevecón son diferentes?", "No. Nevera, nevecón y refrigerador son el mismo electrodoméstico; el filtro depende de la marca y del modelo, no del nombre."),
                 ("¿Cuánto cuesta el envío?", "Nada: el envío es gratis a toda Colombia y el precio que ves es el precio final.")],
-               "Filtro de agua para nevera")
+               "Filtro de agua para nevera", foto="agua")
 
         # 2. precio
         pagina(f"{b}precio-filtro-nevera-{s}/", f"Precio filtro nevera {marca} en Colombia {ANIO} | {rango}",
@@ -109,7 +119,7 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
                [("¿Necesito cerrar la llave del agua?", "En los filtros internos no hace falta; en los externos sí, antes de soltar la manguera."),
                 ("¿Cuánto tarda el cambio?", "Los internos, un par de minutos; los externos, de 10 a 15 minutos."),
                 ("¿Por qué sale aire o agua turbia al principio?", "Es normal: el filtro nuevo suelta aire y polvo de carbón. Saca unos 6 litros por el dispensador para limpiarlo.")],
-               "Cómo cambiar el filtro")
+               "Cómo cambiar el filtro", foto="agua")
 
         # 4. luz del filtro
         reset = "".join(f'<section class="caja"><h2><a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a></h2><p>{esc(instalacion.datos(p)["reset"])}</p></section>' for p in ps)
@@ -122,7 +132,7 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
                [(f"¿Puedo apagar la luz del filtro {marca} sin cambiarlo?", "Se puede reiniciar, pero no conviene: un filtro saturado deja pasar cloro y sedimento y el agua y el hielo cogen mal sabor."),
                 ("¿Cada cuánto se prende la luz?", "Más o menos cada 6 meses, que es lo que dura un filtro con uso normal."),
                 ("¿La luz sigue prendida con el filtro nuevo?", "Falta reiniciar el aviso: se hace a mano, con el botón del panel, después de cambiar el filtro.")],
-               "Luz del filtro")
+               "Luz del filtro", foto="alerta")
 
         # 5. cada cuánto
         pagina(f"{b}cada-cuanto-cambiar-filtro-nevera-{s}/", f"¿Cada cuánto cambiar el filtro de la nevera {marca}? | Señales y plazos",
@@ -135,7 +145,7 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
                [("¿Qué pasa si no cambio el filtro a tiempo?", "Se tapa: baja la presión, el agua coge mal sabor y la suciedad puede llegar a la válvula y a la máquina de hielo."),
                 ("¿Puedo lavar el filtro y volver a usarlo?", "No. Por dentro tiene carbón activado que se satura; lavarlo no lo recupera."),
                 ("¿Puedo usar la nevera sin filtro?", "Algunos modelos traen un tapón para usarla sin filtro, pero el agua sale sin filtrar. Lo mejor es cambiarlo.")],
-               "Cada cuánto cambiarlo")
+               "Cada cuánto cambiarlo", foto="alerta")
 
         # 6. dónde comprar
         pagina(f"{b}donde-comprar-filtro-nevera-{s}/", f"Dónde comprar filtros de nevera {marca} en Colombia | Envío gratis",
@@ -187,7 +197,7 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
                [("¿Cuánto tarda en salir agua con un filtro nuevo?", "Entre 2 y 5 minutos de dispensado en tandas, hasta que el chorro salga parejo."),
                 ("¿El filtro nuevo puede estar dañado?", "Es raro. Antes de cambiarlo, vuelve a instalarlo y purga el aire."),
                 ("¿Cuándo llamo a un técnico?", "Si ya revisaste todo y sigue sin salir agua, puede ser la válvula de entrada o el interruptor del dispensador.")],
-               "No sale agua")
+               "No sale agua", foto="agua")
         pagina(f"{b}filtro-nevera-{s}-gotea/", f"Filtro de nevera {marca} gotea o bota agua: causas y solución",
                f"¿El filtro de tu nevera {marca} gotea o hay agua alrededor? Causas más comunes (mal instalado, sello, manguera) y cómo arreglarlo.",
                f"El filtro de la nevera {marca} gotea: causas y solución",
@@ -210,7 +220,7 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
                [("¿El mal sabor es peligroso?", "Un filtro vencido deja de retener el cloro y el sedimento; no conviene seguir tomando esa agua sin cambiarlo."),
                 ("¿Cuánto dura el mal sabor con un filtro nuevo?", "Debe desaparecer después de botar los primeros litros."),
                 ("¿Y si el agua de la llave ya sabe mal?", "El filtro se satura más rápido; cámbialo antes de los 6 meses o agrega un filtro externo.")],
-               "Mal sabor")
+               "Mal sabor", foto="agua")
 
         # páginas por ciudad
         for c in top_ciudades:
@@ -225,7 +235,7 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
                    [(f"¿Envían filtros {marca} a {ciudad}?", f"Sí, con envío gratis. El pago es en línea y te llega el número de guía."),
                     (f"¿Cómo sé cuál filtro le sirve a mi nevera {marca} en {ciudad}?", "Con el modelo o la referencia del filtro viejo te confirmamos cuál es; lo puedes buscar en el directorio de referencias."),
                     ("¿Se instala fácil?", "Sí. Cada filtro trae su paso a paso y se cambia sin herramientas.")],
-                   f"{ciudad}")
+                   f"{ciudad}", foto="agua")
     return salida
 
 
@@ -354,6 +364,7 @@ def home_bloque(CATALOGO, MARCAS, slug, ubic, CIUDADES_CO):
 <p>Aquí encuentras el <b>filtro de agua de tu nevera, nevecón o refrigerador</b> Samsung, LG, Whirlpool y GE, con <b>envío gratis</b> a toda Colombia y pago seguro en línea. Tenemos {len(CATALOGO)} referencias entre {rango}: filtros internos que van dentro del refrigerador y filtros externos de manguera.</p>
 <p>Si no sabes cuál es el tuyo, búscalo por la <a href="/referencias/">referencia del filtro viejo</a> o por el <a href="/neveras/">modelo de tu nevera</a>. Te ayudamos a confirmarlo antes de comprar.</p></div>
 <div><h2>Filtros por marca de nevera</h2><div class="sh-grid">{tarjetas}</div></div>
+<div><h2>Cuándo cambiar el filtro y cómo queda el agua</h2><div class="foto-par">{figura("alerta")}{figura("agua")}</div><p>Cuando el nevecón muestra la alerta del filtro, ya pasaron unos 6 meses de uso: cámbialo y reinicia el aviso. Con el filtro nuevo, el agua y el hielo salen limpios otra vez.</p></div>
 <div><h2>Lo que más buscan sobre filtros de nevera</h2><div class="sh-chips">{"".join(f'<a href="{r}">{esc(t)}</a>' for r, t in busquedas)}</div></div>
 <div><h2>Preguntas frecuentes sobre filtros de agua para nevera</h2>{"".join(f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in faq)}</div>
 <div><h2>Enviamos filtros para nevera a toda Colombia</h2><div class="sh-chips">{ciudades}<a href="/envios/">Ver todas las ciudades</a></div></div>

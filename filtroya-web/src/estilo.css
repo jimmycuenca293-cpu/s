@@ -162,3 +162,9 @@ footer.pie a{color:#cfe3df;text-decoration:none}footer.pie a:hover{color:#fff;te
 footer.pie .medios span{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:#e6f2ef}
 .pie-base{display:flex!important;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding-block:16px 26px;font-size:12.5px;color:#7fa09a;border-top:1px solid rgba(255,255,255,.08)}
 footer.pie .logo{display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:800;font-size:22px}footer.pie .logo b{color:#5fd6c3}
+
+/* fotos de las secciones */
+.foto-sec{max-width:760px;margin:14px 0 18px;display:flex;flex-direction:column;gap:8px}
+.foto-sec img{width:100%;height:auto;aspect-ratio:1024/572;object-fit:cover;border-radius:18px;border:1px solid var(--line);display:block}
+.foto-sec figcaption{font-size:14px;color:var(--muted)}
+.foto-par{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}

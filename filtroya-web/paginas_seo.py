@@ -65,7 +65,7 @@ def mas_info(p, ubic, r=None):
     nombre = r or p["ref"]
     tipo = ("Es un filtro externo: se conecta en la manguera que lleva el agua al nevecón, así que sirve también para nevecones que no traen filtro de fábrica o que lo tienen dañado."
             if ubic(p) == "externo" else
-            "Es un filtro interno: va dentro del nevecón, en su alojamiento original, y se cambia en menos de un minuto sin cerrar la llave del agua.")
+            "Es un filtro interno: va dentro del nevecón, en su alojamiento, y se cambia en menos de un minuto sin cerrar la llave del agua.")
     return f"""<section class="caja">
   <h2>Para qué sirve el filtro {esc(nombre)}</h2>
   <p>{esc(p.get("desc", ""))}</p>
@@ -74,6 +74,7 @@ def mas_info(p, ubic, r=None):
   <li><b>Hielo más claro:</b> menos sedimento y partículas en los cubos.</li>
   <li><b>Protege el nevecón:</b> el sedimento tapa la válvula de entrada y la máquina de hielo; un filtro al día las cuida.</li>
   <li><b>Más barato que el botellón:</b> un filtro rinde unos 6 meses de agua fría filtrada para toda la familia.</li></ul>
+  {seo_busquedas.figura("alerta")}
   <h3 style="margin:6px 0 0;font-size:16px">Señales de que ya toca cambiarlo</h3>
   <ul><li>Se cumplieron 6 meses desde el último cambio, o se prendió la luz de «Filter» o «Replace».</li><li>El agua o el hielo saben u huelen raro.</li><li>El dispensador echa el agua con poca presión o a chorritos.</li><li>El hielo sale pequeño, turbio o la máquina hace menos.</li></ul>
 </section>"""
@@ -133,6 +134,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 </section>
 {mas_info(p, ubic, r)}
 {instalacion.tutorial_html(p, r)}
+{seo_busquedas.figura('agua')}
 <p class="m">¿Otro tipo de filtro? Mira <a href="/instalacion/">todos los tutoriales de instalación</a>.</p>
 {faq_html(preguntas)}"""
             escribir(ruta, titulo, desc, [mg_ld, faq_ld(preguntas), instalacion.tutorial_ld(p, f"__BASE__{ruta}", r)], cuerpo)
@@ -166,6 +168,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
   <p>El filtro que trae puesto debe decir <span class="ref">{esc(p["ref"])}</span> o una de sus equivalencias: {", ".join(f'<a href="/referencia/{slug(x)}/">{esc(x)}</a>' if norm(x) not in principales else esc(x) for x in p["refs"] if norm(x) != norm(p["ref"])) or "—"}.</p>
 </section>
 {instalacion.tutorial_html(p)}
+{seo_busquedas.figura('agua')}
 {f'<section class="caja"><h2>Otros nevecones que usan el mismo filtro</h2><div class="chips">{"".join(f"<a href=\"/nevecon/{slug(x)}/\">{esc(x)}</a>" for x in hermanos)}</div></section>' if hermanos else ""}
 {faq_html(preguntas)}"""
             escribir(ruta, titulo, desc, [mg_ld, faq_ld(preguntas)], cuerpo)
@@ -274,6 +277,11 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 <p>Reiniciar la luz no cambia el filtro. Si el agua sabe mal o sale despacio, mira <a href="/guia/por-que-el-agua-del-nevecon-sabe-mal/">por qué el agua del nevecón sabe mal</a>.</p>"""),
     ]
     GUIAS += seo_busquedas.guias(CATALOGO, MARCAS, slug, ubic)
+    FOTO_GUIA = {"cada-cuanto-cambiar-el-filtro-del-nevecon": "alerta", "como-cambiar-el-filtro-de-agua-del-nevecon": "agua", "como-reiniciar-la-luz-del-filtro-del-nevecon": "alerta",
+                 "por-que-el-agua-del-nevecon-sabe-mal": "agua", "el-dispensador-de-agua-del-nevecon-no-echa-agua": "agua", "el-hielo-del-nevecon-sale-turbio-o-con-mal-sabor": "agua",
+                 "como-saber-si-el-filtro-de-la-nevera-esta-vencido": "alerta", "filtro-de-nevera-con-dispensador-de-agua-y-hielo": "agua", "agua-turbia-o-con-burbujas-en-la-nevera": "agua",
+                 "nevera-no-hace-hielo-revisar-el-filtro": "agua", "se-puede-usar-la-nevera-sin-filtro-de-agua": "agua", "cuantos-litros-filtra-un-filtro-de-nevera": "alerta",
+                 "como-escoger-el-filtro-de-agua-para-la-nevera": "agua", "mejor-filtro-de-agua-para-nevera": "agua"}
     for s, titulo, desc, cuerpo_g in GUIAS:
         ruta = f"/guia/{s}/"
         mg, mg_ld = miga(("Inicio", "/"), ("Guías", "/guia/"), (titulo, None))
@@ -281,7 +289,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
                "author": {"@type": "Organization", "name": "PuroFiltro"}, "mainEntityOfPage": f"__BASE__{ruta}"}
         firma = ('<p class="m">Escrito por <a href="/quienes-somos.php"><?= h(trim((string) (cfg()["tecnico"]["nombre"] ?? "")) ?: cfg()["negocio"]["nombre"]) ?></a>, '
                  'técnico de neveras · Actualizado el 15 de octubre de 2026</p>')
-        escribir(ruta, titulo, desc, [mg_ld, art], f'{mg}\n<article class="legal"><h1>{esc(titulo)}</h1>\n{firma}\n{cuerpo_g}</article>')
+        escribir(ruta, titulo, desc, [mg_ld, art], f'{mg}\n<article class="legal"><h1>{esc(titulo)}</h1>\n{firma}\n{seo_busquedas.figura(FOTO_GUIA[s]) if s in FOTO_GUIA else ""}\n{cuerpo_g}</article>')
     mg, mg_ld = miga(("Inicio", "/"), ("Guías", None))
     escribir("/guia/", "Guías sobre filtros de agua para nevecón", "Guías para escoger, cambiar y cuidar el filtro de agua de tu nevecón.", [mg_ld],
              f'{mg}<h1>Guías sobre filtros de agua para nevecón</h1><div style="display:flex;flex-direction:column;gap:10px">'
