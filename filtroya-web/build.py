@@ -68,7 +68,7 @@ def norm(s):
     return re.sub(r"[^A-Z0-9]", "", s.upper())
 
 
-PREFIJO = "purofiltro-"  # nombre del proyecto en cada carpeta
+PREFIJO = "filtrosnevecones-"  # nombre del proyecto en cada carpeta
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
 
@@ -109,6 +109,12 @@ for pid, url in imgs.items():
     im.save(OUT / "img" / f"{pid}.webp", "WEBP", quality=82, method=6)
     mini = im.copy(); mini.thumbnail((400, 400), Image.LANCZOS)
     mini.save(OUT / "img" / f"{pid}-400.webp", "WEBP", quality=80, method=6)
+# imagen para compartir en redes, íconos y manifiesto de la app
+for src_, dst_ in (("compartir.jpg", "compartir.jpg"), ("icono-512.png", "icono-512.png"), ("apple-touch-icon.png", "apple-touch-icon.png")):
+    shutil.copy(AQUI / "imagenes-tienda" / src_, OUT / "img" / dst_)
+(OUT / "manifest.webmanifest").write_text(json.dumps({"name": "Filtros Nevecones Colombia", "short_name": "Filtros Nevecones", "start_url": "/", "display": "standalone",
+    "background_color": "#f1f5ff", "theme_color": "#0b1f6b", "lang": "es-CO",
+    "icons": [{"src": "/img/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}, {"src": "/img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}]}, ensure_ascii=False), encoding="utf-8")
 # fotos de las secciones (las que envió el dueño): se recortan a 16:9 y salen en JPG y WebP livianos
 for nombre, (y0, caja) in {"alerta": (None, (0, 200, 1145, 845)), "agua": (60, None), "familia": (20, None), "asesoria": (20, None), "entrega": (100, None)}.items():
     im = Image.open(AQUI / "imagenes-tienda" / f"{nombre}.jpg").convert("RGB")
@@ -334,13 +340,13 @@ index_php = f"""<?php require __DIR__ . '/partes.php'; $S = sitio(); $n = $S['ne
 <meta name="description" content="Compra el filtro de agua de tu nevera o nevecón Samsung, LG, Whirlpool, GE, KitchenAid, Maytag, Jenn-Air, Amana, Kenmore y más marcas. Precios, referencias, cómo instalarlo y cada cuánto cambiarlo. Envío gratis a toda Colombia. Paga con tarjeta, PSE o Nequi.">
 <meta name="keywords" content="filtro de agua para nevera, filtro de nevecón, filtro nevera Samsung, filtro nevera LG, filtro Whirlpool EveryDrop, filtro GE MWF, precio filtro de nevera, cada cuánto cambiar el filtro de la nevera, luz del filtro, filtro de refrigerador Colombia">
 <link rel="canonical" href="<?= h($S['base']) ?>/">
-<meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevera y nevecón | Envío gratis a toda Colombia"><meta property="og:description" content="Envío gratis a toda Colombia. Pago seguro en línea."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/lg-1000-o.jpg"><meta property="og:locale" content="es_CO">
+<meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevera y nevecón | Envío gratis a toda Colombia"><meta property="og:description" content="Envío gratis a toda Colombia. Pago seguro en línea."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/compartir.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="<?= h($n['nombre']) ?>"><meta name="twitter:card" content="summary_large_image"><link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <meta name="theme-color" content="#0b1f6b"><link rel="icon" href="/img/icono.svg" type="image/svg+xml">
 <?= verificacion_html() . analytics_html() ?>
 <script>window.FY_WA = <?= json_encode((strlen($w = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? ''))) === 10 ? '57' : '') . $w) ?>;</script>
 <script type="application/ld+json"><?php $ld = <<<'JSON'
 {json.dumps({"@context": "https://schema.org", "@graph": [
-    {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/lg-1000-o.jpg", "areaServed": {"@type": "Country", "name": "Colombia"}, "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi", "sameAs": "__SAMEAS__"},
+    {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/compartir.jpg", "logo": "__BASE__/img/icono-512.png", "slogan": "Filtros de agua para nevera con envío gratis a toda Colombia", "priceRange": "$$", "areaServed": {"@type": "Country", "name": "Colombia"}, "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi", "sameAs": "__SAMEAS__"},
     {"@type": "WebSite", "name": "__NOMBRE__", "url": "__BASE__/", "inLanguage": "es-CO"},
     {"@type": "ItemList", "name": "Filtros de agua para nevecón", "itemListElement": marca_ld},
     paginas_seo.faq_ld(home_faq)]}, ensure_ascii=False)}
@@ -559,7 +565,7 @@ cat_php = {
 (OUT / "api" / "catalogo.php").write_text("<?php\n// Generado por build.py: no lo edites a mano. Los precios se cambian en la app y se vuelve a generar.\nreturn " + php_val(cat_php) + ";\n", encoding="utf-8")
 
 # ---------- carpetas con el nombre del proyecto ----------
-# Todas las carpetas (y la hoja de estilos y el carrito) llevan "purofiltro-" adelante para no chocar
+# Todas las carpetas (y la hoja de estilos y el carrito) llevan "filtrosnevecones-" adelante para no chocar
 # con archivos que ya existan en el hosting. Se renombran al final y se corrigen todas las rutas.
 CARPETAS = ["img", "api", "data", "filtro", "referencia", "referencias", "nevecon", "neveras", "marca", "guia", "envios", "tienda", "instalacion", "compatible"]
 for c in CARPETAS:
@@ -577,7 +583,7 @@ for f in ("estilo.css", "carrito.js"):
     (OUT / f).rename(OUT / (PREFIJO + f))
 patron = re.compile(r"/(" + "|".join(CARPETAS) + r")/")
 for f in OUT.rglob("*"):
-    if not f.is_file() or f.suffix not in (".php", ".js", ".css", ".html", ".txt", ".xml", ".json", "") or PREFIJO + "data" in f.parts:
+    if not f.is_file() or f.suffix not in (".php", ".js", ".css", ".html", ".txt", ".xml", ".json", ".webmanifest", "") or PREFIJO + "data" in f.parts:
         continue
     t = f.read_text(encoding="utf-8")
     t2 = patron.sub(lambda m: "/" + PREFIJO + m.group(1) + "/", t)
@@ -595,7 +601,7 @@ print(f"Listo: {OUT.relative_to(AQUI)}/ con {len(CATALOGO)} filtros, {len(MARCAS
 # sitios/<marca>/ es una tienda completa (carrito, pago, pedidos, legales) que solo vende esa marca.
 # Lleva todo lo de la tienda principal menos sus páginas, y la portada y las fichas de la marca en la raíz.
 SITIOS = AQUI / "sitios"
-QUITAR = {"index.php", "llms.php", "sitemap.php"} | {PREFIJO + c for c in CARPETAS if c not in ("img", "api", "data")}  # llms.php y sitemap.php se escriben aparte para cada marca
+QUITAR = {"index.php", "llms.php", "sitemap.php", "manifest.webmanifest", "contacto.php"} | {PREFIJO + c for c in CARPETAS if c not in ("img", "api", "data")}  # llms.php y sitemap.php se escriben aparte para cada marca
 SITEMAP_MARCA = """<?php
 require __DIR__ . '/%sapi/sitio.php';
 header('Content-Type: application/xml; charset=utf-8');
@@ -611,17 +617,17 @@ foreach ($urls as $u => $pr) echo '  <url><loc>' . htmlspecialchars($b . $u) . '
 echo '</urlset>';
 """ % (PREFIJO, PREFIJO)
 CAMBIOS_MARCA = {  # rutas de la tienda principal que en el sitio de la marca son otras
-    "carrito.php": [("/purofiltro-filtro/${p.slug}/", "/${p.slug}/"), ('href="/purofiltro-tienda/"', 'href="/#filtros"')],
-    "404.php": [('href="/#catalogo"', 'href="/#filtros"'), ('href="/purofiltro-referencias/"', 'href="/cual-es-mi-filtro/"'), ('href="/purofiltro-neveras/">Buscar por modelo', 'href="/cambio-e-instalacion/">Cómo instalarlo')],
-    "quienes-somos.php": [('href="/purofiltro-guia/">Lee nuestras guías', 'href="/cambio-e-instalacion/">Cómo cambiar tu filtro'), ('href="/#catalogo"', 'href="/#filtros"')],
-    "feed.php": [("$b/purofiltro-filtro/{$p['slug']}/", "$b/{$p['slug']}/")],
+    "carrito.php": [("/filtrosnevecones-filtro/${p.slug}/", "/${p.slug}/"), ('href="/filtrosnevecones-tienda/"', 'href="/#filtros"')],
+    "404.php": [('href="/#catalogo"', 'href="/#filtros"'), ('href="/filtrosnevecones-referencias/"', 'href="/cual-es-mi-filtro/"'), ('href="/filtrosnevecones-neveras/">Buscar por modelo', 'href="/cambio-e-instalacion/">Cómo instalarlo')],
+    "quienes-somos.php": [('href="/filtrosnevecones-guia/">Lee nuestras guías', 'href="/cambio-e-instalacion/">Cómo cambiar tu filtro'), ('href="/#catalogo"', 'href="/#filtros"')],
+    "feed.php": [("$b/filtrosnevecones-filtro/{$p['slug']}/", "$b/{$p['slug']}/")],
     PREFIJO + "api/recordatorios.php": [("'" + PREFIJO + "filtro/' . $cat[$p['pid']]['slug'] . '/'", "$cat[$p['pid']]['slug'] . '/'")],
 }
 for marca in marcas_exclusivas.MARCAS_INFO:
     s = slug(marca)
     d = SITIOS / s
     ids = {p["id"] for p in CATALOGO if p["marca"] == marca}
-    if d.exists():  # los pedidos de purofiltro-data/ nunca se borran
+    if d.exists():  # los pedidos de filtrosnevecones-data/ nunca se borran
         for hijo in d.iterdir():
             if hijo.name not in ("data", PREFIJO + "data"):
                 shutil.rmtree(hijo) if hijo.is_dir() else hijo.unlink()
@@ -645,7 +651,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
             shutil.copy(AQUI / "logos" / f"{s}-icono.png", d / (PREFIJO + "img") / f"icono-{s}.png")
             logo["icono"] = f"/{PREFIJO}img/icono-{s}.png"
     rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo)
-    (d / "purofiltro-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
+    (d / "filtrosnevecones-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
     # resumen en texto para asistentes de IA (ChatGPT, Gemini, Claude, Perplexity): tudominio.com/llms.txt
     ps_m = [p for p in CATALOGO if p["marca"] == marca]
@@ -690,10 +696,10 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         if t2 != txt:
             f.write_text(t2, encoding="utf-8")
     # la hoja de estilo solo lleva los colores de esta marca
-    css = (d / "purofiltro-marcas.css").read_text(encoding="utf-8")
+    css = (d / "filtrosnevecones-marcas.css").read_text(encoding="utf-8")
     bloques = re.split(r"(?=/\* ===== )|(?=/\* Páginas comunes)", css)
     css = "".join(x for x in bloques if not x.startswith("/* ===== ") or x.startswith(f"/* ===== {marca}:"))
-    (d / "purofiltro-marcas.css").write_text(css, encoding="utf-8")
+    (d / "filtrosnevecones-marcas.css").write_text(css, encoding="utf-8")
     sobran = [x.name for x in d.iterdir() if x.name in QUITAR and x.name not in ("index.php", "llms.php", "sitemap.php")]
     if sobran:  # el sitio de una marca nunca debe llevar páginas de la tienda principal (tienen las otras marcas)
         sys.exit(f"Sitio {marca}: sobran {sobran}")

@@ -15,7 +15,7 @@ function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, stri
         . '<meta property="og:type" content="website"><meta property="og:title" content="' . h($titulo) . '"><meta property="og:description" content="' . h($desc) . '"><meta property="og:url" content="' . h($canon) . '"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="Filtros ' . h($M['nombre']) . '">'
         . '<meta name="theme-color" content="' . h($M['tema']) . '"><link rel="icon" href="' . h($M['icono'] ?? '/img/icono.svg') . '">'
         . '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="' . h($M['fuentes']) . '">'
-        . ($legado ? '<link rel="stylesheet" href="/estilo.css">' : '') . '<link rel="stylesheet" href="/purofiltro-marcas.css"><script src="/carrito.js" defer></script>'
+        . ($legado ? '<link rel="stylesheet" href="/estilo.css">' : '') . '<link rel="stylesheet" href="/filtrosnevecones-marcas.css"><script src="/carrito.js" defer></script>'
         . verificacion_html() . analytics_html() . $extra . '</head><body class="m-' . h($M['clase']) . ($legado ? ' m-legado' : '') . '">' . gtm_body_html()
         . '<div class="m-anuncio"><span>✔ Distribuidor autorizado ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
         . '<header class="m-top"><div class="m-wrap">'

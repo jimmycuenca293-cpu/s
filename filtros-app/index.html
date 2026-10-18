@@ -1399,7 +1399,7 @@ async function saveICS() {
   if (!lastOrder) return;
   const d = new Date(lastOrder.cambio), ymd = d.toISOString().slice(0, 10).replace(/-/g, "");
   const end = new Date(d.getTime() + 864e5).toISOString().slice(0, 10).replace(/-/g, "");
-  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//PuroFiltro//ES", "BEGIN:VEVENT", `UID:${lastOrder.id}@purofiltro`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`, `DTSTART;VALUE=DATE:${ymd}`, `DTEND;VALUE=DATE:${end}`, `SUMMARY:Cambiar filtro de agua del nevecón (${lastOrder.ref})`, `DESCRIPTION:Pídelo por WhatsApp a ${NEGOCIO.nombre}: https://wa.me/${NEGOCIO.whatsapp}`, "BEGIN:VALARM", "TRIGGER:-P3D", "ACTION:DISPLAY", "DESCRIPTION:En 3 días toca cambiar el filtro", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//FiltrosNevecones//ES", "BEGIN:VEVENT", `UID:${lastOrder.id}@filtrosnevecones`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`, `DTSTART;VALUE=DATE:${ymd}`, `DTEND;VALUE=DATE:${end}`, `SUMMARY:Cambiar filtro de agua del nevecón (${lastOrder.ref})`, `DESCRIPTION:Pídelo por WhatsApp a ${NEGOCIO.nombre}: https://wa.me/${NEGOCIO.whatsapp}`, "BEGIN:VALARM", "TRIGGER:-P3D", "ACTION:DISPLAY", "DESCRIPTION:En 3 días toca cambiar el filtro", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   const msg = $("#ics-msg");
   abrirCalendario(ymd, end, `Cambiar filtro de agua del nevecón (${lastOrder.ref})`, msg);
 }
@@ -1487,7 +1487,7 @@ function abrirCalendario(desde, hasta, titulo, msg) {
 // Evento de calendario (todo el día) con aviso 3 días antes
 async function guardarICS(fecha, uid, msg) {
   const ymd = d => d.toISOString().slice(0, 10).replace(/-/g, "");
-  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//PuroFiltro//ES", "BEGIN:VEVENT", `UID:${uid}@purofiltro`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//FiltrosNevecones//ES", "BEGIN:VEVENT", `UID:${uid}@filtrosnevecones`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
     `DTSTART;VALUE=DATE:${ymd(fecha)}`, `DTEND;VALUE=DATE:${ymd(new Date(fecha.getTime() + DIA))}`, "SUMMARY:Cambiar el filtro de agua del nevecón",
     `DESCRIPTION:Pídelo en ${NEGOCIO.nombre}: https://wa.me/${NEGOCIO.whatsapp}`, "BEGIN:VALARM", "TRIGGER:-P3D", "ACTION:DISPLAY", "DESCRIPTION:En 3 días toca cambiar el filtro", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   abrirCalendario(ymd(fecha), ymd(new Date(fecha.getTime() + DIA)), "Cambiar el filtro de agua del nevecón", msg);

@@ -22,6 +22,18 @@ if (empty($_SESSION['ok'])) {
     pie(); exit;
 }
 
+// Descargar todos los pedidos en CSV (se abre en Excel)
+if (isset($_GET['csv'])) {
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="pedidos-' . date('Y-m-d') . '.csv"');
+    $o = fopen('php://output', 'w'); fwrite($o, "\xEF\xBB\xBF");
+    fputcsv($o, ['Pedido', 'Fecha', 'Estado', 'Productos', 'Total', 'Entrega', 'Nombre', 'Celular', 'Correo', 'Ciudad', 'Barrio', 'Direccion', 'Indicaciones', 'Modelo', 'Metodo de pago', 'Pagado en', 'Guia']);
+    foreach (db()->query('SELECT * FROM pedidos ORDER BY creado DESC') as $p) {
+        fputcsv($o, [$p['ref'], $p['creado'], $p['estado'], implode(' | ', array_map('linea_txt', lineas_pedido($p))), $p['total'], $p['entrega'], $p['nombre'], $p['tel'], $p['email'], $p['ciudad'], $p['barrio'], $p['dir'], $p['indicaciones'], $p['modelo'], $p['metodo'], $p['pagado_en'], $p['guia']]);
+    }
+    exit;
+}
+
 // Acciones: marcar enviado (con guía), entregado o anulado
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && hash_equals($_SESSION['csrf'] ?? '', (string) ($_POST['csrf'] ?? ''))) {
     $ref = (string) ($_POST['ref'] ?? '');
@@ -49,7 +61,7 @@ $tot = db()->query("SELECT COUNT(*) n, COALESCE(SUM(total),0) s FROM pedidos WHE
 $csrf = h($_SESSION['csrf']);
 ?>
 <?php if ($f = datos_sin_llenar()): ?><div class="estado bad"><b>Tu tienda todavía muestra datos de ejemplo.</b> Cámbialos en api/config.php antes de anunciar en Google Ads: <?= h(implode(', ', $f)) ?>.</div><?php endif; ?>
-<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h1>Pedidos</h1><span><a class="btn ghost sm" href="/diagnostico.php">Diagnóstico de pagos</a> </span><form method="post"><button class="btn ghost sm" name="salir" value="1">Salir</button></form></div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h1>Pedidos</h1><span><a class="btn ghost sm" href="/diagnostico.php">Diagnóstico de pagos</a> <a class="btn ghost sm" href="/admin.php?csv=1">Descargar pedidos (Excel)</a> </span><form method="post"><button class="btn ghost sm" name="salir" value="1">Salir</button></form></div>
 <div class="caja"><b><?= (int) $tot['n'] ?> pedidos pagados · <?= cop((int) $tot['s']) ?> vendidos</b>
 <span class="m">Cada pedido pagado también te llega al correo <?= h(cfg()['correo_avisos']) ?>.</span></div>
 <?= $msg ? '<div class="estado ok">' . h($msg) . '</div>' : '' ?>

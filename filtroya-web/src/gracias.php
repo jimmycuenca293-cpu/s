@@ -15,6 +15,7 @@
       try { const o = JSON.parse(localStorage.getItem("fy_orders") || "[]"); const x = o.find(z => z.id === j.ref); if (x) { x.estado = j.estado === "pagado" ? "Pagado" : j.estado === "rechazado" ? "Pago rechazado" : "Pago pendiente"; localStorage.setItem("fy_orders", JSON.stringify(o)); } } catch {}
       if (j.estado === "pagado" || j.estado === "enviado" || j.estado === "entregado") {
         t.textContent = "¡Pago aprobado! Gracias por tu compra";
+        try { if (!sessionStorage.getItem("dl-" + j.ref)) { window.dataLayer = window.dataLayer || []; dataLayer.push({ event: "purchase", ecommerce: { transaction_id: j.ref, value: j.total, currency: "COP", items: (j.items || []).map(i => ({ item_id: i.pid, item_name: i.texto })) } }); sessionStorage.setItem("dl-" + j.ref, "1"); } } catch {}
         try { if (window.gtag && !sessionStorage.getItem("ga-" + j.ref)) { gtag("event", "purchase", { transaction_id: j.ref, value: j.total, currency: "COP", items: [{ item_id: j.pid, item_name: j.producto, quantity: j.unidades }] }); sessionStorage.setItem("ga-" + j.ref, "1"); } } catch {}
         out.className = "estado ok";
         try { localStorage.removeItem("fy_carrito"); } catch {}

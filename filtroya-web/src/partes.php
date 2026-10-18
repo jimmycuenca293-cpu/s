@@ -3,14 +3,14 @@ declare(strict_types=1);
 // Encabezado y pie de las páginas de producto, marca, legales y de pago.
 require_once __DIR__ . '/api/sitio.php';
 
-// En los sitios de una sola marca (purofiltro-marca.json existe) el encabezado y el pie son los de la marca
+// En los sitios de una sola marca (filtrosnevecones-marca.json existe) el encabezado y el pie son los de la marca
 function marca_sitio(): ?array
 {
     static $m = false;
     if ($m === false) {
-        $f = __DIR__ . '/purofiltro-marca.json';
+        $f = __DIR__ . '/filtrosnevecones-marca.json';
         $m = is_file($f) ? json_decode((string) file_get_contents($f), true) : null;
-        if ($m) require_once __DIR__ . '/purofiltro-marcas.php';
+        if ($m) require_once __DIR__ . '/filtrosnevecones-marcas.php';
     }
     return $m ?: null;
 }
@@ -27,7 +27,9 @@ function cabeza(string $titulo, string $desc, string $ruta, string $extra = '', 
     echo '<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
         . '<title>' . h($titulo) . '</title><meta name="description" content="' . h($desc) . '">'
         . ($indexar ? '<link rel="canonical" href="' . h($canon) . '">' : '<meta name="robots" content="noindex">')
-        . '<meta property="og:type" content="website"><meta property="og:title" content="' . h($titulo) . '"><meta property="og:description" content="' . h($desc) . '"><meta property="og:url" content="' . h($canon) . '"><meta property="og:locale" content="es_CO">'
+        . '<meta property="og:type" content="website"><meta property="og:title" content="' . h($titulo) . '"><meta property="og:description" content="' . h($desc) . '"><meta property="og:url" content="' . h($canon) . '"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="' . h($n['nombre']) . '"><meta name="twitter:card" content="summary_large_image">'
+        . (str_contains($extra, 'og:image') ? '' : '<meta property="og:image" content="' . h($S['base']) . '/img/compartir.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">')
+        . '<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/img/apple-touch-icon.png">'
         . '<script src="/carrito.js" defer></script><meta name="theme-color" content="#0b1f6b"><link rel="icon" href="/img/icono.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap"><link rel="stylesheet" href="/estilo.css">' . verificacion_html() . analytics_html() . $extra . '</head><body>' . gtm_body_html()
         . anuncio_html()
         . '<header class="top"><div class="wrap"><a class="logo" href="/"><img src="/img/icono.svg" alt="" width="34" height="34"><span class="lg-t">Filtros<b>Nevecones</b><small>Colombia</small></span></a>'
@@ -58,7 +60,7 @@ function pie_html(): string
     $h .= '<a href="/tienda/">Ver toda la tienda</a></nav>'
         . '<nav><b>Ayuda</b><a href="/referencias/">Buscar por referencia</a><a href="/neveras/">Filtro por modelo de nevecón</a><a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/">Cuándo cambiar el filtro</a><a href="/instalacion/">Cómo instalar tu filtro</a><a href="/guia/">Guías</a><a href="/envios/">Envíos a toda Colombia</a></nav>'
         . '<nav><b>Marcas y blog</b>' . implode('', array_map(fn($c) => '<a href="' . h($c['ruta']) . '">' . h($c['titulo']) . '</a>', catalogo()['compat'] ?? [])) . '</nav>'
-        . '<nav><b>Empresa</b><a href="/quienes-somos.php">Quiénes somos</a><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a></nav>'
+        . '<nav><b>Empresa</b><a href="/quienes-somos.php">Quiénes somos</a><a href="/contacto.php">Contacto</a><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a></nav>'
         . '</div><div class="wrap pie-medios"><span class="pie-seguro">🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'
         . '<div class="wrap pie-base"><span>© ' . date('Y') . ' ' . h($n['nombre']) . '. Precios en pesos colombianos con envío incluido.</span><span>Las marcas mencionadas pertenecen a sus dueños; somos un comercio independiente.</span></div></footer>';
     return $h;
