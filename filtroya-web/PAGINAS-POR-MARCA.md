@@ -4,19 +4,18 @@ Copia estas direcciones en Search Console (Inspección de URLs) cuando subas cad
 
 ## Samsung (67 páginas)
 
-- `tudominio.com/` — Filtros de agua Samsung originales para nevera | Envío gratis
-- `tudominio.com/filtro-samsung-haf-cin-da29-00020b-original/` — Filtro Samsung HAF-CIN DA29-00020B original
-- `tudominio.com/filtro-samsung-haf-qin-da97-17376b-original/` — Filtro Samsung HAF-QIN DA97-17376B original
-- `tudominio.com/filtro-samsung-aqua-pure-plus-da29-00003g-original/` — Filtro Samsung Aqua-Pure Plus DA29-00003G original
-- `tudominio.com/filtro-samsung-externo-da29-10105j-original/` — Filtro Samsung externo DA29-10105J original
+- `tudominio.com/` — Filtros de agua Samsung para nevera | Envío gratis
+- `tudominio.com/filtro-samsung-haf-cin-da29-00020b/` — Filtro Samsung HAF-CIN DA29-00020B original
+- `tudominio.com/filtro-samsung-haf-qin-da97-17376b/` — Filtro Samsung HAF-QIN DA97-17376B original
+- `tudominio.com/filtro-samsung-aqua-pure-plus-da29-00003g/` — Filtro Samsung Aqua-Pure Plus DA29-00003G original
+- `tudominio.com/filtro-samsung-externo-da29-10105j/` — Filtro Samsung externo DA29-10105J original
 - `tudominio.com/cual-es-mi-filtro/` — ¿Qué filtro Samsung usa mi nevecón? Busca por modelo o referencia
 - `tudominio.com/cambio-e-instalacion/` — Cómo cambiar el filtro de agua del nevecón Samsung: paso a paso
 - `tudominio.com/filtro-nevera-samsung/` — Filtro para nevera Samsung original | Precios y envío gratis
 - `tudominio.com/precio-filtro-samsung/` — Precio filtro nevera Samsung en Colombia 2026 | Originales
 - `tudominio.com/luz-filtro-samsung/` — Luz del filtro de la nevera Samsung: cómo reiniciarla
 - `tudominio.com/cada-cuanto-cambiar-filtro-samsung/` — ¿Cada cuánto cambiar el filtro de la nevera Samsung?
-- `tudominio.com/donde-comprar-filtro-samsung/` — Dónde comprar filtros Samsung originales en Colombia
-- `tudominio.com/filtro-samsung-original-o-generico/` — Filtro Samsung original o genérico: diferencias
+- `tudominio.com/donde-comprar-filtro-samsung/` — Dónde comprar filtros Samsung en Colombia
 - `tudominio.com/filtro-externo-nevera-samsung/` — Filtro externo para nevera Samsung original | $ 81.900
 - `tudominio.com/nevera-samsung-no-sale-agua-despues-de-cambiar-el-filtro/` — Nevera Samsung no sale agua después de cambiar el filtro: solución
 - `tudominio.com/filtro-nevera-samsung-gotea/` — El filtro de la nevera Samsung gotea: causas y solución
@@ -74,21 +73,20 @@ Copia estas direcciones en Search Console (Inspección de URLs) cuando subas cad
 
 ## LG (83 páginas)
 
-- `tudominio.com/` — Filtros de agua LG originales para nevera | Envío gratis
-- `tudominio.com/filtro-lg-lt1000p-original/` — Filtro LG LT1000P original | Envío gratis Colombia
-- `tudominio.com/filtro-lg-lt700p-original/` — Filtro LG LT700P original | Envío gratis Colombia
-- `tudominio.com/filtro-lg-lt800p-original/` — Filtro LG LT800P original | Envío gratis Colombia
-- `tudominio.com/filtro-lg-lt500p-original/` — Filtro LG LT500P original | Envío gratis Colombia
-- `tudominio.com/filtro-lg-lt600p-5231ja2006-original/` — Filtro LG LT600P 5231JA2006 original | Envío gratis Colombia
-- `tudominio.com/filtro-lg-externo-adq73693903-original/` — Filtro LG externo ADQ73693903 original | Envío gratis Colombia
+- `tudominio.com/` — Filtros de agua LG para nevera | Envío gratis
+- `tudominio.com/filtro-lg-lt1000p/` — Filtro LG LT1000P original | Envío gratis Colombia
+- `tudominio.com/filtro-lg-lt700p/` — Filtro LG LT700P original | Envío gratis Colombia
+- `tudominio.com/filtro-lg-lt800p/` — Filtro LG LT800P original | Envío gratis Colombia
+- `tudominio.com/filtro-lg-lt500p/` — Filtro LG LT500P original | Envío gratis Colombia
+- `tudominio.com/filtro-lg-lt600p-5231ja2006/` — Filtro LG LT600P 5231JA2006 original | Envío gratis Colombia
+- `tudominio.com/filtro-lg-externo-adq73693903/` — Filtro LG externo ADQ73693903 original | Envío gratis Colombia
 - `tudominio.com/cual-es-mi-filtro/` — ¿Qué filtro LG usa mi nevecón? Busca por modelo o referencia
 - `tudominio.com/cambio-e-instalacion/` — Cómo cambiar el filtro de agua del nevecón LG: paso a paso
 - `tudominio.com/filtro-nevera-lg/` — Filtro para nevera LG original | Precios y envío gratis
 - `tudominio.com/precio-filtro-lg/` — Precio filtro nevera LG en Colombia 2026 | Originales
 - `tudominio.com/luz-filtro-lg/` — Luz del filtro de la nevera LG: cómo reiniciarla
 - `tudominio.com/cada-cuanto-cambiar-filtro-lg/` — ¿Cada cuánto cambiar el filtro de la nevera LG?
-- `tudominio.com/donde-comprar-filtro-lg/` — Dónde comprar filtros LG originales en Colombia
-- `tudominio.com/filtro-lg-original-o-generico/` — Filtro LG original o genérico: diferencias
+- `tudominio.com/donde-comprar-filtro-lg/` — Dónde comprar filtros LG en Colombia
 - `tudominio.com/filtro-externo-nevera-lg/` — Filtro externo para nevera LG original | $ 81.900
 - `tudominio.com/nevera-lg-no-sale-agua-despues-de-cambiar-el-filtro/` — Nevera LG no sale agua después de cambiar el filtro: solución
 - `tudominio.com/filtro-nevera-lg-gotea/` — El filtro de la nevera LG gotea: causas y solución
@@ -160,21 +158,20 @@ Copia estas direcciones en Search Console (Inspección de URLs) cuando subas cad
 
 ## Whirlpool (75 páginas)
 
-- `tudominio.com/` — Filtros de agua Whirlpool originales para nevera | Envío gratis
-- `tudominio.com/filtro-whirlpool-everydrop-1-edr1rxd1-original/` — Filtro Whirlpool EveryDrop 1 EDR1RXD1 original
-- `tudominio.com/filtro-whirlpool-everydrop-2-edr2rxd1-original/` — Filtro Whirlpool EveryDrop 2 EDR2RXD1 original
-- `tudominio.com/filtro-whirlpool-everydrop-3-edr3rxd1-original/` — Filtro Whirlpool EveryDrop 3 EDR3RXD1 original
-- `tudominio.com/filtro-whirlpool-everydrop-4-edr4rxd1-original/` — Filtro Whirlpool EveryDrop 4 EDR4RXD1 original
-- `tudominio.com/filtro-whirlpool-everydrop-5-edr5rxd1-original/` — Filtro Whirlpool EveryDrop 5 EDR5RXD1 original
-- `tudominio.com/filtro-whirlpool-externo-4378411rb-original/` — Filtro Whirlpool externo 4378411RB original
+- `tudominio.com/` — Filtros de agua Whirlpool para nevera | Envío gratis
+- `tudominio.com/filtro-whirlpool-everydrop-1-edr1rxd1/` — Filtro Whirlpool EveryDrop 1 EDR1RXD1 original
+- `tudominio.com/filtro-whirlpool-everydrop-2-edr2rxd1/` — Filtro Whirlpool EveryDrop 2 EDR2RXD1 original
+- `tudominio.com/filtro-whirlpool-everydrop-3-edr3rxd1/` — Filtro Whirlpool EveryDrop 3 EDR3RXD1 original
+- `tudominio.com/filtro-whirlpool-everydrop-4-edr4rxd1/` — Filtro Whirlpool EveryDrop 4 EDR4RXD1 original
+- `tudominio.com/filtro-whirlpool-everydrop-5-edr5rxd1/` — Filtro Whirlpool EveryDrop 5 EDR5RXD1 original
+- `tudominio.com/filtro-whirlpool-externo-4378411rb/` — Filtro Whirlpool externo 4378411RB original
 - `tudominio.com/cual-es-mi-filtro/` — ¿Qué filtro Whirlpool usa mi nevecón? Busca por modelo o referencia
 - `tudominio.com/cambio-e-instalacion/` — Cómo cambiar el filtro de agua del nevecón Whirlpool: paso a paso
 - `tudominio.com/filtro-nevera-whirlpool/` — Filtro para nevera Whirlpool original | Precios y envío gratis
 - `tudominio.com/precio-filtro-whirlpool/` — Precio filtro nevera Whirlpool en Colombia 2026 | Originales
 - `tudominio.com/luz-filtro-whirlpool/` — Luz del filtro de la nevera Whirlpool: cómo reiniciarla
 - `tudominio.com/cada-cuanto-cambiar-filtro-whirlpool/` — ¿Cada cuánto cambiar el filtro de la nevera Whirlpool?
-- `tudominio.com/donde-comprar-filtro-whirlpool/` — Dónde comprar filtros Whirlpool originales en Colombia
-- `tudominio.com/filtro-whirlpool-original-o-generico/` — Filtro Whirlpool original o genérico: diferencias
+- `tudominio.com/donde-comprar-filtro-whirlpool/` — Dónde comprar filtros Whirlpool en Colombia
 - `tudominio.com/filtro-externo-nevera-whirlpool/` — Filtro externo para nevera Whirlpool original | $ 85.900
 - `tudominio.com/nevera-whirlpool-no-sale-agua-despues-de-cambiar-el-filtro/` — Nevera Whirlpool no sale agua después de cambiar el filtro: solución
 - `tudominio.com/filtro-nevera-whirlpool-gotea/` — El filtro de la nevera Whirlpool gotea: causas y solución
@@ -238,17 +235,16 @@ Copia estas direcciones en Search Console (Inspección de URLs) cuando subas cad
 
 ## GE (44 páginas)
 
-- `tudominio.com/` — Filtros de agua GE originales para nevera | Envío gratis
-- `tudominio.com/filtro-ge-mwf-original/` — Filtro GE MWF original | Envío gratis Colombia
-- `tudominio.com/filtro-ge-xwf-original/` — Filtro GE XWF original | Envío gratis Colombia
+- `tudominio.com/` — Filtros de agua GE para nevera | Envío gratis
+- `tudominio.com/filtro-ge-mwf/` — Filtro GE MWF original | Envío gratis Colombia
+- `tudominio.com/filtro-ge-xwf/` — Filtro GE XWF original | Envío gratis Colombia
 - `tudominio.com/cual-es-mi-filtro/` — ¿Qué filtro GE usa mi nevecón? Busca por modelo o referencia
 - `tudominio.com/cambio-e-instalacion/` — Cómo cambiar el filtro de agua del nevecón GE: paso a paso
 - `tudominio.com/filtro-nevera-ge/` — Filtro para nevera GE original | Precios y envío gratis
 - `tudominio.com/precio-filtro-ge/` — Precio filtro nevera GE en Colombia 2026 | Originales
 - `tudominio.com/luz-filtro-ge/` — Luz del filtro de la nevera GE: cómo reiniciarla
 - `tudominio.com/cada-cuanto-cambiar-filtro-ge/` — ¿Cada cuánto cambiar el filtro de la nevera GE?
-- `tudominio.com/donde-comprar-filtro-ge/` — Dónde comprar filtros GE originales en Colombia
-- `tudominio.com/filtro-ge-original-o-generico/` — Filtro GE original o genérico: diferencias
+- `tudominio.com/donde-comprar-filtro-ge/` — Dónde comprar filtros GE en Colombia
 - `tudominio.com/nevera-ge-no-sale-agua-despues-de-cambiar-el-filtro/` — Nevera GE no sale agua después de cambiar el filtro: solución
 - `tudominio.com/filtro-nevera-ge-gotea/` — El filtro de la nevera GE gotea: causas y solución
 - `tudominio.com/agua-o-hielo-con-mal-sabor-nevera-ge/` — Agua o hielo con mal sabor en la nevera GE: solución
