@@ -81,7 +81,7 @@ def catalogo():
 
 
 def ciudades():
-    return [c[0] for c in js("CIUDADES_CO")][:24]
+    return [(c[0], c[1]) for c in js("CIUDADES_CO")]
 
 
 def wa(numero, texto):
@@ -534,10 +534,66 @@ def pagina_marca(marca, cfg, ps, ciud):
     <div><h3>Pregunta por el pack de 2 filtros</h3><p>Un filtro dura 6 meses: con el pack tienes agua limpia todo el año y pagas menos por cada uno. El precio especial te lo damos por WhatsApp.</p></div>
     <a class="btn wa" data-wa="pack" href="{esc(wa(n, f'Hola, quiero el precio del pack de 2 filtros para mi nevecón {marca} con pago contra entrega.'))}" target="_blank" rel="noopener">{ICONO_WA}Precio del pack</a></div>''')
     c += sec(cab("Preguntas frecuentes", "Resolvemos tus dudas", centrado=True) + faq_html(preguntas), alt=True)
-    c += sec(cab("Envíos contra entrega", "Llegamos a tu ciudad", "Pagas al recibir en estas ciudades y en más municipios de Colombia.", True) + '<div class="chips" style="justify-content:center">' + "".join(f"<span>{esc(x)}</span>" for x in ciud) + "<span>y más municipios</span></div>")
+    c += sec(cab("Envíos contra entrega", "Llegamos a tu ciudad", f"Toca tu ciudad para ver cómo recibir tu filtro {esc(marca)} y pagar al recibir. Y llegamos a más municipios de Colombia.", True) + '<div class="chips" style="justify-content:center">' + "".join(f'<a href="/purofiltro-marca/{slug(marca)}/{slug(x)}/">{esc(x)}</a>' for x, _ in ciud) + "<span>y más municipios</span></div>")
     c += sec(f'''<div class="final"><h2>¿Listo para tener agua limpia otra vez?</h2><p>Escríbenos y te decimos cuál es tu filtro y el precio de hoy. Pagas cuando te llega.</p>
     <a class="btn wa" data-wa="final" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}Escribir por WhatsApp</a></div>''', estilo="padding-top:0")
     return c + pie(marca, cfg) + script(marca, cfg, con_picks=True, con_sintomas=True, total_sintomas=len(SINTOMAS))
+
+
+def pagina_ciudad(marca, cfg, ps, ciudad, depto, ciud):
+    n = cfg["whatsapp"]
+    envio = "Envío gratis" if ENVIO_GRATIS else "Envío"
+    hola = f"Hola, quiero un filtro de agua para mi nevecón {marca} con pago contra entrega en {ciudad}."
+    base = f"/purofiltro-marca/{slug(marca)}/"
+    ruta = f"{base}{slug(ciudad)}/"
+    dias = "2 a 3 días hábiles"
+    titulo = f"Filtro de agua nevecón {marca} en {ciudad} | Paga contra entrega"
+    desc = f"Filtros de agua para nevecones {marca} en {ciudad}, {depto}: pagas al recibir y llega en {dias}. Te decimos cuál es tu filtro por WhatsApp."
+    preguntas = [
+        (f"¿Puedo pagar contra entrega en {ciudad}?", f"Sí. Te lo llevamos a {ciudad} y le pagas en efectivo al mensajero cuando lo recibes. No pagas nada por adelantado."),
+        (f"¿Cuánto tarda en llegar a {ciudad}?", f"Normalmente {dias} después de confirmar tu pedido por WhatsApp. Te mandamos el número de guía para que sigas el paquete."),
+        (f"¿Qué filtro usa mi nevecón {marca}?", f"Mándanos por WhatsApp una foto del filtro viejo o de la etiqueta del nevecón y te decimos cuál es. La etiqueta del modelo está {cfg['etiqueta']}."),
+        ("¿Cada cuánto se cambia el filtro?", "Cada 6 meses, o antes si el agua cambia de sabor, si el dispensador bota menos agua o si aparece la alerta en la pantalla."),
+    ]
+    tarjetas = "".join(f'''
+      <article class="card">
+        <span class="tipo">{"Externo · manguera" if p["externo"] else "Interno"}</span>
+        <div class="im"><picture><source srcset="/purofiltro-img/{p["id"]}-400.webp" type="image/webp"><img src="/purofiltro-img/{p["id"]}.jpg" alt="{esc(p["largo"])} para nevecón {esc(marca)}" width="400" height="400" loading="lazy"></picture></div>
+        <div class="tx">
+          <h3><a href="/purofiltro-filtro/{p["slug"]}/">{esc(p["largo"])}</a></h3>
+          <span class="ref">Ref. {esc(p["ref"])}</span>
+          <a class="btn wa" data-wa="tarjeta" href="{esc(wa(n, f'Hola, quiero el precio de hoy del {p["largo"]} para mi nevecón {marca}, con pago contra entrega en {ciudad}.'))}" target="_blank" rel="noopener">{ICONO_WA}Pedir en {esc(ciudad)}</a>
+          <a class="mas" href="/purofiltro-filtro/{p["slug"]}/">Cómo se instala y cuándo cambiarlo →</a>
+          <div class="pie-card"><span>💵 Pagas al recibir</span><span>🚚 {envio}</span></div>
+        </div>
+      </article>''' for p in ps)
+    ld = {"@context": "https://schema.org", "@graph": [
+        {"@type": "WebPage", "name": titulo, "url": BASE + ruta, "inLanguage": "es-CO", "description": desc},
+        miga_ld([("Inicio", "/"), (f"Filtros {marca}", base), (ciudad, None)]), faq_ld(preguntas)]}
+    c = cabeza(marca, cfg, titulo, desc, ruta, ld, f"/purofiltro-img/{ps[0]['id']}.jpg")
+    c += f"""
+<section class="hero"><div class="w">
+  <div>
+    <span class="cod"><i>💵</i>Pago contra entrega en {esc(ciudad)}</span>
+    <h1>Filtro de agua para tu nevecón <em>{esc(marca)}</em> en {esc(ciudad)}</h1>
+    <p class="lead">Te lo llevamos a {esc(ciudad)} ({esc(depto)}) y le pagas en efectivo al mensajero cuando lo recibes. Te decimos cuál es el tuyo por WhatsApp.</p>
+    <div class="acc"><a class="btn wa" data-wa="portada" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}Pedir por WhatsApp</a><a class="btn claro" href="{base}">Ver todos los filtros {esc(marca)}</a></div>
+    <ul><li>Pagas al recibir</li><li>{envio}</li><li>Llega en {dias}</li><li>Para {esc(cfg["lineas"])}</li></ul>
+  </div>
+  <div class="vis">
+    <span class="f f1"><picture><source srcset="/purofiltro-img/{ps[0]['id']}.webp" type="image/webp"><img src="/purofiltro-img/{ps[0]['id']}.jpg" alt="Filtro de agua para nevecón {esc(marca)} en {esc(ciudad)}" width="600" height="600"></picture></span>
+    <span class="globo"><b>● WhatsApp</b>Mándanos una foto de tu filtro viejo y te decimos cuál es y el precio de hoy.</span>
+  </div>
+</div></section>
+"""
+    c += sec(cab(f"Filtros {marca} en {ciudad}", "Escoge el tuyo y pregunta el precio de hoy", f"Internos y externos para {esc(cfg['lineas'])}. Todos con pago contra entrega en {esc(ciudad)}.") + f'<div class="grid">{tarjetas}</div>')
+    c += bloque_entrega()
+    c += sec(cab("Preguntas frecuentes", f"Filtros {marca} en {ciudad}", centrado=True) + faq_html(preguntas), alt=True)
+    otras = "".join(f'<a href="{base}{slug(x)}/">{esc(x)}</a>' for x, _ in ciud if x != ciudad)
+    c += sec(cab("Más ciudades", f"Filtros {marca} en otras ciudades de Colombia", "Pagas al recibir en todas.") + f'<div class="chips">{otras}</div><p style="margin-top:16px"><a href="{base}">← Volver a todos los filtros {esc(marca)}</a></p>')
+    c += sec(f'''<div class="final"><h2>¿Listo para tener agua limpia otra vez?</h2><p>Escríbenos y te decimos cuál es tu filtro y el precio de hoy. Pagas cuando te llega a {esc(ciudad)}.</p>
+    <a class="btn wa" data-wa="final" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}Escribir por WhatsApp</a></div>''', estilo="padding-top:0")
+    return c + pie(marca, cfg) + script(marca, cfg)
 
 
 # ---------- página de cada filtro ----------
@@ -658,6 +714,8 @@ def main():
                 shutil.copy(FOTOS / f"{p['id']}{suf}", SALIDA / "purofiltro-img" / f"{p['id']}{suf}")
             escribir(SALIDA / "purofiltro-filtro" / p["slug"], pagina_producto(p, marca, cfg, ps)); paginas += 1
         escribir(SALIDA / "purofiltro-marca" / slug(marca), pagina_marca(marca, cfg, ps, ciud)); paginas += 1
+        for ciudad, depto in ciud:
+            escribir(SALIDA / "purofiltro-marca" / slug(marca) / slug(ciudad), pagina_ciudad(marca, cfg, ps, ciudad, depto, ciud)); paginas += 1
         print(f"{marca}: portada + {len(ps)} filtros · WhatsApp {cfg['whatsapp']}")
     from PIL import Image
     for archivo, nombre, _ in IMAGENES.values():
