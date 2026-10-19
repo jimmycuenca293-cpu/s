@@ -502,7 +502,7 @@ def construir(clave, dominio):
     cfg = cfg.replace("https://filtrosaguanevecones.com", dominio).replace("Filtros Nevecones Colombia", M["tienda"]).replace("321 799 6144", M["telefono"]).replace("3217996144", M["whatsapp"])
     cfg = cfg.replace("pedidos@filtrosaguanevecones.com", "pedidos@" + dominio.split("//")[1])
     cfg = cfg.replace("GTM-5WSNHV66", "GTM-5SCP73SQ")
-    cfg = re.sub(r"('google_verificacion'\s*=>\s*)'[^']*'", r"\1''", cfg)  # la verificación de Search Console es de otro dominio
+    cfg = re.sub(r"('google_verificacion'\s*=>\s*)'[^']*'", r"\1'NsQML6RHpDIy79HzjoToyz_eOmWi97jh9G1I1ZwkUM4'", cfg)  # Search Console de filtrosparalavadoras.click
     (out / "api" / "config.sample.php").write_text(cfg, encoding="utf-8")
     (out / "config.sample.php").unlink()
     # 8) zip
