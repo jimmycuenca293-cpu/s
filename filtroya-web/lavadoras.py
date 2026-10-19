@@ -355,9 +355,15 @@ function lav_cabeza(string $titulo, string $desc, string $ruta, string $extra, s
 {
     global $M;
     $ld = $json !== '' ? '<script type="application/ld+json">' . str_replace('__BASE__', sitio()['base'], $json) . '</script>' : '';
-    cabeza_marca($M, $titulo, $desc, $ruta, $extra . $ld);
+    cabeza_marca($M, $titulo, $desc, $ruta, $extra . $ld . lav_evento_whatsapp());
 }
 function lav_pie(): void { global $M; pie_marca($M); }
+// Evento para Google Tag Manager: «whatsapp» al tocar cualquier enlace de WhatsApp
+function lav_evento_whatsapp(): string
+{
+    global $M;
+    return '<script>window.dataLayer=window.dataLayer||[];document.addEventListener("click",function(e){var a=e.target.closest(\'a[href*="wa.me/"]\');if(a){dataLayer.push({event:"whatsapp",ubicacion:a.classList.contains("wa-flot")?"boton_flotante":"enlace",pagina:location.pathname,marca:' . json_encode($M['nombre']) . '})}},true);</script>';
+}
 '''
 
 CSS_EXTRA = '''
@@ -495,6 +501,8 @@ def construir(clave, dominio):
     cfg = (BASE / "api" / "config.sample.php").read_text(encoding="utf-8")
     cfg = cfg.replace("https://filtrosaguanevecones.com", dominio).replace("Filtros Nevecones Colombia", M["tienda"]).replace("321 799 6144", M["telefono"]).replace("3217996144", M["whatsapp"])
     cfg = cfg.replace("pedidos@filtrosaguanevecones.com", "pedidos@" + dominio.split("//")[1])
+    cfg = cfg.replace("GTM-5WSNHV66", "GTM-5SCP73SQ")
+    cfg = re.sub(r"('google_verificacion'\s*=>\s*)'[^']*'", r"\1''", cfg)  # la verificación de Search Console es de otro dominio
     (out / "api" / "config.sample.php").write_text(cfg, encoding="utf-8")
     (out / "config.sample.php").unlink()
     # 8) zip
@@ -542,6 +550,6 @@ def llms_php(S):
 
 
 if __name__ == "__main__":
-    dominio = sys.argv[1] if len(sys.argv) > 1 else "https://filtrosparalavadoras.com"
+    dominio = sys.argv[1] if len(sys.argv) > 1 else "https://filtrosparalavadoras.click"
     for clave in MARCAS:
         construir(clave, dominio)

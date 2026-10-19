@@ -6,6 +6,12 @@ function lav_cabeza(string $titulo, string $desc, string $ruta, string $extra, s
 {
     global $M;
     $ld = $json !== '' ? '<script type="application/ld+json">' . str_replace('__BASE__', sitio()['base'], $json) . '</script>' : '';
-    cabeza_marca($M, $titulo, $desc, $ruta, $extra . $ld);
+    cabeza_marca($M, $titulo, $desc, $ruta, $extra . $ld . lav_evento_whatsapp());
 }
 function lav_pie(): void { global $M; pie_marca($M); }
+// Evento para Google Tag Manager: «whatsapp» al tocar cualquier enlace de WhatsApp
+function lav_evento_whatsapp(): string
+{
+    global $M;
+    return '<script>window.dataLayer=window.dataLayer||[];document.addEventListener("click",function(e){var a=e.target.closest(\'a[href*="wa.me/"]\');if(a){dataLayer.push({event:"whatsapp",ubicacion:a.classList.contains("wa-flot")?"boton_flotante":"enlace",pagina:location.pathname,marca:' . json_encode($M['nombre']) . '})}},true);</script>';
+}
