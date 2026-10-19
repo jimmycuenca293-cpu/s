@@ -13,3 +13,8 @@
 - **URL final:** cada grupo trae la suya (ver 02-grupos-de-anuncios/).
 - **Seguimiento:** parámetros de URL automáticos (auto-tagging) activados.
 - **Grupos de menor intención** (11, 12 y 13): puja 30 % más baja que los de compra de marca.
+
+## Concordancia de las palabras clave (corregida)
+- Referencias sueltas (da29-00020b, haf-cin, lt1000p…): solo **exacta**.
+- Grupo "Cambio e instalación": solo **frase**.
+- Resto: frase y exacta.

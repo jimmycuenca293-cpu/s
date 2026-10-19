@@ -164,7 +164,12 @@ with open(out / "palabras-clave.csv", "w", newline="", encoding="utf-8-sig") as 
     w = csv.writer(f); w.writerow(["Campaign", "Ad group", "Keyword", "Criterion Type"])
     for g in G:
         for k in g["claves"]:
-            w.writerow([CAMP, g["nombre"], k, "Phrase"]); w.writerow([CAMP, g["nombre"], k, "Exact"])
+            if g["nombre"].startswith("Cambio"):
+                w.writerow([CAMP, g["nombre"], k, "Phrase"])
+            elif " " not in k and any(c.isdigit() for c in k):
+                w.writerow([CAMP, g["nombre"], k, "Exact"])
+            else:
+                w.writerow([CAMP, g["nombre"], k, "Phrase"]); w.writerow([CAMP, g["nombre"], k, "Exact"])
 with open(out / "palabras-negativas.csv", "w", newline="", encoding="utf-8-sig") as f:
     w = csv.writer(f); w.writerow(["Campaign", "Keyword", "Criterion Type"])
     for k in NEGATIVAS: w.writerow([CAMP, k, "Campaign negative phrase"])
