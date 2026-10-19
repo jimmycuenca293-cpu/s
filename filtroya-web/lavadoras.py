@@ -362,7 +362,7 @@ function lav_pie(): void { global $M; pie_marca($M); }
 function lav_evento_whatsapp(): string
 {
     global $M;
-    return '<script>window.dataLayer=window.dataLayer||[];document.addEventListener("click",function(e){var a=e.target.closest(\'a[href*="wa.me/"]\');if(a){dataLayer.push({event:"whatsapp",ubicacion:a.classList.contains("wa-flot")?"boton_flotante":"enlace",pagina:location.pathname,marca:' . json_encode($M['nombre']) . '})}},true);</script>';
+    return '<script>window.dataLayer=window.dataLayer||[];document.addEventListener("click",function(e){var a=e.target.closest(\'a[href*="wa.me/"]\');if(a){dataLayer.push({event:"whatsapp",ubicacion:a.classList.contains("wa-flot")?"boton_flotante":"enlace",boton:(a.textContent||"").trim().slice(0,60),pagina:location.pathname,marca:' . json_encode($M['nombre']) . '})}},true);</script>';
 }
 '''
 
