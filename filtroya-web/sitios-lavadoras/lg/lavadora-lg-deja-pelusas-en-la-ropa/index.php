@@ -1,7 +1,0 @@
-<?php require __DIR__ . '/../lav.php';
-lav_cabeza("Lavadora LG deja pelusas en la ropa: causas y solución", "Por qué tu lavadora LG deja pelusas en la ropa y cómo solucionarlo con el filtro de pelusas.", "/lavadora-lg-deja-pelusas-en-la-ropa/", "", <<<'JSON'
-{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Filtros para lavadora LG", "item": "https://filtrosparalavadoras.click/"}, {"@type": "ListItem", "position": 2, "name": "Lavadora LG deja pelusas en la ropa"}]}]}
-JSON);
-?>
-<div class="m-wrap"><nav class="m-miga"><a href="/">Filtros para lavadora LG</a> › Lavadora LG deja pelusas en la ropa</nav><div class="m-texto"><h1>Lavadora LG deja pelusas en la ropa</h1><p>Cuando la ropa sale con pelusas, lo más común es que el filtro esté tapado, roto o mal puesto.</p><h2>Qué revisar</h2><ol class='pasos'><li>Saca el filtro de pelusas y límpialo.</li><li>Revisa que la malla no tenga huecos.</li><li>Comprueba que quedó bien ajustado en su lugar.</li><li>No sobrecargues la lavadora y separa la ropa que suelta mucha pelusa.</li></ol><p>Si la malla está dañada, cámbialo por uno nuevo.</p></div><div class="m-cta" style="margin:24px 0"><div><h2>¿Quieres el filtro correcto?</h2><p>Escríbele al asesor por WhatsApp.</p></div><a class="m-btn wa" href="https://wa.me/573205102995?text=Hola%2C%20tengo%20una%20pregunta%20sobre%20el%20filtro%20de%20mi%20lavadora%20LG" target="_blank" rel="noopener">💬 Preguntar al asesor por WhatsApp</a></div></div>
-<?php lav_pie(); ?>

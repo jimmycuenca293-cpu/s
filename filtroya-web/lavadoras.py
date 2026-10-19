@@ -151,18 +151,36 @@ def chips(items):
     return '<div class="m-chips">' + "".join(f'<a href="{esc(u)}">{esc(t)}</a>' for t, u in items) + "</div>"
 
 
+def escribir(out, real, marca, titulo, desc, cuerpo, ld, extra_head=""):
+    """Escribe una página PHP en out/<real>/index.php (real = ruta completa con el prefijo de la marca)."""
+    carpeta = out / real.strip("/")
+    carpeta.mkdir(parents=True, exist_ok=True)
+    ldj = json.dumps({"@context": "https://schema.org", "@graph": ld}, ensure_ascii=False) if ld else ""
+    prof = len(real.strip("/").split("/")) if real != "/" else 0
+    php = ("<?php $MARCA = '" + marca + "'; require __DIR__ . '/" + "../" * prof + "lav.php';\n"
+           "lav_cabeza(" + json.dumps(titulo, ensure_ascii=False) + ", " + json.dumps(desc, ensure_ascii=False) + ", " + json.dumps(real) + ", "
+           + json.dumps(extra_head, ensure_ascii=False) + ", <<<'JSON'\n" + ldj + "\nJSON);\n?>\n" + cuerpo + "\n<?php lav_pie(); ?>\n")
+    (carpeta / "index.php").write_text(php, encoding="utf-8")
+
+
 class Sitio:
-    def __init__(self, clave, dominio):
+    def __init__(self, clave, dominio, out):
         self.M = MARCAS[clave]
         self.clave = clave
-        self.dominio = dominio
-        self.out = SALIDA / clave
-        self.paginas = {}      # ruta -> (prioridad, archivo)
+        self.raiz = dominio                 # https://dominio (para imágenes comunes)
+        self.pref = "/" + clave             # cada marca vive en /samsung/ o /lg/
+        self.dominio = dominio + self.pref
+        self.out = out
+        self.paginas = {}
         self.ciudades = ciudades()
         m = self.M
         for p in m["productos"]:
             p["nombre"] = f"{p['corto']} para {p.get('dest', 'lavadora')} {m['nombre']}"
         self.chips_ciudad = [(c[0], f"/filtro-lavadora-{self.clave}-{slug(c[0])}/") for c in self.ciudades]
+
+    def enlaces(self, html_):
+        """Los enlaces internos de la marca (carpetas, sin punto) llevan el prefijo /samsung/ o /lg/."""
+        return re.sub(r'href="/(?!/)([^"#.]*)"', lambda m: f'href="{self.pref}/{m.group(1)}"', html_)
 
     # --- mensajes de WhatsApp
     def wa(self, texto):
@@ -173,14 +191,9 @@ class Sitio:
 
     # --- escribe una página PHP
     def pagina(self, ruta, titulo, desc, cuerpo, ld=None, prioridad="0.8", extra_head=""):
-        carpeta = self.out / ruta.strip("/")
-        carpeta.mkdir(parents=True, exist_ok=True)
-        ldj = json.dumps({"@context": "https://schema.org", "@graph": ld}, ensure_ascii=False) if ld else ""
-        php = ("<?php require __DIR__ . '/" + "../" * (len(ruta.strip("/").split("/")) if ruta != "/" else 0) + "lav.php';\n"
-               "lav_cabeza(" + json.dumps(titulo, ensure_ascii=False) + ", " + json.dumps(desc, ensure_ascii=False) + ", " + json.dumps(ruta) + ", "
-               + json.dumps(extra_head, ensure_ascii=False) + ", <<<'JSON'\n" + ldj + "\nJSON);\n?>\n" + cuerpo + "\n<?php lav_pie(); ?>\n")
-        (carpeta / "index.php").write_text(php, encoding="utf-8")
-        self.paginas[ruta] = prioridad
+        real = self.pref + ruta
+        escribir(self.out, real, self.clave, titulo, desc, self.enlaces(cuerpo), ld, extra_head)
+        self.paginas[real] = prioridad
 
     def miga(self, *partes):
         t = '<nav class="m-miga"><a href="/">' + esc(self.M["tienda"]) + "</a>"
@@ -243,7 +256,7 @@ def pagina_inicio(S):
           {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i, "url": S.dominio + f"/{p['slug']}/", "name": p["nombre"]} for i, p in enumerate(M["productos"], 1)]},
           faq_ld(faq)]
     S.pagina("/", f"Filtros para lavadora {n} | Envío a toda Colombia", f"Filtros de pelusas y bolsas de malla para lavadoras {n} de carga superior y frontal. Pregunta al asesor por WhatsApp y recibe en toda Colombia.", cuerpo, ld, "1.0",
-             f'<meta property="og:image" content="{S.dominio}/img/{M["productos"][0]["id"]}.jpg">')
+             f'<meta property="og:image" content="{S.raiz}/img/{M["productos"][0]["id"]}.jpg">')
 
 
 def pasos_limpieza(n):
@@ -288,12 +301,12 @@ def pagina_producto(S, p):
 <section class="m-sec alt"><div class="m-wrap"><section class="caja tutorial" id="instalacion"><h2>Cómo instalar el {esc(p["corto"].lower())}: paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in INSTALACION.get(p.get("inst"), pasos_limpieza(n)))}</ol><p class="m-mut">{NOTA_INSTALACION}</p></section></div></section>
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Preguntas</span><h2>Preguntas frecuentes</h2></div>{faq_html(faq)}</div></section>
 <section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Más filtros</span><h2>Otros filtros {n}</h2></div>{chips(otros)}</div></section>'''
-    prod = {"@type": "Product", "name": p["nombre"], "image": f"{S.dominio}/img/{p['id']}.jpg", "brand": {"@type": "Brand", "name": n},
+    prod = {"@type": "Product", "name": p["nombre"], "image": f"{S.raiz}/img/{p['id']}.jpg", "brand": {"@type": "Brand", "name": n},
             "description": f"{p['corto']} para {d} {n} ({p['tipo']}). Envío a toda Colombia."}
     if p["precio"]:
         prod["offers"] = {"@type": "Offer", "priceCurrency": "COP", "price": p["precio"], "availability": "https://schema.org/InStock", "url": f"{S.dominio}/{p['slug']}/"}
     S.pagina(f"/{p['slug']}/", f"{p['nombre']} | Envío a toda Colombia", f"{p['corto']} para {d} {n} ({p['tipo']}). Pregunta al asesor por WhatsApp el precio y recibe en toda Colombia.", cuerpo,
-             [prod, faq_ld(faq), S.breadcrumb((p["corto"], None))], "0.9", f'<link rel="preload" as="image" href="/img/{p["id"]}.webp"><meta property="og:image" content="{S.dominio}/img/{p["id"]}.jpg">')
+             [prod, faq_ld(faq), S.breadcrumb((p["corto"], None))], "0.9", f'<link rel="preload" as="image" href="/img/{p["id"]}.webp"><meta property="og:image" content="{S.raiz}/img/{p["id"]}.jpg">')
 
 
 def pagina_guia(S, ruta, titulo, desc, h1, cuerpo_html, faq=None):
@@ -350,7 +363,8 @@ def paginas_ciudad(S):
 LAV_PHP = r'''<?php
 // Piezas comunes de la tienda de filtros para lavadoras (generado por lavadoras.py)
 require_once __DIR__ . '/marcas.php';
-$M = json_decode(file_get_contents(__DIR__ . '/marca.json'), true);
+$MARCA = preg_replace('/[^a-z]/', '', (string) ($MARCA ?? 'home'));
+$M = json_decode(file_get_contents(__DIR__ . "/marca-$MARCA.json"), true);
 function lav_cabeza(string $titulo, string $desc, string $ruta, string $extra, string $json): void
 {
     global $M;
@@ -385,14 +399,14 @@ REEMPLAZOS = [
     ("las neveras", "las lavadoras"), ("neveras", "lavadoras"), ("nevera", "lavadora"), ("Filtros de agua", "Filtros de pelusas"), ("filtros de agua", "filtros de pelusas"),
     ("Filtro de agua", "Filtro de pelusas"), ("filtro de agua", "filtro de pelusas"),
 ]
-QUIENES = """<?php require __DIR__ . '/lav.php';
+QUIENES = """<?php $MARCA = 'home'; require __DIR__ . '/lav.php';
 $n = sitio()['negocio'];
 lav_cabeza('Quiénes somos | ' . $n['nombre'], 'Somos un comercio colombiano de filtros de pelusas para lavadoras, con asesoría por WhatsApp y envíos a todo el país.', '/quienes-somos.php', '', '');
 ?>
 <div class="m-wrap"><div class="m-texto"><h1>Quiénes somos</h1>
 <p><?= h($n['nombre']) ?> es un comercio colombiano de filtros de pelusas y bolsas de malla para lavadoras. Te ayudamos a encontrar el filtro que necesita tu lavadora y te lo enviamos a donde estés.</p>
 <p>Antes de que compres, un asesor revisa contigo el modelo de tu lavadora por WhatsApp, para que pidas el filtro correcto.</p>
-<p>Atendemos <?= h($n['horario']) ?>. Escríbenos al WhatsApp <?= h($n['telefono']) ?> o al correo <?= h($n['correo']) ?>.</p>
+<p>Atendemos <?= h($n['horario']) ?>. Escríbenos por WhatsApp: __TELEFONOS__ o al correo <?= h($n['correo']) ?>.</p>
 <p><?= h($n['nombre']) ?> · <?= h($n['titular']) ?> · <?= h($n['documento']) ?></p></div></div>
 <?php lav_pie(); ?>
 """
@@ -425,18 +439,74 @@ LEGALES = {
 
 def legales(out):
     for nombre, (titulo, cuerpo) in LEGALES.items():
-        php = ("<?php require __DIR__ . '/lav.php';\n$n = sitio()['negocio'];\nlav_cabeza(" + json.dumps(titulo + " | ", ensure_ascii=False) + " . $n['nombre'], " + json.dumps(titulo, ensure_ascii=False)
+        php = ("<?php $MARCA = 'home'; require __DIR__ . '/lav.php';\n$n = sitio()['negocio'];\nlav_cabeza(" + json.dumps(titulo + " | ", ensure_ascii=False) + " . $n['nombre'], " + json.dumps(titulo, ensure_ascii=False)
                + ", '/" + nombre + ".php', '', '');\n?>\n<div class=\"m-wrap\"><div class=\"m-texto\"><h1>" + titulo + "</h1>" + cuerpo
                + "<p><?= h($n['nombre']) ?> · <?= h($n['titular']) ?> · <?= h($n['documento']) ?> · <?= h($n['correo']) ?></p></div></div>\n<?php lav_pie(); ?>\n")
         (out / (nombre + ".php")).write_text(php, encoding="utf-8")
 
 
-def construir(clave, dominio):
+HOME_FAQ = [
+    ("¿Hacen filtros para lavadoras Samsung y LG?", "Tenemos filtros de pelusas y bolsas de malla para lavadoras Samsung y para lavadoras y secadoras LG. Cada marca tiene su página y su asesor por WhatsApp."),
+    ("¿Cómo sé cuál filtro necesita mi lavadora?", "Escríbele al asesor de tu marca por WhatsApp con una foto del filtro viejo o con el modelo de la lavadora. Te confirma cuál es antes de que compres."),
+    ("¿Cuánto cuesta?", "El precio depende del filtro. El asesor te responde por WhatsApp con el valor y el tiempo de entrega a tu ciudad."),
+    ("¿Hacen envíos a toda Colombia?", "Sí, enviamos por transportadora a todo el país y te mandamos el número de guía."),
+]
+
+
+def pagina_home(out, dominio, Ss):
+    tarj = ""
+    cuerpo_marcas = ""
+    for S in Ss:
+        M = S.M; n = M["nombre"]
+        fotos = "".join(f'<span class="lf">{foto_html(p, lazy=True)}</span>' for p in M["productos"][:3])
+        cuerpo_marcas += (f'<article class="m-card marca-card"><div class="tx"><h3><a href="/{S.clave}/">Filtros para lavadora {n}</a></h3>'
+                          f'<div class="lav-fotos">{fotos}</div><p>{len(M["productos"])} filtros y bolsas de malla. Asesor por WhatsApp: {esc(M["telefono"])}.</p>'
+                          f'<a class="m-btn block" href="/{S.clave}/">Ver filtros {n}</a>'
+                          + f'<a class="m-btn block wa" href="{esc(wa_link(M["whatsapp"], "Hola, necesito un filtro para mi lavadora " + n))}" target="_blank" rel="noopener">💬 Asesor {n} por WhatsApp</a></div></article>')
+        for p in M["productos"]:
+            pr = f'<span class="pr">{cop(p["precio"])}</span>' if p["precio"] else '<span class="pr consulta">Consulta el precio<small>Te responde el asesor</small></span>'
+            tarj += (f'<article class="m-card"><span class="m-tipo">{n} · {esc(p["tipo"])}</span><span class="im">{foto_html(p)}</span><div class="tx">'
+                     f'<h3><a href="/{S.clave}/{p["slug"]}/">{esc(p["nombre"])}</a></h3>{pr}'
+                     + f'<a class="m-btn block wa" href="{esc(wa_link(M["whatsapp"], "Hola, quiero consultar por el " + p["nombre"]))}" target="_blank" rel="noopener">💬 Preguntar al asesor</a>'
+                     + f'<a class="m-link" href="/{S.clave}/{p["slug"]}/">Ver detalles</a></div></article>')
+    cuerpo = f'''<section class="m-hero"><div class="m-wrap">
+  <div>
+    <h1>Filtros para lavadoras Samsung y LG</h1>
+    <p class="lead">Filtros de pelusas y bolsas de malla para lavadoras Samsung y LG, y filtro para secadora LG. Elige tu marca, cuéntale tu modelo al asesor por WhatsApp y te decimos cuál necesitas. Enviamos a toda Colombia.</p>
+    <div class="acc"><a class="m-btn" href="#marcas">Elegir mi marca</a></div>
+    <ul><li>Envío a toda Colombia</li><li>Pedido por WhatsApp</li><li>Asesor que te confirma el modelo</li></ul>
+  </div>
+</div></section>
+<section class="m-sec" id="marcas"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Escoge tu marca</span><h2>¿De qué marca es tu lavadora?</h2></div><div class="m-grid lav-marcas">{cuerpo_marcas}</div></div></section>
+<section class="m-sec alt" id="filtros"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Catálogo</span><h2>Todos los filtros</h2><p>Pregunta por el tuyo y el asesor te confirma el modelo correcto antes de comprar.</p></div><div class="m-grid">{tarj}</div></div></section>
+<section class="m-sec" id="preguntas"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Resolvemos tus dudas</span><h2>Preguntas frecuentes</h2></div>{faq_html(HOME_FAQ)}</div></section>
+<section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Envíos</span><h2>Enviamos a toda Colombia</h2></div><p>{" · ".join(f'<a href="/{S.clave}/filtros-lavadora-{S.clave}-por-ciudad/">Ciudades {esc(S.M["nombre"])}</a>' for S in Ss)}</p></div></section>'''
+    ld = [{"@type": "WebSite", "name": "Filtros para lavadoras", "url": dominio + "/"}, faq_ld(HOME_FAQ),
+          {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i, "url": f"{dominio}/{S.clave}/{p['slug']}/", "name": p["nombre"]} for i, (S, p) in enumerate([(S, p) for S in Ss for p in S.M["productos"]], 1)]}]
+    escribir(out, "/", "home", "Filtros para lavadoras Samsung y LG | Envío a toda Colombia", "Filtros de pelusas y bolsas de malla para lavadoras Samsung y LG. Pregunta al asesor por WhatsApp y recibe en toda Colombia.", cuerpo, ld,
+             f'<meta property="og:image" content="{dominio}/img/{Ss[0].M["productos"][0]["id"]}.jpg">')
+
+
+def marca_json(S, Ss):
+    M = S.M; clave = S.clave; b = S.pref + "/"
+    otras = [[f"Filtros para lavadora {o.M['nombre']}", f"/{o.clave}/"] for o in Ss if o is not S] + [["Inicio", "/"]]
+    return {"nombre": M["nombre"], "clase": M["clase"], "base": b, "tema": M["tema"], "fuentes": FUENTES, "tienda": M["tienda"], "logo": "", "logo_w": 0, "logo_h": 0, "icono": "/img/icono.svg",
+            "whatsapp": M["whatsapp"], "telefono": M["telefono"],
+            "productos": [[p["nombre"], p["slug"]] for p in M["productos"]],
+            "guias": [[f"{b}cual-es-mi-filtro/", "¿Cuál filtro necesita mi lavadora?"], [f"{b}cambio-e-instalacion/", "Cómo limpiar y cambiar el filtro"],
+                      [f"{b}cada-cuanto-limpiar-filtro-lavadora-{clave}/", "Cada cuánto limpiar el filtro"], [f"{b}lavadora-{clave}-deja-pelusas-en-la-ropa/", "La lavadora deja pelusas"],
+                      [f"{b}filtro-lavadora-{clave}-carga-superior/", "Filtro de carga superior"], [f"{b}filtro-lavadora-{clave}-carga-frontal/", "Filtro de carga frontal"]],
+            "ciudades": [[c, f"{b}filtro-lavadora-{clave}-{slug(c)}/"] for c in ["Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena", "Bucaramanga", "Pereira", "Manizales", "Armenia", "Ibagué", "Cúcuta", "Santa Marta", "Villavicencio", "Neiva"]],
+            "hub": f"{b}filtros-lavadora-{clave}-por-ciudad/", "extra": otras, "externos": [list(M["oficial"]), ["Superintendencia de Industria y Comercio", "https://www.sic.gov.co/"]]}
+
+
+FUENTES = "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+
+
+def construir_todo(dominio):
     global BASE
-    BASE = AQUI / "sitios" / clave
-    S = Sitio(clave, dominio)
-    M = S.M
-    out = S.out
+    BASE = AQUI / "sitios" / "samsung"
+    out = SALIDA / "tienda"
     if out.exists():
         shutil.rmtree(out)
     out.mkdir(parents=True)
@@ -447,7 +517,7 @@ def construir(clave, dominio):
             shutil.copytree(o, out / nombre, ignore=shutil.ignore_patterns("pedidos.sqlite*", "correos.log", "config.php"))
         else:
             shutil.copy(o, out / nombre)
-    # 2) marca: sin frases de "distribuidor autorizado" (no lo somos para lavadoras)
+    # 2) textos: sin "distribuidor autorizado", sin carrito ni pagos
     mp = (out / "marcas.php").read_text(encoding="utf-8")
     mp = mp.replace("✔ Distribuidor autorizado ' . h($M['nombre']) . ' en Colombia", "✔ Filtros para lavadora ' . h($M['nombre']) . ' en Colombia").replace("<small>Distribuidor autorizado</small>", "<small>Filtros para lavadora</small>")
     mp = mp.replace("Distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia, con envío gratis a todo el país y pago seguro en línea.", "Filtros de pelusas para lavadora ' . h($M['nombre']) . ', con envío a todo Colombia y pago seguro en línea.")
@@ -456,61 +526,67 @@ def construir(clave, dominio):
     mp = re.sub(r"\$cart = '.*?';\n", "$cart = '';\n", mp, count=1, flags=re.S).replace("<a href=\"/carrito.php\">Mi carrito</a>", "").replace("🔒 Pago seguro en línea", "💬 Asesor por WhatsApp")
     mp = mp.replace(" y pago seguro en línea", " y atención por WhatsApp")
     mp = mp.replace("Distribuidor autorizado", "Filtros para lavadora").replace("Precios en pesos colombianos con envío incluido.", "Precios en pesos colombianos.")
-    mp = mp.replace("¿Cuál filtro es el mío?", "¿Cuál filtro es el mío?").replace("Cuándo cambiarlo y cómo instalarlo", "Cómo limpiarlo y cambiarlo")
+    mp = mp.replace("Cuándo cambiarlo y cómo instalarlo", "Cómo limpiarlo y cambiarlo")
     mp = mp.replace("return '<b>' . h($M['nombre']) . '</b>';", "return '<b class=\"m-logo-txt\">' . h($M['tienda'] ?? $M['nombre']) . '</b>';").replace("<small>Filtros para lavadora</small>", "")
+    # cada marca (y la portada) usa su propio WhatsApp en el pie
+    mp = mp.replace("$tel = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? ''));", "$tel = preg_replace('/\\D/', '', (string) ($M['whatsapp'] ?? (cfg()['whatsapp'] ?? '')));")
+    mp = mp.replace("h($n['telefono']) . '</a>'", "h($M['telefono'] ?? $n['telefono']) . '</a>'")
     (out / "marcas.php").write_text(mp, encoding="utf-8")
     (out / "marcas.css").write_text((out / "marcas.css").read_text(encoding="utf-8") + CSS_EXTRA, encoding="utf-8")
     (out / "lav.php").write_text(LAV_PHP, encoding="utf-8")
     limpiar_textos(out)
+    lib = (out / "api" / "lib.php").read_text(encoding="utf-8")
+    lib = lib.replace("$num = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? ''));\n    if (strlen($num) === 10)", "$num = preg_replace('/\\D/', '', (string) (($GLOBALS['M']['whatsapp'] ?? null) ?? (cfg()['whatsapp'] ?? '')));\n    if (strlen($num) === 10)")
+    (out / "api" / "lib.php").write_text(lib, encoding="utf-8")
     for f in ["pedido.php", "wompi.php", "estado.php", "reconciliar.php", "recordatorios.php"]:
         (out / "api" / f).unlink(missing_ok=True)  # sin pasarela de pagos: se vende por WhatsApp
     legales(out)
-    # 3) imágenes
-    shutil.copytree(BASE / "img", out / "img", ignore=lambda d, f: [x for x in f if x != "icono.svg"])
-    preparar_fotos(M, out)
-    # 4) catálogo (solo con precio entran al carrito)
-    for p in M["productos"]:
-        p["nombre"] = f"{p['corto']} para {p.get('dest', 'lavadora')} {M['nombre']}"
-    # 5) marca.json
-    prods = [[p["nombre"], p["slug"]] for p in M["productos"]]
-    marca = {"nombre": M["nombre"], "clase": M["clase"], "base": "/", "tema": M["tema"], "fuentes": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
-             "tienda": M["tienda"], "logo": "", "logo_w": 0, "logo_h": 0, "icono": "/img/icono.svg", "productos": prods,
-             "guias": [[f"/cual-es-mi-filtro/", "¿Cuál filtro necesita mi lavadora?"], ["/cambio-e-instalacion/", "Cómo limpiar y cambiar el filtro"],
-                       [f"/cada-cuanto-limpiar-filtro-lavadora-{clave}/", "Cada cuánto limpiar el filtro"], [f"/lavadora-{clave}-deja-pelusas-en-la-ropa/", "La lavadora deja pelusas"],
-                       [f"/filtro-lavadora-{clave}-carga-superior/", "Filtro de carga superior"], [f"/filtro-lavadora-{clave}-carga-frontal/", "Filtro de carga frontal"]],
-             "ciudades": [[c, f"/filtro-lavadora-{clave}-{slug(c)}/"] for c in ["Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena", "Bucaramanga", "Pereira", "Manizales", "Armenia", "Ibagué", "Cúcuta", "Santa Marta", "Villavicencio", "Neiva"]],
-             "hub": f"/filtros-lavadora-{clave}-por-ciudad/", "externos": [list(M["oficial"]), ["Superintendencia de Industria y Comercio", "https://www.sic.gov.co/"]]}
-    (out / "marca.json").write_text(json.dumps(marca, ensure_ascii=False), encoding="utf-8")
-    # 6) páginas
-    pagina_inicio(S)
-    for p in M["productos"]:
-        pagina_producto(S, p)
-    guias(S)
-    paginas_ciudad(S)
-    # 7) catálogo PHP para el carrito/pago + sitemap
-    cat_src = subprocess.run(["php", "-r", "echo json_encode(include '" + str(BASE / 'api' / 'catalogo.php') + "', JSON_UNESCAPED_UNICODE);"], capture_output=True, text=True, check=True).stdout
-    cat = json.loads(cat_src)
-    cat["productos"] = {p["id"]: {"nombre": p["nombre"], "ref": p["ref"] or p["id"].upper(), "marca": M["nombre"], "precio": p["precio"], "pack": p["precio"], "slug": p["slug"], "alias": [], "modelos": [], "nota": "",
-                                  "link_pago": "", "ubic": "interno", "rutas_ref": {}, "rutas_modelo": {}} for p in M["productos"] if p["precio"]}
-    cat["paginas"] = list(S.paginas.keys())
+    tel = " · ".join(f"{m['nombre']} {m['telefono']}" for m in MARCAS.values())
+    q = (out / "quienes-somos.php").read_text(encoding="utf-8").replace("__TELEFONOS__", tel)
+    (out / "quienes-somos.php").write_text(q, encoding="utf-8")
+    # 3) marcas
+    (out / "img").mkdir(exist_ok=True)
+    shutil.copy(BASE / "img" / "icono.svg", out / "img" / "icono.svg")
+    Ss = [Sitio(c, dominio, out) for c in MARCAS]
+    for S in Ss:
+        preparar_fotos(S.M, out)
+    for S in Ss:
+        (out / f"marca-{S.clave}.json").write_text(json.dumps(marca_json(S, Ss), ensure_ascii=False), encoding="utf-8")
+        pagina_inicio(S)
+        for p in S.M["productos"]:
+            pagina_producto(S, p)
+        guias(S)
+        paginas_ciudad(S)
+    home = {"nombre": "Samsung y LG", "clase": "samsung", "base": "/", "tema": "#071338", "fuentes": FUENTES, "tienda": "Filtros para lavadoras", "logo": "", "logo_w": 0, "logo_h": 0, "icono": "/img/icono.svg",
+            "whatsapp": "", "telefono": "", "productos": [[p["nombre"], f"{S.clave}/{p['slug']}"] for S in Ss for p in S.M["productos"]], "guias": [], "ciudades": [], "hub": None,
+            "extra": [[f"Filtros para lavadora {S.M['nombre']}", f"/{S.clave}/"] for S in Ss], "externos": [["Superintendencia de Industria y Comercio", "https://www.sic.gov.co/"]]}
+    (out / "marca-home.json").write_text(json.dumps(home, ensure_ascii=False), encoding="utf-8")
+    (out / "marca.json").write_text(json.dumps(home, ensure_ascii=False), encoding="utf-8")
+    pagina_home(out, dominio, Ss)
+    paginas = {"/": "1.0"}
+    for S in Ss:
+        paginas.update(S.paginas)
+    # 4) catálogo vacío (sin carrito), sitemap, llms, configuración
+    cat = json.loads(subprocess.run(["php", "-r", "echo json_encode(include '" + str(BASE / 'api' / 'catalogo.php') + "', JSON_UNESCAPED_UNICODE);"], capture_output=True, text=True, check=True).stdout)
+    cat["productos"] = {}
+    cat["paginas"] = list(paginas.keys())
     cat["marcas"], cat["guias"], cat["compat"], cat["blog"], cat["rutas_ciudad"] = [], [], [], [], {}
     (out / "api" / "catalogo.php").write_text("<?php\n// Generado por lavadoras.py: no lo edites a mano.\nreturn " + php_val(cat) + ";\n", encoding="utf-8")
     (out / "sitemap.php").write_text(SITEMAP_PHP, encoding="utf-8")
-    (out / "llms.php").write_text(llms_php(S), encoding="utf-8")
-    (out / "config.sample.php").write_text("", encoding="utf-8")
+    (out / "llms.php").write_text(llms_php(Ss), encoding="utf-8")
     cfg = (BASE / "api" / "config.sample.php").read_text(encoding="utf-8")
-    cfg = cfg.replace("https://filtrosaguanevecones.com", dominio).replace("Filtros Nevecones Colombia", M["tienda"]).replace("321 799 6144", M["telefono"]).replace("3217996144", M["whatsapp"])
+    sam = MARCAS["samsung"]
+    cfg = cfg.replace("https://filtrosaguanevecones.com", dominio).replace("Filtros Nevecones Colombia", "Filtros para lavadoras").replace("321 799 6144", sam["telefono"]).replace("3217996144", sam["whatsapp"])
     cfg = cfg.replace("pedidos@filtrosaguanevecones.com", "pedidos@" + dominio.split("//")[1])
     cfg = cfg.replace("GTM-5WSNHV66", "GTM-5SCP73SQ")
     cfg = re.sub(r"('google_verificacion'\s*=>\s*)'[^']*'", r"\1'NsQML6RHpDIy79HzjoToyz_eOmWi97jh9G1I1ZwkUM4'", cfg)  # Search Console de filtrosparalavadoras.click
     (out / "api" / "config.sample.php").write_text(cfg, encoding="utf-8")
-    (out / "config.sample.php").unlink()
-    # 8) zip
-    z = AQUI / f"tienda-lavadoras-{clave}.zip"
+    # 5) zip único
+    z = AQUI / "tienda-lavadoras.zip"
     z.unlink(missing_ok=True)
     subprocess.run(["zip", "-qr", str(z), ".", "-x", "api/config.php", "-x", "data/pedidos.sqlite*", "-x", "data/correos.log"], cwd=out, check=True)
     subprocess.run(["zip", "-qj", str(z), str(AQUI / "INSTALAR-lavadoras.md")], check=True)
-    print(f"Lavadoras {M['nombre']}: {out.name}/ con {len(S.paginas)} páginas → {z.name}")
+    print(f"Lavadoras Samsung y LG: sitios-lavadoras/tienda/ con {len(paginas)} páginas → {z.name}")
 
 
 def php_val(v, ind=0):
@@ -540,16 +616,17 @@ echo '</urlset>';
 '''
 
 
-def llms_php(S):
-    M = S.M
-    txt = f"# {M['tienda']}\n\n> Filtros de pelusas y bolsas de malla para lavadoras {M['nombre']} de carga superior y frontal, con envío a toda Colombia. El precio y el modelo correcto se confirman con un asesor por WhatsApp ({M['telefono']}).\n\n## Productos\n"
-    for p in M["productos"]:
-        txt += f"- [{p['nombre']}](__BASE__/{p['slug']}/): {p['tipo']}.\n"
-    txt += f"\n## Guías\n- [Cuál filtro necesita mi lavadora](__BASE__/cual-es-mi-filtro/)\n- [Cómo limpiar y cambiar el filtro](__BASE__/cambio-e-instalacion/)\n"
+def llms_php(Ss):
+    txt = "# Filtros para lavadoras Samsung y LG\n\n> Filtros de pelusas y bolsas de malla para lavadoras Samsung y LG, y filtro para secadora LG, con envío a toda Colombia. El precio y el modelo correcto se confirman con un asesor por WhatsApp.\n"
+    for S in Ss:
+        M = S.M
+        txt += f"\n## {M['nombre']} (WhatsApp {M['telefono']})\n- [Filtros para lavadora {M['nombre']}](__BASE__/{S.clave}/)\n"
+        for p in M["productos"]:
+            txt += f"- [{p['nombre']}](__BASE__/{S.clave}/{p['slug']}/): {p['tipo']}.\n"
+        txt += f"- [Cuál filtro necesita mi lavadora](__BASE__/{S.clave}/cual-es-mi-filtro/)\n- [Cómo limpiar y cambiar el filtro](__BASE__/{S.clave}/cambio-e-instalacion/)\n"
     return "<?php\nrequire __DIR__ . '/api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + txt + "TXT);\n"
 
 
 if __name__ == "__main__":
     dominio = sys.argv[1] if len(sys.argv) > 1 else "https://filtrosparalavadoras.click"
-    for clave in MARCAS:
-        construir(clave, dominio)
+    construir_todo(dominio)
