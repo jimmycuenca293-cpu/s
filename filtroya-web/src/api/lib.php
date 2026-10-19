@@ -384,11 +384,11 @@ function avisar_por_todos(array $p, string $tipo, string $asunto, string $html):
     return $ok1 || $r['ok'];
 }
 
-// ¿El formulario sale desde el navegador del cliente? (Web3Forms gratis solo acepta envíos desde el navegador, no desde el servidor)
+// El formulario siempre sale desde el navegador del cliente (FormSubmit y Web3Forms lo reciben mejor así que desde el servidor)
 function form_en_navegador(): bool
 {
     $f = cfg()['formulario'] ?? [];
-    return (!isset($f['activo']) || $f['activo']) && ($f['proveedor'] ?? '') === 'web3forms' && !empty($f['clave']);
+    return !isset($f['activo']) || $f['activo'];
 }
 
 // Arma lo que se manda al servicio de formularios: ['url' => ..., 'datos' => [...]]

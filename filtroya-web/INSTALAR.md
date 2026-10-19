@@ -151,5 +151,8 @@ que solo vende esa marca, con su propio diseño. Cada una va en **su propio domi
 4. En Search Console agrega cada dominio como propiedad nueva, verifícalo y envía `https://dominiodelamarca.com/sitemap.xml`.
 5. Cada sitio guarda sus pedidos aparte: entra a `https://dominiodelamarca.com/admin.php` para verlos.
 
-## Formulario de pedidos más completo (Web3Forms)
-Cada pedido llega a tu correo con todos los datos del cliente (nombre, celular, correo, ciudad, barrio, dirección, productos, total) en un campo «Resumen del pedido» y también campo por campo. Si FormSubmit te sigue llegando incompleto, usa Web3Forms: entra a https://web3forms.com, escribe tu correo, copia la clave que te llega y en `config.php` pon `'formulario' => ['activo' => true, 'proveedor' => 'web3forms', 'clave' => 'TU-CLAVE']`. Prueba desde «Diagnóstico → Enviar formulario de prueba». Lo más seguro sigue siendo el correo SMTP (`smtp.clave`).
+## Formulario de pedidos (FormSubmit)
+Cada pedido llega a tu correo con todos los datos del cliente (nombre, celular, correo, ciudad, barrio, dirección, productos y total), en un campo «Resumen del pedido» y también campo por campo. Sale desde el navegador del cliente.
+1. En `filtrosnevecones-api/config.php` deja `'formulario' => ['activo' => true, 'proveedor' => 'formsubmit']`.
+2. Entra a «Diagnóstico → Enviar formulario de prueba».
+3. La primera vez FormSubmit te manda un correo: toca **Activate Form**. Después los pedidos llegan solos. Revisa también el spam.
