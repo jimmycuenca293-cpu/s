@@ -30,7 +30,7 @@ return [
 
     // Datos del pedido a tu correo «como un formulario» (servicio FormSubmit), además del correo normal. Funciona aunque el correo del hosting falle.
     // La primera vez te llega un correo de FormSubmit para activarlo: toca el botón «Activate Form». Pon 'activo' => false para apagarlo.
-    'formulario' => ['activo' => true],
+    'formulario' => ['activo' => true, 'proveedor' => 'web3forms', 'clave' => '738e4767-832d-4e86-89ca-a94d3979fec0'],
     // Opción más profesional (recomendada): Web3Forms. Entra a https://web3forms.com, escribe tu correo, te llega una clave (access key) y no hay que activar nada.
     // Cuando la tengas, cambia la línea de arriba por:
     // 'formulario' => ['activo' => true, 'proveedor' => 'web3forms', 'clave' => 'PEGA-AQUI-TU-CLAVE'],
