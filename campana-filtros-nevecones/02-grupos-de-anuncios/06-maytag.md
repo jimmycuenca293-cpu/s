@@ -1,6 +1,6 @@
 # Grupo 6: Maytag
 
-**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/filtro-para-nevera-maytag/  
+**Página de destino:** https://filtrosaguanevecones.com/purofiltro-otras-marcas/filtro-para-nevera-maytag/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Filtros/Maytag
 
 > Marca nombrada con permiso de uso de marca de revendedor: si Google la limita, usa los títulos por referencia.

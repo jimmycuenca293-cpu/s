@@ -11,7 +11,7 @@ sys.path.insert(0, str(WEB))
 import ads_marcas as A  # catálogo
 
 DOM = "https://filtrosaguanevecones.com"
-P = "filtrosnevecones-"
+P = "purofiltro-"
 CAMP = "Filtros Nevecones - Búsqueda - Colombia"
 PROHIBIDAS = re.compile(r"original|genuin|compatib|100 ?%|mejor |garantiz|contra entrega", re.I)
 

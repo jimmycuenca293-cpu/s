@@ -1,6 +1,6 @@
 # Grupo 9: Kenmore
 
-**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/filtro-para-nevera-kenmore/  
+**Página de destino:** https://filtrosaguanevecones.com/purofiltro-otras-marcas/filtro-para-nevera-kenmore/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Filtros/Kenmore
 
 ## Títulos (máximo 30 caracteres)

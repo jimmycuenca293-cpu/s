@@ -1,6 +1,6 @@
 # Grupo 12: Ciudades principales
 
-**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-envios/  
+**Página de destino:** https://filtrosaguanevecones.com/purofiltro-envios/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Envios/Colombia
 
 > Si quieres anuncios por ciudad, crea una campaña aparte por región y baja la puja en las ciudades que no vendan.

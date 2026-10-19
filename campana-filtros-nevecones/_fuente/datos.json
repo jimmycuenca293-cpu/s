@@ -2,7 +2,7 @@
  "grupos": [
   {
    "nombre": "Samsung",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-marca/samsung/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-marca/samsung/",
    "path1": "Filtros",
    "path2": "Samsung",
    "titulos": [
@@ -71,7 +71,7 @@
   },
   {
    "nombre": "LG",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-marca/lg/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-marca/lg/",
    "path1": "Filtros",
    "path2": "LG",
    "titulos": [
@@ -151,7 +151,7 @@
   },
   {
    "nombre": "Whirlpool EveryDrop",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-marca/whirlpool/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-marca/whirlpool/",
    "path1": "Filtros",
    "path2": "Whirlpool",
    "titulos": [
@@ -235,7 +235,7 @@
   },
   {
    "nombre": "GE",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-marca/ge/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-marca/ge/",
    "path1": "Filtros",
    "path2": "GE",
    "titulos": [
@@ -290,7 +290,7 @@
   },
   {
    "nombre": "KitchenAid",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/filtro-para-nevera-kitchenaid/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-otras-marcas/filtro-para-nevera-kitchenaid/",
    "path1": "Filtros",
    "path2": "KitchenAid",
    "titulos": [
@@ -341,7 +341,7 @@
   },
   {
    "nombre": "Maytag",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/filtro-para-nevera-maytag/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-otras-marcas/filtro-para-nevera-maytag/",
    "path1": "Filtros",
    "path2": "Maytag",
    "titulos": [
@@ -388,7 +388,7 @@
   },
   {
    "nombre": "Jenn-Air",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/filtro-para-nevera-jenn-air/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-otras-marcas/filtro-para-nevera-jenn-air/",
    "path1": "Filtros",
    "path2": "JennAir",
    "titulos": [
@@ -434,7 +434,7 @@
   },
   {
    "nombre": "Amana",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/filtro-para-nevera-amana/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-otras-marcas/filtro-para-nevera-amana/",
    "path1": "Filtros",
    "path2": "Amana",
    "titulos": [
@@ -476,7 +476,7 @@
   },
   {
    "nombre": "Kenmore",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/filtro-para-nevera-kenmore/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-otras-marcas/filtro-para-nevera-kenmore/",
    "path1": "Filtros",
    "path2": "Kenmore",
    "titulos": [
@@ -524,7 +524,7 @@
   },
   {
    "nombre": "Filtro externo",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-tienda/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-tienda/",
    "path1": "Filtros",
    "path2": "Externos",
    "titulos": [
@@ -572,7 +572,7 @@
   },
   {
    "nombre": "Filtro de agua para nevera",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-tienda/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-tienda/",
    "path1": "Tienda",
    "path2": "Filtros",
    "titulos": [
@@ -624,7 +624,7 @@
   },
   {
    "nombre": "Ciudades principales",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-envios/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-envios/",
    "path1": "Envios",
    "path2": "Colombia",
    "titulos": [
@@ -704,7 +704,7 @@
   },
   {
    "nombre": "Cambio e instalación",
-   "url": "https://filtrosaguanevecones.com/filtrosnevecones-guia/como-cambiar-el-filtro-de-agua-del-nevecon/",
+   "url": "https://filtrosaguanevecones.com/purofiltro-guia/como-cambiar-el-filtro-de-agua-del-nevecon/",
    "path1": "Guia",
    "path2": "Cambiar-Filtro",
    "titulos": [
@@ -808,55 +808,55 @@
    "Filtros Samsung",
    "HAF-CIN, HAF-QIN y Aqua-Pure",
    "Con envío gratis a Colombia",
-   "https://filtrosaguanevecones.com/filtrosnevecones-marca/samsung/"
+   "https://filtrosaguanevecones.com/purofiltro-marca/samsung/"
   ],
   [
    "Filtros LG",
    "LT1000P, LT700P, LT800P",
    "Con envío gratis a Colombia",
-   "https://filtrosaguanevecones.com/filtrosnevecones-marca/lg/"
+   "https://filtrosaguanevecones.com/purofiltro-marca/lg/"
   ],
   [
    "Filtros Whirlpool",
    "EveryDrop 1 al 5",
    "Con envío gratis a Colombia",
-   "https://filtrosaguanevecones.com/filtrosnevecones-marca/whirlpool/"
+   "https://filtrosaguanevecones.com/purofiltro-marca/whirlpool/"
   ],
   [
    "Filtros GE",
    "MWF y XWF",
    "Con envío gratis a Colombia",
-   "https://filtrosaguanevecones.com/filtrosnevecones-marca/ge/"
+   "https://filtrosaguanevecones.com/purofiltro-marca/ge/"
   ],
   [
    "Otras marcas",
    "KitchenAid, Maytag, Kenmore",
    "Filtros EveryDrop y externos",
-   "https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/"
+   "https://filtrosaguanevecones.com/purofiltro-otras-marcas/"
   ],
   [
    "Buscar por modelo",
    "Qué filtro usa tu nevera",
    "Mira la referencia correcta",
-   "https://filtrosaguanevecones.com/filtrosnevecones-neveras/"
+   "https://filtrosaguanevecones.com/purofiltro-neveras/"
   ],
   [
    "Cómo instalarlo",
    "Paso a paso por referencia",
    "Sin técnico ni herramientas",
-   "https://filtrosaguanevecones.com/filtrosnevecones-instalacion/"
+   "https://filtrosaguanevecones.com/purofiltro-instalacion/"
   ],
   [
    "Envíos por ciudad",
    "Tiempo de entrega a tu ciudad",
    "Envío gratis",
-   "https://filtrosaguanevecones.com/filtrosnevecones-envios/"
+   "https://filtrosaguanevecones.com/purofiltro-envios/"
   ],
   [
    "Preguntas frecuentes",
    "Respuestas rápidas",
    "Precios, pagos y envíos",
-   "https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/preguntas-frecuentes/"
+   "https://filtrosaguanevecones.com/purofiltro-otras-marcas/preguntas-frecuentes/"
   ],
   [
    "Contáctanos",

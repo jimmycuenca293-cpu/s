@@ -1,6 +1,6 @@
 # Grupo 8: Amana
 
-**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/filtro-para-nevera-amana/  
+**Página de destino:** https://filtrosaguanevecones.com/purofiltro-otras-marcas/filtro-para-nevera-amana/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Filtros/Amana
 
 > Marca nombrada con permiso de uso de marca de revendedor: si Google la limita, usa los títulos por referencia.

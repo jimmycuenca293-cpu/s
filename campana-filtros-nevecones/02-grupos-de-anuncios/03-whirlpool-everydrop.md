@@ -1,6 +1,6 @@
 # Grupo 3: Whirlpool EveryDrop
 
-**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-marca/whirlpool/  
+**Página de destino:** https://filtrosaguanevecones.com/purofiltro-marca/whirlpool/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Filtros/Whirlpool
 
 ## Títulos (máximo 30 caracteres)

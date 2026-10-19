@@ -1,6 +1,6 @@
 # Grupo 5: KitchenAid
 
-**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/filtro-para-nevera-kitchenaid/  
+**Página de destino:** https://filtrosaguanevecones.com/purofiltro-otras-marcas/filtro-para-nevera-kitchenaid/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Filtros/KitchenAid
 
 > Marca nombrada con permiso de uso de marca de revendedor: si Google la limita, usa los títulos por referencia.

@@ -29,7 +29,7 @@ import marcas_exclusivas
 
 AQUI = pathlib.Path(__file__).resolve().parent
 APP = (AQUI.parent / "filtros-app" / "index.html").read_text(encoding="utf-8")
-FOTOS = AQUI / "public_html" / "filtrosnevecones-img"
+FOTOS = AQUI / "public_html" / "purofiltro-img"
 SALIDA = AQUI / "sitios-ads"
 
 # ---------- lo que cambia el dueño ----------

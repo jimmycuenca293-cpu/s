@@ -9,8 +9,8 @@ y todos los datos para despacharlo. Nada llega a WhatsApp.
 
 ## Paso 1. Subir la tienda
 1. En Hostinger entra a **Archivos > Administrador de archivos** y abre la carpeta `public_html`.
-2. Sube el archivo `filtrosnevecones-tienda.zip` y descomprímelo ahí (clic derecho > Extraer).
-   Debe quedar `public_html/index.php`, `public_html/filtrosnevecones-filtro/`, `public_html/filtrosnevecones-api/`, etc.
+2. Sube el archivo `purofiltro-tienda.zip` y descomprímelo ahí (clic derecho > Extraer).
+   Debe quedar `public_html/index.php`, `public_html/purofiltro-filtro/`, `public_html/purofiltro-api/`, etc.
 
 ## Paso 2. Crear el correo de la tienda y conectarlo (para que SÍ te lleguen los pedidos)
 En Hostinger: **Correos > Cuentas de correo** y crea `pedidos@tudominio.com` con una clave.
@@ -22,7 +22,7 @@ Si no llegan, entra a `tudominio.com/admin.php > Diagnóstico de pagos` y toca *
 También puedes ver todos los pedidos y los datos de tus clientes en `tudominio.com/admin.php`.
 
 ## Paso 3. Poner tus datos y llaves
-1. Dentro de `public_html/filtrosnevecones-api/` copia `config.sample.php` y ponle de nombre `config.php`.
+1. Dentro de `public_html/purofiltro-api/` copia `config.sample.php` y ponle de nombre `config.php`.
 2. Ábrelo (clic derecho > Editar) y llena:
    - `dominio`: tu dominio con https, ej. `https://filtrosaguanevecones.com`
    - `negocio`: tu nombre o el de la empresa, cédula o NIT, dirección, teléfono, correo y horario.
@@ -37,7 +37,7 @@ En el panel de Wompi, entra a **Desarrolladores**:
 1. Copia la **llave pública** (`pub_test_...` para pruebas, `pub_prod_...` para cobrar de verdad) en `public_key`.
 2. Copia el **secreto de integridad** en `integridad`.
 3. Copia el **secreto de eventos** en `eventos`.
-4. En **URL de eventos** pon: `https://filtrosaguanevecones.com/filtrosnevecones-api/wompi.php`
+4. En **URL de eventos** pon: `https://filtrosaguanevecones.com/purofiltro-api/wompi.php`
    (así Wompi avisa a tu tienda apenas el cliente paga, aunque cierre el navegador).
 
 ### Cómo probar la pasarela antes de cobrar de verdad
@@ -66,11 +66,11 @@ En Hostinger: **Avanzado > Cron Jobs** (cambia USUARIO por el tuyo; Hostinger te
 
 **Cada 15 minutos**, para revisar en Wompi los pagos que no llegaron por aviso:
 
-    /usr/bin/php /home/USUARIO/public_html/filtrosnevecones-api/reconciliar.php
+    /usr/bin/php /home/USUARIO/public_html/purofiltro-api/reconciliar.php
 
 **Una vez al día**, para los recordatorios de cambio de filtro:
 
-    /usr/bin/php /home/USUARIO/public_html/filtrosnevecones-api/recordatorios.php
+    /usr/bin/php /home/USUARIO/public_html/purofiltro-api/recordatorios.php
 
 Le escribe por correo, solo a quien lo autorizó al comprar, cuando ya casi le toca cambiar el filtro.
 
@@ -93,7 +93,7 @@ unas semanas en mostrar las páginas, y subir en los resultados depende de la co
 3. **Google Analytics 4** (opcional): crea la propiedad y pega el código `G-XXXXXXX` en `ga4` de config.php.
    Mide visitas y compras (cada pago aprobado se registra como venta).
 4. **Quiénes somos**: llena la sección `tecnico` de config.php (tu nombre, años de experiencia y tu historia) y sube una foto
-   tuya como `public_html/filtrosnevecones-img/tecnico.jpg`. Google confía más en las tiendas atendidas por expertos, y las guías salen firmadas por ti.
+   tuya como `public_html/purofiltro-img/tecnico.jpg`. Google confía más en las tiendas atendidas por expertos, y las guías salen firmadas por ti.
 
 ## Para que las IA te lean y te recomienden
 La tienda trae `tudominio.com/llms.txt` y `tudominio.com/llms-full.txt`: un texto escrito para asistentes de IA
@@ -116,15 +116,15 @@ Google lo prohíbe y además responderlas bien genera confianza.
 
 ## Cambiar precios o agregar filtros
 Los precios salen de la app de Claude. Pídeme el cambio y te genero un paquete nuevo
-(se sube igual; tu `config.php` y tus pedidos en `filtrosnevecones-data/` no se tocan).
+(se sube igual; tu `config.php` y tus pedidos en `purofiltro-data/` no se tocan).
 
 ## Carpetas con el nombre del proyecto
 
-Todas las carpetas de la tienda empiezan por `filtrosnevecones-` (filtrosnevecones-img, filtrosnevecones-api, filtrosnevecones-filtro, filtrosnevecones-guia...) para no chocar con las carpetas que ya tengas en tu hosting. Los únicos archivos que pueden coincidir con los tuyos son `index.php` (la página de inicio de la tienda) y `.htaccess`: si ya tienes un `index.html` o `index.php` en `public_html`, la tienda reemplaza tu página de inicio; si ya tienes un `.htaccess`, une su contenido con el de la tienda en vez de borrarlo.
+Todas las carpetas de la tienda empiezan por `purofiltro-` (purofiltro-img, purofiltro-api, purofiltro-filtro, purofiltro-guia...) para no chocar con las carpetas que ya tengas en tu hosting. Los únicos archivos que pueden coincidir con los tuyos son `index.php` (la página de inicio de la tienda) y `.htaccess`: si ya tienes un `index.html` o `index.php` en `public_html`, la tienda reemplaza tu página de inicio; si ya tienes un `.htaccess`, une su contenido con el de la tienda en vez de borrarlo.
 
 ## Google Tag Manager y conversiones de Google Ads
 
-La tienda ya trae tu contenedor **GTM-5WSNHV66** y la verificación de Search Console (en `filtrosnevecones-api/config.php`: `gtm` y `google_verificacion`). Manda estos eventos al `dataLayer`:
+La tienda ya trae tu contenedor **GTM-5WSNHV66** y la verificación de Search Console (en `purofiltro-api/config.php`: `gtm` y `google_verificacion`). Manda estos eventos al `dataLayer`:
 
 | Evento | Cuándo pasa | Datos |
 |---|---|---|
@@ -137,14 +137,14 @@ En Tag Manager, para cada uno:
 3. Agrega también la etiqueta **Vinculador de conversiones** (Conversion Linker) con el activador "All Pages".
 4. **Enviar → Publicar.**
 
-El número de WhatsApp del botón flotante se cambia en `filtrosnevecones-api/config.php` → `whatsapp`.
+El número de WhatsApp del botón flotante se cambia en `purofiltro-api/config.php` → `whatsapp`.
 
 ## Sitios por marca (Samsung, LG, Whirlpool y GE)
-Además de la tienda principal hay un zip por marca: `filtrosnevecones-samsung.zip`, `filtrosnevecones-lg.zip`,
-`filtrosnevecones-whirlpool.zip` y `filtrosnevecones-ge.zip`. Cada uno es una tienda completa (carrito, pago, pedidos)
+Además de la tienda principal hay un zip por marca: `purofiltro-samsung.zip`, `purofiltro-lg.zip`,
+`purofiltro-whirlpool.zip` y `purofiltro-ge.zip`. Cada uno es una tienda completa (carrito, pago, pedidos)
 que solo vende esa marca, con su propio diseño. Cada una va en **su propio dominio**:
 1. En Hostinger agrega el dominio de la marca como sitio nuevo y sube el zip de esa marca a su `public_html` (paso 1).
-2. Crea su `filtrosnevecones-api/config.php` igual que en el paso 3: puedes copiar el de la tienda principal,
+2. Crea su `purofiltro-api/config.php` igual que en el paso 3: puedes copiar el de la tienda principal,
    pero cambia `dominio` por el dominio de esa marca. Las llaves de Wompi y tu correo pueden ser los mismos.
 3. Wompi solo deja poner **una** URL de eventos: déjala con la tienda principal. En los sitios de marca el pago se
    confirma cuando el cliente vuelve de la página de pago. Si un pedido queda «pendiente», míralo en tu panel de Wompi.

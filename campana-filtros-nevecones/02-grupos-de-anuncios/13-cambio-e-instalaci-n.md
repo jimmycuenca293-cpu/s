@@ -1,6 +1,6 @@
 # Grupo 13: Cambio e instalación
 
-**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-guia/como-cambiar-el-filtro-de-agua-del-nevecon/  
+**Página de destino:** https://filtrosaguanevecones.com/purofiltro-guia/como-cambiar-el-filtro-de-agua-del-nevecon/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Guia/Cambiar-Filtro
 
 > Intención más informativa: puja más baja que los grupos de compra.

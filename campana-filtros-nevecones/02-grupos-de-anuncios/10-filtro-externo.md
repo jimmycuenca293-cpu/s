@@ -1,6 +1,6 @@
 # Grupo 10: Filtro externo
 
-**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-tienda/  
+**Página de destino:** https://filtrosaguanevecones.com/purofiltro-tienda/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Filtros/Externos
 
 ## Títulos (máximo 30 caracteres)

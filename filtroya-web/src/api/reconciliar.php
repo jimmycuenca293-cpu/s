@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 // Revisa en Wompi los pagos que quedaron «pendientes» (el cliente cerró el navegador o falló un aviso) y actualiza el pedido.
-// Hostinger > Avanzado > Cron Jobs, cada 15 minutos:  php /home/USUARIO/public_html/filtrosnevecones-api/reconciliar.php
-// (o por URL: https://tudominio.com/filtrosnevecones-api/reconciliar.php?clave=TU_CRON_CLAVE)
+// Hostinger > Avanzado > Cron Jobs, cada 15 minutos:  php /home/USUARIO/public_html/purofiltro-api/reconciliar.php
+// (o por URL: https://tudominio.com/purofiltro-api/reconciliar.php?clave=TU_CRON_CLAVE)
 require __DIR__ . '/lib.php';
 
 if (PHP_SAPI !== 'cli') {

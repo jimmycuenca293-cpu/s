@@ -38,11 +38,11 @@ if (!con_llaves()) {
     $m = $code === 200 ? (json_decode((string) $res, true)['data'] ?? null) : null;
     $m ? $ok('Wompi reconoce tu llave pública', 'Comercio: <b>' . h((string) ($m['name'] ?? '')) . '</b> (' . h(wompi_api()) . ')') : $mal('Wompi no reconoce la llave pública', 'Respuesta ' . $code . ' de ' . h(wompi_api()) . '. Revisa que la copiaste completa y que el servidor puede salir a internet.');
 }
-$url_eventos = base_url() . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/filtrosnevecones-api/wompi.php';
+$url_eventos = base_url() . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/purofiltro-api/wompi.php';
 $aviso('URL de eventos que debe tener Wompi', 'En Wompi > Desarrolladores > URL de eventos pon: <code>' . h($url_eventos) . '</code>');
 
 // 4. Servidor
-try { db()->query('SELECT 1'); is_writable(__DIR__ . '/filtrosnevecones-data') || is_writable(__DIR__ . '/data') ? $ok('Base de pedidos', 'Se puede leer y escribir.') : $mal('La carpeta de datos no se puede escribir', 'Dale permisos de escritura a filtrosnevecones-data.'); }
+try { db()->query('SELECT 1'); is_writable(__DIR__ . '/purofiltro-data') || is_writable(__DIR__ . '/data') ? $ok('Base de pedidos', 'Se puede leer y escribir.') : $mal('La carpeta de datos no se puede escribir', 'Dale permisos de escritura a purofiltro-data.'); }
 catch (Throwable $e) { $mal('Base de pedidos', h($e->getMessage())); }
 function_exists('curl_init') ? $ok('cURL disponible', 'Necesario para consultar a Wompi.') : $mal('Falta cURL', 'Pide a Hostinger activar la extensión cURL de PHP.');
 $prueba = null;
@@ -75,8 +75,8 @@ echo '</div><h2>Prueba de correo</h2><form method="post" class="caja"><input typ
     . ($prueba ? '<p style="margin-top:10px">' . ($prueba[0] ? '✅ Enviado' . ($prueba[1] ? ' (' . h($prueba[1]) . ')' : '') . '. Revisa la bandeja y el spam.' : '❌ No se pudo enviar: <b>' . h($prueba[1]) . '</b>') . '</p>' : '') . '</form>';
 echo '<h2>Datos del pedido como formulario (FormSubmit o Web3Forms)</h2><form method="post" class="caja"><input type="hidden" name="csrf" value="' . h($_SESSION['csrf'] ?? '') . '"><p class="m">Cada pedido también se manda a <b>' . h(correo_destino()) . '</b> como un formulario. La primera vez FormSubmit te manda un correo para activarlo: toca <b>Activate Form</b>. Después de eso llegan solos.</p><button class="btn sm" name="probar_formulario" value="1">Enviar formulario de prueba</button>'
     . ($formulario ? '<p style="margin-top:10px">' . ($formulario['ok'] ? '✅ Enviado: ' : '❌ ') . h($formulario['mensaje']) . '</p>' : '') . '</form>';
-echo '<h2>Tareas programadas (Hostinger > Avanzado > Cron Jobs)</h2><div class="caja"><p class="m">Cada 15 minutos (revisa pagos que no llegaron por aviso):</p><code>/usr/bin/php /home/USUARIO/public_html/filtrosnevecones-api/reconciliar.php</code>'
-    . '<p class="m" style="margin-top:12px">Una vez al día (recordatorios y opiniones):</p><code>/usr/bin/php /home/USUARIO/public_html/filtrosnevecones-api/recordatorios.php</code></div>';
+echo '<h2>Tareas programadas (Hostinger > Avanzado > Cron Jobs)</h2><div class="caja"><p class="m">Cada 15 minutos (revisa pagos que no llegaron por aviso):</p><code>/usr/bin/php /home/USUARIO/public_html/purofiltro-api/reconciliar.php</code>'
+    . '<p class="m" style="margin-top:12px">Una vez al día (recordatorios y opiniones):</p><code>/usr/bin/php /home/USUARIO/public_html/purofiltro-api/recordatorios.php</code></div>';
 $av = db()->query('SELECT creado, ref, tipo, canal, ok, mensaje FROM avisos ORDER BY id DESC LIMIT 12')->fetchAll();
 echo '<h2>Avisos de pedidos enviados a tu correo</h2>';
 if (!$av) echo '<p class="m">Todavía no se ha enviado ningún aviso de pedido.</p>';

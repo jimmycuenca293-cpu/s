@@ -23,7 +23,7 @@ import instalacion
 
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
-PREFIJO = "filtrosnevecones-"
+PREFIJO = "purofiltro-"
 
 FUENTES = "https://fonts.googleapis.com/css2?"
 MARCAS_INFO = {
@@ -103,7 +103,7 @@ def escribir(f, texto):
 # ---------- piezas comunes ----------
 def inicio(M, php_str, titulo, desc, ruta, ld, extra_php="", extra_head=""):
     """Comienzo de la página: datos de la marca, datos estructurados y encabezado propio."""
-    return (f"<?php require __DIR__ . '/{'../' * len([x for x in ruta.split('/') if x])}filtrosnevecones-marcas.php';\n"
+    return (f"<?php require __DIR__ . '/{'../' * len([x for x in ruta.split('/') if x])}purofiltro-marcas.php';\n"
             f"$M = json_decode(<<<'JSON'\n{json.dumps(M, ensure_ascii=False)}\nJSON, true);\n"
             f"$ld = json_decode(<<<'JSON'\n{json.dumps(ld, ensure_ascii=False)}\nJSON, true);\n{extra_php}"
             "foreach ($ld['@graph'] ?? [] as $i => $g) if (($g['sameAs'] ?? null) === '__REDES__') { $r = array_values(array_filter((array) (cfg()['redes'] ?? []))); if ($r) $ld['@graph'][$i]['sameAs'] = $r; else unset($ld['@graph'][$i]['sameAs']); }\n"

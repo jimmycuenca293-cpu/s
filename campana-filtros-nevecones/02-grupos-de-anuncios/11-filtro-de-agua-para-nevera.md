@@ -1,6 +1,6 @@
 # Grupo 11: Filtro de agua para nevera
 
-**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-tienda/  
+**Página de destino:** https://filtrosaguanevecones.com/purofiltro-tienda/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Tienda/Filtros
 
 ## Títulos (máximo 30 caracteres)
