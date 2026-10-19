@@ -377,34 +377,52 @@ function avisar_por_todos(array $p, string $tipo, string $asunto, string $html):
 {
     $ok1 = enviar_correo(correo_destino(), $asunto, $html, $m1);
     anotar_aviso($p['ref'], $tipo, 'correo', $ok1, (string) $m1);
+    if (form_en_navegador()) return $ok1;  // el formulario lo manda el navegador del cliente
     $r = enviar_formulario($asunto, campos_pedido($p));
     anotar_aviso($p['ref'], $tipo, 'formulario', $r['ok'], $r['mensaje']);
     $GLOBALS['ult_aviso'] = ['correo' => $ok1, 'form' => $r['ok']];
     return $ok1 || $r['ok'];
 }
 
-function enviar_formulario(string $asunto, array $campos): array
+// ¿El formulario sale desde el navegador del cliente? (Web3Forms gratis solo acepta envíos desde el navegador, no desde el servidor)
+function form_en_navegador(): bool
 {
     $f = cfg()['formulario'] ?? [];
-    if (isset($f['activo']) && !$f['activo']) return ['ok' => false, 'mensaje' => 'El envío por formulario está apagado en config.php'];
-    $para = correo_destino();
+    return (!isset($f['activo']) || $f['activo']) && ($f['proveedor'] ?? '') === 'web3forms' && !empty($f['clave']);
+}
+
+// Arma lo que se manda al servicio de formularios: ['url' => ..., 'datos' => [...]]
+function form_payload(string $asunto, array $campos): array
+{
+    $f = cfg()['formulario'] ?? [];
     $campos = array_map(fn($v) => (string) $v, $campos);
     // Resumen en texto: aunque el servicio muestre solo un campo, ahí viene todo el pedido
     $resumen = '';
     foreach ($campos as $k => $v) $resumen .= $k . ': ' . $v . "\n";
-    $web3 = ($f['proveedor'] ?? '') === 'web3forms' && !empty($f['clave']);
-    if ($web3) {
-        // Web3Forms (gratis, la clave se pide con tu correo en web3forms.com y no necesita activar nada)
-        $url = (string) ($f['url'] ?? 'https://api.web3forms.com/submit');
+    $mail = filter_var($campos['Correo del cliente'] ?? '', FILTER_VALIDATE_EMAIL) ? $campos['Correo del cliente'] : '';
+    if (($f['proveedor'] ?? '') === 'web3forms' && !empty($f['clave'])) {
         $datos = ['access_key' => (string) $f['clave'], 'subject' => $asunto, 'from_name' => cfg()['negocio']['nombre'], 'message' => $resumen] + $campos;
-        if (filter_var($campos['Correo del cliente'] ?? '', FILTER_VALIDATE_EMAIL)) $datos['replyto'] = $campos['Correo del cliente'];
-    } else {
-        $url = (string) ($f['url'] ?? 'https://formsubmit.co/ajax/') . rawurlencode($para);
-        $datos = ['_subject' => $asunto, '_template' => 'table', '_captcha' => 'false', 'Resumen del pedido' => $resumen] + $campos;
-        if (filter_var($campos['Correo del cliente'] ?? '', FILTER_VALIDATE_EMAIL)) $datos['_replyto'] = $campos['Correo del cliente'];
+        if ($mail) $datos['replyto'] = $mail;
+        return ['url' => (string) ($f['url'] ?? 'https://api.web3forms.com/submit'), 'datos' => $datos];
     }
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($datos, JSON_UNESCAPED_UNICODE), CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15,
+    $datos = ['_subject' => $asunto, '_template' => 'table', '_captcha' => 'false', 'Resumen del pedido' => $resumen] + $campos;
+    if ($mail) $datos['_replyto'] = $mail;
+    return ['url' => (string) ($f['url'] ?? 'https://formsubmit.co/ajax/') . rawurlencode(correo_destino()), 'datos' => $datos];
+}
+
+// Formulario del pedido para que lo mande el navegador del cliente (vacío si el envío es desde el servidor)
+function form_navegador(array $p, string $asunto): array
+{
+    return form_en_navegador() ? form_payload($asunto, campos_pedido($p)) : [];
+}
+
+function enviar_formulario(string $asunto, array $campos): array
+{
+    $f = cfg()['formulario'] ?? [];
+    if (isset($f['activo']) && !$f['activo']) return ['ok' => false, 'mensaje' => 'El envío por formulario está apagado en config.php'];
+    $pl = form_payload($asunto, $campos);
+    $ch = curl_init($pl['url']);
+    curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($pl['datos'], JSON_UNESCAPED_UNICODE), CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15,
         CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Accept: application/json', 'Referer: ' . base_url() . '/', 'Origin: ' . base_url()]]);
     $res = curl_exec($ch);
     $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);

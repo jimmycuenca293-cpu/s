@@ -197,3 +197,18 @@ body:not([class*="m-"]) .btn.ghost{background:transparent;color:var(--accent);bo
 body:not([class*="m-"]) .precio,body:not([class*="m-"]) .card .p{color:#ff4d2e}
 header.top{background:linear-gradient(120deg,#0b1f6b,#1236a8 60%,#1a5cff)}
 .anuncio{background:#ff4d2e;color:#fff}
+
+/* Carrito por pasos y campos obligatorios */
+.paso h2{display:flex;align-items:center;gap:10px;margin:0}
+.np{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:14px;font-weight:800;flex:0 0 auto}
+.req{color:#d62d20;font-weight:800}.f2 i,.check2 i{font-weight:500;color:var(--muted);font-style:normal}
+.nota-req{margin:0;font-size:13.5px}
+.f2 input,.f2 select{border:1.5px solid var(--line)}
+.f2.malo input,.f2.malo select,.check2.malo{border-color:#d62d20;background:#fff4f2}
+.check2.malo{border:1.5px solid #d62d20;border-radius:10px;padding:8px}
+.msg{color:#d62d20;font-size:13px;font-weight:600}
+.lista-req{background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:14px}
+.lista-req ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:2px}
+.lista-req .link{font-size:14px;text-decoration:underline}
+.ok-req{color:var(--ok);font-weight:700}
+.err:not(:empty){background:#fff4f2;border:1px solid #d62d20;border-radius:10px;padding:10px 12px;color:#a8261b}

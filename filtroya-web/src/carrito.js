@@ -13,6 +13,11 @@
     dataLayer.push({ event: "pago_wompi", value: total, currency: "COP", transaction_id: ref, eventCallback: ir, eventTimeout: 300 });
     setTimeout(ir, 350);
   };
+  // Manda los datos del pedido a tu correo como formulario (Web3Forms/FormSubmit) desde el navegador, sin hacer esperar al cliente
+  window.FYForm = f => {
+    if (!f || !f.url || !f.datos) return;
+    try { fetch(f.url, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(f.datos), keepalive: true }).catch(() => {}); } catch {}
+  };
   const K = "fy_carrito";
   const leer = () => { try { const v = JSON.parse(localStorage.getItem(K) || "[]"); return Array.isArray(v) ? v.filter(l => l && l.pid) : []; } catch { return []; } };
   const guardar = c => { try { localStorage.setItem(K, JSON.stringify(c)); } catch {} pintar(); };

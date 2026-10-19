@@ -9,32 +9,44 @@ cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/ca
 <div id="vacio" class="caja" hidden><b>Tu carrito está vacío.</b><span class="m">Busca el filtro de tu nevecón por la referencia o por el modelo.</span><a class="btn" href="/tienda/">Ver todos los filtros</a></div>
 <div class="checkout" id="checkout" hidden>
   <div class="col">
-    <section class="caja"><h2>Productos</h2><div id="lineas"></div><button type="button" class="link vaciar" id="vaciar">Vaciar carrito</button></section>
-    <section class="caja">
-      <h2>¿A dónde lo enviamos?</h2>
+    <section class="caja paso">
+      <h2><span class="np">1</span>Tus productos</h2>
+      <div id="lineas"></div>
+      <button type="button" class="link vaciar" id="vaciar">Vaciar carrito</button>
+    </section>
+    <section class="caja paso">
+      <h2><span class="np">2</span>Tus datos</h2>
+      <p class="m nota-req">Los campos con <b class="req">*</b> son obligatorios para hacer el pedido.</p>
       <div class="campos">
-        <label class="f2"><span>Nombre completo</span><input id="c-nombre" autocomplete="name" maxlength="80"></label>
-        <label class="f2"><span>Celular</span><input id="c-tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="300 123 4567" maxlength="16"></label>
-        <label class="f2"><span>Correo (te llega el recibo)</span><input id="c-email" type="email" inputmode="email" autocomplete="email" placeholder="tucorreo@gmail.com" maxlength="120"></label>
-        <label class="f2"><span>Ciudad</span><select id="c-ciudad"></select></label>
-        <label class="f2"><span>Barrio</span><input id="c-barrio" maxlength="80"></label>
-        <label class="f2 ancho"><span>Dirección</span><input id="c-dir" autocomplete="street-address" placeholder="Calle 5 # 66-20, apto 301" maxlength="160"></label>
-        <label class="f2 ancho"><span>Indicaciones para la entrega (opcional)</span><input id="c-ind" maxlength="200" placeholder="Torre 2, portería; llamar antes"></label>
-        <label class="f2 ancho"><span>Modelo del nevecón (opcional)</span><input id="c-modelo" maxlength="40" placeholder="Nos ayuda a confirmar que le sirve"></label>
+        <label class="f2" data-f="nombre"><span>Nombre completo <b class="req">*</b></span><input id="c-nombre" autocomplete="name" maxlength="80" aria-required="true"><small class="msg" hidden></small></label>
+        <label class="f2" data-f="tel"><span>Celular <b class="req">*</b></span><input id="c-tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="300 123 4567" maxlength="16" aria-required="true"><small class="msg" hidden></small></label>
+        <label class="f2 ancho" data-f="email"><span>Correo (te llega el recibo) <b class="req">*</b></span><input id="c-email" type="email" inputmode="email" autocomplete="email" placeholder="tucorreo@gmail.com" maxlength="120" aria-required="true"><small class="msg" hidden></small></label>
+      </div>
+    </section>
+    <section class="caja paso">
+      <h2><span class="np">3</span>¿A dónde lo enviamos?</h2>
+      <div class="campos">
+        <label class="f2" data-f="ciudad"><span>Ciudad <b class="req">*</b></span><select id="c-ciudad" aria-required="true"></select><small class="msg" hidden></small></label>
+        <label class="f2" data-f="barrio"><span>Barrio <b class="req">*</b></span><input id="c-barrio" maxlength="80" aria-required="true"><small class="msg" hidden></small></label>
+        <label class="f2 ancho" data-f="dir"><span>Dirección <b class="req">*</b></span><input id="c-dir" autocomplete="street-address" placeholder="Calle 5 # 66-20, apto 301" maxlength="160" aria-required="true"><small class="msg" hidden></small></label>
+        <label class="f2 ancho"><span>Indicaciones para la entrega <i>(opcional)</i></span><input id="c-ind" maxlength="200" placeholder="Torre 2, portería; llamar antes"></label>
+        <label class="f2 ancho"><span>Modelo del nevecón <i>(opcional)</i></span><input id="c-modelo" maxlength="40" placeholder="Nos ayuda a confirmar que le sirve"></label>
       </div>
       <div id="entrega" class="entrega"></div>
-      <label class="check2"><input type="checkbox" id="c-acepto" required><span><b>Acepto los <a href="/terminos.php" target="_blank" rel="noopener">términos y condiciones</a>, la <a href="/garantia-y-retracto.php" target="_blank" rel="noopener">garantía y el derecho de retracto</a> y autorizo el tratamiento de mis datos</b> según la <a href="/privacidad.php" target="_blank" rel="noopener">política de privacidad</a>.</span></label>
-      <label class="check2"><input type="checkbox" id="c-rec"><span><b>Recuérdame por correo cuando toque cambiar el filtro</b> (cada 6 meses). Opcional.</span></label>
     </section>
   </div>
   <aside class="col resumen">
-    <section class="caja">
-      <h2>Resumen</h2>
+    <section class="caja paso">
+      <h2><span class="np">4</span>Resumen y pago</h2>
       <div id="totales"></div>
+      <div class="lista-req" id="lista-req" aria-live="polite"></div>
+      <label class="check2" data-f="acepto"><input type="checkbox" id="c-acepto" aria-required="true"><span><b>Acepto los <a href="/terminos.php" target="_blank" rel="noopener">términos</a>, la <a href="/garantia-y-retracto.php" target="_blank" rel="noopener">garantía y el retracto</a> y la <a href="/privacidad.php" target="_blank" rel="noopener">política de datos</a> <b class="req">*</b></b></span></label>
+      <small class="msg" id="m-acepto" hidden></small>
+      <label class="check2"><input type="checkbox" id="c-rec"><span>Recuérdame por correo cuando toque cambiar el filtro (cada 6 meses). <i>Opcional.</i></span></label>
       <button class="btn block" type="button" id="pagar">Pagar</button>
-      <p class="err" id="err" aria-live="polite"></p>
+      <div class="err" id="err" role="alert" aria-live="assertive"></div>
       <div class="sellos"><span>🔒 Pago seguro</span><span>🚚 Envío gratis a toda Colombia</span><span>💬 Asesoría por WhatsApp</span></div><?= medios_pago_html() ?>
-      <p class="m" style="font-size:12.5px;margin:0">Pagas con tarjeta, PSE, Nequi o botón Bancolombia. Al pagar aceptas los <a href="/terminos.php" target="_blank">Términos</a> y autorizas el tratamiento de tus datos según la <a href="/privacidad.php" target="_blank">Política de datos</a>.</p>
+      <p class="m" style="font-size:12.5px;margin:0">Pagas con tarjeta, PSE, Nequi o botón Bancolombia.</p>
     </section>
   </aside>
 </div>
@@ -95,11 +107,49 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   window.addEventListener("storage", pintar);
   $("#vaciar").addEventListener("click", () => { FYCart.guardar([]); pintar(); });
+  // ---- Campos obligatorios: se marcan y se dice cuáles faltan ----
+  const val = {
+    nombre: { id: "c-nombre", et: "Nombre completo", ok: v => v.trim().length >= 3, msg: "Escribe tu nombre completo." },
+    tel: { id: "c-tel", et: "Celular", ok: v => /^3\d{9}$/.test(telok(v)), msg: "Escribe un celular de 10 dígitos que empiece por 3." },
+    email: { id: "c-email", et: "Correo", ok: v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v.trim()), msg: "Escribe un correo válido, como nombre@gmail.com." },
+    ciudad: { id: "c-ciudad", et: "Ciudad", ok: v => !!v, msg: "Escoge tu ciudad." },
+    barrio: { id: "c-barrio", et: "Barrio", ok: v => v.trim().length >= 2, msg: "Escribe el barrio." },
+    dir: { id: "c-dir", et: "Dirección", ok: v => v.trim().length >= 5, msg: "Escribe la dirección completa." },
+    acepto: { id: "c-acepto", et: "Aceptar términos y política de datos", ok: () => $("#c-acepto").checked, msg: "Debes aceptar los términos y la política de datos." }
+  };
+  function telok(v) { return v.replace(/\D/g, "").replace(/^57(?=3\d{9}$)/, ""); }
+  const tocado = new Set();
+  function marcar(k) {
+    const f = val[k], el = $("#" + f.id), bad = !f.ok(el.value), cont = k === "acepto" ? $('[data-f="acepto"]') : el.closest("label"), msg = k === "acepto" ? $("#m-acepto") : cont.querySelector(".msg");
+    const mostrar = bad && tocado.has(k);
+    cont.classList.toggle("malo", mostrar); el.setAttribute("aria-invalid", mostrar ? "true" : "false");
+    if (msg) { msg.hidden = !mostrar; msg.textContent = mostrar ? f.msg : ""; }
+    return bad;
+  }
+  function lista() {
+    const falta = Object.keys(val).filter(k => !val[k].ok($("#" + val[k].id).value));
+    $("#lista-req").innerHTML = falta.length
+      ? `<b>Para hacer el pedido te falta:</b><ul>${falta.map(k => `<li><button type="button" class="link" data-ir="${k}">${esc(val[k].et)}</button></li>`).join("")}</ul>`
+      : `<span class="ok-req">✓ Tienes todos los datos. Ya puedes pagar.</span>`;
+    return falta;
+  }
+  Object.keys(val).forEach(k => {
+    const el = $("#" + val[k].id);
+    ["input", "change"].forEach(ev => el.addEventListener(ev, () => { if (tocado.has(k)) marcar(k); lista(); }));
+    el.addEventListener("blur", () => { tocado.add(k); marcar(k); });
+  });
+  $("#lista-req").addEventListener("click", e => { const b = e.target.closest("[data-ir]"); if (!b) return; const el = $("#" + val[b.dataset.ir].id); el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus({ preventScroll: true }); });
   $("#pagar").addEventListener("click", async () => {
     const v = id => $("#" + id).value.trim(), err = $("#err");
-    const cli = { nombre: v("c-nombre"), tel: v("c-tel").replace(/\D/g, "").replace(/^57(?=3\d{9}$)/, ""), email: v("c-email"), ciudad: $("#c-ciudad").value, barrio: v("c-barrio"), dir: v("c-dir"), indicaciones: v("c-ind"), modelo: v("c-modelo"), recordar: $("#c-rec").checked };
-    const falta = [cli.nombre.length < 3 && "tu nombre", !/^3\d{9}$/.test(cli.tel) && "un celular válido (10 dígitos que empiezan por 3)", !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cli.email) && "un correo válido", !cli.ciudad && "la ciudad", !cli.barrio && "el barrio", cli.dir.length < 5 && "la dirección", !$("#c-acepto").checked && "aceptar los términos y la política de datos"].filter(Boolean);
-    if (falta.length) { err.textContent = "Falta " + falta.join(", ") + "."; return; }
+    const cli = { nombre: v("c-nombre"), tel: telok(v("c-tel")), email: v("c-email"), ciudad: $("#c-ciudad").value, barrio: v("c-barrio"), dir: v("c-dir"), indicaciones: v("c-ind"), modelo: v("c-modelo"), recordar: $("#c-rec").checked };
+    Object.keys(val).forEach(k => tocado.add(k));
+    const falta = Object.keys(val).filter(marcar);
+    lista();
+    if (falta.length) {
+      err.innerHTML = `<b>Faltan ${falta.length} ${falta.length === 1 ? "dato" : "datos"} para hacer el pedido:</b> ${falta.map(k => esc(val[k].et)).join(", ")}.`;
+      const el = $("#" + val[falta[0]].id); el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus({ preventScroll: true });
+      return;
+    }
     const b = $("#pagar"), old = b.textContent; b.disabled = true; b.textContent = "Abriendo el pago seguro…"; err.textContent = "";
     ls.set("fy_cliente", { nombre: cli.nombre, tel: cli.tel, email: cli.email, barrio: cli.barrio, dir: cli.dir, recordar: cli.recordar });
     try {
@@ -107,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const r = await fetch("/api/pedido.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ acepto: true, items: L.map(l => ({ pid: l.pid, pack: !!l.pack, cant: l.cant })), total: t, entrega, cliente: cli }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.url) throw new Error(j.mensaje || "No se pudo crear el pedido. Intenta de nuevo.");
+      window.FYForm && FYForm(j.form);  // los datos del cliente llegan a tu correo como formulario (sin esperar)
       const cambio = new Date(); cambio.setMonth(cambio.getMonth() + 6);
       const o = ls.get("fy_orders", []).filter(x => x.id !== j.ref);
       o.unshift({ id: j.ref, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: P[L[0].pid].nombre + (L.length > 1 ? ` y ${L.length - 1} más` : ""), ref: P[L[0].pid].ref, pid: L[0].pid, total: j.total, ciudad: cli.ciudad, entrega, pago: "wompi", estado: "Pago pendiente", cliente: { recordar: cli.recordar } });
@@ -114,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.FYPago ? FYPago(j.url, j.total, j.ref) : (location.href = j.url);
     } catch (x) { err.textContent = x.message; b.disabled = false; b.textContent = old; }
   });
-  pintar();
+  pintar(); lista();
 });
 </script>
 <?php pie(); ?>

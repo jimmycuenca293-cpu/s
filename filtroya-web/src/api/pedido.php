@@ -73,7 +73,7 @@ if ($link !== '') {
     $st = db()->prepare('SELECT * FROM pedidos WHERE ref = ?'); $st->execute([$ref]);
     $ped0 = $st->fetch();
     $url0 = $link;
-    out_y_seguir(['ref' => $ref, 'total' => $total, 'url' => $url0], fn() => avisar_por_todos($ped0, 'pendiente', "Nuevo pedido {$ref} — revisa el pago de " . cop($total),
+    out_y_seguir(['ref' => $ref, 'total' => $total, 'url' => $url0, 'form' => form_navegador($ped0, "Nuevo pedido {$ref} — " . $cli['nombre'] . ' — ' . $cli['ciudad'])], fn() => avisar_por_todos($ped0, 'pendiente', "Nuevo pedido {$ref} — revisa el pago de " . cop($total),
         '<h2 style="margin:0 0 8px">Nuevo pedido con link de pago</h2><p>El cliente fue al link de pago de ' . cop($total) . '. Confirma en tu panel de Wompi que el pago quedó aprobado antes de despachar.</p>'
         . ($instalacion ? '<p><b>Instalación de filtro externo:</b> cobra ' . cop($instalacion) . ' el día de la instalación (no va en el link de pago).</p>' : '')
         . tabla_pedido($ped0, true) . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>'));
@@ -94,4 +94,4 @@ $q = http_build_query([
     'customer-data:phone-number' => $cli['tel'], 'customer-data:phone-number-prefix' => '+57',
 ]);
 // El cliente pasa a pagar al instante; los avisos al correo se envían después, sin hacerlo esperar
-out_y_seguir(['ref' => $ref, 'total' => $total, 'url' => 'https://checkout.wompi.co/p/?' . $q], $aviso);
+out_y_seguir(['ref' => $ref, 'total' => $total, 'url' => 'https://checkout.wompi.co/p/?' . $q, 'form' => form_navegador($ped, "Pedido {$ref} esperando pago — " . $cli['nombre'] . ' — ' . $cli['ciudad'])], $aviso);

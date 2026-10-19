@@ -17,6 +17,7 @@
         t.textContent = "¡Pago aprobado! Gracias por tu compra";
         try { if (!sessionStorage.getItem("dl-" + j.ref)) { window.dataLayer = window.dataLayer || []; dataLayer.push({ event: "purchase", ecommerce: { transaction_id: j.ref, value: j.total, currency: "COP", items: (j.items || []).map(i => ({ item_id: i.pid, item_name: i.texto })) } }); sessionStorage.setItem("dl-" + j.ref, "1"); } } catch {}
         try { if (window.gtag && !sessionStorage.getItem("ga-" + j.ref)) { gtag("event", "purchase", { transaction_id: j.ref, value: j.total, currency: "COP", items: [{ item_id: j.pid, item_name: j.producto, quantity: j.unidades }] }); sessionStorage.setItem("ga-" + j.ref, "1"); } } catch {}
+        try { if (j.form && !localStorage.getItem("fy-form-" + j.ref)) { window.FYForm && FYForm(j.form); localStorage.setItem("fy-form-" + j.ref, "1"); } } catch {}
         out.className = "estado ok";
         try { localStorage.removeItem("fy_carrito"); } catch {}
         out.innerHTML = `<b>Pedido ${esc(j.ref)} · ${cop(j.total)}</b>${(j.items || []).map(i => `<span>${esc(i.texto)}</span>`).join("")}<span>${j.entrega === "transportadora" ? "Lo despachamos por transportadora a " + esc(j.ciudad) + " y te llega en unos 2 días hábiles. Te enviamos la guía a tu correo." : "Te escribimos para coordinar la entrega."}</span><span class="m">Te enviamos el recibo a ${esc(j.email)}.</span>`;

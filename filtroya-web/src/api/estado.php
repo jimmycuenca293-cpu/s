@@ -16,4 +16,5 @@ $p = aplicar_transaccion($tx);
 if (!$p) fail('No encontramos el pedido.', 404);
 out(['ref' => $p['ref'], 'estado' => $p['estado'], 'tx' => $tx['status'] ?? '', 'producto' => $p['producto'], 'unidades' => (int) $p['unidades'],
     'total' => (int) $p['total'], 'entrega' => $p['entrega'], 'ciudad' => $p['ciudad'], 'email' => $p['email'], 'pid' => $p['pid'],
-    'items' => array_map(fn($l) => ['pid' => $l['pid'], 'texto' => linea_txt($l)], lineas_pedido($p))]);
+    'items' => array_map(fn($l) => ['pid' => $l['pid'], 'texto' => linea_txt($l)], lineas_pedido($p)),
+    'form' => in_array($p['estado'], ['pagado', 'enviado', 'entregado'], true) ? form_navegador($p, 'Nuevo pedido PAGADO ' . $p['ref'] . ' — ' . $p['nombre'] . ' — ' . $p['ciudad'] . ' — ' . cop((int) $p['total'])) : []]);
