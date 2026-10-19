@@ -1,6 +1,6 @@
 # Grupo 7: Jenn-Air
 
-**Página de destino:** https://filtrosaguanevecones.com/purofiltro-otras-marcas/filtro-para-nevera-jenn-air/  
+**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/filtro-para-nevera-jenn-air/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Filtros/JennAir
 
 > Marca nombrada con permiso de uso de marca de revendedor: si Google la limita, usa los títulos por referencia.

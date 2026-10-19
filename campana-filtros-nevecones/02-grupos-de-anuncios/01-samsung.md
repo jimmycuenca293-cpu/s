@@ -1,6 +1,6 @@
 # Grupo 1: Samsung
 
-**Página de destino:** https://filtrosaguanevecones.com/purofiltro-marca/samsung/  
+**Página de destino:** https://filtrosaguanevecones.com/filtrosnevecones-marca/samsung/  
 **Rutas visibles:** https://filtrosaguanevecones.com/Filtros/Samsung
 
 ## Títulos (máximo 30 caracteres)

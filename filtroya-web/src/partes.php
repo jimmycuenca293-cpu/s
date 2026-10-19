@@ -3,14 +3,14 @@ declare(strict_types=1);
 // Encabezado y pie de las páginas de producto, marca, legales y de pago.
 require_once __DIR__ . '/api/sitio.php';
 
-// En los sitios de una sola marca (purofiltro-marca.json existe) el encabezado y el pie son los de la marca
+// En los sitios de una sola marca (filtrosnevecones-marca.json existe) el encabezado y el pie son los de la marca
 function marca_sitio(): ?array
 {
     static $m = false;
     if ($m === false) {
-        $f = __DIR__ . '/purofiltro-marca.json';
+        $f = __DIR__ . '/filtrosnevecones-marca.json';
         $m = is_file($f) ? json_decode((string) file_get_contents($f), true) : null;
-        if ($m) require_once __DIR__ . '/purofiltro-marcas.php';
+        if ($m) require_once __DIR__ . '/filtrosnevecones-marcas.php';
     }
     return $m ?: null;
 }

@@ -1,15 +1,15 @@
 # Recursos (extensiones) a nivel de campaña
 
 ## Enlaces de sitio (título ≤25, descripciones ≤35)
-- **Filtros Samsung** — HAF-CIN, HAF-QIN y Aqua-Pure / Con envío gratis a Colombia → https://filtrosaguanevecones.com/purofiltro-marca/samsung/
-- **Filtros LG** — LT1000P, LT700P, LT800P / Con envío gratis a Colombia → https://filtrosaguanevecones.com/purofiltro-marca/lg/
-- **Filtros Whirlpool** — EveryDrop 1 al 5 / Con envío gratis a Colombia → https://filtrosaguanevecones.com/purofiltro-marca/whirlpool/
-- **Filtros GE** — MWF y XWF / Con envío gratis a Colombia → https://filtrosaguanevecones.com/purofiltro-marca/ge/
-- **Otras marcas** — KitchenAid, Maytag, Kenmore / Filtros EveryDrop y externos → https://filtrosaguanevecones.com/purofiltro-otras-marcas/
-- **Buscar por modelo** — Qué filtro usa tu nevera / Mira la referencia correcta → https://filtrosaguanevecones.com/purofiltro-neveras/
-- **Cómo instalarlo** — Paso a paso por referencia / Sin técnico ni herramientas → https://filtrosaguanevecones.com/purofiltro-instalacion/
-- **Envíos por ciudad** — Tiempo de entrega a tu ciudad / Envío gratis → https://filtrosaguanevecones.com/purofiltro-envios/
-- **Preguntas frecuentes** — Respuestas rápidas / Precios, pagos y envíos → https://filtrosaguanevecones.com/purofiltro-otras-marcas/preguntas-frecuentes/
+- **Filtros Samsung** — HAF-CIN, HAF-QIN y Aqua-Pure / Con envío gratis a Colombia → https://filtrosaguanevecones.com/filtrosnevecones-marca/samsung/
+- **Filtros LG** — LT1000P, LT700P, LT800P / Con envío gratis a Colombia → https://filtrosaguanevecones.com/filtrosnevecones-marca/lg/
+- **Filtros Whirlpool** — EveryDrop 1 al 5 / Con envío gratis a Colombia → https://filtrosaguanevecones.com/filtrosnevecones-marca/whirlpool/
+- **Filtros GE** — MWF y XWF / Con envío gratis a Colombia → https://filtrosaguanevecones.com/filtrosnevecones-marca/ge/
+- **Otras marcas** — KitchenAid, Maytag, Kenmore / Filtros EveryDrop y externos → https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/
+- **Buscar por modelo** — Qué filtro usa tu nevera / Mira la referencia correcta → https://filtrosaguanevecones.com/filtrosnevecones-neveras/
+- **Cómo instalarlo** — Paso a paso por referencia / Sin técnico ni herramientas → https://filtrosaguanevecones.com/filtrosnevecones-instalacion/
+- **Envíos por ciudad** — Tiempo de entrega a tu ciudad / Envío gratis → https://filtrosaguanevecones.com/filtrosnevecones-envios/
+- **Preguntas frecuentes** — Respuestas rápidas / Precios, pagos y envíos → https://filtrosaguanevecones.com/filtrosnevecones-otras-marcas/preguntas-frecuentes/
 - **Contáctanos** — Asesoría por WhatsApp / Te ayudamos a escoger → https://filtrosaguanevecones.com/contacto.php
 
 ## Textos destacados (≤25)

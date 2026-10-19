@@ -68,7 +68,7 @@ def norm(s):
     return re.sub(r"[^A-Z0-9]", "", s.upper())
 
 
-PREFIJO = "purofiltro-"  # nombre del proyecto en cada carpeta
+PREFIJO = "filtrosnevecones-"  # nombre del proyecto en cada carpeta
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
 
@@ -565,7 +565,7 @@ cat_php = {
 (OUT / "api" / "catalogo.php").write_text("<?php\n// Generado por build.py: no lo edites a mano. Los precios se cambian en la app y se vuelve a generar.\nreturn " + php_val(cat_php) + ";\n", encoding="utf-8")
 
 # ---------- carpetas con el nombre del proyecto ----------
-# Todas las carpetas (y la hoja de estilos y el carrito) llevan "purofiltro-" adelante para no chocar
+# Todas las carpetas (y la hoja de estilos y el carrito) llevan "filtrosnevecones-" adelante para no chocar
 # con archivos que ya existan en el hosting. Se renombran al final y se corrigen todas las rutas.
 CARPETAS = ["img", "api", "data", "filtro", "referencia", "referencias", "nevecon", "neveras", "marca", "guia", "envios", "tienda", "instalacion", "otras-marcas"]
 for c in CARPETAS:
@@ -617,17 +617,17 @@ foreach ($urls as $u => $pr) echo '  <url><loc>' . htmlspecialchars($b . $u) . '
 echo '</urlset>';
 """ % (PREFIJO, PREFIJO)
 CAMBIOS_MARCA = {  # rutas de la tienda principal que en el sitio de la marca son otras
-    "carrito.php": [("/purofiltro-filtro/${p.slug}/", "/${p.slug}/"), ('href="/purofiltro-tienda/"', 'href="/#filtros"')],
-    "404.php": [('href="/#catalogo"', 'href="/#filtros"'), ('href="/purofiltro-referencias/"', 'href="/cual-es-mi-filtro/"'), ('href="/purofiltro-neveras/">Buscar por modelo', 'href="/cambio-e-instalacion/">Cómo instalarlo')],
-    "quienes-somos.php": [('href="/purofiltro-guia/">Lee nuestras guías', 'href="/cambio-e-instalacion/">Cómo cambiar tu filtro'), ('href="/#catalogo"', 'href="/#filtros"')],
-    "feed.php": [("$b/purofiltro-filtro/{$p['slug']}/", "$b/{$p['slug']}/")],
+    "carrito.php": [("/filtrosnevecones-filtro/${p.slug}/", "/${p.slug}/"), ('href="/filtrosnevecones-tienda/"', 'href="/#filtros"')],
+    "404.php": [('href="/#catalogo"', 'href="/#filtros"'), ('href="/filtrosnevecones-referencias/"', 'href="/cual-es-mi-filtro/"'), ('href="/filtrosnevecones-neveras/">Buscar por modelo', 'href="/cambio-e-instalacion/">Cómo instalarlo')],
+    "quienes-somos.php": [('href="/filtrosnevecones-guia/">Lee nuestras guías', 'href="/cambio-e-instalacion/">Cómo cambiar tu filtro'), ('href="/#catalogo"', 'href="/#filtros"')],
+    "feed.php": [("$b/filtrosnevecones-filtro/{$p['slug']}/", "$b/{$p['slug']}/")],
     PREFIJO + "api/recordatorios.php": [("'" + PREFIJO + "filtro/' . $cat[$p['pid']]['slug'] . '/'", "$cat[$p['pid']]['slug'] . '/'")],
 }
 for marca in marcas_exclusivas.MARCAS_INFO:
     s = slug(marca)
     d = SITIOS / s
     ids = {p["id"] for p in CATALOGO if p["marca"] == marca}
-    if d.exists():  # los pedidos de purofiltro-data/ nunca se borran
+    if d.exists():  # los pedidos de filtrosnevecones-data/ nunca se borran
         for hijo in d.iterdir():
             if hijo.name not in ("data", PREFIJO + "data"):
                 shutil.rmtree(hijo) if hijo.is_dir() else hijo.unlink()
@@ -651,7 +651,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
             shutil.copy(AQUI / "logos" / f"{s}-icono.png", d / (PREFIJO + "img") / f"icono-{s}.png")
             logo["icono"] = f"/{PREFIJO}img/icono-{s}.png"
     rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo)
-    (d / "purofiltro-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
+    (d / "filtrosnevecones-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
     # resumen en texto para asistentes de IA (ChatGPT, Gemini, Claude, Perplexity): tudominio.com/llms.txt
     ps_m = [p for p in CATALOGO if p["marca"] == marca]
@@ -696,10 +696,10 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         if t2 != txt:
             f.write_text(t2, encoding="utf-8")
     # la hoja de estilo solo lleva los colores de esta marca
-    css = (d / "purofiltro-marcas.css").read_text(encoding="utf-8")
+    css = (d / "filtrosnevecones-marcas.css").read_text(encoding="utf-8")
     bloques = re.split(r"(?=/\* ===== )|(?=/\* Páginas comunes)", css)
     css = "".join(x for x in bloques if not x.startswith("/* ===== ") or x.startswith(f"/* ===== {marca}:"))
-    (d / "purofiltro-marcas.css").write_text(css, encoding="utf-8")
+    (d / "filtrosnevecones-marcas.css").write_text(css, encoding="utf-8")
     sobran = [x.name for x in d.iterdir() if x.name in QUITAR and x.name not in ("index.php", "llms.php", "sitemap.php")]
     if sobran:  # el sitio de una marca nunca debe llevar páginas de la tienda principal (tienen las otras marcas)
         sys.exit(f"Sitio {marca}: sobran {sobran}")
