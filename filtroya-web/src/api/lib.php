@@ -400,7 +400,7 @@ function form_payload(string $asunto, array $campos): array
     $resumen = '';
     foreach ($campos as $k => $v) $resumen .= $k . ': ' . $v . "\n";
     $mail = filter_var($campos['Correo del cliente'] ?? '', FILTER_VALIDATE_EMAIL) ? $campos['Correo del cliente'] : '';
-    if (($f['proveedor'] ?? '') === 'web3forms' && !empty($f['clave'])) {
+    if (false) {  // Web3Forms desactivado: los pedidos salen siempre por FormSubmit, sin tocar config.php
         $datos = ['access_key' => (string) $f['clave'], 'subject' => $asunto, 'from_name' => cfg()['negocio']['nombre'], 'message' => $resumen] + $campos;
         if ($mail) $datos['replyto'] = $mail;
         return ['url' => (string) ($f['url'] ?? 'https://api.web3forms.com/submit'), 'datos' => $datos];
