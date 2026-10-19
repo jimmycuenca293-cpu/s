@@ -38,17 +38,17 @@ MARCAS = {
         "oficial": ("Samsung Colombia", "https://www.samsung.com/co/"),
         # precio: None = el cliente pregunta al asesor por WhatsApp. Cuando lo tengas, escribe el valor en pesos (ej. 45900).
         "productos": [
-            {"id": "lav-sam-1", "foto": "foto-1.png", "slug": "filtro-pelusas-lavadora-samsung-azul", "corto": "Filtro de pelusas azul", "ref": None, "precio": None, "tipo": "Carga superior",
+            {"id": "lav-sam-1", "inst": "rect", "foto": "foto-1.png", "slug": "filtro-pelusas-lavadora-samsung-azul", "corto": "Filtro de pelusas azul", "ref": None, "precio": None, "tipo": "Carga superior",
              "forma": "azul, con una rejilla de ranuras largas y una lengüeta para sacarlo"},
-            {"id": "lav-sam-2", "foto": "foto-2.png", "slug": "filtro-pelusas-lavadora-samsung-gris-panal", "corto": "Filtro de pelusas gris tipo panal", "ref": None, "precio": None, "tipo": "Carga superior",
+            {"id": "lav-sam-2", "inst": "rect", "foto": "foto-2.png", "slug": "filtro-pelusas-lavadora-samsung-gris-panal", "corto": "Filtro de pelusas gris tipo panal", "ref": None, "precio": None, "tipo": "Carga superior",
              "forma": "gris, con celdas en forma de panal y una leyenda en relieve"},
-            {"id": "lav-sam-3", "foto": "foto-3.png", "slug": "filtro-pelusas-lavadora-samsung-negro-triangulos", "corto": "Filtro de pelusas negro con malla de triángulos", "ref": None, "precio": None, "tipo": "Carga superior",
+            {"id": "lav-sam-3", "inst": "rect", "foto": "foto-3.png", "slug": "filtro-pelusas-lavadora-samsung-negro-triangulos", "corto": "Filtro de pelusas negro con malla de triángulos", "ref": None, "precio": None, "tipo": "Carga superior",
              "forma": "negro translúcido, con una malla en triángulos y una tapa con lengüeta"},
-            {"id": "lav-sam-4", "foto": "foto-4.webp", "slug": "filtro-pelusas-lavadora-samsung-verde", "corto": "Filtro de pelusas verde", "ref": None, "precio": None, "tipo": "Carga superior",
+            {"id": "lav-sam-4", "inst": "rect", "foto": "foto-4.webp", "slug": "filtro-pelusas-lavadora-samsung-verde", "corto": "Filtro de pelusas verde", "ref": None, "precio": None, "tipo": "Carga superior",
              "forma": "verde, con dos columnas de ranuras con malla metálica y una leyenda en relieve"},
-            {"id": "lav-sam-5", "foto": "foto-5.png", "slug": "bolsa-malla-pelusas-lavadora-samsung", "corto": "Bolsa de malla para pelusas", "ref": None, "precio": None, "tipo": "Bolsa de malla",
+            {"id": "lav-sam-5", "inst": "bolsa", "foto": "foto-5.png", "slug": "bolsa-malla-pelusas-lavadora-samsung", "corto": "Bolsa de malla para pelusas", "ref": None, "precio": None, "tipo": "Bolsa de malla",
              "forma": "una bolsa de malla blanca con un marco plástico para engancharla"},
-            {"id": "lav-sam-6", "foto": "foto-6.png", "slug": "filtro-pelusas-lavadora-samsung-carga-frontal", "corto": "Filtro para lavadora de carga frontal", "ref": None, "precio": None, "tipo": "Carga frontal",
+            {"id": "lav-sam-6", "inst": "asa", "foto": "foto-6.png", "slug": "filtro-pelusas-lavadora-samsung-carga-frontal", "corto": "Filtro para lavadora de carga frontal", "ref": None, "precio": None, "tipo": "Carga frontal",
              "forma": "blanco, con un asa ancha y una malla de tela para las pelusas"},
         ],
     },
@@ -57,17 +57,54 @@ MARCAS = {
         "tienda": "Filtros para lavadora LG", "logo": "",
         "oficial": ("LG Colombia", "https://www.lg.com/co/"),
         "productos": [
-            {"id": "lav-lg-1", "foto": "foto-1.png", "slug": "bolsa-malla-pelusas-lavadora-lg", "corto": "Bolsa de malla para pelusas", "ref": None, "precio": None, "tipo": "Bolsa de malla",
+            {"id": "lav-lg-1", "inst": "bolsa", "foto": "foto-1.png", "slug": "bolsa-malla-pelusas-lavadora-lg", "corto": "Bolsa de malla para pelusas", "ref": None, "precio": None, "tipo": "Bolsa de malla",
              "forma": "una bolsa de malla blanca con un marco plástico gris que la sostiene"},
-            {"id": "lav-lg-2", "foto": "foto-2.png", "slug": "filtro-pelusas-redondo-lavadora-lg", "corto": "Filtro de pelusas redondo azul", "ref": None, "precio": None, "tipo": "Filtro redondo",
+            {"id": "lav-lg-2", "inst": "redondo", "foto": "foto-2.png", "slug": "filtro-pelusas-redondo-lavadora-lg", "corto": "Filtro de pelusas redondo azul", "ref": None, "precio": None, "tipo": "Filtro redondo",
              "forma": "redondo, azul translúcido, con orificios y dos lengüetas laterales para sacarlo"},
-            {"id": "lav-lg-3", "foto": "foto-3.png", "slug": "filtro-pelusas-gris-circulos-lavadora-lg", "corto": "Filtro de pelusas gris con círculos y rejillas", "ref": None, "precio": None, "tipo": "Filtro rectangular",
+            {"id": "lav-lg-3", "inst": "rect", "foto": "foto-3.png", "slug": "filtro-pelusas-gris-circulos-lavadora-lg", "corto": "Filtro de pelusas gris con círculos y rejillas", "ref": None, "precio": None, "tipo": "Filtro rectangular",
              "forma": "gris, rectangular, con 12 círculos de malla arriba y cinco rejillas de malla debajo"},
-            {"id": "lav-lg-4", "foto": "foto-5.png", "slug": "filtro-pelusas-gris-tapa-flechas-lavadora-lg", "corto": "Filtro de pelusas gris con tapa de flechas", "ref": None, "precio": None, "tipo": "Filtro rectangular",
+            {"id": "lav-lg-4", "inst": "rect", "foto": "foto-5.png", "slug": "filtro-pelusas-gris-tapa-flechas-lavadora-lg", "corto": "Filtro de pelusas gris con tapa de flechas", "ref": None, "precio": None, "tipo": "Filtro rectangular",
              "forma": "gris, rectangular, con una tapa con relieve de flechas y marcas para abrir y cerrar"},
+            {"id": "lav-lg-5", "foto": "foto-6.png", "slug": "filtro-pelusas-secadora-lg", "corto": "Filtro de pelusas", "dest": "secadora", "inst": "secadora", "ref": None, "precio": None, "tipo": "Secadora",
+             "forma": "blanco, de marco plástico con una malla fina de tela, que se coloca en la abertura de la puerta de la secadora"},
         ],
     },
 }
+
+
+INSTALACION = {
+    "rect": ["Apaga y desconecta la lavadora, y espera a que la tina esté vacía.",
+             "Ubica el filtro de pelusas usado: va dentro de la tina, en una de sus paredes, y se sostiene con una lengüeta.",
+             "Halando de la lengüeta, sácalo hacia ti. Si está sujeto con clips, presiónalos a la vez.",
+             "Compara el filtro nuevo con el viejo: debe tener el mismo tamaño y la misma forma de lengüeta.",
+             "Alinea el filtro nuevo con la ranura y empújalo hasta que haga clic o quede firme.",
+             "Revisa que no queden espacios por donde pasen las pelusas y haz una lavada corta para comprobar que no se mueve."],
+    "redondo": ["Apaga y desconecta la lavadora, y vacía la tina.",
+                "Ubica el filtro redondo: va en el fondo o en una pared de la tina, sujeto con dos lengüetas laterales.",
+                "Presiona las dos lengüetas al mismo tiempo y gíralo o sácalo hacia ti, según tu modelo.",
+                "Limpia el alojamiento con un trapo húmedo antes de poner el nuevo.",
+                "Coloca el filtro nuevo alineando las lengüetas con las ranuras y presiona hasta que quede firme.",
+                "Haz una lavada corta y revisa que el filtro no se haya movido."],
+    "bolsa": ["Apaga y desconecta la lavadora, y espera a que la tina esté vacía.",
+              "Ubica el marco plástico de la bolsa: va enganchado en una pared de la tina, con la malla hacia abajo.",
+              "Desengancha el marco y saca la bolsa vieja. Sacúdela fuera de la tina.",
+              "Revisa que el marco nuevo tenga la misma forma y tamaño que el viejo.",
+              "Engancha el marco nuevo en el mismo lugar hasta que quede firme y deja la malla colgando dentro de la tina.",
+              "Haz una lavada corta para comprobar que la bolsa queda bien sujeta."],
+    "asa": ["Apaga y desconecta la lavadora, y espera a que la tina esté vacía.",
+            "Ubica el filtro usado: tiene un asa ancha para sacarlo y una malla de tela para las pelusas.",
+            "Sácalo halando del asa. Si está fijo con un seguro, suéltalo primero.",
+            "Compara el filtro nuevo con el viejo: debe tener el mismo largo y la misma forma de asa.",
+            "Pon el filtro nuevo en su lugar y empújalo hasta que quede firme.",
+            "Haz una lavada corta y revisa que no se mueve ni deja pasar pelusas."],
+    "secadora": ["Apaga y desconecta la secadora, y espera a que se enfríe.",
+                 "Abre la puerta y ubica el filtro de pelusas: en muchas secadoras de carga frontal está en la parte baja de la abertura de la puerta.",
+                 "Sácalo halándolo hacia arriba. Si no lo ves, revisa el manual o pregúntale al asesor por WhatsApp.",
+                 "Quita las pelusas de la malla con la mano. Si tiene residuos de suavizante, enjuágalo con agua tibia y déjalo secar por completo.",
+                 "Revisa que la malla no esté rota. Si tiene huecos, usa el filtro nuevo.",
+                 "Inserta el filtro en su ranura hasta que quede firme y cierra la puerta."],
+}
+NOTA_INSTALACION = "Los pasos pueden variar un poco según el modelo. Si el tuyo es distinto, escríbele al asesor por WhatsApp y te explica cómo ponerlo."
 
 
 def wa_link(numero, texto):
@@ -124,7 +161,7 @@ class Sitio:
         self.ciudades = ciudades()
         m = self.M
         for p in m["productos"]:
-            p["nombre"] = f"{p['corto']} para lavadora {m['nombre']}"
+            p["nombre"] = f"{p['corto']} para {p.get('dest', 'lavadora')} {m['nombre']}"
         self.chips_ciudad = [(c[0], f"/filtro-lavadora-{self.clave}-{slug(c[0])}/") for c in self.ciudades]
 
     # --- mensajes de WhatsApp
@@ -219,9 +256,11 @@ def pasos_limpieza(n):
 
 
 def pagina_producto(S, p):
-    M = S.M; n = M["nombre"]
+    M = S.M; n = M["nombre"]; d = p.get("dest", "lavadora")
+    ciclo = "secado" if d == "secadora" else "lavado"
+    efecto = f"se acumulen dentro de tu secadora" if d == "secadora" else f"tapen el desagüe de tu lavadora"
     otros = [(q["corto"], f"/{q['slug']}/") for q in M["productos"] if q is not p]
-    faq = [(f"¿Este filtro sirve para mi lavadora {n}?", f"Escríbele al asesor por WhatsApp con el modelo de tu lavadora o una foto del filtro viejo y te confirmamos antes de que compres."),
+    faq = [(f"¿Este filtro sirve para mi {d} {n}?", f"Escríbele al asesor por WhatsApp con el modelo de tu {d} o una foto del filtro viejo y te confirmamos antes de que compres."),
            ("¿Cuánto cuesta?", "Pregunta al asesor por WhatsApp: te da el precio y el tiempo de entrega a tu ciudad."),
            ("¿Cómo lo cambio?", "Sacas el filtro viejo a mano y pones el nuevo en el mismo lugar. No se necesitan herramientas.")]
     if p["precio"]:
@@ -234,26 +273,26 @@ def pagina_producto(S, p):
   <div class="foto"><span class="m-badge">{esc(p["tipo"])}</span>{foto_html(p, True, False)}</div>
   <div class="info">
     <h1>{esc(p["nombre"])}</h1>
-    <span class="sub">Lavadora {n} · {esc(p["tipo"])}</span>
+    <span class="sub">{d.capitalize()} {n} · {esc(p["tipo"])}</span>
     {precio}
-    <div class="m-aviso"><span style="font-size:22px">💬</span><span><b>¿Sirve para tu lavadora?</b>Antes de comprar, el asesor confirma contigo el modelo correcto. Mándale una foto del filtro viejo o el modelo de tu lavadora.</span></div>
+    <div class="m-aviso"><span style="font-size:22px">💬</span><span><b>¿Sirve para tu {d}?</b>Antes de comprar, el asesor confirma contigo el modelo correcto. Mándale una foto del filtro viejo o el modelo de tu {d}.</span></div>
     {compra}
     {S.boton_asesor(f"Hola, quiero consultar por el {p['nombre']}", "m-btn block wa", "💬 Pedir o preguntar al asesor por WhatsApp")}
     <ul class="m-ok"><li><b>Envío a toda Colombia</b> por transportadora, con número de guía.</li><li><b>Fácil de cambiar</b>: sin técnico ni herramientas.</li><li><b>Pedido fácil</b>: lo confirmas con el asesor por WhatsApp.</li></ul>
   </div>
 </div></div>
 <section class="m-sec alt"><div class="m-wrap"><div class="m-texto"><div class="m-cab"><span class="eyebrow">Descripción</span><h2>{esc(p["nombre"])}</h2></div>
-<p>Es un {esc(p["corto"].lower())}: {p["forma"]}. Sirve para atrapar las pelusas y los residuos que sueltan las prendas durante el lavado, de modo que no vuelvan a la ropa ni tapen el desagüe de tu lavadora {n}.</p>
-<p>Si el tuyo ya está roto, deformado o la malla no se limpia bien, es el momento de cambiarlo. Para estar seguros de que es el que necesita tu lavadora, el asesor revisa el modelo contigo por WhatsApp.</p></div></div></section>
-<section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Marca de la lavadora</dt><dd>{n}</dd><dt>Tipo</dt><dd>{esc(p["tipo"])}</dd><dt>Descripción</dt><dd>{p["forma"]}</dd><dt>Instalación</dt><dd>A mano, sin herramientas</dd><dt>Precio</dt><dd>{cop(p["precio"]) if p["precio"] else "Consúltalo con el asesor por WhatsApp"}</dd><dt>Envío</dt><dd>A toda Colombia por transportadora</dd></dl></div></section>
-<section class="m-sec alt"><div class="m-wrap"><section class="caja tutorial" id="instalacion"><h2>Cómo limpiar y cambiar el filtro: paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in pasos_limpieza(n))}</ol></section></div></section>
+<p>Es un {esc(p["corto"].lower())}: {p["forma"]}. Sirve para atrapar las pelusas y los residuos que sueltan las prendas durante el {ciclo}, de modo que no vuelvan a la ropa ni {efecto} {n}.</p>
+<p>Si el tuyo ya está roto, deformado o la malla no se limpia bien, es el momento de cambiarlo. Para estar seguros de que es el que necesita tu {d}, el asesor revisa el modelo contigo por WhatsApp.</p></div></div></section>
+<section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Marca de la {d}</dt><dd>{n}</dd><dt>Tipo</dt><dd>{esc(p["tipo"])}</dd><dt>Descripción</dt><dd>{p["forma"]}</dd><dt>Instalación</dt><dd>A mano, sin herramientas</dd><dt>Precio</dt><dd>{cop(p["precio"]) if p["precio"] else "Consúltalo con el asesor por WhatsApp"}</dd><dt>Envío</dt><dd>A toda Colombia por transportadora</dd></dl></div></section>
+<section class="m-sec alt"><div class="m-wrap"><section class="caja tutorial" id="instalacion"><h2>Cómo instalar el {esc(p["corto"].lower())}: paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in INSTALACION.get(p.get("inst"), pasos_limpieza(n)))}</ol><p class="m-mut">{NOTA_INSTALACION}</p></section></div></section>
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Preguntas</span><h2>Preguntas frecuentes</h2></div>{faq_html(faq)}</div></section>
-<section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Más filtros</span><h2>Otros filtros para lavadora {n}</h2></div>{chips(otros)}</div></section>'''
+<section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Más filtros</span><h2>Otros filtros {n}</h2></div>{chips(otros)}</div></section>'''
     prod = {"@type": "Product", "name": p["nombre"], "image": f"{S.dominio}/img/{p['id']}.jpg", "brand": {"@type": "Brand", "name": n},
-            "description": f"{p['corto']} para lavadora {n} ({p['tipo']}). Envío a toda Colombia."}
+            "description": f"{p['corto']} para {d} {n} ({p['tipo']}). Envío a toda Colombia."}
     if p["precio"]:
         prod["offers"] = {"@type": "Offer", "priceCurrency": "COP", "price": p["precio"], "availability": "https://schema.org/InStock", "url": f"{S.dominio}/{p['slug']}/"}
-    S.pagina(f"/{p['slug']}/", f"{p['nombre']} | Envío a toda Colombia", f"{p['corto']} para lavadora {n} ({p['tipo']}). Pregunta al asesor por WhatsApp el precio y recibe en toda Colombia.", cuerpo,
+    S.pagina(f"/{p['slug']}/", f"{p['nombre']} | Envío a toda Colombia", f"{p['corto']} para {d} {n} ({p['tipo']}). Pregunta al asesor por WhatsApp el precio y recibe en toda Colombia.", cuerpo,
              [prod, faq_ld(faq), S.breadcrumb((p["corto"], None))], "0.9", f'<link rel="preload" as="image" href="/img/{p["id"]}.webp"><meta property="og:image" content="{S.dominio}/img/{p["id"]}.jpg">')
 
 
@@ -425,7 +464,7 @@ def construir(clave, dominio):
     preparar_fotos(M, out)
     # 4) catálogo (solo con precio entran al carrito)
     for p in M["productos"]:
-        p["nombre"] = f"{p['corto']} para lavadora {M['nombre']}"
+        p["nombre"] = f"{p['corto']} para {p.get('dest', 'lavadora')} {M['nombre']}"
     # 5) marca.json
     prods = [[p["nombre"], p["slug"]] for p in M["productos"]]
     marca = {"nombre": M["nombre"], "clase": M["clase"], "base": "/", "tema": M["tema"], "fuentes": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",

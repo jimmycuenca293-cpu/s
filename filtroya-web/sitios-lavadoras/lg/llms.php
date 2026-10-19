@@ -11,6 +11,7 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 - [Filtro de pelusas redondo azul para lavadora LG](__BASE__/filtro-pelusas-redondo-lavadora-lg/): Filtro redondo.
 - [Filtro de pelusas gris con círculos y rejillas para lavadora LG](__BASE__/filtro-pelusas-gris-circulos-lavadora-lg/): Filtro rectangular.
 - [Filtro de pelusas gris con tapa de flechas para lavadora LG](__BASE__/filtro-pelusas-gris-tapa-flechas-lavadora-lg/): Filtro rectangular.
+- [Filtro de pelusas para secadora LG](__BASE__/filtro-pelusas-secadora-lg/): Secadora.
 
 ## Guías
 - [Cuál filtro necesita mi lavadora](__BASE__/cual-es-mi-filtro/)
