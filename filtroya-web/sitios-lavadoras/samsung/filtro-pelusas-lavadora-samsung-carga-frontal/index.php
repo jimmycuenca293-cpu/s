@@ -11,9 +11,9 @@ JSON);
     <span class="sub">Lavadora Samsung · Carga frontal</span>
     <span class="precio consulta">Precio: pregúntale al asesor<small>Respuesta en el momento por WhatsApp</small></span>
     <div class="m-aviso"><span style="font-size:22px">💬</span><span><b>¿Sirve para tu lavadora?</b>Antes de comprar, el asesor confirma contigo el modelo correcto. Mándale una foto del filtro viejo o el modelo de tu lavadora.</span></div>
-    <div class="compra"></div>
-    <a class="m-btn block wa" href="https://wa.me/573054796329?text=Hola%2C%20quiero%20consultar%20por%20el%20Filtro%20para%20lavadora%20de%20carga%20frontal%20para%20lavadora%20Samsung" target="_blank" rel="noopener">💬 Preguntar al asesor por WhatsApp</a>
-    <ul class="m-ok"><li><b>Envío a toda Colombia</b> por transportadora, con número de guía.</li><li><b>Fácil de cambiar</b>: sin técnico ni herramientas.</li><li><b>Pago seguro</b> en línea.</li></ul>
+    
+    <a class="m-btn block wa" href="https://wa.me/573054796329?text=Hola%2C%20quiero%20consultar%20por%20el%20Filtro%20para%20lavadora%20de%20carga%20frontal%20para%20lavadora%20Samsung" target="_blank" rel="noopener">💬 Pedir o preguntar al asesor por WhatsApp</a>
+    <ul class="m-ok"><li><b>Envío a toda Colombia</b> por transportadora, con número de guía.</li><li><b>Fácil de cambiar</b>: sin técnico ni herramientas.</li><li><b>Pedido fácil</b>: lo confirmas con el asesor por WhatsApp.</li></ul>
   </div>
 </div></div>
 <section class="m-sec alt"><div class="m-wrap"><div class="m-texto"><div class="m-cab"><span class="eyebrow">Descripción</span><h2>Filtro para lavadora de carga frontal para lavadora Samsung</h2></div>

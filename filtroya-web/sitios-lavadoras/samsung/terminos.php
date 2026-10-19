@@ -1,16 +1,9 @@
-<?php require __DIR__ . '/partes.php'; $n = cfg()['negocio']; cabeza('Términos y condiciones | ' . $n['nombre'], 'Términos y condiciones de compra, envíos, garantía y derecho de retracto de ' . $n['nombre'] . '.', '/terminos.php'); ?>
-<article class="legal">
-<h1>Términos y condiciones</h1>
-<p class="m">Ley 1480 de 2011 (Estatuto del Consumidor). Vigentes desde el 15 de octubre de 2026.</p>
-<h2>1. Quiénes somos</h2><p><?= identificacion() ?> WhatsApp y teléfono: <?= h($n['telefono']) ?>. Correo: <?= h($n['correo']) ?>. Atención: <?= h($n['horario']) ?>.</p>
-<h2>2. Cómo se compra</h2><p>Escoges el filtro, escribes tus datos de entrega y pagas en línea en nuestra página de pago segura con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. Cuando el banco aprueba el pago, te llega el recibo a tu correo y despachamos el pedido. No guardamos datos de tarjetas: el pago lo procesa una pasarela de pagos del Grupo Bancolombia.</p>
-<h2>3. Precios</h2><p>Están en pesos colombianos y son el valor total a pagar, con los impuestos aplicables y el envío incluidos. No hay cobros adicionales.</p>
-<h2>4. Antes de comprar, confirma tu referencia</h2><p>Compara la referencia impresa en tu filtro viejo o el modelo de tu lavadora con la del producto. Las fotos son de referencia. Si tienes dudas, escríbenos por WhatsApp antes de pagar.</p>
-<h2>5. Entregas</h2><p>Envío sin costo a toda Colombia por transportadora; llega en unos 2 días hábiles después de aprobado el pago. Son tiempos estimados que pueden variar por la transportadora; te enviamos el número de guía a tu correo. Solo instalamos en Cali.</p>
-<h2 id="garantia">6. Garantía</h2><p class="m">Más detalle en <a href="/garantia-y-retracto.php">Garantía y retracto</a>.</p><p>Todos los productos tienen la garantía legal de la Ley 1480 de 2011. Si el filtro llega con un defecto o falla por defecto de fabricación, avísanos y lo revisamos para cambiártelo o devolverte el dinero, según la ley. Antes de comprar te ayudamos por WhatsApp a confirmar que es el de tu lavadora.</p>
-<h2>7. Derecho de retracto</h2><p>Como es una compra a distancia, tienes <b>5 días hábiles desde que recibes el filtro</b> para retractarte, sin dar explicaciones. El filtro debe estar sin instalar y en su empaque. El transporte de la devolución corre por tu cuenta y te devolvemos el dinero en máximo 30 días calendario.</p>
-<h2>8. Reversión del pago</h2><p>Si pagaste por un medio electrónico y fuiste víctima de fraude, la compra no fue autorizada por ti, o el producto no llegó, no es el que pediste o está defectuoso, puedes pedir la reversión del pago dentro de los 5 días hábiles siguientes a que lo sepas o lo recibas. Avísanos al correo y avisa a tu banco o entidad de pago.</p>
-<h2>9. Marcas</h2><?php if ($M = marca_sitio()): ?><p><?= h($n['nombre']) ?> vende filtros de pelusas para lavadoras <?= h($M['nombre']) ?> en Colombia. Todos los filtros son, nuevos y en su empaque de fábrica. <?= h($M['nombre']) ?> y su logo son marcas registradas de su dueño y se usan.</p><?php else: ?><p>Samsung, LG, Whirlpool, EveryDrop, GE y General Electric son marcas de sus respectivos dueños. <?= h($n['nombre']) ?> es un comercio independiente y no es distribuidor oficial de esas marcas. Los nombres se usan solo para indicar en qué lavadoras sirve cada filtro.</p><?php endif; ?>
-<h2>10. Peticiones, quejas y reclamos</h2><p>Escríbenos a <?= h($n['correo']) ?>. Respondemos en máximo 15 días hábiles. También puedes acudir a la Superintendencia de Industria y Comercio: <a href="https://www.sic.gov.co" rel="nofollow">www.sic.gov.co</a>.</p>
-</article>
-<?php pie(); ?>
+<?php require __DIR__ . '/lav.php';
+$n = sitio()['negocio'];
+lav_cabeza("Términos y condiciones | " . $n['nombre'], "Términos y condiciones", '/terminos.php', '', '');
+?>
+<div class="m-wrap"><div class="m-texto"><h1>Términos y condiciones</h1><p>Este sitio presenta filtros de pelusas y bolsas de malla para lavadoras. No tiene carrito ni pago en línea: los pedidos se hacen por WhatsApp con un asesor.</p>
+<h2>Cómo se hace un pedido</h2><p>Escribe al asesor por WhatsApp con el modelo de tu lavadora o una foto del filtro viejo. El asesor te confirma el filtro, el precio, el valor del envío y la forma de pago antes de que compres.</p>
+<h2>Confirma antes de comprar</h2><p>Las fotos son de referencia. Antes de pagar, compara el filtro con el que tienes o confirma el modelo de tu lavadora con el asesor.</p>
+<h2>Marcas</h2><p>Los nombres de marca se usan solo para indicar el tipo de lavadora. Somos un comercio independiente.</p><p><?= h($n['nombre']) ?> · <?= h($n['titular']) ?> · <?= h($n['documento']) ?> · <?= h($n['correo']) ?></p></div></div>
+<?php lav_pie(); ?>

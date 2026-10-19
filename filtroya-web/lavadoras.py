@@ -2,7 +2,7 @@
 """Tienda de filtros para lavadoras por marca (Samsung, LG).
 
 Genera sitios-lavadoras/<marca>/ listo para subir a su propio dominio y tienda-lavadoras-<marca>.zip.
-Parte del sitio por marca ya construido (sitios/samsung: carrito, pago, legales, api) y le pone páginas propias de lavadoras.
+Parte del sitio por marca ya construido (sitios/samsung: legales, api) y le pone páginas propias de lavadoras.
 Los precios y las referencias se llenan en PRODUCTOS: mientras un filtro no tenga precio, la página manda al asesor por WhatsApp.
 """
 import html, json, re, shutil, subprocess, sys, unicodedata
@@ -167,7 +167,7 @@ def pagina_inicio(S):
     <h1>Filtros para lavadora {n}</h1>
     <p class="lead">Filtros de pelusas y bolsas de malla para lavadoras {n} de carga superior y de carga frontal. Cuéntale tu modelo al asesor por WhatsApp y te decimos cuál necesitas. Enviamos a toda Colombia.</p>
     <div class="acc">{S.boton_asesor(f"Hola, necesito un filtro para mi lavadora {n}")}<a class="m-btn sec" href="#filtros">Ver los filtros</a></div>
-    <ul><li>Envío a toda Colombia</li><li>Pago seguro en línea</li><li>Asesor por WhatsApp</li></ul>
+    <ul><li>Envío a toda Colombia</li><li>Pedido por WhatsApp</li><li>Asesor que te confirma el modelo</li></ul>
   </div>
   <div class="lav-fotos">{"".join(f'<span class="lf">{foto_html(p, lazy=i>0)}</span>' for i, p in enumerate(M["productos"][:3]))}</div>
 </div></section>
@@ -206,12 +206,10 @@ def pagina_producto(S, p):
            ("¿Cuánto cuesta?", "Pregunta al asesor por WhatsApp: te da el precio y el tiempo de entrega a tu ciudad."),
            ("¿Cómo lo cambio?", "Sacas el filtro viejo a mano y pones el nuevo en el mismo lugar. No se necesitan herramientas.")]
     if p["precio"]:
-        precio = f'<span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>'
-        compra = (f'<div class="compra"><button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button>'
-                  f'<button class="m-btn sec block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>')
+        precio = f'<span class="precio">{cop(p["precio"])}<small>Confirma disponibilidad y envío con el asesor</small></span>'
     else:
         precio = '<span class="precio consulta">Precio: pregúntale al asesor<small>Respuesta en el momento por WhatsApp</small></span>'
-        compra = '<div class="compra"></div>'
+    compra = ""
     cuerpo = f'''<div class="m-wrap">{S.miga((p["corto"], None))}
 <div class="m-prod">
   <div class="foto"><span class="m-badge">{esc(p["tipo"])}</span>{foto_html(p, True, False)}</div>
@@ -221,8 +219,8 @@ def pagina_producto(S, p):
     {precio}
     <div class="m-aviso"><span style="font-size:22px">💬</span><span><b>¿Sirve para tu lavadora?</b>Antes de comprar, el asesor confirma contigo el modelo correcto. Mándale una foto del filtro viejo o el modelo de tu lavadora.</span></div>
     {compra}
-    {S.boton_asesor(f"Hola, quiero consultar por el {p['nombre']}", "m-btn block wa", "💬 Preguntar al asesor por WhatsApp")}
-    <ul class="m-ok"><li><b>Envío a toda Colombia</b> por transportadora, con número de guía.</li><li><b>Fácil de cambiar</b>: sin técnico ni herramientas.</li><li><b>Pago seguro</b> en línea.</li></ul>
+    {S.boton_asesor(f"Hola, quiero consultar por el {p['nombre']}", "m-btn block wa", "💬 Pedir o preguntar al asesor por WhatsApp")}
+    <ul class="m-ok"><li><b>Envío a toda Colombia</b> por transportadora, con número de guía.</li><li><b>Fácil de cambiar</b>: sin técnico ni herramientas.</li><li><b>Pedido fácil</b>: lo confirmas con el asesor por WhatsApp.</li></ul>
   </div>
 </div></div>
 <section class="m-sec alt"><div class="m-wrap"><div class="m-texto"><div class="m-cab"><span class="eyebrow">Descripción</span><h2>{esc(p["nombre"])}</h2></div>
@@ -337,7 +335,7 @@ lav_cabeza('Quiénes somos | ' . $n['nombre'], 'Somos un comercio colombiano de 
 
 
 def limpiar_textos(out):
-    for f in ["404.php", "carrito.php", "opinion.php", "privacidad.php", "garantia-y-retracto.php", "admin.php", "feed.php", "partes.php", "terminos.php", "marcas.php", "api/lib.php", "api/recordatorios.php", "api/reconciliar.php", "gracias.php"]:
+    for f in ["404.php", "partes.php", "marcas.php", "api/lib.php"]:
         p = out / f
         t = p.read_text(encoding="utf-8")
         t = t.replace(", distribuidor autorizado\"", "\"")
@@ -345,6 +343,28 @@ def limpiar_textos(out):
             t = t.replace(a, b)
         p.write_text(t, encoding="utf-8")
     (out / "quienes-somos.php").write_text(QUIENES, encoding="utf-8")
+
+
+LEGALES = {
+    "terminos": ("Términos y condiciones", """<p>Este sitio presenta filtros de pelusas y bolsas de malla para lavadoras. No tiene carrito ni pago en línea: los pedidos se hacen por WhatsApp con un asesor.</p>
+<h2>Cómo se hace un pedido</h2><p>Escribe al asesor por WhatsApp con el modelo de tu lavadora o una foto del filtro viejo. El asesor te confirma el filtro, el precio, el valor del envío y la forma de pago antes de que compres.</p>
+<h2>Confirma antes de comprar</h2><p>Las fotos son de referencia. Antes de pagar, compara el filtro con el que tienes o confirma el modelo de tu lavadora con el asesor.</p>
+<h2>Marcas</h2><p>Los nombres de marca se usan solo para indicar el tipo de lavadora. Somos un comercio independiente.</p>"""),
+    "privacidad": ("Tratamiento de datos personales", """<p>Cuando nos escribes por WhatsApp usamos tu nombre, tu número y los datos que nos des (ciudad, dirección, modelo de la lavadora) solo para atender tu consulta, confirmar tu pedido y coordinar el envío.</p>
+<p>No vendemos tus datos. Puedes pedirnos que los corrijamos o los eliminemos escribiéndonos por WhatsApp o al correo de contacto.</p>
+<p>Este sitio puede usar herramientas de medición (como Google Analytics) para saber cuántas personas lo visitan.</p>"""),
+    "garantia-y-retracto": ("Garantía y retracto", """<p>Si el filtro llega con algún defecto, escríbenos por WhatsApp con una foto y lo revisamos.</p>
+<p>Para compras a distancia puedes ejercer el derecho de retracto dentro de los 5 días hábiles siguientes a la entrega, según la ley colombiana, siempre que el producto no haya sido usado y esté en buen estado. Coordina la devolución con el asesor.</p>
+<p>Autoridad de protección al consumidor: <a href="https://www.sic.gov.co/" target="_blank" rel="noopener">Superintendencia de Industria y Comercio</a>.</p>"""),
+}
+
+
+def legales(out):
+    for nombre, (titulo, cuerpo) in LEGALES.items():
+        php = ("<?php require __DIR__ . '/lav.php';\n$n = sitio()['negocio'];\nlav_cabeza(" + json.dumps(titulo + " | ", ensure_ascii=False) + " . $n['nombre'], " + json.dumps(titulo, ensure_ascii=False)
+               + ", '/" + nombre + ".php', '', '');\n?>\n<div class=\"m-wrap\"><div class=\"m-texto\"><h1>" + titulo + "</h1>" + cuerpo
+               + "<p><?= h($n['nombre']) ?> · <?= h($n['titular']) ?> · <?= h($n['documento']) ?> · <?= h($n['correo']) ?></p></div></div>\n<?php lav_pie(); ?>\n")
+        (out / (nombre + ".php")).write_text(php, encoding="utf-8")
 
 
 def construir(clave, dominio):
@@ -355,8 +375,7 @@ def construir(clave, dominio):
         shutil.rmtree(out)
     out.mkdir(parents=True)
     # 1) infraestructura común
-    for nombre in ["api", "data", ".htaccess", "404.php", "admin.php", "carrito.js", "carrito.php", "diagnostico.php", "estilo.css", "garantia-y-retracto.php", "gracias.php", "marcas.css", "marcas.php",
-                   "opinion.php", "partes.php", "privacidad.php", "quienes-somos.php", "terminos.php", "robots.php", "feed.php"]:
+    for nombre in ["api", "data", ".htaccess", "404.php", "estilo.css", "marcas.css", "marcas.php", "partes.php", "robots.php"]:
         o = BASE / nombre
         if o.is_dir():
             shutil.copytree(o, out / nombre, ignore=shutil.ignore_patterns("pedidos.sqlite*", "correos.log", "config.php"))
@@ -367,6 +386,9 @@ def construir(clave, dominio):
     mp = mp.replace("✔ Distribuidor autorizado ' . h($M['nombre']) . ' en Colombia", "✔ Filtros para lavadora ' . h($M['nombre']) . ' en Colombia").replace("<small>Distribuidor autorizado</small>", "<small>Filtros para lavadora</small>")
     mp = mp.replace("Distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia, con envío gratis a todo el país y pago seguro en línea.", "Filtros de pelusas para lavadora ' . h($M['nombre']) . ', con envío a todo Colombia y pago seguro en línea.")
     mp = mp.replace("Distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia. ' . h($M['nombre']) . ' y su logo son marcas registradas de su dueño y se usan con autorización.", "' . h($M['nombre']) . ' y su logo son marcas de su dueño y se mencionan solo para indicar el tipo de lavadora. Somos un comercio independiente.")
+    mp = mp.replace('<script src="/carrito.js" defer></script>', '').replace("'</div><div class=\"m-wrap m-pie-medios\"><span>🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'", "'</div>'")
+    mp = re.sub(r"\$cart = '.*?';\n", "$cart = '';\n", mp, count=1, flags=re.S).replace("<a href=\"/carrito.php\">Mi carrito</a>", "").replace("🔒 Pago seguro en línea", "💬 Asesor por WhatsApp")
+    mp = mp.replace(" y pago seguro en línea", " y atención por WhatsApp")
     mp = mp.replace("Distribuidor autorizado", "Filtros para lavadora").replace("Precios en pesos colombianos con envío incluido.", "Precios en pesos colombianos.")
     mp = mp.replace("¿Cuál filtro es el mío?", "¿Cuál filtro es el mío?").replace("Cuándo cambiarlo y cómo instalarlo", "Cómo limpiarlo y cambiarlo")
     mp = mp.replace("return '<b>' . h($M['nombre']) . '</b>';", "return '<b class=\"m-logo-txt\">' . h($M['tienda'] ?? $M['nombre']) . '</b>';").replace("<small>Filtros para lavadora</small>", "")
@@ -374,6 +396,9 @@ def construir(clave, dominio):
     (out / "marcas.css").write_text((out / "marcas.css").read_text(encoding="utf-8") + CSS_EXTRA, encoding="utf-8")
     (out / "lav.php").write_text(LAV_PHP, encoding="utf-8")
     limpiar_textos(out)
+    for f in ["pedido.php", "wompi.php", "estado.php", "reconciliar.php", "recordatorios.php"]:
+        (out / "api" / f).unlink(missing_ok=True)  # sin pasarela de pagos: se vende por WhatsApp
+    legales(out)
     # 3) imágenes
     shutil.copytree(BASE / "img", out / "img", ignore=lambda d, f: [x for x in f if x.startswith("sam-") or x.startswith("logo-") and x != "logo-samsung.png" and False])
     for f in list((out / "img").glob("sam-*")) + list((out / "img").glob("logo-*")) + list((out / "img").glob("icono-*")):

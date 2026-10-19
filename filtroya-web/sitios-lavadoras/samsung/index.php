@@ -8,7 +8,7 @@ JSON);
     <h1>Filtros para lavadora Samsung</h1>
     <p class="lead">Filtros de pelusas y bolsas de malla para lavadoras Samsung de carga superior y de carga frontal. Cuéntale tu modelo al asesor por WhatsApp y te decimos cuál necesitas. Enviamos a toda Colombia.</p>
     <div class="acc"><a class="m-btn wa" href="https://wa.me/573054796329?text=Hola%2C%20necesito%20un%20filtro%20para%20mi%20lavadora%20Samsung" target="_blank" rel="noopener">💬 Preguntar al asesor por WhatsApp</a><a class="m-btn sec" href="#filtros">Ver los filtros</a></div>
-    <ul><li>Envío a toda Colombia</li><li>Pago seguro en línea</li><li>Asesor por WhatsApp</li></ul>
+    <ul><li>Envío a toda Colombia</li><li>Pedido por WhatsApp</li><li>Asesor que te confirma el modelo</li></ul>
   </div>
   <div class="lav-fotos"><span class="lf"><picture><source srcset="/img/lav-sam-1-400.webp" type="image/webp"><img src="/img/lav-sam-1.jpg" alt="Filtro de pelusas azul para lavadora Samsung" width="535" height="485" fetchpriority="high"></picture></span><span class="lf"><picture><source srcset="/img/lav-sam-2-400.webp" type="image/webp"><img src="/img/lav-sam-2.jpg" alt="Filtro de pelusas gris tipo panal para lavadora Samsung" width="700" height="700" loading="lazy"></picture></span><span class="lf"><picture><source srcset="/img/lav-sam-3-400.webp" type="image/webp"><img src="/img/lav-sam-3.jpg" alt="Filtro de pelusas negro con malla de triángulos para lavadora Samsung" width="900" height="900" loading="lazy"></picture></span></div>
 </div></section>

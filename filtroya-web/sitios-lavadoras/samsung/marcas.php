@@ -15,9 +15,9 @@ function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, stri
         . '<meta property="og:type" content="website"><meta property="og:title" content="' . h($titulo) . '"><meta property="og:description" content="' . h($desc) . '"><meta property="og:url" content="' . h($canon) . '"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="Filtros ' . h($M['nombre']) . '">'
         . '<meta name="theme-color" content="' . h($M['tema']) . '"><link rel="icon" href="' . h($M['icono'] ?? '/img/icono.svg') . '">'
         . '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="' . h($M['fuentes']) . '">'
-        . ($legado ? '<link rel="stylesheet" href="/estilo.css">' : '') . '<link rel="stylesheet" href="/marcas.css"><script src="/carrito.js" defer></script>'
+        . ($legado ? '<link rel="stylesheet" href="/estilo.css">' : '') . '<link rel="stylesheet" href="/marcas.css">'
         . verificacion_html() . analytics_html() . $extra . '</head><body class="m-' . h($M['clase']) . ($legado ? ' m-legado' : '') . '">' . gtm_body_html()
-        . '<div class="m-anuncio"><span>✔ Filtros para lavadora ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
+        . '<div class="m-anuncio"><span>✔ Filtros para lavadora ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío gratis a toda Colombia</span><span>💬 Asesor por WhatsApp</span></div>'
         . '<header class="m-top"><div class="m-wrap">'
         . '<a class="m-logo" href="' . h($b) . '" aria-label="Filtros ' . h($M['nombre']) . '"><span class="m-sello">' . logo_marca_html($M) . '</span></a>'
         . menu_marca($M)
@@ -39,7 +39,7 @@ function menu_marca(array $M): string
     foreach ($M['compat'] ?? [] as $c) $compat .= '<a href="' . h($c[1]) . '">' . (str_starts_with($c[0], 'Todas') ? '' : 'Neveras ') . h($c[0]) . '</a>';
     $mas = '';
     foreach ($M['extra'] ?? [] as $c) $mas .= '<a href="' . h($c[1]) . '">' . h($c[0]) . '</a>';
-    $cart = '<a class="m-cart" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a>';
+    $cart = '';
     $dd = fn(string $t, string $links) => $links === '' ? '' : '<div class="m-dd"><a href="#" onclick="return false" aria-haspopup="true">' . $t . ' <i aria-hidden="true">▾</i></a><div class="m-panel">' . $links . '</div></div>';
     return '<nav class="m-nav" aria-label="Principal">' . $dd('Filtros', $filtros) . $dd('Guías', $guias) . $dd('Ciudades', $ciudades) . $dd('Marcas', $compat) . $dd('Más', $mas)
         . '<a class="m-ancho" href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a class="m-ancho" href="' . h($b) . 'cambio-e-instalacion/">Instalación</a>' . $cart
@@ -63,7 +63,7 @@ function pie_marca(array $M): void
     $tel = preg_replace('/\D/', '', (string) (cfg()['whatsapp'] ?? ''));
     $h = '<footer class="m-pie"><div class="m-wrap m-pie-top">'
         . '<div><a class="m-logo" href="' . h($b) . '"><span class="m-sello">' . logo_marca_html($M) . '</span></a>'
-        . '<p>Filtros de pelusas para lavadora ' . h($M['nombre']) . ', con envío a todo Colombia y pago seguro en línea.</p>'
+        . '<p>Filtros de pelusas para lavadora ' . h($M['nombre']) . ', con envío a todo Colombia y atención por WhatsApp.</p>'
         . ($tel ? '<a class="m-pie-wa" href="https://wa.me/57' . substr($tel, -10) . '" target="_blank" rel="noopener">💬 WhatsApp ' . h($n['telefono']) . '</a>' : '')
         . '<span class="m-pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
         . '<nav><b>Filtros ' . h($M['nombre']) . '</b>';
@@ -78,11 +78,11 @@ function pie_marca(array $M): void
     $h .= '</nav><nav><b>Envíos</b>';
     foreach (array_slice($M['ciudades'] ?? [], 0, 8) as $c) $h .= '<a href="' . h($c[1]) . '">Filtros ' . h($M['nombre']) . ' en ' . h($c[0]) . '</a>';
     if (!empty($M['hub'])) $h .= '<a href="' . h($M['hub']) . '"><b>Todas las ciudades →</b></a>';
-    $h .= '</nav><nav><b>Ayuda</b><a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál filtro es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Cómo limpiarlo y cambiarlo</a><a href="' . h($b) . '#preguntas">Preguntas frecuentes</a><a href="/carrito.php">Mi carrito</a>';
+    $h .= '</nav><nav><b>Ayuda</b><a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál filtro es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Cómo limpiarlo y cambiarlo</a><a href="' . h($b) . '#preguntas">Preguntas frecuentes</a>';
     foreach ($M['externos'] ?? [] as $e) $h .= '<a href="' . h($e[1]) . '" target="_blank" rel="noopener">' . h($e[0]) . ' ↗</a>';
     $h .= '</nav>'
         . '<nav><b>Compra segura</b><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a><a href="/quienes-somos.php">Quiénes somos</a></nav>'
-        . '</div><div class="m-wrap m-pie-medios"><span>🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'
+        . '</div>'
         . '<div class="m-wrap m-pie-base"><span>© ' . date('Y') . ' ' . h($n['nombre']) . '. Precios en pesos colombianos.</span>'
         . '<span>' . h($M['nombre']) . ' y su logo son marcas de su dueño y se mencionan solo para indicar el tipo de lavadora. Somos un comercio independiente.</span></div></footer>';
     echo $h . whatsapp_html() . '</body></html>';
