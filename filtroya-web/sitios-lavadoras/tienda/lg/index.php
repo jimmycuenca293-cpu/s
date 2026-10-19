@@ -19,6 +19,15 @@ JSON);
 <div><h3>Lavadora de carga frontal</h3><p>Se abre por el frente, con una puerta redonda. El filtro es distinto al de carga superior. Mira el filtro para carga frontal del catálogo.</p></div>
 <div><h3>Si no estás segura o seguro</h3><p>Mándale al asesor una foto del filtro viejo y el modelo de tu lavadora. Te responde con el filtro que le corresponde.</p></div></div>
 <p style="margin-top:14px"><a class="m-btn" href="/lg/cual-es-mi-filtro/">Guía: cuál es mi filtro</a></p></div></section>
+<section class="m-sec lav-importancia"><div class="m-wrap lav-entrega lav-inv"><div class="lav-entrega-foto"><picture><source srcset="/img/filtro-importancia-640.webp 640w, /img/filtro-importancia.webp 1100w" sizes="(max-width:860px) 100vw, 520px" type="image/webp"><img src="/img/filtro-importancia.jpg" alt="Mujer colocando un filtro de pelusas en la tina de una lavadora de carga superior" width="1100" height="1100" loading="lazy"></picture></div>
+<div class="lav-entrega-tx"><span class="eyebrow">Lo importante</span><h2>Por qué es importante el filtro de tu lavadora LG</h2>
+<p>El filtro de pelusas parece pequeño, pero hace un trabajo que se nota en cada lavada. Atrapa los hilos y las pelusas que sueltan las prendas, y así no se quedan en tu ropa ni en la máquina.</p>
+<ul class="lav-puntos"><li><b>Cuida tu ropa.</b> Sin filtro, las pelusas se pegan a las prendas oscuras, a las toallas y a la ropa de los niños.</li>
+<li><b>Protege el desagüe.</b> Las pelusas acumuladas pueden tapar la salida del agua y hacer que la lavadora desagüe lento.</li>
+<li><b>Evita malos olores.</b> La pelusa mojada que se queda en la tina o en el filtro se descompone y huele mal.</li>
+<li><b>Ayuda a que la lavadora rinda más años.</b> Una máquina limpia trabaja con menos esfuerzo.</li>
+<li><b>Se cambia fácil.</b> Cuando la malla se rompe o se deforma, se reemplaza a mano en minutos.</li></ul>
+<p><a class="m-btn sec" href="/lg/cambio-e-instalacion/">Cómo limpiar y cambiar el filtro</a></p></div></div></section>
 <section class="m-sec alt lav-entrega-sec"><div class="m-wrap lav-entrega"><div class="lav-entrega-foto"><picture><source srcset="/img/entrega-lavadora-640.webp 640w, /img/entrega-lavadora.webp 1100w" sizes="(max-width:860px) 100vw, 520px" type="image/webp"><img src="/img/entrega-lavadora.jpg" alt="Repartidor entregando el paquete con el filtro a una clienta que lo recibe en la puerta de su casa" width="1100" height="825" loading="lazy"></picture></div>
 <div class="lav-entrega-tx"><span class="eyebrow">Pago contra entrega</span><h2>Recibes el paquete y pagas</h2>
 <p>Pides tu filtro por WhatsApp, el asesor te confirma el modelo, el valor y el envío, y lo recibes en tu casa. <b>Pagas cuando tienes el paquete en las manos.</b></p>

@@ -275,6 +275,9 @@ details>summary{cursor:pointer;padding:13px 0;font-weight:700}details>p{padding-
 .lav-entrega-tx h2{margin:6px 0 10px}.lav-entrega-tx .m-mut{margin-top:10px;font-size:14px}
 @media(max-width:860px){.lav-entrega{grid-template-columns:1fr;gap:20px}}
 .m-barra .m-btn.wa{min-height:46px}
+.lav-inv .lav-entrega-foto{order:2}.lav-inv .lav-entrega-tx{order:1}
+@media(max-width:860px){.lav-inv .lav-entrega-foto{order:0}.lav-inv .lav-entrega-tx{order:0}}
+.lav-puntos{list-style:none;margin:12px 0;padding:0;display:grid;gap:10px}.lav-puntos li{padding:10px 14px;border-radius:12px;background:var(--panel,#f4f6fb);border:1px solid var(--line,#dde2f1)}
 /* LG: misma estructura que Samsung (cabecera y pie oscuros) con el rojo y el blanco de la marca */
 body.m-lg{--f-titulo:"Plus Jakarta Sans",system-ui,sans-serif;--f-texto:"Plus Jakarta Sans",system-ui,sans-serif;--ls-marca:.22em;
   --pri:#a50034;--ink:#2a0a14;--muted:#6b5058;--fondo:#ffffff;--panel:#fbf0f3;--card:#ffffff;--suave:#f8e0e7;--line:#f0d3dc;--ok:#0f8a5f;

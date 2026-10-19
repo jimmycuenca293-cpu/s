@@ -153,6 +153,28 @@ def preparar_entrega(out):
     im6 = im.copy(); im6.thumbnail((640, 640)); im6.save(img / "entrega-lavadora-640.webp", quality=80)
 
 
+def preparar_importancia(out):
+    im = Image.open(FOTOS / "importancia.webp").convert("RGB")
+    im.thumbnail((1100, 1100))
+    img = out / "img"
+    im.save(img / "filtro-importancia.jpg", quality=84, optimize=True)
+    im.save(img / "filtro-importancia.webp", quality=82)
+    im6 = im.copy(); im6.thumbnail((640, 640)); im6.save(img / "filtro-importancia-640.webp", quality=80)
+
+
+def bloque_importancia(n=""):
+    """Sección: por qué es importante el filtro de pelusas de la lavadora."""
+    return f'''<section class="m-sec lav-importancia"><div class="m-wrap lav-entrega lav-inv"><div class="lav-entrega-foto"><picture><source srcset="/img/filtro-importancia-640.webp 640w, /img/filtro-importancia.webp 1100w" sizes="(max-width:860px) 100vw, 520px" type="image/webp"><img src="/img/filtro-importancia.jpg" alt="Mujer colocando un filtro de pelusas en la tina de una lavadora de carga superior" width="1100" height="1100" loading="lazy"></picture></div>
+<div class="lav-entrega-tx"><span class="eyebrow">Lo importante</span><h2>Por qué es importante el filtro de tu lavadora {n}</h2>
+<p>El filtro de pelusas parece pequeño, pero hace un trabajo que se nota en cada lavada. Atrapa los hilos y las pelusas que sueltan las prendas, y así no se quedan en tu ropa ni en la máquina.</p>
+<ul class="lav-puntos"><li><b>Cuida tu ropa.</b> Sin filtro, las pelusas se pegan a las prendas oscuras, a las toallas y a la ropa de los niños.</li>
+<li><b>Protege el desagüe.</b> Las pelusas acumuladas pueden tapar la salida del agua y hacer que la lavadora desagüe lento.</li>
+<li><b>Evita malos olores.</b> La pelusa mojada que se queda en la tina o en el filtro se descompone y huele mal.</li>
+<li><b>Ayuda a que la lavadora rinda más años.</b> Una máquina limpia trabaja con menos esfuerzo.</li>
+<li><b>Se cambia fácil.</b> Cuando la malla se rompe o se deforma, se reemplaza a mano en minutos.</li></ul>
+<p><a class="m-btn sec" href="/cambio-e-instalacion/">Cómo limpiar y cambiar el filtro</a></p></div></div></section>'''
+
+
 ENTREGA_FOTO = ('<picture><source srcset="/img/entrega-lavadora-640.webp 640w, /img/entrega-lavadora.webp 1100w" sizes="(max-width:860px) 100vw, 520px" type="image/webp">'
                 '<img src="/img/entrega-lavadora.jpg" alt="Repartidor entregando el paquete con el filtro a una clienta que lo recibe en la puerta de su casa" width="1100" height="825" loading="lazy"></picture>')
 
@@ -293,6 +315,7 @@ def pagina_inicio(S):
 <div><h3>Lavadora de carga frontal</h3><p>Se abre por el frente, con una puerta redonda. El filtro es distinto al de carga superior. Mira el filtro para carga frontal del catálogo.</p></div>
 <div><h3>Si no estás segura o seguro</h3><p>Mándale al asesor una foto del filtro viejo y el modelo de tu lavadora. Te responde con el filtro que le corresponde.</p></div></div>
 <p style="margin-top:14px"><a class="m-btn" href="/cual-es-mi-filtro/">Guía: cuál es mi filtro</a></p></div></section>
+{bloque_importancia(n)}
 {bloque_entrega()}
 {tres_pasos(n + " ")}
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Mantenimiento</span><h2>Cuándo limpiar o cambiar el filtro de tu lavadora {n}</h2></div>
@@ -348,6 +371,7 @@ def pagina_producto(S, p):
 <p>Es un {esc(p["corto"].lower())}: {p["forma"]}. Sirve para atrapar las pelusas y los residuos que sueltan las prendas durante el {ciclo}, de modo que no vuelvan a la ropa ni {efecto} {n}.</p>
 <p>Si el tuyo ya está roto, deformado o la malla no se limpia bien, es el momento de cambiarlo. Para estar seguros de que es el que necesita tu {d}, el asesor revisa el modelo contigo por WhatsApp.</p></div></div></section>
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Marca de la {d}</dt><dd>{n}</dd><dt>Tipo</dt><dd>{esc(p["tipo"])}</dd><dt>Descripción</dt><dd>{p["forma"]}</dd><dt>Instalación</dt><dd>A mano, sin herramientas</dd><dt>Precio</dt><dd>{cop(p["precio"]) if p["precio"] else "Consúltalo con el asesor por WhatsApp"}</dd><dt>Envío</dt><dd>A toda Colombia por transportadora</dd></dl></div></section>
+{bloque_importancia(n)}
 {bloque_entrega()}
 <section class="m-sec alt"><div class="m-wrap"><section class="caja tutorial" id="instalacion"><h2>Cómo instalar el {esc(p["corto"].lower())}: paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in INSTALACION.get(p.get("inst"), pasos_limpieza(n)))}</ol><p class="m-mut">{NOTA_INSTALACION}</p></section></div></section>
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Preguntas</span><h2>Preguntas frecuentes</h2></div>{faq_html(faq)}</div></section>
@@ -441,6 +465,9 @@ CSS_EXTRA = '''
 .lav-entrega-tx h2{margin:6px 0 10px}.lav-entrega-tx .m-mut{margin-top:10px;font-size:14px}
 @media(max-width:860px){.lav-entrega{grid-template-columns:1fr;gap:20px}}
 .m-barra .m-btn.wa{min-height:46px}
+.lav-inv .lav-entrega-foto{order:2}.lav-inv .lav-entrega-tx{order:1}
+@media(max-width:860px){.lav-inv .lav-entrega-foto{order:0}.lav-inv .lav-entrega-tx{order:0}}
+.lav-puntos{list-style:none;margin:12px 0;padding:0;display:grid;gap:10px}.lav-puntos li{padding:10px 14px;border-radius:12px;background:var(--panel,#f4f6fb);border:1px solid var(--line,#dde2f1)}
 /* LG: misma estructura que Samsung (cabecera y pie oscuros) con el rojo y el blanco de la marca */
 body.m-lg{--f-titulo:"Plus Jakarta Sans",system-ui,sans-serif;--f-texto:"Plus Jakarta Sans",system-ui,sans-serif;--ls-marca:.22em;
   --pri:#a50034;--ink:#2a0a14;--muted:#6b5058;--fondo:#ffffff;--panel:#fbf0f3;--card:#ffffff;--suave:#f8e0e7;--line:#f0d3dc;--ok:#0f8a5f;
@@ -549,12 +576,14 @@ def pagina_home(out, dominio, Ss):
 {confianza()}
 <section class="m-sec" id="marcas"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Escoge tu marca</span><h2>¿De qué marca es tu lavadora?</h2></div><div class="m-grid lav-marcas">{cuerpo_marcas}</div></div></section>
 <section class="m-sec alt" id="filtros"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Catálogo</span><h2>Todos los filtros</h2><p>Pregunta por el tuyo y el asesor te confirma el modelo correcto antes de comprar.</p></div><div class="m-grid">{tarj}</div></div></section>
+{bloque_importancia()}
 {bloque_entrega()}
 {tres_pasos()}
 <section class="m-sec alt" id="preguntas"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Resolvemos tus dudas</span><h2>Preguntas frecuentes</h2></div>{faq_html(HOME_FAQ)}</div></section>
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Envíos</span><h2>Enviamos a toda Colombia</h2></div><p>{" · ".join(f'<a href="/{S.clave}/filtros-lavadora-{S.clave}-por-ciudad/">Ciudades {esc(S.M["nombre"])}</a>' for S in Ss)}</p></div></section>'''
     ld = [{"@type": "WebSite", "name": "Filtros para lavadoras", "url": dominio + "/"}, faq_ld(HOME_FAQ),
           {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i, "url": f"{dominio}/{S.clave}/{p['slug']}/", "name": p["nombre"]} for i, (S, p) in enumerate([(S, p) for S in Ss for p in S.M["productos"]], 1)]}]
+    cuerpo = cuerpo.replace('href="/cambio-e-instalacion/"', 'href="/samsung/cambio-e-instalacion/"')
     escribir(out, "/", "home", "Filtros para lavadoras Samsung y LG | Envío a toda Colombia", "Filtros de pelusas y bolsas de malla para lavadoras Samsung y LG. Pregunta al asesor por WhatsApp y recibe en toda Colombia.", cuerpo, ld,
              f'<meta property="og:image" content="{dominio}/img/{Ss[0].M["productos"][0]["id"]}.jpg">')
 
@@ -620,6 +649,7 @@ def construir_todo(dominio):
     (out / "img").mkdir(exist_ok=True)
     shutil.copy(BASE / "img" / "icono.svg", out / "img" / "icono.svg")
     preparar_entrega(out)
+    preparar_importancia(out)
     Ss = [Sitio(c, dominio, out) for c in MARCAS]
     for S in Ss:
         preparar_fotos(S.M, out)
