@@ -7,11 +7,11 @@
     const a = e.target.closest('a[href*="wa.me/"]');
     if (a) dataLayer.push({ event: "whatsapp", ubicacion: a.classList.contains("wa-flot") ? "boton_flotante" : "enlace", pagina: location.pathname });
   }, true);
-  // Avisa del pago y luego abre la página de pago (máximo 1 segundo de espera para no demorar al cliente)
+  // Avisa del pago y luego abre la página de pago (máximo 0,35 segundos de espera para no demorar al cliente)
   window.FYPago = (url, total, ref) => {
     let ido = false; const ir = () => { if (!ido) { ido = true; location.href = url; } };
-    dataLayer.push({ event: "pago_wompi", value: total, currency: "COP", transaction_id: ref, eventCallback: ir, eventTimeout: 1000 });
-    setTimeout(ir, 1100);
+    dataLayer.push({ event: "pago_wompi", value: total, currency: "COP", transaction_id: ref, eventCallback: ir, eventTimeout: 300 });
+    setTimeout(ir, 350);
   };
   const K = "fy_carrito";
   const leer = () => { try { const v = JSON.parse(localStorage.getItem(K) || "[]"); return Array.isArray(v) ? v.filter(l => l && l.pid) : []; } catch { return []; } };

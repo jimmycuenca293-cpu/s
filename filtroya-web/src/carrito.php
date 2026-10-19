@@ -4,11 +4,12 @@ $cat = catalogo();
 $pub = ['ciudades' => $cat['ciudades'], 'dias' => (object) ($cat['dias'] ?? []), 'productos' => array_map(fn($p) => ['nombre' => $p['nombre'], 'ref' => $p['ref'], 'marca' => $p['marca'], 'precio' => $p['precio'], 'pack' => $p['pack'], 'slug' => $p['slug'], 'ubic' => $p['ubic']], $cat['productos']), 'inst_ext' => 0, 'pago_link' => !con_llaves()];
 cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/carrito.php', '', false);
 ?>
+<link rel="preconnect" href="https://checkout.wompi.co"><link rel="dns-prefetch" href="https://checkout.wompi.co">
 <h1>Tu carrito</h1>
 <div id="vacio" class="caja" hidden><b>Tu carrito está vacío.</b><span class="m">Busca el filtro de tu nevecón por la referencia o por el modelo.</span><a class="btn" href="/tienda/">Ver todos los filtros</a></div>
 <div class="checkout" id="checkout" hidden>
   <div class="col">
-    <section class="caja"><h2>Productos</h2><div id="lineas"></div></section>
+    <section class="caja"><h2>Productos</h2><div id="lineas"></div><button type="button" class="link vaciar" id="vaciar">Vaciar carrito</button></section>
     <section class="caja">
       <h2>¿A dónde lo enviamos?</h2>
       <div class="campos">
@@ -62,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="ltx"><a href="/filtro/${p.slug}/"><b>${esc(p.nombre)}</b></a><span class="ref">${esc(p.ref)}</span>${l.pack ? `<span class="badge pagado">Pack anual de 2 · ahorras ${cop(ahorro)}</span>` : ""}
           <div class="lact"><span class="qty"><button type="button" data-q="-1" data-i="${i}" aria-label="Menos">−</button><b>${l.cant}</b><button type="button" data-q="1" data-i="${i}" aria-label="Más">+</button></span>
           <button type="button" class="link" data-del="${i}">Quitar</button>${!l.pack ? `<button type="button" class="link" data-topack="${i}">Cambiar a pack de 2 y ahorrar ${cop(ahorro)}</button>` : ""}</div></div>
-        <b class="lprecio">${cop(unit * l.cant)}</b></div>`;
+        <div class="lder"><button type="button" class="lx" data-del="${i}" aria-label="Quitar ${esc(p.nombre)} del carrito" title="Quitar del carrito">✕</button><b class="lprecio">${cop(unit * l.cant)}</b></div></div>`;
     }).join("");
     const ciudad = $("#c-ciudad").value, cali = false;  // la entrega local se coordina por WhatsApp
     const ext = L.some(l => P[l.pid].ubic === "externo"), cInst = ext ? C.inst_ext : 0;
@@ -93,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
     FYCart.guardar(c); pintar();
   });
   window.addEventListener("storage", pintar);
+  $("#vaciar").addEventListener("click", () => { FYCart.guardar([]); pintar(); });
   $("#pagar").addEventListener("click", async () => {
     const v = id => $("#" + id).value.trim(), err = $("#err");
     const cli = { nombre: v("c-nombre"), tel: v("c-tel").replace(/\D/g, "").replace(/^57(?=3\d{9}$)/, ""), email: v("c-email"), ciudad: $("#c-ciudad").value, barrio: v("c-barrio"), dir: v("c-dir"), indicaciones: v("c-ind"), modelo: v("c-modelo"), recordar: $("#c-rec").checked };
@@ -105,7 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const r = await fetch("/api/pedido.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ acepto: true, items: L.map(l => ({ pid: l.pid, pack: !!l.pack, cant: l.cant })), total: t, entrega, cliente: cli }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.url) throw new Error(j.mensaje || "No se pudo crear el pedido. Intenta de nuevo.");
-      if (j.form_url) { try { const ac = new AbortController(); setTimeout(() => ac.abort(), 5000); await fetch(j.form_url, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(j.form_datos), signal: ac.signal }); } catch {} }
       const cambio = new Date(); cambio.setMonth(cambio.getMonth() + 6);
       const o = ls.get("fy_orders", []).filter(x => x.id !== j.ref);
       o.unshift({ id: j.ref, fecha: new Date().toISOString(), cambio: cambio.toISOString(), producto: P[L[0].pid].nombre + (L.length > 1 ? ` y ${L.length - 1} más` : ""), ref: P[L[0].pid].ref, pid: L[0].pid, total: j.total, ciudad: cli.ciudad, entrega, pago: "wompi", estado: "Pago pendiente", cliente: { recordar: cli.recordar } });

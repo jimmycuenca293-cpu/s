@@ -150,3 +150,6 @@ que solo vende esa marca, con su propio diseño. Cada una va en **su propio domi
    confirma cuando el cliente vuelve de la página de pago. Si un pedido queda «pendiente», míralo en tu panel de Wompi.
 4. En Search Console agrega cada dominio como propiedad nueva, verifícalo y envía `https://dominiodelamarca.com/sitemap.xml`.
 5. Cada sitio guarda sus pedidos aparte: entra a `https://dominiodelamarca.com/admin.php` para verlos.
+
+## Formulario de pedidos más completo (Web3Forms)
+Cada pedido llega a tu correo con todos los datos del cliente (nombre, celular, correo, ciudad, barrio, dirección, productos, total) en un campo «Resumen del pedido» y también campo por campo. Si FormSubmit te sigue llegando incompleto, usa Web3Forms: entra a https://web3forms.com, escribe tu correo, copia la clave que te llega y en `config.php` pon `'formulario' => ['activo' => true, 'proveedor' => 'web3forms', 'clave' => 'TU-CLAVE']`. Prueba desde «Diagnóstico → Enviar formulario de prueba». Lo más seguro sigue siendo el correo SMTP (`smtp.clave`).

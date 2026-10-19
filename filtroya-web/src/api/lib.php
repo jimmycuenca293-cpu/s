@@ -388,8 +388,21 @@ function enviar_formulario(string $asunto, array $campos): array
     $f = cfg()['formulario'] ?? [];
     if (isset($f['activo']) && !$f['activo']) return ['ok' => false, 'mensaje' => 'El envío por formulario está apagado en config.php'];
     $para = correo_destino();
-    $url = (string) ($f['url'] ?? 'https://formsubmit.co/ajax/') . rawurlencode($para);
-    $datos = ['_subject' => $asunto, '_template' => 'table', '_captcha' => 'false'] + array_map(fn($v) => (string) $v, $campos);
+    $campos = array_map(fn($v) => (string) $v, $campos);
+    // Resumen en texto: aunque el servicio muestre solo un campo, ahí viene todo el pedido
+    $resumen = '';
+    foreach ($campos as $k => $v) $resumen .= $k . ': ' . $v . "\n";
+    $web3 = ($f['proveedor'] ?? '') === 'web3forms' && !empty($f['clave']);
+    if ($web3) {
+        // Web3Forms (gratis, la clave se pide con tu correo en web3forms.com y no necesita activar nada)
+        $url = (string) ($f['url'] ?? 'https://api.web3forms.com/submit');
+        $datos = ['access_key' => (string) $f['clave'], 'subject' => $asunto, 'from_name' => cfg()['negocio']['nombre'], 'message' => $resumen] + $campos;
+        if (filter_var($campos['Correo del cliente'] ?? '', FILTER_VALIDATE_EMAIL)) $datos['replyto'] = $campos['Correo del cliente'];
+    } else {
+        $url = (string) ($f['url'] ?? 'https://formsubmit.co/ajax/') . rawurlencode($para);
+        $datos = ['_subject' => $asunto, '_template' => 'table', '_captcha' => 'false', 'Resumen del pedido' => $resumen] + $campos;
+        if (filter_var($campos['Correo del cliente'] ?? '', FILTER_VALIDATE_EMAIL)) $datos['_replyto'] = $campos['Correo del cliente'];
+    }
     $ch = curl_init($url);
     curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($datos, JSON_UNESCAPED_UNICODE), CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15,
         CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Accept: application/json', 'Referer: ' . base_url() . '/', 'Origin: ' . base_url()]]);
@@ -406,17 +419,31 @@ function enviar_formulario(string $asunto, array $campos): array
 
 function campos_pedido(array $p): array
 {
-    return ['Pedido' => $p['ref'], 'Estado' => $p['estado'], 'Productos' => implode(' | ', array_map('linea_txt', lineas_pedido($p))), 'Total' => cop((int) $p['total']),
-        'Entrega' => entrega_txt($p['entrega']), 'Nombre' => $p['nombre'], 'Celular' => $p['tel'], 'Correo del cliente' => $p['email'], 'Ciudad' => $p['ciudad'],
-        'Barrio' => $p['barrio'], 'Direccion' => $p['dir'], 'Indicaciones' => $p['indicaciones'] ?: '-', 'Modelo del nevecon' => $p['modelo'] ?: '-'];
+    return ['Pedido' => $p['ref'], 'Estado' => $p['estado'], 'Nombre' => $p['nombre'], 'Celular' => $p['tel'], 'Correo del cliente' => $p['email'], 'Ciudad' => $p['ciudad'],
+        'Barrio' => $p['barrio'], 'Direccion' => $p['dir'], 'Indicaciones' => $p['indicaciones'] ?: '-', 'Productos' => implode(' | ', array_map('linea_txt', lineas_pedido($p))), 'Total' => cop((int) $p['total']),
+        'Entrega' => entrega_txt($p['entrega']), 'Modelo del nevecon' => $p['modelo'] ?: '-'];
 }
 
-// Si el formulario no salió desde el servidor, el navegador del cliente lo manda (respaldo): así el pedido llega sí o sí
-function respaldo_form(array $p): array
+// Responde al navegador de inmediato y sigue trabajando (envío de avisos) sin que el cliente espere
+function out_y_seguir(mixed $data, callable $despues): never
 {
-    if (($GLOBALS['ult_aviso']['form'] ?? true)) return [];
-    return ['form_url' => 'https://formsubmit.co/ajax/' . rawurlencode(correo_destino()),
-        'form_datos' => ['_subject' => 'Pedido ' . $p['ref'] . ' (respaldo)', '_template' => 'table', '_captcha' => 'false'] + array_map('strval', campos_pedido($p))];
+    ignore_user_abort(true);
+    @set_time_limit(90);
+    $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+    http_response_code(200);
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store');
+    header('X-Content-Type-Options: nosniff');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($json));
+    echo $json;
+    @session_write_close();
+    while (ob_get_level() > 0) @ob_end_flush();
+    flush();
+    if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+    elseif (function_exists('litespeed_finish_request')) litespeed_finish_request();
+    try { $despues(); } catch (Throwable $e) { @file_put_contents(__DIR__ . '/../data/correos.log', date('c') . ' ERROR AVISO: ' . $e->getMessage() . "\n----\n", FILE_APPEND); }
+    exit;
 }
 
 // Reintenta los avisos que no llegaron por ningún camino (se llama desde reconciliar.php cada 15 minutos)
