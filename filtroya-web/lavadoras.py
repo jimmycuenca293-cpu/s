@@ -34,18 +34,18 @@ def ciudades():
 MARCAS = {
     "samsung": {
         "nombre": "Samsung", "clase": "samsung", "tema": "#071338", "whatsapp": "3054796329", "telefono": "305 479 6329",
-        "tienda": "Filtros para lavadora Samsung", "logo": "logo-samsung.png",
+        "tienda": "Filtros para lavadora Samsung", "logo": "",
         "oficial": ("Samsung Colombia", "https://www.samsung.com/co/"),
         # precio: None = el cliente pregunta al asesor por WhatsApp. Cuando lo tengas, escribe el valor en pesos (ej. 45900).
         "productos": [
             {"id": "lav-sam-1", "foto": "foto-1.png", "slug": "filtro-pelusas-lavadora-samsung-azul", "corto": "Filtro de pelusas azul", "ref": None, "precio": None, "tipo": "Carga superior",
              "forma": "azul, con una rejilla de ranuras largas y una lengüeta para sacarlo"},
             {"id": "lav-sam-2", "foto": "foto-2.png", "slug": "filtro-pelusas-lavadora-samsung-gris-panal", "corto": "Filtro de pelusas gris tipo panal", "ref": None, "precio": None, "tipo": "Carga superior",
-             "forma": "gris, con celdas en forma de panal y la leyenda Magic Filter"},
+             "forma": "gris, con celdas en forma de panal y una leyenda en relieve"},
             {"id": "lav-sam-3", "foto": "foto-3.png", "slug": "filtro-pelusas-lavadora-samsung-negro-triangulos", "corto": "Filtro de pelusas negro con malla de triángulos", "ref": None, "precio": None, "tipo": "Carga superior",
              "forma": "negro translúcido, con una malla en triángulos y una tapa con lengüeta"},
-            {"id": "lav-sam-4", "foto": "foto-4.webp", "slug": "filtro-pelusas-lavadora-samsung-verde", "corto": "Filtro de pelusas verde Magic Filter", "ref": None, "precio": None, "tipo": "Carga superior",
-             "forma": "verde, con dos columnas de ranuras con malla metálica y la leyenda Magic Filter"},
+            {"id": "lav-sam-4", "foto": "foto-4.webp", "slug": "filtro-pelusas-lavadora-samsung-verde", "corto": "Filtro de pelusas verde", "ref": None, "precio": None, "tipo": "Carga superior",
+             "forma": "verde, con dos columnas de ranuras con malla metálica y una leyenda en relieve"},
             {"id": "lav-sam-5", "foto": "foto-5.png", "slug": "bolsa-malla-pelusas-lavadora-samsung", "corto": "Bolsa de malla para pelusas", "ref": None, "precio": None, "tipo": "Bolsa de malla",
              "forma": "una bolsa de malla blanca con un marco plástico para engancharla"},
             {"id": "lav-sam-6", "foto": "foto-6.png", "slug": "filtro-pelusas-lavadora-samsung-carga-frontal", "corto": "Filtro para lavadora de carga frontal", "ref": None, "precio": None, "tipo": "Carga frontal",
@@ -306,6 +306,7 @@ function lav_pie(): void { global $M; pie_marca($M); }
 
 CSS_EXTRA = '''
 /* Tienda de lavadoras */
+.m-logo-txt{font-size:20px;font-weight:800;letter-spacing:-.01em;color:inherit}.m-sello{gap:0}
 .m-btn.wa{background:#1fa855;border-color:#1fa855;color:#fff}.m-btn.wa:hover{filter:brightness(1.07)}
 .lav-fotos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-self:center}.lav-fotos .lf{background:#fff;border-radius:14px;padding:8px;height:200px;display:grid;place-items:center;overflow:hidden}.lav-fotos picture{display:grid;place-items:center;width:100%;height:100%}.lav-fotos img{width:100%;height:100%;object-fit:contain}
 .pr.consulta,.precio.consulta{font-size:16px;font-weight:700}
@@ -368,14 +369,15 @@ def construir(clave, dominio):
     mp = mp.replace("Distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia. ' . h($M['nombre']) . ' y su logo son marcas registradas de su dueño y se usan con autorización.", "' . h($M['nombre']) . ' y su logo son marcas de su dueño y se mencionan solo para indicar el tipo de lavadora. Somos un comercio independiente.")
     mp = mp.replace("Distribuidor autorizado", "Filtros para lavadora").replace("Precios en pesos colombianos con envío incluido.", "Precios en pesos colombianos.")
     mp = mp.replace("¿Cuál filtro es el mío?", "¿Cuál filtro es el mío?").replace("Cuándo cambiarlo y cómo instalarlo", "Cómo limpiarlo y cambiarlo")
+    mp = mp.replace("return '<b>' . h($M['nombre']) . '</b>';", "return '<b class=\"m-logo-txt\">' . h($M['tienda'] ?? $M['nombre']) . '</b>';").replace("<small>Filtros para lavadora</small>", "")
     (out / "marcas.php").write_text(mp, encoding="utf-8")
     (out / "marcas.css").write_text((out / "marcas.css").read_text(encoding="utf-8") + CSS_EXTRA, encoding="utf-8")
     (out / "lav.php").write_text(LAV_PHP, encoding="utf-8")
     limpiar_textos(out)
     # 3) imágenes
     shutil.copytree(BASE / "img", out / "img", ignore=lambda d, f: [x for x in f if x.startswith("sam-") or x.startswith("logo-") and x != "logo-samsung.png" and False])
-    for f in (out / "img").glob("sam-*"):
-        f.unlink()
+    for f in list((out / "img").glob("sam-*")) + list((out / "img").glob("logo-*")) + list((out / "img").glob("icono-*")):
+        f.unlink()  # sin logos de marca
     preparar_fotos(M, out)
     # 4) catálogo (solo con precio entran al carrito)
     for p in M["productos"]:
@@ -383,7 +385,7 @@ def construir(clave, dominio):
     # 5) marca.json
     prods = [[p["nombre"], p["slug"]] for p in M["productos"]]
     marca = {"nombre": M["nombre"], "clase": M["clase"], "base": "/", "tema": M["tema"], "fuentes": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
-             "tienda": M["tienda"], "logo": "/img/" + M["logo"], "logo_w": 421, "logo_h": 140, "icono": "/img/icono-samsung.png", "productos": prods,
+             "tienda": M["tienda"], "logo": "", "logo_w": 0, "logo_h": 0, "icono": "/img/icono.svg", "productos": prods,
              "guias": [[f"/cual-es-mi-filtro/", "¿Cuál filtro necesita mi lavadora?"], ["/cambio-e-instalacion/", "Cómo limpiar y cambiar el filtro"],
                        [f"/cada-cuanto-limpiar-filtro-lavadora-{clave}/", "Cada cuánto limpiar el filtro"], [f"/lavadora-{clave}-deja-pelusas-en-la-ropa/", "La lavadora deja pelusas"],
                        [f"/filtro-lavadora-{clave}-carga-superior/", "Filtro de carga superior"], [f"/filtro-lavadora-{clave}-carga-frontal/", "Filtro de carga frontal"]],

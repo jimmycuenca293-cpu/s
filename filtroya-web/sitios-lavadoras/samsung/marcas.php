@@ -19,7 +19,7 @@ function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, stri
         . verificacion_html() . analytics_html() . $extra . '</head><body class="m-' . h($M['clase']) . ($legado ? ' m-legado' : '') . '">' . gtm_body_html()
         . '<div class="m-anuncio"><span>✔ Filtros para lavadora ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
         . '<header class="m-top"><div class="m-wrap">'
-        . '<a class="m-logo" href="' . h($b) . '" aria-label="Filtros ' . h($M['nombre']) . '"><span class="m-sello">' . logo_marca_html($M) . '<small>Filtros para lavadora</small></span></a>'
+        . '<a class="m-logo" href="' . h($b) . '" aria-label="Filtros ' . h($M['nombre']) . '"><span class="m-sello">' . logo_marca_html($M) . '</span></a>'
         . menu_marca($M)
         . '</div></header><main' . ($legado ? ' class="wrap m-legado-main"' : '') . '>';
 }
@@ -51,7 +51,7 @@ function menu_marca(array $M): string
 // Logo de la marca (somos vendedor); si no hay logo, el nombre en texto
 function logo_marca_html(array $M, string $clase = 'm-logo-marca'): string
 {
-    if (empty($M['logo'])) return '<b>' . h($M['nombre']) . '</b>';
+    if (empty($M['logo'])) return '<b class="m-logo-txt">' . h($M['tienda'] ?? $M['nombre']) . '</b>';
     return '<img class="' . h($clase) . '" src="' . h($M['logo']) . '" alt="' . h($M['nombre']) . '" width="' . (int) $M['logo_w'] . '" height="' . (int) $M['logo_h'] . '">';
 }
 
@@ -62,7 +62,7 @@ function pie_marca(array $M): void
     $b = $M['base'];
     $tel = preg_replace('/\D/', '', (string) (cfg()['whatsapp'] ?? ''));
     $h = '<footer class="m-pie"><div class="m-wrap m-pie-top">'
-        . '<div><a class="m-logo" href="' . h($b) . '"><span class="m-sello">' . logo_marca_html($M) . '<small>Filtros para lavadora</small></span></a>'
+        . '<div><a class="m-logo" href="' . h($b) . '"><span class="m-sello">' . logo_marca_html($M) . '</span></a>'
         . '<p>Filtros de pelusas para lavadora ' . h($M['nombre']) . ', con envío a todo Colombia y pago seguro en línea.</p>'
         . ($tel ? '<a class="m-pie-wa" href="https://wa.me/57' . substr($tel, -10) . '" target="_blank" rel="noopener">💬 WhatsApp ' . h($n['telefono']) . '</a>' : '')
         . '<span class="m-pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'

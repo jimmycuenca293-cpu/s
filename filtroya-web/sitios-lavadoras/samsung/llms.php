@@ -10,7 +10,7 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 - [Filtro de pelusas azul para lavadora Samsung](__BASE__/filtro-pelusas-lavadora-samsung-azul/): Carga superior.
 - [Filtro de pelusas gris tipo panal para lavadora Samsung](__BASE__/filtro-pelusas-lavadora-samsung-gris-panal/): Carga superior.
 - [Filtro de pelusas negro con malla de triángulos para lavadora Samsung](__BASE__/filtro-pelusas-lavadora-samsung-negro-triangulos/): Carga superior.
-- [Filtro de pelusas verde Magic Filter para lavadora Samsung](__BASE__/filtro-pelusas-lavadora-samsung-verde/): Carga superior.
+- [Filtro de pelusas verde para lavadora Samsung](__BASE__/filtro-pelusas-lavadora-samsung-verde/): Carga superior.
 - [Bolsa de malla para pelusas para lavadora Samsung](__BASE__/bolsa-malla-pelusas-lavadora-samsung/): Bolsa de malla.
 - [Filtro para lavadora de carga frontal para lavadora Samsung](__BASE__/filtro-pelusas-lavadora-samsung-carga-frontal/): Carga frontal.
 
