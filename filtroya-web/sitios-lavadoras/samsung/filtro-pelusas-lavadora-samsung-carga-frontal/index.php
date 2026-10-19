@@ -5,7 +5,7 @@ JSON);
 ?>
 <div class="m-wrap"><nav class="m-miga"><a href="/">Filtros para lavadora Samsung</a> › Filtro para lavadora de carga frontal</nav>
 <div class="m-prod">
-  <div class="foto"><span class="m-badge">Carga frontal</span><picture><source srcset="/img/lav-sam-6.webp" type="image/webp"><img src="/img/lav-sam-6.jpg" alt="Filtro para lavadora de carga frontal para lavadora Samsung" width="500" height="296" fetchpriority="high"></picture></div>
+  <div class="foto"><span class="m-badge">Carga frontal</span><picture><source srcset="/img/lav-sam-6.webp" type="image/webp"><img src="/img/lav-sam-6.jpg" alt="Filtro para lavadora de carga frontal para lavadora Samsung" width="495" height="296" fetchpriority="high"></picture></div>
   <div class="info">
     <h1>Filtro para lavadora de carga frontal para lavadora Samsung</h1>
     <span class="sub">Lavadora Samsung · Carga frontal</span>

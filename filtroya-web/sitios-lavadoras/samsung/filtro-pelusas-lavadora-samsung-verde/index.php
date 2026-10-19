@@ -5,7 +5,7 @@ JSON);
 ?>
 <div class="m-wrap"><nav class="m-miga"><a href="/">Filtros para lavadora Samsung</a> › Filtro de pelusas verde</nav>
 <div class="m-prod">
-  <div class="foto"><span class="m-badge">Carga superior</span><picture><source srcset="/img/lav-sam-4.webp" type="image/webp"><img src="/img/lav-sam-4.jpg" alt="Filtro de pelusas verde para lavadora Samsung" width="900" height="900" fetchpriority="high"></picture></div>
+  <div class="foto"><span class="m-badge">Carga superior</span><picture><source srcset="/img/lav-sam-4.webp" type="image/webp"><img src="/img/lav-sam-4.jpg" alt="Filtro de pelusas verde para lavadora Samsung" width="354" height="900" fetchpriority="high"></picture></div>
   <div class="info">
     <h1>Filtro de pelusas verde para lavadora Samsung</h1>
     <span class="sub">Lavadora Samsung · Carga superior</span>

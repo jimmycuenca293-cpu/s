@@ -52,6 +52,21 @@ MARCAS = {
              "forma": "blanco, con un asa ancha y una malla de tela para las pelusas"},
         ],
     },
+    "lg": {
+        "nombre": "LG", "clase": "lg", "tema": "#a50034", "whatsapp": "3205102995", "telefono": "320 510 2995",
+        "tienda": "Filtros para lavadora LG", "logo": "",
+        "oficial": ("LG Colombia", "https://www.lg.com/co/"),
+        "productos": [
+            {"id": "lav-lg-1", "foto": "foto-1.png", "slug": "bolsa-malla-pelusas-lavadora-lg", "corto": "Bolsa de malla para pelusas", "ref": None, "precio": None, "tipo": "Bolsa de malla",
+             "forma": "una bolsa de malla blanca con un marco plástico gris que la sostiene"},
+            {"id": "lav-lg-2", "foto": "foto-2.png", "slug": "filtro-pelusas-redondo-lavadora-lg", "corto": "Filtro de pelusas redondo azul", "ref": None, "precio": None, "tipo": "Filtro redondo",
+             "forma": "redondo, azul translúcido, con orificios y dos lengüetas laterales para sacarlo"},
+            {"id": "lav-lg-3", "foto": "foto-3.png", "slug": "filtro-pelusas-gris-circulos-lavadora-lg", "corto": "Filtro de pelusas gris con círculos y rejillas", "ref": None, "precio": None, "tipo": "Filtro rectangular",
+             "forma": "gris, rectangular, con 12 círculos de malla arriba y cinco rejillas de malla debajo"},
+            {"id": "lav-lg-4", "foto": "foto-5.png", "slug": "filtro-pelusas-gris-tapa-flechas-lavadora-lg", "corto": "Filtro de pelusas gris con tapa de flechas", "ref": None, "precio": None, "tipo": "Filtro rectangular",
+             "forma": "gris, rectangular, con una tapa con relieve de flechas y marcas para abrir y cerrar"},
+        ],
+    },
 }
 
 
@@ -68,6 +83,10 @@ def preparar_fotos(M, out):
         im = Image.open(FOTOS / M["clase"] / p["foto"]).convert("RGBA")
         fondo = Image.new("RGBA", im.size, (255, 255, 255, 255))
         im = Image.alpha_composite(fondo, im).convert("RGB")  # las fotos con fondo transparente se ven sobre blanco
+        caja = Image.eval(im.convert("L"), lambda v: 255 if v < 245 else 0).getbbox()  # recorta el margen blanco
+        if caja:
+            m = max(8, int(0.04 * max(im.size)))
+            im = im.crop((max(0, caja[0] - m), max(0, caja[1] - m), min(im.width, caja[2] + m), min(im.height, caja[3] + m)))
         im.thumbnail((900, 900))
         w, h = im.size
         im.save(img / f"{p['id']}.jpg", quality=84, optimize=True)
@@ -368,6 +387,8 @@ def legales(out):
 
 
 def construir(clave, dominio):
+    global BASE
+    BASE = AQUI / "sitios" / clave
     S = Sitio(clave, dominio)
     M = S.M
     out = S.out
@@ -400,9 +421,7 @@ def construir(clave, dominio):
         (out / "api" / f).unlink(missing_ok=True)  # sin pasarela de pagos: se vende por WhatsApp
     legales(out)
     # 3) imágenes
-    shutil.copytree(BASE / "img", out / "img", ignore=lambda d, f: [x for x in f if x.startswith("sam-") or x.startswith("logo-") and x != "logo-samsung.png" and False])
-    for f in list((out / "img").glob("sam-*")) + list((out / "img").glob("logo-*")) + list((out / "img").glob("icono-*")):
-        f.unlink()  # sin logos de marca
+    shutil.copytree(BASE / "img", out / "img", ignore=lambda d, f: [x for x in f if x != "icono.svg"])
     preparar_fotos(M, out)
     # 4) catálogo (solo con precio entran al carrito)
     for p in M["productos"]:
@@ -485,4 +504,5 @@ def llms_php(S):
 
 if __name__ == "__main__":
     dominio = sys.argv[1] if len(sys.argv) > 1 else "https://filtrosparalavadoras.com"
-    construir("samsung", dominio)
+    for clave in MARCAS:
+        construir(clave, dominio)

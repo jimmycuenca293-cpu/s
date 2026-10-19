@@ -5,7 +5,7 @@ JSON);
 ?>
 <div class="m-wrap"><nav class="m-miga"><a href="/">Filtros para lavadora Samsung</a> › Filtro de pelusas negro con malla de triángulos</nav>
 <div class="m-prod">
-  <div class="foto"><span class="m-badge">Carga superior</span><picture><source srcset="/img/lav-sam-3.webp" type="image/webp"><img src="/img/lav-sam-3.jpg" alt="Filtro de pelusas negro con malla de triángulos para lavadora Samsung" width="900" height="900" fetchpriority="high"></picture></div>
+  <div class="foto"><span class="m-badge">Carga superior</span><picture><source srcset="/img/lav-sam-3.webp" type="image/webp"><img src="/img/lav-sam-3.jpg" alt="Filtro de pelusas negro con malla de triángulos para lavadora Samsung" width="342" height="894" fetchpriority="high"></picture></div>
   <div class="info">
     <h1>Filtro de pelusas negro con malla de triángulos para lavadora Samsung</h1>
     <span class="sub">Lavadora Samsung · Carga superior</span>

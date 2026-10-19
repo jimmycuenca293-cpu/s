@@ -5,7 +5,7 @@ JSON);
 ?>
 <div class="m-wrap"><nav class="m-miga"><a href="/">Filtros para lavadora Samsung</a> › Bolsa de malla para pelusas</nav>
 <div class="m-prod">
-  <div class="foto"><span class="m-badge">Bolsa de malla</span><picture><source srcset="/img/lav-sam-5.webp" type="image/webp"><img src="/img/lav-sam-5.jpg" alt="Bolsa de malla para pelusas para lavadora Samsung" width="900" height="677" fetchpriority="high"></picture></div>
+  <div class="foto"><span class="m-badge">Bolsa de malla</span><picture><source srcset="/img/lav-sam-5.webp" type="image/webp"><img src="/img/lav-sam-5.jpg" alt="Bolsa de malla para pelusas para lavadora Samsung" width="900" height="522" fetchpriority="high"></picture></div>
   <div class="info">
     <h1>Bolsa de malla para pelusas para lavadora Samsung</h1>
     <span class="sub">Lavadora Samsung · Bolsa de malla</span>

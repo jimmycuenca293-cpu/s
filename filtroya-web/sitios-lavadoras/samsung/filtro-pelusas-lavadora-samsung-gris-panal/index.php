@@ -5,7 +5,7 @@ JSON);
 ?>
 <div class="m-wrap"><nav class="m-miga"><a href="/">Filtros para lavadora Samsung</a> › Filtro de pelusas gris tipo panal</nav>
 <div class="m-prod">
-  <div class="foto"><span class="m-badge">Carga superior</span><picture><source srcset="/img/lav-sam-2.webp" type="image/webp"><img src="/img/lav-sam-2.jpg" alt="Filtro de pelusas gris tipo panal para lavadora Samsung" width="700" height="700" fetchpriority="high"></picture></div>
+  <div class="foto"><span class="m-badge">Carga superior</span><picture><source srcset="/img/lav-sam-2.webp" type="image/webp"><img src="/img/lav-sam-2.jpg" alt="Filtro de pelusas gris tipo panal para lavadora Samsung" width="530" height="673" fetchpriority="high"></picture></div>
   <div class="info">
     <h1>Filtro de pelusas gris tipo panal para lavadora Samsung</h1>
     <span class="sub">Lavadora Samsung · Carga superior</span>
