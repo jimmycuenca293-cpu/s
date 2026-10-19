@@ -13,3 +13,5 @@
 - **Seguimiento:** parámetros automáticos (auto-tagging) activados.
 - **Grupos informativos** («Cambio y limpieza del filtro»): puja 30 % más baja.
 - **Muy importante:** responde rápido los WhatsApp. Si tardas, se pierde la venta aunque el anuncio funcione.
+
+- **Pago contra entrega:** los anuncios lo prometen. Confirma que puedes cumplirlo en las ciudades donde envías; si no, limita la ubicación de la campaña a esas ciudades.

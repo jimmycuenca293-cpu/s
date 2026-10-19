@@ -17,7 +17,7 @@ Objetivo: que la gente toque el botón de **WhatsApp** (el evento `whatsapp` de 
 ## Reglas de Google que ya cumple
 - Títulos de máximo 30 caracteres y descripciones de máximo 90 (validado por código).
 - Sin «original», «compatible», «genuino», «100 %», «mejor», «garantizado» ni «gratis». Sin precios ni promesas: el precio lo da el asesor por WhatsApp.
-- No hay carrito ni pago en línea: ningún anuncio habla de pagar en la página.
+- No hay carrito ni pago en línea: los anuncios hablan de **pago contra entrega** (pagas cuando recibes el paquete) y de pedir por WhatsApp. El asesor confirma si aplica en cada ciudad.
 - Cada grupo manda a la página de su marca o de su producto.
 
 ## Aviso

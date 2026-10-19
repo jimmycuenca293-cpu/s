@@ -270,6 +270,11 @@ details>summary{cursor:pointer;padding:13px 0;font-weight:700}details>p{padding-
 .m-dd>a,.m-nav .m-ancho{white-space:nowrap}
 
 /* Tienda de lavadoras */
+.lav-entrega{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+.lav-entrega-foto{border-radius:var(--r-foto,24px);overflow:hidden;box-shadow:0 18px 40px -20px rgba(0,0,0,.35)}.lav-entrega-foto img{width:100%;height:auto;display:block}
+.lav-entrega-tx h2{margin:6px 0 10px}.lav-entrega-tx .m-mut{margin-top:10px;font-size:14px}
+@media(max-width:860px){.lav-entrega{grid-template-columns:1fr;gap:20px}}
+.m-barra .m-btn.wa{min-height:46px}
 /* LG: misma estructura que Samsung (cabecera y pie oscuros) con el rojo y el blanco de la marca */
 body.m-lg{--f-titulo:"Plus Jakarta Sans",system-ui,sans-serif;--f-texto:"Plus Jakarta Sans",system-ui,sans-serif;--ls-marca:.22em;
   --pri:#a50034;--ink:#2a0a14;--muted:#6b5058;--fondo:#ffffff;--panel:#fbf0f3;--card:#ffffff;--suave:#f8e0e7;--line:#f0d3dc;--ok:#0f8a5f;

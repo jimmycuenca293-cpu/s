@@ -132,6 +132,48 @@ def preparar_fotos(M, out):
         p["w"], p["h"] = w, h
 
 
+def preparar_entrega(out):
+    """Foto de la entrega del paquete: se repinta la etiqueta de la caja para que hable de lavadoras (la original decía otro producto)."""
+    from PIL import ImageDraw, ImageFont
+    im = Image.open(AQUI / "imagenes-tienda" / "entrega.jpg").convert("RGB")
+    d = ImageDraw.Draw(im)
+    caja = (684, 646, 1030, 800)
+    base = (182, 142, 112)
+    for y in range(caja[1], caja[3]):
+        t = (y - caja[1]) / (caja[3] - caja[1])
+        d.line([(caja[0], y), (caja[2], y)], fill=tuple(int(base[i] * (1 - 0.10 * t)) for i in range(3)))
+    f1 = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 34)
+    f2 = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 24)
+    d.text((694, 676), "Filtro de pelusas", font=f1, fill=(20, 45, 100))
+    d.text((694, 722), "para su lavadora", font=f2, fill=(20, 45, 100))
+    im.thumbnail((1100, 1100))
+    img = out / "img"
+    im.save(img / "entrega-lavadora.jpg", quality=84, optimize=True)
+    im.save(img / "entrega-lavadora.webp", quality=82)
+    im6 = im.copy(); im6.thumbnail((640, 640)); im6.save(img / "entrega-lavadora-640.webp", quality=80)
+
+
+ENTREGA_FOTO = ('<picture><source srcset="/img/entrega-lavadora-640.webp 640w, /img/entrega-lavadora.webp 1100w" sizes="(max-width:860px) 100vw, 520px" type="image/webp">'
+                '<img src="/img/entrega-lavadora.jpg" alt="Repartidor entregando el paquete con el filtro a una clienta que lo recibe en la puerta de su casa" width="1100" height="825" loading="lazy"></picture>')
+
+
+def bloque_entrega(corto=False):
+    """Sección «Pago contra entrega» con la foto de la entrega."""
+    return f'''<section class="m-sec alt lav-entrega-sec"><div class="m-wrap lav-entrega"><div class="lav-entrega-foto">{ENTREGA_FOTO}</div>
+<div class="lav-entrega-tx"><span class="eyebrow">Pago contra entrega</span><h2>Recibes el paquete y pagas</h2>
+<p>Pides tu filtro por WhatsApp, el asesor te confirma el modelo, el valor y el envío, y lo recibes en tu casa. <b>Pagas cuando tienes el paquete en las manos.</b></p>
+<ul class="m-ok"><li>Primero confirmas el filtro correcto con el asesor.</li><li>Te enviamos por transportadora, con número de guía.</li><li>Abres el paquete, lo revisas y pagas al recibir.</li></ul>
+<p class="m-mut">El asesor te confirma si el pago contra entrega está disponible en tu ciudad.</p></div></div></section>'''
+
+
+def confianza():
+    return '''<section class="m-confianza"><div class="m-wrap"><div><span class="ic">💵</span><span><b>Pago contra entrega</b><small>Pagas al recibir el paquete</small></span></div><div><span class="ic">🚚</span><span><b>Envío a toda Colombia</b><small>Con número de guía</small></span></div><div><span class="ic">💬</span><span><b>Asesor por WhatsApp</b><small>Te confirma el modelo</small></span></div><div><span class="ic">🔧</span><span><b>Cambio fácil</b><small>Paso a paso, sin técnico</small></span></div></div></section>'''
+
+
+def tres_pasos(n=""):
+    return f'''<section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Así de fácil</span><h2>Compra en 3 pasos</h2></div><div class="m-cols m-num"><div class="m-bloque"><h3>Escríbele al asesor</h3><p>Mándale el modelo de tu lavadora {n}o una foto del filtro viejo por WhatsApp.</p></div><div class="m-bloque"><h3>Confirma filtro y envío</h3><p>El asesor te dice cuál filtro es, el valor y el tiempo de entrega a tu ciudad.</p></div><div class="m-bloque"><h3>Recibe y paga</h3><p>Llega a tu casa con número de guía y pagas contra entrega.</p></div></div></div></section>'''
+
+
 # ---------------------------------------------------------------- piezas de HTML
 def foto_html(p, grande=False, lazy=True):
     sufijo = "" if grande else "-400"
@@ -195,6 +237,9 @@ class Sitio:
         escribir(self.out, real, self.clave, titulo, desc, self.enlaces(cuerpo), ld, extra_head)
         self.paginas[real] = prioridad
 
+    def barra(self, texto, chico="Pago contra entrega", boton="💬 Pedir por WhatsApp"):
+        return f'<div class="m-barra"><span><small>{esc(chico)}</small><b>Asesor {esc(self.M["nombre"])}</b></span>{self.boton_asesor(texto, "m-btn wa", boton)}</div>'
+
     def miga(self, *partes):
         t = '<nav class="m-miga"><a href="/">' + esc(self.M["tienda"]) + "</a>"
         for nombre, url in partes:
@@ -218,6 +263,7 @@ def faq_general(S):
         ("¿Cuánto cuesta?", "El precio depende del tipo de filtro. Pregúntale al asesor por WhatsApp y te responde en el momento con el valor y el tiempo de entrega a tu ciudad."),
         ("¿Hacen envíos a toda Colombia?", "Sí. Enviamos por transportadora a todo el país y te mandamos el número de guía."),
         ("¿Puedo cambiarlo yo mismo?", "Sí. No necesitas técnico ni herramientas: se saca y se pone a mano en pocos minutos. Abajo está el paso a paso."),
+        ("¿Cómo pago?", "Con pago contra entrega: pagas cuando recibes el paquete. El asesor te confirma si está disponible en tu ciudad."),
     ]
 
 
@@ -236,22 +282,26 @@ def pagina_inicio(S):
     <h1>Filtros para lavadora {n}</h1>
     <p class="lead">Filtros de pelusas y bolsas de malla para lavadoras {n} de carga superior y de carga frontal. Cuéntale tu modelo al asesor por WhatsApp y te decimos cuál necesitas. Enviamos a toda Colombia.</p>
     <div class="acc">{S.boton_asesor(f"Hola, necesito un filtro para mi lavadora {n}")}<a class="m-btn sec" href="#filtros">Ver los filtros</a></div>
-    <ul><li>Envío a toda Colombia</li><li>Pedido por WhatsApp</li><li>Asesor que te confirma el modelo</li></ul>
+    <ul><li>Pago contra entrega</li><li>Envío a toda Colombia</li><li>Asesor que te confirma el modelo</li></ul>
   </div>
   <div class="lav-fotos">{"".join(f'<span class="lf">{foto_html(p, lazy=i>0)}</span>' for i, p in enumerate(M["productos"][:3]))}</div>
 </div></section>
+{confianza()}
 <section class="m-sec" id="filtros"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Catálogo {n}</span><h2>Filtros para lavadora {n}</h2><p>{len(M["productos"])} tipos de filtro. Pregunta por el tuyo y el asesor te confirma el modelo correcto antes de comprar.</p></div><div class="m-grid">{tarjetas}</div></div></section>
 <section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Encuentra el tuyo</span><h2>¿Cuál filtro necesita mi lavadora {n}?</h2></div>
 <div class="m-cols"><div><h3>Lavadora de carga superior</h3><p>Se abre por arriba. El filtro de pelusas suele ir dentro de la tina, en una pared, o es una bolsa de malla que se engancha. Mira si el tuyo se parece a los de arriba.</p></div>
 <div><h3>Lavadora de carga frontal</h3><p>Se abre por el frente, con una puerta redonda. El filtro es distinto al de carga superior. Mira el filtro para carga frontal del catálogo.</p></div>
 <div><h3>Si no estás segura o seguro</h3><p>Mándale al asesor una foto del filtro viejo y el modelo de tu lavadora. Te responde con el filtro que le corresponde.</p></div></div>
 <p style="margin-top:14px"><a class="m-btn" href="/cual-es-mi-filtro/">Guía: cuál es mi filtro</a></p></div></section>
+{bloque_entrega()}
+{tres_pasos(n + " ")}
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Mantenimiento</span><h2>Cuándo limpiar o cambiar el filtro de tu lavadora {n}</h2></div>
 <div class="m-texto"><p>Un filtro tapado hace que la ropa salga con pelusas, que la lavadora tarde más en desaguar y que huela mal. Sácalo y enjuágalo con agua después de cada 3 o 4 lavadas. Si la malla está rota, deformada o ya no se limpia bien, es hora de cambiarlo.</p></div>
 <p><a class="m-btn sec" href="/cambio-e-instalacion/">Paso a paso para limpiar y cambiar el filtro</a></p></div></section>
 <section class="m-sec alt" id="preguntas"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Resolvemos tus dudas</span><h2>Preguntas frecuentes sobre filtros de lavadora {n}</h2></div>{faq_html(faq)}</div></section>
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Envíos</span><h2>Enviamos filtros para lavadora {n} a toda Colombia</h2><p>Escoge tu ciudad para ver el tiempo de entrega.</p></div>{chips(S.chips_ciudad[:24])}<p style="margin-top:12px"><a href="/filtros-lavadora-{S.clave}-por-ciudad/">Ver todas las ciudades →</a></p></div></section>
-<section class="m-sec alt"><div class="m-wrap"><div class="m-cta"><div><h2>¿No sabes cuál es tu filtro?</h2><p>Mándanos una foto del filtro viejo o el modelo de tu lavadora por WhatsApp.</p></div>{S.boton_asesor(f"Hola, no sé cuál filtro necesita mi lavadora {n}")}</div></div></section>'''
+<section class="m-sec alt"><div class="m-wrap"><div class="m-cta"><div><h2>¿No sabes cuál es tu filtro?</h2><p>Mándanos una foto del filtro viejo o el modelo de tu lavadora por WhatsApp.</p></div>{S.boton_asesor(f"Hola, no sé cuál filtro necesita mi lavadora {n}")}</div></div></section>
+{S.barra(f"Hola, necesito un filtro para mi lavadora {n}")}'''
     ld = [{"@type": "CollectionPage", "name": f"Filtros para lavadora {n}", "url": S.dominio + "/", "description": f"Filtros de pelusas y bolsas de malla para lavadoras {n} en Colombia."},
           {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i, "url": S.dominio + f"/{p['slug']}/", "name": p["nombre"]} for i, p in enumerate(M["productos"], 1)]},
           faq_ld(faq)]
@@ -291,21 +341,23 @@ def pagina_producto(S, p):
     <div class="m-aviso"><span style="font-size:22px">💬</span><span><b>¿Sirve para tu {d}?</b>Antes de comprar, el asesor confirma contigo el modelo correcto. Mándale una foto del filtro viejo o el modelo de tu {d}.</span></div>
     {compra}
     {S.boton_asesor(f"Hola, quiero consultar por el {p['nombre']}", "m-btn block wa", "💬 Pedir o preguntar al asesor por WhatsApp")}
-    <ul class="m-ok"><li><b>Envío a toda Colombia</b> por transportadora, con número de guía.</li><li><b>Fácil de cambiar</b>: sin técnico ni herramientas.</li><li><b>Pedido fácil</b>: lo confirmas con el asesor por WhatsApp.</li></ul>
+    <ul class="m-ok"><li><b>Envío a toda Colombia</b> por transportadora, con número de guía.</li><li><b>Fácil de cambiar</b>: sin técnico ni herramientas.</li><li><b>Pago contra entrega</b>: pagas cuando recibes el paquete (el asesor confirma si aplica en tu ciudad).</li></ul>
   </div>
 </div></div>
 <section class="m-sec alt"><div class="m-wrap"><div class="m-texto"><div class="m-cab"><span class="eyebrow">Descripción</span><h2>{esc(p["nombre"])}</h2></div>
 <p>Es un {esc(p["corto"].lower())}: {p["forma"]}. Sirve para atrapar las pelusas y los residuos que sueltan las prendas durante el {ciclo}, de modo que no vuelvan a la ropa ni {efecto} {n}.</p>
 <p>Si el tuyo ya está roto, deformado o la malla no se limpia bien, es el momento de cambiarlo. Para estar seguros de que es el que necesita tu {d}, el asesor revisa el modelo contigo por WhatsApp.</p></div></div></section>
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Marca de la {d}</dt><dd>{n}</dd><dt>Tipo</dt><dd>{esc(p["tipo"])}</dd><dt>Descripción</dt><dd>{p["forma"]}</dd><dt>Instalación</dt><dd>A mano, sin herramientas</dd><dt>Precio</dt><dd>{cop(p["precio"]) if p["precio"] else "Consúltalo con el asesor por WhatsApp"}</dd><dt>Envío</dt><dd>A toda Colombia por transportadora</dd></dl></div></section>
+{bloque_entrega()}
 <section class="m-sec alt"><div class="m-wrap"><section class="caja tutorial" id="instalacion"><h2>Cómo instalar el {esc(p["corto"].lower())}: paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in INSTALACION.get(p.get("inst"), pasos_limpieza(n)))}</ol><p class="m-mut">{NOTA_INSTALACION}</p></section></div></section>
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Preguntas</span><h2>Preguntas frecuentes</h2></div>{faq_html(faq)}</div></section>
-<section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Más filtros</span><h2>Otros filtros {n}</h2></div>{chips(otros)}</div></section>'''
+<section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Más filtros</span><h2>Otros filtros {n}</h2></div>{chips(otros)}</div></section>
+{S.barra(f"Hola, quiero consultar por el {p['nombre']}")}'''
     prod = {"@type": "Product", "name": p["nombre"], "image": f"{S.raiz}/img/{p['id']}.jpg", "brand": {"@type": "Brand", "name": n},
             "description": f"{p['corto']} para {d} {n} ({p['tipo']}). Envío a toda Colombia."}
     if p["precio"]:
         prod["offers"] = {"@type": "Offer", "priceCurrency": "COP", "price": p["precio"], "availability": "https://schema.org/InStock", "url": f"{S.dominio}/{p['slug']}/"}
-    S.pagina(f"/{p['slug']}/", f"{p['nombre']} | Envío a toda Colombia", f"{p['corto']} para {d} {n} ({p['tipo']}). Pregunta al asesor por WhatsApp el precio y recibe en toda Colombia.", cuerpo,
+    S.pagina(f"/{p['slug']}/", f"{p['nombre']} | Pago contra entrega", f"{p['corto']} para {d} {n} ({p['tipo']}). Pregunta al asesor por WhatsApp el precio y recibe en toda Colombia.", cuerpo,
              [prod, faq_ld(faq), S.breadcrumb((p["corto"], None))], "0.9", f'<link rel="preload" as="image" href="/img/{p["id"]}.webp"><meta property="og:image" content="{S.raiz}/img/{p["id"]}.jpg">')
 
 
@@ -346,13 +398,15 @@ def paginas_ciudad(S):
         ciudad, depto = c[0], c[1]
         ruta = f"/filtro-lavadora-{S.clave}-{slug(ciudad)}/"
         h1 = f"Filtro para lavadora {n} en {ciudad}"
-        faq = [(f"¿Envían filtros para lavadora {n} a {ciudad}?", f"Sí. Enviamos por transportadora a {ciudad} ({depto}) y te mandamos el número de guía. Pregunta al asesor por el tiempo de entrega."),
+        faq = [(f"¿Envían filtros para lavadora {n} a {ciudad}?", f"Sí. Enviamos por transportadora a {ciudad} ({depto}) y te mandamos el número de guía. Pregunta al asesor por el tiempo de entrega y si hay pago contra entrega en tu ciudad."),
                ("¿Cómo sé cuál filtro necesito?", "Mándale al asesor una foto del filtro viejo o el modelo de tu lavadora por WhatsApp.")]
         cuerpo = f'''<div class="m-wrap">{S.miga((f"Lavadoras {n} en {ciudad}", None))}<div class="m-texto"><h1>{esc(h1)}</h1>
 <p>Si tienes una lavadora {n} en {esc(ciudad)}, {esc(depto)}, aquí encuentras filtros de pelusas y bolsas de malla. Los enviamos por transportadora y el asesor te confirma el modelo correcto antes de comprar.</p>
 {chips([(p["corto"], f"/{p['slug']}/") for p in M["productos"]])}
 <p style="margin-top:16px">{S.boton_asesor(f"Hola, soy de {ciudad} y necesito un filtro para mi lavadora {n}")}</p>
-<h2>Preguntas frecuentes</h2>{faq_html(faq)}<p><a href="/filtros-lavadora-{S.clave}-por-ciudad/">Ver todas las ciudades →</a></p></div></div>'''
+<h2>Preguntas frecuentes</h2>{faq_html(faq)}<p><a href="/filtros-lavadora-{S.clave}-por-ciudad/">Ver todas las ciudades →</a></p></div></div>
+{bloque_entrega()}
+{S.barra(f"Hola, soy de {ciudad} y necesito un filtro para mi lavadora {n}")}'''
         S.pagina(ruta, f"{h1} | Envío por transportadora", f"Filtros de pelusas para lavadora {n} en {ciudad}, {depto}. Pregunta al asesor por WhatsApp y recibe en tu ciudad.", cuerpo,
                  [faq_ld(faq), S.breadcrumb((f"Lavadoras {n} en {ciudad}", None))], "0.6")
     cuerpo = f'<div class="m-wrap">{S.miga(("Ciudades", None))}<div class="m-texto"><h1>Filtros para lavadora {n} en toda Colombia</h1><p>Elige tu ciudad.</p>{chips(S.chips_ciudad)}</div></div>'
@@ -382,6 +436,11 @@ function lav_evento_whatsapp(): string
 
 CSS_EXTRA = '''
 /* Tienda de lavadoras */
+.lav-entrega{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+.lav-entrega-foto{border-radius:var(--r-foto,24px);overflow:hidden;box-shadow:0 18px 40px -20px rgba(0,0,0,.35)}.lav-entrega-foto img{width:100%;height:auto;display:block}
+.lav-entrega-tx h2{margin:6px 0 10px}.lav-entrega-tx .m-mut{margin-top:10px;font-size:14px}
+@media(max-width:860px){.lav-entrega{grid-template-columns:1fr;gap:20px}}
+.m-barra .m-btn.wa{min-height:46px}
 /* LG: misma estructura que Samsung (cabecera y pie oscuros) con el rojo y el blanco de la marca */
 body.m-lg{--f-titulo:"Plus Jakarta Sans",system-ui,sans-serif;--f-texto:"Plus Jakarta Sans",system-ui,sans-serif;--ls-marca:.22em;
   --pri:#a50034;--ink:#2a0a14;--muted:#6b5058;--fondo:#ffffff;--panel:#fbf0f3;--card:#ffffff;--suave:#f8e0e7;--line:#f0d3dc;--ok:#0f8a5f;
@@ -433,8 +492,8 @@ def limpiar_textos(out):
 
 
 LEGALES = {
-    "terminos": ("Términos y condiciones", """<p>Este sitio presenta filtros de pelusas y bolsas de malla para lavadoras. No tiene carrito ni pago en línea: los pedidos se hacen por WhatsApp con un asesor.</p>
-<h2>Cómo se hace un pedido</h2><p>Escribe al asesor por WhatsApp con el modelo de tu lavadora o una foto del filtro viejo. El asesor te confirma el filtro, el precio, el valor del envío y la forma de pago antes de que compres.</p>
+    "terminos": ("Términos y condiciones", """<p>Este sitio presenta filtros de pelusas y bolsas de malla para lavadoras. No tiene carrito ni pago en línea: los pedidos se hacen por WhatsApp con un asesor y se pagan contra entrega.</p>
+<h2>Cómo se hace un pedido</h2><p>Escribe al asesor por WhatsApp con el modelo de tu lavadora o una foto del filtro viejo. El asesor te confirma el filtro, el precio, el valor del envío y si hay pago contra entrega en tu ciudad antes de que compres.</p><h2>Pago contra entrega</h2><p>Pagas cuando recibes el paquete. Revisa el producto al recibirlo. Si el envío no tiene pago contra entrega en tu ciudad, el asesor te lo dice antes de despachar y acuerdas con él otra forma de pago.</p>
 <h2>Confirma antes de comprar</h2><p>Las fotos son de referencia. Antes de pagar, compara el filtro con el que tienes o confirma el modelo de tu lavadora con el asesor.</p>
 <h2>Marcas</h2><p>Los nombres de marca se usan solo para indicar el tipo de lavadora. Somos un comercio independiente.</p>"""),
     "privacidad": ("Tratamiento de datos personales", """<p>Cuando nos escribes por WhatsApp usamos tu nombre, tu número y los datos que nos des (ciudad, dirección, modelo de la lavadora) solo para atender tu consulta, confirmar tu pedido y coordinar el envío.</p>
@@ -459,6 +518,7 @@ HOME_FAQ = [
     ("¿Cómo sé cuál filtro necesita mi lavadora?", "Escríbele al asesor de tu marca por WhatsApp con una foto del filtro viejo o con el modelo de la lavadora. Te confirma cuál es antes de que compres."),
     ("¿Cuánto cuesta?", "El precio depende del filtro. El asesor te responde por WhatsApp con el valor y el tiempo de entrega a tu ciudad."),
     ("¿Hacen envíos a toda Colombia?", "Sí, enviamos por transportadora a todo el país y te mandamos el número de guía."),
+    ("¿Cómo pago?", "Con pago contra entrega: pagas cuando recibes el paquete. El asesor te confirma si está disponible en tu ciudad."),
 ]
 
 
@@ -483,13 +543,16 @@ def pagina_home(out, dominio, Ss):
     <h1>Filtros para lavadoras Samsung y LG</h1>
     <p class="lead">Filtros de pelusas y bolsas de malla para lavadoras Samsung y LG, y filtro para secadora LG. Elige tu marca, cuéntale tu modelo al asesor por WhatsApp y te decimos cuál necesitas. Enviamos a toda Colombia.</p>
     <div class="acc"><a class="m-btn" href="#marcas">Elegir mi marca</a></div>
-    <ul><li>Envío a toda Colombia</li><li>Pedido por WhatsApp</li><li>Asesor que te confirma el modelo</li></ul>
+    <ul><li>Pago contra entrega</li><li>Envío a toda Colombia</li><li>Asesor que te confirma el modelo</li></ul>
   </div>
 </div></section>
+{confianza()}
 <section class="m-sec" id="marcas"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Escoge tu marca</span><h2>¿De qué marca es tu lavadora?</h2></div><div class="m-grid lav-marcas">{cuerpo_marcas}</div></div></section>
 <section class="m-sec alt" id="filtros"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Catálogo</span><h2>Todos los filtros</h2><p>Pregunta por el tuyo y el asesor te confirma el modelo correcto antes de comprar.</p></div><div class="m-grid">{tarj}</div></div></section>
-<section class="m-sec" id="preguntas"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Resolvemos tus dudas</span><h2>Preguntas frecuentes</h2></div>{faq_html(HOME_FAQ)}</div></section>
-<section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Envíos</span><h2>Enviamos a toda Colombia</h2></div><p>{" · ".join(f'<a href="/{S.clave}/filtros-lavadora-{S.clave}-por-ciudad/">Ciudades {esc(S.M["nombre"])}</a>' for S in Ss)}</p></div></section>'''
+{bloque_entrega()}
+{tres_pasos()}
+<section class="m-sec alt" id="preguntas"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Resolvemos tus dudas</span><h2>Preguntas frecuentes</h2></div>{faq_html(HOME_FAQ)}</div></section>
+<section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Envíos</span><h2>Enviamos a toda Colombia</h2></div><p>{" · ".join(f'<a href="/{S.clave}/filtros-lavadora-{S.clave}-por-ciudad/">Ciudades {esc(S.M["nombre"])}</a>' for S in Ss)}</p></div></section>'''
     ld = [{"@type": "WebSite", "name": "Filtros para lavadoras", "url": dominio + "/"}, faq_ld(HOME_FAQ),
           {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i, "url": f"{dominio}/{S.clave}/{p['slug']}/", "name": p["nombre"]} for i, (S, p) in enumerate([(S, p) for S in Ss for p in S.M["productos"]], 1)]}]
     escribir(out, "/", "home", "Filtros para lavadoras Samsung y LG | Envío a toda Colombia", "Filtros de pelusas y bolsas de malla para lavadoras Samsung y LG. Pregunta al asesor por WhatsApp y recibe en toda Colombia.", cuerpo, ld,
@@ -532,7 +595,7 @@ def construir_todo(dominio):
     mp = mp.replace("Distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia, con envío gratis a todo el país y pago seguro en línea.", "Filtros de pelusas para lavadora ' . h($M['nombre']) . ', con envío a todo Colombia y pago seguro en línea.")
     mp = mp.replace("Distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia. ' . h($M['nombre']) . ' y su logo son marcas registradas de su dueño y se usan con autorización.", "' . h($M['nombre']) . ' y su logo son marcas de su dueño y se mencionan solo para indicar el tipo de lavadora. Somos un comercio independiente.")
     mp = mp.replace('<script src="/carrito.js" defer></script>', '').replace("'</div><div class=\"m-wrap m-pie-medios\"><span>🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'", "'</div>'")
-    mp = re.sub(r"\$cart = '.*?';\n", "$cart = '';\n", mp, count=1, flags=re.S).replace("<a href=\"/carrito.php\">Mi carrito</a>", "").replace("🔒 Pago seguro en línea", "💬 Asesor por WhatsApp")
+    mp = re.sub(r"\$cart = '.*?';\n", "$cart = '';\n", mp, count=1, flags=re.S).replace("<a href=\"/carrito.php\">Mi carrito</a>", "").replace("🔒 Pago seguro en línea", "💵 Pago contra entrega")
     mp = mp.replace(" y pago seguro en línea", " y atención por WhatsApp")
     mp = mp.replace("Distribuidor autorizado", "Filtros para lavadora").replace("Precios en pesos colombianos con envío incluido.", "Precios en pesos colombianos.")
     mp = mp.replace("Cuándo cambiarlo y cómo instalarlo", "Cómo limpiarlo y cambiarlo")
@@ -556,6 +619,7 @@ def construir_todo(dominio):
     # 3) marcas
     (out / "img").mkdir(exist_ok=True)
     shutil.copy(BASE / "img" / "icono.svg", out / "img" / "icono.svg")
+    preparar_entrega(out)
     Ss = [Sitio(c, dominio, out) for c in MARCAS]
     for S in Ss:
         preparar_fotos(S.M, out)

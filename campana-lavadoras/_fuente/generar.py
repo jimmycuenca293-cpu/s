@@ -8,7 +8,7 @@ RAIZ = QUI.parent
 WEB = RAIZ.parent / "filtroya-web" / "sitios-lavadoras" / "tienda"
 DOM = "https://filtrosparalavadoras.click"
 CAMP = "Filtros Lavadoras - Búsqueda - Colombia"
-PROHIBIDAS = re.compile(r"original|genuin|compatib|100 ?%|mejor |garantiz|contra entrega|gratis", re.I)
+PROHIBIDAS = re.compile(r"original|genuin|compatib|100 ?%|mejor |garantiz|gratis", re.I)
 
 
 def url(ruta):
@@ -17,12 +17,12 @@ def url(ruta):
     return f"{DOM}/{r}/" if r else f"{DOM}/"
 
 
-GEN_H = ["Pedido por WhatsApp", "Asesor Te Confirma el Modelo", "Envío a Toda Colombia", "Filtros para Samsung y LG", "Escríbenos por WhatsApp",
+GEN_H = ["Pago contra Entrega", "Pedido por WhatsApp", "Asesor Te Confirma el Modelo", "Envío a Toda Colombia", "Filtros para Samsung y LG", "Escríbenos por WhatsApp",
          "Cambio Paso a Paso", "Precio por WhatsApp", "Atención por WhatsApp", "Envía la Foto de tu Filtro", "Te Decimos Cuál Necesitas"]
 GEN_D = ["Dinos el modelo de tu lavadora por WhatsApp y te confirmamos el filtro que necesitas.",
          "Envía una foto del filtro viejo y el asesor te dice cuál es. Pedido por WhatsApp.",
          "Cada filtro trae su paso a paso para cambiarlo. Sin técnico y sin herramientas.",
-         "Enviamos por transportadora a todo el país, con número de guía."]
+         "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."]
 
 G = []
 
