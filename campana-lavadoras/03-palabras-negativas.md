@@ -1,0 +1,62 @@
+# 3. Palabras negativas (a nivel de campaña)
+
+Son búsquedas por las que NO quieres pagar. Ya vienen en `05-archivos-para-importar/palabras-negativas.csv`. Incluyen las de quien busca comprar una lavadora (no un filtro) y otras marcas. Revisa el informe de **Términos de búsqueda** cada semana y agrega las que no te sirvan.
+
+- usado
+- usada
+- segunda mano
+- casero
+- casera
+- reciclar
+- manual
+- pdf
+- descargar
+- video
+- youtube
+- curso
+- empleo
+- trabajo
+- vacante
+- gratis
+- comprar lavadora
+- lavadora nueva
+- precio de lavadora
+- lavadoras en oferta
+- oferta lavadora
+- falabella
+- exito
+- alkosto
+- homecenter
+- ktronix
+- olx
+- mercadolibre
+- amazon
+- alibaba
+- aliexpress
+- temu
+- reparacion
+- reparar
+- servicio tecnico
+- tecnico
+- motor
+- bomba
+- tarjeta electronica
+- compresor
+- correa
+- rodamiento
+- empaque
+- amortiguador
+- mabe
+- whirlpool
+- haceb
+- electrolux
+- challenger
+- kalley
+- midea
+- nevera
+- refrigerador
+- aire acondicionado
+- pdf manual
+- patente
+- dibujo
+- juguete
