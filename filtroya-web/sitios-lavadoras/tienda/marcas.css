@@ -270,6 +270,15 @@ details>summary{cursor:pointer;padding:13px 0;font-weight:700}details>p{padding-
 .m-dd>a,.m-nav .m-ancho{white-space:nowrap}
 
 /* Tienda de lavadoras */
+/* LG: misma estructura que Samsung (cabecera y pie oscuros) con el rojo y el blanco de la marca */
+body.m-lg{--f-titulo:"Plus Jakarta Sans",system-ui,sans-serif;--f-texto:"Plus Jakarta Sans",system-ui,sans-serif;--ls-marca:.22em;
+  --pri:#a50034;--ink:#2a0a14;--muted:#6b5058;--fondo:#ffffff;--panel:#fbf0f3;--card:#ffffff;--suave:#f8e0e7;--line:#f0d3dc;--ok:#0f8a5f;
+  --anuncio:#a50034;--pie:#5c001c;--hero-bg:radial-gradient(1100px 480px at 85% -10%,#d4144f 0%,transparent 60%),linear-gradient(160deg,#5c001c 0%,#a50034 100%);--hero-ink:#fff;--hero-acento:#ffb3c8;
+  --r-btn:999px;--r-card:18px;--r-foto:24px;--r-ic:12px;--card-borde:1px solid var(--line);--card-sombra:none}
+body.m-lg .m-sello b{color:#a50034}
+body.m-lg .m-hero .m-btn:not(.sec){background:#fff;color:#a50034}
+body.m-lg .m-cta{background:linear-gradient(120deg,#a50034,#7a0026);color:#fff}body.m-lg .m-cta h2{color:#fff}
+
 .m-logo-txt{font-size:20px;font-weight:800;letter-spacing:-.01em;color:inherit}.m-sello{gap:0}
 .m-btn.wa{background:#1fa855;border-color:#1fa855;color:#fff}.m-btn.wa:hover{filter:brightness(1.07)}
 .lav-fotos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-self:center}.lav-fotos .lf{background:#fff;border-radius:14px;padding:8px;height:200px;display:grid;place-items:center;overflow:hidden}.lav-fotos picture{display:grid;place-items:center;width:100%;height:100%}.lav-fotos img{width:100%;height:100%;object-fit:contain}
