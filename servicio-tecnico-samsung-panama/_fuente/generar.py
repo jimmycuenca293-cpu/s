@@ -24,6 +24,10 @@ ICONOS = {
 def wa(msg=""):
     return f"https://wa.me/{WA}" + (f"?text={quote(msg)}" if msg else "")
 def R(depth): return "../" * depth
+def pic(nombre, alt, depth, w, h, clase="fto", lazy=True):
+    r = R(depth)
+    return f'<picture class="{clase}"><source srcset="{r}images/fotos/{nombre}.webp" type="image/webp"><img src="{r}images/fotos/{nombre}.jpg" alt="{esc(alt)}" width="{w}" height="{h}"{" loading=\"lazy\"" if lazy else ""}></picture>'
+FOTO_EQ = {"neveras": ("tecnico-nevera", "Técnico reparando una refrigeradora Samsung en una cocina de Panamá"), "lavadoras": ("tecnico-lavadora-2", "Técnico revisando una lavadora Samsung en una cocina de Panamá")}
 
 NAV_EQ = [(k, v["corto"]) for k, v in EQUIPOS.items()]
 
@@ -129,6 +133,7 @@ def pagina_inicio():
 <ul class="pts"><li>Visitas en 24 a 48 horas</li><li>Garantía en pieza y mano de obra</li><li>{HORARIO}</li></ul></div>
 <div class="hero-tarjeta"><b>¿Qué equipo tienes?</b><div class="mini">{"".join(f'<a href="electrodomesticos/{k}/index.html"><span class="ic">{ICONOS[v["icono"]]}</span>{esc(v["corto"])}</a>' for k, v in EQUIPOS.items())}</div><small>Toca tu equipo para ver fallas comunes y cómo lo reparamos.</small></div></div></section>
 <section class="conf"><div class="w"><div><b>Técnico especializado</b><small>Enfocado en equipos Samsung</small></div><div><b>Costo claro</b><small>Antes de reparar</small></div><div><b>Garantía</b><small>Pieza y mano de obra</small></div><div><b>Atención por WhatsApp</b><small>Respuesta en minutos</small></div></div></section>
+<section class="sec fotos-s"><div class="w"><div class="cab"><span class="ey">En tu casa</span><h2>Técnicos revisando tus equipos Samsung</h2><p>Medimos, diagnosticamos y te explicamos la falla antes de reparar.</p></div><div class="grid g3 gf">{pic("tecnico-nevera", "Técnico reparando una nevera Samsung", 0, 1024, 572)}{pic("tecnico-lavadora-2", "Técnico revisando una lavadora Samsung", 0, 1024, 572)}{pic("tecnico-lavadora-1", "Técnico reparando una lavadora Samsung de carga frontal", 0, 1024, 572)}</div></div></section>
 <section class="sec" id="equipos"><div class="w"><div class="cab"><span class="ey">Qué reparamos</span><h2>Reparación de electrodomésticos Samsung en Panamá</h2><p>Atendemos los equipos Samsung más usados en casas y apartamentos de la ciudad.</p></div>{tarjetas_eq(0)}</div></section>
 <section class="sec alt" id="servicios"><div class="w"><div class="cab"><span class="ey">Servicios</span><h2>Servicio técnico a domicilio</h2></div><div class="grid g4">{"".join(f'<a class="card" href="servicios/{k}-samsung-panama.html"><h3>{esc(v[1])}</h3><p>{esc(v[2][:130].rsplit(" ",1)[0])}…</p><span class="mas">Ver más →</span></a>' for k, v in SERVICIOS.items())}</div></div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Así trabajamos</span><h2>Cómo agendar tu servicio técnico Samsung</h2></div><ol class="pasos">{"".join(f"<li><b>{esc(a)}</b><p>{esc(b)}</p></li>" for a, b in pasos)}</ol></div></section>
@@ -156,7 +161,7 @@ def paginas_equipo():
         # índice
         fallas = "".join(f'<tr><td data-l="Síntoma"><b>{esc(f[0])}</b></td><td data-l="Causa probable">{esc(f[1])}</td><td data-l="Urgencia"><span class="u {slug(f[2])}">{esc(f[2])}</span></td></tr>' for f in e["fallas"])
         cuerpo = f'''{miga(2, (e["nombre"], None))}<section class="hero chico"><div class="w hg"><div><span class="ey">Servicio técnico Samsung</span><h1>{esc(e["titulo_h1"])}</h1><p class="lead">{esc(e["intro"])}</p>
-<div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a><a class="btn sec lg" href="../../diagnostico.html">Diagnóstico rápido</a></div></div><div class="hero-tarjeta"><span class="ic grande">{ICONOS[e["icono"]]}</span><b>{esc(e["nombre"])} Samsung</b><small>{HORARIO}</small></div></div></section>
+<div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a><a class="btn sec lg" href="../../diagnostico.html">Diagnóstico rápido</a></div></div>{f'<div class="hero-tarjeta foto">{pic(FOTO_EQ[k][0], FOTO_EQ[k][1], 2, 1024, 572, "fto", False)}</div>' if k in FOTO_EQ else f'<div class="hero-tarjeta"><span class="ic grande">{ICONOS[e["icono"]]}</span><b>{esc(e["nombre"])} Samsung</b><small>{HORARIO}</small></div>'}</div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Modelos</span><h2>Qué {e["corto"].lower()} Samsung reparamos</h2></div><ul class="lista">{"".join(f"<li>{esc(m)}</li>" for m in e["modelos"])}</ul></div></section>
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Fallas</span><h2>Fallas comunes de {e["corto"].lower()} Samsung y su causa probable</h2><p>Estas son las que más vemos en Panamá. Si tu equipo tiene otro síntoma, escríbenos.</p></div><div class="tabla-w"><table class="tabla"><thead><tr><th>Síntoma</th><th>Causa probable</th><th>Urgencia</th></tr></thead><tbody>{fallas}</tbody></table></div><p><a href="fallas-comunes.html">Ver las fallas con más detalle →</a></p></div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Más información</span><h2>Todo sobre {e["art"]} Samsung</h2></div><div class="chips">{sub_links}<a href="../../servicios/mantenimiento-preventivo-samsung-panama.html">Mantenimiento preventivo</a><a href="../../servicios/instalacion-samsung-panama.html">Instalación</a></div></div></section>
@@ -286,6 +291,8 @@ nav{display:flex;align-items:center;gap:18px}nav>a,.dd>a{color:var(--ink);text-d
 .falla{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;margin:14px 0}.falla p{margin:6px 0}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{padding:8px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;font:600 14px inherit;cursor:pointer}.tab.on{background:var(--pri);color:#fff;border-color:var(--pri)}
 .pie{background:var(--pri2);color:#dfe5ff;padding-top:44px}.pie a{color:#dfe5ff;text-decoration:none}.cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px}.cols b{display:block;color:#fff;margin-bottom:8px}.cols a{display:block;padding:3px 0;font-size:14px}.pl{font-size:18px}.hor{font-size:13px;opacity:.8}.legal{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.15);margin-top:28px;padding-block:18px;font-size:12px;opacity:.85}@media(max-width:860px){.cols{grid-template-columns:1fr 1fr}}@media(max-width:560px){.cols{grid-template-columns:1fr}}
 .wa-flot{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:8px;background:#25d366;color:#fff!important;border-radius:999px;padding:12px 18px 12px 14px;font-weight:800;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.25)}.wa-flot svg{width:28px;height:28px}@media(max-width:520px){.wa-flot span{display:none}.wa-flot{padding:14px}}
+
+.fto img{width:100%;height:auto;display:block;border-radius:var(--r)}.hero-tarjeta.foto{padding:0;overflow:hidden;background:none;border:0}.gf .fto img{aspect-ratio:16/10;object-fit:cover}
 '''
 JS = '''(function(){
   window.dataLayer=window.dataLayer||[];
