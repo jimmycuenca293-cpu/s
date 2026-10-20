@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Contenido del sitio «Servicio técnico Samsung en Panamá» (SEO orgánico).
-Servicio técnico independiente: no se dice «autorizado», «oficial» ni «original»."""
+Servicio técnico Samsung Panamá (SEO orgánico)."""
 
 DOMINIO = "https://serviciotecnicosamsungpanama.click"
 NOMBRE = "Servicio Técnico Samsung Panamá"
@@ -206,7 +206,7 @@ BLOG = [
 ]
 
 FAQ_GENERAL = [
- ("¿Son servicio técnico autorizado de Samsung?", "No. Somos un servicio técnico independiente especializado en electrodomésticos Samsung. Si tu equipo está en garantía de fábrica, te lo decimos para que la hagas valer donde corresponde."),
+ ("¿Hacen servicio técnico Samsung a domicilio en Panamá?", "Sí. Vamos a tu casa u oficina en Ciudad de Panamá, San Miguelito y Panamá Oeste para revisar y reparar tu equipo Samsung. Escríbenos por WhatsApp con el modelo y la falla."),
  ("¿Qué equipos Samsung reparan?", "Neveras, lavadoras, secadoras y aires acondicionados."),
  ("¿Dónde dan servicio?", "En Ciudad de Panamá y alrededores: zonas como San Francisco, Bella Vista, Obarrio, Costa del Este, Punta Pacífica, Betania, San Miguelito, Albrook, Arraiján y La Chorrera."),
  ("¿Cuánto tardan en llegar?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas; te confirmamos disponibilidad por WhatsApp."),
