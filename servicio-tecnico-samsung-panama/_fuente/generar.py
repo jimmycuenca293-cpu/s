@@ -133,9 +133,9 @@ def negocio_ld(nombre=None, area=None):
             "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "07:00", "closes": "18:00"}],
             "priceRange": "$$", "knowsAbout": ["Reparación de neveras Samsung", "Reparación de lavadoras Samsung", "Reparación de secadoras Samsung"]}
 
+EQ_IMGS = {"neveras": ["prod-nevera-top", "prod-nevera-sbs"], "lavadoras": ["prod-lavadora-sup"], "secadoras": ["prod-torre"]}
 def eq_img(k, r):
-    n = HERO_PROD[k]; w, h = WH[n]
-    return f'<img class="eqimg" src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{w}" height="{h}" loading="lazy">'
+    return '<div class="eqimgs">' + "".join(f'<img class="eqimg" src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{WH[n][0]}" height="{WH[n][1]}" loading="lazy">' for n in EQ_IMGS[k]) + '</div>'
 
 def tarjetas_eq(depth):
     r = R(depth)
@@ -143,16 +143,11 @@ def tarjetas_eq(depth):
         f'<a class="card eq" href="{r}electrodomesticos/{k}/index.html">{eq_img(k, r)}<h3>{esc(v["nombre"])}</h3><p>{esc(v["intro"][:120].rsplit(" ",1)[0])}…</p><span class="mas">Ver servicio →</span></a>'
         for k, v in EQUIPOS.items()) + "</div>"
 
+HERO_CARDS = [("Neveras", "neveras", ["prod-nevera-top"]), ("Refrigeradores", "neveras", ["prod-nevera-sbs"]), ("Lavadoras", "lavadoras", ["prod-lavadora-sup"]), ("Secadoras y torres de lavado", "secadoras", ["prod-torre"])]
+def _imgs(ns, r=""):
+    return "".join(f'<img src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{WH[n][0]}" height="{WH[n][1]}">' for n in ns)
 def hero_cards():
-    out = ""
-    for k, v in EQUIPOS.items():
-        if k in HERO_PROD:
-            n = HERO_PROD[k]; w, h = WH[n]
-            media = f'<img src="images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{w}" height="{h}">'
-        else:
-            media = f'<span class="ic">{ICONOS[v["icono"]]}</span>'
-        out += f'<a href="electrodomesticos/{k}/index.html">{media}<span class="nm">{esc(v["corto"])}</span></a>'
-    return out
+    return "".join(f'<a href="electrodomesticos/{k}/index.html">{_imgs(ns)}<span class="nm">{esc(t)}</span></a>' for t, k, ns in HERO_CARDS)
 
 # ------------------------------------------------------------ páginas
 def pagina_inicio():
@@ -206,7 +201,7 @@ def paginas_equipo():
         fallas = "".join(f'<tr><td data-l="Síntoma"><b>{esc(f[0])}</b></td><td data-l="Causa probable">{esc(f[1])}</td><td data-l="Urgencia"><span class="u {slug(f[2])}">{esc(f[2])}</span></td></tr>' for f in e["fallas"])
         cuerpo = f'''{miga(2, (e["nombre"], None))}<section class="hero chico"><div class="w hg"><div><span class="ey">Servicio técnico Samsung</span><h1>{esc(e["titulo_h1"])}</h1><p class="lead">{esc(e["intro"])}</p>
 <div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a><a class="btn sec lg" href="../../diagnostico.html">Diagnóstico rápido</a></div></div>{f'<div class="hero-tarjeta foto">{pic(FOTO_EQ[k][0], FOTO_EQ[k][1], 2, 1024, 572, "fto", False)}</div>' if k in FOTO_EQ else f'<div class="hero-tarjeta foto">{fpic(HERO_PROD[k], 2, None, False)}</div>'}</div></section>
-<section class="sec"><div class="w"><div class="cab"><span class="ey">Modelos</span><h2>Qué {e["corto"].lower()} Samsung reparamos</h2></div><ul class="lista">{"".join(f"<li>{esc(m)}</li>" for m in e["modelos"])}</ul></div></section>
+<section class="sec"><div class="w"><div class="cab"><span class="ey">Modelos</span><h2>Qué {e["corto"].lower()} Samsung reparamos</h2></div><div class="eqimgs big">{"".join(fpic(n, 2) for n in EQ_IMGS[k])}</div><ul class="lista">{"".join(f"<li>{esc(m)}</li>" for m in e["modelos"])}</ul></div></section>
 {split(FOTO_SPLIT[k], e["corto"] + " Samsung", f"Cómo trabajamos en {e['art']} Samsung", "Revisamos el equipo en tu casa, te explicamos la falla y el costo antes de empezar y reparamos con garantía sobre la pieza y la mano de obra.", "diagnostico.html", "Diagnóstico rápido", True, False, 2) if k in FOTO_SPLIT else ""}
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Fallas</span><h2>Fallas comunes de {e["corto"].lower()} Samsung y su causa probable</h2><p>Estas son las que más vemos en Panamá. Si tu equipo tiene otro síntoma, escríbenos.</p></div><div class="tabla-w"><table class="tabla"><thead><tr><th>Síntoma</th><th>Causa probable</th><th>Urgencia</th></tr></thead><tbody>{fallas}</tbody></table></div><p><a href="fallas-comunes.html">Ver las fallas con más detalle →</a></p></div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Más información</span><h2>Todo sobre {e["art"]} Samsung</h2></div><div class="chips">{sub_links}<a href="../../servicios/mantenimiento-preventivo-samsung-panama.html">Mantenimiento preventivo</a><a href="../../servicios/instalacion-samsung-panama.html">Instalación</a></div><h3>Más sobre {e["corto"].lower()} Samsung</h3><div class="chips">{subs_chips(k, e, 2)}</div><h3>Fallas de {e["corto"].lower()} Samsung</h3><div class="chips">{"".join(f'<a href="../../{furl(k, f)}">{esc(f[0])}</a>' for f in e["fallas"])}</div><h3>{esc(e["corto"])} Samsung por zona</h3><div class="chips">{"".join(f'<a href="../../{zurl(k, z[0])}">{esc(z[0])}</a>' for z in ZONAS)}</div></div></section>
@@ -321,7 +316,7 @@ nav{display:flex;align-items:center;gap:18px}nav>a,.dd>a{color:var(--ink);text-d
 @media(max-width:900px){nav{display:none}.burger{display:block}.barra span{display:none}.barra .w{justify-content:center}}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--pri);color:#fff;border:2px solid var(--pri);border-radius:999px;padding:11px 20px;font-weight:700;text-decoration:none;cursor:pointer;font-size:15px}.btn svg{width:20px;height:20px}.btn.lg{padding:14px 26px;font-size:16px}.btn.sm{padding:6px 14px;font-size:13px}.btn.sec{background:transparent;color:#fff;border-color:#fff}.btn.wa{background:var(--wa);border-color:var(--wa);color:#fff}.btn:hover{filter:brightness(1.08)}
 .hero{background:radial-gradient(1000px 420px at 85% -10%,#2f4fd0 0%,transparent 60%),linear-gradient(160deg,var(--pri2),var(--pri));color:#fff;padding-block:56px}.hero.chico{padding-block:40px}.hero h1{color:#fff}.hero .lead{font-size:18px;opacity:.95;max-width:60ch}.hg{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}.ey{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#a9b8ff;margin-bottom:10px}.sec:not(.alt) .ey,.sec.alt .ey,.card .ey{color:var(--pri)}.acc{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}.pts{display:flex;gap:18px;flex-wrap:wrap;list-style:none;padding:0;margin:0;font-weight:600;font-size:14px}.pts li::before{content:"✓ ";color:#a9f5c9}
-.hero-tarjeta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}.eqimg{height:150px;width:auto;max-width:100%;object-fit:contain;align-self:center;margin-bottom:6px}.mini.fotos a{flex-direction:column;justify-content:center;text-align:center;padding:12px 8px;gap:8px}.mini.fotos img{height:130px;width:auto;max-width:100%;object-fit:contain}.mini.fotos .nm{font-weight:700;line-height:1.2}.mini.fotos .ic svg{width:70px;height:70px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini a{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:12px;text-decoration:none;font-weight:700;font-size:14px}.mini .ic svg,.ic.grande svg{width:34px;height:34px}.mini .ic{color:var(--pri)}.ic.grande{color:#fff}.ic.grande svg{width:56px;height:56px}
+.hero-tarjeta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}.eqimgs.big{gap:24px;margin:0 0 22px;justify-content:flex-start}.eqimgs.big .fto{width:auto}.eqimgs.big img{height:260px;width:auto;border:0;padding:0}.eqimgs{display:flex;justify-content:center;gap:10px}.eqimg{height:150px;width:auto;max-width:100%;object-fit:contain;align-self:center;margin-bottom:6px}.mini.fotos a{flex-direction:column;justify-content:center;text-align:center;padding:12px 8px;gap:8px}.mini.fotos img{height:120px;width:auto;max-width:100%;object-fit:contain}.mini.fotos .nm{font-weight:700;line-height:1.2}.mini.fotos .ic svg{width:70px;height:70px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini a{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:12px;text-decoration:none;font-weight:700;font-size:14px}.mini .ic svg,.ic.grande svg{width:34px;height:34px}.mini .ic{color:var(--pri)}.ic.grande{color:#fff}.ic.grande svg{width:56px;height:56px}
 @media(max-width:860px){.hg{grid-template-columns:1fr}}
 .conf{border-bottom:1px solid var(--line)}.conf .w{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding-block:20px}.conf b{display:block}.conf small{color:var(--mut)}@media(max-width:760px){.conf .w{grid-template-columns:1fr 1fr}}
 .sec{padding-block:56px}.sec.alt{background:var(--panel)}.cab{max-width:720px;margin-bottom:28px}.cab p{color:var(--mut)}.grid{display:grid;gap:18px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}@media(max-width:960px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}@media(max-width:620px){.g4,.g3,.g2{grid-template-columns:1fr}}
