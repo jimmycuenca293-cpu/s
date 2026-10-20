@@ -22,22 +22,15 @@ SEO_EQ = {
  ("Secadoras Samsung en apartamentos de {z}", "En apartamentos y torres es frecuente que la salida de aire sea larga o tenga curvas, lo que alarga el secado. Revisamos la instalación completa y te recomendamos mejoras."),
  ("¿Cuánto cuesta reparar una secadora Samsung en {z}?", "Te confirmamos el costo de la visita antes de ir y el de la reparación antes de empezar, según la falla y el modelo."),
 ],
-"aires-acondicionados": [
- ("Servicio técnico de aires acondicionados Samsung en {z}", "Instalamos, damos mantenimiento y reparamos aires acondicionados Samsung tipo split, inverter y de pared en {z}. Si tu aire no enfría, gotea agua dentro del cuarto, hace ruido, huele mal, se congela o no responde al control, nuestro técnico lo revisa en tu casa u oficina."),
- ("Mantenimiento de aires acondicionados Samsung en Panamá", "Con el calor de Panamá el aire trabaja casi todo el año. Recomendamos limpieza de filtros cada mes o dos, y mantenimiento completo de la unidad interior y exterior cada 6 a 12 meses, para mantener el rendimiento, bajar el consumo de energía y evitar fugas y malos olores."),
- ("Aires Samsung inverter: fallas de tarjeta, sensores y gas", "Los aires inverter dependen de tarjetas electrónicas y sensores. Revisamos la unidad exterior, el compresor, el ventilador, la carga de gas y los códigos de error. Si el aire no enfría bien, la causa puede ser desde un filtro sucio hasta una fuga de refrigerante."),
- ("Instalación de aires acondicionados Samsung", "Instalamos aires tipo split con la ubicación, el drenaje y la conexión eléctrica adecuados. Una buena instalación evita goteras, ruidos y pérdidas de eficiencia."),
- ("¿Cuánto cuesta el servicio de aire acondicionado Samsung en {z}?", "Depende del servicio (mantenimiento, reparación o instalación) y del modelo. Te lo confirmamos por WhatsApp antes de agendar la visita."),
-],
 }
 SEO_HOME = [
- ("Servicio técnico Samsung en Panamá: reparación a domicilio", "Somos tu servicio técnico Samsung en Ciudad de Panamá, San Miguelito, Panamá Oeste y zonas cercanas. Reparamos neveras y refrigeradoras, lavadoras, secadoras y aires acondicionados Samsung en tu casa, apartamento u oficina, con diagnóstico claro, costo confirmado antes de reparar y garantía en la pieza y la mano de obra."),
+ ("Servicio técnico Samsung en Panamá: reparación a domicilio", "Somos tu servicio técnico Samsung en Ciudad de Panamá, San Miguelito, Panamá Oeste y zonas cercanas. Reparamos neveras y refrigeradoras, lavadoras y secadoras Samsung en tu casa, apartamento u oficina, con diagnóstico claro, costo confirmado antes de reparar y garantía en la pieza y la mano de obra."),
  ("Técnico Samsung en Panamá para neveras y refrigeradoras", "Nevera que no enfría, refrigeradora con escarcha, ruido en el congelador, dispensador de agua dañado o fábrica de hielo que no produce: atendemos neveras Samsung de congelador superior, Side by Side, French Door y Family Hub en barrios como San Francisco, Bella Vista, Obarrio, Costa del Este, Punta Pacífica, Paitilla y Betania."),
  ("Reparación de lavadoras y secadoras Samsung", "Lavadoras que no centrifugan, no desaguan, gotean o muestran códigos de error (UE, 5E, 4E, dE, LE) y secadoras que no secan o no calientan. Trabajamos con lavadoras de carga superior y frontal, con motor inverter, y con secadoras eléctricas y a gas."),
- ("Mantenimiento, instalación y diagnóstico de aires acondicionados Samsung", "Mantenimiento preventivo, limpieza, carga de gas, reparación de unidades interior y exterior e instalación de aires split e inverter Samsung. Ideal para mantener el aire eficiente durante todo el año."),
+ ("Mantenimiento, instalación y diagnóstico de lavadoras, neveras y secadoras Samsung", "Mantenimiento preventivo, limpieza de filtros y desagües, nivelación e instalación de lavadoras y secadoras, y revisión completa de neveras Samsung. Ideal para evitar fallas con el calor y la humedad de Panamá."),
  ("Zonas de cobertura y cómo pedir tu visita", "Damos servicio en más de 30 zonas de la ciudad y alrededores. Escríbenos por WhatsApp con el equipo, el modelo y la falla; coordinamos la visita en 24 a 48 horas y te confirmamos el costo antes de empezar."),
 ]
 HUB_EXTRA = [
- ("Servicio técnico Samsung: neveras, lavadoras, secadoras y aires", "Atendemos neveras y refrigeradoras, lavadoras de carga superior y frontal, secadoras y aires acondicionados Samsung. Cada visita incluye diagnóstico, explicación de la falla, costo claro y garantía."),
+ ("Servicio técnico Samsung: neveras, lavadoras y secadoras", "Atendemos neveras y refrigeradoras, lavadoras de carga superior y frontal, y secadoras Samsung. Cada visita incluye diagnóstico, explicación de la falla, costo claro y garantía."),
  ("Cobertura en Ciudad de Panamá, San Miguelito y Panamá Oeste", "Visitamos San Francisco, Bella Vista, Obarrio, Marbella, Costa del Este, Punta Pacífica, Paitilla, Betania, Albrook, Clayton, Arraiján, La Chorrera y más zonas. Consulta la lista completa en la página de cobertura."),
 ]

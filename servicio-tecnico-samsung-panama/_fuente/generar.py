@@ -84,7 +84,7 @@ def pie(depth):
     zs = "".join(f'<a href="{r}zonas/{slug(z[0])}.html">{esc(z[0])}</a>' for z in ZONAS[:8])
     eq = "".join(f'<a href="{r}electrodomesticos/{k}/index.html">{esc(v["nombre"])}</a>' for k, v in EQUIPOS.items())
     sv = "".join(f'<a href="{r}servicios/{k}-samsung-panama.html">{esc(v[1])}</a>' for k, v in SERVICIOS.items())
-    return (f'</main><footer class="pie"><div class="w cols"><div><a class="logo pl-logo" href="{r}index.html" aria-label="{NOMBRE}"><span class="lg-i">{ICONOS["wrench"]}</span><span class="lg-t">Servicio Técnico<b>Samsung</b><small>Panamá</small></span></a><p>Servicio técnico Samsung en Panamá: reparación a domicilio de neveras, lavadoras, secadoras y aires acondicionados Samsung, con cobertura en Ciudad de Panamá, San Miguelito y Panamá Oeste.</p>'
+    return (f'</main><footer class="pie"><div class="w cols"><div><a class="logo pl-logo" href="{r}index.html" aria-label="{NOMBRE}"><span class="lg-i">{ICONOS["wrench"]}</span><span class="lg-t">Servicio Técnico<b>Samsung</b><small>Panamá</small></span></a><p>Servicio técnico Samsung en Panamá: reparación a domicilio de neveras, lavadoras y secadoras Samsung, con cobertura en Ciudad de Panamá, San Miguelito y Panamá Oeste.</p>'
             f'<p class="marca-pie">Equipos que atendemos: <img src="{r}images/logo/samsung-marca.png" alt="Samsung" width="120" height="40"></p><a class="btn wa" href="{wa()}" target="_blank" rel="noopener" data-wa="pie">{ICONOS["wa"]} {TEL}</a><p class="hor">{HORARIO}</p></div>'
             f'<div><b>Electrodomésticos</b>{eq}</div><div><b>Servicios</b>{sv}<a href="{r}diagnostico.html">Diagnóstico rápido</a><a href="{r}garantia.html">Garantía</a></div>'
             f'<div><b>Zonas</b>{zs}<a href="{r}zonas-de-cobertura.html">Ver todas las zonas</a></div></div>'
@@ -128,15 +128,19 @@ def cta(msg, titulo="¿Necesitas servicio técnico Samsung en Panamá?", texto="
 
 def negocio_ld(nombre=None, area=None):
     return {"@context": "https://schema.org", "@type": "LocalBusiness", "@id": DOMINIO + "/#negocio", "name": NOMBRE, "url": DOMINIO + "/", "telephone": TEL,
-            "description": "Servicio técnico Samsung en Panamá: neveras, lavadoras, secadoras y aires acondicionados Samsung en Ciudad de Panamá.",
+            "description": "Servicio técnico Samsung en Panamá: neveras, lavadoras y secadoras Samsung en Ciudad de Panamá.",
             "areaServed": [{"@type": "City", "name": "Ciudad de Panamá"}, {"@type": "AdministrativeArea", "name": "Panamá"}] if not area else [{"@type": "Place", "name": area}],
             "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "07:00", "closes": "18:00"}],
-            "priceRange": "$$", "knowsAbout": ["Reparación de neveras Samsung", "Reparación de lavadoras Samsung", "Reparación de secadoras Samsung", "Aire acondicionado Samsung"]}
+            "priceRange": "$$", "knowsAbout": ["Reparación de neveras Samsung", "Reparación de lavadoras Samsung", "Reparación de secadoras Samsung"]}
+
+def eq_img(k, r):
+    n = HERO_PROD[k]; w, h = WH[n]
+    return f'<img class="eqimg" src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{w}" height="{h}" loading="lazy">'
 
 def tarjetas_eq(depth):
     r = R(depth)
-    return '<div class="grid g4">' + "".join(
-        f'<a class="card eq" href="{r}electrodomesticos/{k}/index.html"><span class="ic">{ICONOS[v["icono"]]}</span><h3>{esc(v["nombre"])}</h3><p>{esc(v["intro"][:120].rsplit(" ",1)[0])}…</p><span class="mas">Ver servicio →</span></a>'
+    return '<div class="grid g3">' + "".join(
+        f'<a class="card eq" href="{r}electrodomesticos/{k}/index.html">{eq_img(k, r)}<h3>{esc(v["nombre"])}</h3><p>{esc(v["intro"][:120].rsplit(" ",1)[0])}…</p><span class="mas">Ver servicio →</span></a>'
         for k, v in EQUIPOS.items()) + "</div>"
 
 def hero_cards():
@@ -156,7 +160,7 @@ def pagina_inicio():
     zonas = "".join(f'<a href="zonas/{slug(z[0])}.html">{esc(z[0])}</a>' for z in ZONAS[:16])
     pasos = [("Escríbenos por WhatsApp", "Cuéntanos qué equipo es, el modelo y qué le pasa. Si puedes, manda una foto o un video."), ("Coordinamos la visita", "Te confirmamos disponibilidad en tu zona, normalmente en 24 a 48 horas."), ("Diagnóstico y reparación", "Revisamos el equipo en tu casa, te explicamos la falla y el costo, y reparamos si estás de acuerdo.")]
     cuerpo = f'''<section class="hero"><div class="w hg"><div><span class="ey">Servicio técnico Samsung Panamá</span><h1>Servicio técnico Samsung en Panamá</h1>
-<p class="lead">Reparamos neveras, lavadoras, secadoras y aires acondicionados Samsung a domicilio en Ciudad de Panamá. Diagnóstico honesto, costo claro antes de reparar y garantía en cada reparación.</p>
+<p class="lead">Reparamos neveras, lavadoras y secadoras Samsung a domicilio en Ciudad de Panamá. Diagnóstico honesto, costo claro antes de reparar y garantía en cada reparación.</p>
 <div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a><a class="btn sec lg" href="diagnostico.html">Diagnóstico rápido</a></div>
 <ul class="pts"><li>Visitas en 24 a 48 horas</li><li>Garantía en pieza y mano de obra</li><li>{HORARIO}</li></ul></div>
 <div class="hero-tarjeta"><b>¿Qué equipo Samsung tienes?</b><div class="mini fotos">{hero_cards()}</div><small>Toca tu equipo para ver fallas comunes y cómo lo reparamos.</small></div></div></section>
@@ -179,7 +183,7 @@ def pagina_inicio():
 {split("nevera-familia", "Tu cocina de nuevo en marcha", "Que tu nevera vuelva a enfriar sin complicaciones", "Escríbenos con el modelo y la falla. Coordinamos la visita en 24 a 48 horas y te confirmamos el costo antes de empezar.", "diagnostico.html", "Abrir diagnóstico rápido", False, True)}
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Cobertura</span><h2>Servicio técnico Samsung en tu zona de Panamá</h2><p>Llegamos a los principales barrios de la ciudad, San Miguelito y Panamá Oeste.</p></div><div class="chips">{zonas}</div><p><a href="zonas-de-cobertura.html">Ver todas las zonas de cobertura →</a></p></div></section>
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Diagnóstico rápido</span><h2>¿Qué le pasa a tu equipo Samsung?</h2><p>Mira los síntomas más comunes, la causa probable y qué tan urgente es.</p></div><p><a class="btn lg" href="diagnostico.html">Abrir el diagnóstico rápido</a></p></div></section>
-<section class="sec"><div class="w"><div class="cab"><span class="ey">Lo que más buscan</span><h2>Servicio técnico Samsung en Panamá: encuentra lo que necesitas</h2><p>Reparación de neveras, lavadoras, secadoras y aires acondicionados Samsung, teléfono, precios, repuestos, filtros y zonas de cobertura.</p></div><div class="chips">{busquedas_chips(0)}</div>
+<section class="sec"><div class="w"><div class="cab"><span class="ey">Lo que más buscan</span><h2>Servicio técnico Samsung en Panamá: encuentra lo que necesitas</h2><p>Reparación de neveras, lavadoras y secadoras Samsung, teléfono, precios, repuestos, filtros y zonas de cobertura.</p></div><div class="chips">{busquedas_chips(0)}</div>
 <div class="grid g3 gf" style="margin-top:22px"><a class="card" href="cambio-filtro-nevera-samsung-panama.html">{fpic("prod-nevera-top", 0)}<h3>Nevera Samsung con dispensador</h3><p>Agua lenta, hielo y avisos del panel.</p></a>
 <a class="card" href="fallas/neveras-samsung-{fslug(EQUIPOS['neveras']['fallas'][0])}.html">{fpic("prod-nevera-sbs", 0)}<h3>La nevera Samsung no enfría</h3><p>Causas y qué revisar antes de llamar.</p></a>
 <a class="card" href="codigos-de-error-lavadora-samsung-panama.html">{fpic("prod-lavadora-sup", 0)}<h3>Códigos de error de lavadora</h3><p>UE, 5E, 4E, dE, LE: qué significan.</p></a></div>
@@ -187,8 +191,8 @@ def pagina_inicio():
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Dudas frecuentes</span><h2>Preguntas frecuentes sobre el servicio técnico Samsung en Panamá</h2></div>{faq_html(FAQ_GENERAL)}</div></section>
 {cta(msg)}'''
     ld = [negocio_ld(), faq_ld(FAQ_GENERAL)]
-    escribir("index.html", "Servicio Técnico Samsung Panamá | Neveras, Lavadoras y Aires",
-             "Servicio técnico Samsung en Panamá: reparación de neveras, lavadoras, secadoras y aires acondicionados a domicilio. Diagnóstico honesto, garantía y visitas en 24-48 horas. WhatsApp +507 6933-7976.", cuerpo, ld, "1.0")
+    escribir("index.html", "Servicio Técnico Samsung Panamá | Neveras, Lavadoras y Secadoras",
+             "Servicio técnico Samsung en Panamá: reparación de neveras, lavadoras y secadoras a domicilio. Diagnóstico honesto, garantía y visitas en 24-48 horas. WhatsApp +507 6933-7976.", cuerpo, ld, "1.0")
 
 def paginas_equipo():
     for k, e in EQUIPOS.items():
@@ -201,7 +205,7 @@ def paginas_equipo():
         # índice
         fallas = "".join(f'<tr><td data-l="Síntoma"><b>{esc(f[0])}</b></td><td data-l="Causa probable">{esc(f[1])}</td><td data-l="Urgencia"><span class="u {slug(f[2])}">{esc(f[2])}</span></td></tr>' for f in e["fallas"])
         cuerpo = f'''{miga(2, (e["nombre"], None))}<section class="hero chico"><div class="w hg"><div><span class="ey">Servicio técnico Samsung</span><h1>{esc(e["titulo_h1"])}</h1><p class="lead">{esc(e["intro"])}</p>
-<div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a><a class="btn sec lg" href="../../diagnostico.html">Diagnóstico rápido</a></div></div>{f'<div class="hero-tarjeta foto">{pic(FOTO_EQ[k][0], FOTO_EQ[k][1], 2, 1024, 572, "fto", False)}</div>' if k in FOTO_EQ else f'<div class="hero-tarjeta"><span class="ic grande">{ICONOS[e["icono"]]}</span><b>{esc(e["nombre"])} Samsung</b><small>{HORARIO}</small></div>'}</div></section>
+<div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a><a class="btn sec lg" href="../../diagnostico.html">Diagnóstico rápido</a></div></div>{f'<div class="hero-tarjeta foto">{pic(FOTO_EQ[k][0], FOTO_EQ[k][1], 2, 1024, 572, "fto", False)}</div>' if k in FOTO_EQ else f'<div class="hero-tarjeta foto">{fpic(HERO_PROD[k], 2, None, False)}</div>'}</div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Modelos</span><h2>Qué {e["corto"].lower()} Samsung reparamos</h2></div><ul class="lista">{"".join(f"<li>{esc(m)}</li>" for m in e["modelos"])}</ul></div></section>
 {split(FOTO_SPLIT[k], e["corto"] + " Samsung", f"Cómo trabajamos en {e['art']} Samsung", "Revisamos el equipo en tu casa, te explicamos la falla y el costo antes de empezar y reparamos con garantía sobre la pieza y la mano de obra.", "diagnostico.html", "Diagnóstico rápido", True, False, 2) if k in FOTO_SPLIT else ""}
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Fallas</span><h2>Fallas comunes de {e["corto"].lower()} Samsung y su causa probable</h2><p>Estas son las que más vemos en Panamá. Si tu equipo tiene otro síntoma, escríbenos.</p></div><div class="tabla-w"><table class="tabla"><thead><tr><th>Síntoma</th><th>Causa probable</th><th>Urgencia</th></tr></thead><tbody>{fallas}</tbody></table></div><p><a href="fallas-comunes.html">Ver las fallas con más detalle →</a></p></div></section>
@@ -232,7 +236,7 @@ def paginas_servicio():
     for k, (titulo, corto, desc, puntos) in SERVICIOS.items():
         msg = f"Hola, quiero agendar: {corto.lower()} para mi equipo Samsung en Panamá"
         ruta = f"servicios/{k}-samsung-panama.html"
-        faq = [(f"¿Qué equipos incluye el servicio de {corto.lower()}?", "Neveras, lavadoras, secadoras y aires acondicionados Samsung."), ("¿Dónde lo hacen?", "En Ciudad de Panamá, San Miguelito y Panamá Oeste. Escríbenos por WhatsApp para confirmar tu zona."), ("¿Cuánto cuesta?", "Te confirmamos el costo por WhatsApp antes de ir, según el equipo y el servicio.")]
+        faq = [(f"¿Qué equipos incluye el servicio de {corto.lower()}?", "Neveras, lavadoras y secadoras Samsung."), ("¿Dónde lo hacen?", "En Ciudad de Panamá, San Miguelito y Panamá Oeste. Escríbenos por WhatsApp para confirmar tu zona."), ("¿Cuánto cuesta?", "Te confirmamos el costo por WhatsApp antes de ir, según el equipo y el servicio.")]
         cuerpo = f'''{miga(1, (corto, None))}<section class="sec"><div class="w txt"><h1>{esc(titulo)}</h1><p class="lead">{esc(desc)}</p><h2>Qué incluye</h2><ul class="lista">{"".join(f"<li>{esc(p)}</li>" for p in puntos)}</ul>
 <div class="fotoc" style="max-width:720px">{pic("atencion-2", "Técnico y asesora de servicio en una oficina de atención", 1, 1024, 434)}</div><h2>Equipos que atendemos</h2>{tarjetas_eq(1)}<h2>{esc(corto)} por equipo</h2><div class="chips">{"".join(f'<a href="{k}-{k2}-samsung-panama.html">{esc(corto)} de {esc(e2["corto"].lower())} Samsung</a>' for k2, e2 in EQUIPOS.items())}</div><h2>Preguntas frecuentes</h2>{faq_html(faq)}</div></section>{cta(msg, f"Agenda: {corto.lower()}")}'''
         escribir(ruta, f"{titulo} | {TEL}", f"{desc[:150]} WhatsApp {TEL}.", cuerpo, [negocio_ld(), faq_ld(faq), bc((corto, None))], "0.8")
@@ -245,13 +249,13 @@ def paginas_zona():
         msg = f"Hola, necesito servicio técnico para mi equipo Samsung en {z}"
         faq = [(f"¿Atienden en {z}?", f"Sí, damos servicio técnico Samsung a domicilio en {z} ({area}). Escríbenos por WhatsApp y te confirmamos disponibilidad."),
                (f"¿Cuánto tardan en llegar a {z}?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas."),
-               ("¿Qué equipos Samsung reparan?", "Neveras, lavadoras, secadoras y aires acondicionados.")]
-        cuerpo = f'''{miga(1, ("Zonas", "zonas-de-cobertura.html"), (z, None))}<section class="hero chico"><div class="w hg"><div><span class="ey">{esc(area)}</span><h1>Servicio técnico Samsung en {esc(z)}</h1><p class="lead">Reparación a domicilio de neveras, lavadoras, secadoras y aires acondicionados Samsung en {esc(z)}. Diagnóstico honesto, costo claro y garantía.</p>
+               ("¿Qué equipos Samsung reparan?", "Neveras, lavadoras y secadoras.")]
+        cuerpo = f'''{miga(1, ("Zonas", "zonas-de-cobertura.html"), (z, None))}<section class="hero chico"><div class="w hg"><div><span class="ey">{esc(area)}</span><h1>Servicio técnico Samsung en {esc(z)}</h1><p class="lead">Reparación a domicilio de neveras, lavadoras y secadoras Samsung en {esc(z)}. Diagnóstico honesto, costo claro y garantía.</p>
 <div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a></div></div><div class="hero-tarjeta"><b>{esc(z)}</b><small>{HORARIO}</small></div></div></section>
 <section class="sec"><div class="w txt"><h2>Técnico Samsung a domicilio en {esc(z)}</h2><p>{esc(t1)}</p><p>{esc(t2)}</p>
 <h2>Equipos Samsung que reparamos en {esc(z)}</h2>{tarjetas_eq(1)}<h2>Preguntas frecuentes en {esc(z)}</h2>{faq_html(faq)}
 <h2>Servicio por equipo en {esc(z)}</h2><div class="chips">{"".join(f'<a href="{k2}-samsung-{s}.html">Reparación de {esc(e2["corto"].lower())} Samsung en {esc(z)}</a>' for k2, e2 in EQUIPOS.items())}</div><h2>Zonas cercanas</h2><div class="chips">{"".join(f'<a href="{slug(v[0])}.html">{esc(v[0])}</a>' for v in vec)}</div></div></section>{cta(msg, f"¿Equipo Samsung con falla en {z}?")}'''
-        escribir(ruta, f"Servicio Técnico Samsung en {z} | Neveras, Lavadoras, Aires", f"Servicio técnico Samsung a domicilio en {z}, Panamá: neveras, lavadoras, secadoras y aires acondicionados. Garantía y visitas en 24-48 horas. WhatsApp {TEL}.", cuerpo,
+        escribir(ruta, f"Servicio Técnico Samsung en {z} | Neveras, Lavadoras y Secadoras", f"Servicio técnico Samsung a domicilio en {z}, Panamá: neveras, lavadoras y secadoras. Garantía y visitas en 24-48 horas. WhatsApp {TEL}.", cuerpo,
                  [negocio_ld(area=z), faq_ld(faq), bc(("Zonas", "zonas-de-cobertura.html"), (z, None))], "0.6")
     por_area = {}
     for z, tipo, area in ZONAS: por_area.setdefault(area, []).append(z)
@@ -271,8 +275,8 @@ def paginas_blog():
         ld = [{"@context": "https://schema.org", "@type": "Article", "headline": titulo, "description": resumen, "inLanguage": "es-PA", "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@type": "Organization", "name": NOMBRE}, "mainEntityOfPage": f"{DOMINIO}/blog/{sl}.html", "datePublished": "2026-10-20", "dateModified": "2026-10-20"}, bc(("Blog", "blog/index.html"), (titulo, None))]
         escribir(f"blog/{sl}.html", f"{titulo} | {NOMBRE}", resumen, cuerpo, ld, "0.6")
         tarj += f'<a class="card" href="{sl}.html"><span class="ey">{esc(EQUIPOS[cat]["corto"])}</span><h3>{esc(titulo)}</h3><p>{esc(resumen)}</p><span class="mas">Leer →</span></a>'
-    cuerpo = f'''{miga(1, ("Blog", None))}<section class="sec"><div class="w"><div class="cab"><h1>Blog: guías de electrodomésticos Samsung en Panamá</h1><p>Consejos para entender las fallas de tu nevera, lavadora, secadora o aire acondicionado Samsung.</p></div><div class="grid g3">{tarj}</div></div></section>'''
-    escribir("blog/index.html", f"Blog de electrodomésticos Samsung en Panamá | {NOMBRE}", "Guías sobre fallas de neveras, lavadoras, secadoras y aires acondicionados Samsung en Panamá: causas y qué hacer.", cuerpo, [bc(("Blog", None))], "0.7")
+    cuerpo = f'''{miga(1, ("Blog", None))}<section class="sec"><div class="w"><div class="cab"><h1>Blog: guías de electrodomésticos Samsung en Panamá</h1><p>Consejos para entender las fallas de tu nevera, lavadora o secadora Samsung.</p></div><div class="grid g3">{tarj}</div></div></section>'''
+    escribir("blog/index.html", f"Blog de electrodomésticos Samsung en Panamá | {NOMBRE}", "Guías sobre fallas de neveras, lavadoras y secadoras Samsung en Panamá: causas y qué hacer.", cuerpo, [bc(("Blog", None))], "0.7")
 
 def pagina_diagnostico():
     items = []
@@ -282,8 +286,8 @@ def pagina_diagnostico():
     tabs = '<button class="tab on" data-f="todos">Todos</button>' + "".join(f'<button class="tab" data-f="{k}">{esc(v["corto"])}</button>' for k, v in EQUIPOS.items())
     cards = "".join(f'<article class="falla dg" data-eq="{k}"><span class="ey">{esc(c)} Samsung</span><h3>{esc(f[0])}</h3><p><b>Causa probable:</b> {esc(f[1])}</p><p><b>Qué revisar:</b> {esc(f[3])}</p><p><span class="u {slug(f[2])}">{esc(f[2])}</span> <a class="btn sm wa" href="{wa(f"Hola, mi {s} Samsung tiene este problema: {f[0]}")}" target="_blank" rel="noopener" data-wa="diagnostico">{ICONOS["wa"]} Consultar</a></p></article>' for k, c, s, f in items)
     ld = {"@context": "https://schema.org", "@type": "ItemList", "name": "Diagnóstico rápido de electrodomésticos Samsung", "itemListElement": [{"@type": "ListItem", "position": i, "name": f"{x[2].capitalize()} Samsung: {x[3][0]}"} for i, x in enumerate(items, 1)]}
-    cuerpo = f'''{miga(0, ("Diagnóstico rápido", None))}<section class="sec"><div class="w"><div class="cab"><h1>Diagnóstico rápido: ¿qué le pasa a tu equipo Samsung?</h1><p>{len(items)} fallas comunes de neveras, lavadoras, secadoras y aires acondicionados Samsung, con la causa probable y qué tan urgente es.</p></div><div class="tabs" role="tablist">{tabs}</div><div class="grid g2" id="dg">{cards}</div></div></section>{cta("Hola, necesito diagnóstico para mi equipo Samsung en Panamá")}'''
-    escribir("diagnostico.html", f"Diagnóstico rápido de neveras, lavadoras, secadoras y aires Samsung | {NOMBRE}", f"{len(items)} fallas comunes de electrodomésticos Samsung en Panamá con causa probable y urgencia. Consulta tu caso por WhatsApp.", cuerpo, [ld, bc(("Diagnóstico rápido", None))], "0.8")
+    cuerpo = f'''{miga(0, ("Diagnóstico rápido", None))}<section class="sec"><div class="w"><div class="cab"><h1>Diagnóstico rápido: ¿qué le pasa a tu equipo Samsung?</h1><p>{len(items)} fallas comunes de neveras, lavadoras y secadoras Samsung, con la causa probable y qué tan urgente es.</p></div><div class="tabs" role="tablist">{tabs}</div><div class="grid g2" id="dg">{cards}</div></div></section>{cta("Hola, necesito diagnóstico para mi equipo Samsung en Panamá")}'''
+    escribir("diagnostico.html", f"Diagnóstico rápido de neveras, lavadoras y secadoras Samsung | {NOMBRE}", f"{len(items)} fallas comunes de electrodomésticos Samsung en Panamá con causa probable y urgencia. Consulta tu caso por WhatsApp.", cuerpo, [ld, bc(("Diagnóstico rápido", None))], "0.8")
 
 def paginas_info():
     msg = "Hola, necesito servicio técnico para mi equipo Samsung en Panamá"
@@ -292,7 +296,7 @@ def paginas_info():
 <h2>Qué cubre</h2><ul class="lista"><li><b>Pieza reemplazada:</b> si vuelve a fallar por defecto de la pieza dentro del plazo acordado, la revisamos sin costo adicional de mano de obra.</li><li><b>Mano de obra:</b> si el mismo síntoma reaparece por un error de instalación o ajuste, lo corregimos sin cargo.</li></ul>
 <h2>Qué no cubre</h2><p>Daños nuevos por mal uso, variaciones de voltaje posteriores al servicio o intervención de terceros después de nuestra visita.</p>{faq_html([("¿Cuánto dura la garantía?", "Depende de la pieza y del tipo de reparación; te lo confirmamos por escrito al momento del servicio, antes de que pagues."), ("¿Qué hago si la falla vuelve?", "Escríbenos por WhatsApp con tu nombre y la fecha del servicio anterior; si está dentro del plazo, coordinamos la revisión.")])}</div></section>{cta(msg)}'''
     escribir("garantia.html", f"Garantía de servicio técnico Samsung en Panamá | {NOMBRE}", "Garantía sobre la pieza reemplazada y la mano de obra en cada reparación de electrodomésticos Samsung en Panamá.", c, [bc(("Garantía", None))], "0.5")
-    c = f'''{miga(0, ("Nosotros", None))}<section class="sec"><div class="w txt"><h1>Nosotros: especialistas en electrodomésticos Samsung en Panamá</h1><p class="lead">Somos un servicio técnico enfocado en electrodomésticos Samsung: neveras, lavadoras, secadoras y aires acondicionados.</p>
+    c = f'''{miga(0, ("Nosotros", None))}<section class="sec"><div class="w txt"><h1>Nosotros: especialistas en electrodomésticos Samsung en Panamá</h1><p class="lead">Somos un servicio técnico enfocado en electrodomésticos Samsung: neveras, lavadoras y secadoras.</p>
 <p>Esa especialización nos permite conocer a fondo los modelos que circulan en Panamá, sus fallas más comunes y los repuestos que realmente necesitan. Trabajamos con coordinación directa por WhatsApp, sin intermediarios.</p>
 <div class="fotoc" style="max-width:720px">{pic("atencion-1", "Técnico y asesora de servicio conversando en una oficina de atención al cliente", 0, 1024, 572)}</div><h2>Cómo trabajamos</h2><ul class="lista"><li><b>Diagnóstico honesto:</b> explicamos la falla antes de reparar. Si no vale la pena, te lo decimos.</li><li><b>Garantía:</b> en la pieza y en la mano de obra.</li><li><b>Tiempos claros:</b> visitas en 24 a 48 horas en la mayoría de zonas.</li><li><b>Costo claro:</b> te lo confirmamos antes de empezar.</li></ul>
 </div></section>{cta(msg)}'''
@@ -317,7 +321,7 @@ nav{display:flex;align-items:center;gap:18px}nav>a,.dd>a{color:var(--ink);text-d
 @media(max-width:900px){nav{display:none}.burger{display:block}.barra span{display:none}.barra .w{justify-content:center}}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--pri);color:#fff;border:2px solid var(--pri);border-radius:999px;padding:11px 20px;font-weight:700;text-decoration:none;cursor:pointer;font-size:15px}.btn svg{width:20px;height:20px}.btn.lg{padding:14px 26px;font-size:16px}.btn.sm{padding:6px 14px;font-size:13px}.btn.sec{background:transparent;color:#fff;border-color:#fff}.btn.wa{background:var(--wa);border-color:var(--wa);color:#fff}.btn:hover{filter:brightness(1.08)}
 .hero{background:radial-gradient(1000px 420px at 85% -10%,#2f4fd0 0%,transparent 60%),linear-gradient(160deg,var(--pri2),var(--pri));color:#fff;padding-block:56px}.hero.chico{padding-block:40px}.hero h1{color:#fff}.hero .lead{font-size:18px;opacity:.95;max-width:60ch}.hg{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}.ey{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#a9b8ff;margin-bottom:10px}.sec:not(.alt) .ey,.sec.alt .ey,.card .ey{color:var(--pri)}.acc{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}.pts{display:flex;gap:18px;flex-wrap:wrap;list-style:none;padding:0;margin:0;font-weight:600;font-size:14px}.pts li::before{content:"✓ ";color:#a9f5c9}
-.hero-tarjeta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}.mini.fotos a{flex-direction:column;justify-content:center;text-align:center;padding:12px 8px;gap:8px}.mini.fotos img{height:130px;width:auto;max-width:100%;object-fit:contain}.mini.fotos .nm{font-weight:700;line-height:1.2}.mini.fotos .ic svg{width:70px;height:70px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini a{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:12px;text-decoration:none;font-weight:700;font-size:14px}.mini .ic svg,.ic.grande svg{width:34px;height:34px}.mini .ic{color:var(--pri)}.ic.grande{color:#fff}.ic.grande svg{width:56px;height:56px}
+.hero-tarjeta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}.eqimg{height:150px;width:auto;max-width:100%;object-fit:contain;align-self:center;margin-bottom:6px}.mini.fotos a{flex-direction:column;justify-content:center;text-align:center;padding:12px 8px;gap:8px}.mini.fotos img{height:130px;width:auto;max-width:100%;object-fit:contain}.mini.fotos .nm{font-weight:700;line-height:1.2}.mini.fotos .ic svg{width:70px;height:70px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini a{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:12px;text-decoration:none;font-weight:700;font-size:14px}.mini .ic svg,.ic.grande svg{width:34px;height:34px}.mini .ic{color:var(--pri)}.ic.grande{color:#fff}.ic.grande svg{width:56px;height:56px}
 @media(max-width:860px){.hg{grid-template-columns:1fr}}
 .conf{border-bottom:1px solid var(--line)}.conf .w{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding-block:20px}.conf b{display:block}.conf small{color:var(--mut)}@media(max-width:760px){.conf .w{grid-template-columns:1fr 1fr}}
 .sec{padding-block:56px}.sec.alt{background:var(--panel)}.cab{max-width:720px;margin-bottom:28px}.cab p{color:var(--mut)}.grid{display:grid;gap:18px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}@media(max-width:960px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}@media(max-width:620px){.g4,.g3,.g2{grid-template-columns:1fr}}
@@ -358,7 +362,7 @@ def estaticos():
     fb = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"; fr = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
     d.text((70, 150), "Servicio técnico", font=ImageFont.truetype(fb, 64), fill="white")
     d.text((70, 235), "Samsung en Panamá", font=ImageFont.truetype(fb, 84), fill="white")
-    d.text((70, 360), "Neveras · Lavadoras · Secadoras · Aires acondicionados", font=ImageFont.truetype(fr, 34), fill=(200, 214, 255))
+    d.text((70, 360), "Neveras · Lavadoras · Secadoras", font=ImageFont.truetype(fr, 34), fill=(200, 214, 255))
     d.text((70, 480), f"WhatsApp {TEL}  ·  {HORARIO}", font=ImageFont.truetype(fb, 36), fill="white")
     (OUT / "images").mkdir(exist_ok=True); im.save(OUT / "images" / "og.jpg", quality=88)
 
@@ -366,7 +370,7 @@ def indices():
     urls = "".join(f"<url><loc>{DOMINIO}/{r}</loc><lastmod>2026-10-20</lastmod><priority>{p[0]}</priority></url>\n" for r, p in sorted(PAGINAS.items(), key=lambda x: -float(x[1][0])))
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n", encoding="utf-8")
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nUser-agent: GPTBot\nAllow: /\nUser-agent: ClaudeBot\nAllow: /\nUser-agent: PerplexityBot\nAllow: /\nUser-agent: Google-Extended\nAllow: /\n\nSitemap: {DOMINIO}/sitemap.xml\n", encoding="utf-8")
-    txt = f"# {NOMBRE}\n\n> Servicio técnico Samsung en Panamá: neveras, lavadoras, secadoras y aires acondicionados Samsung a domicilio en Ciudad de Panamá. WhatsApp {TEL}. {HORARIO}.\n\n## Servicios\n"
+    txt = f"# {NOMBRE}\n\n> Servicio técnico Samsung en Panamá: neveras, lavadoras y secadoras Samsung a domicilio en Ciudad de Panamá. WhatsApp {TEL}. {HORARIO}.\n\n## Servicios\n"
     for k, e in EQUIPOS.items(): txt += f"- [{e['titulo_h1']}]({DOMINIO}/electrodomesticos/{k}/index.html)\n"
     txt += "\n## Páginas clave\n" + "".join(f"- [{h['h1']}]({DOMINIO}/{h['f']})\n" for h in HUBS)
     txt += "\n## Zonas\n" + "".join(f"- [Servicio técnico Samsung en {z[0]}]({DOMINIO}/zonas/{slug(z[0])}.html)\n" for z in ZONAS)
@@ -378,9 +382,9 @@ def fslug(f): return slug(f[0])[:48].strip("-")
 def furl(k, f): return f"fallas/{k}-samsung-{fslug(f)}.html"
 def zurl(k, z): return f"zonas/{k}-samsung-{slug(z)}.html"
 FOTO_FALLA = {"neveras": ("dispensador-nevera", "Persona usando el dispensador de agua de una nevera Samsung French Door"), "lavadoras": ("tecnico-lavadora-1", "Técnico revisando una lavadora Samsung en Panamá"),
-              "secadoras": ("tecnico-lavadora-2", "Técnico revisando una secadora y lavadora Samsung"), "aires-acondicionados": ("tecnico-banner", "Técnico de servicio Samsung en Panamá")}
-FOTO_ZEQ = {"neveras": ("tecnico-nevera", FOTO_EQ["neveras"][1]), "lavadoras": ("tecnico-lavadora-2", FOTO_EQ["lavadoras"][1]), "secadoras": ("tecnico-lavadora-1", "Técnico revisando una secadora Samsung"), "aires-acondicionados": ("tecnico-banner", "Técnico de servicio Samsung en Panamá")}
-ROT = {"neveras": NEV_FOTOS, "lavadoras": ["tecnico-lavadora-1", "prod-lavadora-sup", "tecnico-lavadora-2"], "secadoras": ["prod-torre", "tecnico-lavadora-2", "tecnico-lavadora-1"], "aires-acondicionados": ["tecnico-banner"]}
+              "secadoras": ("tecnico-lavadora-2", "Técnico revisando una secadora y lavadora Samsung")}
+FOTO_ZEQ = {"neveras": ("tecnico-nevera", FOTO_EQ["neveras"][1]), "lavadoras": ("tecnico-lavadora-2", FOTO_EQ["lavadoras"][1]), "secadoras": ("tecnico-lavadora-1", "Técnico revisando una secadora Samsung")}
+ROT = {"neveras": NEV_FOTOS, "lavadoras": ["tecnico-lavadora-1", "prod-lavadora-sup", "tecnico-lavadora-2"], "secadoras": ["prod-torre", "tecnico-lavadora-2", "tecnico-lavadora-1"]}
 def foto_rot(k, i): return ROT[k][i % len(ROT[k])]
 PASOS = {"Urgente": "Si el síntoma es este, lo mejor es apagar y desconectar el equipo y escribirnos cuanto antes: seguir usándolo puede agravar el daño o la pérdida de alimentos.",
          "Revisar pronto": "No es una emergencia, pero conviene revisarlo pronto: una falla pequeña que se deja pasar suele terminar en una reparación más costosa.",
@@ -426,8 +430,8 @@ def paginas_fallas():
     for k, e in EQUIPOS.items():
         bloques += f'<h2>Fallas de {esc(e["corto"].lower())} Samsung</h2><div class="chips">' + "".join(f'<a href="{k}-samsung-{fslug(f)}.html">{esc(f[0])}</a>' for f in e["fallas"]) + "</div>"
     msg = "Hola, mi equipo Samsung tiene una falla y necesito un técnico en Panamá"
-    cuerpo = f'''{miga(1, ("Fallas", None))}<section class="sec"><div class="w txt"><h1>Fallas de electrodomésticos Samsung en Panamá: causas y soluciones</h1><p class="lead">{len(todas)} síntomas frecuentes de neveras, lavadoras, secadoras y aires acondicionados Samsung, con la causa probable y qué revisar.</p>{bloques}</div></section>{cta(msg)}'''
-    escribir("fallas/index.html", f"Fallas de neveras, lavadoras, secadoras y aires Samsung en Panamá | {TEL}", f"{len(todas)} fallas comunes de electrodomésticos Samsung en Panamá con causa probable y solución. Servicio técnico a domicilio. WhatsApp {TEL}.", cuerpo, [bc(("Fallas", None))], "0.8")
+    cuerpo = f'''{miga(1, ("Fallas", None))}<section class="sec"><div class="w txt"><h1>Fallas de electrodomésticos Samsung en Panamá: causas y soluciones</h1><p class="lead">{len(todas)} síntomas frecuentes de neveras, lavadoras y secadoras Samsung, con la causa probable y qué revisar.</p>{bloques}</div></section>{cta(msg)}'''
+    escribir("fallas/index.html", f"Fallas de neveras, lavadoras y secadoras Samsung en Panamá | {TEL}", f"{len(todas)} fallas comunes de electrodomésticos Samsung en Panamá con causa probable y solución. Servicio técnico a domicilio. WhatsApp {TEL}.", cuerpo, [bc(("Fallas", None))], "0.8")
 
 def paginas_zona_equipo():
     n = 0
@@ -455,42 +459,42 @@ def paginas_zona_equipo():
             n += 1
 
 HUBS = [
- dict(f="servicio-tecnico-samsung-panama.html", chip="Servicio técnico Samsung Panamá", t="Servicio Técnico Samsung Panamá | Neveras, Lavadoras, Secadoras y Aires", h1="Servicio técnico Samsung en Panamá", foto=("nevera-cocina", ALT["nevera-cocina"]), foto2="nevera-familia",
-      lead="Reparación a domicilio de neveras, lavadoras, secadoras y aires acondicionados Samsung en Ciudad de Panamá, San Miguelito y Panamá Oeste.",
-      secs=[("Qué es el servicio técnico Samsung que ofrecemos", "Atendemos en tu casa u oficina los electrodomésticos Samsung que presentan fallas: neveras que no enfrían, lavadoras que no centrifugan o no desaguan, secadoras que no secan y aires acondicionados que no enfrían o gotean. Revisamos el equipo, te explicamos la causa y confirmamos el costo antes de reparar."),
+ dict(f="servicio-tecnico-samsung-panama.html", chip="Servicio técnico Samsung Panamá", t="Servicio Técnico Samsung Panamá | Neveras, Lavadoras y Secadoras", h1="Servicio técnico Samsung en Panamá", foto=("nevera-cocina", ALT["nevera-cocina"]), foto2="nevera-familia",
+      lead="Reparación a domicilio de neveras, lavadoras y secadoras Samsung en Ciudad de Panamá, San Miguelito y Panamá Oeste.",
+      secs=[("Qué es el servicio técnico Samsung que ofrecemos", "Atendemos en tu casa u oficina los electrodomésticos Samsung que presentan fallas: neveras que no enfrían, lavadoras que no centrifugan o no desaguan, secadoras que no secan o no calientan. Revisamos el equipo, te explicamos la causa y confirmamos el costo antes de reparar."),
             ("Cómo funciona", "1) Escríbenos por WhatsApp con el equipo, el modelo y la falla. 2) Coordinamos la visita, normalmente en 24 a 48 horas. 3) Diagnosticamos en el sitio y te damos el costo. 4) Reparamos y probamos el equipo, con garantía sobre la pieza y la mano de obra."),
             ("Por qué elegir un técnico especializado en Samsung", "Conocer las fallas típicas de cada línea (inverter, carga frontal, French Door, dispensador, tarjetas de control) acorta el diagnóstico y evita cambiar piezas por prueba y error.")],
       faq=[("¿Qué incluye el servicio técnico Samsung a domicilio?", "Visita, diagnóstico en el sitio, explicación de la falla, cotización y reparación del equipo, con garantía."), ("¿En qué zonas de Panamá atienden?", "En Ciudad de Panamá, San Miguelito, Arraiján y La Chorrera, entre otras. Mira la lista de zonas de cobertura.")]),
  dict(f="telefono-servicio-tecnico-samsung-panama.html", chip="Teléfono servicio técnico Samsung Panamá", t="Teléfono y WhatsApp del Servicio Técnico Samsung en Panamá", h1="Teléfono del servicio técnico Samsung en Panamá", foto=None,
       lead=f"Llama o escribe por WhatsApp al {TEL}. Atendemos de lunes a sábado de 7:00am a 6:00pm.",
       secs=[("Contacto directo", f"WhatsApp y teléfono: {TEL}. Es la forma más rápida de pedir una visita: envíanos una foto del equipo, la etiqueta con el modelo (suele estar en el costado o en la parte trasera) y una descripción de la falla."),
-            ("Qué información enviar", "Tipo de equipo (nevera, lavadora, secadora o aire acondicionado), modelo, tiempo de uso, qué síntoma presenta, si muestra códigos de error y tu barrio o edificio. Con eso te confirmamos disponibilidad y costo de la visita."),
+            ("Qué información enviar", "Tipo de equipo (nevera, lavadora o secadora), modelo, tiempo de uso, qué síntoma presenta, si muestra códigos de error y tu barrio o edificio. Con eso te confirmamos disponibilidad y costo de la visita."),
             ("Horario", "Lunes a sábado de 7:00am a 6:00pm. Los mensajes enviados fuera de horario se responden el siguiente día hábil.")],
       faq=[("¿Cuál es el número de servicio técnico Samsung en Panamá?", f"Nuestro WhatsApp y teléfono es {TEL}."), ("¿Atienden por WhatsApp?", "Sí, es el canal principal: ahí coordinamos la visita y confirmamos el costo.")]),
- dict(f="tecnico-samsung-a-domicilio-panama.html", chip="Técnico Samsung a domicilio", t="Técnico Samsung a Domicilio en Panamá | Neveras, Lavadoras y Aires", h1="Técnico Samsung a domicilio en Panamá", foto=("tecnico-nevera", FOTO_EQ["neveras"][1]), foto2="nevera-cliente",
+ dict(f="tecnico-samsung-a-domicilio-panama.html", chip="Técnico Samsung a domicilio", t="Técnico Samsung a Domicilio en Panamá | Neveras, Lavadoras y Secadoras", h1="Técnico Samsung a domicilio en Panamá", foto=("tecnico-nevera", FOTO_EQ["neveras"][1]), foto2="nevera-cliente",
       lead="Vamos a tu casa, apartamento u oficina para revisar y reparar tu electrodoméstico Samsung sin que tengas que moverlo.",
       secs=[("Ventajas de la reparación a domicilio", "No tienes que cargar ni transportar una nevera o una lavadora. El técnico revisa el equipo donde está instalado, con su conexión eléctrica, su desagüe y su ventilación reales, que muchas veces son parte del problema."),
             ("Apartamentos y torres", "Coordinamos con la administración el horario, el ascensor de servicio y el ingreso de herramientas para que la visita sea rápida y sin inconvenientes."),
             ("Qué llevamos a la visita", "Herramientas de diagnóstico, multímetro y las piezas más frecuentes según el equipo. Si hace falta una pieza que no llevamos, te avisamos el plazo antes de empezar.")],
       faq=[("¿Cuánto tarda en llegar el técnico?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas."), ("¿Hacen la reparación en el momento?", "Muchas fallas se resuelven en la misma visita; si hay que pedir una pieza te avisamos antes.")]),
- dict(f="reparacion-electrodomesticos-samsung-panama.html", chip="Reparación de electrodomésticos Samsung", t="Reparación de Electrodomésticos Samsung en Panamá | Neveras, Lavadoras, Secadoras, Aires", h1="Reparación de electrodomésticos Samsung en Panamá", foto=("nevera-family-hub", ALT["nevera-family-hub"]), foto2="prod-torre",
-      lead="Neveras, lavadoras, secadoras y aires acondicionados Samsung: reparación, mantenimiento e instalación con diagnóstico claro y garantía.",
-      secs=[("Equipos que reparamos", "Neveras (French Door, Side by Side, congelador superior e inferior, con dispensador), lavadoras de carga superior y frontal, secadoras y aires acondicionados split e inverter."),
+ dict(f="reparacion-electrodomesticos-samsung-panama.html", chip="Reparación de electrodomésticos Samsung", t="Reparación de Electrodomésticos Samsung en Panamá | Neveras, Lavadoras y Secadoras", h1="Reparación de electrodomésticos Samsung en Panamá", foto=("nevera-family-hub", ALT["nevera-family-hub"]), foto2="prod-torre",
+      lead="Neveras, lavadoras y secadoras Samsung: reparación, mantenimiento e instalación con diagnóstico claro y garantía.",
+      secs=[("Equipos que reparamos", "Neveras (French Door, Side by Side, congelador superior e inferior, con dispensador), lavadoras de carga superior y frontal y secadoras split e inverter."),
             ("Tipos de servicio", "Reparación de fallas, diagnóstico, mantenimiento preventivo e instalación. Cada servicio incluye explicación de la falla y costo confirmado antes de empezar."),
-            ("Fallas más comunes", "La nevera que no enfría, el congelador con escarcha, la lavadora que no desagua o no centrifuga, la secadora que no seca y el aire que no enfría o gotea son las consultas más frecuentes en Panamá.")],
-      faq=[("¿Reparan todas las líneas de Samsung?", "Atendemos neveras, lavadoras, secadoras y aires acondicionados. Para otros equipos, escríbenos y te decimos si podemos ayudarte."), ("¿Vale la pena reparar un equipo viejo?", "Si la falla es de una pieza accesible, casi siempre sí. Si no vale la pena, te lo decimos con honestidad.")]),
+            ("Fallas más comunes", "La nevera que no enfría, el congelador con escarcha, la lavadora que no desagua o no centrifuga, y la secadora que no seca son las consultas más frecuentes en Panamá.")],
+      faq=[("¿Reparan todas las líneas de Samsung?", "Atendemos neveras, lavadoras y secadoras. Para otros equipos, escríbenos y te decimos si podemos ayudarte."), ("¿Vale la pena reparar un equipo viejo?", "Si la falla es de una pieza accesible, casi siempre sí. Si no vale la pena, te lo decimos con honestidad.")]),
  dict(f="servicio-tecnico-samsung-cerca-de-mi-panama.html", chip="Servicio técnico Samsung cerca de mí", t="Servicio Técnico Samsung Cerca de Mí en Panamá | Visita a Domicilio", h1="Servicio técnico Samsung cerca de mí en Panamá", foto=("dispensador-nevera", ALT["dispensador-nevera"]),
       lead="Si buscas un técnico Samsung cerca de tu casa en Panamá, atendemos a domicilio en más de 30 barrios y corregimientos.",
       secs=[("Cobertura por zonas", "Llegamos a San Francisco, Bella Vista, Obarrio, Marbella, Costa del Este, Punta Pacífica, Paitilla, Betania, San Miguelito, Albrook, Arraiján, La Chorrera y más. Elige tu zona abajo."),
             ("No tienes que ir a ningún lado", "Como el servicio es a domicilio, no necesitas buscar un taller cercano ni transportar tu equipo: nosotros vamos a donde está.")],
       faq=[("¿Mi zona tiene cobertura?", "Mira la lista de zonas o escríbenos con tu barrio. Si no aparece, es posible que igualmente lleguemos.")], zonas=True),
- dict(f="repuestos-samsung-panama.html", chip="Repuestos Samsung Panamá", t="Repuestos para Neveras, Lavadoras, Secadoras y Aires Samsung en Panamá", h1="Repuestos Samsung en Panamá", foto=("prod-torre", ALT["prod-torre"]), foto2="prod-nevera-top",
+ dict(f="repuestos-samsung-panama.html", chip="Repuestos Samsung Panamá", t="Repuestos para Neveras, Lavadoras y Secadoras Samsung en Panamá", h1="Repuestos Samsung en Panamá", foto=("prod-torre", ALT["prod-torre"]), foto2="prod-nevera-top",
       lead="Cuando tu electrodoméstico Samsung necesita una pieza, la conseguimos e instalamos en la visita o en la siguiente, con garantía.",
-      secs=[("Piezas más solicitadas", "Neveras: ventilador del evaporador, sensores, tarjeta de control, resistencia de descongelación, filtro de agua, empaques. Lavadoras: bomba de desagüe, válvula de entrada, seguro de puerta, amortiguadores, rodamientos. Secadoras: resistencia, termostatos, correa. Aires: tarjetas, sensores, capacitores, motores de ventilador."),
+      secs=[("Piezas más solicitadas", "Neveras: ventilador del evaporador, sensores, tarjeta de control, resistencia de descongelación, filtro de agua, empaques. Lavadoras: bomba de desagüe, válvula de entrada, seguro de puerta, amortiguadores, rodamientos. Secadoras: resistencia, termostatos, correa."),
             ("Cómo pedir una pieza", "Envíanos por WhatsApp el modelo del equipo (etiqueta) y una foto o descripción de la falla. Con eso identificamos la pieza que necesitas y te confirmamos plazo y costo."),
             ("Instalación incluida", "Si nos encargamos de la reparación, instalamos la pieza y la probamos. La pieza instalada y la mano de obra tienen garantía.")],
       faq=[("¿Venden repuestos sin instalación?", "Escríbenos con el modelo y la pieza que necesitas y te decimos qué podemos ofrecerte."), ("¿Cuánto tardan en conseguir una pieza?", "Depende de la pieza y del modelo; te confirmamos el plazo antes de empezar la reparación.")]),
- dict(f="cuanto-cuesta-reparar-electrodomesticos-samsung-panama.html", chip="¿Cuánto cuesta reparar un Samsung?", t="¿Cuánto Cuesta Reparar una Nevera, Lavadora o Aire Samsung en Panamá?", h1="¿Cuánto cuesta reparar un electrodoméstico Samsung en Panamá?", foto=None,
+ dict(f="cuanto-cuesta-reparar-electrodomesticos-samsung-panama.html", chip="¿Cuánto cuesta reparar un Samsung?", t="¿Cuánto Cuesta Reparar una Nevera, Lavadora o Secadora Samsung en Panamá?", h1="¿Cuánto cuesta reparar un electrodoméstico Samsung en Panamá?", foto=None,
       lead="El costo depende de la falla, la pieza y el modelo. Te lo confirmamos antes de la visita y antes de empezar la reparación.",
       secs=[("De qué depende el costo", "Del tipo de equipo, el modelo, la falla, la pieza que haya que reemplazar y la zona donde estás. Una limpieza de filtro o desagüe no cuesta lo mismo que cambiar una tarjeta de control o un compresor."),
             ("Cómo evitar sorpresas", "Pide siempre que el técnico te explique la falla y te dé el costo antes de empezar. Nosotros lo hacemos así: diagnóstico, explicación, costo y solo entonces reparación."),
@@ -511,7 +515,7 @@ HUBS = [
  dict(f="servicio-tecnico-samsung-24-horas-panama.html", chip="Servicio técnico Samsung urgente", t="Servicio Técnico Samsung Urgente en Panamá | Visitas en 24 a 48 Horas", h1="Servicio técnico Samsung urgente en Panamá", foto=("tecnico-nevera", ALT["tecnico-nevera"]),
       lead="Si tu nevera dejó de enfriar o tu lavadora gotea, escríbenos de inmediato: priorizamos las fallas urgentes y coordinamos visitas en 24 a 48 horas.",
       secs=[("Qué fallas son urgentes", "Nevera que no enfría o se apaga y prende sola, lavadora que gotea o inunda, equipos que saltan el breaker o huelen a quemado. En esos casos desconecta el equipo y escríbenos."),
-            ("Mientras llega el técnico", "En la nevera, evita abrir la puerta para conservar el frío. En la lavadora, cierra la llave de agua y desconecta. En aires y secadoras, apaga y desconecta si hay olor a quemado."),
+            ("Mientras llega el técnico", "En la nevera, evita abrir la puerta para conservar el frío. En la lavadora, cierra la llave de agua y desconecta. En secadoras, apaga y desconecta si hay olor a quemado."),
             ("Cómo pedir una visita urgente", f"Escríbenos por WhatsApp al {TEL} con tu zona, el equipo y el síntoma. Te confirmamos la disponibilidad más cercana.")],
       faq=[("¿Atienden emergencias?", "Priorizamos las fallas urgentes; la disponibilidad se confirma por WhatsApp según tu zona."), ("¿Atienden fines de semana?", "Trabajamos de lunes a sábado de 7:00am a 6:00pm.")]),
  dict(f="codigos-de-error-lavadora-samsung-panama.html", chip="Códigos de error lavadora Samsung", t="Códigos de Error de Lavadora Samsung: UE, 5E, 4E, dE, LE y Qué Hacer", h1="Códigos de error de lavadoras Samsung: qué significan", foto=("tecnico-lavadora-1", FOTO_FALLA["lavadoras"][1]),
@@ -528,7 +532,7 @@ HUBS = [
       secs=[("Opciones para reparar tu equipo", "Puedes consultar las condiciones de garantía del vendedor si el equipo es reciente, llevarlo a un taller o pedir un técnico a domicilio. Para equipos grandes como neveras y lavadoras, la visita a domicilio suele ser más cómoda."),
             ("Cómo pedir nuestra visita", f"Escríbenos por WhatsApp al {TEL} con el equipo, el modelo y la falla. Te confirmamos la disponibilidad en tu zona, normalmente en 24 a 48 horas."),
             ("Qué incluye", "Diagnóstico en el sitio, explicación de la falla, costo confirmado antes de reparar y garantía sobre la pieza y la mano de obra.")],
-      faq=[("¿Tengo que llevar el equipo a un taller?", "No. Vamos a tu casa u oficina en Ciudad de Panamá, San Miguelito y Panamá Oeste."), ("¿Qué marca reparan?", "Nos especializamos en electrodomésticos Samsung: neveras, lavadoras, secadoras y aires acondicionados.")]),
+      faq=[("¿Tengo que llevar el equipo a un taller?", "No. Vamos a tu casa u oficina en Ciudad de Panamá, San Miguelito y Panamá Oeste."), ("¿Qué marca reparan?", "Nos especializamos en electrodomésticos Samsung: neveras, lavadoras y secadoras.")]),
 ]
 
 def paginas_hubs():
@@ -552,7 +556,6 @@ EQ_REP = {
  "neveras": "ventilador del evaporador, sensores de temperatura, tarjeta de control, resistencia de descongelación, termostato de deshielo, empaques de puertas, válvula de agua, manguera y fábrica de hielo",
  "lavadoras": "bomba de desagüe, válvula de entrada de agua, seguro de la puerta, amortiguadores, rodamientos, tarjeta de control, sensor de nivel y mangueras",
  "secadoras": "resistencia de calor, termostatos y fusible térmico, sensor de humedad, motor, correa, rodillos, tarjeta de control y ducto de salida",
- "aires-acondicionados": "tarjeta de la unidad interior y exterior, sensores, capacitores, motor del ventilador, compresor, control remoto, bandeja de drenaje y carga de gas refrigerante",
 }
 ATENC = [("atencion-1", "Técnico y asesora de servicio conversando en una oficina de atención al cliente", 1024, 572), ("atencion-2", "Técnico y asesora de servicio en una oficina de atención", 1024, 434)]
 SUBS = [("modelos", "Modelos y líneas", "Modelos de {c} Samsung que reparamos en Panamá"),
