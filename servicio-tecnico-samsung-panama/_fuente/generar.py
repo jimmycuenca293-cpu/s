@@ -44,6 +44,7 @@ def split(n, ey, h2, p, href, link, rev=False, alt_bg=False, depth=0):
 FOTO_SPLIT = {"neveras": "nevera-family-hub", "lavadoras": "prod-lavadora-sup", "secadoras": "prod-torre"}
 NEV_FOTOS = ["tecnico-nevera", "prod-nevera-top", "nevera-family-hub", "nevera-cocina", "prod-nevera-sbs", "nevera-cliente", "nevera-familia", "dispensador-nevera"]
 
+HERO_PROD = {"neveras": "prod-nevera-top", "lavadoras": "prod-lavadora-sup", "secadoras": "prod-torre"}
 NAV_EQ = [(k, v["corto"]) for k, v in EQUIPOS.items()]
 
 def cabeza(ruta, titulo, desc, ld=None, og="images/og.jpg", extra=""):
@@ -138,6 +139,17 @@ def tarjetas_eq(depth):
         f'<a class="card eq" href="{r}electrodomesticos/{k}/index.html"><span class="ic">{ICONOS[v["icono"]]}</span><h3>{esc(v["nombre"])}</h3><p>{esc(v["intro"][:120].rsplit(" ",1)[0])}…</p><span class="mas">Ver servicio →</span></a>'
         for k, v in EQUIPOS.items()) + "</div>"
 
+def hero_cards():
+    out = ""
+    for k, v in EQUIPOS.items():
+        if k in HERO_PROD:
+            n = HERO_PROD[k]; w, h = WH[n]
+            media = f'<img src="images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{w}" height="{h}">'
+        else:
+            media = f'<span class="ic">{ICONOS[v["icono"]]}</span>'
+        out += f'<a href="electrodomesticos/{k}/index.html">{media}<span class="nm">{esc(v["corto"])}</span></a>'
+    return out
+
 # ------------------------------------------------------------ páginas
 def pagina_inicio():
     msg = "Hola, necesito servicio técnico para mi equipo Samsung en Panamá"
@@ -147,7 +159,7 @@ def pagina_inicio():
 <p class="lead">Reparamos neveras, lavadoras, secadoras y aires acondicionados Samsung a domicilio en Ciudad de Panamá. Diagnóstico honesto, costo claro antes de reparar y garantía en cada reparación.</p>
 <div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a><a class="btn sec lg" href="diagnostico.html">Diagnóstico rápido</a></div>
 <ul class="pts"><li>Visitas en 24 a 48 horas</li><li>Garantía en pieza y mano de obra</li><li>{HORARIO}</li></ul></div>
-<div class="hero-tarjeta"><b>¿Qué equipo tienes?</b><div class="mini">{"".join(f'<a href="electrodomesticos/{k}/index.html"><span class="ic">{ICONOS[v["icono"]]}</span>{esc(v["corto"])}</a>' for k, v in EQUIPOS.items())}</div><small>Toca tu equipo para ver fallas comunes y cómo lo reparamos.</small></div></div></section>
+<div class="hero-tarjeta"><b>¿Qué equipo Samsung tienes?</b><div class="mini fotos">{hero_cards()}</div><small>Toca tu equipo para ver fallas comunes y cómo lo reparamos.</small></div></div></section>
 <section class="conf"><div class="w"><div><b>Técnico especializado</b><small>Enfocado en equipos Samsung</small></div><div><b>Costo claro</b><small>Antes de reparar</small></div><div><b>Garantía</b><small>Pieza y mano de obra</small></div><div><b>Atención por WhatsApp</b><small>Respuesta en minutos</small></div></div></section>
 {split("nevera-cocina", "Neveras Samsung", "Neveras French Door, Side by Side y con dispensador", "Reparamos neveras Samsung que no enfrían, con escarcha, ruido, fugas de agua o dispensador dañado, en casas y apartamentos de Panamá.", "electrodomesticos/neveras/index.html", "Ver servicio de neveras")}
 <section class="marca-band"><div class="w"><span>Reparamos equipos de la marca</span><img src="images/logo/samsung-marca.png" alt="Samsung" width="180" height="60"><small>Samsung es una marca de Samsung Electronics Co., Ltd.; este sitio no es operado por Samsung.</small></div></section>
@@ -305,7 +317,7 @@ nav{display:flex;align-items:center;gap:18px}nav>a,.dd>a{color:var(--ink);text-d
 @media(max-width:900px){nav{display:none}.burger{display:block}.barra span{display:none}.barra .w{justify-content:center}}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--pri);color:#fff;border:2px solid var(--pri);border-radius:999px;padding:11px 20px;font-weight:700;text-decoration:none;cursor:pointer;font-size:15px}.btn svg{width:20px;height:20px}.btn.lg{padding:14px 26px;font-size:16px}.btn.sm{padding:6px 14px;font-size:13px}.btn.sec{background:transparent;color:#fff;border-color:#fff}.btn.wa{background:var(--wa);border-color:var(--wa);color:#fff}.btn:hover{filter:brightness(1.08)}
 .hero{background:radial-gradient(1000px 420px at 85% -10%,#2f4fd0 0%,transparent 60%),linear-gradient(160deg,var(--pri2),var(--pri));color:#fff;padding-block:56px}.hero.chico{padding-block:40px}.hero h1{color:#fff}.hero .lead{font-size:18px;opacity:.95;max-width:60ch}.hg{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}.ey{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#a9b8ff;margin-bottom:10px}.sec:not(.alt) .ey,.sec.alt .ey,.card .ey{color:var(--pri)}.acc{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}.pts{display:flex;gap:18px;flex-wrap:wrap;list-style:none;padding:0;margin:0;font-weight:600;font-size:14px}.pts li::before{content:"✓ ";color:#a9f5c9}
-.hero-tarjeta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini a{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:12px;text-decoration:none;font-weight:700;font-size:14px}.mini .ic svg,.ic.grande svg{width:34px;height:34px}.mini .ic{color:var(--pri)}.ic.grande{color:#fff}.ic.grande svg{width:56px;height:56px}
+.hero-tarjeta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}.mini.fotos a{flex-direction:column;justify-content:center;text-align:center;padding:12px 8px;gap:8px}.mini.fotos img{height:130px;width:auto;max-width:100%;object-fit:contain}.mini.fotos .nm{font-weight:700;line-height:1.2}.mini.fotos .ic svg{width:70px;height:70px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini a{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:12px;text-decoration:none;font-weight:700;font-size:14px}.mini .ic svg,.ic.grande svg{width:34px;height:34px}.mini .ic{color:var(--pri)}.ic.grande{color:#fff}.ic.grande svg{width:56px;height:56px}
 @media(max-width:860px){.hg{grid-template-columns:1fr}}
 .conf{border-bottom:1px solid var(--line)}.conf .w{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding-block:20px}.conf b{display:block}.conf small{color:var(--mut)}@media(max-width:760px){.conf .w{grid-template-columns:1fr 1fr}}
 .sec{padding-block:56px}.sec.alt{background:var(--panel)}.cab{max-width:720px;margin-bottom:28px}.cab p{color:var(--mut)}.grid{display:grid;gap:18px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}@media(max-width:960px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}@media(max-width:620px){.g4,.g3,.g2{grid-template-columns:1fr}}
