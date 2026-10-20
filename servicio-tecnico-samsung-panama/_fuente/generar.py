@@ -192,7 +192,7 @@ def paginas_equipo():
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Modelos</span><h2>Qué {e["corto"].lower()} Samsung reparamos</h2></div><ul class="lista">{"".join(f"<li>{esc(m)}</li>" for m in e["modelos"])}</ul></div></section>
 {split(FOTO_SPLIT[k], e["corto"] + " Samsung", f"Cómo trabajamos en {e['art']} Samsung", "Revisamos el equipo en tu casa, te explicamos la falla y el costo antes de empezar y reparamos con garantía sobre la pieza y la mano de obra.", "diagnostico.html", "Diagnóstico rápido", True, False, 2) if k in FOTO_SPLIT else ""}
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Fallas</span><h2>Fallas comunes de {e["corto"].lower()} Samsung y su causa probable</h2><p>Estas son las que más vemos en Panamá. Si tu equipo tiene otro síntoma, escríbenos.</p></div><div class="tabla-w"><table class="tabla"><thead><tr><th>Síntoma</th><th>Causa probable</th><th>Urgencia</th></tr></thead><tbody>{fallas}</tbody></table></div><p><a href="fallas-comunes.html">Ver las fallas con más detalle →</a></p></div></section>
-<section class="sec"><div class="w"><div class="cab"><span class="ey">Más información</span><h2>Todo sobre {e["art"]} Samsung</h2></div><div class="chips">{sub_links}<a href="../../servicios/mantenimiento-preventivo-samsung-panama.html">Mantenimiento preventivo</a><a href="../../servicios/instalacion-samsung-panama.html">Instalación</a></div><h3>Fallas de {e["corto"].lower()} Samsung</h3><div class="chips">{"".join(f'<a href="../../{furl(k, f)}">{esc(f[0])}</a>' for f in e["fallas"])}</div><h3>{esc(e["corto"])} Samsung por zona</h3><div class="chips">{"".join(f'<a href="../../{zurl(k, z[0])}">{esc(z[0])}</a>' for z in ZONAS)}</div></div></section>
+<section class="sec"><div class="w"><div class="cab"><span class="ey">Más información</span><h2>Todo sobre {e["art"]} Samsung</h2></div><div class="chips">{sub_links}<a href="../../servicios/mantenimiento-preventivo-samsung-panama.html">Mantenimiento preventivo</a><a href="../../servicios/instalacion-samsung-panama.html">Instalación</a></div><h3>Más sobre {e["corto"].lower()} Samsung</h3><div class="chips">{subs_chips(k, e, 2)}</div><h3>Fallas de {e["corto"].lower()} Samsung</h3><div class="chips">{"".join(f'<a href="../../{furl(k, f)}">{esc(f[0])}</a>' for f in e["fallas"])}</div><h3>{esc(e["corto"])} Samsung por zona</h3><div class="chips">{"".join(f'<a href="../../{zurl(k, z[0])}">{esc(z[0])}</a>' for z in ZONAS)}</div></div></section>
 {f'<section class="sec alt"><div class="w"><div class="cab"><span class="ey">Blog</span><h2>Guías sobre {e["corto"].lower()} Samsung</h2></div><div class="grid g3">{blog_html}</div></div></section>' if blog else ""}
 <section class="sec alt"><div class="w txt seo">{"".join(f"<h2>{esc(a.replace('{z}', 'Panamá'))}</h2><p>{esc(b.replace('{z}', 'Panamá'))}</p>" for a, b in SEO_EQ[k])}</div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Dudas frecuentes</span><h2>Preguntas frecuentes</h2></div>{faq_html(e["faq"])}</div></section>
@@ -221,7 +221,7 @@ def paginas_servicio():
         ruta = f"servicios/{k}-samsung-panama.html"
         faq = [(f"¿Qué equipos incluye el servicio de {corto.lower()}?", "Neveras, lavadoras, secadoras y aires acondicionados Samsung."), ("¿Dónde lo hacen?", "En Ciudad de Panamá, San Miguelito y Panamá Oeste. Escríbenos por WhatsApp para confirmar tu zona."), ("¿Cuánto cuesta?", "Te confirmamos el costo por WhatsApp antes de ir, según el equipo y el servicio.")]
         cuerpo = f'''{miga(1, (corto, None))}<section class="sec"><div class="w txt"><h1>{esc(titulo)}</h1><p class="lead">{esc(desc)}</p><h2>Qué incluye</h2><ul class="lista">{"".join(f"<li>{esc(p)}</li>" for p in puntos)}</ul>
-<h2>Equipos que atendemos</h2>{tarjetas_eq(1)}<h2>Preguntas frecuentes</h2>{faq_html(faq)}</div></section>{cta(msg, f"Agenda: {corto.lower()}")}'''
+<div class="fotoc" style="max-width:720px">{pic("atencion-2", "Técnico y asesora de servicio en una oficina de atención", 1, 1024, 434)}</div><h2>Equipos que atendemos</h2>{tarjetas_eq(1)}<h2>{esc(corto)} por equipo</h2><div class="chips">{"".join(f'<a href="{k}-{k2}-samsung-panama.html">{esc(corto)} de {esc(e2["corto"].lower())} Samsung</a>' for k2, e2 in EQUIPOS.items())}</div><h2>Preguntas frecuentes</h2>{faq_html(faq)}</div></section>{cta(msg, f"Agenda: {corto.lower()}")}'''
         escribir(ruta, f"{titulo} | {TEL}", f"{desc[:150]} WhatsApp {TEL}.", cuerpo, [negocio_ld(), faq_ld(faq), bc((corto, None))], "0.8")
 
 def paginas_zona():
@@ -281,7 +281,7 @@ def paginas_info():
     escribir("garantia.html", f"Garantía de servicio técnico Samsung en Panamá | {NOMBRE}", "Garantía sobre la pieza reemplazada y la mano de obra en cada reparación de electrodomésticos Samsung en Panamá.", c, [bc(("Garantía", None))], "0.5")
     c = f'''{miga(0, ("Nosotros", None))}<section class="sec"><div class="w txt"><h1>Nosotros: especialistas en electrodomésticos Samsung en Panamá</h1><p class="lead">Somos un servicio técnico enfocado en electrodomésticos Samsung: neveras, lavadoras, secadoras y aires acondicionados.</p>
 <p>Esa especialización nos permite conocer a fondo los modelos que circulan en Panamá, sus fallas más comunes y los repuestos que realmente necesitan. Trabajamos con coordinación directa por WhatsApp, sin intermediarios.</p>
-<h2>Cómo trabajamos</h2><ul class="lista"><li><b>Diagnóstico honesto:</b> explicamos la falla antes de reparar. Si no vale la pena, te lo decimos.</li><li><b>Garantía:</b> en la pieza y en la mano de obra.</li><li><b>Tiempos claros:</b> visitas en 24 a 48 horas en la mayoría de zonas.</li><li><b>Costo claro:</b> te lo confirmamos antes de empezar.</li></ul>
+<div class="fotoc" style="max-width:720px">{pic("atencion-1", "Técnico y asesora de servicio conversando en una oficina de atención al cliente", 0, 1024, 572)}</div><h2>Cómo trabajamos</h2><ul class="lista"><li><b>Diagnóstico honesto:</b> explicamos la falla antes de reparar. Si no vale la pena, te lo decimos.</li><li><b>Garantía:</b> en la pieza y en la mano de obra.</li><li><b>Tiempos claros:</b> visitas en 24 a 48 horas en la mayoría de zonas.</li><li><b>Costo claro:</b> te lo confirmamos antes de empezar.</li></ul>
 </div></section>{cta(msg)}'''
     escribir("nosotros.html", f"Nosotros | {NOMBRE}", "Servicio técnico especializado en electrodomésticos Samsung en Ciudad de Panamá.", c, [negocio_ld(), bc(("Nosotros", None))], "0.5")
     c = f'''{miga(0, ("Preguntas frecuentes", None))}<section class="sec"><div class="w txt"><h1>Preguntas frecuentes sobre el servicio técnico Samsung en Panamá</h1>{faq_html(FAQ_GENERAL)}</div></section>{cta(msg)}'''
@@ -534,10 +534,77 @@ def paginas_hubs():
         ld = [negocio_ld(), faq_ld(h["faq"]), bc((h["h1"], None))]
         escribir(h["f"], h["t"] if len(h["t"]) < 75 else h["h1"] + f" | {NOMBRE}", f"{h['lead']} WhatsApp {TEL}.", cuerpo, ld, "0.9")
 
+# ------------------------------------------------------------ subpáginas por sección
+EQ_REP = {
+ "neveras": "ventilador del evaporador, sensores de temperatura, tarjeta de control, resistencia de descongelación, termostato de deshielo, empaques de puertas, válvula de agua, manguera y fábrica de hielo",
+ "lavadoras": "bomba de desagüe, válvula de entrada de agua, seguro de la puerta, amortiguadores, rodamientos, tarjeta de control, sensor de nivel y mangueras",
+ "secadoras": "resistencia de calor, termostatos y fusible térmico, sensor de humedad, motor, correa, rodillos, tarjeta de control y ducto de salida",
+ "aires-acondicionados": "tarjeta de la unidad interior y exterior, sensores, capacitores, motor del ventilador, compresor, control remoto, bandeja de drenaje y carga de gas refrigerante",
+}
+ATENC = [("atencion-1", "Técnico y asesora de servicio conversando en una oficina de atención al cliente", 1024, 572), ("atencion-2", "Técnico y asesora de servicio en una oficina de atención", 1024, 434)]
+SUBS = [("modelos", "Modelos y líneas", "Modelos de {c} Samsung que reparamos en Panamá"),
+        ("costo", "Costo de reparación", "¿Cuánto cuesta reparar {a} Samsung en Panamá?"),
+        ("repuestos", "Repuestos", "Repuestos para {c} Samsung en Panamá"),
+        ("urgente", "Servicio urgente", "Servicio técnico urgente de {c} Samsung en Panamá"),
+        ("reparar-o-reemplazar", "¿Reparar o reemplazar?", "¿Reparar o reemplazar {a} Samsung?")]
+
+def subs_chips(k, e, depth, actual=None):
+    r = R(depth)
+    return "".join(f'<a href="{r}electrodomesticos/{k}/{s}.html">{esc(t)} de {esc(e["corto"].lower())}</a>' for s, t, _ in SUBS if s != actual)
+
+def paginas_subequipo():
+    for ek, e in EQUIPOS.items():
+        base = f"electrodomesticos/{ek}/"
+        msg = f"Hola, necesito servicio técnico para mi {e['sing']} Samsung en Panamá"
+        urg = [f for f in e["fallas"] if f[2] == "Urgente"]
+        for j, (s, etiqueta, h1) in enumerate(SUBS):
+            H1 = h1.format(c=e["corto"].lower(), a=e["art"])
+            foto = ATENC[j % 2] if s in ("costo", "reparar-o-reemplazar") else None
+            if s == "modelos":
+                cuerpo_t = (f"<p class=\"lead\">Atendemos {esc(e['art'])} Samsung de las líneas más comunes en Panamá, en casas, apartamentos y oficinas.</p><h2>Líneas y tipos que atendemos</h2><ul class=\"lista\">{''.join(f'<li>{esc(m)}</li>' for m in e['modelos'])}</ul>"
+                            f"<h2>¿Cómo encuentro el modelo de mi {esc(e['sing'])} Samsung?</h2><p>Casi siempre hay una etiqueta con el número de modelo y de serie en el costado, en la parte trasera o dentro de la puerta del equipo. Envíanos una foto de esa etiqueta por WhatsApp y te confirmamos si podemos atenderlo y cuánto tardaría la visita.</p>"
+                            f"<h2>Fallas más frecuentes según el tipo</h2><ul class=\"lista\">{''.join(f'<li><a href=\"../../{furl(ek, f)}\">{esc(f[0])}</a></li>' for f in e['fallas'])}</ul>")
+            elif s == "costo":
+                cuerpo_t = (f"<p class=\"lead\">El costo de reparar {esc(e['art'])} Samsung depende de la falla, la pieza y el modelo. Esto es lo que influye y cómo evitar sorpresas.</p><h2>De qué depende el costo</h2><ul class=\"lista\"><li><b>La falla:</b> una limpieza o ajuste no cuesta lo mismo que cambiar una tarjeta electrónica o el compresor.</li><li><b>La pieza:</b> disponibilidad y precio según el modelo.</li><li><b>La visita:</b> zona de {esc('Panamá')} y horario.</li><li><b>Mano de obra:</b> tiempo que toma el diagnóstico y la reparación.</li></ul>"
+                            f"<h2>Cómo trabajamos el costo</h2><p>Te confirmamos el valor de la visita antes de ir. En el sitio diagnosticamos, te explicamos la falla y te damos el costo de la reparación antes de empezar. Si no estás de acuerdo, no reparamos.</p>"
+                            f"<h2>Fallas que suelen ser más económicas</h2><p>Casi siempre lo son las que se resuelven con limpieza, ajuste o piezas pequeñas: {esc(', '.join(f[0].lower() for f in e['fallas'] if f[2] == 'Vigilar')[:240])}.</p>")
+            elif s == "repuestos":
+                cuerpo_t = (f"<p class=\"lead\">Cuando {esc(e['art'])} Samsung necesita una pieza, la identificamos por el modelo y la instalamos en la visita o en la siguiente.</p><h2>Piezas que cambiamos con más frecuencia</h2><p>{esc(EQ_REP[ek].capitalize())}.</p>"
+                            f"<h2>Cómo identificamos la pieza correcta</h2><p>Con la etiqueta del modelo y el síntoma. Así evitamos cambiar piezas por prueba y error. Envíanos la foto de la etiqueta por WhatsApp.</p><h2>Instalación y garantía</h2><p>La pieza instalada y la mano de obra tienen garantía. Si hay que pedir una pieza, te avisamos el plazo antes de empezar.</p>")
+            elif s == "urgente":
+                li = "".join(f"<li><a href=\"../../{furl(ek, f)}\"><b>{esc(f[0])}</b></a>: {esc(f[3])}</li>" for f in (urg or e['fallas'][:3]))
+                cuerpo_t = (f"<p class=\"lead\">Si {esc(e['art'])} Samsung presenta una falla urgente, escríbenos de inmediato por WhatsApp. Priorizamos estos casos y coordinamos visitas en 24 a 48 horas.</p><h2>Fallas que consideramos urgentes</h2><ul class=\"lista\">{li}</ul>"
+                            f"<h2>Qué hacer mientras llega el técnico</h2><ul class=\"lista\"><li>Si hay olor a quemado, chispas o humedad en la conexión eléctrica, desconecta el equipo.</li><li>No lo reinicies repetidamente: puedes dañar el compresor o la tarjeta.</li><li>Ten a la mano el modelo y una foto o video del problema.</li></ul>")
+            else:
+                cuerpo_t = (f"<p class=\"lead\">Decidir entre reparar o reemplazar {esc(e['art'])} Samsung depende de la edad, la falla y el costo. Te lo explicamos con claridad.</p><h2>Conviene reparar cuando…</h2><ul class=\"lista\"><li>El equipo tiene pocos años y está en buen estado general.</li><li>La falla es de una pieza accesible (sensor, ventilador, bomba, válvula, tarjeta).</li><li>El costo de la reparación es una fracción pequeña del valor de uno nuevo.</li></ul>"
+                            f"<h2>Conviene reemplazar cuando…</h2><ul class=\"lista\"><li>El equipo es muy antiguo y tiene varias fallas seguidas.</li><li>El daño es en una pieza principal muy costosa.</li><li>El consumo de energía es muy alto frente a un equipo nuevo.</li></ul><h2>Nuestro criterio</h2><p>Primero diagnosticamos, luego te damos las opciones y el costo. Si no vale la pena reparar, te lo decimos con honestidad.</p>")
+            fotoh = f'<div class="fotoc">{pic(foto[0], foto[1], 2, foto[2], foto[3])}</div>' if foto else ""
+            faq = [(f"¿Atienden {e['corto'].lower()} Samsung en toda la ciudad de Panamá?", "Damos servicio a domicilio en Ciudad de Panamá, San Miguelito y Panamá Oeste. Escríbenos con tu barrio para confirmarlo."), ("¿Cuánto tarda la visita?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas."), ("¿La reparación tiene garantía?", "Sí, sobre la pieza reemplazada y la mano de obra. El plazo se confirma antes de empezar.")]
+            cuerpo = f'''{miga(2, (e["nombre"], base + "index.html"), (etiqueta, None))}<section class="sec"><div class="w txt"><h1>{esc(H1)}</h1>{cuerpo_t}{fotoh}<h2>Más sobre {esc(e["corto"].lower())} Samsung</h2><div class="chips"><a href="index.html">Servicio técnico de {esc(e["corto"].lower())}</a><a href="fallas-comunes.html">Fallas comunes</a><a href="mantenimiento.html">Mantenimiento</a>{subs_chips(ek, e, 2, s)}</div><h2>Preguntas frecuentes</h2>{faq_html(faq)}</div></section>{cta(msg)}'''
+            escribir(base + s + ".html", f"{H1} | Panamá" if len(H1) < 52 else H1, f"{H1} Servicio técnico Samsung a domicilio en Panamá. Diagnóstico claro, costo confirmado y garantía. WhatsApp {TEL}.", cuerpo,
+                     [negocio_ld(), faq_ld(faq), bc((e["nombre"], base + "index.html"), (etiqueta, None))], "0.6")
+
+def paginas_servicio_equipo():
+    for sk, (titulo, corto, desc, puntos) in SERVICIOS.items():
+        for j, (ek, e) in enumerate(EQUIPOS.items()):
+            ruta = f"servicios/{sk}-{ek}-samsung-panama.html"
+            H1 = f"{corto} de {e['corto'].lower()} Samsung en Panamá"
+            msg = f"Hola, quiero agendar: {corto.lower()} de mi {e['sing']} Samsung en Panamá"
+            fl = "".join(f'<li><a href="../{furl(ek, f)}">{esc(f[0])}</a></li>' for f in e["fallas"][:5])
+            foto = ATENC[(j + len(sk)) % 2]
+            faq = [(f"¿Qué incluye el servicio de {corto.lower()} de {e['art']} Samsung?", "; ".join(puntos[:3]) + "."), ("¿Dónde lo hacen?", "En tu casa, apartamento u oficina en Ciudad de Panamá, San Miguelito y Panamá Oeste."), ("¿Cuánto cuesta?", "Te confirmamos el costo por WhatsApp antes de agendar, según el equipo y el servicio.")]
+            cuerpo = f'''{miga(1, ("Servicios", f"servicios/{sk}-samsung-panama.html"), (e["corto"], None))}<section class="sec"><div class="w txt"><h1>{esc(H1)}</h1><p class="lead">{esc(desc)}</p>
+<h2>{esc(corto)} de {esc(e["corto"].lower())} Samsung: qué incluye</h2><ul class="lista">{"".join(f"<li>{esc(p)}</li>" for p in puntos)}</ul>
+<div class="fotoc">{pic(foto[0], foto[1], 1, foto[2], foto[3])}</div>
+<h2>Qué revisamos en {esc(e["art"])} Samsung</h2><p>{esc(EQ_REP[ek].capitalize())}.</p><h2>Fallas relacionadas</h2><ul class="lista">{fl}</ul>
+<h2>Más información</h2><div class="chips"><a href="../electrodomesticos/{ek}/index.html">Servicio técnico de {esc(e["corto"].lower())} Samsung</a><a href="{sk}-samsung-panama.html">{esc(corto)}</a><a href="../electrodomesticos/{ek}/costo.html">Costo de reparación</a></div>
+<h2>Preguntas frecuentes</h2>{faq_html(faq)}</div></section>{cta(msg)}'''
+            escribir(ruta, f"{H1} | {NOMBRE}" if len(H1) < 40 else H1, f"{corto} de {e['corto'].lower()} Samsung a domicilio en Panamá. {desc[:90]} WhatsApp {TEL}.", cuerpo, [negocio_ld(), faq_ld(faq), bc(("Servicios", f"servicios/{sk}-samsung-panama.html"), (e["corto"], None))], "0.6")
+
 def main():
     for d in ["electrodomesticos", "servicios", "zonas", "blog", "fallas"]:
         shutil.rmtree(OUT / d, ignore_errors=True)
-    estaticos(); pagina_inicio(); paginas_equipo(); paginas_servicio(); paginas_zona(); paginas_blog(); pagina_diagnostico(); paginas_info(); paginas_hubs(); paginas_fallas(); paginas_zona_equipo(); indices()
+    estaticos(); pagina_inicio(); paginas_equipo(); paginas_servicio(); paginas_zona(); paginas_blog(); pagina_diagnostico(); paginas_info(); paginas_hubs(); paginas_subequipo(); paginas_servicio_equipo(); paginas_fallas(); paginas_zona_equipo(); indices()
     z = AQUI.parent.parent / "entrega" / "servicio-tecnico-samsung-panama.zip"
     z.parent.mkdir(exist_ok=True)
     with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED) as zf:
