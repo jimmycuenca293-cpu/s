@@ -219,7 +219,7 @@ def pie(depth):
             f'<div><b>Zonas</b>{zs}<a href="{r}zonas/index.html">Ver todas las zonas</a></div></div>'
             f'<div class="w busq"><b>Búsquedas frecuentes</b><div class="chips">{busquedas_chips(depth)}</div></div>'
             f'<div class="w otra"><b>{NOMBRE}</b> · <a href="{ext_url()}" target="_blank" rel="noopener">Sitio oficial de {MARCA}</a> · <a href="{r}busquedas/index.html">Búsquedas frecuentes</a> · <a href="{r}mapa-del-sitio.html">Mapa del sitio</a></div>'
-            f'<div class="w legal"><span>© 2026 {NOMBRE}. Frigidaire es una marca registrada de Frigidaire Corporation Este sitio no es operado por Frigidaire.</span>'
+            f'<div class="w legal"><span>© 2026 {NOMBRE}. Frigidaire es una marca registrada de su titular. Este sitio no es operado por Frigidaire.</span>'
             f'<span><a href="{r}privacidad.html">Privacidad</a> · <a href="{r}aviso-legal.html">Aviso legal</a> · <a href="{r}preguntas-frecuentes.html">Preguntas frecuentes</a></span></div></footer>'
             f'<a class="wa-flot" href="{wa("Hola, necesito servicio técnico para mi equipo Frigidaire en Panamá")}" target="_blank" rel="noopener" data-wa="flotante" aria-label="Escribir por WhatsApp">{ICONOS["wa"]}<span>Escríbenos</span></a>'
             f'<script src="{r}js/main.js" defer></script></body></html>')
@@ -402,6 +402,69 @@ def inyectar_faq(h, ruta, ld):
         ld.append(faq_ld(nuevas))
     return h, ld
 
+def hero_desde_texto(h):
+    """Páginas interiores sin encabezado: el H1, la entradilla y la foto pasan a un hero con fondo."""
+    m = re.search(r'(<nav class="miga w"[^>]*>.*?</nav>)<section class="sec"><div class="w txt">(.*?)(<h1>.*?</h1>)(<p class="lead">.*?</p>)?', h, re.S)
+    if not m:
+        c = re.search(r'(<nav class="miga w"[^>]*>.*?</nav>)<section class="sec"><div class="w"><div class="cab">(<span class="ey">.*?</span>)?(<h1>.*?</h1>)(?:<p>(.*?)</p>)?</div>', h, re.S)
+        if not c: return h, None
+        hero = f'<section class="hero chico"><div class="w hg solo"><div>{c.group(2) or ""}{c.group(3)}{("<p class=lead>" + c.group(4) + "</p>") if c.group(4) else ""}</div></div></section>'
+        return h[:c.start()] + c.group(1) + hero + '<section class="sec"><div class="w">' + h[c.end():], None
+    previo = m.group(2)
+    ey = re.search(r'<span class="ey">.*?</span>', previo, re.S)
+    fig_pre = re.search(r'<figure class="lado">.*?</figure>', previo, re.S)
+    if len(previo) != (len(ey.group(0)) if ey else 0) + (len(fig_pre.group(0)) if fig_pre else 0): return h, None
+    ini = m.end()
+    fig_post = re.match(r'<figure class="lado">.*?</figure>', h[ini:], re.S)
+    fig = fig_pre or fig_post
+    if fig_post: ini += fig_post.end()
+    stem = None
+    if fig:
+        mm = re.search(r'images/fotos/([\w-]+)\.(?:jpg|webp)', fig.group(0)); stem = mm.group(1) if mm else None
+    hero = f'<section class="hero chico"><div class="w hg solo"><div>{ey.group(0) if ey else ""}{m.group(3)}{m.group(4) or ""}</div></div></section>'
+    quitar_fig = bool(fig) and not (stem or "").startswith("prod-")
+    resto = h[ini:] if quitar_fig else h[m.end():]
+    if not quitar_fig and fig_pre: pass
+    cuerpo_ini = '<section class="sec"><div class="w txt">' + ((fig.group(0) if (fig and not quitar_fig) else ""))
+    return h[:m.start()] + m.group(1) + hero + cuerpo_ini + resto, (stem if quitar_fig else None)
+
+FONDO_HERO = {"nev": ["sam-4", "sam-8", "sam-7"], "lav": ["sam-3", "sam-6", "sam-2"], "zon": ["sam-3", "sam-4", "sam-6"], "con": ["sam-5", "sam-1", "sam-2"], "def": ["sam-3", "sam-4", "sam-6", "sam-2", "sam-1", "sam-5", "sam-7", "sam-8"]}
+def fondo_hero(h, ruta):
+    """Fondo del encabezado: una foto real por página (la que mejor cuadra), con velo oscuro para que el texto se lea en móvil y escritorio."""
+    m = re.search(r'<section class="hero( chico)?">', h)
+    figura = None
+    if not m:
+        h, figura = hero_desde_texto(h)
+        m = re.search(r'<section class="hero( chico)?">', h)
+        if not m: return h
+    fin = h.find("</section>", m.end())
+    hero = h[m.start():fin]
+    resto = h[:m.start()] + h[fin:]
+    usados = set(re.findall(r'images/fotos/([\w-]+)\.(?:jpg|webp)', resto))
+    r = "../" * ruta.count("/")
+    rl = ruta.lower()
+    clave = "nev" if "nevera" in rl or "refriger" in rl or "congelador" in rl else "lav" if ("lavadora" in rl or "secadora" in rl or "lavado" in rl) else "zon" if rl.startswith("zonas/") else "con" if any(k in rl for k in ("telefono", "contacto", "nosotros", "atencion", "whatsapp", "cita", "garantia")) else "def"
+    cand = FONDO_HERO[clave] + [c for c in FONDO_HERO["def"] if c not in FONDO_HERO[clave]]
+    off = sum(ord(c) for c in ruta) % 3
+    cand = cand[off:] + cand[:off] if clave == "def" else cand
+    ft = re.search(r'<div class="hero-tarjeta foto">.*?</picture></div>', hero, re.S)
+    stem = None
+    if ft:
+        mm = re.search(r'images/fotos/([\w-]+)\.(?:jpg|webp)', ft.group(0))
+        stem = mm.group(1) if mm else None
+        if stem and stem.startswith("prod-"): stem = None
+        hero = hero.replace(ft.group(0), "")
+        hero = hero.replace('<div class="w hg">', '<div class="w hg solo">', 1)
+    if figura and not stem:
+        stem = figura if not figura.startswith("prod-") else None
+    if not stem or stem in usados:
+        stem = next((c for c in cand if c not in usados), cand[0])
+    hero = hero.replace(m.group(0), "", 1)
+    cls = "hero bgimg" + (" chico" if m.group(1) else "")
+    pos = "center 30%" if stem in ("sam-1", "sam-2", "sam-5", "sam-6", "sam-7") else "center 35%"
+    nuevo = f'<section class="{cls}" style="--bg:url({r}images/fotos/{stem}.webp);--pos:{pos}">' + hero
+    return h[:m.start()] + nuevo + h[fin:]
+
 def escribir(ruta, titulo, desc, cuerpo, ld=None, prioridad="0.7", og="images/og.jpg"):
     depth = ruta.count("/")
     p = OUT / ruta
@@ -410,6 +473,7 @@ def escribir(ruta, titulo, desc, cuerpo, ld=None, prioridad="0.7", og="images/og
     pag_cuerpo = estructura_imgs(pag_cuerpo, ruta)
     pag_cuerpo = inyectar_ext(pag_cuerpo, ruta)
     pag_cuerpo = dedupe_imgs(pag_cuerpo, ruta)
+    pag_cuerpo = fondo_hero(pag_cuerpo, ruta)
     pag_cuerpo, ld = inyectar_faq(pag_cuerpo, ruta, ld)
     p.write_text(alt_seo(cabeza(ruta, titulo, desc, ld, og) + pag_cuerpo, ruta), encoding="utf-8")
     PAGINAS[ruta] = (prioridad, titulo)
@@ -632,7 +696,7 @@ def paginas_info():
     escribir("preguntas-frecuentes.html", f"Preguntas frecuentes | Servicio técnico Frigidaire en Panamá", "Respuestas sobre cobertura, costos, garantía y tiempos del servicio técnico Frigidaire en Panamá.", c, [faq_ld(FAQ_FULL), bc(("Preguntas frecuentes", None))], "0.6")
     c = f'''{miga(0, ("Privacidad", None))}<section class="sec"><div class="w txt"><h1>Política de privacidad</h1><p>Cuando nos escribes por WhatsApp o nos llamas usamos tu nombre, tu número y los datos que nos des (dirección, equipo, modelo y falla) solo para atender tu solicitud y coordinar la visita.</p><p>No vendemos tus datos. Puedes pedirnos que los corrijamos o los eliminemos escribiéndonos por WhatsApp al {TEL}.</p><p>Este sitio puede usar herramientas de medición (como Google Analytics o Tag Manager) para saber cuántas personas lo visitan y cuántas nos escriben por WhatsApp.</p></div></section>'''
     escribir("privacidad.html", f"Política de privacidad | {NOMBRE}", "Cómo usamos tus datos cuando nos contactas para un servicio técnico.", c, None, "0.2")
-    c = f'''{miga(0, ("Aviso legal", None))}<section class="sec"><div class="w txt"><h1>Aviso legal</h1><p>{NOMBRE} presta servicio técnico a domicilio para electrodomésticos Frigidaire en Panamá.</p><p>Frigidaire es una marca registrada de Frigidaire Corporation Este sitio no es operado por Frigidaire.</p><p>La información de este sitio es orientativa. El diagnóstico definitivo y el costo se confirman en la visita.</p></div></section>'''
+    c = f'''{miga(0, ("Aviso legal", None))}<section class="sec"><div class="w txt"><h1>Aviso legal</h1><p>{NOMBRE} presta servicio técnico a domicilio para electrodomésticos Frigidaire en Panamá.</p><p>Frigidaire es una marca registrada de su titular. Este sitio no es operado por Frigidaire.</p><p>La información de este sitio es orientativa. El diagnóstico definitivo y el costo se confirman en la visita.</p></div></section>'''
     escribir("aviso-legal.html", f"Aviso legal | {NOMBRE}", "Aviso legal del servicio técnico de electrodomésticos Frigidaire en Panamá.", c, None, "0.2")
 
 CSS = r'''
@@ -648,6 +712,7 @@ nav{display:flex;align-items:center;gap:18px}nav>a,.dd>a{color:var(--ink);text-d
 @media(max-width:900px){nav{display:none}.burger{display:block}.barra span{display:none}.barra .w{justify-content:center}}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--pri);color:#fff;border:2px solid var(--pri);border-radius:999px;padding:11px 20px;font-weight:700;text-decoration:none;cursor:pointer;font-size:15px}.btn svg{width:20px;height:20px}.btn.lg{padding:14px 26px;font-size:16px}.btn.sm{padding:6px 14px;font-size:13px}.btn.sec{background:transparent;color:#fff;border-color:#fff}.btn.wa{background:var(--wa);border-color:var(--wa);color:#fff}.btn:hover{filter:brightness(1.08)}
 .hero{background:radial-gradient(1000px 420px at 85% -10%,#5a1119 0%,transparent 60%),linear-gradient(160deg,var(--pri2),var(--pri));color:#fff;padding-block:56px}.hero.chico{padding-block:40px}.hero h1{color:#fff}.hero .lead{font-size:18px;opacity:.95;max-width:60ch}.hg{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}.ey{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ff3b4e;margin-bottom:10px}.sec:not(.alt) .ey,.sec.alt .ey,.card .ey{color:var(--pri)}.acc{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}.pts{display:flex;gap:18px;flex-wrap:wrap;list-style:none;padding:0;margin:0;font-weight:600;font-size:14px}.pts li::before{content:"✓ ";color:#a9f5c9}
+.hero.bgimg{background:linear-gradient(90deg,rgba(12,10,10,.94) 0%,rgba(12,10,10,.80) 48%,rgba(150,12,30,.50) 100%),var(--bg) var(--pos,center)/cover no-repeat;min-height:clamp(340px,46vw,520px);display:flex;align-items:center}.hero.bgimg>.w{width:100%}.hero.bgimg .hg.solo{grid-template-columns:minmax(0,760px)}.hero.bgimg .hero-tarjeta{backdrop-filter:blur(6px);background:rgba(12,10,10,.55)}.hero.bgimg h1{text-shadow:0 2px 18px rgba(0,0,0,.45)}@media(max-width:860px){.hero.bgimg{background:linear-gradient(180deg,rgba(12,10,10,.88) 0%,rgba(12,10,10,.80) 60%,rgba(120,10,25,.72) 100%),var(--bg) var(--pos,center)/cover no-repeat;min-height:0;padding-block:44px}}
 .hero-tarjeta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}.eqimgs.big{gap:24px;margin:0 0 22px;justify-content:flex-start}.eqimgs.big .fto{width:auto}.eqimgs.big img{height:260px;width:auto;border:0;padding:0}.eqimgs{display:flex;justify-content:center;gap:10px}.eqimg.foto{height:auto;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px}.eqimg{height:150px;width:auto;max-width:100%;object-fit:contain;align-self:center;margin-bottom:6px}.mini.fotos a{flex-direction:column;justify-content:center;text-align:center;padding:12px 8px;gap:8px}.mini.fotos img{height:120px;width:auto;max-width:100%;object-fit:contain}.mini.fotos .nm{font-weight:700;line-height:1.2}.mini.fotos .ic svg{width:70px;height:70px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini a{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:12px;text-decoration:none;font-weight:700;font-size:14px}.mini .ic svg,.ic.grande svg{width:34px;height:34px}.mini .ic{color:var(--pri)}.ic.grande{color:#fff}.ic.grande svg{width:56px;height:56px}
 @media(max-width:860px){.hg{grid-template-columns:1fr}}
 .conf{border-bottom:1px solid var(--line)}.conf .w{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding-block:20px}.conf b{display:block}.conf small{color:var(--mut)}@media(max-width:760px){.conf .w{grid-template-columns:1fr 1fr}}
