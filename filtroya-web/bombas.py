@@ -40,6 +40,10 @@ MARCAS = {
              "tipo": "Motor gris con rodete celeste", "carga": None, "forma": "bomba de desagüe para lavadora Samsung de motor gris con rodete celeste y conector gris en la base"},
             {"id": "bom-sam-4", "foto": "bomba-4.png", "slug": "bomba-desague-lavadora-samsung-motor-gris-rodete-blanco", "corto": "Bomba de desagüe", "ref": None, "precio": None,
              "tipo": "Motor gris con rodete blanco", "carga": None, "forma": "bomba de desagüe para lavadora Samsung de motor gris con rodete blanco; la etiqueta del motor indica DRAIN PUMP y 60 Hz"},
+            {"id": "bom-sam-5", "foto": "bomba-5.png", "slug": "bomba-desague-lavadora-samsung-carcasa-blanca-motor-gris-cables", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Carcasa blanca con motor gris y cables", "carga": None, "forma": "bomba de desagüe para lavadora Samsung con carcasa blanca, dos salidas de manguera y motor gris con cables de conexión"},
+            {"id": "bom-sam-6", "foto": "bomba-6.png", "slug": "bomba-desague-lavadora-samsung-dc31-00181c", "corto": "Bomba de desagüe", "ref": "DC31-00181C", "precio": None,
+             "tipo": "Carcasa blanca, motor Hanyu B15-3A (DC31-00181C)", "carga": None, "forma": "bomba de desagüe para lavadora Samsung con carcasa blanca y motor Hanyu B15-3A de 120 V y 60 Hz; en la etiqueta de la foto se lee la referencia DC31-00181C"},
         ],
     },
     "lg": {

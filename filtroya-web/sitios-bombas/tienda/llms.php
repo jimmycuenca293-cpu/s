@@ -12,6 +12,8 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 - [Bomba de desagüe para lavadora Samsung: carcasa blanca con filtro y salida roscada](__BASE__/samsung/bomba-desague-lavadora-samsung-carcasa-blanca-filtro-salida-roscada/): Carcasa blanca con filtro y salida roscada.
 - [Bomba de desagüe para lavadora Samsung: motor gris con rodete celeste](__BASE__/samsung/bomba-desague-lavadora-samsung-motor-gris-rodete-celeste/): Motor gris con rodete celeste.
 - [Bomba de desagüe para lavadora Samsung: motor gris con rodete blanco](__BASE__/samsung/bomba-desague-lavadora-samsung-motor-gris-rodete-blanco/): Motor gris con rodete blanco.
+- [Bomba de desagüe para lavadora Samsung: carcasa blanca con motor gris y cables](__BASE__/samsung/bomba-desague-lavadora-samsung-carcasa-blanca-motor-gris-cables/): Carcasa blanca con motor gris y cables.
+- [Bomba de desagüe para lavadora Samsung: carcasa blanca, motor Hanyu B15-3A (DC31-00181C)](__BASE__/samsung/bomba-desague-lavadora-samsung-dc31-00181c/): Carcasa blanca, motor Hanyu B15-3A (DC31-00181C).
 - [Cuál bomba necesita mi lavadora](__BASE__/samsung/cual-es-mi-bomba/)
 - [Cómo cambiar la bomba](__BASE__/samsung/cambio-e-instalacion/)
 - [Lavadora Samsung no desagua](__BASE__/samsung/lavadora-samsung-no-desagua/)
