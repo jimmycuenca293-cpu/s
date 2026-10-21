@@ -45,10 +45,16 @@ MARCAS = {
         "codigos": "OE",
         "familias": [("WT", "Carga superior", "carga-superior"), ("WM", "Carga frontal", "carga-frontal"), ("WD", "Carga frontal", "carga-frontal")],
         "productos": [
-            {"id": "bom-lg-1", "foto": "bomba-1.png", "slug": "bomba-desague-lavadora-lg-carga-superior", "corto": "Bomba de desagüe", "ref": None, "precio": None,
-             "tipo": "Carga superior", "carga": "carga-superior", "forma": "bomba eléctrica de desagüe para lavadora LG de carga superior"},
-            {"id": "bom-lg-2", "foto": "bomba-2.png", "slug": "bomba-desague-lavadora-lg-carga-frontal", "corto": "Bomba de desagüe", "ref": None, "precio": None,
-             "tipo": "Carga frontal", "carga": "carga-frontal", "forma": "bomba eléctrica de desagüe para lavadora LG de carga frontal"},
+            {"id": "bom-lg-1", "foto": "bomba-1.png", "slug": "bomba-desague-lavadora-lg-carcasa-filtro-gris", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Con carcasa y filtro integrado (gris)", "carga": None, "forma": "bomba de desagüe para lavadora LG con carcasa gris y cámara de filtro integrada, con el motor y el conector a un lado"},
+            {"id": "bom-lg-2", "foto": "bomba-2.png", "slug": "bomba-desague-lavadora-lg-motor-negro-4681ea2001t", "corto": "Bomba de desagüe", "ref": "4681EA2001T", "precio": None,
+             "tipo": "Motor negro con rodete blanco", "carga": None, "forma": "bomba de desagüe para lavadora LG de motor negro con rodete blanco; en la etiqueta de la foto se lee la referencia 4681EA2001T"},
+            {"id": "bom-lg-3", "foto": "bomba-3.png", "slug": "bomba-desague-lavadora-lg-rodete-lila-marca-lc", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Rodete lila (con marca LC)", "carga": None, "forma": "bomba de desagüe para lavadora LG con carcasa gris, rodete lila y bornes de conexión en la base; esta versión trae la marca LC en el rodete"},
+            {"id": "bom-lg-4", "foto": "bomba-4.png", "slug": "bomba-desague-lavadora-lg-rodete-lila", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Rodete lila", "carga": None, "forma": "bomba de desagüe para lavadora LG con carcasa gris, rodete lila y bornes de conexión en la base"},
+            {"id": "bom-lg-5", "foto": "bomba-5.png", "slug": "bomba-desague-lavadora-lg-carcasa-filtro-blanca", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Con carcasa y filtro integrado (blanca)", "carga": None, "forma": "bomba de desagüe para lavadora LG con carcasa blanca y cámara de filtro integrada, con anillo negro del motor"},
         ],
     },
 }
@@ -252,7 +258,7 @@ def pagina_producto(S, p):
 <section class="m-sec alt"><div class="m-wrap"><div class="m-texto"><div class="m-cab"><span class="eyebrow">Descripción</span><h2>{esc(p["nombre"])}</h2></div>
 <p>Es una {esc(p["forma"])}. También se conoce como bomba de agua, bomba de drenaje o motobomba de la lavadora: saca el agua de la tina cuando termina el lavado y antes del centrifugado.</p>
 <p>Si tu lavadora {n} no desagua, hace ruido al vaciar o muestra un código de error de desagüe ({M["codigos"]}), esta pieza es una de las primeras que se revisan. Para estar seguros de que es la que necesita tu lavadora, el asesor revisa el modelo contigo por WhatsApp.</p></div></div></section>
-<section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Marca de la lavadora</dt><dd>{n}</dd><dt>Tipo de lavadora</dt><dd>{esc(p["tipo"])}</dd><dt>Pieza</dt><dd>Bomba de desagüe (bomba de agua)</dd><dt>Referencia</dt><dd>{esc(p["ref"]) if p["ref"] else "Te la confirma el asesor según el modelo"}</dd><dt>Envío</dt><dd>Toda Colombia, por transportadora</dd></dl></div></section>
+<section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Marca de la lavadora</dt><dd>{n}</dd><dt>Tipo de bomba</dt><dd>{esc(p["tipo"])}</dd><dt>Pieza</dt><dd>Bomba de desagüe (bomba de agua)</dd><dt>Referencia</dt><dd>{esc(p["ref"]) if p["ref"] else "Te la confirma el asesor según el modelo"}</dd><dt>Envío</dt><dd>Toda Colombia, por transportadora</dd></dl></div></section>
 {bloque_importancia(n)}
 {bloque_entrega()}
 <section class="m-sec alt"><div class="m-wrap"><section class="caja tutorial" id="instalacion"><h2>Cómo cambiar la bomba de desagüe de tu lavadora {n}: paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in INSTALACION)}</ol><p class="m-mut">{esc(NOTA_INSTALACION)}</p></section></div></section>
@@ -260,11 +266,11 @@ def pagina_producto(S, p):
 {('<section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Más bombas</span><h2>Otras bombas para lavadora ' + n + '</h2></div>' + chips(otros) + '</div></section>') if otros else ""}
 {S.barra(f"Hola, quiero consultar por la {p['nombre']}")}'''
     prod = {"@type": "Product", "name": p["nombre"], "image": f"{S.raiz}/img/{p['id']}.jpg", "brand": {"@type": "Brand", "name": n}, "category": "Repuestos para lavadoras",
-            "description": f"Bomba de desagüe (bomba de agua) para lavadora {n} {p['tipo'].lower()}. Envío a toda Colombia.", "areaServed": "CO"}
+            "description": f"Bomba de desagüe (bomba de agua) para lavadora {n}: {p['tipo'].lower()}. Envío a toda Colombia.", "areaServed": "CO"}
     if p["ref"]: prod["mpn"] = p["ref"]
     if p["precio"]:
         prod["offers"] = {"@type": "Offer", "priceCurrency": "COP", "price": p["precio"], "availability": "https://schema.org/InStock", "url": f"{S.dominio}/{p['slug']}/"}
-    S.pagina(f"/{p['slug']}/", f"{p['nombre']} | Pago contra entrega", f"Bomba de desagüe para lavadora {n} {p['tipo'].lower()}. Pregunta al asesor por WhatsApp el precio y recibe en toda Colombia.", cuerpo,
+    S.pagina(f"/{p['slug']}/", f"{p['nombre']} | Pago contra entrega", f"Bomba de desagüe para lavadora {n}: {p['tipo'].lower()}. Pregunta al asesor por WhatsApp el precio y recibe en toda Colombia.", cuerpo,
              [prod, faq_ld(faq), HowTo(S, p), S.breadcrumb((p["nombre"], None))], "0.9", f'<link rel="preload" as="image" href="/img/{p["id"]}.webp"><meta property="og:image" content="{S.raiz}/img/{p["id"]}.jpg">')
 
 
@@ -322,12 +328,12 @@ def guias(S):
     for tipo, slg, ptxt in [("carga superior", "carga-superior", "se abre por arriba"), ("carga frontal", "carga-frontal", "se abre por el frente con una puerta redonda")]:
         G(f"/bomba-lavadora-{S.clave}-{slg}/", f"Bomba de agua para lavadora {n} de {tipo}", f"Bombas de desagüe para lavadoras {n} de {tipo}. Pregunta al asesor por WhatsApp y recibe en toda Colombia.",
           f"Bomba de agua para lavadora {n} de {tipo}",
-          f"<p>La lavadora de {tipo} {ptxt}. Su bomba de desagüe es distinta a la de la otra, por eso conviene confirmar el modelo antes de comprar.</p>" + chips([(p["nombre"], f"/{p['slug']}/") for p in M["productos"] if p["carga"] == slg]))
+          f"<p>La lavadora de {tipo} {ptxt}. Su bomba de desagüe es distinta a la de la otra, por eso conviene confirmar el modelo antes de comprar.</p>" + chips([(p["nombre"], f"/{p['slug']}/") for p in (([q for q in M["productos"] if q["carga"] == slg]) or M["productos"])]))
     for pref, tipo, slg in M["familias"]:
         G(f"/bomba-lavadora-{S.clave}-modelo-{pref.lower()}/", f"Bomba de agua para lavadora {n} {pref} ({tipo.lower()})", f"Bomba de desagüe para lavadoras {n} de la familia {pref}: {tipo.lower()}. El asesor confirma la referencia con tu modelo exacto.",
           f"Bomba de agua para lavadora {n} modelo {pref}",
           f"<p>Los modelos de lavadora {n} que empiezan por <b>{pref}</b> suelen ser de {tipo.lower()}. Cada modelo puede usar una bomba distinta, así que la referencia exacta se confirma con el modelo completo (por ejemplo, {pref}… y los números y letras que siguen) que aparece en la etiqueta.</p>"
-          f"<p>Mándale al asesor el modelo completo por WhatsApp y te confirma la bomba, el precio y el envío.</p>" + chips([(p["nombre"], f"/{p['slug']}/") for p in M["productos"] if p["carga"] == slg]))
+          f"<p>Mándale al asesor el modelo completo por WhatsApp y te confirma la bomba, el precio y el envío.</p>" + chips([(p["nombre"], f"/{p['slug']}/") for p in (([q for q in M["productos"] if q["carga"] == slg]) or M["productos"])]))
 
 
 def paginas_ciudad(S):
@@ -488,6 +494,7 @@ def construir_todo(dominio):
                  (">Filtros ' . h($M['nombre']) . ' en '", ">Bombas para lavadora ' . h($M['nombre']) . ' en '"), ("¿Cuál filtro es el mío?", "¿Cuál bomba es la mía?"),
                  ("content=\"Filtros '", "content=\"Bombas de agua '"), ("(filtros, guías, ciudades)", "(bombas, guías, ciudades)")]:
         mp = mp.replace(a, b)
+    mp = mp.replace("Envío gratis a toda Colombia", "Envío a toda Colombia")
     (out / "marcas.php").write_text(mp, encoding="utf-8")
     for f in ["partes.php", "404.php"]:
         t = (out / f).read_text(encoding="utf-8").replace("Filtros<b>Lavadoras</b>", "Bombas<b>Lavadoras</b>")
@@ -511,7 +518,7 @@ def construir_todo(dominio):
     for S in Ss:
         S.chips_ciudad = [(c[0], f"/bomba-lavadora-{S.clave}-{slug(c[0])}/") for c in S.ciudades]
         for p in S.M["productos"]:
-            p["nombre"] = f"{p['corto']} para lavadora {S.M['nombre']} {p['tipo'].lower()}"
+            p["nombre"] = f"{p['corto']} para lavadora {S.M['nombre']}: {p['tipo'][0].lower() + p['tipo'][1:]}"
         preparar_fotos(S.M, out)
     for S in Ss:
         (out / f"marca-{S.clave}.json").write_text(json.dumps(marca_json(S, Ss), ensure_ascii=False), encoding="utf-8")

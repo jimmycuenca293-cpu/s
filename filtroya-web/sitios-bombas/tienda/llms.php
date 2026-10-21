@@ -8,16 +8,19 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 
 ## Samsung (WhatsApp 305 479 6329)
 - [Bombas de agua para lavadora Samsung](__BASE__/samsung/)
-- [Bomba de desagüe para lavadora Samsung carga superior](__BASE__/samsung/bomba-desague-lavadora-samsung-carga-superior/): Carga superior.
-- [Bomba de desagüe para lavadora Samsung carga frontal](__BASE__/samsung/bomba-desague-lavadora-samsung-carga-frontal/): Carga frontal.
+- [Bomba de desagüe para lavadora Samsung: carga superior](__BASE__/samsung/bomba-desague-lavadora-samsung-carga-superior/): Carga superior.
+- [Bomba de desagüe para lavadora Samsung: carga frontal](__BASE__/samsung/bomba-desague-lavadora-samsung-carga-frontal/): Carga frontal.
 - [Cuál bomba necesita mi lavadora](__BASE__/samsung/cual-es-mi-bomba/)
 - [Cómo cambiar la bomba](__BASE__/samsung/cambio-e-instalacion/)
 - [Lavadora Samsung no desagua](__BASE__/samsung/lavadora-samsung-no-desagua/)
 
 ## LG (WhatsApp 320 510 2995)
 - [Bombas de agua para lavadora LG](__BASE__/lg/)
-- [Bomba de desagüe para lavadora LG carga superior](__BASE__/lg/bomba-desague-lavadora-lg-carga-superior/): Carga superior.
-- [Bomba de desagüe para lavadora LG carga frontal](__BASE__/lg/bomba-desague-lavadora-lg-carga-frontal/): Carga frontal.
+- [Bomba de desagüe para lavadora LG: con carcasa y filtro integrado (gris)](__BASE__/lg/bomba-desague-lavadora-lg-carcasa-filtro-gris/): Con carcasa y filtro integrado (gris).
+- [Bomba de desagüe para lavadora LG: motor negro con rodete blanco](__BASE__/lg/bomba-desague-lavadora-lg-motor-negro-4681ea2001t/): Motor negro con rodete blanco.
+- [Bomba de desagüe para lavadora LG: rodete lila (con marca LC)](__BASE__/lg/bomba-desague-lavadora-lg-rodete-lila-marca-lc/): Rodete lila (con marca LC).
+- [Bomba de desagüe para lavadora LG: rodete lila](__BASE__/lg/bomba-desague-lavadora-lg-rodete-lila/): Rodete lila.
+- [Bomba de desagüe para lavadora LG: con carcasa y filtro integrado (blanca)](__BASE__/lg/bomba-desague-lavadora-lg-carcasa-filtro-blanca/): Con carcasa y filtro integrado (blanca).
 - [Cuál bomba necesita mi lavadora](__BASE__/lg/cual-es-mi-bomba/)
 - [Cómo cambiar la bomba](__BASE__/lg/cambio-e-instalacion/)
 - [Lavadora LG no desagua](__BASE__/lg/lavadora-lg-no-desagua/)

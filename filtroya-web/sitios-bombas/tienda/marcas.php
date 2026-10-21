@@ -17,7 +17,7 @@ function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, stri
         . '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="' . h($M['fuentes']) . '">'
         . ($legado ? '<link rel="stylesheet" href="/estilo.css">' : '') . '<link rel="stylesheet" href="/marcas.css">'
         . verificacion_html() . analytics_html() . $extra . '</head><body class="m-' . h($M['clase']) . ($legado ? ' m-legado' : '') . '">' . gtm_body_html()
-        . '<div class="m-anuncio"><span>✔ Bombas de agua para lavadora ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío gratis a toda Colombia</span><span>💵 Pago contra entrega</span></div>'
+        . '<div class="m-anuncio"><span>✔ Bombas de agua para lavadora ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío a toda Colombia</span><span>💵 Pago contra entrega</span></div>'
         . '<header class="m-top"><div class="m-wrap">'
         . '<a class="m-logo" href="' . h($b) . '" aria-label="Bombas de agua ' . h($M['nombre']) . '"><span class="m-sello">' . logo_marca_html($M) . '</span></a>'
         . menu_marca($M)
