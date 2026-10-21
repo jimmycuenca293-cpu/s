@@ -191,15 +191,3 @@ Servicio Técnico Samsung Panamá repara secadoras Samsung a domicilio en Ciudad
 
 ### ¿Vale la pena reparar la secadora Samsung o conviene comprar uno nuevo?
 Si la falla es de una pieza accesible y el equipo está en buen estado, reparar casi siempre conviene. Si es muy antiguo o el daño es costoso, te explicamos las opciones con honestidad antes de repararlo.
-
-## Servicio técnico LG en Panamá
-- [Servicio técnico LG Panamá](https://centroserviciopanama.com/lg/index.html)
-- [llms.txt de LG](https://centroserviciopanama.com/lg/llms.txt)
-
-## Servicio técnico Whirlpool en Panamá
-- [Servicio técnico Whirlpool Panamá](https://centroserviciopanama.com/whirlpool/index.html)
-- [llms.txt de Whirlpool](https://centroserviciopanama.com/whirlpool/llms.txt)
-
-## Servicio técnico Mabe en Panamá
-- [Servicio técnico Mabe Panamá](https://centroserviciopanama.com/mabe/index.html)
-- [llms.txt de Mabe](https://centroserviciopanama.com/mabe/llms.txt)

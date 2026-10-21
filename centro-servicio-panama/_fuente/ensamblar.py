@@ -45,7 +45,6 @@ robots = re.sub(r"Sitemap:.*", f"Sitemap: {DOM}/sitemap.xml", robots)
 # llms.txt raíz: Samsung + referencia a LG
 ll = (RAIZ / "llms.txt").read_text(encoding="utf-8")
 ll = ll.replace("# Servicio Técnico Samsung Panamá", "# Centro de Servicio Panamá (Samsung y LG)", 1)
-ll += f"\n## Servicio técnico LG en Panamá\n- [Servicio técnico LG Panamá]({DOM}/lg/index.html)\n- [llms.txt de LG]({DOM}/lg/llms.txt)\n\n## Servicio técnico Whirlpool en Panamá\n- [Servicio técnico Whirlpool Panamá]({DOM}/whirlpool/index.html)\n- [llms.txt de Whirlpool]({DOM}/whirlpool/llms.txt)\n\n## Servicio técnico Mabe en Panamá\n- [Servicio técnico Mabe Panamá]({DOM}/mabe/index.html)\n- [llms.txt de Mabe]({DOM}/mabe/llms.txt)\n"
 (RAIZ / "llms.txt").write_text(ll, encoding="utf-8")
 # zip
 z = RAIZ.parent / "entrega" / "centro-servicio-panama.zip"

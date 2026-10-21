@@ -76,14 +76,47 @@ def brand_href(r, path):
 def otra_url(r):
     return brand_href(r, "")
 
+EXT_BRAND = {"Samsung": "https://www.samsung.com/pa/", "LG": "https://www.lg.com/pa/", "Whirlpool": "https://www.whirlpool.com/", "Mabe": "https://www.mabe.com.mx/"}
+def ext_url(): return EXT_BRAND[MARCA]
+
+def ext_box():
+    u = ext_url()
+    return (f'<section class="sec"><div class="w txt"><div class="cab"><span class="ey">Recursos de la marca</span><h2>Información oficial de {MARCA}</h2></div>'
+            f'<ul class="lista"><li><a href="{u}" target="_blank" rel="noopener">Sitio oficial de {MARCA}</a>: catálogo, manuales y especificaciones de tus equipos {MARCA}.</li>'
+            f'<li><a href="{u}" target="_blank" rel="noopener">Garantía de fábrica {MARCA}</a>: consulta las condiciones de la garantía de tu equipo antes de pedir una reparación.</li>'
+            f'<li><a href="{u}" target="_blank" rel="noopener">Productos {MARCA}</a>: modelos, medidas y funciones para identificar tu equipo.</li></ul></div></section>')
+
 def marcas_sw(r):
+    return ""
+
+def marcas_sw_old(r):
     a = "".join(f'<a href="{brand_href(r, bp)}"{" class=on" if bp == MY_PATH else ""}>{bn}</a>' for bn, bp in BRANDS)
     return f'<span class="marcas" aria-label="Marcas">{a}</span>'
 
 def brand_links(r):
     return ", ".join(f'<a href="{brand_href(r, bp)}">{bn}</a>' for bn, bp in BRANDS[:-1]) + f' y <a href="{brand_href(r, BRANDS[-1][1])}">{BRANDS[-1][0]}</a>'
 
+def sinpref(e, s):
+    s0 = s[0].lower() + s[1:]
+    for pre in (f"la {e['sing']} ", f"el {e['sing']} ", f"{e['sing']} "):
+        if s0.startswith(pre): return s0[len(pre):]
+    return s0
+
+def terminos_falla(k, e, f):
+    s0 = sinpref(e, f[0]); s1 = re.sub(r"\s*\([^)]*\)", "", s0).strip()
+    fr = {"diagnostico": f"{e['sing']} {MARCA} {s1}", "porque": f"por qué mi {e['sing']} {MARCA} {s1}", "quehacer": f"{e['sing']} {MARCA} {s1} qué hacer"}
+    return [(t, fr[t], f"busquedas/{k}/{slug(fr[t])[:80]}.html") for t in ("diagnostico", "porque", "quehacer")]
+
 def terminos_equipo(k, e, depth, zonas=14):
+    r = R(depth)
+    ch = []
+    for f in e["fallas"]:
+        for t, frase, url in terminos_falla(k, e, f):
+            ch.append(f'<a href="{r}{url}">{esc(frase)}</a>')
+    zs = "".join(f'<a href="{r}{zurl(k, z[0])}">Servicio técnico de {esc(e["corto"].lower())} {MARCA} en {esc(z[0])}</a>' for z in ZONAS[:zonas])
+    return "".join(ch) + zs
+
+def terminos_equipo_old(k, e, depth, zonas=14):
     """Chips con términos de búsqueda frecuentes (enlazan a fallas y zonas)."""
     r = R(depth)
     ch = []
@@ -94,14 +127,61 @@ def terminos_equipo(k, e, depth, zonas=14):
     zs = "".join(f'<a href="{r}{zurl(k, z[0])}">Servicio técnico de {esc(e["corto"].lower())} {MARCA} en {esc(z[0])}</a>' for z in ZONAS[:zonas])
     return "".join(ch) + zs
 
+def paginas_busquedas():
+    idx = ""
+    for k, e in EQUIPOS.items():
+        lis = ""
+        for fi, f in enumerate(e["fallas"]):
+            s, causa, urg, rev = f
+            s1 = re.sub(r"\s*\([^)]*\)", "", sinpref(e, s)).strip()
+            ter = terminos_falla(k, e, f)
+            otras = "".join(f'<a href="../../{terminos_falla(k, e, g2)[0][2]}">{esc(terminos_falla(k, e, g2)[0][1])}</a>' for g2 in e["fallas"] if g2 is not f)
+            zs = "".join(f'<a href="../../{zurl(k, z[0])}">{esc(e["corto"])} {MARCA} en {esc(z[0])}</a>' for z in ZONAS[:10])
+            causas = [c.strip(" .") for c in re.split(r",| o ", causa) if len(c.strip()) > 6][:5]
+            msg = f"Hola, mi {e['sing']} {MARCA}: {s1}"
+            foto = foto_rot(k, fi)
+            for t, frase, url in ter:
+                lis += f'<li><a href="{url[len("busquedas/"):]}">{esc(frase)}</a></li>'
+                if t == "diagnostico":
+                    h1 = f"{frase[0].upper() + frase[1:]}: causas y diagnóstico en Panamá"
+                    cuerpo_t = (f"<p class=\"lead\">Si tu {esc(e['sing'])} {MARCA} {esc(s1)}, aquí tienes las causas más comunes, qué puedes revisar y cuándo conviene un técnico a domicilio en Panamá.</p>"
+                                f"<h2>Causas posibles</h2><ul class=\"lista\">{''.join(f'<li>{esc(c[0].upper() + c[1:])}.</li>' for c in causas)}</ul>"
+                                f"<h2>Qué puedes revisar primero</h2><p>{esc(rev)}</p>"
+                                f"<h2>¿Qué tan urgente es?</h2><p><span class=\"u {slug(urg)}\">{esc(urg)}</span> {esc(PASOS[urg])}</p>"
+                                f"<h2>Diagnóstico a domicilio</h2><p>Revisamos {esc(e['art'])} {MARCA} en tu casa u oficina, medimos y confirmamos la causa antes de reparar. Te damos el costo antes de empezar y garantía en la pieza y la mano de obra.</p>")
+                elif t == "porque":
+                    h1 = f"¿{frase[0].upper() + frase[1:]}? Explicación y solución"
+                    cuerpo_t = (f"<p class=\"lead\">Respuesta corta: lo más probable es que {esc(causa[0].lower() + causa[1:].rstrip('.'))}.</p>"
+                                f"<h2>Por qué pasa</h2><p>En Panamá el calor, la humedad y las variaciones de voltaje desgastan antes los componentes de {esc(e['art'])} {MARCA}. Cuando el equipo {esc(s1)}, casi siempre hay una pieza o un ajuste detrás: {esc(causa[0].lower() + causa[1:].rstrip('.'))}.</p>"
+                                f"<h2>Cómo confirmarlo</h2><p>{esc(rev)} Si el síntoma continúa, es mejor medir con herramientas que cambiar piezas por prueba y error.</p>"
+                                f"<h2>Qué hace el técnico</h2><ul class=\"lista\"><li>Revisa el equipo y confirma la causa en el sitio.</li><li>Te explica la falla y el costo antes de empezar.</li><li>Repara o reemplaza la pieza y prueba el equipo.</li></ul>")
+                else:
+                    h1 = f"{frase[0].upper() + frase[1:]}: pasos para resolverlo"
+                    cuerpo_t = (f"<p class=\"lead\">Pasos simples para saber qué hacer cuando tu {esc(e['sing'])} {MARCA} {esc(s1)}.</p>"
+                                f"<ol class=\"lista\"><li><b>Seguridad:</b> {esc(PASOS[urg])}</li><li><b>Revisión básica:</b> {esc(rev)}</li><li><b>Anota el modelo y el síntoma:</b> la etiqueta con el modelo está en el equipo; una foto o video ayuda al técnico.</li><li><b>Pide diagnóstico:</b> escríbenos por WhatsApp para coordinar una visita en 24 a 48 horas.</li><li><b>Aprueba el costo:</b> te lo confirmamos antes de reparar.</li></ol>"
+                                f"<h2>Causa más probable</h2><p>{esc(causa)}</p>")
+                guias = guias_chips(k, 2)
+                cuerpo = f'''{miga(2, ("Búsquedas", "busquedas/index.html"), (e["corto"] + " " + MARCA, None))}<section class="sec"><div class="w txt"><h1>{esc(h1)}</h1>{cuerpo_t}
+<h2>Más información</h2><div class="chips"><a href="../../{furl(k, f)}">Falla completa: {esc(s)}</a><a href="../../electrodomesticos/{k}/index.html">Servicio técnico de {esc(e["corto"].lower())} {MARCA}</a></div>
+<h2>Búsquedas relacionadas</h2><div class="chips">{otras}</div><h2>Servicio en tu zona</h2><div class="chips">{zs}</div><h2>Guías</h2><div class="chips">{guias}</div></div></section>{cta(msg, f"¿Tu {e['sing']} {MARCA} {s1}?")}'''
+                cuerpo = cuerpo.replace('<h1>', '<figure class="lado">' + fpic(foto, 2, None, False) + '</figure><h1>', 1) if False else cuerpo
+                ld = [negocio_ld(), bc(("Búsquedas", "busquedas/index.html"), (frase, None))]
+                if t == "quehacer": ld.append(howto_ld(f"Qué hacer si {frase}", [("Seguridad", PASOS[urg]), ("Revisión básica", rev), ("Pide diagnóstico", "Escribe por WhatsApp con el modelo y el síntoma para coordinar la visita.")], url))
+                tit = h1 if len(h1) <= 66 else frase[0].upper() + frase[1:]
+                escribir(url, f"{tit} | {MARCA} Panamá" if len(tit) <= 52 else tit, f"{frase[0].upper() + frase[1:]}: causas, qué revisar y cuándo llamar al técnico. Servicio técnico {MARCA} a domicilio en Panamá. WhatsApp {TEL}.", cuerpo.replace('<div class="w txt"><h1>', '<div class="w txt"><figure class="lado">' + fpic(foto, 2, None, False) + '</figure><h1>', 1), ld, "0.5")
+        idx += f'<h2>{esc(e["corto"])} {MARCA}: búsquedas frecuentes</h2><ul class="lista mapa">{lis}</ul>'
+    msg = f"Hola, necesito servicio técnico {MARCA} en Panamá"
+    cuerpo = f'''{miga(1, ("Búsquedas frecuentes", None))}<section class="sec"><div class="w txt"><h1>Búsquedas frecuentes sobre servicio técnico {MARCA} en Panamá</h1><p class="lead">Cada búsqueda tiene su propia página con causas, qué revisar y cuándo llamar al técnico.</p>{idx}</div></section>{cta(msg)}'''
+    escribir("busquedas/index.html", f"Búsquedas frecuentes: servicio técnico {MARCA} Panamá", f"Las búsquedas más frecuentes sobre neveras, lavadoras y secadoras {MARCA} en Panamá, cada una con su página de respuestas. WhatsApp {TEL}.", cuerpo, [negocio_ld(), bc(("Búsquedas frecuentes", None))], "0.7")
+
 def paginas_mapa():
     grupos = {}
     for ruta, (pr, tit) in sorted(PAGINAS.items()):
         if ruta in ("index.html",): continue
         carpeta = ruta.split("/")[0] if "/" in ruta else "_raiz"
         grupos.setdefault(carpeta, []).append((ruta, tit))
-    nombres = {"_raiz": "Páginas principales y búsquedas clave", "electrodomesticos": "Electrodomésticos", "servicios": "Servicios", "fallas": "Fallas y soluciones", "zonas": "Zonas de cobertura", "blog": "Guías y blog"}
-    orden = ["_raiz", "electrodomesticos", "servicios", "fallas", "zonas", "blog"]
+    nombres = {"_raiz": "Páginas principales y búsquedas clave", "electrodomesticos": "Electrodomésticos", "servicios": "Servicios", "fallas": "Fallas y soluciones", "zonas": "Zonas de cobertura", "blog": "Guías y blog", "busquedas": "Búsquedas frecuentes"}
+    orden = ["_raiz", "electrodomesticos", "servicios", "fallas", "zonas", "busquedas", "blog"]
     partes = ""
     for c in orden:
         if c not in grupos: continue
@@ -109,7 +189,7 @@ def paginas_mapa():
         if c == "zonas": items = [x for x in items if x[0].count("/") == 2 and x[0].endswith("index.html") or x[0] == "zonas/index.html"]
         lis = "".join(f'<li><a href="{ruta}">{esc(tit.split(" | ")[0])}</a></li>' for ruta, tit in items)
         partes += f'<h2>{esc(nombres[c])} <small>({len(items)})</small></h2><ul class="lista mapa">{lis}</ul>'
-    cuerpo = f'''{miga(0, ("Mapa del sitio", None))}<section class="sec"><div class="w txt"><h1>Mapa del sitio: servicio técnico {MARCA} en Panamá</h1><p class="lead">Todas las secciones de {NOMBRE} organizadas por tema: equipos, servicios, fallas, zonas y guías.</p>{partes}<p><a href="{otra_url("")}">Ver el servicio técnico de la otra marca →</a></p></div></section>'''
+    cuerpo = f'''{miga(0, ("Mapa del sitio", None))}<section class="sec"><div class="w txt"><h1>Mapa del sitio: servicio técnico {MARCA} en Panamá</h1><p class="lead">Todas las secciones de {NOMBRE} organizadas por tema: equipos, servicios, fallas, zonas y guías.</p>{partes}</div></section>'''
     escribir("mapa-del-sitio.html", f"Mapa del sitio | {NOMBRE}", f"Mapa del sitio de {NOMBRE}: electrodomésticos, servicios, fallas, zonas y guías de {MARCA} en Panamá.", cuerpo, [bc(("Mapa del sitio", None))], "0.4")
 
 def menu(depth):
@@ -136,7 +216,7 @@ def pie(depth):
             f'<div><b>Electrodomésticos</b>{eq}</div><div><b>Servicios</b>{sv}<a href="{r}diagnostico.html">Diagnóstico rápido</a><a href="{r}garantia.html">Garantía</a></div>'
             f'<div><b>Zonas</b>{zs}<a href="{r}zonas/index.html">Ver todas las zonas</a></div></div>'
             f'<div class="w busq"><b>Búsquedas frecuentes</b><div class="chips">{busquedas_chips(depth)}</div></div>'
-            f'<div class="w otra"><b>{ORG}</b>: servicio técnico de neveras, lavadoras y secadoras {brand_links(r)} en Panamá · <a href="{r}mapa-del-sitio.html">Mapa del sitio</a></div>'
+            f'<div class="w otra"><b>{NOMBRE}</b> · <a href="{ext_url()}" target="_blank" rel="noopener">Sitio oficial de {MARCA}</a> · <a href="{r}busquedas/index.html">Búsquedas frecuentes</a> · <a href="{r}mapa-del-sitio.html">Mapa del sitio</a></div>'
             f'<div class="w legal"><span>© 2026 {NOMBRE}. Mabe es una marca registrada de Mabe Este sitio no es operado por Mabe.</span>'
             f'<span><a href="{r}privacidad.html">Privacidad</a> · <a href="{r}aviso-legal.html">Aviso legal</a> · <a href="{r}preguntas-frecuentes.html">Preguntas frecuentes</a></span></div></footer>'
             f'<a class="wa-flot" href="{wa("Hola, necesito servicio técnico para mi equipo Mabe en Panamá")}" target="_blank" rel="noopener" data-wa="flotante" aria-label="Escribir por WhatsApp">{ICONOS["wa"]}<span>Escríbenos</span></a>'
@@ -275,6 +355,29 @@ def dedupe_imgs(h, ruta):
     partes[medio] = cuerpo
     return "".join(partes)
 
+def inyectar_ext(h, ruta):
+    if not (ruta in ("garantia.html", "nosotros.html", "preguntas-frecuentes.html") or ruta.startswith("garantia-") or (ruta.startswith("electrodomesticos/") and ruta.endswith("/index.html"))): return h
+    i = h.find('<section class="sec"><div class="w"><div class="cta">')
+    if i < 0: i = h.find("</main>")
+    return h[:i] + ext_box() + h[i:]
+
+def estructura_imgs(h, ruta):
+    """Una imagen por sección: sin fotos sueltas arriba y abajo en las páginas interiores."""
+    if ruta == "index.html": return h
+    hero = "hero-tarjeta foto" in h
+    fotos = re.findall(r'<div class="fotoc"[^>]*>.*?</div>', h, re.S)
+    h = re.sub(r'<div class="fotoc"[^>]*>.*?</div>', "", h, flags=re.S)
+    h = re.sub(r'<div class="eqimgs big">.*?</div>\n?', "", h, flags=re.S)
+    h = re.sub(r'<section class="sec[^"]*"><div class="w split.*?</section>', "", h, flags=re.S)
+    if fotos and not hero:
+        fig = re.sub(r'^<div class="fotoc"[^>]*>(.*)</div>$', r'<figure class="lado">\1</figure>', fotos[0], flags=re.S)
+        m = re.search(r'<p class="lead">.*?</p>', h, re.S)
+        if m: h = h[:m.end()] + fig + h[m.end():]
+        else:
+            m = re.search(r'</h1>', h)
+            if m: h = h[:m.end()] + fig + h[m.end():]
+    return h
+
 def inyectar_faq(h, ruta, ld):
     if ruta in ("privacidad.html", "aviso-legal.html", "mapa-del-sitio.html"): return h, ld
     existentes = set(re.findall(r'<summary>(.*?)</summary>', h))
@@ -302,6 +405,8 @@ def escribir(ruta, titulo, desc, cuerpo, ld=None, prioridad="0.7", og="images/og
     p = OUT / ruta
     p.parent.mkdir(parents=True, exist_ok=True)
     pag_cuerpo = menu(depth) + cuerpo + pie(depth)
+    pag_cuerpo = estructura_imgs(pag_cuerpo, ruta)
+    pag_cuerpo = inyectar_ext(pag_cuerpo, ruta)
     pag_cuerpo = dedupe_imgs(pag_cuerpo, ruta)
     pag_cuerpo, ld = inyectar_faq(pag_cuerpo, ruta, ld)
     p.write_text(alt_seo(cabeza(ruta, titulo, desc, ld, og) + pag_cuerpo, ruta), encoding="utf-8")
@@ -400,7 +505,7 @@ def pagina_inicio():
 {split("sam-3", "Tu cocina de nuevo en marcha", "Que tu nevera vuelva a enfriar sin complicaciones", "Escríbenos con el modelo y la falla. Coordinamos la visita en 24 a 48 horas y te confirmamos el costo antes de empezar.", "diagnostico.html", "Abrir diagnóstico rápido", False, True)}
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Cobertura</span><h2>Servicio técnico Mabe en tu zona de Panamá</h2><p>Llegamos a los principales barrios de la ciudad, San Miguelito y Panamá Oeste.</p></div><div class="chips">{zonas}</div><p><a href="zonas/index.html">Ver todas las zonas de cobertura →</a></p></div></section>
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Diagnóstico rápido</span><h2>¿Qué le pasa a tu equipo Mabe?</h2><p>Mira los síntomas más comunes, la causa probable y qué tan urgente es.</p></div><p><a class="btn lg" href="diagnostico.html">Abrir el diagnóstico rápido</a></p></div></section>
-<section class="sec"><div class="w"><div class="cab"><span class="ey">{ORG}</span><h2>Servicio técnico de Mabe, LG y Mabe en Panamá</h2><p>Un solo centro de servicio para neveras, lavadoras y secadoras. Elige tu marca para ver fallas, zonas y guías específicas.</p></div><div class="grid g4">{"".join(f'<a class="card" href="{brand_href("", bp)}"><h3>Servicio técnico {bn}</h3><p>Neveras, lavadoras y secadoras {bn} a domicilio.</p><span class="mas">Ver {bn} →</span></a>' for bn, bp in BRANDS)}<a class="card" href="mapa-del-sitio.html"><h3>Mapa del sitio</h3><p>Todas las secciones organizadas por tema.</p><span class="mas">Ver mapa →</span></a></div></div></section>
+{ext_box()}
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Lo que más buscan</span><h2>Servicio técnico Mabe en Panamá: encuentra lo que necesitas</h2><p>Reparación de neveras, lavadoras y secadoras Mabe, teléfono, precios, repuestos, filtros y zonas de cobertura.</p></div><div class="chips">{busquedas_chips(0)}</div>
 <div class="grid g3 gf" style="margin-top:22px"><a class="card" href="cambio-filtro-nevera-mabe-panama.html">{fpic("prod-nevera-top", 0)}<h3>Nevera Mabe con dispensador</h3><p>Agua lenta, hielo y avisos del panel.</p></a>
 <a class="card" href="{furl('neveras', EQUIPOS['neveras']['fallas'][0])}">{fpic("prod-nevera-sbs", 0)}<h3>La nevera Mabe no enfría</h3><p>Causas y qué revisar antes de llamar.</p></a>
@@ -558,7 +663,7 @@ nav{display:flex;align-items:center;gap:18px}nav>a,.dd>a{color:var(--ink);text-d
 .pie{background:var(--pri2);color:#e3ecfb;padding-top:44px}.pie a{color:#e3ecfb;text-decoration:none}.cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px}.cols b{display:block;color:#fff;margin-bottom:8px}.cols a{display:block;padding:3px 0;font-size:14px}.pl{font-size:18px}.hor{font-size:13px;opacity:.8}.legal{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.15);margin-top:28px;padding-block:18px;font-size:12px;opacity:.85}@media(max-width:860px){.cols{grid-template-columns:1fr 1fr}}@media(max-width:560px){.cols{grid-template-columns:1fr}}
 .wa-flot{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:8px;background:#25d366;color:#fff!important;border-radius:999px;padding:12px 18px 12px 14px;font-weight:800;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.25)}.wa-flot svg{width:28px;height:28px}@media(max-width:520px){.wa-flot span{display:none}.wa-flot{padding:14px}}
 
-.pie .logo{color:#fff;display:flex!important;margin:0 0 12px}.pie .btn{display:inline-flex!important;width:auto}.pie .lg-t{font-size:14px}.pie .lg-t b{color:#fff}.pie .lg-t small{color:#b9c9ee}.pie .lg-i{background:#fff;color:var(--pri)}.busq{padding-top:22px}.busq b{display:block;color:#fff;margin-bottom:6px}.busq .chips a{background:transparent;border-color:rgba(255,255,255,.3);color:#e3ecfb;font-size:13px;padding:6px 12px}.fto img{width:100%;height:auto;display:block;border-radius:var(--r)}.hero-tarjeta.foto{padding:0;overflow:hidden;background:none;border:0}.gf .fto img{aspect-ratio:16/10;object-fit:cover}.split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}.split.rev .sp-f{order:2}.split .fto img{aspect-ratio:4/3;object-fit:cover}.fto.pr img{object-fit:contain!important;background:#fff;border:1px solid var(--line);padding:14px}.sp-t p{color:var(--mut)}.btn.sm{padding:8px 16px;font-size:14px}.split .fto.pr img{aspect-ratio:auto;width:auto;max-width:100%;max-height:440px;margin:0 auto}.sp-f{text-align:center}.mods{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.mods img{height:200px!important}.mods a{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;text-align:center;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:10px;align-items:center}.mods img{height:230px;width:auto;max-width:100%;object-fit:contain}.mods b{font-size:15px}@media(max-width:900px){.mods{grid-template-columns:repeat(2,1fr)}}.marca-pie{display:flex;align-items:center;gap:10px;font-size:13px;color:#b9c9ee}.marca-pie img{background:#fff;border-radius:8px;padding:3px 8px;height:30px;width:auto}.marca-band{border-bottom:1px solid var(--line);background:#fff}.marca-band .w{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding-block:16px}.marca-band span{font-weight:700;color:var(--mut)}.marca-band img{height:44px;width:auto}.marca-band small{color:var(--mut);font-size:12px}.marcas{display:inline-flex;gap:4px;margin-left:12px}.marcas a{padding:2px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.45);color:#fff;text-decoration:none;font-weight:700;font-size:12px}.marcas a.on{background:#fff;color:var(--pri)}.otra{padding:16px 0 4px;font-size:13px;color:var(--soft2,#ccd)}.otra a{text-decoration:underline}.mapa{columns:2;column-gap:32px}.mapa li{break-inside:avoid;font-size:14px}.busq2 .chips a{font-size:13px;padding:6px 12px}.u.urgente{background:#fde2e2}.fotoc{max-width:520px;margin:18px 0}.fotoc img{width:100%;height:auto;border-radius:var(--r)}@media(max-width:820px){.split{grid-template-columns:1fr;gap:20px}.split.rev .sp-f{order:0}}
+.pie .logo{color:#fff;display:flex!important;margin:0 0 12px}.pie .btn{display:inline-flex!important;width:auto}.pie .lg-t{font-size:14px}.pie .lg-t b{color:#fff}.pie .lg-t small{color:#b9c9ee}.pie .lg-i{background:#fff;color:var(--pri)}.busq{padding-top:22px}.busq b{display:block;color:#fff;margin-bottom:6px}.busq .chips a{background:transparent;border-color:rgba(255,255,255,.3);color:#e3ecfb;font-size:13px;padding:6px 12px}.fto img{width:100%;height:auto;display:block;border-radius:var(--r)}.hero-tarjeta.foto{padding:0;overflow:hidden;background:none;border:0}.gf .fto img{aspect-ratio:16/10;object-fit:cover}.split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}.split.rev .sp-f{order:2}.split .fto img{aspect-ratio:4/3;object-fit:cover}.fto.pr img{object-fit:contain!important;background:#fff;border:1px solid var(--line);padding:14px}.sp-t p{color:var(--mut)}.btn.sm{padding:8px 16px;font-size:14px}.split .fto.pr img{aspect-ratio:auto;width:auto;max-width:100%;max-height:440px;margin:0 auto}.sp-f{text-align:center}.mods{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.mods img{height:200px!important}.mods a{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;text-align:center;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:10px;align-items:center}.mods img{height:230px;width:auto;max-width:100%;object-fit:contain}.mods b{font-size:15px}@media(max-width:900px){.mods{grid-template-columns:repeat(2,1fr)}}.marca-pie{display:flex;align-items:center;gap:10px;font-size:13px;color:#b9c9ee}.marca-pie img{background:#fff;border-radius:8px;padding:3px 8px;height:30px;width:auto}.marca-band{border-bottom:1px solid var(--line);background:#fff}.marca-band .w{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding-block:16px}.marca-band span{font-weight:700;color:var(--mut)}.marca-band img{height:44px;width:auto}.marca-band small{color:var(--mut);font-size:12px}.marcas{display:inline-flex;gap:4px;margin-left:12px}.marcas a{padding:2px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.45);color:#fff;text-decoration:none;font-weight:700;font-size:12px}.marcas a.on{background:#fff;color:var(--pri)}.otra{padding:16px 0 4px;font-size:13px;color:var(--soft2,#ccd)}.otra a{text-decoration:underline}.mapa{columns:2;column-gap:32px}.mapa li{break-inside:avoid;font-size:14px}.busq2 .chips a{font-size:13px;padding:6px 12px}.u.urgente{background:#fde2e2}.lado{float:right;width:min(46%,420px);margin:4px 0 18px 26px}.lado img{width:100%;height:auto;border-radius:var(--r)}.txt::after{content:"";display:block;clear:both}@media(max-width:700px){.lado{float:none;width:100%;margin:0 0 16px}}.fotoc{max-width:520px;margin:18px 0}.fotoc img{width:100%;height:auto;border-radius:var(--r)}@media(max-width:820px){.split{grid-template-columns:1fr;gap:20px}.split.rev .sp-f{order:0}}
 '''
 JS = '''(function(){
   window.dataLayer=window.dataLayer||[];
@@ -854,9 +959,9 @@ def paginas_servicio_equipo():
 
 def main():
     (OUT / "zonas-de-cobertura.html").unlink(missing_ok=True)
-    for d in ["electrodomesticos", "servicios", "zonas", "blog", "fallas"]:
+    for d in ["electrodomesticos", "servicios", "zonas", "blog", "fallas", "busquedas"]:
         shutil.rmtree(OUT / d, ignore_errors=True)
-    estaticos(); pagina_inicio(); paginas_equipo(); paginas_servicio(); paginas_zona(); paginas_blog(); pagina_diagnostico(); paginas_info(); paginas_hubs(); paginas_subequipo(); paginas_servicio_equipo(); paginas_fallas(); paginas_zona_equipo(); paginas_mapa(); indices()
+    estaticos(); pagina_inicio(); paginas_equipo(); paginas_servicio(); paginas_zona(); paginas_blog(); pagina_diagnostico(); paginas_info(); paginas_hubs(); paginas_subequipo(); paginas_servicio_equipo(); paginas_fallas(); paginas_zona_equipo(); paginas_busquedas(); paginas_mapa(); indices()
     z = AQUI.parent.parent / "entrega" / "servicio-tecnico-mabe-centro.zip"
     z.parent.mkdir(exist_ok=True)
     with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED) as zf:
