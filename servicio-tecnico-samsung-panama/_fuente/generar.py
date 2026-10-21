@@ -127,7 +127,7 @@ def cta(msg, titulo="¿Necesitas servicio técnico Samsung en Panamá?", texto="
             f'<a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="{fuente}">{ICONOS["wa"]} Escribir por WhatsApp</a></div></div></section>')
 
 def negocio_ld(nombre=None, area=None):
-    return {"@context": "https://schema.org", "@type": "LocalBusiness", "@id": DOMINIO + "/#negocio", "name": NOMBRE, "url": DOMINIO + "/", "telephone": TEL,
+    return {"@context": "https://schema.org", "@type": "LocalBusiness", "@id": DOMINIO + "/#negocio", "name": NOMBRE, "logo": DOMINIO + "/images/logo/favicon.svg", "image": DOMINIO + "/images/og.jpg", "address": {"@type": "PostalAddress", "addressLocality": "Ciudad de Panamá", "addressCountry": "PA"}, "url": DOMINIO + "/", "telephone": TEL,
             "description": "Servicio técnico Samsung en Panamá: neveras, lavadoras y secadoras Samsung en Ciudad de Panamá.",
             "areaServed": [{"@type": "City", "name": "Ciudad de Panamá"}, {"@type": "AdministrativeArea", "name": "Panamá"}] if not area else [{"@type": "Place", "name": area}],
             "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "07:00", "closes": "18:00"}],
@@ -136,6 +136,16 @@ def negocio_ld(nombre=None, area=None):
 EQ_IMGS = {"neveras": ["prod-nevera-top", "prod-nevera-sbs"], "lavadoras": ["prod-lavadora-sup"], "secadoras": ["prod-secadora", "prod-torre"]}
 def eq_img(k, r):
     return '<div class="eqimgs">' + "".join(f'<img class="eqimg" src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{WH[n][0]}" height="{WH[n][1]}" loading="lazy">' for n in EQ_IMGS[k]) + '</div>'
+
+def guias_chips(k, depth, n=6):
+    r = R(depth)
+    return "".join(f'<a href="{r}blog/{b[0]}.html">{esc(b[1])}</a>' for b in BLOG if b[2] == k)
+
+def servicio_ld(e, url):
+    return {"@context": "https://schema.org", "@type": "Service", "name": e["titulo_h1"], "serviceType": f"Reparación de {e['corto'].lower()} Samsung", "provider": {"@id": DOMINIO + "/#negocio"}, "areaServed": {"@type": "City", "name": "Ciudad de Panamá"}, "url": f"{DOMINIO}/{url}", "description": e["intro"]}
+
+def howto_ld(titulo, pasos, url):
+    return {"@context": "https://schema.org", "@type": "HowTo", "name": titulo, "url": f"{DOMINIO}/{url}", "step": [{"@type": "HowToStep", "position": i, "name": n, "text": t} for i, (n, t) in enumerate(pasos, 1)]}
 
 def tarjetas_eq(depth):
     r = R(depth)
@@ -214,7 +224,7 @@ def paginas_equipo():
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Dudas frecuentes</span><h2>Preguntas frecuentes</h2></div>{faq_html(e["faq"])}</div></section>
 {cta(msg, f"¿Tu {e['sing']} Samsung tiene una falla?")}'''
         escribir(base + "index.html", f"{e['titulo_h1']} | Reparación a domicilio", f"{e['intro'][:150]} Visitas en 24-48 horas y garantía. WhatsApp {TEL}.", cuerpo,
-                 [negocio_ld(), faq_ld(e["faq"]), bc((e["nombre"], None))], "0.9")
+                 [negocio_ld(), servicio_ld(e, base + "index.html"), faq_ld(e["faq"]), bc((e["nombre"], None))], "0.9")
         # fallas
         det = "".join(f'<article class="falla"><h3><a href="../../{furl(k, f)}">{esc(f[0])}</a></h3><p><b>Causa probable:</b> {esc(f[1])}</p><p><b>Qué puedes revisar:</b> {esc(f[3])}</p><p><span class="u {slug(f[2])}">{esc(f[2])}</span> <a class="btn sm wa" href="{wa(f"Hola, mi {e["sing"]} Samsung tiene este problema: {f[0]}")}" target="_blank" rel="noopener" data-wa="falla">{ICONOS["wa"]} Consultar esta falla</a></p></article>' for f in e["fallas"])
         cuerpo = f'''{miga(2, (e["nombre"], base + "index.html"), ("Fallas comunes", None))}<section class="sec"><div class="w txt"><h1>Fallas comunes de {esc(e["corto"].lower())} Samsung en Panamá</h1><p class="lead">Síntomas frecuentes, causa probable y qué puedes revisar antes de llamar al técnico.</p>{det}</div></section>{cta(msg)}'''
@@ -268,7 +278,7 @@ def paginas_blog():
     for sl, titulo, cat, resumen, secs in BLOG:
         msg = f"Hola, leí '{titulo}' y necesito servicio técnico Samsung"
         cuerpo_txt = "".join(f"<h2>{esc(h)}</h2>" + (t if t.startswith("<") or "<ul>" in t else f"<p>{esc(t)}</p>") if False else (f"<h2>{esc(h)}</h2><p>{t}</p>" if "<ul>" not in t else f"<h2>{esc(h)}</h2>{t}") for h, t in secs)
-        rel = "".join(f'<a href="{sl2}.html">{esc(t2)}</a>' for sl2, t2, c2, *_ in BLOG if c2 == cat and sl2 != sl)[:600]
+        rel = "".join([f'<a href="{sl2}.html">{esc(t2)}</a>' for sl2, t2, c2, *_ in BLOG if c2 == cat and sl2 != sl][:8])
         cuerpo = f'''{miga(1, ("Blog", "blog/index.html"), (titulo, None))}<section class="sec"><div class="w txt"><span class="ey">{esc(EQUIPOS[cat]["corto"])} Samsung</span><h1>{esc(titulo)}</h1><p class="lead">{esc(resumen)}</p>{cuerpo_txt}
 <p><a href="../electrodomesticos/{cat}/index.html">Ver el servicio técnico de {esc(EQUIPOS[cat]["corto"].lower())} Samsung →</a></p>{f'<h2>Te puede interesar</h2><div class="chips">{rel}</div>' if rel else ""}</div></section>{cta(msg)}'''
         ld = [{"@context": "https://schema.org", "@type": "Article", "headline": titulo, "description": resumen, "inLanguage": "es-PA", "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@type": "Organization", "name": NOMBRE}, "mainEntityOfPage": f"{DOMINIO}/blog/{sl}.html", "datePublished": "2026-10-20", "dateModified": "2026-10-20"}, bc(("Blog", "blog/index.html"), (titulo, None))]
@@ -421,10 +431,11 @@ def paginas_fallas():
 <h2>¿Reparar o reemplazar {esc(e["art"])} Samsung?</h2><p>Si la falla es de una pieza accesible y el equipo está en buen estado general, reparar casi siempre conviene. Si el equipo es muy antiguo o el daño es costoso, te explicamos las opciones con honestidad para que decidas con la información completa.</p>
 <h2>Cómo prevenir esta falla</h2><p>{esc(e["mant"][idx % len(e["mant"])])} Además, protege el equipo de bajones de voltaje y evita sobrecargarlo.</p>
 <h2>Servicio técnico de {esc(e["corto"].lower())} Samsung en Ciudad de Panamá</h2><p>Atendemos este tipo de falla a domicilio en San Francisco, Bella Vista, Obarrio, Costa del Este, Punta Pacífica, Betania, San Miguelito, Albrook, Arraiján, La Chorrera y más zonas. Escríbenos por WhatsApp con el modelo y la falla.</p>
+<h2>Guías relacionadas</h2><div class="chips">{guias_chips(k, 1)}</div>
 <h2>Otras fallas de {esc(e["corto"].lower())} Samsung</h2><div class="chips">{otras}</div>
 <h2>Preguntas frecuentes</h2>{faq_html(faq)}<h2>Servicio en tu zona</h2><div class="chips">{zs}</div></div></section>{cta(msg, f"¿Tu {e['sing']} Samsung tiene esta falla?")}'''
         escribir(ruta, titulo, f"{s} en {e['sing']} Samsung: causa probable, qué revisar y cuándo llamar al técnico. Servicio técnico Samsung a domicilio en Panamá. WhatsApp {TEL}.", cuerpo,
-                 [negocio_ld(), faq_ld(faq), bc(("Fallas", "fallas/index.html"), (f"{e['corto']}: {s}", None))], "0.7")
+                 [negocio_ld(), faq_ld(faq), howto_ld(f"Qué revisar si {s.lower()} en {e['art']} Samsung", [("Revisa lo básico", rev), ("Descarta la causa probable", causa), ("Pide diagnóstico técnico", "Si el síntoma continúa, escribe por WhatsApp con el modelo y la falla para coordinar una visita a domicilio en Panamá.")], ruta), bc(("Fallas", "fallas/index.html"), (f"{e['corto']}: {s}", None))], "0.7")
     bloques = ""
     for k, e in EQUIPOS.items():
         bloques += f'<h2>Fallas de {esc(e["corto"].lower())} Samsung</h2><div class="chips">' + "".join(f'<a href="{k}-samsung-{fslug(f)}.html">{esc(f[0])}</a>' for f in e["fallas"]) + "</div>"
@@ -452,13 +463,13 @@ def paginas_zona_equipo():
 {"".join(f"<h2>{esc(a.replace('{z}', z))}</h2><p>{esc(b.replace('{z}', z))}</p>" for a, b in [SEO_EQ[k][(i + j) % 5], SEO_EQ[k][(i + j + 2) % 5]])}<h2>Fallas de {esc(e["corto"].lower())} Samsung que atendemos en {esc(z)}</h2><ul class="lista">{fl}</ul>
 <h2>Consejo de mantenimiento</h2><p>{esc(mant)}</p>
 <h2>Preguntas frecuentes en {esc(z)}</h2>{faq_html(faq)}
-<h2>Otros equipos Samsung en {esc(z)}</h2><div class="chips">{otros}</div><h2>{esc(e["corto"])} Samsung en zonas cercanas</h2><div class="chips">{vec}</div></div></section>{cta(msg, f"¿Tu {e['sing']} Samsung falla en {z}?")}'''
+<h2>Guías de {esc(e["corto"].lower())} Samsung</h2><div class="chips">{guias_chips(k, 1)}</div><h2>Otros equipos Samsung en {esc(z)}</h2><div class="chips">{otros}</div><h2>{esc(e["corto"])} Samsung en zonas cercanas</h2><div class="chips">{vec}</div></div></section>{cta(msg, f"¿Tu {e['sing']} Samsung falla en {z}?")}'''
             escribir(zurl(k, z), f"Reparación de {e['corto']} Samsung en {z} | Panamá", f"Servicio técnico de {e['corto'].lower()} Samsung a domicilio en {z}, Panamá. Diagnóstico claro, garantía y visitas en 24-48 horas. WhatsApp {TEL}.", cuerpo,
                      [negocio_ld(area=z), faq_ld(faq), bc(("Zonas", "zonas-de-cobertura.html"), (z, f"zonas/{slug(z)}.html"), (e["corto"], None))], "0.5")
             n += 1
 
 HUBS = [
- dict(f="servicio-tecnico-samsung-panama.html", chip="Servicio técnico Samsung Panamá", t="Servicio Técnico Samsung Panamá | Neveras, Lavadoras y Secadoras", h1="Servicio técnico Samsung en Panamá", foto=("nevera-cocina", ALT["nevera-cocina"]), foto2="nevera-familia",
+ dict(f="servicio-tecnico-samsung-panama.html", chip="Servicio técnico Samsung Panamá", t="Servicio Técnico Samsung Panamá: Cómo Funciona, Zonas y Contacto", h1="Servicio técnico Samsung en Panamá", foto=("nevera-cocina", ALT["nevera-cocina"]), foto2="nevera-familia",
       lead="Reparación a domicilio de neveras, lavadoras y secadoras Samsung en Ciudad de Panamá, San Miguelito y Panamá Oeste.",
       secs=[("Qué es el servicio técnico Samsung que ofrecemos", "Atendemos en tu casa u oficina los electrodomésticos Samsung que presentan fallas: neveras que no enfrían, lavadoras que no centrifugan o no desaguan, secadoras que no secan o no calientan. Revisamos el equipo, te explicamos la causa y confirmamos el costo antes de reparar."),
             ("Cómo funciona", "1) Escríbenos por WhatsApp con el equipo, el modelo y la falla. 2) Coordinamos la visita, normalmente en 24 a 48 horas. 3) Diagnosticamos en el sitio y te damos el costo. 4) Reparamos y probamos el equipo, con garantía sobre la pieza y la mano de obra."),
@@ -595,7 +606,7 @@ def paginas_subequipo():
                             f"<h2>Conviene reemplazar cuando…</h2><ul class=\"lista\"><li>El equipo es muy antiguo y tiene varias fallas seguidas.</li><li>El daño es en una pieza principal muy costosa.</li><li>El consumo de energía es muy alto frente a un equipo nuevo.</li></ul><h2>Nuestro criterio</h2><p>Primero diagnosticamos, luego te damos las opciones y el costo. Si no vale la pena reparar, te lo decimos con honestidad.</p>")
             fotoh = f'<div class="fotoc">{pic(foto[0], foto[1], 2, foto[2], foto[3])}</div>' if foto else ""
             faq = [(f"¿Atienden {e['corto'].lower()} Samsung en toda la ciudad de Panamá?", "Damos servicio a domicilio en Ciudad de Panamá, San Miguelito y Panamá Oeste. Escríbenos con tu barrio para confirmarlo."), ("¿Cuánto tarda la visita?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas."), ("¿La reparación tiene garantía?", "Sí, sobre la pieza reemplazada y la mano de obra. El plazo se confirma antes de empezar.")]
-            cuerpo = f'''{miga(2, (e["nombre"], base + "index.html"), (etiqueta, None))}<section class="sec"><div class="w txt"><h1>{esc(H1)}</h1>{cuerpo_t}{fotoh}<h2>Más sobre {esc(e["corto"].lower())} Samsung</h2><div class="chips"><a href="index.html">Servicio técnico de {esc(e["corto"].lower())}</a><a href="fallas-comunes.html">Fallas comunes</a><a href="mantenimiento.html">Mantenimiento</a>{subs_chips(ek, e, 2, s)}</div><h2>Preguntas frecuentes</h2>{faq_html(faq)}</div></section>{cta(msg)}'''
+            cuerpo = f'''{miga(2, (e["nombre"], base + "index.html"), (etiqueta, None))}<section class="sec"><div class="w txt"><h1>{esc(H1)}</h1>{cuerpo_t}{fotoh}<h2>Guías de {esc(e["corto"].lower())} Samsung</h2><div class="chips">{guias_chips(ek, 2)}</div><h2>Más sobre {esc(e["corto"].lower())} Samsung</h2><div class="chips"><a href="index.html">Servicio técnico de {esc(e["corto"].lower())}</a><a href="fallas-comunes.html">Fallas comunes</a><a href="mantenimiento.html">Mantenimiento</a>{subs_chips(ek, e, 2, s)}</div><h2>Preguntas frecuentes</h2>{faq_html(faq)}</div></section>{cta(msg)}'''
             escribir(base + s + ".html", f"{H1} | Panamá" if len(H1) < 52 else H1, f"{H1} Servicio técnico Samsung a domicilio en Panamá. Diagnóstico claro, costo confirmado y garantía. WhatsApp {TEL}.", cuerpo,
                      [negocio_ld(), faq_ld(faq), bc((e["nombre"], base + "index.html"), (etiqueta, None))], "0.6")
 

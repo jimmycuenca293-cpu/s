@@ -108,6 +108,11 @@ ZONAS = [
  ("Juan Díaz", "mixto", "Ciudad de Panamá"), ("Pedregal", "mixto", "Ciudad de Panamá"), ("Tocumen", "mixto", "Ciudad de Panamá"),
  ("Albrook", "mixto", "Ciudad de Panamá"), ("Clayton", "torres", "Ciudad de Panamá"), ("Ancón", "casas", "Ciudad de Panamá"),
  ("Arraiján", "casas", "Panamá Oeste"), ("La Chorrera", "casas", "Panamá Oeste"), ("Panamá Pacífico", "casas", "Panamá Oeste"),
+ ("Calidonia", "mixto", "Ciudad de Panamá"), ("Curundú", "popular", "Ciudad de Panamá"), ("Chanis", "mixto", "Ciudad de Panamá"),
+ ("Cerro Viento", "casas", "Ciudad de Panamá"), ("Don Bosco", "casas", "Ciudad de Panamá"), ("Llano Bonito", "casas", "Ciudad de Panamá"),
+ ("Las Mañanitas", "casas", "Ciudad de Panamá"), ("Pacora", "popular", "Ciudad de Panamá"), ("Altos de Panamá", "casas", "Ciudad de Panamá"),
+ ("Ciudad Radial", "casas", "Ciudad de Panamá"), ("Vista Alegre", "casas", "Panamá Oeste"), ("Burunga", "casas", "Panamá Oeste"),
+ ("Howard", "casas", "Panamá Oeste"), ("Veracruz", "casas", "Panamá Oeste"), ("Coronado", "casas", "Panamá Oeste"), ("Chame", "casas", "Panamá Oeste"),
 ]
 TIPO_TXT = {
  "torres": ("En esta zona predominan los edificios y torres de apartamentos. Antes de ir coordinamos con la administración el horario, el ingreso de herramientas y el uso del ascensor de servicio, para que la visita no tenga contratiempos.",
@@ -180,3 +185,6 @@ FAQ_GENERAL = [
  ("¿Dan garantía?", "Sí, cada reparación incluye garantía sobre la pieza reemplazada y sobre la mano de obra. El plazo se confirma antes de empezar."),
  ("¿Cuál es el horario?", "De lunes a sábado, de 7:00am a 6:00pm."),
 ]
+
+from blog2 import BLOG2
+BLOG = BLOG + BLOG2
