@@ -142,11 +142,53 @@ def pie(depth):
             f'<a class="wa-flot" href="{wa("Hola, necesito servicio técnico para mi equipo Whirlpool en Panamá")}" target="_blank" rel="noopener" data-wa="flotante" aria-label="Escribir por WhatsApp">{ICONOS["wa"]}<span>Escríbenos</span></a>'
             f'<script src="{r}js/main.js" defer></script></body></html>')
 
+
+ALT_EQ = {"neveras": ("nevera", "neveras", "refrigeradora"), "lavadoras": ("lavadora", "lavadoras", "lavadora de carga frontal y superior"), "secadoras": ("secadora", "secadoras", "secadora eléctrica y a gas")}
+def alt_contexto(ruta):
+    partes = ruta.replace(".html", "").split("/")
+    zona = eq = falla = None
+    zmap = {slug(z[0]): z[0] for z in ZONAS}
+    if partes[0] == "zonas" and len(partes) >= 2 and partes[1] in zmap:
+        zona = zmap[partes[1]]
+        if len(partes) == 3 and partes[2] in EQUIPOS: eq = partes[2]
+    elif partes[0] == "electrodomesticos" and len(partes) >= 2: eq = partes[1]
+    elif partes[0] == "fallas" and len(partes) == 3:
+        eq = partes[1]
+        for f in EQUIPOS.get(eq, {}).get("fallas", []):
+            if fslug(f) == partes[2]: falla = f[0].lower()
+    else:
+        for k in EQUIPOS:
+            if k[:-1] in ruta or k in ruta: eq = k; break
+    return zona, eq, falla
+
+def alt_seo(html_txt, ruta):
+    zona, eq, falla = alt_contexto(ruta)
+    donde = f"en {zona}, Panamá" if zona else "en Panamá"
+    n = [0]
+    def r(m):
+        tag = m.group(0)
+        am = re.search(r'alt="([^"]*)"', tag)
+        if not am: return tag
+        base = html.unescape(am.group(1)).strip()
+        if "lg-i" in tag: return tag
+        i = n[0]; n[0] += 1
+        e1, e2, e3 = ALT_EQ[eq] if eq else ("electrodoméstico", "electrodomésticos", "neveras, lavadoras y secadoras")
+        if falla:
+            for pre in (f"la {e1} ", f"el {e1} ", f"{e1} "):
+                if falla.startswith(pre): falla = falla[len(pre):]; break
+            kws = [f"{e1} {MARCA} {falla} {donde}", f"reparación de {e2} {MARCA} {donde}", f"técnico {MARCA} a domicilio {donde}"]
+        else:
+            kws = [f"servicio técnico {MARCA} {donde}", f"reparación de {e2} {MARCA} {donde}", f"técnico de {e2} {MARCA} a domicilio {donde}", f"{e1} {MARCA} no funciona: servicio técnico {donde}", f"cerca de mí: servicio técnico {MARCA} {donde}"]
+        nuevo = f"{base} - {kws[i % len(kws)]}"
+        if len(nuevo) > 150: nuevo = nuevo[:147].rsplit(" ", 1)[0] + "…"
+        return tag.replace(am.group(0), f'alt="{html.escape(nuevo, quote=True)}"')
+    return re.sub(r'<img\b[^>]*>', r, html_txt)
+
 def escribir(ruta, titulo, desc, cuerpo, ld=None, prioridad="0.7", og="images/og.jpg"):
     depth = ruta.count("/")
     p = OUT / ruta
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(cabeza(ruta, titulo, desc, ld, og) + menu(depth) + cuerpo + pie(depth), encoding="utf-8")
+    p.write_text(alt_seo(cabeza(ruta, titulo, desc, ld, og) + menu(depth) + cuerpo + pie(depth), ruta), encoding="utf-8")
     PAGINAS[ruta] = (prioridad, titulo)
 
 def miga(depth, *partes):
