@@ -10,4 +10,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://centroserviciopanama.com/mabe/sitemap.xml
+Sitemap: https://centrodeserviciopanama.com/mabe/sitemap.xml

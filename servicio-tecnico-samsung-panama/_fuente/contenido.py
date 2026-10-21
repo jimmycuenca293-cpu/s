@@ -2,8 +2,8 @@
 """Contenido del sitio «Servicio técnico Samsung en Panamá» (SEO orgánico).
 Servicio técnico Samsung Panamá (SEO orgánico)."""
 
-DOMINIO = "https://centroserviciopanama.com"
-DOMINIO_RAIZ = "https://centroserviciopanama.com"
+DOMINIO = "https://centrodeserviciopanama.com"
+DOMINIO_RAIZ = "https://centrodeserviciopanama.com"
 ORG = "Centro de Servicio Panamá"
 MARCA = "Samsung"
 ES_LG = False
@@ -12,7 +12,7 @@ TEL = "+507 6933-7976"
 WA = "50769337976"
 HORARIO = "Lun a Sáb 7:00am–6:00pm"
 GTM_ID = ""           # p. ej. "GTM-XXXXXXX"
-VERIFICACION = ""     # código de Search Console (content de la metaetiqueta)
+VERIFICACION = "1FCQLXVsX43MkGLgBisqGEWBV3OUJ_DDeEW_TQzsoYQ"     # Search Console
 
 EQUIPOS = {
  "neveras": dict(

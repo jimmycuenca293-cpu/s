@@ -2,8 +2,8 @@
 """Contenido del sitio «Servicio técnico LG en Panamá» (SEO orgánico).
 Servicio técnico LG Panamá (SEO orgánico)."""
 
-DOMINIO = "https://centroserviciopanama.com/lg"
-DOMINIO_RAIZ = "https://centroserviciopanama.com"
+DOMINIO = "https://centrodeserviciopanama.com/lg"
+DOMINIO_RAIZ = "https://centrodeserviciopanama.com"
 ORG = "Centro de Servicio Panamá"
 MARCA = "LG"
 ES_LG = True
@@ -12,7 +12,7 @@ TEL = "+507 6933-7976"
 WA = "50769337976"
 HORARIO = "Lun a Sáb 7:00am–6:00pm"
 GTM_ID = ""           # p. ej. "GTM-XXXXXXX"
-VERIFICACION = ""     # código de Search Console (content de la metaetiqueta)
+VERIFICACION = "1FCQLXVsX43MkGLgBisqGEWBV3OUJ_DDeEW_TQzsoYQ"     # Search Console
 
 EQUIPOS = {
  "neveras": dict(

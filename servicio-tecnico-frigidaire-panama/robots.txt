@@ -10,4 +10,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://centroserviciopanama.com/frigidaire/sitemap.xml
+Sitemap: https://centrodeserviciopanama.com/frigidaire/sitemap.xml

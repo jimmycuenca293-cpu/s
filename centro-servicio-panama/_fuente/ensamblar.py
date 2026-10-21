@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Ensambla centroserviciopanama.com: Samsung en la raíz, LG en /lg/, Whirlpool en /whirlpool/, Mabe en /mabe/ Frigidaire en /frigidaire/ Electrolux en /electrolux/ y General Electric en /general-electric/ (una sola URL).
+"""Ensambla centrodeserviciopanama.com: Samsung en la raíz, LG en /lg/, Whirlpool en /whirlpool/, Mabe en /mabe/ Frigidaire en /frigidaire/ Electrolux en /electrolux/ y General Electric en /general-electric/ (una sola URL).
 Uso: ejecutar generar.py en servicio-tecnico-samsung-panama/_fuente y servicio-tecnico-lg-panama/_fuente, luego:  python3 ensamblar.py"""
 import shutil, zipfile, datetime
 from pathlib import Path
@@ -12,7 +12,7 @@ MB = RAIZ.parent / "servicio-tecnico-mabe-centro"
 FR = RAIZ.parent / "servicio-tecnico-frigidaire-panama"
 EL = RAIZ.parent / "servicio-tecnico-electrolux-panama"
 GE = RAIZ.parent / "servicio-tecnico-general-electric-panama"
-DOM = "https://centroserviciopanama.com"
+DOM = "https://centrodeserviciopanama.com"
 HOY = datetime.date.today().isoformat()
 SKIP = {"_fuente", "README.md", "__pycache__"}
 
@@ -84,8 +84,16 @@ Header set X-Content-Type-Options "nosniff"
 Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 """, encoding="utf-8")
+# Organización y sitio web del dominio (solo portada principal)
+import json as _j
+_org = {"@context": "https://schema.org", "@graph": [
+    {"@type": "Organization", "@id": DOM + "/#organizacion", "name": "Centro de Servicio Panamá", "url": DOM + "/", "telephone": "+507 6933-7976",
+     "areaServed": {"@type": "AdministrativeArea", "name": "Panamá"}, "contactPoint": {"@type": "ContactPoint", "telephone": "+507 6933-7976", "contactType": "customer service", "areaServed": "PA", "availableLanguage": "es", "hoursAvailable": "Mo-Sa 07:00-18:00"}},
+    {"@type": "WebSite", "@id": DOM + "/#sitio", "url": DOM + "/", "name": "Centro de Servicio Panamá", "inLanguage": "es-PA", "publisher": {"@id": DOM + "/#organizacion"}}]}
+_ix = (RAIZ / "index.html").read_text(encoding="utf-8")
+(RAIZ / "index.html").write_text(_ix.replace("</head>", '<script type="application/ld+json">' + _j.dumps(_org, ensure_ascii=False) + "</script></head>", 1), encoding="utf-8")
 # zip
-z = RAIZ.parent / "entrega" / "centro-servicio-panama.zip"
+z = RAIZ.parent / "entrega" / "centrodeserviciopanama-com.zip"
 z.parent.mkdir(exist_ok=True)
 n = 0
 with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED) as zf:
