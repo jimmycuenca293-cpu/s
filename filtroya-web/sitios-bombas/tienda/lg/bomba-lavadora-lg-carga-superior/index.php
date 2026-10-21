@@ -1,0 +1,7 @@
+<?php $MARCA = 'lg'; require __DIR__ . '/../../lav.php';
+lav_cabeza("Bomba de agua para lavadora LG de carga superior", "Bombas de desagüe para lavadoras LG de carga superior. Pregunta al asesor por WhatsApp y recibe en toda Colombia.", "/lg/bomba-lavadora-lg-carga-superior/", "", <<<'JSON'
+{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Bombas de agua para lavadora LG", "item": "https://bombasparalavadoras.com/lg/"}, {"@type": "ListItem", "position": 2, "name": "Bomba de agua para lavadora LG de carga superior"}]}]}
+JSON);
+?>
+<div class="m-wrap"><nav class="m-miga"><a href="/lg/">Bombas de agua para lavadora LG</a> › Bomba de agua para lavadora LG de carga superior</nav><div class="m-texto"><h1>Bomba de agua para lavadora LG de carga superior</h1><p>La lavadora de carga superior se abre por arriba. Su bomba de desagüe es distinta a la de la otra, por eso conviene confirmar el modelo antes de comprar.</p><div class="m-chips"><a href="/lg/bomba-desague-lavadora-lg-carga-superior/">Bomba de desagüe para lavadora LG carga superior</a></div></div><div class="m-cta" style="margin:24px 0"><div><h2>¿Quieres la bomba correcta?</h2><p>Escríbele al asesor por WhatsApp con el modelo de tu lavadora.</p></div><a class="m-btn wa" href="https://wa.me/573205102995?text=Hola%2C%20tengo%20una%20pregunta%20sobre%20la%20bomba%20de%20agua%20de%20mi%20lavadora%20LG" target="_blank" rel="noopener">💬 Preguntar al asesor por WhatsApp</a></div></div>
+<?php lav_pie(); ?>

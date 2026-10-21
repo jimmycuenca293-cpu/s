@@ -1,0 +1,7 @@
+<?php $MARCA = 'lg'; require __DIR__ . '/../../lav.php';
+lav_cabeza("Lavadora LG no centrifuga y deja la ropa mojada", "La lavadora LG no centrifuga y la ropa sale empapada: cuándo es la bomba de desagüe y qué revisar.", "/lg/lavadora-lg-no-centrifuga-ropa-mojada/", "", <<<'JSON'
+{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Bombas de agua para lavadora LG", "item": "https://bombasparalavadoras.com/lg/"}, {"@type": "ListItem", "position": 2, "name": "Lavadora LG no centrifuga y deja la ropa mojada"}]}]}
+JSON);
+?>
+<div class="m-wrap"><nav class="m-miga"><a href="/lg/">Bombas de agua para lavadora LG</a> › Lavadora LG no centrifuga y deja la ropa mojada</nav><div class="m-texto"><h1>Lavadora LG no centrifuga y deja la ropa mojada</h1><p>La lavadora no centrifuga mientras haya agua en la tina. Si el agua no se va, la máquina no gira para escurrir.</p><h2>Revisa</h2><ol class='pasos'><li>Que la lavadora esté nivelada y la carga bien repartida.</li><li>El filtro y la manguera de desagüe.</li><li>Si el agua no se va: la bomba de desagüe.</li></ol></div><div class="m-cta" style="margin:24px 0"><div><h2>¿Quieres la bomba correcta?</h2><p>Escríbele al asesor por WhatsApp con el modelo de tu lavadora.</p></div><a class="m-btn wa" href="https://wa.me/573205102995?text=Hola%2C%20tengo%20una%20pregunta%20sobre%20la%20bomba%20de%20agua%20de%20mi%20lavadora%20LG" target="_blank" rel="noopener">💬 Preguntar al asesor por WhatsApp</a></div></div>
+<?php lav_pie(); ?>
