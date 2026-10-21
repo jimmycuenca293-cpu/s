@@ -14,11 +14,11 @@ for i,g in enumerate(d['grupos']):
 <div class="cols"><div><h3>Títulos ({len(g["titulos"])}) {bl(g["titulos"],"Copiar todos")}</h3>{lista(g["titulos"],30)}</div>
 <div><h3>Descripciones ({len(g["descripciones"])}) {bl(g["descripciones"],"Copiar todas")}</h3>{lista(g["descripciones"],90)}</div></div>
 <h3>Palabras clave ({len(K)}) {bl(fr,"En frase")} {bl(ex,"En exacta") if ex else ""} {bl(K,"Sin formato")}</h3>
-<p class="kw">{" ".join(f'<span class="k">{e(k)}</span>' for k in K)}</p>{('<p class="nota">'+e(g["nota"])+'</p>') if g["nota"] else ''}</section>'''
+<p class="kw">{" ".join(f'<button class="cp k" data-t="{e(k)}" title="Copiar">{e(k)}</button>' for k in K)}</p>{('<p class="nota">'+e(g["nota"])+'</p>') if g["nota"] else ''}</section>'''
 neg=d['negativas']
 sl=''.join(f'<li><span class="t"><b>{e(s[0])}</b> · {e(s[1])} · {e(s[2])}<br><span class="u">{e(s[3])}</span></span><span class="btns"><button class="cp" data-t="{e(s[0])}">Título</button><button class="cp" data-t="{e(s[1])}">Desc 1</button><button class="cp" data-t="{e(s[2])}">Desc 2</button><button class="cp" data-t="{e(s[3])}">URL</button></span></li>' for s in d['sitelinks'])
 f=d['fragmento']
-page=f'''<title>Campaña Filtros Lavadoras</title>
+page=f'''<title>Campaña Bombas Lavadoras</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
 <style>
@@ -37,7 +37,7 @@ nav a{{padding:5px 10px;border:1px solid var(--line);border-radius:6px;color:var
 .rows{{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:8px}}.rows li{{display:flex;gap:10px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)}}.rows li:last-child{{border:0}}
 .t{{flex:1;min-width:0;overflow-wrap:anywhere}}.n{{font:12px var(--mono);color:var(--mut);white-space:nowrap}}.btns{{display:flex;gap:4px;flex-wrap:wrap}}
 .cp{{font:600 12px var(--body);border:1px solid var(--acc);color:var(--acc);background:transparent;border-radius:6px;padding:4px 9px;cursor:pointer;white-space:nowrap}}.cp:hover{{background:var(--soft)}}.cp:focus-visible{{outline:2px solid var(--acc);outline-offset:2px}}.cp.ok{{background:var(--ok);border-color:var(--ok);color:var(--accf)}}.cp.all{{background:var(--acc);color:var(--accf)}}
-.kw{{display:flex;flex-wrap:wrap;gap:5px;margin:0}}.k{{font:12px var(--mono);background:var(--soft);padding:2px 7px;border-radius:5px}}.nota{{color:var(--mut);font-style:italic}}
+.kw{{display:flex;flex-wrap:wrap;gap:5px;margin:0}}.k{{font:12px var(--mono);background:var(--soft);padding:3px 8px;border-radius:5px;white-space:normal;text-align:left}}.kw .cp.k.ok{{background:var(--ok);color:var(--accf);border-color:var(--ok)}}.nota{{color:var(--mut);font-style:italic}}
 @media(max-width:760px){{.cols{{grid-template-columns:1fr}}.rows li{{flex-wrap:wrap}}}}
 </style>
 <div class="w"><h1>{e(d["campana"])}</h1>
@@ -45,7 +45,7 @@ nav a{{padding:5px 10px;border:1px solid var(--line);border-radius:6px;color:var
 <nav><a href="#gen">Campaña</a>{nav}<a href="#neg">Negativas</a></nav>
 <section class="gen" id="gen"><h2>Recursos de la campaña</h2><h3>Enlaces de sitio</h3><ul class="rows">{sl}</ul>
 <h3>Textos destacados {bl(d["destacados"],"Copiar todos")}</h3>{lista(d["destacados"],25)}
-<h3>Fragmento estructurado ({e(f[0])}) {bl(f[1],"Copiar valores")}</h3><p class="kw">{" ".join(f'<span class="k">{e(k)}</span>' for k in f[1])}</p>
+<h3>Fragmento estructurado ({e(f[0])}) {bl(f[1],"Copiar valores")}</h3><p class="kw">{" ".join(f'<button class="cp k" data-t="{e(k)}" title="Copiar">{e(k)}</button>' for k in f[1])}</p>
 <h3>Llamadas</h3><ul class="rows"><li><span class="t">Samsung 305 479 6329</span><button class="cp" data-t="3054796329">Copiar</button></li><li><span class="t">LG 320 510 2995</span><button class="cp" data-t="3205102995">Copiar</button></li></ul></section>
 {sec}
 <section class="gen" id="neg"><h2>Palabras negativas ({len(neg)})</h2><p class="sub">Agrégalas a nivel de campaña, en concordancia de frase. {bl(neg,"Copiar todas")} {bl(['"'+n+'"' for n in neg],"En frase")}</p><p class="kw">{" ".join(f'<span class="k">{e(k)}</span>' for k in neg)}</p></section></div>
