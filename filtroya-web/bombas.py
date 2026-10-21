@@ -5,7 +5,7 @@ Misma arquitectura que la tienda de filtros de pelusas (lavadoras.py): un domini
 asesor por WhatsApp propio de cada marca, sin carrito ni pago en línea (pago contra entrega).
 Genera sitios-bombas/tienda/ y tienda-bombas.zip.
 
-Uso:  python3 bombas.py [https://tu-dominio.com]
+Uso:  python3 bombas.py [https://filtrosparalavadoras.click]   (por defecto ese dominio, en la carpeta /bombas-de-agua/)
 
 Fotos: imagenes-bombas/<marca>/ (una por bomba, nombre en PRODUCTOS[...]["foto"]). Si falta una foto se genera una imagen
 provisional con el texto «Foto próximamente» para que el sitio compile; reemplázala por la real y vuelve a generar.
@@ -16,9 +16,12 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 import lavadoras as L
-from lavadoras import (esc, cop, slug, wa_link, faq_ld, faq_html, chips, foto_html, escribir, Sitio, php_val, ciudades,
+from lavadoras import (esc, cop, slug, wa_link, faq_ld, faq_html, chips, foto_html, Sitio, php_val, ciudades,
                        LAV_PHP, CSS_EXTRA, SITEMAP_PHP, FUENTES, AQUI)
 
+PREF = "/bombas-de-agua"      # carpeta de esta tienda dentro del dominio: no pisa nada de la tienda de filtros
+GTM = "GTM-5SCP73SQ"                                                  # el mismo de la tienda de filtros
+VERIFICACION = "NsQML6RHpDIy79HzjoToyz_eOmWi97jh9G1I1ZwkUM4"          # Search Console de filtrosparalavadoras.click
 SALIDA = AQUI / "sitios-bombas"
 FOTOS = AQUI / "imagenes-bombas"
 L.FOTOS = FOTOS
@@ -149,6 +152,36 @@ def preparar_entrega(out):
     im.save(img / "entrega-bomba.jpg", quality=84, optimize=True)
     im.save(img / "entrega-bomba.webp", quality=82)
     im6 = im.copy(); im6.thumbnail((640, 640)); im6.save(img / "entrega-bomba-640.webp", quality=80)
+
+
+def prefijar(h):
+    """Todo enlace o imagen que empiece por «/» pasa a vivir dentro de /bombas-de-agua/."""
+    h = re.sub(r'(?<![\w.:/-])/img/', PREF + "/img/", h)
+    return re.sub(r'(href|action)="/(?!/|bombas-de-agua/)', lambda m: f'{m.group(1)}="{PREF}/', h)
+
+
+def escribir(out, real, marca, titulo, desc, cuerpo, ld, extra_head=""):
+    """Escribe una página PHP en out/<real>/index.php; la infraestructura (lav.php) vive en out/bombas-de-agua/."""
+    carpeta = out / real.strip("/")
+    carpeta.mkdir(parents=True, exist_ok=True)
+    ldj = json.dumps({"@context": "https://schema.org", "@graph": ld}, ensure_ascii=False) if ld else ""
+    prof = len(real.strip("/").split("/")) - 1
+    php = ("<?php $MARCA = '" + marca + "'; require __DIR__ . '/" + "../" * prof + "lav.php';\n"
+           "lav_cabeza(" + json.dumps(titulo, ensure_ascii=False) + ", " + json.dumps(desc, ensure_ascii=False) + ", " + json.dumps(real) + ", "
+           + json.dumps(prefijar(extra_head), ensure_ascii=False) + ", <<<'JSON'\n" + ldj + "\nJSON);\n?>\n" + prefijar(cuerpo) + "\n<?php lav_pie(); ?>\n")
+    (carpeta / "index.php").write_text(php, encoding="utf-8")
+
+
+L.escribir = escribir
+
+
+class SitioB(Sitio):
+    """Igual que Sitio, pero la marca vive en /bombas-de-agua/<marca>/."""
+    def __init__(self, clave, dominio, out):
+        super().__init__(clave, dominio, out)
+        self.pref = PREF + "/" + clave
+        self.dominio = dominio + self.pref
+        self.raiz = dominio + PREF
 
 
 # ---------------------------------------------------------------- bloques comunes
@@ -445,20 +478,20 @@ def pagina_home(out, dominio, Ss):
 <section class="m-sec alt" id="preguntas"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Resolvemos tus dudas</span><h2>Preguntas frecuentes</h2></div>{faq_html(HOME_FAQ)}</div></section>
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Envíos</span><h2>Enviamos a toda Colombia</h2></div><p>{ciudades_links}</p></div></section>'''
     cuerpo = cuerpo.replace('href="/cambio-e-instalacion/"', 'href="/samsung/cambio-e-instalacion/"').replace('href="/como-saber-si-la-bomba-esta-danada/"', 'href="/samsung/como-saber-si-la-bomba-esta-danada/"')
-    ld = [{"@type": "WebSite", "name": "Bombas de agua para lavadoras", "url": dominio + "/"}, faq_ld(HOME_FAQ),
-          {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i, "url": f"{dominio}/{S.clave}/{p['slug']}/", "name": p["nombre"]} for i, (S, p) in enumerate([(S, p) for S in Ss for p in S.M["productos"]], 1)]}]
-    escribir(out, "/", "home", "Bombas de agua para lavadoras Samsung y LG | Envío a toda Colombia",
+    ld = [{"@type": "WebSite", "name": "Bombas de agua para lavadoras", "url": dominio + PREF + "/"}, faq_ld(HOME_FAQ),
+          {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i, "url": f"{dominio}{PREF}/{S.clave}/{p['slug']}/", "name": p["nombre"]} for i, (S, p) in enumerate([(S, p) for S in Ss for p in S.M["productos"]], 1)]}]
+    escribir(out, PREF + "/", "home", "Bombas de agua para lavadoras Samsung y LG | Envío a toda Colombia",
              "Bomba de desagüe (bomba de agua) para lavadoras Samsung y LG de carga superior y frontal. Pregunta al asesor por WhatsApp y recibe en toda Colombia.", cuerpo, ld,
-             f'<meta property="og:image" content="{dominio}/img/{Ss[0].M["productos"][0]["id"]}.jpg">')
+             f'<meta property="og:image" content="{dominio}{PREF}/img/{Ss[0].M["productos"][0]["id"]}.jpg">')
 
 
 def marca_json(S, Ss):
     M = S.M; clave = S.clave; b = S.pref + "/"
-    otras = [[f"Bombas para lavadora {o.M['nombre']}", f"/{o.clave}/"] for o in Ss if o is not S] + [["Inicio", "/"]]
+    otras = [[f"Bombas para lavadora {o.M['nombre']}", f"{PREF}/{o.clave}/"] for o in Ss if o is not S] + [["Inicio", PREF + "/"]]
     guias_ = [[f"{b}cual-es-mi-bomba/", "¿Cuál bomba necesita mi lavadora?"], [f"{b}como-saber-si-la-bomba-esta-danada/", "Cómo saber si la bomba está dañada"],
               [f"{b}cambio-e-instalacion/", "Cómo cambiar la bomba"], [f"{b}lavadora-{clave}-no-desagua/", "La lavadora no desagua"],
               [f"{b}bomba-lavadora-{clave}-carga-superior/", "Bomba de carga superior"], [f"{b}bomba-lavadora-{clave}-carga-frontal/", "Bomba de carga frontal"]]
-    return {"nombre": M["nombre"], "clase": M["clase"], "base": b, "tema": M["tema"], "fuentes": FUENTES, "tienda": M["tienda"], "logo": "", "logo_w": 0, "logo_h": 0, "icono": "/img/icono.svg",
+    return {"nombre": M["nombre"], "clase": M["clase"], "base": b, "tema": M["tema"], "fuentes": FUENTES, "tienda": M["tienda"], "logo": "", "logo_w": 0, "logo_h": 0, "icono": PREF + "/img/icono.svg",
             "whatsapp": M["whatsapp"], "telefono": M["telefono"], "productos": [[p["nombre"], p["slug"]] for p in M["productos"]], "guias": guias_,
             "ciudades": [[c, f"{b}bomba-lavadora-{clave}-{slug(c)}/"] for c in ["Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena", "Bucaramanga", "Pereira", "Manizales", "Armenia", "Ibagué", "Cúcuta", "Santa Marta"]],
             "hub": f"{b}bombas-lavadora-{clave}-por-ciudad/", "extra": otras, "externos": [list(M["oficial"]), ["Superintendencia de Industria y Comercio", "https://www.sic.gov.co/"]]}
@@ -469,11 +502,11 @@ def llms_php(Ss):
            "El modelo correcto y el precio se confirman con un asesor por WhatsApp.\n")
     for S in Ss:
         M = S.M
-        txt += f"\n## {M['nombre']} (WhatsApp {M['telefono']})\n- [Bombas de agua para lavadora {M['nombre']}](__BASE__/{S.clave}/)\n"
+        txt += f"\n## {M['nombre']} (WhatsApp {M['telefono']})\n- [Bombas de agua para lavadora {M['nombre']}](__BASE__{PREF}/{S.clave}/)\n"
         for p in M["productos"]:
-            txt += f"- [{p['nombre']}](__BASE__/{S.clave}/{p['slug']}/): {p['tipo']}.\n"
-        txt += (f"- [Cuál bomba necesita mi lavadora](__BASE__/{S.clave}/cual-es-mi-bomba/)\n- [Cómo cambiar la bomba](__BASE__/{S.clave}/cambio-e-instalacion/)\n"
-                f"- [Lavadora {M['nombre']} no desagua](__BASE__/{S.clave}/lavadora-{S.clave}-no-desagua/)\n")
+            txt += f"- [{p['nombre']}](__BASE__{PREF}/{S.clave}/{p['slug']}/): {p['tipo']}.\n"
+        txt += (f"- [Cuál bomba necesita mi lavadora](__BASE__{PREF}/{S.clave}/cual-es-mi-bomba/)\n- [Cómo cambiar la bomba](__BASE__{PREF}/{S.clave}/cambio-e-instalacion/)\n"
+                f"- [Lavadora {M['nombre']} no desagua](__BASE__{PREF}/{S.clave}/lavadora-{S.clave}-no-desagua/)\n")
     txt += "\n## Preguntas y respuestas\n" + "".join(f"- **{q}** {a}\n" for q, a in HOME_FAQ)
     return "<?php\nrequire __DIR__ . '/api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + txt + "TXT);\n"
 
@@ -481,11 +514,12 @@ def llms_php(Ss):
 # ---------------------------------------------------------------- construcción
 def construir_todo(dominio):
     base = AQUI / "sitios" / "samsung"
-    out = SALIDA / "tienda"
-    if out.exists():
-        shutil.rmtree(out)
+    raiz = SALIDA / "tienda"                       # lo que se sube a public_html
+    out = raiz / PREF.strip("/")                   # toda la tienda vive en /bombas-de-agua/
+    if raiz.exists():
+        shutil.rmtree(raiz)
     out.mkdir(parents=True)
-    for nombre in ["api", "data", ".htaccess", "404.php", "estilo.css", "marcas.css", "marcas.php", "partes.php", "robots.php"]:
+    for nombre in ["api", "data", "404.php", "estilo.css", "marcas.css", "marcas.php", "partes.php"]:   # sin .htaccess ni robots: son de la raíz
         o = base / nombre
         if o.is_dir():
             shutil.copytree(o, out / nombre, ignore=shutil.ignore_patterns("pedidos.sqlite*", "correos.log", "config.php"))
@@ -503,12 +537,16 @@ def construir_todo(dominio):
     mp = mp.replace("return '<b>' . h($M['nombre']) . '</b>';", "return '<b class=\"m-logo-txt\">' . h($M['tienda'] ?? $M['nombre']) . '</b>';").replace("<small>Bombas para lavadora</small>", "")
     mp = mp.replace("$tel = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? ''));", "$tel = preg_replace('/\\D/', '', (string) ($M['whatsapp'] ?? (cfg()['whatsapp'] ?? '')));")
     mp = mp.replace("h($n['telefono']) . '</a>'", "h($M['telefono'] ?? $n['telefono']) . '</a>'")
-    for a, b in [("aria-label=\"Filtros '", "aria-label=\"Bombas de agua '"), ("$dd('Filtros', $filtros)", "$dd('Bombas', $filtros)"), ("'<b>Filtros</b>'", "'<b>Bombas</b>'"),
-                 ("cual-es-mi-filtro/", "cual-es-mi-bomba/"), ("'<nav><b>Filtros ' . h($M['nombre'])", "'<nav><b>Bombas ' . h($M['nombre'])"),
-                 (">Filtros ' . h($M['nombre']) . ' en '", ">Bombas para lavadora ' . h($M['nombre']) . ' en '"), ("¿Cuál filtro es el mío?", "¿Cuál bomba es la mía?"),
-                 ("content=\"Filtros '", "content=\"Bombas de agua '"), ("(filtros, guías, ciudades)", "(bombas, guías, ciudades)")]:
-        mp = mp.replace(a, b)
-    mp = mp.replace("Envío gratis a toda Colombia", "Envío a toda Colombia")
+    for a_, b_ in [("aria-label=\"Filtros '", "aria-label=\"Bombas de agua '"), ("$dd('Filtros', $filtros)", "$dd('Bombas', $filtros)"), ("'<b>Filtros</b>'", "'<b>Bombas</b>'"),
+                   ("cual-es-mi-filtro/", "cual-es-mi-bomba/"), ("'<nav><b>Filtros ' . h($M['nombre'])", "'<nav><b>Bombas ' . h($M['nombre'])"),
+                   (">Filtros ' . h($M['nombre']) . ' en '", ">Bombas para lavadora ' . h($M['nombre']) . ' en '"), ("¿Cuál filtro es el mío?", "¿Cuál bomba es la mía?"),
+                   ("content=\"Filtros '", "content=\"Bombas de agua '"), ("(filtros, guías, ciudades)", "(bombas, guías, ciudades)"),
+                   ("Envío gratis a toda Colombia", "Envío a toda Colombia"),
+                   # rutas de esta tienda: todo bajo /bombas-de-agua/
+                   ('href="/marcas.css"', f'href="{PREF}/marcas.css"'), ('href="/estilo.css"', f'href="{PREF}/estilo.css"'), ("'/img/icono.svg'", f"'{PREF}/img/icono.svg'"),
+                   ('href="/terminos.php"', f'href="{PREF}/terminos.php"'), ('href="/privacidad.php"', f'href="{PREF}/privacidad.php"'),
+                   ('href="/garantia-y-retracto.php"', f'href="{PREF}/garantia-y-retracto.php"'), ('href="/quienes-somos.php"', f'href="{PREF}/quienes-somos.php"')]:
+        mp = mp.replace(a_, b_)
     (out / "marcas.php").write_text(mp, encoding="utf-8")
     for f in ["partes.php", "404.php"]:
         t = (out / f).read_text(encoding="utf-8").replace("Filtros<b>Lavadoras</b>", "Bombas<b>Lavadoras</b>")
@@ -522,13 +560,16 @@ def construir_todo(dominio):
     for f in ["pedido.php", "wompi.php", "estado.php", "reconciliar.php", "recordatorios.php"]:
         (out / "api" / f).unlink(missing_ok=True)
     L.legales(out)
+    for nombre in list(L.LEGALES) + ["quienes-somos"]:   # la ruta canónica de las páginas legales incluye la carpeta
+        p_ = out / (nombre + ".php")
+        p_.write_text(p_.read_text(encoding="utf-8").replace(f"'/{nombre}.php'", f"'{PREF}/{nombre}.php'"), encoding="utf-8")
     tel = " · ".join(f"{m['nombre']} {m['telefono']}" for m in MARCAS.values())
     q = (out / "quienes-somos.php").read_text(encoding="utf-8").replace("__TELEFONOS__", tel)
     (out / "quienes-somos.php").write_text(q, encoding="utf-8")
     (out / "img").mkdir(exist_ok=True)
     shutil.copy(base / "img" / "icono.svg", out / "img" / "icono.svg")
     preparar_entrega(out)
-    Ss = [Sitio(c, dominio, out) for c in MARCAS]
+    Ss = [SitioB(c, dominio, raiz) for c in MARCAS]
     for S in Ss:
         S.chips_ciudad = [(c[0], f"/bomba-lavadora-{S.clave}-{slug(c[0])}/") for c in S.ciudades]
         for p in S.M["productos"]:
@@ -541,55 +582,75 @@ def construir_todo(dominio):
             pagina_producto(S, p)
         guias(S)
         paginas_ciudad(S)
-    home = {"nombre": "Samsung y LG", "clase": "samsung", "base": "/", "tema": "#071338", "fuentes": FUENTES, "tienda": "Bombas de agua para lavadoras", "logo": "", "logo_w": 0, "logo_h": 0, "icono": "/img/icono.svg",
+    home = {"nombre": "Samsung y LG", "clase": "samsung", "base": PREF + "/", "tema": "#071338", "fuentes": FUENTES, "tienda": "Bombas de agua para lavadoras", "logo": "", "logo_w": 0, "logo_h": 0, "icono": PREF + "/img/icono.svg",
             "whatsapp": "", "telefono": "", "productos": [[p["nombre"], f"{S.clave}/{p['slug']}"] for S in Ss for p in S.M["productos"]], "guias": [], "ciudades": [], "hub": None,
-            "extra": [[f"Bombas para lavadora {S.M['nombre']}", f"/{S.clave}/"] for S in Ss], "externos": [["Superintendencia de Industria y Comercio", "https://www.sic.gov.co/"]]}
+            "extra": [[f"Bombas para lavadora {S.M['nombre']}", f"{PREF}/{S.clave}/"] for S in Ss], "externos": [["Superintendencia de Industria y Comercio", "https://www.sic.gov.co/"]]}
     (out / "marca-home.json").write_text(json.dumps(home, ensure_ascii=False), encoding="utf-8")
     (out / "marca.json").write_text(json.dumps(home, ensure_ascii=False), encoding="utf-8")
-    pagina_home(out, dominio, Ss)
-    paginas = {"/": "1.0"}
+    pagina_home(raiz, dominio, Ss)
+    paginas = {PREF + "/": "1.0"}
     for S in Ss:
         paginas.update(S.paginas)
     cat = json.loads(subprocess.run(["php", "-r", "echo json_encode(include '" + str(base / 'api' / 'catalogo.php') + "', JSON_UNESCAPED_UNICODE);"], capture_output=True, text=True, check=True).stdout)
     cat["productos"] = {}
-    cat["paginas"] = list(paginas.keys())
+    cat["paginas"] = [k[len(PREF):] or "/" for k in paginas]
     cat["marcas"], cat["guias"], cat["compat"], cat["blog"], cat["rutas_ciudad"] = [], [], [], [], {}
     (out / "api" / "catalogo.php").write_text("<?php\n// Generado por bombas.py: no lo edites a mano.\nreturn " + php_val(cat) + ";\n", encoding="utf-8")
-    (out / "sitemap.php").write_text(SITEMAP_PHP, encoding="utf-8")
+    sm = SITEMAP_PHP.replace("$b = sitio()['base'];", "$b = sitio()['base'] . '" + PREF + "';").replace("'/quienes-somos.php'", "'/quienes-somos.php'")
+    (out / "sitemap.php").write_text(sm, encoding="utf-8")
     (out / "llms.php").write_text(llms_php(Ss), encoding="utf-8")
+    (out / ".htaccess").write_text("""DirectoryIndex index.php
+Options -Indexes
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteRule ^sitemap\\.xml$ sitemap.php [L]
+RewriteRule ^llms\\.txt$ llms.php [L]
+<FilesMatch "^(partes\\.php|marcas\\.php|marca.*\\.json|.*\\.md)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "\\.(sqlite|sqlite-wal|sqlite-shm|log)$">
+  Require all denied
+</FilesMatch>
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+""", encoding="utf-8")
     cfg = (base / "api" / "config.sample.php").read_text(encoding="utf-8")
     sam = MARCAS["samsung"]
-    cfg = cfg.replace("https://filtrosaguanevecones.com", dominio).replace("Filtros Nevecones Colombia", "Bombas de agua para lavadoras").replace("321 799 6144", sam["telefono"]).replace("3217996144", sam["whatsapp"])
+    cfg = cfg.replace("https://filtrosaguanevecones.com", dominio).replace("Filtros Nevecones Colombia", "Filtros para lavadoras").replace("321 799 6144", sam["telefono"]).replace("3217996144", sam["whatsapp"])
     cfg = cfg.replace("pedidos@filtrosaguanevecones.com", "pedidos@" + dominio.split("//")[1])
-    cfg = re.sub(r"('gtm'\s*=>\s*)'[^']*'", r"\1''", cfg)                                  # pon aquí el GTM de este dominio
-    cfg = re.sub(r"('google_verificacion'\s*=>\s*)'[^']*'", r"\1''", cfg)                   # y la verificación de Search Console de este dominio
+    cfg = cfg.replace("GTM-5WSNHV66", GTM)                                                    # el mismo Tag Manager de filtrosparalavadoras.click
+    cfg = re.sub(r"('google_verificacion'\s*=>\s*)'[^']*'", r"\1'" + VERIFICACION + "'", cfg)  # y la misma verificación de Search Console
     (out / "api" / "config.sample.php").write_text(cfg, encoding="utf-8")
-    inst = AQUI / "INSTALAR-bombas.md"
-    inst.write_text(f"""# Tienda de bombas de agua para lavadoras Samsung y LG (un solo dominio)
+    inst = out / "INSTALAR.md"
+    inst.write_text(f"""# Bombas de agua para lavadoras Samsung y LG, dentro de {dominio}
 
-Dominio: {dominio}
-- Portada: `/` (elige marca)
-- Samsung: `/samsung/` (asesor WhatsApp {MARCAS['samsung']['telefono']})
-- LG: `/lg/` (asesor WhatsApp {MARCAS['lg']['telefono']})
+Todo vive en la carpeta `bombas-de-agua/`, así que no pisa nada de la tienda de filtros (`/samsung/`, `/lg/`, `api/`, `.htaccess`, etc.).
+
+- Portada: {dominio}{PREF}/ (elige marca)
+- Samsung: {dominio}{PREF}/samsung/ (asesor WhatsApp {MARCAS['samsung']['telefono']})
+- LG: {dominio}{PREF}/lg/ (asesor WhatsApp {MARCAS['lg']['telefono']})
 
 Sin carrito ni pago en línea: los pedidos se hacen por WhatsApp con el asesor (pago contra entrega).
 
-1. En Hostinger agrega el dominio, sube `tienda-bombas.zip` a `public_html` y descomprime.
-2. Copia `api/config.sample.php` como `api/config.php` y completa el correo, el titular y el documento. Pon el GTM y la verificación de Search Console de este dominio en `gtm` y `google_verificacion`.
-3. Cada clic en un botón de WhatsApp manda el evento `whatsapp` a Tag Manager (marca, página y texto del botón).
-4. Agrega `{dominio}/sitemap.xml` en Search Console.
-5. Fotos: pon la foto real de cada bomba en `imagenes-bombas/<marca>/` y vuelve a generar con `python3 bombas.py {dominio}`. Las que falten salen con «Foto próximamente».
-6. Precios y referencias: llena `precio` y `ref` en `PRODUCTOS` de `bombas.py`. Mientras no haya precio, la página dice «pregúntale al asesor».
+1. En Hostinger abre el administrador de archivos del dominio {dominio.split('//')[1]}, entra a `public_html`, sube `tienda-bombas-de-agua.zip` y descomprímelo ahí. Se crea solo la carpeta `bombas-de-agua`.
+2. Dentro de `bombas-de-agua/api/` copia `config.sample.php` como `config.php` y completa el correo, el titular y el documento (iguales a los de la otra tienda). El Tag Manager ({GTM}) y la verificación de Search Console ya vienen puestos.
+3. Cada clic en un botón de WhatsApp manda el mismo evento `whatsapp` a Tag Manager (con la marca, la página y el texto del botón), igual que en la tienda de filtros, así que cuenta como la misma conversión.
+4. En Search Console agrega el sitemap {dominio}{PREF}/sitemap.xml (la propiedad es la misma).
+5. Precios: mientras una bomba no tenga precio, su página dice «pregúntale al asesor».
 """, encoding="utf-8")
-    z = AQUI / "tienda-bombas.zip"
+    z = AQUI / "tienda-bombas-de-agua.zip"
     z.unlink(missing_ok=True)
-    subprocess.run(["zip", "-qr", str(z), ".", "-x", "api/config.php", "-x", "data/pedidos.sqlite*", "-x", "data/correos.log"], cwd=out, check=True)
-    subprocess.run(["zip", "-qj", str(z), str(inst)], check=True)
+    (AQUI / "tienda-bombas.zip").unlink(missing_ok=True)
+    subprocess.run(["zip", "-qr", str(z), PREF.strip("/"), "-x", f"{PREF.strip('/')}/api/config.php", "-x", f"{PREF.strip('/')}/data/pedidos.sqlite*", "-x", f"{PREF.strip('/')}/data/correos.log"], cwd=raiz, check=True)
     sin_foto = [f"{S.M['nombre']} {p['tipo']}" for S in Ss for p in S.M["productos"] if p.get("provisional")]
-    print(f"Bombas Samsung y LG: sitios-bombas/tienda/ con {len(paginas)} páginas → {z.name}")
+    print(f"Bombas Samsung y LG: sitios-bombas/tienda{PREF}/ con {len(paginas)} páginas → {z.name}")
     if sin_foto:
         print("Fotos provisionales (faltan las reales):", ", ".join(sin_foto))
 
 
 if __name__ == "__main__":
-    construir_todo(sys.argv[1] if len(sys.argv) > 1 else "https://bombasparalavadoras.com")
+    construir_todo(sys.argv[1] if len(sys.argv) > 1 else "https://filtrosparalavadoras.click")
