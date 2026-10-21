@@ -465,6 +465,12 @@ def fondo_hero(h, ruta):
     nuevo = f'<section class="{cls}" style="--bg:url({r}images/fotos/{stem}.webp);--pos:{pos}">' + hero
     return h[:m.start()] + nuevo + h[fin:]
 
+def alts_fotos(h):
+    def f(mt):
+        b = mt.group(0); mm = re.search(r'images/fotos/([\w-]+)\.jpg', b)
+        return re.sub(r'alt="[^"]*"', lambda _: 'alt="' + html.escape(ALT[mm.group(1)], quote=True) + '"', b, count=1) if mm and mm.group(1) in ALT else b
+    return re.sub(r'<img\b[^>]*>', f, h)
+
 def escribir(ruta, titulo, desc, cuerpo, ld=None, prioridad="0.7", og="images/og.jpg"):
     depth = ruta.count("/")
     p = OUT / ruta
@@ -475,6 +481,7 @@ def escribir(ruta, titulo, desc, cuerpo, ld=None, prioridad="0.7", og="images/og
     pag_cuerpo = dedupe_imgs(pag_cuerpo, ruta)
     pag_cuerpo = fondo_hero(pag_cuerpo, ruta)
     pag_cuerpo, ld = inyectar_faq(pag_cuerpo, ruta, ld)
+    pag_cuerpo = alts_fotos(pag_cuerpo)
     p.write_text(alt_seo(cabeza(ruta, titulo, desc, ld, og) + pag_cuerpo, ruta), encoding="utf-8")
     PAGINAS[ruta] = (prioridad, titulo)
 
