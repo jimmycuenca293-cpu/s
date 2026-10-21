@@ -2,7 +2,11 @@
 """Contenido del sitio «Servicio técnico LG en Panamá» (SEO orgánico).
 Servicio técnico LG Panamá (SEO orgánico)."""
 
-DOMINIO = "https://serviciotecnicolgpanama.click"
+DOMINIO = "https://centroserviciopanama.com/lg"
+DOMINIO_RAIZ = "https://centroserviciopanama.com"
+ORG = "Centro de Servicio Panamá"
+MARCA = "LG"
+ES_LG = True
 NOMBRE = "Servicio Técnico LG Panamá"
 TEL = "+507 6933-7976"
 WA = "50769337976"

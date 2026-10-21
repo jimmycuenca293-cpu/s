@@ -58,37 +58,82 @@ def cabeza(ruta, titulo, desc, ld=None, og="images/og.jpg", extra=""):
             f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}"><meta name="robots" content="index, follow, max-image-preview:large">{ver}'
             f'<meta name="geo.region" content="PA-8"><meta name="geo.placename" content="Ciudad de Panamá"><link rel="canonical" href="{canon}">'
             f'<link rel="alternate" hreflang="es-pa" href="{canon}"><link rel="alternate" hreflang="x-default" href="{canon}">'
-            f'<link rel="icon" href="{r}images/logo/favicon.svg" type="image/svg+xml"><meta property="og:type" content="website"><meta property="og:title" content="{esc(titulo)}">'
+            f'<link rel="icon" href="{r}images/logo/favicon.svg" type="image/svg+xml"><meta property="og:type" content="website"><meta property="og:site_name" content="{ORG}"><meta property="og:title" content="{esc(titulo)}">'
             f'<meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{canon}"><meta property="og:image" content="{DOMINIO}/{og}"><meta property="og:locale" content="es_PA">'
             f'<meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#a50034">'
             f'<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
             f'<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">'
             f'<link rel="stylesheet" href="{r}css/estilos.css">{lds}{extra}{gtm}</head><body>')
 
+
+def marcas_href(r, lg):
+    if ES_LG: return (r + "index.html") if lg else (r + "../index.html")
+    return (r + "lg/index.html") if lg else (r + "index.html")
+
+def otra_url(r):
+    """Enlace a la portada de la otra marca (Samsung en la raíz, LG en /lg/)."""
+    return (r + "../index.html") if ES_LG else (r + "lg/index.html")
+
+def marcas_sw(r):
+    sam = (r + "../index.html") if ES_LG else (r + "index.html")
+    lg = (r + "index.html") if ES_LG else (r + "lg/index.html")
+    return (f'<span class="marcas" aria-label="Marcas"><a href="{sam}"{"" if ES_LG else " class=on"}>Samsung</a>'
+            f'<a href="{lg}"{" class=on" if ES_LG else ""}>LG</a></span>')
+
+def terminos_equipo(k, e, depth, zonas=14):
+    """Chips con términos de búsqueda frecuentes (enlazan a fallas y zonas)."""
+    r = R(depth)
+    ch = []
+    for f in e["fallas"]:
+        u = r + furl(k, f)
+        ch.append(f'<a href="{u}">{esc(e["sing"])} {MARCA} {esc(f[0].lower())}</a>')
+        ch.append(f'<a href="{u}">{esc(f[0])} en {esc(e["art"])} {MARCA}</a>')
+    zs = "".join(f'<a href="{r}{zurl(k, z[0])}">Servicio técnico de {esc(e["corto"].lower())} {MARCA} en {esc(z[0])}</a>' for z in ZONAS[:zonas])
+    return "".join(ch) + zs
+
+def paginas_mapa():
+    grupos = {}
+    for ruta, (pr, tit) in sorted(PAGINAS.items()):
+        if ruta in ("index.html",): continue
+        carpeta = ruta.split("/")[0] if "/" in ruta else "_raiz"
+        grupos.setdefault(carpeta, []).append((ruta, tit))
+    nombres = {"_raiz": "Páginas principales y búsquedas clave", "electrodomesticos": "Electrodomésticos", "servicios": "Servicios", "fallas": "Fallas y soluciones", "zonas": "Zonas de cobertura", "blog": "Guías y blog"}
+    orden = ["_raiz", "electrodomesticos", "servicios", "fallas", "zonas", "blog"]
+    partes = ""
+    for c in orden:
+        if c not in grupos: continue
+        items = grupos[c]
+        if c == "zonas": items = [x for x in items if x[0].count("/") == 2 and x[0].endswith("index.html") or x[0] == "zonas/index.html"]
+        lis = "".join(f'<li><a href="{ruta}">{esc(tit.split(" | ")[0])}</a></li>' for ruta, tit in items)
+        partes += f'<h2>{esc(nombres[c])} <small>({len(items)})</small></h2><ul class="lista mapa">{lis}</ul>'
+    cuerpo = f'''{miga(0, ("Mapa del sitio", None))}<section class="sec"><div class="w txt"><h1>Mapa del sitio: servicio técnico {MARCA} en Panamá</h1><p class="lead">Todas las secciones de {NOMBRE} organizadas por tema: equipos, servicios, fallas, zonas y guías.</p>{partes}<p><a href="{otra_url("")}">Ver el servicio técnico de la otra marca →</a></p></div></section>'''
+    escribir("mapa-del-sitio.html", f"Mapa del sitio | {NOMBRE}", f"Mapa del sitio de {NOMBRE}: electrodomésticos, servicios, fallas, zonas y guías de {MARCA} en Panamá.", cuerpo, [bc(("Mapa del sitio", None))], "0.4")
+
 def menu(depth):
     r = R(depth)
     eq = "".join(f'<a href="{r}electrodomesticos/{k}/index.html">{esc(v)}</a>' for k, v in NAV_EQ)
     sv = "".join(f'<a href="{r}servicios/{k}-lg-panama.html">{esc(v[1])}</a>' for k, v in SERVICIOS.items())
     return (f'<header class="top"><div class="barra"><div class="w"><span>Servicio técnico LG en Ciudad de Panamá · {HORARIO}</span>'
-            f'<a href="{wa()}" target="_blank" rel="noopener" data-wa="barra">{ICONOS["wa"]} {TEL}</a></div></div>'
+            f'{marcas_sw(r)}<a href="{wa()}" target="_blank" rel="noopener" data-wa="barra">{ICONOS["wa"]} {TEL}</a></div></div>'
             f'<div class="w nav"><a class="logo" href="{r}index.html" aria-label="{NOMBRE}"><span class="lg-i">{ICONOS["wrench"]}</span><span class="lg-t">Servicio Técnico<b>LG</b><small>Panamá</small></span></a>'
             f'<nav aria-label="Principal"><div class="dd"><a href="{r}index.html#equipos">Electrodomésticos ▾</a><div class="pn">{eq}</div></div>'
             f'<div class="dd"><a href="{r}index.html#servicios">Servicios ▾</a><div class="pn">{sv}</div></div>'
-            f'<a href="{r}diagnostico.html">Diagnóstico</a><a href="{r}fallas/index.html">Fallas</a><a href="{r}zonas-de-cobertura.html">Zonas</a><a href="{r}blog/index.html">Blog</a><a href="{r}nosotros.html">Nosotros</a>'
+            f'<a href="{r}diagnostico.html">Diagnóstico</a><a href="{r}fallas/index.html">Fallas</a><a href="{r}zonas/index.html">Zonas</a><a href="{r}blog/index.html">Blog</a><a href="{r}nosotros.html">Nosotros</a>'
             f'<a class="btn wa" href="{wa("Hola, necesito servicio técnico para mi equipo LG en Panamá")}" target="_blank" rel="noopener" data-wa="menu">{ICONOS["wa"]} WhatsApp</a></nav>'
             f'<button class="burger" type="button" aria-label="Abrir menú" aria-expanded="false"><span></span></button></div>'
-            f'<div class="mov" hidden><b>Electrodomésticos</b>{eq}<b>Servicios</b>{sv}<b>Más</b><a href="{r}diagnostico.html">Diagnóstico rápido</a><a href="{r}fallas/index.html">Fallas por equipo</a><a href="{r}zonas-de-cobertura.html">Zonas de cobertura</a><a href="{r}blog/index.html">Blog</a><a href="{r}nosotros.html">Nosotros</a><a href="{r}garantia.html">Garantía</a><a href="{r}preguntas-frecuentes.html">Preguntas frecuentes</a></div></header><main>')
+            f'<div class="mov" hidden><b>Electrodomésticos</b>{eq}<b>Servicios</b>{sv}<b>Más</b><a href="{r}diagnostico.html">Diagnóstico rápido</a><a href="{r}fallas/index.html">Fallas por equipo</a><a href="{r}zonas/index.html">Zonas de cobertura</a><a href="{r}blog/index.html">Blog</a><a href="{r}nosotros.html">Nosotros</a><a href="{r}garantia.html">Garantía</a><a href="{r}preguntas-frecuentes.html">Preguntas frecuentes</a></div></header><main>')
 
 def pie(depth):
     r = R(depth)
-    zs = "".join(f'<a href="{r}zonas/{slug(z[0])}.html">{esc(z[0])}</a>' for z in ZONAS[:8])
+    zs = "".join(f'<a href="{r}zonas/{slug(z[0])}/index.html">{esc(z[0])}</a>' for z in ZONAS[:8])
     eq = "".join(f'<a href="{r}electrodomesticos/{k}/index.html">{esc(v["nombre"])}</a>' for k, v in EQUIPOS.items())
     sv = "".join(f'<a href="{r}servicios/{k}-lg-panama.html">{esc(v[1])}</a>' for k, v in SERVICIOS.items())
     return (f'</main><footer class="pie"><div class="w cols"><div><a class="logo pl-logo" href="{r}index.html" aria-label="{NOMBRE}"><span class="lg-i">{ICONOS["wrench"]}</span><span class="lg-t">Servicio Técnico<b>LG</b><small>Panamá</small></span></a><p>Servicio técnico LG en Panamá: reparación a domicilio de neveras, lavadoras y secadoras LG, con cobertura en Ciudad de Panamá, San Miguelito y Panamá Oeste.</p>'
             f'<p class="marca-pie">Equipos que atendemos: <img src="{r}images/logo/lg-marca.png" alt="LG" width="120" height="53"></p><a class="btn wa" href="{wa()}" target="_blank" rel="noopener" data-wa="pie">{ICONOS["wa"]} {TEL}</a><p class="hor">{HORARIO}</p></div>'
             f'<div><b>Electrodomésticos</b>{eq}</div><div><b>Servicios</b>{sv}<a href="{r}diagnostico.html">Diagnóstico rápido</a><a href="{r}garantia.html">Garantía</a></div>'
-            f'<div><b>Zonas</b>{zs}<a href="{r}zonas-de-cobertura.html">Ver todas las zonas</a></div></div>'
+            f'<div><b>Zonas</b>{zs}<a href="{r}zonas/index.html">Ver todas las zonas</a></div></div>'
             f'<div class="w busq"><b>Búsquedas frecuentes</b><div class="chips">{busquedas_chips(depth)}</div></div>'
+            f'<div class="w otra"><b>{ORG}</b>: servicio técnico de neveras, lavadoras y secadoras <a href="{marcas_href(r, False)}">Samsung</a> y <a href="{marcas_href(r, True)}">LG</a> en Panamá · <a href="{r}mapa-del-sitio.html">Mapa del sitio</a></div>'
             f'<div class="w legal"><span>© 2026 {NOMBRE}. LG es una marca registrada de LG Electronics Inc. Este sitio no es operado por LG.</span>'
             f'<span><a href="{r}privacidad.html">Privacidad</a> · <a href="{r}aviso-legal.html">Aviso legal</a> · <a href="{r}preguntas-frecuentes.html">Preguntas frecuentes</a></span></div></footer>'
             f'<a class="wa-flot" href="{wa("Hola, necesito servicio técnico para mi equipo LG en Panamá")}" target="_blank" rel="noopener" data-wa="flotante" aria-label="Escribir por WhatsApp">{ICONOS["wa"]}<span>Escríbenos</span></a>'
@@ -127,7 +172,7 @@ def cta(msg, titulo="¿Necesitas servicio técnico LG en Panamá?", texto="Escr�
             f'<a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="{fuente}">{ICONOS["wa"]} Escribir por WhatsApp</a></div></div></section>')
 
 def negocio_ld(nombre=None, area=None):
-    return {"@context": "https://schema.org", "@type": "LocalBusiness", "@id": DOMINIO + "/#negocio", "name": NOMBRE, "logo": DOMINIO + "/images/logo/favicon.svg", "image": DOMINIO + "/images/og.jpg", "address": {"@type": "PostalAddress", "addressLocality": "Ciudad de Panamá", "addressCountry": "PA"}, "url": DOMINIO + "/", "telephone": TEL,
+    return {"@context": "https://schema.org", "@type": "LocalBusiness", "@id": DOMINIO + "/#negocio", "name": NOMBRE, "alternateName": ORG, "parentOrganization": {"@type": "Organization", "name": ORG, "url": DOMINIO_RAIZ}, "logo": DOMINIO + "/images/logo/favicon.svg", "image": DOMINIO + "/images/og.jpg", "address": {"@type": "PostalAddress", "addressLocality": "Ciudad de Panamá", "addressCountry": "PA"}, "url": DOMINIO + "/", "telephone": TEL,
             "description": "Servicio técnico LG en Panamá: neveras, lavadoras y secadoras LG en Ciudad de Panamá.",
             "areaServed": [{"@type": "City", "name": "Ciudad de Panamá"}, {"@type": "AdministrativeArea", "name": "Panamá"}] if not area else [{"@type": "Place", "name": area}],
             "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "07:00", "closes": "18:00"}],
@@ -162,7 +207,7 @@ def hero_cards():
 # ------------------------------------------------------------ páginas
 def pagina_inicio():
     msg = "Hola, necesito servicio técnico para mi equipo LG en Panamá"
-    zonas = "".join(f'<a href="zonas/{slug(z[0])}.html">{esc(z[0])}</a>' for z in ZONAS[:16])
+    zonas = "".join(f'<a href="zonas/{slug(z[0])}/index.html">{esc(z[0])}</a>' for z in ZONAS[:16])
     pasos = [("Escríbenos por WhatsApp", "Cuéntanos qué equipo es, el modelo y qué le pasa. Si puedes, manda una foto o un video."), ("Coordinamos la visita", "Te confirmamos disponibilidad en tu zona, normalmente en 24 a 48 horas."), ("Diagnóstico y reparación", "Revisamos el equipo en tu casa, te explicamos la falla y el costo, y reparamos si estás de acuerdo.")]
     cuerpo = f'''<section class="hero"><div class="w hg"><div><span class="ey">Servicio técnico LG Panamá</span><h1>Servicio técnico LG en Panamá</h1>
 <p class="lead">Reparamos neveras, lavadoras y secadoras LG a domicilio en Ciudad de Panamá. Diagnóstico honesto, costo claro antes de reparar y garantía en cada reparación.</p>
@@ -190,11 +235,12 @@ def pagina_inicio():
 {split("atencion-3", "Asesoras de servicio", "Una asesora te atiende y agenda tu visita", "Te pedimos el equipo, el modelo y la falla, registramos tu zona y te confirmamos el horario disponible para que el técnico llegue preparado.", "servicio-tecnico-lg-cerca-de-mi-panama.html", "Ver zonas de cobertura", False, True)}
 {split("atencion-2", "Técnico y asesoría", "Del primer mensaje a la visita en 24 a 48 horas", "Coordinamos por WhatsApp, te confirmamos disponibilidad en tu zona y el técnico llega con el diagnóstico claro y garantía en la reparación.", "garantia-lg-panama-que-hacer.html", "Ver garantía")}
 {split("tecnico-banner", "Tu cocina de nuevo en marcha", "Que tu nevera vuelva a enfriar sin complicaciones", "Escríbenos con el modelo y la falla. Coordinamos la visita en 24 a 48 horas y te confirmamos el costo antes de empezar.", "diagnostico.html", "Abrir diagnóstico rápido", False, True)}
-<section class="sec"><div class="w"><div class="cab"><span class="ey">Cobertura</span><h2>Servicio técnico LG en tu zona de Panamá</h2><p>Llegamos a los principales barrios de la ciudad, San Miguelito y Panamá Oeste.</p></div><div class="chips">{zonas}</div><p><a href="zonas-de-cobertura.html">Ver todas las zonas de cobertura →</a></p></div></section>
+<section class="sec"><div class="w"><div class="cab"><span class="ey">Cobertura</span><h2>Servicio técnico LG en tu zona de Panamá</h2><p>Llegamos a los principales barrios de la ciudad, San Miguelito y Panamá Oeste.</p></div><div class="chips">{zonas}</div><p><a href="zonas/index.html">Ver todas las zonas de cobertura →</a></p></div></section>
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Diagnóstico rápido</span><h2>¿Qué le pasa a tu equipo LG?</h2><p>Mira los síntomas más comunes, la causa probable y qué tan urgente es.</p></div><p><a class="btn lg" href="diagnostico.html">Abrir el diagnóstico rápido</a></p></div></section>
+<section class="sec"><div class="w"><div class="cab"><span class="ey">{ORG}</span><h2>Servicio técnico de Samsung y LG en Panamá</h2><p>Un solo centro de servicio para neveras, lavadoras y secadoras. Elige tu marca para ver fallas, zonas y guías específicas.</p></div><div class="grid g3"><a class="card" href="{marcas_href("", False)}"><h3>Servicio técnico Samsung</h3><p>Neveras, lavadoras y secadoras Samsung a domicilio.</p><span class="mas">Ver Samsung →</span></a><a class="card" href="{marcas_href("", True)}"><h3>Servicio técnico LG</h3><p>Neveras, lavadoras y secadoras LG a domicilio.</p><span class="mas">Ver LG →</span></a><a class="card" href="mapa-del-sitio.html"><h3>Mapa del sitio</h3><p>Todas las secciones organizadas por tema.</p><span class="mas">Ver mapa →</span></a></div></div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Lo que más buscan</span><h2>Servicio técnico LG en Panamá: encuentra lo que necesitas</h2><p>Reparación de neveras, lavadoras y secadoras LG, teléfono, precios, repuestos, filtros y zonas de cobertura.</p></div><div class="chips">{busquedas_chips(0)}</div>
 <div class="grid g3 gf" style="margin-top:22px"><a class="card" href="cambio-filtro-nevera-lg-panama.html">{fpic("prod-nevera-top", 0)}<h3>Nevera LG con dispensador</h3><p>Agua lenta, hielo y avisos del panel.</p></a>
-<a class="card" href="fallas/neveras-lg-{fslug(EQUIPOS['neveras']['fallas'][0])}.html">{fpic("prod-nevera-top", 0)}<h3>La nevera LG no enfría</h3><p>Causas y qué revisar antes de llamar.</p></a>
+<a class="card" href="{furl('neveras', EQUIPOS['neveras']['fallas'][0])}">{fpic("prod-nevera-top", 0)}<h3>La nevera LG no enfría</h3><p>Causas y qué revisar antes de llamar.</p></a>
 <a class="card" href="codigos-de-error-lavadora-lg-panama.html">{fpic("prod-lavadora-fr", 0)}<h3>Códigos de error de lavadora</h3><p>UE, OE, IE, dE, LE: qué significan.</p></a></div>
 <h3 style="margin-top:26px">Fallas y zonas más consultadas</h3><div class="chips"><a href="fallas/index.html">Todas las fallas LG</a>{"".join(f'<a href="{furl(k, e["fallas"][0])}">{esc(e["corto"])}: {esc(e["fallas"][0][0])}</a>' for k, e in EQUIPOS.items())}{"".join(f'<a href="{zurl("neveras", z[0])}">Neveras LG en {esc(z[0])}</a>' for z in ZONAS[:8])}</div></div></section>
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Dudas frecuentes</span><h2>Preguntas frecuentes sobre el servicio técnico LG en Panamá</h2></div>{faq_html(FAQ_GENERAL)}</div></section>
@@ -220,6 +266,7 @@ def paginas_equipo():
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Fallas</span><h2>Fallas comunes de {e["corto"].lower()} LG y su causa probable</h2><p>Estas son las que más vemos en Panamá. Si tu equipo tiene otro síntoma, escríbenos.</p></div><div class="tabla-w"><table class="tabla"><thead><tr><th>Síntoma</th><th>Causa probable</th><th>Urgencia</th></tr></thead><tbody>{fallas}</tbody></table></div><p><a href="fallas-comunes.html">Ver las fallas con más detalle →</a></p></div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Más información</span><h2>Todo sobre {e["art"]} LG</h2></div><div class="chips">{sub_links}<a href="../../servicios/mantenimiento-preventivo-lg-panama.html">Mantenimiento preventivo</a><a href="../../servicios/instalacion-lg-panama.html">Instalación</a></div><h3>Más sobre {e["corto"].lower()} LG</h3><div class="chips">{subs_chips(k, e, 2)}</div><h3>Fallas de {e["corto"].lower()} LG</h3><div class="chips">{"".join(f'<a href="../../{furl(k, f)}">{esc(f[0])}</a>' for f in e["fallas"])}</div><h3>{esc(e["corto"])} LG por zona</h3><div class="chips">{"".join(f'<a href="../../{zurl(k, z[0])}">{esc(z[0])}</a>' for z in ZONAS)}</div></div></section>
 {f'<section class="sec alt"><div class="w"><div class="cab"><span class="ey">Blog</span><h2>Guías sobre {e["corto"].lower()} LG</h2></div><div class="grid g3">{blog_html}</div></div></section>' if blog else ""}
+<section class="sec"><div class="w busq2"><div class="cab"><span class="ey">Búsquedas frecuentes</span><h2>Lo que más buscan sobre {e["corto"].lower()} {MARCA} en Panamá</h2></div><div class="chips">{terminos_equipo(k, e, 2)}</div></div></section>
 <section class="sec alt"><div class="w txt seo">{"".join(f"<h2>{esc(a.replace('{z}', 'Panamá'))}</h2><p>{esc(b.replace('{z}', 'Panamá'))}</p>" for a, b in SEO_EQ[k])}</div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Dudas frecuentes</span><h2>Preguntas frecuentes</h2></div>{faq_html(e["faq"])}</div></section>
 {cta(msg, f"¿Tu {e['sing']} LG tiene una falla?")}'''
@@ -252,26 +299,26 @@ def paginas_servicio():
 
 def paginas_zona():
     for i, (z, tipo, area) in enumerate(ZONAS):
-        s = slug(z); ruta = f"zonas/{s}.html"
+        s = slug(z); ruta = f"zonas/{s}/index.html"
         t1, t2 = TIPO_TXT[tipo]
         vec = [ZONAS[(i + d) % len(ZONAS)] for d in (1, 2, 3, 4)]
         msg = f"Hola, necesito servicio técnico para mi equipo LG en {z}"
         faq = [(f"¿Atienden en {z}?", f"Sí, damos servicio técnico LG a domicilio en {z} ({area}). Escríbenos por WhatsApp y te confirmamos disponibilidad."),
                (f"¿Cuánto tardan en llegar a {z}?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas."),
                ("¿Qué equipos LG reparan?", "Neveras, lavadoras y secadoras.")]
-        cuerpo = f'''{miga(1, ("Zonas", "zonas-de-cobertura.html"), (z, None))}<section class="hero chico"><div class="w hg"><div><span class="ey">{esc(area)}</span><h1>Servicio técnico LG en {esc(z)}</h1><p class="lead">Reparación a domicilio de neveras, lavadoras y secadoras LG en {esc(z)}. Diagnóstico honesto, costo claro y garantía.</p>
+        cuerpo = f'''{miga(2, ("Zonas", "zonas/index.html"), (z, None))}<section class="hero chico"><div class="w hg"><div><span class="ey">{esc(area)}</span><h1>Servicio técnico LG en {esc(z)}</h1><p class="lead">Reparación a domicilio de neveras, lavadoras y secadoras LG en {esc(z)}. Diagnóstico honesto, costo claro y garantía.</p>
 <div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a></div></div><div class="hero-tarjeta"><b>{esc(z)}</b><small>{HORARIO}</small></div></div></section>
 <section class="sec"><div class="w txt"><h2>Técnico LG a domicilio en {esc(z)}</h2><p>{esc(t1)}</p><p>{esc(t2)}</p>
-<h2>Equipos LG que reparamos en {esc(z)}</h2>{tarjetas_eq(1)}<h2>Preguntas frecuentes en {esc(z)}</h2>{faq_html(faq)}
-<h2>Servicio por equipo en {esc(z)}</h2><div class="chips">{"".join(f'<a href="{k2}-lg-{s}.html">Reparación de {esc(e2["corto"].lower())} LG en {esc(z)}</a>' for k2, e2 in EQUIPOS.items())}</div><h2>Zonas cercanas</h2><div class="chips">{"".join(f'<a href="{slug(v[0])}.html">{esc(v[0])}</a>' for v in vec)}</div></div></section>{cta(msg, f"¿Equipo LG con falla en {z}?")}'''
+<h2>Equipos LG que reparamos en {esc(z)}</h2>{tarjetas_eq(2)}<h2>Preguntas frecuentes en {esc(z)}</h2>{faq_html(faq)}
+<h2>Servicio por equipo en {esc(z)}</h2><div class="chips">{"".join(f'<a href="{k2}.html">Reparación de {esc(e2["corto"].lower())} LG en {esc(z)}</a>' for k2, e2 in EQUIPOS.items())}</div><h2>Zonas cercanas</h2><div class="chips">{"".join(f'<a href="../{slug(v[0])}/index.html">{esc(v[0])}</a>' for v in vec)}</div><h2>Búsquedas relacionadas en {esc(z)}</h2><div class="chips">{"".join(f'<a href="{k2}.html">{t}</a>' for k2, e2 in EQUIPOS.items() for t in (f'Técnico de {esc(e2["sing"])} {MARCA} en {esc(z)}', f'Reparación de {esc(e2["corto"].lower())} {MARCA} en {esc(z)}', f'Servicio técnico {MARCA} {esc(e2["corto"].lower())} {esc(z)}'))}</div></div></section>{cta(msg, f"¿Equipo LG con falla en {z}?")}'''
         escribir(ruta, f"Servicio Técnico LG en {z} | Neveras, Lavadoras y Secadoras", f"Servicio técnico LG a domicilio en {z}, Panamá: neveras, lavadoras y secadoras. Garantía y visitas en 24-48 horas. WhatsApp {TEL}.", cuerpo,
-                 [negocio_ld(area=z), faq_ld(faq), bc(("Zonas", "zonas-de-cobertura.html"), (z, None))], "0.6")
+                 [negocio_ld(area=z), faq_ld(faq), bc(("Zonas", "zonas/index.html"), (z, None))], "0.6")
     por_area = {}
     for z, tipo, area in ZONAS: por_area.setdefault(area, []).append(z)
-    bloques = "".join(f'<h2>{esc(a)}</h2><div class="chips">{"".join(f"<a href=\"zonas/{slug(z)}.html\">{esc(z)}</a>" for z in zs)}</div>' for a, zs in por_area.items())
+    bloques = "".join(f'<h2>{esc(a)}</h2><div class="chips">{"".join(f"<a href=\"{slug(z)}/index.html\">{esc(z)}</a>" for z in zs)}</div>' for a, zs in por_area.items())
     msg = "Hola, quiero saber si dan servicio técnico LG en mi zona de Panamá"
-    cuerpo = f'''{miga(0, ("Zonas de cobertura", None))}<section class="sec"><div class="w txt"><h1>Zonas de cobertura del servicio técnico LG en Panamá</h1><p class="lead">Atendemos a domicilio en {len(ZONAS)} zonas de Ciudad de Panamá, San Miguelito y Panamá Oeste. Si tu zona no aparece, escríbenos: puede que también lleguemos.</p>{bloques}</div></section>{cta(msg)}'''
-    escribir("zonas-de-cobertura.html", f"Zonas de cobertura: servicio técnico LG en Panamá | {TEL}", f"Zonas donde damos servicio técnico LG en Panamá: Ciudad de Panamá, San Miguelito, Arraiján y La Chorrera. WhatsApp {TEL}.", cuerpo, [bc(("Zonas de cobertura", None))], "0.8")
+    cuerpo = f'''{miga(1, ("Zonas de cobertura", None))}<section class="sec"><div class="w txt"><h1>Zonas de cobertura del servicio técnico LG en Panamá</h1><p class="lead">Atendemos a domicilio en {len(ZONAS)} zonas de Ciudad de Panamá, San Miguelito y Panamá Oeste. Si tu zona no aparece, escríbenos: puede que también lleguemos.</p>{bloques}</div></section>{cta(msg)}'''
+    escribir("zonas/index.html", f"Zonas de cobertura: servicio técnico LG en Panamá | {TEL}", f"Zonas donde damos servicio técnico LG en Panamá: Ciudad de Panamá, San Miguelito, Arraiján y La Chorrera. WhatsApp {TEL}.", cuerpo, [bc(("Zonas de cobertura", None))], "0.8")
 
 def paginas_blog():
     tarj = ""
@@ -298,6 +345,7 @@ def pagina_diagnostico():
     cuerpo = f'''{miga(0, ("Diagnóstico rápido", None))}<section class="sec"><div class="w"><div class="cab"><h1>Diagnóstico rápido: ¿qué le pasa a tu equipo LG?</h1><p>{len(items)} fallas comunes de neveras, lavadoras y secadoras LG, con la causa probable y qué tan urgente es.</p></div><div class="tabs" role="tablist">{tabs}</div><div class="grid g2" id="dg">{cards}</div></div></section>{cta("Hola, necesito diagnóstico para mi equipo LG en Panamá")}'''
     escribir("diagnostico.html", f"Diagnóstico rápido de neveras, lavadoras y secadoras LG | {NOMBRE}", f"{len(items)} fallas comunes de electrodomésticos LG en Panamá con causa probable y urgencia. Consulta tu caso por WhatsApp.", cuerpo, [ld, bc(("Diagnóstico rápido", None))], "0.8")
 
+FAQ_FULL = FAQ_GENERAL + [q for e in EQUIPOS.values() for q in e["faq"]]
 def paginas_info():
     msg = "Hola, necesito servicio técnico para mi equipo LG en Panamá"
     c = f'''{miga(0, ("Garantía", None))}<section class="sec"><div class="w txt"><h1>Garantía de servicio técnico LG en Panamá</h1><p class="lead">Cada reparación incluye garantía sobre la pieza reemplazada y sobre la mano de obra. El plazo exacto se confirma antes de empezar el trabajo, no después.</p>
@@ -310,8 +358,8 @@ def paginas_info():
 <div class="fotoc" style="max-width:720px">{pic("atencion-1", "Técnico y asesora de servicio conversando en una oficina de atención al cliente", 0, 1024, 765)}</div><div class="fotoc" style="max-width:720px">{pic("atencion-3", "Asesora de servicio atendiendo en el escritorio de la oficina", 0, 1024, 765)}</div><h2>Cómo trabajamos</h2><ul class="lista"><li><b>Diagnóstico honesto:</b> explicamos la falla antes de reparar. Si no vale la pena, te lo decimos.</li><li><b>Garantía:</b> en la pieza y en la mano de obra.</li><li><b>Tiempos claros:</b> visitas en 24 a 48 horas en la mayoría de zonas.</li><li><b>Costo claro:</b> te lo confirmamos antes de empezar.</li></ul>
 </div></section>{cta(msg)}'''
     escribir("nosotros.html", f"Nosotros | {NOMBRE}", "Servicio técnico especializado en electrodomésticos LG en Ciudad de Panamá.", c, [negocio_ld(), bc(("Nosotros", None))], "0.5")
-    c = f'''{miga(0, ("Preguntas frecuentes", None))}<section class="sec"><div class="w txt"><h1>Preguntas frecuentes sobre el servicio técnico LG en Panamá</h1>{faq_html(FAQ_GENERAL)}</div></section>{cta(msg)}'''
-    escribir("preguntas-frecuentes.html", f"Preguntas frecuentes | Servicio técnico LG en Panamá", "Respuestas sobre cobertura, costos, garantía y tiempos del servicio técnico LG en Panamá.", c, [faq_ld(FAQ_GENERAL), bc(("Preguntas frecuentes", None))], "0.6")
+    c = f'''{miga(0, ("Preguntas frecuentes", None))}<section class="sec"><div class="w txt"><h1>Preguntas frecuentes sobre el servicio técnico LG en Panamá</h1>{faq_html(FAQ_FULL)}</div></section>{cta(msg)}'''
+    escribir("preguntas-frecuentes.html", f"Preguntas frecuentes | Servicio técnico LG en Panamá", "Respuestas sobre cobertura, costos, garantía y tiempos del servicio técnico LG en Panamá.", c, [faq_ld(FAQ_FULL), bc(("Preguntas frecuentes", None))], "0.6")
     c = f'''{miga(0, ("Privacidad", None))}<section class="sec"><div class="w txt"><h1>Política de privacidad</h1><p>Cuando nos escribes por WhatsApp o nos llamas usamos tu nombre, tu número y los datos que nos des (dirección, equipo, modelo y falla) solo para atender tu solicitud y coordinar la visita.</p><p>No vendemos tus datos. Puedes pedirnos que los corrijamos o los eliminemos escribiéndonos por WhatsApp al {TEL}.</p><p>Este sitio puede usar herramientas de medición (como Google Analytics o Tag Manager) para saber cuántas personas lo visitan y cuántas nos escriben por WhatsApp.</p></div></section>'''
     escribir("privacidad.html", f"Política de privacidad | {NOMBRE}", "Cómo usamos tus datos cuando nos contactas para un servicio técnico.", c, None, "0.2")
     c = f'''{miga(0, ("Aviso legal", None))}<section class="sec"><div class="w txt"><h1>Aviso legal</h1><p>{NOMBRE} presta servicio técnico a domicilio para electrodomésticos LG en Panamá.</p><p>LG es una marca registrada de LG Electronics Inc. Este sitio no es operado por LG.</p><p>La información de este sitio es orientativa. El diagnóstico definitivo y el costo se confirman en la visita.</p></div></section>'''
@@ -347,7 +395,7 @@ nav{display:flex;align-items:center;gap:18px}nav>a,.dd>a{color:var(--ink);text-d
 .pie{background:var(--pri2);color:#ffe3ea;padding-top:44px}.pie a{color:#ffe3ea;text-decoration:none}.cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px}.cols b{display:block;color:#fff;margin-bottom:8px}.cols a{display:block;padding:3px 0;font-size:14px}.pl{font-size:18px}.hor{font-size:13px;opacity:.8}.legal{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.15);margin-top:28px;padding-block:18px;font-size:12px;opacity:.85}@media(max-width:860px){.cols{grid-template-columns:1fr 1fr}}@media(max-width:560px){.cols{grid-template-columns:1fr}}
 .wa-flot{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:8px;background:#25d366;color:#fff!important;border-radius:999px;padding:12px 18px 12px 14px;font-weight:800;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.25)}.wa-flot svg{width:28px;height:28px}@media(max-width:520px){.wa-flot span{display:none}.wa-flot{padding:14px}}
 
-.pie .logo{color:#fff;display:flex!important;margin:0 0 12px}.pie .btn{display:inline-flex!important;width:auto}.pie .lg-t{font-size:14px}.pie .lg-t b{color:#fff}.pie .lg-t small{color:#f2b8c8}.pie .lg-i{background:#fff;color:var(--pri)}.busq{padding-top:22px}.busq b{display:block;color:#fff;margin-bottom:6px}.busq .chips a{background:transparent;border-color:rgba(255,255,255,.3);color:#ffe3ea;font-size:13px;padding:6px 12px}.fto img{width:100%;height:auto;display:block;border-radius:var(--r)}.hero-tarjeta.foto{padding:0;overflow:hidden;background:none;border:0}.gf .fto img{aspect-ratio:16/10;object-fit:cover}.split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}.split.rev .sp-f{order:2}.split .fto img{aspect-ratio:4/3;object-fit:cover}.fto.pr img{object-fit:contain!important;background:#fff;border:1px solid var(--line);padding:14px}.sp-t p{color:var(--mut)}.btn.sm{padding:8px 16px;font-size:14px}.split .fto.pr img{aspect-ratio:auto;width:auto;max-width:100%;max-height:440px;margin:0 auto}.sp-f{text-align:center}.mods{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.mods img{height:170px!important}.mods a{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;text-align:center;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:10px;align-items:center}.mods img{height:230px;width:auto;max-width:100%;object-fit:contain}.mods b{font-size:15px}@media(max-width:900px){.mods{grid-template-columns:repeat(2,1fr)}}.marca-pie{display:flex;align-items:center;gap:10px;font-size:13px;color:#f2b8c8}.marca-pie img{background:#fff;border-radius:8px;padding:3px 8px;height:30px;width:auto}.marca-band{border-bottom:1px solid var(--line);background:#fff}.marca-band .w{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding-block:16px}.marca-band span{font-weight:700;color:var(--mut)}.marca-band img{height:44px;width:auto}.marca-band small{color:var(--mut);font-size:12px}.fotoc{max-width:520px;margin:18px 0}.fotoc img{width:100%;height:auto;border-radius:var(--r)}@media(max-width:820px){.split{grid-template-columns:1fr;gap:20px}.split.rev .sp-f{order:0}}
+.pie .logo{color:#fff;display:flex!important;margin:0 0 12px}.pie .btn{display:inline-flex!important;width:auto}.pie .lg-t{font-size:14px}.pie .lg-t b{color:#fff}.pie .lg-t small{color:#f2b8c8}.pie .lg-i{background:#fff;color:var(--pri)}.busq{padding-top:22px}.busq b{display:block;color:#fff;margin-bottom:6px}.busq .chips a{background:transparent;border-color:rgba(255,255,255,.3);color:#ffe3ea;font-size:13px;padding:6px 12px}.fto img{width:100%;height:auto;display:block;border-radius:var(--r)}.hero-tarjeta.foto{padding:0;overflow:hidden;background:none;border:0}.gf .fto img{aspect-ratio:16/10;object-fit:cover}.split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}.split.rev .sp-f{order:2}.split .fto img{aspect-ratio:4/3;object-fit:cover}.fto.pr img{object-fit:contain!important;background:#fff;border:1px solid var(--line);padding:14px}.sp-t p{color:var(--mut)}.btn.sm{padding:8px 16px;font-size:14px}.split .fto.pr img{aspect-ratio:auto;width:auto;max-width:100%;max-height:440px;margin:0 auto}.sp-f{text-align:center}.mods{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.mods img{height:170px!important}.mods a{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;text-align:center;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:10px;align-items:center}.mods img{height:230px;width:auto;max-width:100%;object-fit:contain}.mods b{font-size:15px}@media(max-width:900px){.mods{grid-template-columns:repeat(2,1fr)}}.marca-pie{display:flex;align-items:center;gap:10px;font-size:13px;color:#f2b8c8}.marca-pie img{background:#fff;border-radius:8px;padding:3px 8px;height:30px;width:auto}.marca-band{border-bottom:1px solid var(--line);background:#fff}.marca-band .w{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding-block:16px}.marca-band span{font-weight:700;color:var(--mut)}.marca-band img{height:44px;width:auto}.marca-band small{color:var(--mut);font-size:12px}.marcas{display:inline-flex;gap:4px;margin-left:12px}.marcas a{padding:2px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.45);color:#fff;text-decoration:none;font-weight:700;font-size:12px}.marcas a.on{background:#fff;color:var(--pri)}.otra{padding:16px 0 4px;font-size:13px;color:var(--soft2,#ccd)}.otra a{text-decoration:underline}.mapa{columns:2;column-gap:32px}.mapa li{break-inside:avoid;font-size:14px}.busq2 .chips a{font-size:13px;padding:6px 12px}.fotoc{max-width:520px;margin:18px 0}.fotoc img{width:100%;height:auto;border-radius:var(--r)}@media(max-width:820px){.split{grid-template-columns:1fr;gap:20px}.split.rev .sp-f{order:0}}
 '''
 JS = '''(function(){
   window.dataLayer=window.dataLayer||[];
@@ -382,14 +430,14 @@ def indices():
     txt = f"# {NOMBRE}\n\n> Servicio técnico LG en Panamá: neveras, lavadoras y secadoras LG a domicilio en Ciudad de Panamá. WhatsApp {TEL}. {HORARIO}.\n\n## Servicios\n"
     for k, e in EQUIPOS.items(): txt += f"- [{e['titulo_h1']}]({DOMINIO}/electrodomesticos/{k}/index.html)\n"
     txt += "\n## Páginas clave\n" + "".join(f"- [{h['h1']}]({DOMINIO}/{h['f']})\n" for h in HUBS)
-    txt += "\n## Zonas\n" + "".join(f"- [Servicio técnico LG en {z[0]}]({DOMINIO}/zonas/{slug(z[0])}.html)\n" for z in ZONAS)
+    txt += "\n## Zonas\n" + "".join(f"- [Servicio técnico LG en {z[0]}]({DOMINIO}/zonas/{slug(z[0])}/index.html)\n" for z in ZONAS)
     txt += "\n## Guías\n" + "".join(f"- [{b[1]}]({DOMINIO}/blog/{b[0]}.html)\n" for b in BLOG)
     (OUT / "llms.txt").write_text(txt, encoding="utf-8")
 
 # ------------------------------------------------------------ cobertura de búsquedas
 def fslug(f): return slug(f[0])[:48].strip("-")
-def furl(k, f): return f"fallas/{k}-lg-{fslug(f)}.html"
-def zurl(k, z): return f"zonas/{k}-lg-{slug(z)}.html"
+def furl(k, f): return f"fallas/{k}/{fslug(f)}.html"
+def zurl(k, z): return f"zonas/{slug(z)}/{k}.html"
 FOTO_FALLA = {"neveras": ("prod-nevera-top", "Persona usando el dispensador de agua de una nevera LG French Door"), "lavadoras": ("tecnico-lavadora-1", "Técnico revisando una lavadora LG en Panamá"),
               "secadoras": ("tecnico-lavadora-2", "Técnico revisando una secadora y lavadora LG")}
 FOTO_ZEQ = {"neveras": ("tecnico-nevera", FOTO_EQ["neveras"][1]), "lavadoras": ("tecnico-lavadora-2", FOTO_EQ["lavadoras"][1]), "secadoras": ("tecnico-lavadora-1", "Técnico revisando una secadora LG")}
@@ -416,13 +464,13 @@ def paginas_fallas():
         titulo = f"{s} en {e['sing']} LG: causas y reparación en Panamá"
         titulo = titulo if len(titulo) <= 68 else (f"{s}: {e['sing']} LG | Panamá" if len(s) < 38 else f"{s[:38].rsplit(' ', 1)[0]}…: {e['sing']} LG | Panamá")
         foto = foto_rot(k, idx)
-        otras = "".join(f'<a href="{k}-lg-{fslug(g)}.html">{esc(g[0])}</a>' for g in e["fallas"] if g is not f)
-        zs = "".join(f'<a href="../{zurl(k, z[0])}">{esc(e["corto"])} LG en {esc(z[0])}</a>' for z in ZONAS[:12])
+        otras = "".join(f'<a href="{fslug(g)}.html">{esc(g[0])}</a>' for g in e["fallas"] if g is not f)
+        zs = "".join(f'<a href="../../{zurl(k, z[0])}">{esc(e["corto"])} LG en {esc(z[0])}</a>' for z in ZONAS[:12])
         faq = [(f"¿Cuánto cuesta reparar: {s.lower()}?", "Depende de la causa y de la pieza. Escríbenos por WhatsApp con el modelo y el síntoma; te confirmamos el costo de la visita antes de ir y el de la reparación antes de empezar."),
                (f"¿Cuánto tarda la reparación?", "Muchas fallas se resuelven en la misma visita. Si hace falta una pieza, te avisamos el plazo antes de empezar. Coordinamos visitas en 24 a 48 horas."),
                (f"¿Atienden en mi zona de Panamá?", "Damos servicio a domicilio en Ciudad de Panamá, San Miguelito y Panamá Oeste. Escríbenos con tu barrio y te confirmamos.")]
-        cuerpo = f'''{miga(1, ("Fallas", "fallas/index.html"), (f"{e['corto']}: {s}", None))}<section class="hero chico"><div class="w hg"><div><span class="ey">{esc(e["corto"])} LG · <span class="u {slug(urg)}">{esc(urg)}</span></span><h1>{esc(s)} en {esc(e["sing"])} LG</h1><p class="lead">Qué significa, cuál es la causa más probable y cuándo conviene llamar al técnico. Servicio técnico LG a domicilio en Panamá.</p>
-<div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Consultar esta falla</a></div></div><div class="hero-tarjeta foto">{fpic(foto, 1, None, False)}</div></div></section>
+        cuerpo = f'''{miga(2, ("Fallas", "fallas/index.html"), (f"{e['corto']}: {s}", None))}<section class="hero chico"><div class="w hg"><div><span class="ey">{esc(e["corto"])} LG · <span class="u {slug(urg)}">{esc(urg)}</span></span><h1>{esc(s)} en {esc(e["sing"])} LG</h1><p class="lead">Qué significa, cuál es la causa más probable y cuándo conviene llamar al técnico. Servicio técnico LG a domicilio en Panamá.</p>
+<div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Consultar esta falla</a></div></div><div class="hero-tarjeta foto">{fpic(foto, 2, None, False)}</div></div></section>
 <section class="sec"><div class="w txt"><h2>¿Por qué mi {esc(e["sing"])} LG presenta este problema?</h2><p><b>Causa probable:</b> {esc(causa)}</p><p>En Panamá el calor, la humedad y las variaciones de voltaje aceleran el desgaste de componentes de {esc(e["art"])}, por eso esta falla es frecuente en equipos con algunos años de uso.</p>
 <h2>Qué puedes revisar antes de llamar</h2><p>{esc(rev)}</p><p>Revisa también que el equipo esté bien conectado, nivelado y con el tomacorriente en buen estado. Si no estás seguro de algo, no desarmes el equipo: puedes empeorar la falla o hacerte daño.</p>
 <h2>¿Es urgente?</h2><p><span class="u {slug(urg)}">{esc(urg)}</span> {esc(PASOS[urg])}</p>
@@ -431,14 +479,14 @@ def paginas_fallas():
 <h2>¿Reparar o reemplazar {esc(e["art"])} LG?</h2><p>Si la falla es de una pieza accesible y el equipo está en buen estado general, reparar casi siempre conviene. Si el equipo es muy antiguo o el daño es costoso, te explicamos las opciones con honestidad para que decidas con la información completa.</p>
 <h2>Cómo prevenir esta falla</h2><p>{esc(e["mant"][idx % len(e["mant"])])} Además, protege el equipo de bajones de voltaje y evita sobrecargarlo.</p>
 <h2>Servicio técnico de {esc(e["corto"].lower())} LG en Ciudad de Panamá</h2><p>Atendemos este tipo de falla a domicilio en San Francisco, Bella Vista, Obarrio, Costa del Este, Punta Pacífica, Betania, San Miguelito, Albrook, Arraiján, La Chorrera y más zonas. Escríbenos por WhatsApp con el modelo y la falla.</p>
-<h2>Guías relacionadas</h2><div class="chips">{guias_chips(k, 1)}</div>
+<h2>Guías relacionadas</h2><div class="chips">{guias_chips(k, 2)}</div>
 <h2>Otras fallas de {esc(e["corto"].lower())} LG</h2><div class="chips">{otras}</div>
-<h2>Preguntas frecuentes</h2>{faq_html(faq)}<h2>Servicio en tu zona</h2><div class="chips">{zs}</div></div></section>{cta(msg, f"¿Tu {e['sing']} LG tiene esta falla?")}'''
+<h2>Preguntas frecuentes</h2>{faq_html(faq)}<h2>Servicio en tu zona</h2><div class="chips">{zs}</div><h2>Búsquedas relacionadas</h2><div class="chips">{"".join(f'<a href="../../{zurl(k, z[0])}">{esc(s)} {esc(e["sing"])} {MARCA} en {esc(z[0])}</a>' for z in ZONAS[12:24])}</div></div></section>{cta(msg, f"¿Tu {e['sing']} LG tiene esta falla?")}'''
         escribir(ruta, titulo, f"{s} en {e['sing']} LG: causa probable, qué revisar y cuándo llamar al técnico. Servicio técnico LG a domicilio en Panamá. WhatsApp {TEL}.", cuerpo,
                  [negocio_ld(), faq_ld(faq), howto_ld(f"Qué revisar si {s.lower()} en {e['art']} LG", [("Revisa lo básico", rev), ("Descarta la causa probable", causa), ("Pide diagnóstico técnico", "Si el síntoma continúa, escribe por WhatsApp con el modelo y la falla para coordinar una visita a domicilio en Panamá.")], ruta), bc(("Fallas", "fallas/index.html"), (f"{e['corto']}: {s}", None))], "0.7")
     bloques = ""
     for k, e in EQUIPOS.items():
-        bloques += f'<h2>Fallas de {esc(e["corto"].lower())} LG</h2><div class="chips">' + "".join(f'<a href="{k}-lg-{fslug(f)}.html">{esc(f[0])}</a>' for f in e["fallas"]) + "</div>"
+        bloques += f'<h2>Fallas de {esc(e["corto"].lower())} LG</h2><div class="chips">' + "".join(f'<a href="{k}/{fslug(f)}.html">{esc(f[0])}</a>' for f in e["fallas"]) + "</div>"
     msg = "Hola, mi equipo LG tiene una falla y necesito un técnico en Panamá"
     cuerpo = f'''{miga(1, ("Fallas", None))}<section class="sec"><div class="w txt"><h1>Fallas de electrodomésticos LG en Panamá: causas y soluciones</h1><p class="lead">{len(todas)} síntomas frecuentes de neveras, lavadoras y secadoras LG, con la causa probable y qué revisar.</p>{bloques}</div></section>{cta(msg)}'''
     escribir("fallas/index.html", f"Fallas de neveras, lavadoras y secadoras LG en Panamá | {TEL}", f"{len(todas)} fallas comunes de electrodomésticos LG en Panamá con causa probable y solución. Servicio técnico a domicilio. WhatsApp {TEL}.", cuerpo, [bc(("Fallas", None))], "0.8")
@@ -450,22 +498,22 @@ def paginas_zona_equipo():
         for j, (k, e) in enumerate(EQUIPOS.items()):
             msg = f"Hola, necesito servicio técnico para mi {e['sing']} LG en {z}"
             foto = foto_rot(k, i + j)
-            fl = "".join(f'<li><a href="../{furl(k, f)}"><b>{esc(f[0])}</b></a>: {esc(f[1])}</li>' for f in e["fallas"][:5])
+            fl = "".join(f'<li><a href="../../{furl(k, f)}"><b>{esc(f[0])}</b></a>: {esc(f[1])}</li>' for f in e["fallas"][:5])
             mant = e["mant"][(i + j) % len(e["mant"])]
-            otros = "".join(f'<a href="../{zurl(k2, z)}">{esc(e2["corto"])} LG en {esc(z)}</a>' for k2, e2 in EQUIPOS.items() if k2 != k)
-            vec = "".join(f'<a href="{k}-lg-{slug(v[0])}.html">{esc(e["corto"])} LG en {esc(v[0])}</a>' for v in [ZONAS[(i + d) % len(ZONAS)] for d in (1, 2, 3, 4, 5)])
+            otros = "".join(f'<a href="{k2}.html">{esc(e2["corto"])} LG en {esc(z)}</a>' for k2, e2 in EQUIPOS.items() if k2 != k)
+            vec = "".join(f'<a href="../{slug(v[0])}/{k}.html">{esc(e["corto"])} LG en {esc(v[0])}</a>' for v in [ZONAS[(i + d) % len(ZONAS)] for d in (1, 2, 3, 4, 5)])
             faq = [(f"¿Reparan {e['corto'].lower()} LG en {z}?", f"Sí. Damos servicio técnico a domicilio de {e['corto'].lower()} LG en {z} ({area}). Escríbenos por WhatsApp con el modelo y la falla y te confirmamos la visita."),
                    (f"¿Cuánto tardan en llegar a {z}?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas, según disponibilidad."),
                    (f"¿Cuánto cuesta el servicio técnico de {e['art']} LG en {z}?", "Te confirmamos el costo de la visita antes de ir y el de la reparación antes de empezar, según la falla y el modelo.")]
-            cuerpo = f'''{miga(1, ("Zonas", "zonas-de-cobertura.html"), (z, f"zonas/{slug(z)}.html"), (e["corto"], None))}<section class="hero chico"><div class="w hg"><div><span class="ey">{esc(area)}</span><h1>Reparación de {esc(e["corto"].lower())} LG en {esc(z)}</h1><p class="lead">Servicio técnico LG a domicilio en {esc(z)} para {esc(e["corto"].lower())}: diagnóstico en el sitio, costo claro antes de reparar y garantía en la pieza y la mano de obra.</p>
-<div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a></div></div><div class="hero-tarjeta foto">{fpic(foto, 1, None, False)}</div></div></section>
+            cuerpo = f'''{miga(2, ("Zonas", "zonas/index.html"), (z, f"zonas/{slug(z)}/index.html"), (e["corto"], None))}<section class="hero chico"><div class="w hg"><div><span class="ey">{esc(area)}</span><h1>Reparación de {esc(e["corto"].lower())} LG en {esc(z)}</h1><p class="lead">Servicio técnico LG a domicilio en {esc(z)} para {esc(e["corto"].lower())}: diagnóstico en el sitio, costo claro antes de reparar y garantía en la pieza y la mano de obra.</p>
+<div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a></div></div><div class="hero-tarjeta foto">{fpic(foto, 2, None, False)}</div></div></section>
 <section class="sec"><div class="w txt"><h2>Técnico de {esc(e["corto"].lower())} LG en {esc(z)}</h2><p>{esc(t1)}</p><p>{esc(t2)}</p>
 {"".join(f"<h2>{esc(a.replace('{z}', z))}</h2><p>{esc(b.replace('{z}', z))}</p>" for a, b in [SEO_EQ[k][(i + j) % 5], SEO_EQ[k][(i + j + 2) % 5]])}<h2>Fallas de {esc(e["corto"].lower())} LG que atendemos en {esc(z)}</h2><ul class="lista">{fl}</ul>
 <h2>Consejo de mantenimiento</h2><p>{esc(mant)}</p>
 <h2>Preguntas frecuentes en {esc(z)}</h2>{faq_html(faq)}
-<h2>Guías de {esc(e["corto"].lower())} LG</h2><div class="chips">{guias_chips(k, 1)}</div><h2>Otros equipos LG en {esc(z)}</h2><div class="chips">{otros}</div><h2>{esc(e["corto"])} LG en zonas cercanas</h2><div class="chips">{vec}</div></div></section>{cta(msg, f"¿Tu {e['sing']} LG falla en {z}?")}'''
+<h2>Guías de {esc(e["corto"].lower())} LG</h2><div class="chips">{guias_chips(k, 2)}</div><h2>Otros equipos LG en {esc(z)}</h2><div class="chips">{otros}</div><h2>{esc(e["corto"])} LG en zonas cercanas</h2><div class="chips">{vec}</div><h2>Búsquedas relacionadas en {esc(z)}</h2><div class="chips">{"".join(f'<a href="../../{furl(k, f)}">{esc(e["sing"])} {MARCA} {esc(f[0].lower())} en {esc(z)}</a>' for f in e["fallas"])}<a href="../../servicio-tecnico-{MARCA.lower()}-cerca-de-mi-panama.html">Servicio técnico {MARCA} cerca de {esc(z)}</a><a href="../../telefono-servicio-tecnico-{MARCA.lower()}-panama.html">Teléfono servicio técnico {MARCA} {esc(z)}</a></div></div></section>{cta(msg, f"¿Tu {e['sing']} LG falla en {z}?")}'''
             escribir(zurl(k, z), f"Reparación de {e['corto']} LG en {z} | Panamá", f"Servicio técnico de {e['corto'].lower()} LG a domicilio en {z}, Panamá. Diagnóstico claro, garantía y visitas en 24-48 horas. WhatsApp {TEL}.", cuerpo,
-                     [negocio_ld(area=z), faq_ld(faq), bc(("Zonas", "zonas-de-cobertura.html"), (z, f"zonas/{slug(z)}.html"), (e["corto"], None))], "0.5")
+                     [negocio_ld(area=z), faq_ld(faq), bc(("Zonas", "zonas/index.html"), (z, f"zonas/{slug(z)}/index.html"), (e["corto"], None))], "0.5")
             n += 1
 
 HUBS = [
@@ -572,7 +620,7 @@ def paginas_hubs():
         if h.get("foto2"): partes.insert(1, f'<div class="fotoc">{fpic(h["foto2"], 0)}</div>')
         partes += [f"<h2>{esc(a)}</h2><p>{esc(b)}</p>" for a, b in HUB_EXTRA]
         secs = "".join(partes)
-        zs = '<h2>Zonas de cobertura</h2><div class="chips">' + "".join(f'<a href="zonas/{slug(z[0])}.html">{esc(z[0])}</a>' for z in ZONAS) + "</div>" if h.get("zonas") else ""
+        zs = '<h2>Zonas de cobertura</h2><div class="chips">' + "".join(f'<a href="zonas/{slug(z[0])}/index.html">{esc(z[0])}</a>' for z in ZONAS) + "</div>" if h.get("zonas") else ""
         rel = "".join(f'<a href="{o["f"]}">{esc(o["chip"])}</a>' for o in HUBS if o is not h)
         cuerpo = f'''{miga(0, (h["h1"], None))}<section class="hero chico"><div class="w hg"><div><span class="ey">Servicio técnico LG Panamá</span><h1>{esc(h["h1"])}</h1><p class="lead">{esc(h["lead"])}</p>
 <div class="acc"><a class="btn wa lg" href="{wa(msg)}" target="_blank" rel="noopener" data-wa="hero">{ICONOS["wa"]} Escribir por WhatsApp</a></div></div>{foto}</div></section>
@@ -647,9 +695,10 @@ def paginas_servicio_equipo():
             escribir(ruta, f"{H1} | {NOMBRE}" if len(H1) < 40 else H1, f"{corto} de {e['corto'].lower()} LG a domicilio en Panamá. {desc[:90]} WhatsApp {TEL}.", cuerpo, [negocio_ld(), faq_ld(faq), bc(("Servicios", f"servicios/{sk}-lg-panama.html"), (e["corto"], None))], "0.6")
 
 def main():
+    (OUT / "zonas-de-cobertura.html").unlink(missing_ok=True)
     for d in ["electrodomesticos", "servicios", "zonas", "blog", "fallas"]:
         shutil.rmtree(OUT / d, ignore_errors=True)
-    estaticos(); pagina_inicio(); paginas_equipo(); paginas_servicio(); paginas_zona(); paginas_blog(); pagina_diagnostico(); paginas_info(); paginas_hubs(); paginas_subequipo(); paginas_servicio_equipo(); paginas_fallas(); paginas_zona_equipo(); indices()
+    estaticos(); pagina_inicio(); paginas_equipo(); paginas_servicio(); paginas_zona(); paginas_blog(); pagina_diagnostico(); paginas_info(); paginas_hubs(); paginas_subequipo(); paginas_servicio_equipo(); paginas_fallas(); paginas_zona_equipo(); paginas_mapa(); indices()
     z = AQUI.parent.parent / "entrega" / "servicio-tecnico-lg-panama.zip"
     z.parent.mkdir(exist_ok=True)
     with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED) as zf:

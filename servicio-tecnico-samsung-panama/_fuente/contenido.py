@@ -2,7 +2,11 @@
 """Contenido del sitio «Servicio técnico Samsung en Panamá» (SEO orgánico).
 Servicio técnico Samsung Panamá (SEO orgánico)."""
 
-DOMINIO = "https://serviciotecnicosamsungpanama.click"
+DOMINIO = "https://centroserviciopanama.com"
+DOMINIO_RAIZ = "https://centroserviciopanama.com"
+ORG = "Centro de Servicio Panamá"
+MARCA = "Samsung"
+ES_LG = False
 NOMBRE = "Servicio Técnico Samsung Panamá"
 TEL = "+507 6933-7976"
 WA = "50769337976"
@@ -187,4 +191,31 @@ FAQ_GENERAL = [
 ]
 
 from blog2 import BLOG2
-BLOG = BLOG + BLOG2
+from blog_sam import BLOG_SAM
+BLOG = BLOG + BLOG2 + BLOG_SAM
+
+# --- fallas y preguntas específicas de Samsung
+EQUIPOS["neveras"]["fallas"] += [
+ ("La pantalla Family Hub no enciende o se congela", "Software de la pantalla bloqueado, Wi-Fi inestable o tarjeta de la pantalla.", "Vigilar", "Reinicia la pantalla y el router; verifica que la nevera tenga energía."),
+ ("El compresor Digital Inverter hace ruido o vibra", "Compresor inverter, nevera desnivelada o contacto con la pared.", "Revisar pronto", "Nivela las patas y separa la nevera de la pared y los muebles."),
+]
+EQUIPOS["lavadoras"]["fallas"] += [
+ ("Muestra el código 5E o SE (no desagua)", "Filtro de desagüe tapado, manguera obstruida o bomba de desagüe con falla.", "Revisar pronto", "Revisa el filtro de desagüe y que la manguera no esté doblada."),
+ ("Muestra el código 4E (no entra agua)", "Llaves cerradas, mallas tapadas, baja presión o válvula de entrada con falla.", "Revisar pronto", "Abre las llaves y limpia las mallas de las mangueras."),
+ ("La puerta AddWash gotea", "Empaque o seguro de la compuerta AddWash sucio o desajustado.", "Revisar pronto", "Limpia el empaque y verifica que la compuerta cierre sin prendas atrapadas."),
+ ("No conecta a la app SmartThings", "Red Wi-Fi 2.4 GHz mal configurada o módulo Wi-Fi con falla.", "Vigilar", "Acerca el router, reinicia ambos equipos y repite el emparejamiento."),
+]
+EQUIPOS["secadoras"]["fallas"] += [
+ ("Ciclo muy largo con ducto o filtro saturado", "Ducto de escape obstruido o muy largo, filtro saturado o sensor de humedad sucio.", "Revisar pronto", "Limpia el filtro y revisa que el ducto no esté aplastado ni tapado."),
+]
+EQUIPOS["neveras"]["faq"] += [
+ ("¿Reparan neveras Samsung Family Hub?", "Sí, atendemos neveras Samsung Family Hub, French Door, Side by Side y de congelador superior o inferior."),
+ ("¿Qué hago si mi nevera Samsung no conecta a SmartThings?", "Revisa que el router esté en 2.4 GHz, reinicia ambos equipos y repite el emparejamiento; si sigue, escríbenos."),
+]
+EQUIPOS["lavadoras"]["faq"] += [
+ ("¿Reparan lavadoras Samsung con EcoBubble y AddWash?", "Sí, atendemos lavadoras Samsung de carga frontal y superior, incluyendo la compuerta AddWash y los problemas de conexión SmartThings."),
+ ("¿Qué significa 5E en una lavadora Samsung?", "Problema de desagüe: filtro, manguera o bomba."),
+]
+EQUIPOS["secadoras"]["faq"] += [
+ ("¿Por qué mi secadora Samsung tarda tanto en secar?", "Casi siempre es el filtro de pelusas o el ducto de escape obstruido; si ambos están limpios, puede ser la resistencia o el sensor de humedad."),
+]
