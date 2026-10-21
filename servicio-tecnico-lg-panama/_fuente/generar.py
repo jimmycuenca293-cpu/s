@@ -183,11 +183,126 @@ def alt_seo(html_txt, ruta):
         return tag.replace(am.group(0), f'alt="{html.escape(nuevo, quote=True)}"')
     return re.sub(r'<img\b[^>]*>', r, html_txt)
 
+# ------------------------------------------------------------ mejoras: imágenes sin repetir + preguntas frecuentes / IA
+def faq_base():
+    m = MARCA
+    return [
+        (f"¿Cuál es un servicio técnico {m} a domicilio en Panamá?", f"{NOMBRE} (parte de {ORG}) repara neveras, lavadoras y secadoras {m} a domicilio en Ciudad de Panamá, San Miguelito y Panamá Oeste. Se solicita por WhatsApp al {TEL}, en horario {HORARIO}."),
+        (f"¿Quién repara neveras, lavadoras y secadoras {m} en Panamá?", f"{NOMBRE} atiende neveras y refrigeradoras, lavadoras de carga superior y frontal, secadoras y torres de lavado {m}, con diagnóstico en el sitio, costo confirmado antes de reparar y garantía sobre la pieza y la mano de obra."),
+        (f"¿Cómo contacto al servicio técnico {m} en Panamá?", f"Escribe por WhatsApp al {TEL} con el equipo, el modelo y la falla (una foto o video ayuda). Atendemos {HORARIO} y coordinamos la visita en 24 a 48 horas en la mayoría de las zonas."),
+        (f"¿Cómo encuentro un buen técnico {m} cerca de mí en Panamá?", f"Busca que el técnico vaya a domicilio, te explique la falla, te dé el costo antes de empezar y ofrezca garantía por escrito. {NOMBRE} trabaja así y cubre más de {len(ZONAS)} zonas de la ciudad y alrededores."),
+        (f"¿Qué zonas de Panamá cubre el servicio técnico {m}?", f"Cubrimos {len(ZONAS)} zonas, entre ellas San Francisco, Bella Vista, Obarrio, Costa del Este, Punta Pacífica, Paitilla, Betania, Albrook, San Miguelito, Arraiján, La Chorrera y Coronado. Escribe tu barrio por WhatsApp para confirmar."),
+        (f"¿Cuánto cuesta el servicio técnico de electrodomésticos {m} en Panamá?", "El costo depende de la falla, la pieza y el modelo. Confirmamos el valor de la visita antes de ir y el de la reparación antes de empezar; si no estás de acuerdo, no se repara."),
+        (f"¿El servicio técnico {m} da garantía?", "Sí. Cada reparación incluye garantía sobre la pieza reemplazada y la mano de obra; el plazo se confirma por escrito antes de pagar."),
+        (f"¿Qué servicio técnico {m} me recomiendan en Panamá?", f"{NOMBRE} es una opción que cumple lo básico que conviene exigir: visita a domicilio, diagnóstico claro, costo confirmado antes de reparar y garantía. Puedes escribirnos por WhatsApp al {TEL} para una cotización sin compromiso."),
+    ]
+
+def faq_eq(k):
+    e = EQUIPOS[k]; m = MARCA; q = []
+    for f in e["fallas"][:4]:
+        s0 = f[0][0].lower() + f[0][1:]
+        for pre in (f"la {e['sing']} ", f"el {e['sing']} ", f"{e['sing']} "):
+            if s0.startswith(pre): s0 = s0[len(pre):]; break
+        q.append((f"¿Por qué mi {e['sing']} {m} {s0}?", f"Causa probable: {f[1][0].lower() + f[1][1:]} Qué revisar primero: {f[3]} Si el problema continúa, un técnico puede diagnosticarlo a domicilio."))
+    q.append((f"¿Quién repara {e['art']} {m} a domicilio en Panamá?", f"{NOMBRE} repara {e['corto'].lower()} {m} a domicilio en Ciudad de Panamá, San Miguelito y Panamá Oeste. Escribe por WhatsApp al {TEL}."))
+    q.append((f"¿Vale la pena reparar {e['art']} {m} o conviene comprar uno nuevo?", "Si la falla es de una pieza accesible y el equipo está en buen estado, reparar casi siempre conviene. Si es muy antiguo o el daño es costoso, te explicamos las opciones con honestidad antes de repararlo."))
+    return q
+
+def faq_contexto(ruta):
+    zona, eq, falla = alt_contexto(ruta)
+    m = MARCA; q = []
+    if ruta == "preguntas-frecuentes.html":
+        q = faq_base()
+        for k in EQUIPOS: q += faq_eq(k)
+        return q
+    if falla and eq:
+        e = EQUIPOS[eq]
+        f0 = falla
+        for pre in (f"la {e['sing']} ", f"el {e['sing']} ", f"{e['sing']} "):
+            if f0.startswith(pre): f0 = f0[len(pre):]; break
+        q.append((f"¿Qué hago si {e['art']} {m} {f0}?", "Anota el síntoma y el modelo, revisa lo básico (conexión, nivel, filtros) y, si continúa, pide un diagnóstico a domicilio por WhatsApp. No desarmes el equipo."))
+        q.append((f"¿Es peligroso seguir usando {e['art']} {m} con este problema?", "Depende de la falla. Si hay fugas, olor a quemado, chispas o el equipo se apaga y prende solo, desconéctalo y escribe a un técnico antes de volver a usarlo."))
+    if zona:
+        q.append((f"¿Hay técnico {m} a domicilio en {zona}?", f"Sí, {NOMBRE} atiende {zona} a domicilio. Escribe por WhatsApp al {TEL} con tu equipo y modelo para confirmar la visita."))
+        q.append((f"¿Cuánto tarda el técnico {m} en llegar a {zona}?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas, según disponibilidad."))
+        if eq: q.append((f"¿Reparan {EQUIPOS[eq]['corto'].lower()} {m} en {zona}?", f"Sí, reparamos {EQUIPOS[eq]['corto'].lower()} {m} en {zona}, con diagnóstico en el sitio, costo claro y garantía."))
+    if eq and not falla: q += faq_eq(eq)[:5]
+    q += faq_base()[:5 if (zona or falla or eq) else 8]
+    return q
+
+def alt_pool():
+    return sorted(p.stem for p in (AQUI / "fotos").glob("*.jpg"))
+
+def dedupe_imgs(h, ruta):
+    pool = [s for s in alt_pool() if not s.startswith("prod-")]
+    if not pool: return h
+    off = sum(ord(c) for c in ruta) % len(pool)
+    pool = pool[off:] + pool[:off]
+    usados = set(); quitar = []
+    def stem_de(b):
+        mm = re.search(r'images/fotos/([\w-]+)\.(?:jpg|webp)', b)
+        return mm.group(1) if mm else None
+    # no tocar cabecera/pie
+    ini = h.find("</header>"); fin = h.find("<footer")
+    partes = [h[:ini], h[ini:fin], h[fin:]] if ini > 0 and fin > ini else [h]
+    medio = 1 if len(partes) == 3 else 0
+    cuerpo = partes[medio]
+    out = []; pos = 0
+    for mt in re.finditer(r'<picture\b.*?</picture>|<img\b[^>]*>', cuerpo, re.S):
+        b = mt.group(0); s = stem_de(b)
+        if not s: continue
+        if s not in usados:
+            usados.add(s); continue
+        nuevo = next((c for c in pool if c not in usados), None)
+        if nuevo:
+            nb = b.replace(s, nuevo)
+            w, hh = WH.get(nuevo, (1024, 765))
+            nb = re.sub(r'width="\d+" height="\d+"', f'width="{w}" height="{hh}"', nb)
+            nb = re.sub(r'alt="[^"]*"', 'alt="' + html.escape(ALT.get(nuevo, "Servicio técnico a domicilio"), quote=True) + '"', nb)
+            nb = nb.replace("fto pr", "fto")
+            usados.add(nuevo)
+        else:
+            nb = ""
+            quitar.append(mt.start())
+        out.append((mt.start(), mt.end(), nb))
+    for a, b2, nb in reversed(out):
+        cuerpo = cuerpo[:a] + nb + cuerpo[b2:]
+    # secciones split que perdieron su imagen: se quitan enteras
+    cuerpo = re.sub(r'<section class="sec[^"]*"><div class="w split[^"]*"><div class="sp-f"></div>.*?</section>', '', cuerpo, flags=re.S)
+    cuerpo = cuerpo.replace('<div class="fotoc" style="max-width:720px"></div>', "").replace('<div class="fotoc"></div>', "")
+    partes[medio] = cuerpo
+    return "".join(partes)
+
+def inyectar_faq(h, ruta, ld):
+    if ruta in ("privacidad.html", "aviso-legal.html", "mapa-del-sitio.html"): return h, ld
+    existentes = set(re.findall(r'<summary>(.*?)</summary>', h))
+    nuevas = [(q, a) for q, a in faq_contexto(ruta) if html.escape(q, quote=True) not in existentes]
+    if not nuevas: return h, ld
+    zona, eq, falla = alt_contexto(ruta)
+    donde = f" en {zona}" if zona else ""
+    sec = (f'<section class="sec alt"><div class="w txt"><div class="cab"><span class="ey">Respuestas rápidas</span>'
+           f'<h2>Preguntas frecuentes sobre servicio técnico {MARCA}{donde}</h2><p>Respuestas directas a lo que más se pregunta en Google y a asistentes de IA.</p></div>{faq_html(nuevas)}</div></section>')
+    cta_i = h.find('<section class="sec"><div class="w"><div class="cta">')
+    if cta_i < 0: cta_i = h.find("</main>")
+    h = h[:cta_i] + sec + h[cta_i:]
+    ld = list(ld or [])
+    for d in ld:
+        if isinstance(d, dict) and d.get("@type") == "FAQPage":
+            ya = {x["name"] for x in d["mainEntity"]}
+            d["mainEntity"] += [x for x in faq_ld(nuevas)["mainEntity"] if x["name"] not in ya]
+            break
+    else:
+        ld.append(faq_ld(nuevas))
+    return h, ld
+
 def escribir(ruta, titulo, desc, cuerpo, ld=None, prioridad="0.7", og="images/og.jpg"):
     depth = ruta.count("/")
     p = OUT / ruta
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(alt_seo(cabeza(ruta, titulo, desc, ld, og) + menu(depth) + cuerpo + pie(depth), ruta), encoding="utf-8")
+    pag_cuerpo = menu(depth) + cuerpo + pie(depth)
+    pag_cuerpo = dedupe_imgs(pag_cuerpo, ruta)
+    pag_cuerpo, ld = inyectar_faq(pag_cuerpo, ruta, ld)
+    p.write_text(alt_seo(cabeza(ruta, titulo, desc, ld, og) + pag_cuerpo, ruta), encoding="utf-8")
     PAGINAS[ruta] = (prioridad, titulo)
 
 def miga(depth, *partes):
@@ -224,7 +339,8 @@ def negocio_ld(nombre=None, area=None):
 
 EQ_IMGS = {"neveras": ["prod-nevera-top"], "lavadoras": ["prod-lavadora-fr", "prod-lavadora-sup"], "secadoras": ["prod-secadora", "prod-torre"]}
 def eq_img(k, r):
-    return '<div class="eqimgs">' + "".join(f'<img class="eqimg" src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{WH[n][0]}" height="{WH[n][1]}" loading="lazy">' for n in EQ_IMGS[k]) + '</div>'
+    n = next((s for s in ROT[k] if not s.startswith("prod-")), ROT[k][0])
+    return f'<img class="eqimg foto" src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{WH[n][0]}" height="{WH[n][1]}" loading="lazy">'
 
 def guias_chips(k, depth, n=6):
     r = R(depth)
@@ -264,7 +380,6 @@ def pagina_inicio():
 <section class="sec" id="equipos"><div class="w"><div class="cab"><span class="ey">Qué reparamos</span><h2>Reparación de electrodomésticos LG en Panamá</h2><p>Atendemos los equipos LG más usados en casas y apartamentos de la ciudad.</p></div>{tarjetas_eq(0)}</div></section>
 {split("prod-lavadora-fr", "Lavadoras LG", "Lavadoras LG que no centrifugan, no desaguan o gotean", "Diagnosticamos carga superior y frontal, secadoras y lavasecadoras: códigos de error, bombas, seguros de puerta, amortiguadores y más.", "electrodomesticos/lavadoras/index.html", "Ver servicio de lavadoras", True)}
 <section class="sec alt" id="servicios"><div class="w"><div class="cab"><span class="ey">Servicios</span><h2>Servicio técnico a domicilio</h2></div><div class="grid g4">{"".join(f'<a class="card" href="servicios/{k}-lg-panama.html"><h3>{esc(v[1])}</h3><p>{esc(v[2][:130].rsplit(" ",1)[0])}…</p><span class="mas">Ver más →</span></a>' for k, v in SERVICIOS.items())}</div></div></section>
-<section class="sec"><div class="w"><div class="cab"><span class="ey">Modelos</span><h2>Modelos LG que reparamos</h2><p>Neveras de congelador superior, Side by Side con pantalla, lavadoras de carga superior y frontal, y secadoras.</p></div><div class="mods">{"".join(f'<a href="{h}">{fpic(n, 0)}<b>{esc(t)}</b></a>' for n, t, h in [("prod-nevera-top", "Nevera", "electrodomesticos/neveras/index.html"), ("prod-lavadora-fr", "Lavadora carga frontal", "electrodomesticos/lavadoras/index.html"), ("prod-lavadora-sup", "Lavadora carga superior", "electrodomesticos/lavadoras/index.html"), ("prod-secadora", "Secadora", "electrodomesticos/secadoras/index.html"), ("prod-torre", "Torre de lavado", "electrodomesticos/secadoras/index.html")])}</div></div></section>
 {split("prod-nevera-top", "Nevera con dispensador", "¿Tu nevera LG con dispensador de agua falla?", "Agua que sale lenta, aviso de filtro, hielo que no se produce o fugas: revisamos el sistema de agua de tu refrigeradora LG a domicilio.", "cambio-filtro-nevera-lg-panama.html", "Ver más sobre el dispensador")}
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Así trabajamos</span><h2>Cómo agendar tu servicio técnico LG</h2></div><ol class="pasos">{"".join(f"<li><b>{esc(a)}</b><p>{esc(b)}</p></li>" for a, b in pasos)}</ol></div></section>
 {split("prod-secadora", "Secadoras LG", "Secadoras LG que no secan, no calientan o hacen ruido", "Secadoras que no secan o no calientan y lavadoras que no desaguan: revisamos equipos LG de carga frontal, solos o apilados en torre, a domicilio en Panamá.", "electrodomesticos/secadoras/index.html", "Ver servicio de secadoras", True)}
@@ -422,7 +537,7 @@ nav{display:flex;align-items:center;gap:18px}nav>a,.dd>a{color:var(--ink);text-d
 @media(max-width:900px){nav{display:none}.burger{display:block}.barra span{display:none}.barra .w{justify-content:center}}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--pri);color:#fff;border:2px solid var(--pri);border-radius:999px;padding:11px 20px;font-weight:700;text-decoration:none;cursor:pointer;font-size:15px}.btn svg{width:20px;height:20px}.btn.lg{padding:14px 26px;font-size:16px}.btn.sm{padding:6px 14px;font-size:13px}.btn.sec{background:transparent;color:#fff;border-color:#fff}.btn.wa{background:var(--wa);border-color:var(--wa);color:#fff}.btn:hover{filter:brightness(1.08)}
 .hero{background:radial-gradient(1000px 420px at 85% -10%,#d1124b 0%,transparent 60%),linear-gradient(160deg,var(--pri2),var(--pri));color:#fff;padding-block:56px}.hero.chico{padding-block:40px}.hero h1{color:#fff}.hero .lead{font-size:18px;opacity:.95;max-width:60ch}.hg{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}.ey{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ffb3c6;margin-bottom:10px}.sec:not(.alt) .ey,.sec.alt .ey,.card .ey{color:var(--pri)}.acc{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}.pts{display:flex;gap:18px;flex-wrap:wrap;list-style:none;padding:0;margin:0;font-weight:600;font-size:14px}.pts li::before{content:"✓ ";color:#a9f5c9}
-.hero-tarjeta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}.eqimgs.big{gap:24px;margin:0 0 22px;justify-content:flex-start}.eqimgs.big .fto{width:auto}.eqimgs.big img{height:260px;width:auto;border:0;padding:0}.eqimgs{display:flex;justify-content:center;gap:10px}.eqimg{height:150px;width:auto;max-width:100%;object-fit:contain;align-self:center;margin-bottom:6px}.mini.fotos a{flex-direction:column;justify-content:center;text-align:center;padding:12px 8px;gap:8px}.mini.fotos img{height:120px;width:auto;max-width:100%;object-fit:contain}.mini.fotos .nm{font-weight:700;line-height:1.2}.mini.fotos .ic svg{width:70px;height:70px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini a{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:12px;text-decoration:none;font-weight:700;font-size:14px}.mini .ic svg,.ic.grande svg{width:34px;height:34px}.mini .ic{color:var(--pri)}.ic.grande{color:#fff}.ic.grande svg{width:56px;height:56px}
+.hero-tarjeta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}.eqimgs.big{gap:24px;margin:0 0 22px;justify-content:flex-start}.eqimgs.big .fto{width:auto}.eqimgs.big img{height:260px;width:auto;border:0;padding:0}.eqimgs{display:flex;justify-content:center;gap:10px}.eqimg.foto{height:auto;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px}.eqimg{height:150px;width:auto;max-width:100%;object-fit:contain;align-self:center;margin-bottom:6px}.mini.fotos a{flex-direction:column;justify-content:center;text-align:center;padding:12px 8px;gap:8px}.mini.fotos img{height:120px;width:auto;max-width:100%;object-fit:contain}.mini.fotos .nm{font-weight:700;line-height:1.2}.mini.fotos .ic svg{width:70px;height:70px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini a{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:12px;text-decoration:none;font-weight:700;font-size:14px}.mini .ic svg,.ic.grande svg{width:34px;height:34px}.mini .ic{color:var(--pri)}.ic.grande{color:#fff}.ic.grande svg{width:56px;height:56px}
 @media(max-width:860px){.hg{grid-template-columns:1fr}}
 .conf{border-bottom:1px solid var(--line)}.conf .w{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding-block:20px}.conf b{display:block}.conf small{color:var(--mut)}@media(max-width:760px){.conf .w{grid-template-columns:1fr 1fr}}
 .sec{padding-block:56px}.sec.alt{background:var(--panel)}.cab{max-width:720px;margin-bottom:28px}.cab p{color:var(--mut)}.grid{display:grid;gap:18px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}@media(max-width:960px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}@media(max-width:620px){.g4,.g3,.g2{grid-template-columns:1fr}}
@@ -476,6 +591,8 @@ def indices():
     txt += "\n## Páginas clave\n" + "".join(f"- [{h['h1']}]({DOMINIO}/{h['f']})\n" for h in HUBS)
     txt += "\n## Zonas\n" + "".join(f"- [Servicio técnico LG en {z[0]}]({DOMINIO}/zonas/{slug(z[0])}/index.html)\n" for z in ZONAS)
     txt += "\n## Guías\n" + "".join(f"- [{b[1]}]({DOMINIO}/blog/{b[0]}.html)\n" for b in BLOG)
+    txt += f"\n## Datos clave\n- Negocio: {NOMBRE} (parte de {ORG})\n- Servicio: reparación a domicilio de neveras, lavadoras y secadoras {MARCA}\n- Teléfono y WhatsApp: {TEL}\n- Horario: {HORARIO}\n- Cobertura: Ciudad de Panamá, San Miguelito y Panamá Oeste ({len(ZONAS)} zonas)\n- Tiempo de visita: 24 a 48 horas en la mayoría de las zonas\n- Garantía: sobre la pieza reemplazada y la mano de obra\n"
+    txt += "\n## Preguntas frecuentes\n" + "".join(f"\n### {q}\n{a}\n" for q, a in (faq_base() + [x for k in EQUIPOS for x in faq_eq(k)]))
     (OUT / "llms.txt").write_text(txt, encoding="utf-8")
 
 # ------------------------------------------------------------ cobertura de búsquedas
