@@ -1,0 +1,39 @@
+# Grupo 8: LG - Carga frontal
+
+**Página de destino:** https://filtrosparalavadoras.click/bombas-de-agua/lg/bomba-lavadora-lg-carga-frontal/  
+**Rutas visibles:** filtrosparalavadoras.click/LG/Carga-Frontal
+
+## Títulos (máximo 30 caracteres)
+1. Bomba LG Carga Frontal (22)
+2. Bomba de Agua LG Frontal (24)
+3. Bomba Desagüe LG Frontal (24)
+4. Bomba para Lavadora LG (22)
+5. Elige tu Bomba por Modelo (25)
+6. Cambio Paso a Paso (18)
+7. Pago contra Entrega (19)
+8. Pedido por WhatsApp (19)
+9. Asesor Te Confirma el Modelo (28)
+10. Envío a Toda Colombia (21)
+11. Bombas para Samsung y LG (24)
+12. Escríbenos por WhatsApp (23)
+13. Precio por WhatsApp (19)
+14. Atención por WhatsApp (21)
+
+## Descripciones (máximo 90 caracteres)
+1. Bomba de desagüe para lavadora LG de carga frontal. El asesor confirma el modelo. (81)
+2. Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es. (86)
+3. Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir. (77)
+4. Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía. (79)
+
+## Palabras clave (11)
+- bomba lavadora lg carga frontal
+- bomba de agua lavadora lg carga frontal
+- bomba desague lavadora lg carga frontal
+- bomba lavadora lg frontal
+- bomba de agua lg lavadora frontal
+- bomba lavadora lg puerta frontal
+- comprar bomba lavadora lg carga frontal
+- bomba lavadora lg wm
+- bomba lavadora lg wd
+- bomba desague lavadora lg wm
+- bomba desague lavadora lg wd

@@ -1,0 +1,94 @@
+# 3. Palabras negativas (a nivel de campaña)
+
+Son búsquedas por las que NO quieres pagar. Ya vienen en `05-archivos-para-importar/palabras-negativas.csv`. Incluyen las de quien busca comprar una lavadora (no una bomba), otras marcas y otras clases de bomba (piscina, pozo, carro, presurizadora…). Revisa el informe de **Términos de búsqueda** cada semana y agrega las que no te sirvan.
+
+- usado
+- usada
+- segunda mano
+- casero
+- casera
+- reciclar
+- manual
+- pdf
+- descargar
+- video
+- youtube
+- curso
+- empleo
+- trabajo
+- vacante
+- gratis
+- comprar lavadora
+- lavadora nueva
+- precio de lavadora
+- lavadoras en oferta
+- oferta lavadora
+- falabella
+- exito
+- alkosto
+- homecenter
+- ktronix
+- olx
+- mercadolibre
+- amazon
+- alibaba
+- aliexpress
+- temu
+- reparacion
+- reparar
+- servicio tecnico
+- tecnico
+- tecnico a domicilio
+- tarjeta electronica
+- compresor
+- correa
+- rodamiento
+- empaque
+- amortiguador
+- mabe
+- whirlpool
+- haceb
+- electrolux
+- challenger
+- kalley
+- midea
+- frigidaire
+- general electric
+- nevera
+- refrigerador
+- aire acondicionado
+- pdf manual
+- patente
+- dibujo
+- juguete
+- piscina
+- sumergible
+- presurizadora
+- hidroneumatico
+- hidroneumatica
+- jardin
+- riego
+- acuario
+- pecera
+- pozo
+- tanque
+- cisterna
+- bomba de vacio
+- bomba de calor
+- bomba de gasolina
+- bomba de combustible
+- bomba de agua carro
+- bomba de agua automovil
+- radiador
+- motor de carro
+- bomba de aire
+- bomba hidraulica
+- bomba de presion
+- bomba de achique
+- bomba periferica
+- bomba centrifuga
+- lavavajillas
+- lavaplatos
+- dispensador
+- bicicleta
+- moto
