@@ -39,56 +39,17 @@ BASE_KW = ["bomba de agua lavadora {m}", "bomba de agua para lavadora {m}", "bom
            "bomba de drenaje lavadora {m}", "bomba de vaciado lavadora {m}", "motobomba lavadora {m}", "bomba lavadora {m}", "bomba para lavadora {m}", "comprar bomba lavadora {m}",
            "repuesto bomba lavadora {m}", "bomba lavadora {m} colombia", "donde comprar bomba lavadora {m}", "precio bomba lavadora {m}", "bomba de agua {m} lavadora carga frontal",
            "bomba de agua {m} lavadora carga superior"]
-for M, TELEF, REF, REFURL, CODIGOS, FAM_SUP, FAM_FRO in [
-        ("Samsung", "305 479 6329", "DC31-00181C", "samsung/bomba-desague-lavadora-samsung-dc31-00181c", ["5e", "se", "5c"], ["wa"], ["ww", "wf"]),
-        ("LG", "320 510 2995", "4681EA2001T", "lg/bomba-desague-lavadora-lg-motor-negro-4681ea2001t", ["oe"], ["wt"], ["wm", "wd"])]:
+for M, REF, FAM in [("Samsung", "DC31-00181C", ["wa", "ww", "wf"]), ("LG", "4681EA2001T", ["wt", "wm", "wd"])]:
     c = M.lower(); R = REF.lower()
-    grupo(f"{M} - Bomba de agua", url(c), "Bombas", M,
-          [f"Bomba de Agua Lavadora {M}", f"Bomba de Desagüe {M}", f"Bomba para Lavadora {M}", f"Motobomba Lavadora {M}", f"Bomba de Drenaje {M}", f"Bomba {M} Colombia", f"Bombas para Lavadora {M}"] + GEN_H[:8],
-          [f"Bomba de desagüe (bomba de agua) para lavadora {M}. Pide la tuya por WhatsApp.", GEN_D[0], GEN_D[2], GEN_D[3]],
-          kw(M, *BASE_KW))
-    grupo(f"{M} - Carga superior", url(f"{c}/bomba-lavadora-{c}-carga-superior"), M, "Carga-Superior",
-          [f"Bomba {M} Carga Superior", f"Bomba de Agua {M} Superior", f"Bomba Desagüe {M} Superior", f"Bomba para Lavadora {M}", "Elige tu Bomba por Modelo", "Cambio Paso a Paso"] + GEN_H[:9],
-          [f"Bomba de desagüe para lavadora {M} de carga superior. El asesor confirma el modelo.", GEN_D[1], GEN_D[2], GEN_D[3]],
-          kw(M, "bomba lavadora {m} carga superior", "bomba de agua lavadora {m} carga superior", "bomba desague lavadora {m} carga superior", "bomba lavadora {m} superior",
-             "bomba de agua {m} lavadora superior", "comprar bomba lavadora {m} carga superior") + [f"bomba lavadora {c} {f}" for f in FAM_SUP] + [f"bomba desague lavadora {c} {f}" for f in FAM_SUP])
-    grupo(f"{M} - Carga frontal", url(f"{c}/bomba-lavadora-{c}-carga-frontal"), M, "Carga-Frontal",
-          [f"Bomba {M} Carga Frontal", f"Bomba de Agua {M} Frontal", f"Bomba Desagüe {M} Frontal", f"Bomba para Lavadora {M}", "Elige tu Bomba por Modelo", "Cambio Paso a Paso"] + GEN_H[:9],
-          [f"Bomba de desagüe para lavadora {M} de carga frontal. El asesor confirma el modelo.", GEN_D[1], GEN_D[2], GEN_D[3]],
-          kw(M, "bomba lavadora {m} carga frontal", "bomba de agua lavadora {m} carga frontal", "bomba desague lavadora {m} carga frontal", "bomba lavadora {m} frontal",
-             "bomba de agua {m} lavadora frontal", "bomba lavadora {m} puerta frontal", "comprar bomba lavadora {m} carga frontal") + [f"bomba lavadora {c} {f}" for f in FAM_FRO] + [f"bomba desague lavadora {c} {f}" for f in FAM_FRO])
-    grupo(f"{M} - Referencia {REF}", url(REFURL), "Bombas", REF,
-          [f"Bomba {REF}", f"Bomba Desagüe {REF}", f"Bomba {M} {REF}", "Consulta por WhatsApp", "Te Confirmamos el Modelo", "Bomba de Agua Lavadora"] + GEN_H[:9],
-          [f"Bomba de desagüe referencia {REF} para lavadora {M}. Consulta por WhatsApp.", GEN_D[1], GEN_D[2], GEN_D[3]],
-          [f"{R}", f"bomba {R}", f"bomba desague {R}", f"bomba lavadora {R}", f"bomba {R.replace('-', ' ')}", f"{R.replace('-', ' ')} bomba", f"comprar bomba {R}", f"bomba de agua {R}"],
-          f"La referencia sale de la etiqueta de la foto del producto. Si cambias de proveedor y la referencia deja de aplicar, pausa este grupo.")
-    grupo(f"{M} - Lavadora no desagua", url(f"{c}/lavadora-{c}-no-desagua"), M, "No-Desagua",
-          [f"Lavadora {M} No Desagua", f"Falla de Desagüe {M}", "¿Será la Bomba de Agua?", "Qué Revisar Antes de Cambiar", "Cambia la Bomba Paso a Paso", f"Bomba de Agua {M}"] + GEN_H[:9],
-          [f"¿Tu lavadora {M} no desagua? Mira qué revisar y pide la bomba por WhatsApp.", GEN_D[1], GEN_D[2], GEN_D[3]],
-          kw(M, "lavadora {m} no desagua", "lavadora {m} no saca el agua", "lavadora {m} no vacia el agua", "lavadora {m} no centrifuga", "lavadora {m} hace ruido al desaguar",
-              "lavadora {m} se queda con agua", "lavadora {m} no escurre", "bomba de lavadora {m} danada", "como saber si la bomba de la lavadora {m} esta danada")
-          + [f"lavadora {c} error {k}" for k in CODIGOS] + [f"lavadora {c} codigo {k}" for k in CODIGOS],
-          "Búsquedas informativas: puja 30 % más baja que los grupos de compra. Solo concordancia de frase.")
-# ---------------- genéricos ----------------
-grupo("Bomba de lavadora - Samsung y LG", url(""), "Bombas", "Lavadoras",
-      ["Bomba de Agua para Lavadora", "Bomba de Desagüe Lavadora", "Bombas para Lavadoras", "Bomba Lavadora Samsung y LG", "Elige tu Marca: Samsung o LG", "Motobomba para Lavadora"] + GEN_H[:9],
-      ["Bombas de desagüe para lavadoras Samsung y LG. Elige tu marca y pregunta al asesor.", GEN_D[0], GEN_D[2], GEN_D[3]],
-      ["bomba de agua lavadora", "bomba de agua para lavadora", "bomba de desague lavadora", "bomba desague lavadora", "bomba de drenaje lavadora", "motobomba lavadora", "bomba de lavadora",
-       "bomba lavadora", "comprar bomba lavadora", "bomba lavadora colombia", "bomba de agua lavadora colombia", "repuesto bomba lavadora", "donde comprar bomba de lavadora",
-       "bomba de desague lavadora carga frontal", "bomba de desague lavadora carga superior"],
-      "Búsquedas sin marca: pueden traer gente con otras marcas. Vigila «Términos de búsqueda» la primera semana.")
-grupo("Ciudades principales", url(""), "Bombas", "Ciudades",
-      ["Bombas Lavadora en Colombia", "Envío a Tu Ciudad", "Bomba de Agua Lavadora", "Bogotá, Medellín, Cali y más", "Consulta el Envío a tu Ciudad", "Bombas Samsung y LG"] + GEN_H[:9],
-      ["Bomba de desagüe para lavadora con envío a Bogotá, Medellín, Cali y todo el país.", GEN_D[0], GEN_D[2], GEN_D[3]],
-      [f"bomba lavadora {c}" for c in ["bogota", "medellin", "cali", "barranquilla", "cartagena", "bucaramanga", "pereira", "manizales", "cucuta", "ibague", "santa marta", "villavicencio"]]
-      + [f"bomba de agua lavadora {c}" for c in ["bogota", "medellin", "cali", "barranquilla"]],
-      "Búsquedas por ciudad. Si una ciudad rinde más, sepárala en su propio grupo.")
-grupo("Cambio de la bomba", url("samsung/cambio-e-instalacion"), "Bombas", "Cambio",
-      ["Cambia la Bomba de Lavadora", "Cómo Cambiar la Bomba", "Bomba de Agua Dañada", "Instalación Paso a Paso", "Bombas Samsung y LG", "Pide tu Bomba por WhatsApp"] + GEN_H[:9],
-      ["¿Bomba dañada? Mira cómo cambiarla paso a paso y pide la nueva por WhatsApp.", GEN_D[1], GEN_D[2], GEN_D[3]],
-      ["como cambiar bomba de desague lavadora", "como cambiar la bomba de agua de la lavadora", "cambiar bomba de lavadora", "como saber si la bomba de la lavadora esta danada",
-       "bomba de lavadora danada", "lavadora no desagua bomba", "donde esta la bomba de la lavadora", "bomba de desague lavadora como funciona", "lavadora no desagua que hacer"],
-      "Intención más informativa: puja más baja que los grupos de compra. Solo concordancia de frase. La página de destino es la de Samsung; si prefieres, crea uno igual para LG apuntando a su guía.")
+    claves = (kw(M, *BASE_KW)
+              + kw(M, "bomba lavadora {m} carga superior", "bomba lavadora {m} carga frontal", "bomba desague lavadora {m} carga superior", "bomba desague lavadora {m} carga frontal")
+              + [f"bomba lavadora {c} {f}" for f in FAM] + [f"bomba desague lavadora {c} {f}" for f in FAM]
+              + [R, f"bomba {R}", f"bomba desague {R}", f"bomba {R.replace('-', ' ')}"])
+    grupo(f"{M} - Bomba", url(c), "Bombas", M,
+          [f"Bomba de Agua Lavadora {M}", f"Bomba de Desagüe {M}", f"Bomba para Lavadora {M}", f"Motobomba Lavadora {M}", f"Bomba {M} Carga Superior", f"Bomba {M} Carga Frontal",
+           f"Bomba {M} {REF}", f"Bombas para Lavadora {M}"] + GEN_H[:7],
+          [f"Bomba de desagüe (bomba de agua) para lavadora {M}. Pide la tuya por WhatsApp.", GEN_D[0], GEN_D[1], GEN_D[3]],
+          claves)
 
 NEGATIVAS = ["usado", "usada", "segunda mano", "casero", "casera", "reciclar", "manual", "pdf", "descargar", "video", "youtube", "curso", "empleo", "trabajo", "vacante", "gratis",
              "comprar lavadora", "lavadora nueva", "precio de lavadora", "lavadoras en oferta", "oferta lavadora", "falabella", "exito", "alkosto", "homecenter", "ktronix", "olx", "mercadolibre",
@@ -133,7 +94,7 @@ for s in SITELINKS:
 if err:
     print("\n".join(err)); sys.exit(1)
 
-INFORMATIVOS = ("Cambio", "Samsung - Lavadora no", "LG - Lavadora no")
+INFORMATIVOS = ()
 out = RAIZ / "05-archivos-para-importar"; out.mkdir(exist_ok=True)
 with open(out / "anuncios.csv", "w", newline="", encoding="utf-8-sig") as f:
     w = csv.writer(f)
@@ -145,7 +106,7 @@ with open(out / "palabras-clave.csv", "w", newline="", encoding="utf-8-sig") as 
     for g in G:
         for k in g["claves"]:
             w.writerow([CAMP, g["nombre"], k, "Phrase"])
-            if not g["nombre"].startswith(INFORMATIVOS):
+            if True:
                 w.writerow([CAMP, g["nombre"], k, "Exact"])
 with open(out / "palabras-negativas.csv", "w", newline="", encoding="utf-8-sig") as f:
     w = csv.writer(f); w.writerow(["Campaign", "Keyword", "Criterion Type"])

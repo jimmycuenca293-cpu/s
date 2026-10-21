@@ -6,7 +6,7 @@ Objetivo: que la gente toque el botón de **WhatsApp** (el evento `whatsapp` de 
 | Archivo | Para qué sirve |
 |---|---|
 | 01-configuracion.md | Ajustes de la campaña (presupuesto, ubicación, pujas) |
-| 02-grupos-de-anuncios/ | 13 grupos: 15 títulos, 4 descripciones, palabras clave y página de destino |
+| 02-grupos-de-anuncios/ | 2 grupos: 15 títulos, 4 descripciones, palabras clave y página de destino |
 | 03-palabras-negativas.md | 90 palabras negativas (incluye otras clases de bomba: piscina, pozo, carro…) |
 | 04-recursos-extensiones.md | 10 enlaces de sitio, 8 textos destacados, fragmento estructurado y llamadas |
 | 05-archivos-para-importar/ | CSV para **Google Ads Editor** |
@@ -16,10 +16,9 @@ Objetivo: que la gente toque el botón de **WhatsApp** (el evento `whatsapp` de 
 | 09-copiar-y-pegar.html | Página con botones «Copiar» para pegar todo en Google Ads |
 
 ## Cómo está armada
-- **Por marca** (Samsung y LG), cada una con 5 grupos: bomba de agua, carga superior, carga frontal, la referencia que se ve en la etiqueta de la foto (DC31-00181C en Samsung y 4681EA2001T en LG) y «lavadora no desagua» (informativo).
-- **Genéricos:** bomba de lavadora sin marca, ciudades principales y cambio de la bomba.
-- Cada grupo manda a su página dentro de `/bombas-de-agua/` (marca, tipo de carga, bomba o guía).
-- Palabras que busca la gente para la misma pieza: bomba de agua, bomba de desagüe, bomba de drenaje, bomba de vaciado y motobomba.
+- **Dos grupos de anuncios**, uno por marca: **Samsung - Bomba** y **LG - Bomba**. Cada uno manda a la página de su marca dentro de `/bombas-de-agua/`.
+- Cada grupo junta las palabras de compra: bomba de agua, bomba de desagüe, bomba de drenaje, bomba de vaciado y motobomba; carga superior y frontal; familias de modelo; y la referencia que se ve en la etiqueta de la foto (DC31-00181C en Samsung y 4681EA2001T en LG).
+- No hay grupos por ciudad ni por síntomas: si más adelante quieres separar algo, se crea aparte.
 
 ## Reglas de Google que ya cumple
 - Títulos de máximo 30 caracteres y descripciones de máximo 90 (validado por código).

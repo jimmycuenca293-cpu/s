@@ -11,8 +11,6 @@
 - **Programación:** todos los días en el horario en que atiendes WhatsApp (lunes a sábado de 8:00 a. m. a 6:00 p. m. según la tienda). Fuera de ese horario, pausa o baja la puja.
 - **Dispositivos:** todos; casi todo el tráfico será móvil.
 - **Seguimiento:** parámetros automáticos (auto-tagging) activados.
-- **Grupos informativos** («Lavadora no desagua» de cada marca y «Cambio de la bomba»): puja 30 % más baja.
-- **Grupo «Bomba de lavadora - Samsung y LG»:** busca sin marca; puede traer gente con otras marcas. Revisa «Términos de búsqueda» a los 3 días y agrega negativas.
 - **Muy importante:** responde rápido los WhatsApp. Si tardas, se pierde la venta aunque el anuncio funcione.
 - **Pago contra entrega:** los anuncios lo prometen. Confirma que puedes cumplirlo en las ciudades donde envías; si no, limita la ubicación de la campaña a esas ciudades.
 - **Ojo con el cruce:** esta campaña es aparte de la de filtros. No repitas palabras clave entre las dos (aquí van «bomba», allá «filtro»).

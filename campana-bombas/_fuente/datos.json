@@ -1,7 +1,7 @@
 {
  "grupos": [
   {
-   "nombre": "Samsung - Bomba de agua",
+   "nombre": "Samsung - Bomba",
    "url": "https://filtrosparalavadoras.click/bombas-de-agua/samsung/",
    "path1": "Bombas",
    "path2": "Samsung",
@@ -10,8 +10,9 @@
     "Bomba de Desagüe Samsung",
     "Bomba para Lavadora Samsung",
     "Motobomba Lavadora Samsung",
-    "Bomba de Drenaje Samsung",
-    "Bomba Samsung Colombia",
+    "Bomba Samsung Carga Superior",
+    "Bomba Samsung Carga Frontal",
+    "Bomba Samsung DC31-00181C",
     "Bombas para Lavadora Samsung",
     "Pago contra Entrega",
     "Pedido por WhatsApp",
@@ -19,13 +20,12 @@
     "Envío a Toda Colombia",
     "Bombas para Samsung y LG",
     "Escríbenos por WhatsApp",
-    "Cambio Paso a Paso",
-    "Precio por WhatsApp"
+    "Cambio Paso a Paso"
    ],
    "descripciones": [
     "Bomba de desagüe (bomba de agua) para lavadora Samsung. Pide la tuya por WhatsApp.",
     "Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la bomba que necesita.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
+    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
     "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
    ],
    "claves": [
@@ -45,180 +45,26 @@
     "donde comprar bomba lavadora samsung",
     "precio bomba lavadora samsung",
     "bomba de agua samsung lavadora carga frontal",
-    "bomba de agua samsung lavadora carga superior"
-   ],
-   "nota": ""
-  },
-  {
-   "nombre": "Samsung - Carga superior",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/samsung/bomba-lavadora-samsung-carga-superior/",
-   "path1": "Samsung",
-   "path2": "Carga-Superior",
-   "titulos": [
-    "Bomba Samsung Carga Superior",
-    "Bomba de Agua Samsung Superior",
-    "Bomba Desagüe Samsung Superior",
-    "Bomba para Lavadora Samsung",
-    "Elige tu Bomba por Modelo",
-    "Cambio Paso a Paso",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "Bomba de desagüe para lavadora Samsung de carga superior. El asesor confirma el modelo.",
-    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
+    "bomba de agua samsung lavadora carga superior",
     "bomba lavadora samsung carga superior",
-    "bomba de agua lavadora samsung carga superior",
-    "bomba desague lavadora samsung carga superior",
-    "bomba lavadora samsung superior",
-    "bomba de agua samsung lavadora superior",
-    "comprar bomba lavadora samsung carga superior",
-    "bomba lavadora samsung wa",
-    "bomba desague lavadora samsung wa"
-   ],
-   "nota": ""
-  },
-  {
-   "nombre": "Samsung - Carga frontal",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/samsung/bomba-lavadora-samsung-carga-frontal/",
-   "path1": "Samsung",
-   "path2": "Carga-Frontal",
-   "titulos": [
-    "Bomba Samsung Carga Frontal",
-    "Bomba de Agua Samsung Frontal",
-    "Bomba Desagüe Samsung Frontal",
-    "Bomba para Lavadora Samsung",
-    "Elige tu Bomba por Modelo",
-    "Cambio Paso a Paso",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "Bomba de desagüe para lavadora Samsung de carga frontal. El asesor confirma el modelo.",
-    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
     "bomba lavadora samsung carga frontal",
-    "bomba de agua lavadora samsung carga frontal",
+    "bomba desague lavadora samsung carga superior",
     "bomba desague lavadora samsung carga frontal",
-    "bomba lavadora samsung frontal",
-    "bomba de agua samsung lavadora frontal",
-    "bomba lavadora samsung puerta frontal",
-    "comprar bomba lavadora samsung carga frontal",
+    "bomba lavadora samsung wa",
     "bomba lavadora samsung ww",
     "bomba lavadora samsung wf",
+    "bomba desague lavadora samsung wa",
     "bomba desague lavadora samsung ww",
-    "bomba desague lavadora samsung wf"
-   ],
-   "nota": ""
-  },
-  {
-   "nombre": "Samsung - Referencia DC31-00181C",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/samsung/bomba-desague-lavadora-samsung-dc31-00181c/",
-   "path1": "Bombas",
-   "path2": "DC31-00181C",
-   "titulos": [
-    "Bomba DC31-00181C",
-    "Bomba Desagüe DC31-00181C",
-    "Bomba Samsung DC31-00181C",
-    "Consulta por WhatsApp",
-    "Te Confirmamos el Modelo",
-    "Bomba de Agua Lavadora",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Cambio Paso a Paso",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "Bomba de desagüe referencia DC31-00181C para lavadora Samsung. Consulta por WhatsApp.",
-    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
+    "bomba desague lavadora samsung wf",
     "dc31-00181c",
     "bomba dc31-00181c",
     "bomba desague dc31-00181c",
-    "bomba lavadora dc31-00181c",
-    "bomba dc31 00181c",
-    "dc31 00181c bomba",
-    "comprar bomba dc31-00181c",
-    "bomba de agua dc31-00181c"
+    "bomba dc31 00181c"
    ],
-   "nota": "La referencia sale de la etiqueta de la foto del producto. Si cambias de proveedor y la referencia deja de aplicar, pausa este grupo."
+   "nota": ""
   },
   {
-   "nombre": "Samsung - Lavadora no desagua",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/samsung/lavadora-samsung-no-desagua/",
-   "path1": "Samsung",
-   "path2": "No-Desagua",
-   "titulos": [
-    "Lavadora Samsung No Desagua",
-    "Falla de Desagüe Samsung",
-    "¿Será la Bomba de Agua?",
-    "Qué Revisar Antes de Cambiar",
-    "Cambia la Bomba Paso a Paso",
-    "Bomba de Agua Samsung",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Cambio Paso a Paso",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "¿Tu lavadora Samsung no desagua? Mira qué revisar y pide la bomba por WhatsApp.",
-    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
-    "lavadora samsung no desagua",
-    "lavadora samsung no saca el agua",
-    "lavadora samsung no vacia el agua",
-    "lavadora samsung no centrifuga",
-    "lavadora samsung hace ruido al desaguar",
-    "lavadora samsung se queda con agua",
-    "lavadora samsung no escurre",
-    "bomba de lavadora samsung danada",
-    "como saber si la bomba de la lavadora samsung esta danada",
-    "lavadora samsung error 5e",
-    "lavadora samsung error se",
-    "lavadora samsung error 5c",
-    "lavadora samsung codigo 5e",
-    "lavadora samsung codigo se",
-    "lavadora samsung codigo 5c"
-   ],
-   "nota": "Búsquedas informativas: puja 30 % más baja que los grupos de compra. Solo concordancia de frase."
-  },
-  {
-   "nombre": "LG - Bomba de agua",
+   "nombre": "LG - Bomba",
    "url": "https://filtrosparalavadoras.click/bombas-de-agua/lg/",
    "path1": "Bombas",
    "path2": "LG",
@@ -227,8 +73,9 @@
     "Bomba de Desagüe LG",
     "Bomba para Lavadora LG",
     "Motobomba Lavadora LG",
-    "Bomba de Drenaje LG",
-    "Bomba LG Colombia",
+    "Bomba LG Carga Superior",
+    "Bomba LG Carga Frontal",
+    "Bomba LG 4681EA2001T",
     "Bombas para Lavadora LG",
     "Pago contra Entrega",
     "Pedido por WhatsApp",
@@ -236,13 +83,12 @@
     "Envío a Toda Colombia",
     "Bombas para Samsung y LG",
     "Escríbenos por WhatsApp",
-    "Cambio Paso a Paso",
-    "Precio por WhatsApp"
+    "Cambio Paso a Paso"
    ],
    "descripciones": [
     "Bomba de desagüe (bomba de agua) para lavadora LG. Pide la tuya por WhatsApp.",
     "Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la bomba que necesita.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
+    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
     "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
    ],
    "claves": [
@@ -262,308 +108,22 @@
     "donde comprar bomba lavadora lg",
     "precio bomba lavadora lg",
     "bomba de agua lg lavadora carga frontal",
-    "bomba de agua lg lavadora carga superior"
-   ],
-   "nota": ""
-  },
-  {
-   "nombre": "LG - Carga superior",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/lg/bomba-lavadora-lg-carga-superior/",
-   "path1": "LG",
-   "path2": "Carga-Superior",
-   "titulos": [
-    "Bomba LG Carga Superior",
-    "Bomba de Agua LG Superior",
-    "Bomba Desagüe LG Superior",
-    "Bomba para Lavadora LG",
-    "Elige tu Bomba por Modelo",
-    "Cambio Paso a Paso",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "Bomba de desagüe para lavadora LG de carga superior. El asesor confirma el modelo.",
-    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
+    "bomba de agua lg lavadora carga superior",
     "bomba lavadora lg carga superior",
-    "bomba de agua lavadora lg carga superior",
-    "bomba desague lavadora lg carga superior",
-    "bomba lavadora lg superior",
-    "bomba de agua lg lavadora superior",
-    "comprar bomba lavadora lg carga superior",
-    "bomba lavadora lg wt",
-    "bomba desague lavadora lg wt"
-   ],
-   "nota": ""
-  },
-  {
-   "nombre": "LG - Carga frontal",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/lg/bomba-lavadora-lg-carga-frontal/",
-   "path1": "LG",
-   "path2": "Carga-Frontal",
-   "titulos": [
-    "Bomba LG Carga Frontal",
-    "Bomba de Agua LG Frontal",
-    "Bomba Desagüe LG Frontal",
-    "Bomba para Lavadora LG",
-    "Elige tu Bomba por Modelo",
-    "Cambio Paso a Paso",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "Bomba de desagüe para lavadora LG de carga frontal. El asesor confirma el modelo.",
-    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
     "bomba lavadora lg carga frontal",
-    "bomba de agua lavadora lg carga frontal",
+    "bomba desague lavadora lg carga superior",
     "bomba desague lavadora lg carga frontal",
-    "bomba lavadora lg frontal",
-    "bomba de agua lg lavadora frontal",
-    "bomba lavadora lg puerta frontal",
-    "comprar bomba lavadora lg carga frontal",
+    "bomba lavadora lg wt",
     "bomba lavadora lg wm",
     "bomba lavadora lg wd",
+    "bomba desague lavadora lg wt",
     "bomba desague lavadora lg wm",
-    "bomba desague lavadora lg wd"
-   ],
-   "nota": ""
-  },
-  {
-   "nombre": "LG - Referencia 4681EA2001T",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/lg/bomba-desague-lavadora-lg-motor-negro-4681ea2001t/",
-   "path1": "Bombas",
-   "path2": "4681EA2001T",
-   "titulos": [
-    "Bomba 4681EA2001T",
-    "Bomba Desagüe 4681EA2001T",
-    "Bomba LG 4681EA2001T",
-    "Consulta por WhatsApp",
-    "Te Confirmamos el Modelo",
-    "Bomba de Agua Lavadora",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Cambio Paso a Paso",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "Bomba de desagüe referencia 4681EA2001T para lavadora LG. Consulta por WhatsApp.",
-    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
+    "bomba desague lavadora lg wd",
     "4681ea2001t",
     "bomba 4681ea2001t",
-    "bomba desague 4681ea2001t",
-    "bomba lavadora 4681ea2001t",
-    "4681ea2001t bomba",
-    "comprar bomba 4681ea2001t",
-    "bomba de agua 4681ea2001t"
+    "bomba desague 4681ea2001t"
    ],
-   "nota": "La referencia sale de la etiqueta de la foto del producto. Si cambias de proveedor y la referencia deja de aplicar, pausa este grupo."
-  },
-  {
-   "nombre": "LG - Lavadora no desagua",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/lg/lavadora-lg-no-desagua/",
-   "path1": "LG",
-   "path2": "No-Desagua",
-   "titulos": [
-    "Lavadora LG No Desagua",
-    "Falla de Desagüe LG",
-    "¿Será la Bomba de Agua?",
-    "Qué Revisar Antes de Cambiar",
-    "Cambia la Bomba Paso a Paso",
-    "Bomba de Agua LG",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Cambio Paso a Paso",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "¿Tu lavadora LG no desagua? Mira qué revisar y pide la bomba por WhatsApp.",
-    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
-    "lavadora lg no desagua",
-    "lavadora lg no saca el agua",
-    "lavadora lg no vacia el agua",
-    "lavadora lg no centrifuga",
-    "lavadora lg hace ruido al desaguar",
-    "lavadora lg se queda con agua",
-    "lavadora lg no escurre",
-    "bomba de lavadora lg danada",
-    "como saber si la bomba de la lavadora lg esta danada",
-    "lavadora lg error oe",
-    "lavadora lg codigo oe"
-   ],
-   "nota": "Búsquedas informativas: puja 30 % más baja que los grupos de compra. Solo concordancia de frase."
-  },
-  {
-   "nombre": "Bomba de lavadora - Samsung y LG",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/",
-   "path1": "Bombas",
-   "path2": "Lavadoras",
-   "titulos": [
-    "Bomba de Agua para Lavadora",
-    "Bomba de Desagüe Lavadora",
-    "Bombas para Lavadoras",
-    "Bomba Lavadora Samsung y LG",
-    "Elige tu Marca: Samsung o LG",
-    "Motobomba para Lavadora",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Cambio Paso a Paso",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "Bombas de desagüe para lavadoras Samsung y LG. Elige tu marca y pregunta al asesor.",
-    "Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la bomba que necesita.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
-    "bomba de agua lavadora",
-    "bomba de agua para lavadora",
-    "bomba de desague lavadora",
-    "bomba desague lavadora",
-    "bomba de drenaje lavadora",
-    "motobomba lavadora",
-    "bomba de lavadora",
-    "bomba lavadora",
-    "comprar bomba lavadora",
-    "bomba lavadora colombia",
-    "bomba de agua lavadora colombia",
-    "repuesto bomba lavadora",
-    "donde comprar bomba de lavadora",
-    "bomba de desague lavadora carga frontal",
-    "bomba de desague lavadora carga superior"
-   ],
-   "nota": "Búsquedas sin marca: pueden traer gente con otras marcas. Vigila «Términos de búsqueda» la primera semana."
-  },
-  {
-   "nombre": "Ciudades principales",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/",
-   "path1": "Bombas",
-   "path2": "Ciudades",
-   "titulos": [
-    "Bombas Lavadora en Colombia",
-    "Envío a Tu Ciudad",
-    "Bomba de Agua Lavadora",
-    "Bogotá, Medellín, Cali y más",
-    "Consulta el Envío a tu Ciudad",
-    "Bombas Samsung y LG",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Cambio Paso a Paso",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "Bomba de desagüe para lavadora con envío a Bogotá, Medellín, Cali y todo el país.",
-    "Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la bomba que necesita.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
-    "bomba lavadora bogota",
-    "bomba lavadora medellin",
-    "bomba lavadora cali",
-    "bomba lavadora barranquilla",
-    "bomba lavadora cartagena",
-    "bomba lavadora bucaramanga",
-    "bomba lavadora pereira",
-    "bomba lavadora manizales",
-    "bomba lavadora cucuta",
-    "bomba lavadora ibague",
-    "bomba lavadora santa marta",
-    "bomba lavadora villavicencio",
-    "bomba de agua lavadora bogota",
-    "bomba de agua lavadora medellin",
-    "bomba de agua lavadora cali",
-    "bomba de agua lavadora barranquilla"
-   ],
-   "nota": "Búsquedas por ciudad. Si una ciudad rinde más, sepárala en su propio grupo."
-  },
-  {
-   "nombre": "Cambio de la bomba",
-   "url": "https://filtrosparalavadoras.click/bombas-de-agua/samsung/cambio-e-instalacion/",
-   "path1": "Bombas",
-   "path2": "Cambio",
-   "titulos": [
-    "Cambia la Bomba de Lavadora",
-    "Cómo Cambiar la Bomba",
-    "Bomba de Agua Dañada",
-    "Instalación Paso a Paso",
-    "Bombas Samsung y LG",
-    "Pide tu Bomba por WhatsApp",
-    "Pago contra Entrega",
-    "Pedido por WhatsApp",
-    "Asesor Te Confirma el Modelo",
-    "Envío a Toda Colombia",
-    "Bombas para Samsung y LG",
-    "Escríbenos por WhatsApp",
-    "Cambio Paso a Paso",
-    "Precio por WhatsApp",
-    "Atención por WhatsApp"
-   ],
-   "descripciones": [
-    "¿Bomba dañada? Mira cómo cambiarla paso a paso y pide la nueva por WhatsApp.",
-    "Envía la etiqueta del modelo o una foto de la bomba vieja y el asesor te dice cuál es.",
-    "Cada bomba trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
-    "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
-   ],
-   "claves": [
-    "como cambiar bomba de desague lavadora",
-    "como cambiar la bomba de agua de la lavadora",
-    "cambiar bomba de lavadora",
-    "como saber si la bomba de la lavadora esta danada",
-    "bomba de lavadora danada",
-    "lavadora no desagua bomba",
-    "donde esta la bomba de la lavadora",
-    "bomba de desague lavadora como funciona",
-    "lavadora no desagua que hacer"
-   ],
-   "nota": "Intención más informativa: puja más baja que los grupos de compra. Solo concordancia de frase. La página de destino es la de Samsung; si prefieres, crea uno igual para LG apuntando a su guía."
+   "nota": ""
   }
  ],
  "negativas": [
@@ -741,5 +301,5 @@
  ],
  "dominio": "https://filtrosparalavadoras.click/bombas-de-agua",
  "campana": "Bombas Lavadoras - Búsqueda - Colombia",
- "total_claves": 153
+ "total_claves": 61
 }
