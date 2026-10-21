@@ -55,6 +55,12 @@ MARCAS = {
              "tipo": "Rodete lila", "carga": None, "forma": "bomba de desagüe para lavadora LG con carcasa gris, rodete lila y bornes de conexión en la base"},
             {"id": "bom-lg-5", "foto": "bomba-5.png", "slug": "bomba-desague-lavadora-lg-carcasa-filtro-blanca", "corto": "Bomba de desagüe", "ref": None, "precio": None,
              "tipo": "Con carcasa y filtro integrado (blanca)", "carga": None, "forma": "bomba de desagüe para lavadora LG con carcasa blanca y cámara de filtro integrada, con anillo negro del motor"},
+            {"id": "bom-lg-6", "foto": "bomba-6.png", "slug": "bomba-desague-lavadora-lg-carcasa-filtro-negra-110-127v", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Carcasa de filtro negra (110-127 V)", "carga": None, "forma": "bomba de desagüe para lavadora LG con carcasa negra, tapa de filtro y bornes laterales; la etiqueta de la foto indica PSB-02, 110-127 V, 60 Hz y 35 W"},
+            {"id": "bom-lg-7", "foto": "bomba-7.png", "slug": "bomba-desague-lavadora-lg-carcasa-gris-conector-blanco", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Carcasa gris con conector blanco", "carga": None, "forma": "bomba de desagüe para lavadora LG con carcasa gris, dos salidas de manguera y conector eléctrico blanco bajo la bomba"},
+            {"id": "bom-lg-8", "foto": "bomba-8.png", "slug": "bomba-desague-lavadora-lg-carcasa-negra-manguera-purga", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Carcasa negra con manguera de purga", "carga": None, "forma": "bomba de desagüe para lavadora LG con carcasa negra, cámara de filtro de boca ancha y una manguera pequeña de purga"},
         ],
     },
 }

@@ -21,6 +21,9 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 - [Bomba de desagüe para lavadora LG: rodete lila (con marca LC)](__BASE__/lg/bomba-desague-lavadora-lg-rodete-lila-marca-lc/): Rodete lila (con marca LC).
 - [Bomba de desagüe para lavadora LG: rodete lila](__BASE__/lg/bomba-desague-lavadora-lg-rodete-lila/): Rodete lila.
 - [Bomba de desagüe para lavadora LG: con carcasa y filtro integrado (blanca)](__BASE__/lg/bomba-desague-lavadora-lg-carcasa-filtro-blanca/): Con carcasa y filtro integrado (blanca).
+- [Bomba de desagüe para lavadora LG: carcasa de filtro negra (110-127 V)](__BASE__/lg/bomba-desague-lavadora-lg-carcasa-filtro-negra-110-127v/): Carcasa de filtro negra (110-127 V).
+- [Bomba de desagüe para lavadora LG: carcasa gris con conector blanco](__BASE__/lg/bomba-desague-lavadora-lg-carcasa-gris-conector-blanco/): Carcasa gris con conector blanco.
+- [Bomba de desagüe para lavadora LG: carcasa negra con manguera de purga](__BASE__/lg/bomba-desague-lavadora-lg-carcasa-negra-manguera-purga/): Carcasa negra con manguera de purga.
 - [Cuál bomba necesita mi lavadora](__BASE__/lg/cual-es-mi-bomba/)
 - [Cómo cambiar la bomba](__BASE__/lg/cambio-e-instalacion/)
 - [Lavadora LG no desagua](__BASE__/lg/lavadora-lg-no-desagua/)
