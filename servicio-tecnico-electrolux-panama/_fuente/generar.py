@@ -28,13 +28,14 @@ def R(depth): return "../" * depth
 def pic(nombre, alt, depth, w, h, clase="fto", lazy=True):
     r = R(depth)
     return f'<picture class="{clase}"><source srcset="{r}images/fotos/{nombre}.webp" type="image/webp"><img src="{r}images/fotos/{nombre}.jpg" alt="{esc(alt)}" width="{w}" height="{h}"{" loading=\"lazy\"" if lazy else ""}></picture>'
-FOTO_EQ = {"neveras": ("prod-nevera-sbs", "Técnico reparando una refrigeradora Electrolux en una cocina de Panamá"), "lavadoras": ("prod-lavadora-sup", "Técnico revisando una lavadora Electrolux en una cocina de Panamá")}
+FOTO_EQ = {"neveras": ("sam-4", "Técnico reparando una refrigeradora Electrolux en una cocina de Panamá"), "lavadoras": ("sam-3", "Técnico revisando una lavadora Electrolux en una cocina de Panamá")}
 
-WH = {"prod-nevera-sbs": (704, 378), "prod-nevera-sbs": (804, 450), "prod-lavadora-sup": (720, 500), "prod-nevera-sbs": (720, 500), "filtro-pelusa-1": (535, 485), "filtro-pelusa-2": (700, 700), "filtro-pelusa-3": (1000, 1000), "filtro-agua": (277, 641), "prod-nevera-sbs": (236, 497), "prod-nevera-sbs": (182, 328), "prod-lavadora-sup": (228, 382), "prod-torre": (345, 900), "prod-nevera-sbs": (1024, 765), "prod-torre": (1024, 765), "prod-lavadora-sup": (1024, 765), "prod-nevera-sbs": (1024, 765), "prod-lavadora-fr": (1024, 765), "prod-torre": (1024, 765), "prod-torre": (1024, 765), "prod-lavadora-fr": (375, 494), "prod-lavadora-fr": (1024, 572), "prod-torre": (1024, 434), "prod-nevera-sbs": (1024, 572)}
-ALT = {"prod-nevera-sbs": "Asesora de servicio atendiendo en el mostrador", "prod-torre": "Técnico y asesora de servicio conversando en la oficina", "prod-lavadora-sup": "Técnico saludando a la clienta en la puerta de su apartamento", "prod-nevera-sbs": "Técnico revisando una nevera con la clienta en la cocina", "prod-lavadora-fr": "Asesora atendiendo a un cliente en el mostrador", "prod-torre": "Asesora de servicio atendiendo una llamada", "prod-torre": "Técnico midiendo con multímetro una lavadora en la cocina", "prod-nevera-sbs": "Nevera Electrolux French Door con pantalla táctil", "prod-nevera-sbs": "Cocina con nevera Electrolux French Door abierta", "prod-lavadora-sup": "Familia en una cocina con nevera Electrolux", "prod-nevera-sbs": "Cliente usando su nevera Electrolux en la cocina",
-       "filtro-pelusa-1": "Filtro de pelusas de lavadora Electrolux", "filtro-pelusa-2": "Filtro de pelusas de lavadora Electrolux", "filtro-pelusa-3": "Filtro de pelusas de lavadora Electrolux", "filtro-agua": "Filtro de agua de nevera Electrolux", "prod-nevera-sbs": "Nevera Electrolux de congelador superior con dispensador de agua", "prod-nevera-sbs": "Nevera Electrolux Side by Side con pantalla Family Hub", "prod-lavadora-sup": "Lavadora Electrolux de carga superior", "prod-torre": "Secadora y lavadora Electrolux de carga frontal en torre", "prod-lavadora-fr": "Secadora Electrolux de carga frontal", "prod-lavadora-fr": "Técnico y asesora de servicio conversando en una oficina de atención al cliente", "prod-torre": "Técnico y asesora de servicio en una oficina de atención", "prod-nevera-sbs": "Asesora de servicio atendiendo en el escritorio de la oficina",
-       "prod-nevera-sbs": "Técnico reparando una nevera Electrolux", "prod-torre": "Técnico reparando una lavadora Electrolux de carga frontal", "prod-lavadora-sup": "Técnico revisando una lavadora Electrolux", "prod-nevera-sbs": "Dispensador de agua de una nevera Electrolux", "cambiar-filtro-nevera": "Pantalla de nevera Electrolux con aviso de cambiar filtro", "prod-torre": "Técnico de servicio Electrolux en Panamá"}
-ALT.update({"prod-nevera-sbs": "Nevera Electrolux Side by Side negra con dispensador de agua", "prod-nevera-top": "Nevera Electrolux de congelador superior con dispensador de agua", "prod-lavadora-sup": "Lavadora Electrolux de carga superior negra", "prod-lavadora-fr": "Lavadora secadora Electrolux de carga frontal gris", "prod-torre": "Torre de lavado Electrolux con secadora y lavadora de carga frontal"})
+WH = {"sam-4": (704, 378), "sam-4": (804, 450), "sam-3": (720, 500), "sam-1": (720, 500), "filtro-pelusa-1": (535, 485), "filtro-pelusa-2": (700, 700), "filtro-pelusa-3": (1000, 1000), "filtro-agua": (277, 641), "prod-nevera-sbs": (236, 497), "prod-nevera-sbs": (182, 328), "prod-lavadora-sup": (228, 382), "prod-torre": (345, 900), "sam-1": (1024, 765), "sam-2": (1024, 765), "sam-3": (1024, 765), "sam-4": (1024, 765), "sam-5": (1024, 765), "sam-4": (1024, 765), "sam-4": (1024, 765), "prod-lavadora-fr": (375, 494), "sam-5": (1024, 572), "sam-4": (1024, 434), "sam-1": (1024, 572)}
+ALT = {"sam-1": "Asesora de servicio atendiendo en el mostrador", "sam-2": "Técnico y asesora de servicio conversando en la oficina", "sam-3": "Técnico saludando a la clienta en la puerta de su apartamento", "sam-4": "Técnico revisando una nevera con la clienta en la cocina", "sam-5": "Asesora atendiendo a un cliente en el mostrador", "sam-4": "Asesora de servicio atendiendo una llamada", "sam-4": "Técnico midiendo con multímetro una lavadora en la cocina", "sam-4": "Nevera Electrolux French Door con pantalla táctil", "sam-4": "Cocina con nevera Electrolux French Door abierta", "sam-3": "Familia en una cocina con nevera Electrolux", "sam-1": "Cliente usando su nevera Electrolux en la cocina",
+       "filtro-pelusa-1": "Filtro de pelusas de lavadora Electrolux", "filtro-pelusa-2": "Filtro de pelusas de lavadora Electrolux", "filtro-pelusa-3": "Filtro de pelusas de lavadora Electrolux", "filtro-agua": "Filtro de agua de nevera Electrolux", "prod-nevera-sbs": "Nevera Electrolux de congelador superior con dispensador de agua", "prod-nevera-sbs": "Nevera Electrolux Side by Side con pantalla Family Hub", "prod-lavadora-sup": "Lavadora Electrolux de carga superior", "prod-torre": "Secadora y lavadora Electrolux de carga frontal en torre", "prod-lavadora-fr": "Secadora Electrolux de carga frontal", "sam-5": "Técnico y asesora de servicio conversando en una oficina de atención al cliente", "sam-4": "Técnico y asesora de servicio en una oficina de atención", "sam-1": "Asesora de servicio atendiendo en el escritorio de la oficina",
+       "sam-4": "Técnico reparando una nevera Electrolux", "sam-4": "Técnico reparando una lavadora Electrolux de carga frontal", "sam-3": "Técnico revisando una lavadora Electrolux", "prod-nevera-sbs": "Dispensador de agua de una nevera Electrolux", "cambiar-filtro-nevera": "Pantalla de nevera Electrolux con aviso de cambiar filtro", "sam-2": "Técnico de servicio Electrolux en Panamá"}
+ALT.update({"prod-nevera-sbs": "Nevera Electrolux Side by Side negra con dispensador de agua", "prod-nevera-top": "Nevera Electrolux de congelador superior con dispensador de agua", "prod-lavadora-sup": "Lavadora Electrolux de carga superior negra", "prod-lavadora-fr": "Lavadora secadora Electrolux de carga frontal gris", "prod-torre": "Torre de lavado Electrolux con secadora y lavadora de carga frontal",
+ "sam-1": "Asesora de servicio Electrolux atendiendo en el escritorio de la oficina", "sam-2": "Técnico Electrolux y asesora de servicio conversando en la oficina", "sam-3": "Técnico Electrolux saludando a la clienta en la puerta de su apartamento", "sam-4": "Técnico Electrolux de servicio a domicilio con maletín de herramientas en la cocina", "sam-5": "Asesora de servicio Electrolux atendiendo a un cliente en el mostrador"})
 from PIL import Image as _I
 WH.update({p.stem: _I.open(p).size for p in (AQUI / "fotos").glob("*.jpg")})
 def fpic(n, depth=0, alt=None, lazy=True):
@@ -44,8 +45,8 @@ def split(n, ey, h2, p, href, link, rev=False, alt_bg=False, depth=0):
     r = R(depth)
     return (f'<section class="sec{" alt" if alt_bg else ""}"><div class="w split{" rev" if rev else ""}"><div class="sp-f">{fpic(n, depth)}</div>'
             f'<div class="sp-t"><span class="ey">{esc(ey)}</span><h2>{esc(h2)}</h2><p>{esc(p)}</p><p><a class="btn sm" href="{r}{href}">{esc(link)} →</a></p></div></div></section>')
-FOTO_SPLIT = {"neveras": "prod-nevera-sbs", "lavadoras": "prod-lavadora-sup", "secadoras": "prod-lavadora-fr"}
-NEV_FOTOS = ["prod-nevera-sbs", "prod-lavadora-fr", "prod-nevera-sbs", "prod-nevera-top", "prod-lavadora-sup", "prod-torre", "prod-torre", "prod-nevera-sbs", "prod-lavadora-fr"]
+FOTO_SPLIT = {"neveras": "sam-4", "lavadoras": "prod-lavadora-sup", "secadoras": "prod-lavadora-fr"}
+NEV_FOTOS = ["sam-4", "prod-nevera-top", "prod-nevera-sbs", "sam-2", "sam-3", "sam-2", "sam-4", "sam-1", "sam-5"]
 
 HERO_PROD = {"neveras": "prod-nevera-sbs", "lavadoras": "prod-lavadora-sup", "secadoras": "prod-torre"}
 NAV_EQ = [(k, v["corto"]) for k, v in EQUIPOS.items()]
@@ -317,7 +318,7 @@ def alt_pool():
     return sorted(p.stem for p in (AQUI / "fotos").glob("*.jpg"))
 
 def dedupe_imgs(h, ruta):
-    pool = [s for s in alt_pool() if not s.startswith("prod-")] or list(alt_pool())
+    pool = [s for s in alt_pool() if not s.startswith("prod-")]
     if not pool: return h
     off = sum(ord(c) for c in ruta) % len(pool)
     pool = pool[off:] + pool[:off]
@@ -422,12 +423,12 @@ def hero_desde_texto(h):
         mm = re.search(r'images/fotos/([\w-]+)\.(?:jpg|webp)', fig.group(0)); stem = mm.group(1) if mm else None
     hero = f'<section class="hero chico"><div class="w hg solo"><div>{ey.group(0) if ey else ""}{m.group(3)}{m.group(4) or ""}</div></div></section>'
     quitar_fig = bool(fig) and not (stem or "").startswith("prod-")
-    resto = h[ini:]
+    resto = h[ini:] if quitar_fig else h[m.end():]
+    if not quitar_fig and fig_pre: pass
     cuerpo_ini = '<section class="sec"><div class="w txt">' + ((fig.group(0) if (fig and not quitar_fig) else ""))
     return h[:m.start()] + m.group(1) + hero + cuerpo_ini + resto, (stem if quitar_fig else None)
 
-FONDO_HERO = {"nev": ["prod-nevera-sbs", "prod-nevera-top", "prod-lavadora-fr"], "lav": ["prod-lavadora-sup", "prod-torre", "prod-torre"], "zon": ["prod-lavadora-sup", "prod-nevera-sbs", "prod-torre"], "con": ["prod-lavadora-fr", "prod-nevera-sbs", "prod-torre"], "def": ["prod-lavadora-sup", "prod-nevera-sbs", "prod-torre", "prod-torre", "prod-nevera-sbs", "prod-lavadora-fr", "prod-lavadora-fr", "prod-nevera-top"]}
-SIN_FONDO = True  # sin fotos de personas: encabezado con degradado de marca y la foto del producto
+FONDO_HERO = {"nev": ["sam-4", "sam-2", "sam-4"], "lav": ["sam-3", "sam-4", "sam-2"], "zon": ["sam-3", "sam-4", "sam-4"], "con": ["sam-5", "sam-1", "sam-2"], "def": ["sam-3", "sam-4", "sam-4", "sam-2", "sam-1", "sam-5", "sam-4", "sam-2"]}
 def fondo_hero(h, ruta):
     """Fondo del encabezado: una foto real por página (la que mejor cuadra), con velo oscuro para que el texto se lea en móvil y escritorio."""
     m = re.search(r'<section class="hero( chico)?">', h)
@@ -436,7 +437,6 @@ def fondo_hero(h, ruta):
         h, figura = hero_desde_texto(h)
         m = re.search(r'<section class="hero( chico)?">', h)
         if not m: return h
-    if SIN_FONDO: return h
     fin = h.find("</section>", m.end())
     hero = h[m.start():fin]
     resto = h[:m.start()] + h[fin:]
@@ -461,14 +461,14 @@ def fondo_hero(h, ruta):
         stem = next((c for c in cand if c not in usados), cand[0])
     hero = hero.replace(m.group(0), "", 1)
     cls = "hero bgimg" + (" chico" if m.group(1) else "")
-    pos = "center 30%" if stem in ("prod-nevera-sbs", "prod-torre", "prod-lavadora-fr", "prod-torre", "prod-lavadora-fr") else "center 35%"
+    pos = "center 30%" if stem in ("sam-1", "sam-2", "sam-5", "sam-4", "sam-4") else "center 35%"
     nuevo = f'<section class="{cls}" style="--bg:url({r}images/fotos/{stem}.webp);--pos:{pos}">' + hero
     return h[:m.start()] + nuevo + h[fin:]
 
-def alts_producto(h):
+def alts_fotos(h):
     def f(mt):
-        b = mt.group(0); mm = re.search(r'images/fotos/(prod-[\w-]+)\.jpg', b)
-        return re.sub(r'alt="[^"]*"', 'alt="' + html.escape(ALT[mm.group(1)], quote=True) + '"', b, count=1) if mm and mm.group(1) in ALT else b
+        b = mt.group(0); mm = re.search(r'images/fotos/([\w-]+)\.jpg', b)
+        return re.sub(r'alt="[^"]*"', lambda _: 'alt="' + html.escape(ALT[mm.group(1)], quote=True) + '"', b, count=1) if mm and mm.group(1) in ALT else b
     return re.sub(r'<img\b[^>]*>', f, h)
 
 def escribir(ruta, titulo, desc, cuerpo, ld=None, prioridad="0.7", og="images/og.jpg"):
@@ -481,7 +481,7 @@ def escribir(ruta, titulo, desc, cuerpo, ld=None, prioridad="0.7", og="images/og
     pag_cuerpo = dedupe_imgs(pag_cuerpo, ruta)
     pag_cuerpo = fondo_hero(pag_cuerpo, ruta)
     pag_cuerpo, ld = inyectar_faq(pag_cuerpo, ruta, ld)
-    pag_cuerpo = alts_producto(pag_cuerpo)
+    pag_cuerpo = alts_fotos(pag_cuerpo)
     p.write_text(alt_seo(cabeza(ruta, titulo, desc, ld, og) + pag_cuerpo, ruta), encoding="utf-8")
     PAGINAS[ruta] = (prioridad, titulo)
 
@@ -517,7 +517,7 @@ def negocio_ld(nombre=None, area=None):
             "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "07:00", "closes": "18:00"}],
             "priceRange": "$$", "knowsAbout": ["Reparación de neveras Electrolux", "Reparación de lavadoras Electrolux", "Reparación de secadoras Electrolux"]}
 
-EQ_IMGS = {"neveras": ["prod-nevera-sbs", "prod-nevera-sbs"], "lavadoras": ["prod-lavadora-sup"], "secadoras": ["prod-lavadora-fr", "prod-torre"]}
+EQ_IMGS = {"neveras": ["prod-nevera-top", "prod-nevera-sbs"], "lavadoras": ["prod-lavadora-sup"], "secadoras": ["prod-lavadora-fr", "prod-torre"]}
 def eq_img(k, r):
     n = next((s for s in ROT[k] if not s.startswith("prod-")), ROT[k][0])
     return f'<img class="eqimg foto" src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{WH[n][0]}" height="{WH[n][1]}" loading="lazy">'
@@ -538,7 +538,7 @@ def tarjetas_eq(depth):
         f'<a class="card eq" href="{r}electrodomesticos/{k}/index.html">{eq_img(k, r)}<h3>{esc(v["nombre"])}</h3><p>{esc(v["intro"][:120].rsplit(" ",1)[0])}…</p><span class="mas">Ver servicio →</span></a>'
         for k, v in EQUIPOS.items()) + "</div>"
 
-HERO_CARDS = [("Neveras", "neveras", ["prod-nevera-sbs"]), ("Refrigeradores", "neveras", ["prod-nevera-sbs"]), ("Lavadoras", "lavadoras", ["prod-lavadora-sup"]), ("Secadoras", "secadoras", ["prod-lavadora-fr"]), ("Torres de lavado", "secadoras", ["prod-torre"])]
+HERO_CARDS = [("Neveras", "neveras", ["prod-nevera-top"]), ("Refrigeradores", "neveras", ["prod-nevera-sbs"]), ("Lavadoras", "lavadoras", ["prod-lavadora-sup"]), ("Secadoras", "secadoras", ["prod-lavadora-fr"]), ("Torres de lavado", "secadoras", ["prod-torre"])]
 def _imgs(ns, r=""):
     return "".join(f'<img src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{WH[n][0]}" height="{WH[n][1]}">' for n in ns)
 def hero_cards():
@@ -555,27 +555,27 @@ def pagina_inicio():
 <ul class="pts"><li>Visitas en 24 a 48 horas</li><li>Garantía en pieza y mano de obra</li><li>{HORARIO}</li></ul></div>
 <div class="hero-tarjeta"><b>¿Qué equipo Electrolux tienes?</b><div class="mini fotos">{hero_cards()}</div><small>Toca tu equipo para ver fallas comunes y cómo lo reparamos.</small></div></div></section>
 <section class="conf"><div class="w"><div><b>Técnico especializado</b><small>Enfocado en equipos Electrolux</small></div><div><b>Costo claro</b><small>Antes de reparar</small></div><div><b>Garantía</b><small>Pieza y mano de obra</small></div><div><b>Atención por WhatsApp</b><small>Respuesta en minutos</small></div></div></section>
-{split("prod-nevera-sbs", "Neveras Electrolux", "Neveras French Door, Side by Side y con dispensador", "Reparamos neveras Electrolux que no enfrían, con escarcha, ruido, fugas de agua o dispensador dañado, en casas y apartamentos de Panamá.", "electrodomesticos/neveras/index.html", "Ver servicio de neveras")}
+{split("sam-4", "Neveras Electrolux", "Neveras French Door, Side by Side y con dispensador", "Reparamos neveras Electrolux que no enfrían, con escarcha, ruido, fugas de agua o dispensador dañado, en casas y apartamentos de Panamá.", "electrodomesticos/neveras/index.html", "Ver servicio de neveras")}
 <section class="marca-band"><div class="w"><span>Reparamos equipos de la marca</span><img src="images/logo/electrolux-marca.png" alt="Electrolux" width="180" height="28"><small>Electrolux es una marca registrada de su titular.</small></div></section>
 <section class="sec" id="equipos"><div class="w"><div class="cab"><span class="ey">Qué reparamos</span><h2>Reparación de electrodomésticos Electrolux en Panamá</h2><p>Atendemos los equipos Electrolux más usados en casas y apartamentos de la ciudad.</p></div>{tarjetas_eq(0)}</div></section>
-{split("prod-torre", "Lavadoras y secadoras", "Lavadoras Electrolux que no centrifugan, no desaguan o gotean", "Diagnosticamos carga superior y frontal, secadoras y lavasecadoras: códigos de error, bombas, seguros de puerta, amortiguadores y más.", "electrodomesticos/lavadoras/index.html", "Ver servicio de lavadoras", True)}
+{split("sam-4", "Lavadoras y secadoras", "Lavadoras Electrolux que no centrifugan, no desaguan o gotean", "Diagnosticamos carga superior y frontal, secadoras y lavasecadoras: códigos de error, bombas, seguros de puerta, amortiguadores y más.", "electrodomesticos/lavadoras/index.html", "Ver servicio de lavadoras", True)}
 <section class="sec alt" id="servicios"><div class="w"><div class="cab"><span class="ey">Servicios</span><h2>Servicio técnico a domicilio</h2></div><div class="grid g4">{"".join(f'<a class="card" href="servicios/{k}-electrolux-panama.html"><h3>{esc(v[1])}</h3><p>{esc(v[2][:130].rsplit(" ",1)[0])}…</p><span class="mas">Ver más →</span></a>' for k, v in SERVICIOS.items())}</div></div></section>
 {split("prod-nevera-sbs", "Nevera con dispensador", "¿Tu nevera Electrolux con dispensador de agua falla?", "Agua que sale lenta, aviso de filtro, hielo que no se produce o fugas: revisamos el sistema de agua de tu refrigeradora Electrolux a domicilio.", "cambio-filtro-nevera-electrolux-panama.html", "Ver más sobre el dispensador")}
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Así trabajamos</span><h2>Cómo agendar tu servicio técnico Electrolux</h2></div><ol class="pasos">{"".join(f"<li><b>{esc(a)}</b><p>{esc(b)}</p></li>" for a, b in pasos)}</ol></div></section>
 {split("prod-lavadora-fr", "Secadoras Electrolux", "Secadoras Electrolux que no secan, no calientan o hacen ruido", "Secadoras que no secan o no calientan y lavadoras que no desaguan: revisamos equipos Electrolux de carga frontal, solos o apilados en torre, a domicilio en Panamá.", "electrodomesticos/secadoras/index.html", "Ver servicio de secadoras", True)}
 {split("prod-torre", "Torres de lavado", "Lavadora y secadora Electrolux en torre", "Atendemos torres de lavado Electrolux de carga frontal: revisamos la lavadora y la secadora, sus conexiones, desagües y ductos, en tu casa o apartamento.", "electrodomesticos/secadoras/index.html", "Ver servicio de secadoras")}
-{split("prod-lavadora-fr", "Atención al cliente", "Te atendemos con asesoría clara antes de ir", "Una asesora toma tus datos, el modelo y la falla, y el técnico te llama para coordinar la visita y confirmarte el costo antes de empezar.", "telefono-servicio-tecnico-electrolux-panama.html", "Cómo contactarnos", True)}
+{split("sam-5", "Atención al cliente", "Te atendemos con asesoría clara antes de ir", "Una asesora toma tus datos, el modelo y la falla, y el técnico te llama para coordinar la visita y confirmarte el costo antes de empezar.", "telefono-servicio-tecnico-electrolux-panama.html", "Cómo contactarnos", True)}
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Por qué elegirnos</span><h2>Servicio técnico Electrolux con honestidad</h2></div><div class="grid g3">
 <div class="card"><h3>Diagnóstico honesto</h3><p>Te explicamos la falla y la causa antes de reparar nada. Si no vale la pena reparar, te lo decimos.</p></div>
 <div class="card"><h3>Garantía real</h3><p>Cada reparación incluye garantía sobre la pieza reemplazada y la mano de obra. El plazo se confirma antes de empezar.</p></div>
 <div class="card"><h3>Costo claro</h3><p>Te confirmamos el costo de la visita y de la reparación antes de empezar el trabajo.</p></div></div>
 <p class="aviso">Si tu equipo todavía está en garantía de fábrica, te lo decimos durante el diagnóstico para que decidas cómo proceder.</p></div></section>
 <section class="sec"><div class="w txt seo">{"".join(f"<h2>{esc(a)}</h2><p>{esc(b)}</p>" for a, b in SEO_HOME)}</div></section>
-<section class="sec alt"><div class="w"><div class="cab"><span class="ey">Así es la visita</span><h2>De la llegada a la reparación de tu equipo Electrolux</h2><p>El técnico llega, revisa contigo la falla y repara en tu casa, con el costo confirmado antes de empezar.</p></div><div class="grid g3 gf"><div class="card">{fpic("prod-lavadora-sup", 0)}<h3>1. Llegada a tu casa</h3><p>Coordinamos el horario y llegamos con las herramientas.</p></div><div class="card">{fpic("prod-nevera-sbs", 0)}<h3>2. Diagnóstico contigo</h3><p>Te explicamos la falla y el costo antes de reparar.</p></div><div class="card">{fpic("prod-torre", 0)}<h3>3. Revisión y reparación</h3><p>Medimos, reparamos y probamos el equipo.</p></div></div></div></section>
-{split("prod-nevera-sbs", "Asesoras de servicio", "Una asesora te atiende y agenda tu visita", "Te pedimos el equipo, el modelo y la falla, registramos tu zona y te confirmamos el horario disponible para que el técnico llegue preparado.", "servicio-tecnico-electrolux-cerca-de-mi-panama.html", "Ver zonas de cobertura", False, True)}
-{split("prod-nevera-sbs", "Atención personalizada", "Te ayudamos desde el primer mensaje", "Nuestra asesora toma los datos del equipo, el modelo y la falla, y coordina el horario de la visita según tu zona.", "telefono-servicio-tecnico-electrolux-panama.html", "Teléfono y WhatsApp", True)}
-{split("prod-torre", "Técnico y asesoría", "Del primer mensaje a la visita en 24 a 48 horas", "Coordinamos por WhatsApp, te confirmamos disponibilidad en tu zona y el técnico llega con el diagnóstico claro y garantía en la reparación.", "garantia-electrolux-panama-que-hacer.html", "Ver garantía")}
-{split("prod-lavadora-sup", "Tu cocina de nuevo en marcha", "Que tu nevera vuelva a enfriar sin complicaciones", "Escríbenos con el modelo y la falla. Coordinamos la visita en 24 a 48 horas y te confirmamos el costo antes de empezar.", "diagnostico.html", "Abrir diagnóstico rápido", False, True)}
+<section class="sec alt"><div class="w"><div class="cab"><span class="ey">Así es la visita</span><h2>De la llegada a la reparación de tu equipo Electrolux</h2><p>El técnico llega, revisa contigo la falla y repara en tu casa, con el costo confirmado antes de empezar.</p></div><div class="grid g3 gf"><div class="card">{fpic("sam-3", 0)}<h3>1. Llegada a tu casa</h3><p>Coordinamos el horario y llegamos con las herramientas.</p></div><div class="card">{fpic("sam-4", 0)}<h3>2. Diagnóstico contigo</h3><p>Te explicamos la falla y el costo antes de reparar.</p></div><div class="card">{fpic("sam-4", 0)}<h3>3. Revisión y reparación</h3><p>Medimos, reparamos y probamos el equipo.</p></div></div></div></section>
+{split("sam-1", "Asesoras de servicio", "Una asesora te atiende y agenda tu visita", "Te pedimos el equipo, el modelo y la falla, registramos tu zona y te confirmamos el horario disponible para que el técnico llegue preparado.", "servicio-tecnico-electrolux-cerca-de-mi-panama.html", "Ver zonas de cobertura", False, True)}
+{split("sam-1", "Atención personalizada", "Te ayudamos desde el primer mensaje", "Nuestra asesora toma los datos del equipo, el modelo y la falla, y coordina el horario de la visita según tu zona.", "telefono-servicio-tecnico-electrolux-panama.html", "Teléfono y WhatsApp", True)}
+{split("sam-4", "Técnico y asesoría", "Del primer mensaje a la visita en 24 a 48 horas", "Coordinamos por WhatsApp, te confirmamos disponibilidad en tu zona y el técnico llega con el diagnóstico claro y garantía en la reparación.", "garantia-electrolux-panama-que-hacer.html", "Ver garantía")}
+{split("sam-3", "Tu cocina de nuevo en marcha", "Que tu nevera vuelva a enfriar sin complicaciones", "Escríbenos con el modelo y la falla. Coordinamos la visita en 24 a 48 horas y te confirmamos el costo antes de empezar.", "diagnostico.html", "Abrir diagnóstico rápido", False, True)}
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Cobertura</span><h2>Servicio técnico Electrolux en tu zona de Panamá</h2><p>Llegamos a los principales barrios de la ciudad, San Miguelito y Panamá Oeste.</p></div><div class="chips">{zonas}</div><p><a href="zonas/index.html">Ver todas las zonas de cobertura →</a></p></div></section>
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Diagnóstico rápido</span><h2>¿Qué le pasa a tu equipo Electrolux?</h2><p>Mira los síntomas más comunes, la causa probable y qué tan urgente es.</p></div><p><a class="btn lg" href="diagnostico.html">Abrir el diagnóstico rápido</a></p></div></section>
 {ext_box()}
@@ -635,7 +635,7 @@ def paginas_servicio():
         ruta = f"servicios/{k}-electrolux-panama.html"
         faq = [(f"¿Qué equipos incluye el servicio de {corto.lower()}?", "Neveras, lavadoras y secadoras Electrolux."), ("¿Dónde lo hacen?", "En Ciudad de Panamá, San Miguelito y Panamá Oeste. Escríbenos por WhatsApp para confirmar tu zona."), ("¿Cuánto cuesta?", "Te confirmamos el costo por WhatsApp antes de ir, según el equipo y el servicio.")]
         cuerpo = f'''{miga(1, (corto, None))}<section class="sec"><div class="w txt"><h1>{esc(titulo)}</h1><p class="lead">{esc(desc)}</p><h2>Qué incluye</h2><ul class="lista">{"".join(f"<li>{esc(p)}</li>" for p in puntos)}</ul>
-<div class="fotoc" style="max-width:720px">{pic("prod-torre", "Técnico y asesora de servicio en una oficina de atención", 1, 1024, 765)}</div><h2>Equipos que atendemos</h2>{tarjetas_eq(1)}<h2>{esc(corto)} por equipo</h2><div class="chips">{"".join(f'<a href="{k}-{k2}-electrolux-panama.html">{esc(corto)} de {esc(e2["corto"].lower())} Electrolux</a>' for k2, e2 in EQUIPOS.items())}</div><h2>Preguntas frecuentes</h2>{faq_html(faq)}</div></section>{cta(msg, f"Agenda: {corto.lower()}")}'''
+<div class="fotoc" style="max-width:720px">{pic("sam-4", "Técnico y asesora de servicio en una oficina de atención", 1, 1024, 765)}</div><h2>Equipos que atendemos</h2>{tarjetas_eq(1)}<h2>{esc(corto)} por equipo</h2><div class="chips">{"".join(f'<a href="{k}-{k2}-electrolux-panama.html">{esc(corto)} de {esc(e2["corto"].lower())} Electrolux</a>' for k2, e2 in EQUIPOS.items())}</div><h2>Preguntas frecuentes</h2>{faq_html(faq)}</div></section>{cta(msg, f"Agenda: {corto.lower()}")}'''
         escribir(ruta, f"{titulo} | {TEL}", f"{desc[:150]} WhatsApp {TEL}.", cuerpo, [negocio_ld(), faq_ld(faq), bc((corto, None))], "0.8")
 
 def paginas_zona():
@@ -696,7 +696,7 @@ def paginas_info():
     escribir("garantia.html", f"Garantía de servicio técnico Electrolux en Panamá | {NOMBRE}", "Garantía sobre la pieza reemplazada y la mano de obra en cada reparación de electrodomésticos Electrolux en Panamá.", c, [bc(("Garantía", None))], "0.5")
     c = f'''{miga(0, ("Nosotros", None))}<section class="sec"><div class="w txt"><h1>Nosotros: especialistas en electrodomésticos Electrolux en Panamá</h1><p class="lead">Somos un servicio técnico enfocado en electrodomésticos Electrolux: neveras, lavadoras y secadoras.</p>
 <p>Esa especialización nos permite conocer a fondo los modelos que circulan en Panamá, sus fallas más comunes y los repuestos que realmente necesitan. Trabajamos con coordinación directa por WhatsApp, sin intermediarios.</p>
-<div class="fotoc" style="max-width:720px">{pic("prod-lavadora-fr", "Técnico y asesora de servicio conversando en una oficina de atención al cliente", 0, 1024, 765)}</div><div class="fotoc" style="max-width:720px">{pic("prod-nevera-sbs", "Asesora de servicio atendiendo en el escritorio de la oficina", 0, 1024, 765)}</div><div class="fotoc" style="max-width:720px">{pic("prod-torre", "Técnico y asesora de servicio conversando en la oficina", 0, 1024, 765)}</div><div class="fotoc" style="max-width:720px">{pic("prod-lavadora-fr", "Asesora atendiendo a un cliente en el mostrador", 0, 1024, 765)}</div><h2>Cómo trabajamos</h2><ul class="lista"><li><b>Diagnóstico honesto:</b> explicamos la falla antes de reparar. Si no vale la pena, te lo decimos.</li><li><b>Garantía:</b> en la pieza y en la mano de obra.</li><li><b>Tiempos claros:</b> visitas en 24 a 48 horas en la mayoría de zonas.</li><li><b>Costo claro:</b> te lo confirmamos antes de empezar.</li></ul>
+<div class="fotoc" style="max-width:720px">{pic("sam-5", "Técnico y asesora de servicio conversando en una oficina de atención al cliente", 0, 1024, 765)}</div><div class="fotoc" style="max-width:720px">{pic("sam-1", "Asesora de servicio atendiendo en el escritorio de la oficina", 0, 1024, 765)}</div><div class="fotoc" style="max-width:720px">{pic("sam-2", "Técnico y asesora de servicio conversando en la oficina", 0, 1024, 765)}</div><div class="fotoc" style="max-width:720px">{pic("sam-5", "Asesora atendiendo a un cliente en el mostrador", 0, 1024, 765)}</div><h2>Cómo trabajamos</h2><ul class="lista"><li><b>Diagnóstico honesto:</b> explicamos la falla antes de reparar. Si no vale la pena, te lo decimos.</li><li><b>Garantía:</b> en la pieza y en la mano de obra.</li><li><b>Tiempos claros:</b> visitas en 24 a 48 horas en la mayoría de zonas.</li><li><b>Costo claro:</b> te lo confirmamos antes de empezar.</li></ul>
 </div></section>{cta(msg)}'''
     escribir("nosotros.html", f"Nosotros | {NOMBRE}", "Servicio técnico especializado en electrodomésticos Electrolux en Ciudad de Panamá.", c, [negocio_ld(), bc(("Nosotros", None))], "0.5")
     c = f'''{miga(0, ("Preguntas frecuentes", None))}<section class="sec"><div class="w txt"><h1>Preguntas frecuentes sobre el servicio técnico Electrolux en Panamá</h1>{faq_html(FAQ_FULL)}</div></section>{cta(msg)}'''
@@ -720,7 +720,6 @@ nav{display:flex;align-items:center;gap:18px}nav>a,.dd>a{color:var(--ink);text-d
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--pri);color:#fff;border:2px solid var(--pri);border-radius:999px;padding:11px 20px;font-weight:700;text-decoration:none;cursor:pointer;font-size:15px}.btn svg{width:20px;height:20px}.btn.lg{padding:14px 26px;font-size:16px}.btn.sm{padding:6px 14px;font-size:13px}.btn.sec{background:transparent;color:#fff;border-color:#fff}.btn.wa{background:var(--wa);border-color:var(--wa);color:#fff}.btn:hover{filter:brightness(1.08)}
 .hero{background:radial-gradient(1000px 420px at 85% -10%,#16407a 0%,transparent 60%),linear-gradient(160deg,var(--pri2),var(--pri));color:#fff;padding-block:56px}.hero.chico{padding-block:40px}.hero h1{color:#fff}.hero .lead{font-size:18px;opacity:.95;max-width:60ch}.hg{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}.ey{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#5cb8ff;margin-bottom:10px}.sec:not(.alt) .ey,.sec.alt .ey,.card .ey{color:var(--pri)}.acc{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}.pts{display:flex;gap:18px;flex-wrap:wrap;list-style:none;padding:0;margin:0;font-weight:600;font-size:14px}.pts li::before{content:"✓ ";color:#a9f5c9}
 .hero.bgimg{background:linear-gradient(90deg,rgba(12,10,10,.94) 0%,rgba(12,10,10,.80) 48%,rgba(22,64,122,.50) 100%),var(--bg) var(--pos,center)/cover no-repeat;min-height:clamp(340px,46vw,520px);display:flex;align-items:center}.hero.bgimg>.w{width:100%}.hero.bgimg .hg.solo{grid-template-columns:minmax(0,760px)}.hero.bgimg .hero-tarjeta{backdrop-filter:blur(6px);background:rgba(12,10,10,.55)}.hero.bgimg h1{text-shadow:0 2px 18px rgba(0,0,0,.45)}@media(max-width:860px){.hero.bgimg{background:linear-gradient(180deg,rgba(12,10,10,.88) 0%,rgba(12,10,10,.80) 60%,rgba(22,64,122,.72) 100%),var(--bg) var(--pos,center)/cover no-repeat;min-height:0;padding-block:44px}}
-.pie .marca-pie img{filter:brightness(0) invert(1)}
 .hero-tarjeta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}.eqimgs.big{gap:24px;margin:0 0 22px;justify-content:flex-start}.eqimgs.big .fto{width:auto}.eqimgs.big img{height:260px;width:auto;border:0;padding:0}.eqimgs{display:flex;justify-content:center;gap:10px}.eqimg.foto{height:auto;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px}.eqimg{height:150px;width:auto;max-width:100%;object-fit:contain;align-self:center;margin-bottom:6px}.mini.fotos a{flex-direction:column;justify-content:center;text-align:center;padding:12px 8px;gap:8px}.mini.fotos img{height:120px;width:auto;max-width:100%;object-fit:contain}.mini.fotos .nm{font-weight:700;line-height:1.2}.mini.fotos .ic svg{width:70px;height:70px}.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini a{display:flex;align-items:center;gap:10px;background:#fff;color:var(--ink);border-radius:14px;padding:12px;text-decoration:none;font-weight:700;font-size:14px}.mini .ic svg,.ic.grande svg{width:34px;height:34px}.mini .ic{color:var(--pri)}.ic.grande{color:#fff}.ic.grande svg{width:56px;height:56px}
 @media(max-width:860px){.hg{grid-template-columns:1fr}}
 .conf{border-bottom:1px solid var(--line)}.conf .w{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding-block:20px}.conf b{display:block}.conf small{color:var(--mut)}@media(max-width:760px){.conf .w{grid-template-columns:1fr 1fr}}
@@ -783,10 +782,10 @@ def indices():
 def fslug(f): return slug(f[0])[:48].strip("-")
 def furl(k, f): return f"fallas/{k}/{fslug(f)}.html"
 def zurl(k, z): return f"zonas/{slug(z)}/{k}.html"
-FOTO_FALLA = {"neveras": ("prod-nevera-sbs", "Persona usando el dispensador de agua de una nevera Electrolux French Door"), "lavadoras": ("prod-torre", "Técnico revisando una lavadora Electrolux en Panamá"),
-              "secadoras": ("prod-lavadora-sup", "Técnico revisando una secadora y lavadora Electrolux")}
-FOTO_ZEQ = {"neveras": ("prod-nevera-sbs", FOTO_EQ["neveras"][1]), "lavadoras": ("prod-lavadora-sup", FOTO_EQ["lavadoras"][1]), "secadoras": ("prod-torre", "Técnico revisando una secadora Electrolux")}
-ROT = {"neveras": NEV_FOTOS, "lavadoras": ["prod-torre", "prod-lavadora-sup", "prod-torre", "prod-lavadora-fr", "prod-lavadora-sup", "prod-torre"], "secadoras": ["prod-lavadora-fr", "prod-torre", "prod-lavadora-sup", "prod-torre", "prod-nevera-sbs", "prod-torre"]}
+FOTO_FALLA = {"neveras": ("prod-nevera-sbs", "Persona usando el dispensador de agua de una nevera Electrolux French Door"), "lavadoras": ("sam-4", "Técnico revisando una lavadora Electrolux en Panamá"),
+              "secadoras": ("sam-3", "Técnico revisando una secadora y lavadora Electrolux")}
+FOTO_ZEQ = {"neveras": ("sam-4", FOTO_EQ["neveras"][1]), "lavadoras": ("sam-3", FOTO_EQ["lavadoras"][1]), "secadoras": ("sam-4", "Técnico revisando una secadora Electrolux")}
+ROT = {"neveras": NEV_FOTOS, "lavadoras": ["sam-4", "prod-lavadora-sup", "sam-2", "sam-5", "sam-3", "sam-4"], "secadoras": ["prod-lavadora-fr", "prod-torre", "sam-3", "sam-4", "sam-1", "sam-2"]}
 def foto_rot(k, i): return ROT[k][i % len(ROT[k])]
 PASOS = {"Urgente": "Si el síntoma es este, lo mejor es apagar y desconectar el equipo y escribirnos cuanto antes: seguir usándolo puede agravar el daño o la pérdida de alimentos.",
          "Revisar pronto": "No es una emergencia, pero conviene revisarlo pronto: una falla pequeña que se deja pasar suele terminar en una reparación más costosa.",
@@ -862,31 +861,31 @@ def paginas_zona_equipo():
             n += 1
 
 HUBS = [
- dict(f="servicio-tecnico-electrolux-panama.html", chip="Servicio técnico Electrolux Panamá", t="Servicio Técnico Electrolux Panamá: Cómo Funciona, Zonas y Contacto", h1="Servicio técnico Electrolux en Panamá", foto=("prod-nevera-sbs", ALT["prod-nevera-sbs"]), foto2="prod-lavadora-sup",
+ dict(f="servicio-tecnico-electrolux-panama.html", chip="Servicio técnico Electrolux Panamá", t="Servicio Técnico Electrolux Panamá: Cómo Funciona, Zonas y Contacto", h1="Servicio técnico Electrolux en Panamá", foto=("sam-4", ALT["sam-4"]), foto2="sam-3",
       lead="Reparación a domicilio de neveras, lavadoras y secadoras Electrolux en Ciudad de Panamá, San Miguelito y Panamá Oeste.",
       secs=[("Qué es el servicio técnico Electrolux que ofrecemos", "Atendemos en tu casa u oficina los electrodomésticos Electrolux que presentan fallas: neveras que no enfrían, lavadoras que no centrifugan o no desaguan, secadoras que no secan o no calientan. Revisamos el equipo, te explicamos la causa y confirmamos el costo antes de reparar."),
             ("Cómo funciona", "1) Escríbenos por WhatsApp con el equipo, el modelo y la falla. 2) Coordinamos la visita, normalmente en 24 a 48 horas. 3) Diagnosticamos en el sitio y te damos el costo. 4) Reparamos y probamos el equipo, con garantía sobre la pieza y la mano de obra."),
             ("Por qué elegir un técnico especializado en Electrolux", "Conocer las fallas típicas de cada línea (inverter, carga frontal, French Door, dispensador, tarjetas de control) acorta el diagnóstico y evita cambiar piezas por prueba y error.")],
       faq=[("¿Qué incluye el servicio técnico Electrolux a domicilio?", "Visita, diagnóstico en el sitio, explicación de la falla, cotización y reparación del equipo, con garantía."), ("¿En qué zonas de Panamá atienden?", "En Ciudad de Panamá, San Miguelito, Arraiján y La Chorrera, entre otras. Mira la lista de zonas de cobertura.")]),
- dict(f="telefono-servicio-tecnico-electrolux-panama.html", chip="Teléfono servicio técnico Electrolux Panamá", t="Teléfono y WhatsApp del Servicio Técnico Electrolux en Panamá", h1="Teléfono del servicio técnico Electrolux en Panamá", foto=("prod-torre", ALT["prod-torre"]),
+ dict(f="telefono-servicio-tecnico-electrolux-panama.html", chip="Teléfono servicio técnico Electrolux Panamá", t="Teléfono y WhatsApp del Servicio Técnico Electrolux en Panamá", h1="Teléfono del servicio técnico Electrolux en Panamá", foto=("sam-4", ALT["sam-4"]),
       lead=f"Llama o escribe por WhatsApp al {TEL}. Atendemos de lunes a sábado de 7:00am a 6:00pm.",
       secs=[("Contacto directo", f"WhatsApp y teléfono: {TEL}. Es la forma más rápida de pedir una visita: envíanos una foto del equipo, la etiqueta con el modelo (suele estar en el costado o en la parte trasera) y una descripción de la falla."),
             ("Qué información enviar", "Tipo de equipo (nevera, lavadora o secadora), modelo, tiempo de uso, qué síntoma presenta, si muestra códigos de error y tu barrio o edificio. Con eso te confirmamos disponibilidad y costo de la visita."),
             ("Horario", "Lunes a sábado de 7:00am a 6:00pm. Los mensajes enviados fuera de horario se responden el siguiente día hábil.")],
       faq=[("¿Cuál es el número de servicio técnico Electrolux en Panamá?", f"Nuestro WhatsApp y teléfono es {TEL}."), ("¿Atienden por WhatsApp?", "Sí, es el canal principal: ahí coordinamos la visita y confirmamos el costo.")]),
- dict(f="tecnico-electrolux-a-domicilio-panama.html", chip="Técnico Electrolux a domicilio", t="Técnico Electrolux a Domicilio en Panamá | Neveras, Lavadoras y Secadoras", h1="Técnico Electrolux a domicilio en Panamá", foto=("prod-nevera-sbs", FOTO_EQ["neveras"][1]), foto2="prod-nevera-sbs",
+ dict(f="tecnico-electrolux-a-domicilio-panama.html", chip="Técnico Electrolux a domicilio", t="Técnico Electrolux a Domicilio en Panamá | Neveras, Lavadoras y Secadoras", h1="Técnico Electrolux a domicilio en Panamá", foto=("sam-4", FOTO_EQ["neveras"][1]), foto2="sam-1",
       lead="Vamos a tu casa, apartamento u oficina para revisar y reparar tu electrodoméstico Electrolux sin que tengas que moverlo.",
       secs=[("Ventajas de la reparación a domicilio", "No tienes que cargar ni transportar una nevera o una lavadora. El técnico revisa el equipo donde está instalado, con su conexión eléctrica, su desagüe y su ventilación reales, que muchas veces son parte del problema."),
             ("Apartamentos y torres", "Coordinamos con la administración el horario, el ascensor de servicio y el ingreso de herramientas para que la visita sea rápida y sin inconvenientes."),
             ("Qué llevamos a la visita", "Herramientas de diagnóstico, multímetro y las piezas más frecuentes según el equipo. Si hace falta una pieza que no llevamos, te avisamos el plazo antes de empezar.")],
       faq=[("¿Cuánto tarda en llegar el técnico?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas."), ("¿Hacen la reparación en el momento?", "Muchas fallas se resuelven en la misma visita; si hay que pedir una pieza te avisamos antes.")]),
- dict(f="reparacion-electrodomesticos-electrolux-panama.html", chip="Reparación de electrodomésticos Electrolux", t="Reparación de Electrodomésticos Electrolux en Panamá | Neveras, Lavadoras y Secadoras", h1="Reparación de electrodomésticos Electrolux en Panamá", foto=("prod-nevera-sbs", ALT["prod-nevera-sbs"]), foto2="prod-torre",
+ dict(f="reparacion-electrodomesticos-electrolux-panama.html", chip="Reparación de electrodomésticos Electrolux", t="Reparación de Electrodomésticos Electrolux en Panamá | Neveras, Lavadoras y Secadoras", h1="Reparación de electrodomésticos Electrolux en Panamá", foto=("sam-4", ALT["sam-4"]), foto2="prod-torre",
       lead="Neveras, lavadoras y secadoras Electrolux: reparación, mantenimiento e instalación con diagnóstico claro y garantía.",
       secs=[("Equipos que reparamos", "Neveras (French Door, Side by Side, congelador superior e inferior, con dispensador), lavadoras de carga superior y frontal y secadoras split e inverter."),
             ("Tipos de servicio", "Reparación de fallas, diagnóstico, mantenimiento preventivo e instalación. Cada servicio incluye explicación de la falla y costo confirmado antes de empezar."),
             ("Fallas más comunes", "La nevera que no enfría, el congelador con escarcha, la lavadora que no desagua o no centrifuga, y la secadora que no seca son las consultas más frecuentes en Panamá.")],
       faq=[("¿Reparan todas las líneas de Electrolux?", "Atendemos neveras, lavadoras y secadoras. Para otros equipos, escríbenos y te decimos si podemos ayudarte."), ("¿Vale la pena reparar un equipo viejo?", "Si la falla es de una pieza accesible, casi siempre sí. Si no vale la pena, te lo decimos con honestidad.")]),
- dict(f="servicio-tecnico-electrolux-cerca-de-mi-panama.html", chip="Servicio técnico Electrolux cerca de mí", t="Servicio Técnico Electrolux Cerca de Mí en Panamá | Visita a Domicilio", h1="Servicio técnico Electrolux cerca de mí en Panamá", foto=("prod-lavadora-sup", ALT["prod-lavadora-sup"]),
+ dict(f="servicio-tecnico-electrolux-cerca-de-mi-panama.html", chip="Servicio técnico Electrolux cerca de mí", t="Servicio Técnico Electrolux Cerca de Mí en Panamá | Visita a Domicilio", h1="Servicio técnico Electrolux cerca de mí en Panamá", foto=("sam-3", ALT["sam-3"]),
       lead="Si buscas un técnico Electrolux cerca de tu casa en Panamá, atendemos a domicilio en más de 30 barrios y corregimientos.",
       secs=[("Cobertura por zonas", "Llegamos a San Francisco, Bella Vista, Obarrio, Marbella, Costa del Este, Punta Pacífica, Paitilla, Betania, San Miguelito, Albrook, Arraiján, La Chorrera y más. Elige tu zona abajo."),
             ("No tienes que ir a ningún lado", "Como el servicio es a domicilio, no necesitas buscar un taller cercano ni transportar tu equipo: nosotros vamos a donde está.")],
@@ -903,37 +902,37 @@ HUBS = [
             ("Cómo evitar sorpresas", "Pide siempre que el técnico te explique la falla y te dé el costo antes de empezar. Nosotros lo hacemos así: diagnóstico, explicación, costo y solo entonces reparación."),
             ("¿Reparar o reemplazar?", "Si la reparación cuesta una parte importante del valor de un equipo nuevo y el equipo es muy viejo, te explicamos las opciones con honestidad para que decidas.")],
       faq=[("¿Cuánto cuesta la visita de diagnóstico?", "Escríbenos por WhatsApp con el equipo, el modelo y la falla; te confirmamos el costo de la visita antes de ir."), ("¿El diagnóstico se descuenta de la reparación?", "Te explicamos las condiciones por WhatsApp antes de agendar la visita.")]),
- dict(f="reparacion-neveras-electrolux-french-door-panama.html", chip="Neveras Electrolux French Door", t="Reparación de Neveras Electrolux French Door y Side by Side en Panamá", h1="Reparación de neveras Electrolux French Door en Panamá", foto=("prod-nevera-sbs", ALT["prod-nevera-sbs"]), foto2="prod-nevera-sbs",
+ dict(f="reparacion-neveras-electrolux-french-door-panama.html", chip="Neveras Electrolux French Door", t="Reparación de Neveras Electrolux French Door y Side by Side en Panamá", h1="Reparación de neveras Electrolux French Door en Panamá", foto=("prod-nevera-sbs", ALT["prod-nevera-sbs"]), foto2="sam-4",
       lead="Atendemos neveras Electrolux French Door, Side by Side y de congelador superior a domicilio en Ciudad de Panamá.",
       secs=[("Fallas frecuentes de las neveras Electrolux", "La nevera que no enfría, la escarcha en el congelador, el dispensador de agua, la fábrica de hielo, las fugas de agua y los ruidos del ventilador o del compresor son las consultas más comunes."),
             ("Neveras Electrolux con dispensador de agua y hielo", "Revisamos filtro, manguera, válvula de entrada, sensor y fábrica de hielo, y te explicamos qué pieza hay que cambiar antes de empezar."),
             ("Cómo pedir la visita", "Escríbenos por WhatsApp con el modelo de tu nevera Electrolux y una foto o video del problema.")],
       faq=[("¿Reparan neveras Electrolux French Door?", "Sí, atendemos French Door, Side by Side y de congelador superior o inferior."), ("¿Cuánto tarda la visita?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas.")]),
- dict(f="reparacion-lavadoras-electrolux-carga-superior-frontal-panama.html", chip="Lavadoras Electrolux carga superior y frontal", t="Reparación de Lavadoras Electrolux de Carga Superior y Frontal en Panamá", h1="Reparación de lavadoras Electrolux en Panamá: carga superior y frontal", foto=("prod-lavadora-sup", ALT["prod-lavadora-sup"]), foto2="prod-torre",
+ dict(f="reparacion-lavadoras-electrolux-carga-superior-frontal-panama.html", chip="Lavadoras Electrolux carga superior y frontal", t="Reparación de Lavadoras Electrolux de Carga Superior y Frontal en Panamá", h1="Reparación de lavadoras Electrolux en Panamá: carga superior y frontal", foto=("prod-lavadora-sup", ALT["prod-lavadora-sup"]), foto2="sam-4",
       lead="Lavadoras Electrolux de carga superior y frontal: vibración, desagüe, entrada de agua, fugas y códigos de error.",
       secs=[("Lavadoras Electrolux que reparamos", "Carga superior con agitador, carga frontal, lavadoras con sensores y torres de lavado."),
             ("Fallas más consultadas", "No centrifuga, no desagua, no llena de agua, gotea, vibra de más o muestra un código de error. Mira nuestra guía de códigos de error."),
             ("Cómo pedir la visita", "Escríbenos por WhatsApp con el modelo, el síntoma y el código que muestra la pantalla.")],
       faq=[("¿Reparan lavadoras Electrolux de carga superior?", "Sí, atendemos carga superior y frontal."), ("¿Qué hago si muestra un código?", "Anótalo, apaga y desconecta unos minutos y escríbenos con el modelo.")]),
- dict(f="garantia-electrolux-panama-que-hacer.html", chip="Garantía Electrolux en Panamá", t="Garantía Electrolux en Panamá: Qué Hacer si tu Equipo Falla", h1="Garantía Electrolux en Panamá: qué hacer si tu equipo falla", foto=("prod-lavadora-fr", ALT["prod-lavadora-fr"]),
+ dict(f="garantia-electrolux-panama-que-hacer.html", chip="Garantía Electrolux en Panamá", t="Garantía Electrolux en Panamá: Qué Hacer si tu Equipo Falla", h1="Garantía Electrolux en Panamá: qué hacer si tu equipo falla", foto=("sam-5", ALT["sam-5"]),
       lead="Antes de reparar, verifica si tu equipo sigue en garantía de fábrica. Te explicamos cómo y qué opciones tienes.",
       secs=[("Cómo saber si tu equipo está en garantía", "Revisa la factura de compra, la fecha y el plazo indicado por el vendedor o el fabricante. Guarda siempre el comprobante: lo vas a necesitar para cualquier reclamo."),
             ("Si el equipo ya no está en garantía", "Podemos revisarlo a domicilio, explicarte la falla y repararlo. Nuestra reparación incluye garantía propia sobre la pieza reemplazada y la mano de obra."),
             ("Antes de pagar una reparación", "Si tu equipo es reciente, consulta primero las condiciones de garantía del vendedor. Durante nuestro diagnóstico también te lo recordamos para que tomes la mejor decisión.")],
       faq=[("¿Cuánto dura la garantía de la reparación?", "Se confirma por escrito al momento del servicio, antes de que pagues."), ("¿Qué hago si la falla vuelve?", "Escríbenos por WhatsApp con la fecha del servicio; si está dentro del plazo, coordinamos la revisión.")]),
- dict(f="cambio-filtro-nevera-electrolux-panama.html", chip="Cambio de filtro de nevera Electrolux", t="Cambio de Filtro de Agua de Nevera Electrolux en Panamá | Cada Cuánto", h1="Cambio de filtro de agua de nevera Electrolux en Panamá", foto=("prod-nevera-sbs", ALT["prod-nevera-sbs"]), foto2="prod-nevera-sbs",
+ dict(f="cambio-filtro-nevera-electrolux-panama.html", chip="Cambio de filtro de nevera Electrolux", t="Cambio de Filtro de Agua de Nevera Electrolux en Panamá | Cada Cuánto", h1="Cambio de filtro de agua de nevera Electrolux en Panamá", foto=("prod-nevera-sbs", ALT["prod-nevera-sbs"]), foto2="sam-4",
       lead="Cuando la nevera muestra «cambiar filtro» o el agua sale lenta o con mal sabor, es momento de reemplazar el filtro. Lo hacemos a domicilio.",
       secs=[("Cada cuánto cambiar el filtro", "Por lo general cada 6 meses, o antes si el agua sale lenta, con sabor u olor extraño, o si la nevera muestra el aviso de filtro. En zonas con agua con más sedimentos puede necesitar cambio más seguido."),
             ("Señales de que el filtro está vencido", "Luz o aviso de cambio de filtro, flujo de agua lento en el dispensador, hielo con mal sabor, o fábrica de hielo que produce poco."),
             ("Qué hacemos en la visita", "Identificamos el modelo, instalamos el filtro correcto, purgamos el sistema y reiniciamos el aviso. Si el problema de agua continúa, revisamos manguera y válvula de entrada.")],
       faq=[("¿Cómo reinicio el aviso de filtro?", "En la mayoría de neveras con dispensador se mantiene presionado un botón del panel durante unos segundos después de cambiar el filtro; el método exacto depende del modelo."), ("¿Puedo cambiar el filtro yo mismo?", "En muchos modelos es sencillo, pero si tienes dudas, el agua sale lenta o hay fugas, podemos hacerlo nosotros.")]),
- dict(f="servicio-tecnico-electrolux-24-horas-panama.html", chip="Servicio técnico Electrolux urgente", t="Servicio Técnico Electrolux Urgente en Panamá | Visitas en 24 a 48 Horas", h1="Servicio técnico Electrolux urgente en Panamá", foto=("prod-torre", ALT["prod-torre"]),
+ dict(f="servicio-tecnico-electrolux-24-horas-panama.html", chip="Servicio técnico Electrolux urgente", t="Servicio Técnico Electrolux Urgente en Panamá | Visitas en 24 a 48 Horas", h1="Servicio técnico Electrolux urgente en Panamá", foto=("sam-4", ALT["sam-4"]),
       lead="Si tu nevera dejó de enfriar o tu lavadora gotea, escríbenos de inmediato: priorizamos las fallas urgentes y coordinamos visitas en 24 a 48 horas.",
       secs=[("Qué fallas son urgentes", "Nevera que no enfría o se apaga y prende sola, lavadora que gotea o inunda, equipos que saltan el breaker o huelen a quemado. En esos casos desconecta el equipo y escríbenos."),
             ("Mientras llega el técnico", "En la nevera, evita abrir la puerta para conservar el frío. En la lavadora, cierra la llave de agua y desconecta. En secadoras, apaga y desconecta si hay olor a quemado."),
             ("Cómo pedir una visita urgente", f"Escríbenos por WhatsApp al {TEL} con tu zona, el equipo y el síntoma. Te confirmamos la disponibilidad más cercana.")],
       faq=[("¿Atienden emergencias?", "Priorizamos las fallas urgentes; la disponibilidad se confirma por WhatsApp según tu zona."), ("¿Atienden fines de semana?", "Trabajamos de lunes a sábado de 7:00am a 6:00pm.")]),
- dict(f="codigos-de-error-lavadora-electrolux-panama.html", chip="Códigos de error lavadora Electrolux", t="Códigos de Error de Lavadora Electrolux: Qué Hacer y Cuándo Llamar al Técnico", h1="Códigos de error de lavadoras Electrolux: qué significan", foto=("prod-torre", FOTO_FALLA["lavadoras"][1]),
+ dict(f="codigos-de-error-lavadora-electrolux-panama.html", chip="Códigos de error lavadora Electrolux", t="Códigos de Error de Lavadora Electrolux: Qué Hacer y Cuándo Llamar al Técnico", h1="Códigos de error de lavadoras Electrolux: qué significan", foto=("sam-4", FOTO_FALLA["lavadoras"][1]),
       lead="Qué hacer cuando tu lavadora Electrolux muestra un código de error y qué revisar antes de llamar al técnico.",
       secs=[("Cómo leer el código", "Cada modelo Electrolux usa códigos distintos. Anota el código exacto que aparece en la pantalla y el modelo (etiqueta en la tapa o en el marco de la puerta)."),
             ("Si el problema es de desagüe", "Revisa el filtro de desagüe y que la manguera no esté doblada ni tapada. Si persiste, puede ser la bomba."),
@@ -972,7 +971,7 @@ EQ_REP = {
  "lavadoras": "bomba de desagüe, válvula de entrada de agua, seguro de la puerta, amortiguadores, rodamientos, tarjeta de control, sensor de nivel y mangueras",
  "secadoras": "resistencia de calor, termostatos y fusible térmico, sensor de humedad, motor, correa, rodillos, tarjeta de control y ducto de salida",
 }
-ATENC = [("prod-lavadora-fr", "Técnico y asesora de servicio conversando en una oficina de atención al cliente", 1024, 765), ("prod-torre", "Técnico y asesora de servicio en una oficina de atención", 1024, 765)]
+ATENC = [("sam-5", "Técnico y asesora de servicio conversando en una oficina de atención al cliente", 1024, 765), ("sam-4", "Técnico y asesora de servicio en una oficina de atención", 1024, 765)]
 SUBS = [("modelos", "Modelos y líneas", "Modelos de {c} Electrolux que reparamos en Panamá"),
         ("costo", "Costo de reparación", "¿Cuánto cuesta reparar {a} Electrolux en Panamá?"),
         ("repuestos", "Repuestos", "Repuestos para {c} Electrolux en Panamá"),
