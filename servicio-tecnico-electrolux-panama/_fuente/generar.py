@@ -428,7 +428,7 @@ def hero_desde_texto(h):
     cuerpo_ini = '<section class="sec"><div class="w txt">' + ((fig.group(0) if (fig and not quitar_fig) else ""))
     return h[:m.start()] + m.group(1) + hero + cuerpo_ini + resto, (stem if quitar_fig else None)
 
-FONDO_HERO = {"nev": ["sam-4", "sam-2", "sam-4"], "lav": ["sam-3", "sam-4", "sam-2"], "zon": ["sam-3", "sam-4", "sam-4"], "con": ["sam-5", "sam-1", "sam-2"], "def": ["sam-3", "sam-4", "sam-4", "sam-2", "sam-1", "sam-5", "sam-4", "sam-2"]}
+FONDO_HERO = {"nev": ["sam-6", "sam-4", "sam-2"], "lav": ["sam-3", "sam-4", "sam-2"], "zon": ["sam-3", "sam-4", "sam-4"], "con": ["sam-5", "sam-1", "sam-2"], "def": ["sam-3", "sam-4", "sam-4", "sam-2", "sam-1", "sam-5", "sam-4", "sam-2"]}
 def fondo_hero(h, ruta):
     """Fondo del encabezado: una foto real por página (la que mejor cuadra), con velo oscuro para que el texto se lea en móvil y escritorio."""
     m = re.search(r'<section class="hero( chico)?">', h)
