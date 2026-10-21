@@ -8,8 +8,10 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 
 ## Samsung (WhatsApp 305 479 6329)
 - [Bombas de agua para lavadora Samsung](__BASE__/samsung/)
-- [Bomba de desagüe para lavadora Samsung: carga superior](__BASE__/samsung/bomba-desague-lavadora-samsung-carga-superior/): Carga superior.
-- [Bomba de desagüe para lavadora Samsung: carga frontal](__BASE__/samsung/bomba-desague-lavadora-samsung-carga-frontal/): Carga frontal.
+- [Bomba de desagüe para lavadora Samsung: carcasa blanca con conector azul](__BASE__/samsung/bomba-desague-lavadora-samsung-carcasa-blanca-conector-azul/): Carcasa blanca con conector azul.
+- [Bomba de desagüe para lavadora Samsung: carcasa blanca con filtro y salida roscada](__BASE__/samsung/bomba-desague-lavadora-samsung-carcasa-blanca-filtro-salida-roscada/): Carcasa blanca con filtro y salida roscada.
+- [Bomba de desagüe para lavadora Samsung: motor gris con rodete celeste](__BASE__/samsung/bomba-desague-lavadora-samsung-motor-gris-rodete-celeste/): Motor gris con rodete celeste.
+- [Bomba de desagüe para lavadora Samsung: motor gris con rodete blanco](__BASE__/samsung/bomba-desague-lavadora-samsung-motor-gris-rodete-blanco/): Motor gris con rodete blanco.
 - [Cuál bomba necesita mi lavadora](__BASE__/samsung/cual-es-mi-bomba/)
 - [Cómo cambiar la bomba](__BASE__/samsung/cambio-e-instalacion/)
 - [Lavadora Samsung no desagua](__BASE__/samsung/lavadora-samsung-no-desagua/)

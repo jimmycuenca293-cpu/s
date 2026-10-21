@@ -32,10 +32,14 @@ MARCAS = {
         "codigos": "5E, SE o 5C",
         "familias": [("WA", "Carga superior", "carga-superior"), ("WW", "Carga frontal", "carga-frontal"), ("WF", "Carga frontal", "carga-frontal")],
         "productos": [
-            {"id": "bom-sam-1", "foto": "bomba-1.png", "slug": "bomba-desague-lavadora-samsung-carga-superior", "corto": "Bomba de desagüe", "ref": None, "precio": None,
-             "tipo": "Carga superior", "carga": "carga-superior", "forma": "bomba eléctrica de desagüe para lavadora Samsung de carga superior"},
-            {"id": "bom-sam-2", "foto": "bomba-2.png", "slug": "bomba-desague-lavadora-samsung-carga-frontal", "corto": "Bomba de desagüe", "ref": None, "precio": None,
-             "tipo": "Carga frontal", "carga": "carga-frontal", "forma": "bomba eléctrica de desagüe para lavadora Samsung de carga frontal"},
+            {"id": "bom-sam-1", "foto": "bomba-1.png", "slug": "bomba-desague-lavadora-samsung-carcasa-blanca-conector-azul", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Carcasa blanca con conector azul", "carga": None, "forma": "bomba de desagüe para lavadora Samsung con carcasa blanca, dos bocas de manguera, motor gris y conector eléctrico azul"},
+            {"id": "bom-sam-2", "foto": "bomba-2.png", "slug": "bomba-desague-lavadora-samsung-carcasa-blanca-filtro-salida-roscada", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Carcasa blanca con filtro y salida roscada", "carga": None, "forma": "bomba de desagüe para lavadora Samsung con carcasa blanca, cámara de filtro con tapa negra, salida roscada hacia arriba y motor gris"},
+            {"id": "bom-sam-3", "foto": "bomba-3.png", "slug": "bomba-desague-lavadora-samsung-motor-gris-rodete-celeste", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Motor gris con rodete celeste", "carga": None, "forma": "bomba de desagüe para lavadora Samsung de motor gris con rodete celeste y conector gris en la base"},
+            {"id": "bom-sam-4", "foto": "bomba-4.png", "slug": "bomba-desague-lavadora-samsung-motor-gris-rodete-blanco", "corto": "Bomba de desagüe", "ref": None, "precio": None,
+             "tipo": "Motor gris con rodete blanco", "carga": None, "forma": "bomba de desagüe para lavadora Samsung de motor gris con rodete blanco; la etiqueta del motor indica DRAIN PUMP y 60 Hz"},
         ],
     },
     "lg": {
