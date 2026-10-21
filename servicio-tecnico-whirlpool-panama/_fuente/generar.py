@@ -174,9 +174,10 @@ def alt_seo(html_txt, ruta):
         i = n[0]; n[0] += 1
         e1, e2, e3 = ALT_EQ[eq] if eq else ("electrodoméstico", "electrodomésticos", "neveras, lavadoras y secadoras")
         if falla:
+            fl_ = falla
             for pre in (f"la {e1} ", f"el {e1} ", f"{e1} "):
-                if falla.startswith(pre): falla = falla[len(pre):]; break
-            kws = [f"{e1} {MARCA} {falla} {donde}", f"reparación de {e2} {MARCA} {donde}", f"técnico {MARCA} a domicilio {donde}"]
+                if fl_.startswith(pre): fl_ = fl_[len(pre):]; break
+            kws = [f"{e1} {MARCA} {fl_} {donde}", f"reparación de {e2} {MARCA} {donde}", f"técnico {MARCA} a domicilio {donde}"]
         else:
             kws = [f"servicio técnico {MARCA} {donde}", f"reparación de {e2} {MARCA} {donde}", f"técnico de {e2} {MARCA} a domicilio {donde}", f"{e1} {MARCA} no funciona: servicio técnico {donde}", f"cerca de mí: servicio técnico {MARCA} {donde}"]
         nuevo = f"{base} - {kws[i % len(kws)]}"
