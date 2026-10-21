@@ -106,3 +106,7 @@
 ## Servicio técnico LG en Panamá
 - [Servicio técnico LG Panamá](https://centroserviciopanama.com/lg/index.html)
 - [llms.txt de LG](https://centroserviciopanama.com/lg/llms.txt)
+
+## Servicio técnico Whirlpool en Panamá
+- [Servicio técnico Whirlpool Panamá](https://centroserviciopanama.com/whirlpool/index.html)
+- [llms.txt de Whirlpool](https://centroserviciopanama.com/whirlpool/llms.txt)

@@ -1,0 +1,36 @@
+# -*- coding: utf-8 -*-
+"""Texto SEO por equipo. {z} se reemplaza por la zona o por «Panamá»."""
+SEO_EQ = {
+"neveras": [
+ ("Servicio técnico de neveras y refrigeradoras Whirlpool en {z}", "Si tu nevera Whirlpool dejó de enfriar, hace ruido, forma escarcha o el dispensador de agua no funciona, nuestro técnico de refrigeradoras Whirlpool va a tu casa en {z} para revisarla. Atendemos neveras de congelador superior (Top Mount), congelador inferior (Bottom Mount), Side by Side, French Door y modelos con pantalla con o sin dispensador de agua y hielo."),
+ ("Reparación de refrigeradoras Whirlpool: fallas que atendemos", "Las consultas más frecuentes son: la nevera no enfría o enfría poco, el congelador se llena de escarcha, la refrigeradora gotea agua por dentro, se escucha un zumbido fuerte del ventilador o del compresor, no hace hielo, la luz del filtro de agua se enciende y la nevera se apaga y prende sola. En cada caso revisamos sensores, ventilador del evaporador, resistencia de descongelación, tarjeta de control, empaques y sistema de agua antes de proponer la reparación."),
+ ("Mantenimiento de neveras Whirlpool con el clima de Panamá", "El calor y la humedad de Panamá obligan al compresor y a las rejillas a trabajar más. Limpiar el polvo del condensador, revisar que las puertas sellen bien, no sobrecargar el congelador y proteger la nevera de bajones de voltaje alarga su vida útil. Si hace tiempo no le haces mantenimiento a tu nevera Whirlpool en {z}, agenda una revisión preventiva."),
+ ("Neveras Whirlpool con dispensador de agua y fábrica de hielo", "Los modelos con dispensador pueden fallar por filtro de agua vencido, manguera congelada o válvula de entrada de agua. También atendemos la fábrica de hielo que no produce o produce poco. Si tu nevera Whirlpool muestra una alarma o un código en la pantalla, escríbenos el modelo y el código por WhatsApp y te orientamos."),
+ ("¿Cuánto cuesta reparar una nevera Whirlpool en {z}?", "El costo depende de la falla, la pieza y el modelo. Te confirmamos el valor de la visita antes de ir y el de la reparación antes de empezar. Si la nevera es muy antigua y la reparación no conviene, te lo decimos con claridad para que decidas."),
+],
+"lavadoras": [
+ ("Servicio técnico de lavadoras Whirlpool en {z}", "Reparamos lavadoras Whirlpool de carga superior y de carga frontal a domicilio en {z}. Si tu lavadora no centrifuga, no desagua, no llena de agua, gotea, vibra de más, no enciende o muestra códigos de error en la pantalla, nuestro técnico la revisa en tu casa y te explica la falla antes de reparar."),
+ ("Lavadoras Whirlpool de carga superior y frontal", "Conocemos las líneas más usadas de Whirlpool: lavadoras de carga superior con agitador, de carga frontal y con sistemas de sensores que ajustan el ciclo. Revisamos tarjeta electrónica, bomba de desagüe, válvula de entrada de agua, seguro de la puerta, amortiguadores y rodamientos."),
+ ("Fallas comunes de lavadoras Whirlpool y cómo evitarlas", "La mayoría de problemas se previenen con hábitos simples: no sobrecargar el tambor, limpiar el filtro de desagüe, usar la cantidad de detergente adecuada, nivelar las patas y dejar la puerta entreabierta para evitar moho y mal olor, algo muy importante por la humedad de Panamá."),
+ ("Lavadoras Whirlpool en apartamentos y torres de Panamá", "En edificios coordinamos con la administración el horario, el ascensor de servicio y el ingreso de herramientas. En {z} revisamos también el desagüe, las llaves de agua y la ventilación del cuarto de lavado, que muchas veces explican el problema."),
+ ("¿Cuánto cuesta reparar una lavadora Whirlpool en {z}?", "Depende de la falla y de la pieza. Te damos el costo de la visita antes de ir y el de la reparación antes de empezar el trabajo, con garantía sobre la pieza y la mano de obra."),
+],
+"secadoras": [
+ ("Servicio técnico de secadoras Whirlpool en {z}", "Si tu secadora Whirlpool no seca, no calienta, tarda demasiado, hace ruido, se detiene a mitad del ciclo o no enciende, nuestro técnico va a tu casa en {z} para diagnosticarla. Atendemos secadoras eléctricas y a gas, de carga frontal, solas o en torre con la lavadora."),
+ ("Por qué mi secadora Whirlpool no seca o no calienta", "Las causas más comunes son: ducto de salida de aire obstruido, filtro de pelusas saturado, resistencia o termostato dañados, sensor de humedad sucio o problemas del motor y la correa. Un buen diagnóstico evita cambiar piezas innecesarias."),
+ ("Seguridad: secadoras y ductos de ventilación", "Una secadora que se sobrecalienta o con el ducto tapado es un riesgo. Si notas olor a quemado, desconéctala y escríbenos de inmediato. Revisamos ductos, conexiones y el estado general del equipo."),
+ ("Secadoras Whirlpool en apartamentos de {z}", "En apartamentos y torres es frecuente que la salida de aire sea larga o tenga curvas, lo que alarga el secado. Revisamos la instalación completa y te recomendamos mejoras."),
+ ("¿Cuánto cuesta reparar una secadora Whirlpool en {z}?", "Te confirmamos el costo de la visita antes de ir y el de la reparación antes de empezar, según la falla y el modelo."),
+],
+}
+SEO_HOME = [
+ ("Servicio técnico Whirlpool en Panamá: reparación a domicilio", "Somos tu servicio técnico Whirlpool en Ciudad de Panamá, San Miguelito, Panamá Oeste y zonas cercanas. Reparamos neveras y refrigeradoras, lavadoras y secadoras Whirlpool en tu casa, apartamento u oficina, con diagnóstico claro, costo confirmado antes de reparar y garantía en la pieza y la mano de obra."),
+ ("Técnico Whirlpool en Panamá para neveras y refrigeradoras", "Nevera que no enfría, refrigeradora con escarcha, ruido en el congelador, dispensador de agua dañado o fábrica de hielo que no produce: atendemos neveras Whirlpool de congelador superior, Side by Side y French Door en barrios como San Francisco, Bella Vista, Obarrio, Costa del Este, Punta Pacífica, Paitilla y Betania."),
+ ("Reparación de lavadoras y secadoras Whirlpool", "Lavadoras que no centrifugan, no desaguan, gotean o muestran códigos de error y secadoras que no secan o no calientan. Trabajamos con lavadoras de carga superior y frontal, con motor inverter, y con secadoras eléctricas y a gas."),
+ ("Mantenimiento, instalación y diagnóstico de lavadoras, neveras y secadoras Whirlpool", "Mantenimiento preventivo, limpieza de filtros y desagües, nivelación e instalación de lavadoras y secadoras, y revisión completa de neveras Whirlpool. Ideal para evitar fallas con el calor y la humedad de Panamá."),
+ ("Zonas de cobertura y cómo pedir tu visita", "Damos servicio en más de 30 zonas de la ciudad y alrededores. Escríbenos por WhatsApp con el equipo, el modelo y la falla; coordinamos la visita en 24 a 48 horas y te confirmamos el costo antes de empezar."),
+]
+HUB_EXTRA = [
+ ("Servicio técnico Whirlpool: neveras, lavadoras y secadoras", "Atendemos neveras y refrigeradoras, lavadoras de carga superior y frontal, y secadoras Whirlpool. Cada visita incluye diagnóstico, explicación de la falla, costo claro y garantía."),
+ ("Cobertura en Ciudad de Panamá, San Miguelito y Panamá Oeste", "Visitamos San Francisco, Bella Vista, Obarrio, Marbella, Costa del Este, Punta Pacífica, Paitilla, Betania, Albrook, Clayton, Arraiján, La Chorrera y más zonas. Consulta la lista completa en la página de cobertura."),
+]
