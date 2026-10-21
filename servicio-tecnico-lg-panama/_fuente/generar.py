@@ -30,9 +30,9 @@ def pic(nombre, alt, depth, w, h, clase="fto", lazy=True):
     return f'<picture class="{clase}"><source srcset="{r}images/fotos/{nombre}.webp" type="image/webp"><img src="{r}images/fotos/{nombre}.jpg" alt="{esc(alt)}" width="{w}" height="{h}"{" loading=\"lazy\"" if lazy else ""}></picture>'
 FOTO_EQ = {"neveras": ("tecnico-nevera", "Técnico reparando una refrigeradora LG en una cocina de Panamá"), "lavadoras": ("tecnico-lavadora-2", "Técnico revisando una lavadora LG en una cocina de Panamá")}
 
-WH = {"nevera-family-hub": (732, 488), "nevera-cocina": (720, 960), "nevera-familia": (1024, 900), "nevera-cliente": (1100, 412), "dispensador-nevera": (1024, 900), "prod-nevera-top": (368, 677), "prod-nevera-sbs": (390, 566), "prod-lavadora-fr": (631, 900), "prod-lavadora-sup": (573, 900), "prod-secadora": (477, 675), "prod-torre": (272, 678), "atencion-1": (1024, 765), "atencion-2": (1024, 765), "atencion-3": (1024, 765), "tecnico-nevera": (1024, 765), "tecnico-lavadora-1": (1024, 765), "tecnico-lavadora-2": (1024, 765), "tecnico-banner": (500, 615)}
-ALT = {"prod-lavadora-fr": "Lavadora LG de carga frontal con motor Inverter Direct Drive", "prod-lavadora-sup": "Lavadora LG de carga superior", "prod-secadora": "Secadora LG de carga frontal", "prod-torre": "Torre de lavado LG WashTower con lavadora y secadora", "nevera-family-hub": "Mujer usando una nevera LG InstaView en la cocina", "nevera-cocina": "Cocina con nevera LG French Door", "nevera-familia": "Niño usando el dispensador de una nevera LG InstaView", "nevera-cliente": "Neveras y refrigeradores LG de distintos modelos", "dispensador-nevera": "Dispensador de agua de una nevera LG",
-       "prod-nevera-top": "Nevera LG French Door con puerta InstaView", "prod-nevera-sbs": "Refrigerador LG Side by Side con dispensador", "atencion-1": "Técnico y asesora de servicio conversando en una oficina de atención al cliente", "atencion-2": "Técnico y asesora de servicio en una oficina de atención", "atencion-3": "Asesora de servicio atendiendo en el escritorio de la oficina",
+WH = {"tecnico-nevera": (732, 488), "tecnico-nevera": (720, 960), "tecnico-banner": (1024, 900), "atencion-3": (1100, 412), "prod-nevera-top": (1024, 900), "prod-nevera-top": (368, 677), "prod-nevera-top": (390, 566), "prod-lavadora-fr": (631, 900), "prod-lavadora-sup": (573, 900), "prod-secadora": (477, 675), "prod-torre": (272, 678), "atencion-1": (1024, 765), "atencion-2": (1024, 765), "atencion-3": (1024, 765), "tecnico-nevera": (1024, 765), "tecnico-lavadora-1": (1024, 765), "tecnico-lavadora-2": (1024, 765), "tecnico-banner": (500, 615)}
+ALT = {"prod-lavadora-fr": "Lavadora LG de carga frontal con motor Inverter Direct Drive", "prod-lavadora-sup": "Lavadora LG de carga superior", "prod-secadora": "Secadora LG de carga frontal", "prod-torre": "Torre de lavado LG WashTower con lavadora y secadora", "tecnico-nevera": "Mujer usando una nevera LG InstaView en la cocina", "tecnico-nevera": "Cocina con nevera LG French Door", "tecnico-banner": "Niño usando el dispensador de una nevera LG InstaView", "atencion-3": "Neveras y refrigeradores LG de distintos modelos", "prod-nevera-top": "Dispensador de agua de una nevera LG",
+       "prod-nevera-top": "Nevera LG French Door con puerta InstaView", "prod-nevera-top": "Refrigerador LG Side by Side con dispensador", "atencion-1": "Técnico y asesora de servicio conversando en una oficina de atención al cliente", "atencion-2": "Técnico y asesora de servicio en una oficina de atención", "atencion-3": "Asesora de servicio atendiendo en el escritorio de la oficina",
        "tecnico-nevera": "Técnico reparando una nevera LG", "tecnico-lavadora-1": "Técnico reparando una lavadora LG de carga frontal", "tecnico-lavadora-2": "Técnico revisando una lavadora LG", "tecnico-banner": "Técnico de servicio LG en Panamá"}
 def fpic(n, depth=0, alt=None, lazy=True):
     w, h = WH.get(n, (1024, 572))
@@ -41,8 +41,8 @@ def split(n, ey, h2, p, href, link, rev=False, alt_bg=False, depth=0):
     r = R(depth)
     return (f'<section class="sec{" alt" if alt_bg else ""}"><div class="w split{" rev" if rev else ""}"><div class="sp-f">{fpic(n, depth)}</div>'
             f'<div class="sp-t"><span class="ey">{esc(ey)}</span><h2>{esc(h2)}</h2><p>{esc(p)}</p><p><a class="btn sm" href="{r}{href}">{esc(link)} →</a></p></div></div></section>')
-FOTO_SPLIT = {"neveras": "nevera-family-hub", "lavadoras": "prod-lavadora-fr", "secadoras": "prod-secadora"}
-NEV_FOTOS = ["tecnico-nevera", "prod-nevera-top", "atencion-1", "nevera-cocina", "atencion-3", "prod-nevera-top", "nevera-familia", "prod-nevera-sbs", "nevera-cliente", "dispensador-nevera"]
+FOTO_SPLIT = {"neveras": "tecnico-nevera", "lavadoras": "prod-lavadora-fr", "secadoras": "prod-secadora"}
+NEV_FOTOS = ["tecnico-nevera", "prod-nevera-top", "atencion-1", "atencion-3", "tecnico-banner", "atencion-2"]
 
 HERO_PROD = {"neveras": "prod-nevera-top", "lavadoras": "prod-lavadora-fr", "secadoras": "prod-secadora"}
 NAV_EQ = [(k, v["corto"]) for k, v in EQUIPOS.items()]
@@ -133,7 +133,7 @@ def negocio_ld(nombre=None, area=None):
             "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "07:00", "closes": "18:00"}],
             "priceRange": "$$", "knowsAbout": ["Reparación de neveras LG", "Reparación de lavadoras LG", "Reparación de secadoras LG"]}
 
-EQ_IMGS = {"neveras": ["prod-nevera-top", "prod-nevera-sbs"], "lavadoras": ["prod-lavadora-fr", "prod-lavadora-sup"], "secadoras": ["prod-secadora", "prod-torre"]}
+EQ_IMGS = {"neveras": ["prod-nevera-top"], "lavadoras": ["prod-lavadora-fr", "prod-lavadora-sup"], "secadoras": ["prod-secadora", "prod-torre"]}
 def eq_img(k, r):
     return '<div class="eqimgs">' + "".join(f'<img class="eqimg" src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{WH[n][0]}" height="{WH[n][1]}" loading="lazy">' for n in EQ_IMGS[k]) + '</div>'
 
@@ -153,7 +153,7 @@ def tarjetas_eq(depth):
         f'<a class="card eq" href="{r}electrodomesticos/{k}/index.html">{eq_img(k, r)}<h3>{esc(v["nombre"])}</h3><p>{esc(v["intro"][:120].rsplit(" ",1)[0])}…</p><span class="mas">Ver servicio →</span></a>'
         for k, v in EQUIPOS.items()) + "</div>"
 
-HERO_CARDS = [("Neveras", "neveras", ["prod-nevera-top"]), ("Refrigeradores", "neveras", ["prod-nevera-sbs"]), ("Lavadoras carga frontal", "lavadoras", ["prod-lavadora-fr"]), ("Lavadoras carga superior", "lavadoras", ["prod-lavadora-sup"]), ("Secadoras", "secadoras", ["prod-secadora"]), ("Torres de lavado", "secadoras", ["prod-torre"])]
+HERO_CARDS = [("Neveras", "neveras", ["prod-nevera-top"]), ("Lavadoras carga frontal", "lavadoras", ["prod-lavadora-fr"]), ("Lavadoras carga superior", "lavadoras", ["prod-lavadora-sup"]), ("Secadoras", "secadoras", ["prod-secadora"]), ("Torres de lavado", "secadoras", ["prod-torre"])]
 def _imgs(ns, r=""):
     return "".join(f'<img src="{r}images/fotos/{n}.webp" alt="{esc(ALT[n])}" width="{WH[n][0]}" height="{WH[n][1]}">' for n in ns)
 def hero_cards():
@@ -170,12 +170,12 @@ def pagina_inicio():
 <ul class="pts"><li>Visitas en 24 a 48 horas</li><li>Garantía en pieza y mano de obra</li><li>{HORARIO}</li></ul></div>
 <div class="hero-tarjeta"><b>¿Qué equipo LG tienes?</b><div class="mini fotos">{hero_cards()}</div><small>Toca tu equipo para ver fallas comunes y cómo lo reparamos.</small></div></div></section>
 <section class="conf"><div class="w"><div><b>Técnico especializado</b><small>Enfocado en equipos LG</small></div><div><b>Costo claro</b><small>Antes de reparar</small></div><div><b>Garantía</b><small>Pieza y mano de obra</small></div><div><b>Atención por WhatsApp</b><small>Respuesta en minutos</small></div></div></section>
-{split("nevera-cocina", "Neveras LG", "Neveras French Door, Side by Side y con dispensador", "Reparamos neveras LG que no enfrían, con escarcha, ruido, fugas de agua o dispensador dañado, en casas y apartamentos de Panamá.", "electrodomesticos/neveras/index.html", "Ver servicio de neveras")}
+{split("tecnico-nevera", "Neveras LG", "Neveras French Door, Side by Side y con dispensador", "Reparamos neveras LG que no enfrían, con escarcha, ruido, fugas de agua o dispensador dañado, en casas y apartamentos de Panamá.", "electrodomesticos/neveras/index.html", "Ver servicio de neveras")}
 <section class="marca-band"><div class="w"><span>Reparamos equipos de la marca</span><img src="images/logo/lg-marca.png" alt="LG" width="180" height="80"><small>LG es una marca de LG Electronics Inc.; este sitio no es operado por LG.</small></div></section>
 <section class="sec" id="equipos"><div class="w"><div class="cab"><span class="ey">Qué reparamos</span><h2>Reparación de electrodomésticos LG en Panamá</h2><p>Atendemos los equipos LG más usados en casas y apartamentos de la ciudad.</p></div>{tarjetas_eq(0)}</div></section>
 {split("prod-lavadora-fr", "Lavadoras LG", "Lavadoras LG que no centrifugan, no desaguan o gotean", "Diagnosticamos carga superior y frontal, secadoras y lavasecadoras: códigos de error, bombas, seguros de puerta, amortiguadores y más.", "electrodomesticos/lavadoras/index.html", "Ver servicio de lavadoras", True)}
 <section class="sec alt" id="servicios"><div class="w"><div class="cab"><span class="ey">Servicios</span><h2>Servicio técnico a domicilio</h2></div><div class="grid g4">{"".join(f'<a class="card" href="servicios/{k}-lg-panama.html"><h3>{esc(v[1])}</h3><p>{esc(v[2][:130].rsplit(" ",1)[0])}…</p><span class="mas">Ver más →</span></a>' for k, v in SERVICIOS.items())}</div></div></section>
-<section class="sec"><div class="w"><div class="cab"><span class="ey">Modelos</span><h2>Modelos LG que reparamos</h2><p>Neveras de congelador superior, Side by Side con pantalla, lavadoras de carga superior y frontal, y secadoras.</p></div><div class="mods">{"".join(f'<a href="{h}">{fpic(n, 0)}<b>{esc(t)}</b></a>' for n, t, h in [("prod-nevera-top", "Nevera", "electrodomesticos/neveras/index.html"), ("prod-nevera-sbs", "Refrigerador Side by Side", "electrodomesticos/neveras/index.html"), ("prod-lavadora-fr", "Lavadora carga frontal", "electrodomesticos/lavadoras/index.html"), ("prod-lavadora-sup", "Lavadora carga superior", "electrodomesticos/lavadoras/index.html"), ("prod-secadora", "Secadora", "electrodomesticos/secadoras/index.html"), ("prod-torre", "Torre de lavado", "electrodomesticos/secadoras/index.html")])}</div></div></section>
+<section class="sec"><div class="w"><div class="cab"><span class="ey">Modelos</span><h2>Modelos LG que reparamos</h2><p>Neveras de congelador superior, Side by Side con pantalla, lavadoras de carga superior y frontal, y secadoras.</p></div><div class="mods">{"".join(f'<a href="{h}">{fpic(n, 0)}<b>{esc(t)}</b></a>' for n, t, h in [("prod-nevera-top", "Nevera", "electrodomesticos/neveras/index.html"), ("prod-lavadora-fr", "Lavadora carga frontal", "electrodomesticos/lavadoras/index.html"), ("prod-lavadora-sup", "Lavadora carga superior", "electrodomesticos/lavadoras/index.html"), ("prod-secadora", "Secadora", "electrodomesticos/secadoras/index.html"), ("prod-torre", "Torre de lavado", "electrodomesticos/secadoras/index.html")])}</div></div></section>
 {split("prod-nevera-top", "Nevera con dispensador", "¿Tu nevera LG con dispensador de agua falla?", "Agua que sale lenta, aviso de filtro, hielo que no se produce o fugas: revisamos el sistema de agua de tu refrigeradora LG a domicilio.", "cambio-filtro-nevera-lg-panama.html", "Ver más sobre el dispensador")}
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Así trabajamos</span><h2>Cómo agendar tu servicio técnico LG</h2></div><ol class="pasos">{"".join(f"<li><b>{esc(a)}</b><p>{esc(b)}</p></li>" for a, b in pasos)}</ol></div></section>
 {split("prod-secadora", "Secadoras LG", "Secadoras LG que no secan, no calientan o hacen ruido", "Secadoras que no secan o no calientan y lavadoras que no desaguan: revisamos equipos LG de carga frontal, solos o apilados en torre, a domicilio en Panamá.", "electrodomesticos/secadoras/index.html", "Ver servicio de secadoras", True)}
@@ -189,18 +189,18 @@ def pagina_inicio():
 <section class="sec"><div class="w txt seo">{"".join(f"<h2>{esc(a)}</h2><p>{esc(b)}</p>" for a, b in SEO_HOME)}</div></section>
 {split("atencion-3", "Asesoras de servicio", "Una asesora te atiende y agenda tu visita", "Te pedimos el equipo, el modelo y la falla, registramos tu zona y te confirmamos el horario disponible para que el técnico llegue preparado.", "servicio-tecnico-lg-cerca-de-mi-panama.html", "Ver zonas de cobertura", False, True)}
 {split("atencion-2", "Técnico y asesoría", "Del primer mensaje a la visita en 24 a 48 horas", "Coordinamos por WhatsApp, te confirmamos disponibilidad en tu zona y el técnico llega con el diagnóstico claro y garantía en la reparación.", "garantia-lg-panama-que-hacer.html", "Ver garantía")}
-{split("nevera-familia", "Tu cocina de nuevo en marcha", "Que tu nevera vuelva a enfriar sin complicaciones", "Escríbenos con el modelo y la falla. Coordinamos la visita en 24 a 48 horas y te confirmamos el costo antes de empezar.", "diagnostico.html", "Abrir diagnóstico rápido", False, True)}
+{split("tecnico-banner", "Tu cocina de nuevo en marcha", "Que tu nevera vuelva a enfriar sin complicaciones", "Escríbenos con el modelo y la falla. Coordinamos la visita en 24 a 48 horas y te confirmamos el costo antes de empezar.", "diagnostico.html", "Abrir diagnóstico rápido", False, True)}
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Cobertura</span><h2>Servicio técnico LG en tu zona de Panamá</h2><p>Llegamos a los principales barrios de la ciudad, San Miguelito y Panamá Oeste.</p></div><div class="chips">{zonas}</div><p><a href="zonas-de-cobertura.html">Ver todas las zonas de cobertura →</a></p></div></section>
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Diagnóstico rápido</span><h2>¿Qué le pasa a tu equipo LG?</h2><p>Mira los síntomas más comunes, la causa probable y qué tan urgente es.</p></div><p><a class="btn lg" href="diagnostico.html">Abrir el diagnóstico rápido</a></p></div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Lo que más buscan</span><h2>Servicio técnico LG en Panamá: encuentra lo que necesitas</h2><p>Reparación de neveras, lavadoras y secadoras LG, teléfono, precios, repuestos, filtros y zonas de cobertura.</p></div><div class="chips">{busquedas_chips(0)}</div>
 <div class="grid g3 gf" style="margin-top:22px"><a class="card" href="cambio-filtro-nevera-lg-panama.html">{fpic("prod-nevera-top", 0)}<h3>Nevera LG con dispensador</h3><p>Agua lenta, hielo y avisos del panel.</p></a>
-<a class="card" href="fallas/neveras-lg-{fslug(EQUIPOS['neveras']['fallas'][0])}.html">{fpic("prod-nevera-sbs", 0)}<h3>La nevera LG no enfría</h3><p>Causas y qué revisar antes de llamar.</p></a>
+<a class="card" href="fallas/neveras-lg-{fslug(EQUIPOS['neveras']['fallas'][0])}.html">{fpic("prod-nevera-top", 0)}<h3>La nevera LG no enfría</h3><p>Causas y qué revisar antes de llamar.</p></a>
 <a class="card" href="codigos-de-error-lavadora-lg-panama.html">{fpic("prod-lavadora-fr", 0)}<h3>Códigos de error de lavadora</h3><p>UE, OE, IE, dE, LE: qué significan.</p></a></div>
 <h3 style="margin-top:26px">Fallas y zonas más consultadas</h3><div class="chips"><a href="fallas/index.html">Todas las fallas LG</a>{"".join(f'<a href="{furl(k, e["fallas"][0])}">{esc(e["corto"])}: {esc(e["fallas"][0][0])}</a>' for k, e in EQUIPOS.items())}{"".join(f'<a href="{zurl("neveras", z[0])}">Neveras LG en {esc(z[0])}</a>' for z in ZONAS[:8])}</div></div></section>
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Dudas frecuentes</span><h2>Preguntas frecuentes sobre el servicio técnico LG en Panamá</h2></div>{faq_html(FAQ_GENERAL)}</div></section>
 {cta(msg)}'''
     ld = [negocio_ld(), faq_ld(FAQ_GENERAL)]
-    escribir("index.html", "Servicio Técnico LG Panamá | Neveras, Lavadoras y Secadoras",
+    escribir("index.html", "Servicio Técnico LG Panamá | Reparación de Neveras, Lavadoras y Secadoras LG",
              "Servicio técnico LG en Panamá: reparación de neveras, lavadoras y secadoras a domicilio. Diagnóstico honesto, garantía y visitas en 24-48 horas. WhatsApp +507 6933-7976.", cuerpo, ld, "1.0")
 
 def paginas_equipo():
@@ -390,7 +390,7 @@ def indices():
 def fslug(f): return slug(f[0])[:48].strip("-")
 def furl(k, f): return f"fallas/{k}-lg-{fslug(f)}.html"
 def zurl(k, z): return f"zonas/{k}-lg-{slug(z)}.html"
-FOTO_FALLA = {"neveras": ("dispensador-nevera", "Persona usando el dispensador de agua de una nevera LG French Door"), "lavadoras": ("tecnico-lavadora-1", "Técnico revisando una lavadora LG en Panamá"),
+FOTO_FALLA = {"neveras": ("prod-nevera-top", "Persona usando el dispensador de agua de una nevera LG French Door"), "lavadoras": ("tecnico-lavadora-1", "Técnico revisando una lavadora LG en Panamá"),
               "secadoras": ("tecnico-lavadora-2", "Técnico revisando una secadora y lavadora LG")}
 FOTO_ZEQ = {"neveras": ("tecnico-nevera", FOTO_EQ["neveras"][1]), "lavadoras": ("tecnico-lavadora-2", FOTO_EQ["lavadoras"][1]), "secadoras": ("tecnico-lavadora-1", "Técnico revisando una secadora LG")}
 ROT = {"neveras": NEV_FOTOS, "lavadoras": ["tecnico-lavadora-1", "prod-lavadora-fr", "atencion-2", "prod-lavadora-sup", "atencion-3", "tecnico-lavadora-2"], "secadoras": ["prod-secadora", "prod-torre", "atencion-1", "tecnico-lavadora-2", "atencion-2", "tecnico-lavadora-1"]}
@@ -469,7 +469,7 @@ def paginas_zona_equipo():
             n += 1
 
 HUBS = [
- dict(f="servicio-tecnico-lg-panama.html", chip="Servicio técnico LG Panamá", t="Servicio Técnico LG Panamá: Cómo Funciona, Zonas y Contacto", h1="Servicio técnico LG en Panamá", foto=("nevera-cocina", ALT["nevera-cocina"]), foto2="nevera-familia",
+ dict(f="servicio-tecnico-lg-panama.html", chip="Servicio técnico LG Panamá", t="Servicio Técnico LG Panamá: Cómo Funciona, Zonas y Contacto", h1="Servicio técnico LG en Panamá", foto=("tecnico-nevera", ALT["tecnico-nevera"]), foto2="tecnico-banner",
       lead="Reparación a domicilio de neveras, lavadoras y secadoras LG en Ciudad de Panamá, San Miguelito y Panamá Oeste.",
       secs=[("Qué es el servicio técnico LG que ofrecemos", "Atendemos en tu casa u oficina los electrodomésticos LG que presentan fallas: neveras que no enfrían, lavadoras que no centrifugan o no desaguan, secadoras que no secan o no calientan. Revisamos el equipo, te explicamos la causa y confirmamos el costo antes de reparar."),
             ("Cómo funciona", "1) Escríbenos por WhatsApp con el equipo, el modelo y la falla. 2) Coordinamos la visita, normalmente en 24 a 48 horas. 3) Diagnosticamos en el sitio y te damos el costo. 4) Reparamos y probamos el equipo, con garantía sobre la pieza y la mano de obra."),
@@ -481,19 +481,19 @@ HUBS = [
             ("Qué información enviar", "Tipo de equipo (nevera, lavadora o secadora), modelo, tiempo de uso, qué síntoma presenta, si muestra códigos de error y tu barrio o edificio. Con eso te confirmamos disponibilidad y costo de la visita."),
             ("Horario", "Lunes a sábado de 7:00am a 6:00pm. Los mensajes enviados fuera de horario se responden el siguiente día hábil.")],
       faq=[("¿Cuál es el número de servicio técnico LG en Panamá?", f"Nuestro WhatsApp y teléfono es {TEL}."), ("¿Atienden por WhatsApp?", "Sí, es el canal principal: ahí coordinamos la visita y confirmamos el costo.")]),
- dict(f="tecnico-lg-a-domicilio-panama.html", chip="Técnico LG a domicilio", t="Técnico LG a Domicilio en Panamá | Neveras, Lavadoras y Secadoras", h1="Técnico LG a domicilio en Panamá", foto=("tecnico-nevera", FOTO_EQ["neveras"][1]), foto2="nevera-cliente",
+ dict(f="tecnico-lg-a-domicilio-panama.html", chip="Técnico LG a domicilio", t="Técnico LG a Domicilio en Panamá | Neveras, Lavadoras y Secadoras", h1="Técnico LG a domicilio en Panamá", foto=("tecnico-nevera", FOTO_EQ["neveras"][1]), foto2="atencion-3",
       lead="Vamos a tu casa, apartamento u oficina para revisar y reparar tu electrodoméstico LG sin que tengas que moverlo.",
       secs=[("Ventajas de la reparación a domicilio", "No tienes que cargar ni transportar una nevera o una lavadora. El técnico revisa el equipo donde está instalado, con su conexión eléctrica, su desagüe y su ventilación reales, que muchas veces son parte del problema."),
             ("Apartamentos y torres", "Coordinamos con la administración el horario, el ascensor de servicio y el ingreso de herramientas para que la visita sea rápida y sin inconvenientes."),
             ("Qué llevamos a la visita", "Herramientas de diagnóstico, multímetro y las piezas más frecuentes según el equipo. Si hace falta una pieza que no llevamos, te avisamos el plazo antes de empezar.")],
       faq=[("¿Cuánto tarda en llegar el técnico?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas."), ("¿Hacen la reparación en el momento?", "Muchas fallas se resuelven en la misma visita; si hay que pedir una pieza te avisamos antes.")]),
- dict(f="reparacion-electrodomesticos-lg-panama.html", chip="Reparación de electrodomésticos LG", t="Reparación de Electrodomésticos LG en Panamá | Neveras, Lavadoras y Secadoras", h1="Reparación de electrodomésticos LG en Panamá", foto=("nevera-family-hub", ALT["nevera-family-hub"]), foto2="tecnico-lavadora-2",
+ dict(f="reparacion-electrodomesticos-lg-panama.html", chip="Reparación de electrodomésticos LG", t="Reparación de Electrodomésticos LG en Panamá | Neveras, Lavadoras y Secadoras", h1="Reparación de electrodomésticos LG en Panamá", foto=("tecnico-nevera", ALT["tecnico-nevera"]), foto2="tecnico-lavadora-2",
       lead="Neveras, lavadoras y secadoras LG: reparación, mantenimiento e instalación con diagnóstico claro y garantía.",
       secs=[("Equipos que reparamos", "Neveras (French Door, Side by Side, congelador superior e inferior, con dispensador), lavadoras de carga superior y frontal y secadoras split e inverter."),
             ("Tipos de servicio", "Reparación de fallas, diagnóstico, mantenimiento preventivo e instalación. Cada servicio incluye explicación de la falla y costo confirmado antes de empezar."),
             ("Fallas más comunes", "La nevera que no enfría, el congelador con escarcha, la lavadora que no desagua o no centrifuga, y la secadora que no seca son las consultas más frecuentes en Panamá.")],
       faq=[("¿Reparan todas las líneas de LG?", "Atendemos neveras, lavadoras y secadoras. Para otros equipos, escríbenos y te decimos si podemos ayudarte."), ("¿Vale la pena reparar un equipo viejo?", "Si la falla es de una pieza accesible, casi siempre sí. Si no vale la pena, te lo decimos con honestidad.")]),
- dict(f="servicio-tecnico-lg-cerca-de-mi-panama.html", chip="Servicio técnico LG cerca de mí", t="Servicio Técnico LG Cerca de Mí en Panamá | Visita a Domicilio", h1="Servicio técnico LG cerca de mí en Panamá", foto=("dispensador-nevera", ALT["dispensador-nevera"]),
+ dict(f="servicio-tecnico-lg-cerca-de-mi-panama.html", chip="Servicio técnico LG cerca de mí", t="Servicio Técnico LG Cerca de Mí en Panamá | Visita a Domicilio", h1="Servicio técnico LG cerca de mí en Panamá", foto=("prod-nevera-top", ALT["prod-nevera-top"]),
       lead="Si buscas un técnico LG cerca de tu casa en Panamá, atendemos a domicilio en más de 30 barrios y corregimientos.",
       secs=[("Cobertura por zonas", "Llegamos a San Francisco, Bella Vista, Obarrio, Marbella, Costa del Este, Punta Pacífica, Paitilla, Betania, San Miguelito, Albrook, Arraiján, La Chorrera y más. Elige tu zona abajo."),
             ("No tienes que ir a ningún lado", "Como el servicio es a domicilio, no necesitas buscar un taller cercano ni transportar tu equipo: nosotros vamos a donde está.")],
@@ -510,13 +510,32 @@ HUBS = [
             ("Cómo evitar sorpresas", "Pide siempre que el técnico te explique la falla y te dé el costo antes de empezar. Nosotros lo hacemos así: diagnóstico, explicación, costo y solo entonces reparación."),
             ("¿Reparar o reemplazar?", "Si la reparación cuesta una parte importante del valor de un equipo nuevo y el equipo es muy viejo, te explicamos las opciones con honestidad para que decidas.")],
       faq=[("¿Cuánto cuesta la visita de diagnóstico?", "Escríbenos por WhatsApp con el equipo, el modelo y la falla; te confirmamos el costo de la visita antes de ir."), ("¿El diagnóstico se descuenta de la reparación?", "Te explicamos las condiciones por WhatsApp antes de agendar la visita.")]),
- dict(f="garantia-lg-panama-que-hacer.html", chip="Garantía LG en Panamá", t="Garantía LG en Panamá: Qué Hacer si tu Equipo Falla", h1="Garantía LG en Panamá: qué hacer si tu equipo falla", foto=("nevera-cliente", ALT["nevera-cliente"]),
+ dict(f="reparacion-neveras-lg-instaview-panama.html", chip="Neveras LG InstaView", t="Reparación de Neveras LG InstaView y Door-in-Door en Panamá", h1="Reparación de neveras LG InstaView en Panamá", foto=("prod-nevera-top", ALT["prod-nevera-top"]), foto2="tecnico-nevera",
+      lead="Atendemos neveras LG InstaView, Door-in-Door, French Door y Side by Side a domicilio en Ciudad de Panamá.",
+      secs=[("Fallas frecuentes de las neveras LG InstaView", "La ventana InstaView que no se ilumina, el panel que no responde, el dispensador de agua, la fábrica de hielo, la escarcha en el congelador y los ruidos del compresor son las consultas más comunes."),
+            ("Neveras LG con compresor inverter", "Las neveras LG con compresor Smart Inverter y Linear Cooling son silenciosas, pero dependen de sensores y tarjetas. Revisamos ventiladores, sensores de temperatura, descongelación y tarjeta antes de proponer la reparación."),
+            ("Cómo pedir la visita", "Escríbenos por WhatsApp con el modelo de tu nevera LG, el código que muestra el panel y una foto o video del problema.")],
+      faq=[("¿Reparan neveras LG InstaView?", "Sí, revisamos la iluminación de la puerta, el panel y el sistema de enfriamiento."), ("¿Cuánto tarda la visita?", "Coordinamos visitas en 24 a 48 horas en la mayoría de las zonas.")]),
+ dict(f="reparacion-lavadoras-lg-inverter-direct-drive-panama.html", chip="Lavadoras LG Inverter Direct Drive", t="Reparación de Lavadoras LG Inverter Direct Drive y TurboWash en Panamá", h1="Reparación de lavadoras LG en Panamá: Inverter Direct Drive, TurboWash y ThinQ", foto=("prod-lavadora-fr", ALT["prod-lavadora-fr"]), foto2="tecnico-lavadora-2",
+      lead="Lavadoras LG de carga frontal y superior: códigos de error, vibración, desagüe, entrada de agua y conexión ThinQ.",
+      secs=[("Lavadoras LG que reparamos", "Carga frontal con motor Inverter Direct Drive, carga superior, lavadoras con TurboWash y TrueSteam, y torres WashTower."),
+            ("Códigos de error más consultados", "UE (carga desbalanceada), OE (desagüe), IE (entrada de agua), dE (puerta), LE (motor) y FE (exceso de agua). Mira nuestra guía de códigos de error de lavadora LG."),
+            ("Problemas con la app ThinQ", "Si tu lavadora LG no conecta al Wi-Fi o no se empareja con la app, revisamos la red 2.4 GHz y el módulo de la lavadora.")],
+      faq=[("¿Qué significa OE en una lavadora LG?", "Problema de desagüe: filtro, manguera o bomba."), ("¿Reparan lavadoras LG de carga superior?", "Sí, atendemos carga frontal y superior.")]),
+ dict(f="codigos-de-error-nevera-lg-panama.html", chip="Códigos de error nevera LG", t="Códigos de Error de Neveras LG: Er FF, Er rF y Qué Hacer", h1="Códigos de error de neveras LG: qué significan", foto=("tecnico-nevera", ALT["tecnico-nevera"]),
+      lead="Los códigos más comunes de las neveras LG y qué revisar antes de llamar al técnico.",
+      secs=[("Er FF y Er rF", "Suelen indicar problemas del ventilador del congelador (FF) o del ventilador de la nevera (rF). Revisa que no haya hielo en las rejillas."),
+            ("Er dS", "Suele relacionarse con el sensor de descongelación. Puede aparecer con escarcha excesiva."),
+            ("Er CO", "Problema de comunicación entre componentes. Desconecta la nevera unos minutos y reinicia."),
+            ("Cuándo llamar", "Si el código reaparece o la nevera enfría mal, escríbenos con el modelo y el código. Los códigos pueden variar según el modelo.")],
+      faq=[("¿Cómo reinicio mi nevera LG?", "Desconéctala 5 a 10 minutos y vuelve a conectarla."), ("¿Un código significa que el compresor está dañado?", "No necesariamente: suelen ser ventiladores o sensores.")]),
+ dict(f="garantia-lg-panama-que-hacer.html", chip="Garantía LG en Panamá", t="Garantía LG en Panamá: Qué Hacer si tu Equipo Falla", h1="Garantía LG en Panamá: qué hacer si tu equipo falla", foto=("atencion-3", ALT["atencion-3"]),
       lead="Antes de reparar, verifica si tu equipo sigue en garantía de fábrica. Te explicamos cómo y qué opciones tienes.",
       secs=[("Cómo saber si tu equipo está en garantía", "Revisa la factura de compra, la fecha y el plazo indicado por el vendedor o el fabricante. Guarda siempre el comprobante: lo vas a necesitar para cualquier reclamo."),
             ("Si el equipo ya no está en garantía", "Podemos revisarlo a domicilio, explicarte la falla y repararlo. Nuestra reparación incluye garantía propia sobre la pieza reemplazada y la mano de obra."),
             ("Antes de pagar una reparación", "Si tu equipo es reciente, consulta primero las condiciones de garantía del vendedor. Durante nuestro diagnóstico también te lo recordamos para que tomes la mejor decisión.")],
       faq=[("¿Cuánto dura la garantía de la reparación?", "Se confirma por escrito al momento del servicio, antes de que pagues."), ("¿Qué hago si la falla vuelve?", "Escríbenos por WhatsApp con la fecha del servicio; si está dentro del plazo, coordinamos la revisión.")]),
- dict(f="cambio-filtro-nevera-lg-panama.html", chip="Cambio de filtro de nevera LG", t="Cambio de Filtro de Agua de Nevera LG en Panamá | Cada Cuánto", h1="Cambio de filtro de agua de nevera LG en Panamá", foto=("prod-nevera-sbs", ALT["prod-nevera-sbs"]), foto2="nevera-cocina",
+ dict(f="cambio-filtro-nevera-lg-panama.html", chip="Cambio de filtro de nevera LG", t="Cambio de Filtro de Agua de Nevera LG en Panamá | Cada Cuánto", h1="Cambio de filtro de agua de nevera LG en Panamá", foto=("prod-nevera-top", ALT["prod-nevera-top"]), foto2="tecnico-nevera",
       lead="Cuando la nevera muestra «cambiar filtro» o el agua sale lenta o con mal sabor, es momento de reemplazar el filtro. Lo hacemos a domicilio.",
       secs=[("Cada cuánto cambiar el filtro", "Por lo general cada 6 meses, o antes si el agua sale lenta, con sabor u olor extraño, o si la nevera muestra el aviso de filtro. En zonas con agua con más sedimentos puede necesitar cambio más seguido."),
             ("Señales de que el filtro está vencido", "Luz o aviso de cambio de filtro, flujo de agua lento en el dispensador, hielo con mal sabor, o fábrica de hielo que produce poco."),

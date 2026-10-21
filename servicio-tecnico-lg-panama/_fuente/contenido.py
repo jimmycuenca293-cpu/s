@@ -187,4 +187,34 @@ FAQ_GENERAL = [
 ]
 
 from blog2 import BLOG2
-BLOG = BLOG + BLOG2
+from blog_lg import BLOG_LG
+BLOG = BLOG + BLOG2 + BLOG_LG
+
+# --- fallas y preguntas específicas de LG
+EQUIPOS["neveras"]["fallas"] += [
+ ("La puerta InstaView no se ilumina", "LED o iluminación de la ventana con falla, sensor de toque, modo de bloqueo o tarjeta de control.", "Vigilar", "Desconecta la nevera unos minutos, limpia el cristal y desactiva el bloqueo del panel."),
+ ("La nevera LG muestra un código de error en el panel", "Falla de ventilador, sensor de descongelación o comunicación entre tarjetas.", "Revisar pronto", "Anota el código exacto y revisa que no haya hielo en las rejillas del congelador."),
+ ("El compresor hace ruido de arranque o vibra", "Compresor inverter, nevera desnivelada o contacto con la pared.", "Revisar pronto", "Nivela las patas y separa la nevera de la pared y los muebles."),
+]
+EQUIPOS["lavadoras"]["fallas"] += [
+ ("Muestra el código OE (no desagua)", "Filtro de desagüe tapado, manguera obstruida o bomba de desagüe con falla.", "Revisar pronto", "Revisa el filtro de desagüe y que la manguera no esté doblada."),
+ ("Muestra el código IE (no entra agua)", "Llaves cerradas, mallas tapadas, baja presión o válvula de entrada con falla.", "Revisar pronto", "Abre las llaves y limpia las mallas de las mangueras."),
+ ("Muestra el código LE (motor bloqueado)", "Sobrecarga, rodamientos, motor Inverter Direct Drive o tarjeta de control.", "Urgente", "Apaga, desconecta, reparte la ropa y reinicia; si reaparece, no la uses."),
+ ("No conecta a la app ThinQ", "Red Wi-Fi 2.4 GHz mal configurada o módulo Wi-Fi con falla.", "Vigilar", "Acerca el router, reinicia ambos equipos y repite el emparejamiento."),
+]
+EQUIPOS["secadoras"]["fallas"] += [
+ ("Muestra aviso de ventilación o código d80", "Ducto de escape obstruido o muy largo, filtro saturado.", "Revisar pronto", "Limpia el filtro y revisa que el ducto no esté aplastado ni tapado."),
+ ("La secadora LG no seca con Sensor Dry", "Sensor de humedad sucio, ducto obstruido o resistencia con falla.", "Revisar pronto", "Limpia el sensor con un paño húmedo y repite un ciclo corto."),
+]
+EQUIPOS["neveras"]["faq"] += [
+ ("¿Reparan neveras LG InstaView y Door-in-Door?", "Sí, atendemos neveras LG con puerta InstaView, Door-in-Door, French Door, Side by Side y de congelador superior o inferior."),
+ ("¿Qué significa un código de error en mi nevera LG?", "Suele indicar falla de un ventilador, un sensor o la comunicación entre tarjetas. Escríbenos el modelo y el código y te orientamos."),
+]
+EQUIPOS["lavadoras"]["faq"] += [
+ ("¿Qué significan los códigos UE, OE, IE, dE, LE y FE en una lavadora LG?", "UE: carga desbalanceada. OE: problema de desagüe. IE: entrada de agua. dE: puerta. LE: motor bloqueado. FE: exceso de agua."),
+ ("¿Reparan lavadoras LG con ThinQ y TurboWash?", "Sí, atendemos lavadoras LG de carga frontal y superior, incluyendo los problemas de conexión con la app ThinQ."),
+]
+EQUIPOS["secadoras"]["faq"] += [
+ ("¿Reparan la torre de lavado LG WashTower?", "Sí, revisamos la lavadora y la secadora de la torre, sus conexiones y el ducto de escape."),
+ ("¿Por qué mi secadora LG tarda tanto en secar?", "Casi siempre es el filtro de pelusas o el ducto de escape obstruido; si ambos están limpios, puede ser la resistencia o el sensor de humedad."),
+]
