@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Ensambla centroserviciopanama.com: Samsung en la raíz, LG en /lg/, Whirlpool en /whirlpool/, Mabe en /mabe/ Frigidaire en /frigidaire/ y Electrolux en /electrolux/ (una sola URL).
+"""Ensambla centroserviciopanama.com: Samsung en la raíz, LG en /lg/, Whirlpool en /whirlpool/, Mabe en /mabe/ Frigidaire en /frigidaire/ Electrolux en /electrolux/ y General Electric en /general-electric/ (una sola URL).
 Uso: ejecutar generar.py en servicio-tecnico-samsung-panama/_fuente y servicio-tecnico-lg-panama/_fuente, luego:  python3 ensamblar.py"""
 import shutil, zipfile, datetime
 from pathlib import Path
@@ -11,6 +11,7 @@ W = RAIZ.parent / "servicio-tecnico-whirlpool-panama"
 MB = RAIZ.parent / "servicio-tecnico-mabe-centro"
 FR = RAIZ.parent / "servicio-tecnico-frigidaire-panama"
 EL = RAIZ.parent / "servicio-tecnico-electrolux-panama"
+GE = RAIZ.parent / "servicio-tecnico-general-electric-panama"
 DOM = "https://centroserviciopanama.com"
 HOY = datetime.date.today().isoformat()
 SKIP = {"_fuente", "README.md", "__pycache__"}
@@ -35,6 +36,7 @@ copiar(W, RAIZ / "whirlpool", excluir=("robots.txt", "sitemap.xml"))
 copiar(MB, RAIZ / "mabe", excluir=("robots.txt", "sitemap.xml"))
 copiar(FR, RAIZ / "frigidaire", excluir=("robots.txt", "sitemap.xml"))
 copiar(EL, RAIZ / "electrolux", excluir=("robots.txt", "sitemap.xml"))
+copiar(GE, RAIZ / "general-electric", excluir=("robots.txt", "sitemap.xml"))
 # sitemaps por marca + índice en la raíz
 shutil.copy2(S / "sitemap.xml", RAIZ / "sitemap-samsung.xml")
 shutil.copy2(L / "sitemap.xml", RAIZ / "lg" / "sitemap-lg.xml")
@@ -42,8 +44,9 @@ shutil.copy2(W / "sitemap.xml", RAIZ / "whirlpool" / "sitemap-whirlpool.xml")
 shutil.copy2(MB / "sitemap.xml", RAIZ / "mabe" / "sitemap-mabe.xml")
 shutil.copy2(FR / "sitemap.xml", RAIZ / "frigidaire" / "sitemap-frigidaire.xml")
 shutil.copy2(EL / "sitemap.xml", RAIZ / "electrolux" / "sitemap-electrolux.xml")
+shutil.copy2(GE / "sitemap.xml", RAIZ / "general-electric" / "sitemap-general-electric.xml")
 (RAIZ / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    f'<sitemap><loc>{DOM}/sitemap-samsung.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/lg/sitemap-lg.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/whirlpool/sitemap-whirlpool.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/mabe/sitemap-mabe.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/frigidaire/sitemap-frigidaire.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/electrolux/sitemap-electrolux.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n</sitemapindex>\n', encoding="utf-8")
+    f'<sitemap><loc>{DOM}/sitemap-samsung.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/lg/sitemap-lg.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/whirlpool/sitemap-whirlpool.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/mabe/sitemap-mabe.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/frigidaire/sitemap-frigidaire.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/electrolux/sitemap-electrolux.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n<sitemap><loc>{DOM}/general-electric/sitemap-general-electric.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n</sitemapindex>\n', encoding="utf-8")
 robots = (RAIZ / "robots.txt").read_text(encoding="utf-8")
 import re
 robots = re.sub(r"Sitemap:.*", f"Sitemap: {DOM}/sitemap.xml", robots)

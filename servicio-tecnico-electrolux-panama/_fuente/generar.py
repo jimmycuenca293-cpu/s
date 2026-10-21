@@ -423,8 +423,7 @@ def hero_desde_texto(h):
         mm = re.search(r'images/fotos/([\w-]+)\.(?:jpg|webp)', fig.group(0)); stem = mm.group(1) if mm else None
     hero = f'<section class="hero chico"><div class="w hg solo"><div>{ey.group(0) if ey else ""}{m.group(3)}{m.group(4) or ""}</div></div></section>'
     quitar_fig = bool(fig) and not (stem or "").startswith("prod-")
-    resto = h[ini:] if quitar_fig else h[m.end():]
-    if not quitar_fig and fig_pre: pass
+    resto = h[ini:]
     cuerpo_ini = '<section class="sec"><div class="w txt">' + ((fig.group(0) if (fig and not quitar_fig) else ""))
     return h[:m.start()] + m.group(1) + hero + cuerpo_ini + resto, (stem if quitar_fig else None)
 
