@@ -5,6 +5,7 @@ from pathlib import Path
 from urllib.parse import quote
 from contenido import *
 from seo import *
+from seo_final import *
 
 AQUI = Path(__file__).resolve().parent
 OUT = AQUI.parent
@@ -482,7 +483,7 @@ def escribir(ruta, titulo, desc, cuerpo, ld=None, prioridad="0.7", og="images/og
     pag_cuerpo = fondo_hero(pag_cuerpo, ruta)
     pag_cuerpo, ld = inyectar_faq(pag_cuerpo, ruta, ld)
     pag_cuerpo = alts_fotos(pag_cuerpo)
-    p.write_text(alt_seo(cabeza(ruta, titulo, desc, ld, og) + pag_cuerpo, ruta), encoding="utf-8")
+    p.write_text(refinar(alt_seo(cabeza(ruta, titulo, desc, ld, og) + pag_cuerpo, ruta), ruta, MARCA), encoding="utf-8")
     PAGINAS[ruta] = (prioridad, titulo)
 
 def miga(depth, *partes):
@@ -766,7 +767,7 @@ def estaticos():
     (OUT / "images").mkdir(exist_ok=True); im.save(OUT / "images" / "og.jpg", quality=88)
 
 def indices():
-    urls = "".join(f"<url><loc>{DOMINIO}/{r}</loc><lastmod>2026-10-20</lastmod><priority>{p[0]}</priority></url>\n" for r, p in sorted(PAGINAS.items(), key=lambda x: -float(x[1][0])))
+    urls = "".join(f"<url><loc>{DOMINIO}/{r}</loc><lastmod>{LASTMOD}</lastmod><priority>{p[0]}</priority></url>\n" for r, p in sorted(((k, v) for k, v in PAGINAS.items() if k not in NOINDEX), key=lambda x: -float(x[1][0])))
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "</urlset>\n", encoding="utf-8")
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nUser-agent: GPTBot\nAllow: /\nUser-agent: ClaudeBot\nAllow: /\nUser-agent: PerplexityBot\nAllow: /\nUser-agent: Google-Extended\nAllow: /\n\nSitemap: {DOMINIO}/sitemap.xml\n", encoding="utf-8")
     txt = f"# {NOMBRE}\n\n> Servicio técnico General Electric en Panamá: neveras, lavadoras y secadoras General Electric a domicilio en Ciudad de Panamá. WhatsApp {TEL}. {HORARIO}.\n\n## Servicios\n"

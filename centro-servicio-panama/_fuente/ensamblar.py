@@ -55,6 +55,35 @@ robots = re.sub(r"Sitemap:.*", f"Sitemap: {DOM}/sitemap.xml", robots)
 ll = (RAIZ / "llms.txt").read_text(encoding="utf-8")
 ll = ll.replace("# Servicio Técnico Samsung Panamá", "# Centro de Servicio Panamá (Samsung y LG)", 1)
 (RAIZ / "llms.txt").write_text(ll, encoding="utf-8")
+# llms.txt raíz: presentación de la entidad y mapa de marcas para asistentes de IA
+MARCAS = [("Samsung", ""), ("LG", "lg/"), ("Whirlpool", "whirlpool/"), ("Mabe", "mabe/"), ("Frigidaire", "frigidaire/"), ("Electrolux", "electrolux/"), ("General Electric", "general-electric/")]
+cab = ("# Centro de Servicio Panamá\n\n> Servicio técnico a domicilio de neveras, refrigeradoras, lavadoras y secadoras en Ciudad de Panamá, San Miguelito y Panamá Oeste. "
+       "Diagnóstico honesto, costo confirmado antes de reparar, garantía y visitas en 24 a 48 horas. WhatsApp +507 6933-7976. Lun a Sáb 7:00am–6:00pm.\n\n## Marcas que atendemos\n"
+       + "".join(f"- [Servicio técnico {n} Panamá]({DOM}/{p}index.html): guía completa en {DOM}/{p}llms.txt\n" for n, p in MARCAS) + "\n")
+(RAIZ / "llms.txt").write_text(cab + (RAIZ / "llms.txt").read_text(encoding="utf-8"), encoding="utf-8")
+# 404 y reglas del servidor (Apache): compresión, caché, página de error
+(RAIZ / "404.html").write_text('<!DOCTYPE html><html lang="es-PA"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Página no encontrada | Centro de Servicio Panamá</title>'
+    '<meta name="robots" content="noindex, follow"><style>body{margin:0;font:16px/1.6 system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;background:#f6f7f9;color:#17181b;text-align:center;padding:24px}a{color:#0b4ea2;font-weight:700}</style></head>'
+    '<body><main><h1>No encontramos esa página</h1><p>Puede que el enlace haya cambiado. Vuelve al inicio o escríbenos por WhatsApp al <a href="https://wa.me/50769337976">+507 6933-7976</a>.</p><p><a href="/index.html">Ir al inicio</a></p></main></body></html>', encoding="utf-8")
+(RAIZ / ".htaccess").write_text("""ErrorDocument 404 /404.html
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml text/plain application/xml
+</IfModule>
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/webp "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType image/svg+xml "access plus 1 year"
+ExpiresByType text/css "access plus 1 month"
+ExpiresByType application/javascript "access plus 1 month"
+ExpiresByType text/html "access plus 10 minutes"
+</IfModule>
+<IfModule mod_headers.c>
+Header set X-Content-Type-Options "nosniff"
+Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+""", encoding="utf-8")
 # zip
 z = RAIZ.parent / "entrega" / "centro-servicio-panama.zip"
 z.parent.mkdir(exist_ok=True)
