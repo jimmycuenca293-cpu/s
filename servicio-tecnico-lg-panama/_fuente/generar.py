@@ -66,7 +66,7 @@ def cabeza(ruta, titulo, desc, ld=None, og="images/og.jpg", extra=""):
             f'<link rel="stylesheet" href="{r}css/estilos.css">{lds}{extra}{gtm}</head><body>')
 
 
-BRANDS = [("Samsung", ""), ("LG", "lg/"), ("Whirlpool", "whirlpool/")]
+BRANDS = [("Samsung", ""), ("LG", "lg/"), ("Whirlpool", "whirlpool/"), ("Mabe", "mabe/")]
 MY_PATH = "lg/"
 def brand_href(r, path):
     return r + "../" * MY_PATH.count("/") + path + "index.html"
@@ -281,7 +281,7 @@ def pagina_inicio():
 {split("tecnico-banner", "Tu cocina de nuevo en marcha", "Que tu nevera vuelva a enfriar sin complicaciones", "Escríbenos con el modelo y la falla. Coordinamos la visita en 24 a 48 horas y te confirmamos el costo antes de empezar.", "diagnostico.html", "Abrir diagnóstico rápido", False, True)}
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Cobertura</span><h2>Servicio técnico LG en tu zona de Panamá</h2><p>Llegamos a los principales barrios de la ciudad, San Miguelito y Panamá Oeste.</p></div><div class="chips">{zonas}</div><p><a href="zonas/index.html">Ver todas las zonas de cobertura →</a></p></div></section>
 <section class="sec alt"><div class="w"><div class="cab"><span class="ey">Diagnóstico rápido</span><h2>¿Qué le pasa a tu equipo LG?</h2><p>Mira los síntomas más comunes, la causa probable y qué tan urgente es.</p></div><p><a class="btn lg" href="diagnostico.html">Abrir el diagnóstico rápido</a></p></div></section>
-<section class="sec"><div class="w"><div class="cab"><span class="ey">{ORG}</span><h2>Servicio técnico de Samsung, LG y Whirlpool en Panamá</h2><p>Un solo centro de servicio para neveras, lavadoras y secadoras. Elige tu marca para ver fallas, zonas y guías específicas.</p></div><div class="grid g4">{"".join(f'<a class="card" href="{brand_href("", bp)}"><h3>Servicio técnico {bn}</h3><p>Neveras, lavadoras y secadoras {bn} a domicilio.</p><span class="mas">Ver {bn} →</span></a>' for bn, bp in BRANDS)}<a class="card" href="mapa-del-sitio.html"><h3>Mapa del sitio</h3><p>Todas las secciones organizadas por tema.</p><span class="mas">Ver mapa →</span></a></div></div></section>
+<section class="sec"><div class="w"><div class="cab"><span class="ey">{ORG}</span><h2>Servicio técnico de Samsung, LG, Whirlpool y Mabe en Panamá</h2><p>Un solo centro de servicio para neveras, lavadoras y secadoras. Elige tu marca para ver fallas, zonas y guías específicas.</p></div><div class="grid g4">{"".join(f'<a class="card" href="{brand_href("", bp)}"><h3>Servicio técnico {bn}</h3><p>Neveras, lavadoras y secadoras {bn} a domicilio.</p><span class="mas">Ver {bn} →</span></a>' for bn, bp in BRANDS)}<a class="card" href="mapa-del-sitio.html"><h3>Mapa del sitio</h3><p>Todas las secciones organizadas por tema.</p><span class="mas">Ver mapa →</span></a></div></div></section>
 <section class="sec"><div class="w"><div class="cab"><span class="ey">Lo que más buscan</span><h2>Servicio técnico LG en Panamá: encuentra lo que necesitas</h2><p>Reparación de neveras, lavadoras y secadoras LG, teléfono, precios, repuestos, filtros y zonas de cobertura.</p></div><div class="chips">{busquedas_chips(0)}</div>
 <div class="grid g3 gf" style="margin-top:22px"><a class="card" href="cambio-filtro-nevera-lg-panama.html">{fpic("prod-nevera-top", 0)}<h3>Nevera LG con dispensador</h3><p>Agua lenta, hielo y avisos del panel.</p></a>
 <a class="card" href="{furl('neveras', EQUIPOS['neveras']['fallas'][0])}">{fpic("prod-nevera-top", 0)}<h3>La nevera LG no enfría</h3><p>Causas y qué revisar antes de llamar.</p></a>

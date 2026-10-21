@@ -68,7 +68,7 @@ def cabeza(ruta, titulo, desc, ld=None, og="images/og.jpg", extra=""):
             f'<link rel="stylesheet" href="{r}css/estilos.css">{lds}{extra}{gtm}</head><body>')
 
 
-BRANDS = [("Samsung", ""), ("LG", "lg/"), ("Whirlpool", "whirlpool/")]
+BRANDS = [("Samsung", ""), ("LG", "lg/"), ("Whirlpool", "whirlpool/"), ("Mabe", "mabe/")]
 MY_PATH = "whirlpool/"
 def brand_href(r, path):
     return r + "../" * MY_PATH.count("/") + path + "index.html"

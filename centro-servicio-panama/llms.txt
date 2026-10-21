@@ -110,3 +110,7 @@
 ## Servicio técnico Whirlpool en Panamá
 - [Servicio técnico Whirlpool Panamá](https://centroserviciopanama.com/whirlpool/index.html)
 - [llms.txt de Whirlpool](https://centroserviciopanama.com/whirlpool/llms.txt)
+
+## Servicio técnico Mabe en Panamá
+- [Servicio técnico Mabe Panamá](https://centroserviciopanama.com/mabe/index.html)
+- [llms.txt de Mabe](https://centroserviciopanama.com/mabe/llms.txt)
