@@ -12,7 +12,7 @@ RAIZ = AQUI.parent
 LISTA = Path(sys.argv[1])
 
 # supuestos (editables en la hoja «Supuestos»)
-A = dict(fee_pct=0.054, fee_fijo=0.30, flete_pct=0.08, envio=5.60, envio_pack=6.50, ganancia_min=6.0, margen_min=0.15, piso=4.0)
+A = dict(fee_pct=0.054, fee_fijo=0.30, flete_pct=0.08, envio=7.50, envio_pack=9.50, ganancia_min=6.0, margen_min=0.15, piso=4.0)
 
 # producto de la tienda -> (fila del proveedor, precio de la calle USD, rango visto, fuente/nota)
 MERCADO = {
@@ -71,7 +71,7 @@ s.append(["Supuesto (cámbialo y la hoja se recalcula)", "Valor", "Qué es"])
 rows = [("Comisión de PayPal (%)", A["fee_pct"], "Comisión por venta. Verifica la de tu cuenta: es una suposición conservadora para una cuenta en Colombia."),
         ("Comisión fija por venta (USD)", A["fee_fijo"], "Cargo fijo por transacción."),
         ("Flete y gastos hasta tu depósito (%)", A["flete_pct"], "Sobre el precio del proveedor: flete, aranceles, almacenaje. Pon el real."),
-        ("Envío al cliente, 1 filtro (USD)", A["envio"], "Etiqueta + empaque. Si el precio incluye envío gratis, se suma al costo."),
+        ("Envío al cliente, 1 filtro (USD)", A["envio"], "Etiqueta promedio nacional (USPS Ground Advantage, menos de 1 lb: unos $5.50 a $8.40 según la zona) + empaque. Si el precio incluye envío gratis, se suma al costo."),
         ("Envío al cliente, paquete de 2 (USD)", A["envio_pack"], "Etiqueta + empaque."),
         ("Ganancia mínima por pedido (USD)", A["ganancia_min"], "Para el precio objetivo."),
         ("Margen mínimo sobre el precio (%)", A["margen_min"], "Para el precio objetivo."),
