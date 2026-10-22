@@ -1,0 +1,1 @@
+{"name": "Servicio técnico Electrolux", "short_name": "Electrolux", "start_url": "/electrolux/", "scope": "/electrolux/", "display": "standalone", "background_color": "#ffffff", "theme_color": "#0b3c7d", "lang": "es", "icons": [{"src": "/img/electrolux/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}]}

@@ -1,0 +1,1 @@
+{"name": "Servicio técnico Whirlpool", "short_name": "Whirlpool", "start_url": "/whirlpool/", "scope": "/whirlpool/", "display": "standalone", "background_color": "#ffffff", "theme_color": "#f5b800", "lang": "es", "icons": [{"src": "/img/whirlpool/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}]}

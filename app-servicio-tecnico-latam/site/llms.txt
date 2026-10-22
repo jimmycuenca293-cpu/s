@@ -1,10 +1,9 @@
 # Soporte Técnico Autorizado
-> Servicio técnico a domicilio de neveras, lavadoras y secadoras Samsung, LG, Whirlpool, Mabe, Frigidaire, Electrolux y GE en Guatemala, Panamá, Costa Rica, Ecuador, El Salvador, Paraguay, Colombia, Chile.
-- Guatemala: https://soporte-tecnico-autorizado.com/gt/
-- Panamá: https://soporte-tecnico-autorizado.com/pa/
-- Costa Rica: https://soporte-tecnico-autorizado.com/cr/
-- Ecuador: https://soporte-tecnico-autorizado.com/ec/
-- El Salvador: https://soporte-tecnico-autorizado.com/sv/
-- Paraguay: https://soporte-tecnico-autorizado.com/py/
-- Colombia: https://soporte-tecnico-autorizado.com/co/
-- Chile: https://soporte-tecnico-autorizado.com/cl/
+> Servicio técnico a domicilio por marca (neveras, lavadoras, secadoras) en Guatemala, Panamá, Costa Rica, Ecuador, El Salvador, Paraguay, Colombia, Chile.
+- Samsung: https://soporte-tecnico-autorizado.com/samsung/
+- LG: https://soporte-tecnico-autorizado.com/lg/
+- Whirlpool: https://soporte-tecnico-autorizado.com/whirlpool/
+- Mabe: https://soporte-tecnico-autorizado.com/mabe/
+- Frigidaire: https://soporte-tecnico-autorizado.com/frigidaire/
+- Electrolux: https://soporte-tecnico-autorizado.com/electrolux/
+- General Electric: https://soporte-tecnico-autorizado.com/general-electric/

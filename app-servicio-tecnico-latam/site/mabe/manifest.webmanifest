@@ -1,0 +1,1 @@
+{"name": "Servicio técnico Mabe", "short_name": "Mabe", "start_url": "/mabe/", "scope": "/mabe/", "display": "standalone", "background_color": "#ffffff", "theme_color": "#0b6b3a", "lang": "es", "icons": [{"src": "/img/mabe/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}]}
