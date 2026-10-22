@@ -198,7 +198,14 @@ def acortar(t, must=(), n=68):
         if len(c) <= n and all(x in c for x in must) and c not in TITULOS: out = c; break
     TITULOS.add(out); return out
 
-def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, jsonld=None, eq=None, falla=None, orden=True, fab=True, ci=None):
+HOY = __import__('datetime').date.today().isoformat()
+def recorta(d, n=158):
+    if len(d) <= n: return d
+    c = d[:n].rsplit(' ', 1)[0].rstrip(',;:')
+    return c + ('.' if not c.endswith('.') else '')
+
+def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, jsonld=None, eq=None, falla=None, orden=True, fab=True, ci=None, noindex=False):
+    desc = recorta(desc)
     title = acortar(title, ([MA[m]['nombre']] + ([ci] if ci else ([PA[cc]['nombre']] if cc else []))) if m else ())
     url = f"{DOM}/{ruta}"; PAGES.append(url)
     mc = MA[m]["color"] if m else "#0f766e"; mt = MA[m].get("texto", "#fff") if m else "#fff"
@@ -230,12 +237,14 @@ def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, j
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><link rel="canonical" href="{url}">{hl}{ver}
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="geo.region" content="{cc.upper() if cc else ''}">
 <link rel="manifest" href="{man}"><meta name="theme-color" content="{mc}"><link rel="icon" href="{ico}"><link rel="apple-touch-icon" href="{ico}">
-<meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:type" content="website"><meta property="og:url" content="{url}"><meta property="og:image" content="{img}"><meta property="og:locale" content="{locale.replace('-','_')}">
+<meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:type" content="website"><meta property="og:url" content="{url}"><meta property="og:image" content="{img}"><meta property="og:locale" content="{locale.replace('-','_')}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="{img}"><meta name="author" content="{esc(NOM)}"><meta property="article:modified_time" content="{HOY}">
 <link rel="stylesheet" href="/estilo.css">{ld}{gtm}</head><body data-marca="{m or ''}" data-nombre="{esc(MA[m]['nombre']) if m else ''}" data-pais="{cc or ''}" data-bu="{Um(m) if m else ''}" data-equipo="{eq or ''}" data-falla="{esc(falla or '')}" style="{pal}">
 <header class="h"><div class="w"><div class="top">{logo}<a class="al" href="/">Todas las marcas</a></div>{bch}<h1>{esc(h1)}</h1><p class="sub">{esc(sub)}</p></div></header>
 <main class="w">{ordh}{body}</main>{fb}
-<footer>{esc(NOM)}{(' · Servicio técnico ' + esc(MA[m]['nombre'])) if m else ''}. Las marcas y logos pertenecen a sus respectivos propietarios.</footer>
+<footer><nav aria-label="Información del sitio"><a href="/nosotros/">Nosotros</a> · <a href="/contacto/">Contacto</a> · <a href="/politica-de-privacidad/">Privacidad</a> · <a href="/aviso-legal/">Aviso legal</a> · <a href="{(Um(m) + 'mapa-del-sitio/') if False else (_u(m, 'mapa-del-sitio') if m else '/mapa-del-sitio/')}">Mapa del sitio</a></nav><p>{esc(NOM)}{(' · Servicio técnico ' + esc(MA[m]['nombre'])) if m else ''}. Las marcas y logos pertenecen a sus respectivos propietarios.</p></footer>
 <script src="/datos.js" defer></script><script src="/geo.js" defer></script><script src="/app.js" defer></script></body></html>"""
+    h = re.sub(r"<img (?![^>]*\bwidth=)", '<img width="900" height="600" decoding="async" ', h)
+    if noindex: h = h.replace('content="index,follow,', 'content="noindex,follow,')
     p = OUT / ruta / "index.html" if ruta else OUT / "index.html"
     p.parent.mkdir(parents=True, exist_ok=True); p.write_text(h, encoding="utf-8")
 
@@ -255,7 +264,7 @@ def svc_ld(m, cc, ci=None, k=None):
     nom = f"Servicio técnico {mn}" + (f" de {term(cc,k)}" if k else "") + f" en {lugar}"
     return {"@context": "https://schema.org", "@type": "HomeAndConstructionBusiness", "name": nom, "url": DOM + Uc(m, cc), "image": f"{DOM}/img/{m}/tecnico.jpg", "telephone": p["tel"] or None, "priceRange": "$$",
             "areaServed": ([{"@type": "City", "name": ci}] if ci else [{"@type": "City", "name": c} for c in p["ciudades"]]) + [{"@type": "Country", "name": p["nombre"]}],
-            "makesOffer": {"@type": "Offer", "itemOffered": {"@type": "Service", "name": nom}}, "knowsAbout": [f"reparación de {term(cc,x)} {mn}" for x in EQ]}
+            "dateModified": HOY, "makesOffer": {"@type": "Offer", "itemOffered": {"@type": "Service", "name": nom}}, "knowsAbout": [f"reparación de {term(cc,x)} {mn}" for x in EQ]}
 
 def faq_gen(m, cc, ci=None, k=None):
     mn = MA[m]["nombre"]; p = PA[cc]; lugar = ci or p["nombre"]; eqn = f"{term(cc,k)} {mn}" if k else f"{term(cc,'neveras')}, {term(cc,'lavadoras')} y {term(cc,'secadoras')} {mn}"
@@ -361,7 +370,7 @@ def guia_pais(m, cc):
     mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; I = INFO[cc]; R = RESUMEN[cc]
     out = []
     out.append(sec(f"{pn}: datos útiles antes de pedir un técnico {mn}",
-        f"<ul><li><b>Capital:</b> {esc(R['capital'])}</li><li><b>Población:</b> {esc(R['pob'])} de habitantes</li><li><b>Moneda:</b> {esc(R['moneda'])}</li>"
+        f"<ul><li><b>Capital:</b> {esc(R['capital'])}</li><li><b>Moneda:</b> {esc(R['moneda'])}</li>"
         f"<li><b>Código telefónico:</b> {esc(R['tel'])}</li><li><b>Husos horarios:</b> {esc(R['huso'])}</li><li><b>Red eléctrica:</b> {esc(I['volt'])}</li>"
         f"<li><b>División administrativa:</b> {esc(R['div'])}</li></ul>"
         f"<p>El soporte técnico autorizado {esc(mn)} en {esc(pn)} atiende neveras, lavadoras y secadoras en {len(p['ciudades'])} ciudades de {len(set(r for r, t in CITYINFO[cc].values()))} {esc(R['div'])}. "
@@ -413,7 +422,7 @@ def build():
     page("", "Soporte técnico autorizado por marca: neveras, lavadoras y secadoras en Latinoamérica",
          "Pide tu técnico Samsung, LG, Whirlpool, Mabe, Frigidaire, Electrolux o GE. Detectamos tu barrio, eliges el equipo y la falla, y enviamos la solicitud por WhatsApp. Colombia, Panamá, Guatemala, El Salvador, Costa Rica, Ecuador, Paraguay y Chile.",
          "Soporte técnico autorizado por marca, en tu barrio", "Elige tu marca, cuéntanos la falla y te conectamos por WhatsApp con el técnico más cercano.", body, orden=False,
-         jsonld=[{"@context": "https://schema.org", "@type": "WebSite", "name": NOM, "url": DOM + "/"}], fab=False)
+         jsonld=[{"@context": "https://schema.org", "@type": "WebSite", "name": NOM, "url": DOM + "/", "inLanguage": "es"}, {"@context": "https://schema.org", "@type": "Organization", "name": NOM, "url": DOM + "/", "logo": DOM + "/icons/icon-512.png", "areaServed": [p["nombre"] for p in PA.values()], "contactPoint": [{"@type": "ContactPoint", "contactType": "customer service", "telephone": p["tel"], "areaServed": p["nombre"], "availableLanguage": "es"} for p in PA.values() if p["tel"]]}], fab=False)
     for m, v in MA.items():
         mn = v["nombre"]; tt = TEC.get(m, []); globals()["EQ"] = EQB[m]
         (OUT / Um(m)[1:]).mkdir(parents=True, exist_ok=True)
@@ -427,7 +436,11 @@ def build():
                (f"¿En qué países hay servicio técnico {mn}?", "En " + ", ".join(p["nombre"] for p in PA.values()) + "."),
                (f"¿Cómo funciona la solicitud de servicio {mn}?", "Activas tu ubicación, eliges el equipo y la falla, y enviamos tu solicitud por WhatsApp al técnico más cercano."),
                (f"¿Cuánto cuesta el servicio técnico {mn}?", "Depende de la falla y la pieza. Te cotizamos antes de reparar, sin compromiso.")]
-        body = sec("Elige tu país", pills([(p["nombre"], Uc(m, c)) for c, p in PA.items()])) + sec(f"Equipos {mn} que reparamos", f'<div class="g">{eqc}</div>') \
+        porpais = "".join(f"<h3>{esc(p['nombre'])}</h3><p>Soporte técnico {esc(mn)} en {len(p['ciudades'])} ciudades de {esc(p['nombre'])}, entre ellas {esc(', '.join(list(p['ciudades'])[:6]))}.</p>" + pills([(c2, Uci(m, c, c2)) for c2 in list(p['ciudades'])[:8]] + [(f"Todo {p['nombre']}", Uc(m, c))]) for c, p in PA.items())
+        lineas = "".join(f"<h3>{esc(cap(e['corto']))} {esc(mn)}</h3><p>{esc(txt(e['intro'], m, None))}</p><ul>" + "".join(f"<li>{esc(x)}</li>" for x in e["modelos"][:6]) + "</ul>" for k, e in EQ.items())
+        pasos = "<ol><li><b>Elige tu país y ciudad.</b> Cada ciudad tiene su técnico y su información local.</li><li><b>Cuéntanos tu equipo y la falla</b> por WhatsApp, con el modelo si lo tienes.</li><li><b>El técnico confirma</b> horario y datos.</li><li><b>Diagnóstico y presupuesto</b> en tu casa, antes de reparar.</li><li><b>Reparación con garantía</b> de la pieza y la mano de obra.</li></ol>"
+        body = sec("Elige tu país", pills([(p["nombre"], Uc(m, c)) for c, p in PA.items()])) + sec(f"Equipos {mn} que reparamos", f'<div class="g">{eqc}</div>') + sec(f"Líneas {mn} que atendemos", lineas) \
+            + sec(f"Servicio técnico {mn} por país y ciudad", porpais) + sec(f"Cómo pedir tu técnico {mn}", pasos) \
             + sec("Preguntas frecuentes", faqh(fqb)) + sec(f"Búsquedas relacionadas con servicio técnico {mn}", "<ul class='kw'>" + "".join(f"<li>servicio técnico {esc(mn)} {esc(p['nombre'])}</li>" for p in PA.values()) + "</ul>")
         page(Um(m)[1:], f"Soporte técnico autorizado {mn}: técnico más cercano por WhatsApp",
              f"Servicio técnico {mn} a domicilio en 8 países. Activa tu ubicación, elige tu equipo y la falla, y envía tu solicitud por WhatsApp al técnico {mn} más cercano a tu barrio.",
@@ -540,6 +553,34 @@ def build():
                     page(Ucod(m, cc, k)[1:], f"Códigos de error de lavadoras {mn} en {pn}: soporte técnico autorizado", f"Significado de los códigos de error de las lavadoras {mn} y cuándo pedir un técnico en {pn}.",
                          f"Códigos de error de lavadoras {mn}", "Qué significa cada código y qué hacer.", body, bc=bc_k, m=m, cc=cc, rel=(lambda c2: Ucod(m, c2, k)), eq=k,
                          jsonld=[bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), ("Códigos de error", DOM + Ucod(m, cc, k))])])
+
+    # ---- páginas de confianza (E-E-A-T) y mapas del sitio
+    paises_l = ", ".join(p["nombre"] for p in PA.values()); marcas_l = ", ".join(v["nombre"] for v in MA.values())
+    wa_l = "<ul>" + "".join(f'<li><b>{esc(p["nombre"])}:</b> <a href="{wa(p["wa"], "Hola, necesito servicio técnico")}" rel="noopener">WhatsApp {esc(p["tel"])}</a></li>' for p in PA.values()) + "</ul>"
+    page("nosotros/", f"Nosotros: {NOM}", f"Quiénes somos y cómo trabajamos: servicio técnico a domicilio de neveras, lavadoras y secadoras de {marcas_l} en {paises_l}.", "Nosotros", "Técnicos a domicilio en ocho países.",
+         sec("Quiénes somos", f"<p>{esc(NOM)} conecta a clientes con técnicos de electrodomésticos en {esc(paises_l)}. Trabajamos con neveras, lavadoras y secadoras de {esc(marcas_l)}.</p><p>Cada solicitud llega por WhatsApp al técnico más cercano a tu barrio, con la marca, el equipo y la falla.</p>")
+         + sec("Cómo trabajamos", "<ol><li>Recibimos tu mensaje por WhatsApp.</li><li>El técnico confirma horario y datos del equipo.</li><li>Diagnostica en tu casa y te da el costo antes de reparar.</li><li>Repara y explica la garantía.</li></ol>")
+         + sec("Países y marcas", f"<p>Países: {esc(paises_l)}.</p><p>Marcas: {esc(marcas_l)}.</p>"), orden=False, fab=False)
+    page("contacto/", f"Contacto: WhatsApp por país | {NOM}", "Números de WhatsApp del servicio técnico en cada país: Colombia, Panamá, Guatemala, El Salvador, Costa Rica, Ecuador, Paraguay y Chile.", "Contacto", "Escríbenos por WhatsApp en tu país.",
+         sec("WhatsApp por país", wa_l) + sec("Horario", "<p>Coordinamos la visita según tu zona y urgencia. Escríbenos y te respondemos con el horario disponible.</p>"), orden=False, fab=False)
+    page("politica-de-privacidad/", f"Política de privacidad y ubicación | {NOM}", "Cómo usamos tu ubicación y tus datos: solo en tu dispositivo, con tu permiso y sin guardarlos en nuestros servidores.", "Política de privacidad", "Tu ubicación es tuya.",
+         sec("Ubicación", "<p>Solo pedimos tu ubicación cuando tocas «Detectar mi ubicación», y tu navegador te pide permiso. Con ella calculamos en tu dispositivo la ciudad y el técnico más cercano. No guardamos tu ubicación en nuestros servidores.</p>")
+         + sec("Servicios de terceros", "<p>Para mostrarte el nombre de tu barrio enviamos tus coordenadas aproximadas a OpenStreetMap (Nominatim). Al escribir por WhatsApp, tu mensaje y tu número los procesa WhatsApp según sus propias políticas. Si activamos Google Tag Manager, este mide visitas y clics en los botones de WhatsApp.</p>")
+         + sec("Tus decisiones", "<p>Puedes negar el permiso de ubicación y escribirnos igual por WhatsApp. Puedes borrar los datos del sitio desde la configuración de tu navegador.</p>"), orden=False, fab=False, noindex=True)
+    page("aviso-legal/", f"Aviso legal y marcas | {NOM}", "Aviso legal: las marcas y logos mencionados pertenecen a sus propietarios.", "Aviso legal", "Marcas y responsabilidad.",
+         sec("Marcas registradas", f"<p>{esc(marcas_l)} y sus logos son marcas de sus respectivos propietarios. Se usan para identificar los equipos que reparamos.</p>")
+         + sec("Información del sitio", "<p>Los textos del sitio son orientativos: el diagnóstico, el costo y la garantía los confirma el técnico después de revisar tu equipo.</p>"), orden=False, fab=False, noindex=True)
+    gen = "".join(f'<h3>{esc(v["nombre"])}</h3>' + pills([(f"{v['nombre']} {p['nombre']}", Uc(m2, c)) for c, p in PA.items()]) for m2, v in MA.items())
+    page("mapa-del-sitio/", f"Mapa del sitio: servicio técnico por marca y país | {NOM}", "Todas las marcas y países del soporte técnico autorizado, en un solo lugar.", "Mapa del sitio", "Marcas y países.", sec("Marcas y países", gen), orden=False, fab=False)
+    for m2, v2 in MA.items():
+        mn2 = v2["nombre"]; bloques = ""
+        for c2, p2 in PA.items():
+            reg2 = {}
+            for ci2, (r2, t2) in CITYINFO[c2].items(): reg2.setdefault(r2, []).append(ci2)
+            bloques += f"<h3>{esc(p2['nombre'])}</h3><p>" + pills([(f"Servicio {mn2} {p2['nombre']}", Uc(m2, c2)), ("Preguntas frecuentes", Ufaq(m2, c2)), ("Cerca de mí", Ucerca(m2, c2))] + [(cap(term(c2, k)), Ue(m2, c2, k)) for k in EQ]) + "</p>"
+            for r2, cs2 in reg2.items(): bloques += f"<h4>{esc(r2)}</h4>" + pills([(ci2, Uci(m2, c2, ci2)) for ci2 in cs2])
+        page(_u(m2, "mapa-del-sitio")[1:], f"Mapa del sitio {mn2}: ciudades y países | {NOM}", f"Todas las ciudades y países con servicio técnico {mn2}: neveras, lavadoras y secadoras.", f"Mapa del sitio: soporte técnico autorizado {mn2}", "Todas las ciudades, en un solo lugar.",
+             sec(f"Servicio técnico {mn2} por país y ciudad", bloques), bc=[("Inicio", "/"), (mn2, Um(m2))], m=m2, orden=False, fab=False)
     # ---- estáticos
     (OUT / "datos.js").write_text("window.DATOS=" + json.dumps({c: {"n": p["nombre"], "wa": p["wa"], "dial": p["dial"], "ps": PS[c], "ciudades": p["ciudades"], "voc": {k: term(c, k) for k in EQ}} for c, p in PA.items()}, ensure_ascii=False) + ";", encoding="utf-8")
     (OUT / "app.js").write_text("""if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
@@ -557,14 +598,35 @@ self.addEventListener('fetch',function(e){if(e.request.method!=='GET'||new URL(e
         d.ellipse([s*.3, s*.18, s*.7, s*.58], fill="white"); d.polygon([(s*.5, s*.84), (s*.34, s*.5), (s*.66, s*.5)], fill="white"); d.ellipse([s*.42, s*.3, s*.58, s*.46], fill="#0f766e")
         im.save(OUT / "icons" / f"icon-{s}.png")
     idx = []
-    for nombre, filtro in [("inicio", lambda u: u.rstrip("/") == DOM)] + [(m, (lambda mm: (lambda u: u.startswith(f"{DOM}/soporte-tecnico-autorizado-{mm}")))(m)) for m in MA]:
-        us = sorted(u for u in set(PAGES) if filtro(u))
-        (OUT / f"sitemap-{nombre}.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{u}</loc><changefreq>monthly</changefreq></url>" for u in us) + "</urlset>", encoding="utf-8")
+    for nombre, filtro in [("inicio", lambda u: u.rstrip("/") == DOM or not u.startswith(f"{DOM}/soporte-tecnico-autorizado-"))] + [(m, (lambda mm: (lambda u: u.startswith(f"{DOM}/soporte-tecnico-autorizado-{mm}")))(m)) for m in MA]:
+        us = sorted(u for u in set(PAGES) if filtro(u) and not any(x in u for x in ('/404/', '/politica-de-privacidad/', '/aviso-legal/')))
+        (OUT / f"sitemap-{nombre}.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{u}</loc><lastmod>{HOY}</lastmod><changefreq>monthly</changefreq><priority>{'1.0' if u.rstrip('/') == DOM else ('0.9' if u.count('-') < 6 else '0.6')}</priority></url>" for u in us) + "</urlset>", encoding="utf-8")
         idx.append(f"<sitemap><loc>{DOM}/sitemap-{nombre}.xml</loc></sitemap>")
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(idx) + "</sitemapindex>", encoding="utf-8")
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {DOM}/sitemap.xml\n", encoding="utf-8")
     (OUT / "llms.txt").write_text(f"# {NOM}\n> Servicio técnico a domicilio por marca (neveras, lavadoras, secadoras) en " + ", ".join(p["nombre"] for p in PA.values()) + ".\n" + "".join(f"- {v['nombre']}: {DOM}{Um(m)}\n" for m, v in MA.items()), encoding="utf-8")
-    (OUT / ".htaccess").write_text("DirectoryIndex index.html\nAddType application/manifest+json .webmanifest\nHeader set Permissions-Policy \"geolocation=(self)\"\n", encoding="utf-8")
+    (OUT / ".htaccess").write_text("""DirectoryIndex index.html
+ErrorDocument 404 /404.html
+AddType application/manifest+json .webmanifest
+Header set Permissions-Policy "geolocation=(self)"
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteCond %{HTTP_HOST} ^www\\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType text/css "access plus 1 month"
+ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+""", encoding="utf-8")
+    page("404/", f"Página no encontrada | {NOM}", "La página que buscas no existe. Elige tu marca y tu país.", "Página no encontrada", "Elige tu marca para continuar.", sec("Ir a", pills([(v["nombre"], Um(m2)) for m2, v in MA.items()])), orden=False, fab=False, noindex=True)
+    (OUT / "404.html").write_text((OUT / "404" / "index.html").read_text(encoding="utf-8"), encoding="utf-8"); shutil.rmtree(OUT / "404")
     print(f"{len(set(PAGES))} páginas")
     if faltan:
         print("⚠ FALTAN WhatsApp para: " + ", ".join(PA[c]["nombre"] for c in faltan))

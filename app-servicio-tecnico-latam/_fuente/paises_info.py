@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Datos propios de cada país (red eléctrica, clima, agua, cómo se busca) y de cada ciudad (clima)."""
 INFO = {
- "co": dict(volt="110–120 V y 60 Hz", clima="Colombia tiene pisos térmicos muy distintos: frío en Bogotá, templado en Medellín y calor húmedo en Barranquilla, Cartagena y Cali.",
+ "co": dict(volt="110 V y 60 Hz", clima="Colombia tiene pisos térmicos muy distintos: frío en Bogotá, templado en Medellín y calor húmedo en Barranquilla, Cartagena y Cali.",
    rayos="En temporada de lluvias las tormentas eléctricas y los bajones de tensión dañan tarjetas y compresores.",
    agua="En varias ciudades el agua llega con sedimento o sarro, que tapa filtros y mangueras de las lavadoras.",
    busq=["servicio técnico {m} Colombia","reparación de nevera {m} a domicilio","técnico de lavadoras {m} en {c}","arreglo de secadora {m} {c}","servicio técnico {m} Bogotá Medellín Cali","{m} servicio técnico celular whatsapp Colombia"],
@@ -16,7 +16,7 @@ INFO = {
    agua="En algunas zonas el agua llega con sarro, que acorta la vida de resistencias y válvulas.",
    busq=["servicio técnico {m} Guatemala","técnico de refrigeradoras {m} zona 10","reparación de lavadoras {m} en {c}","arreglo de secadoras {m} Guatemala","servicio técnico {m} a domicilio {c}","{m} Guatemala whatsapp servicio técnico"],
    tip={"neveras":"En la costa el calor exige más al compresor; revisa que las rejillas estén limpias.","lavadoras":"Si el agua trae sarro, usa un descalcificador para lavadoras cada dos o tres meses.","secadoras":"En el altiplano, donde hace más frío, la ropa tarda más: limpia el filtro en cada carga."}),
- "sv": dict(volt="115 V y 60 Hz", clima="El Salvador es caluroso casi todo el año, con una época lluviosa de mayo a octubre.",
+ "sv": dict(volt="115–120 V y 60 Hz", clima="El Salvador es caluroso casi todo el año, con una época lluviosa de mayo a octubre.",
    rayos="Las tormentas de la época lluviosa y los cortes de energía son comunes y dañan tarjetas y compresores.",
    agua="En ciertas zonas el agua tiene sarro o llega con baja presión, algo que afecta el llenado de las lavadoras.",
    busq=["servicio técnico {m} El Salvador","técnico de refrigeradoras {m} en {c}","reparación de lavadoras {m} San Salvador","arreglo de secadoras {m} en {c}","servicio técnico {m} a domicilio El Salvador","{m} El Salvador whatsapp técnico"],
@@ -26,7 +26,7 @@ INFO = {
    agua="El agua es de buena calidad en general, pero la humedad favorece el moho en lavadoras.",
    busq=["servicio técnico {m} Costa Rica","técnico de refrigeradoras {m} San José","reparación de lavadoras {m} en {c}","arreglo de secadoras {m} Costa Rica","servicio técnico {m} a domicilio en {c}","{m} Costa Rica teléfono whatsapp servicio"],
    tip={"neveras":"En zonas de costa la sal acelera la corrosión: limpia las rejillas y la parte trasera con un paño seco.","lavadoras":"Con tanta lluvia y humedad, deja la tapa abierta después de lavar para evitar moho.","secadoras":"En la época lluviosa la secadora se usa más; limpia el filtro de pelusas en cada ciclo."}),
- "ec": dict(volt="120 V y 60 Hz", clima="Ecuador cambia mucho por regiones: Quito y Cuenca son frescas y de altura, mientras Guayaquil, Manta y la costa son calientes y húmedas.",
+ "ec": dict(volt="110–120 V y 60 Hz", clima="Ecuador cambia mucho por regiones: Quito y Cuenca son frescas y de altura, mientras Guayaquil, Manta y la costa son calientes y húmedas.",
    rayos="En el invierno costero, de diciembre a mayo, las tormentas y los cortes de luz dañan compresores y tarjetas.",
    agua="En algunas zonas el agua es dura, deja sarro y obstruye válvulas y resistencias.",
    busq=["servicio técnico {m} Ecuador","técnico de refrigeradoras {m} en {c}","reparación de lavadoras {m} Guayaquil Quito","arreglo de secadoras {m} {c}","servicio técnico {m} a domicilio Ecuador","{m} Ecuador whatsapp servicio técnico"],

@@ -10,7 +10,7 @@ function barrio(la,lo,cb){var done=false,t=setTimeout(function(){if(!done){done=
  fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=16&accept-language=es&lat='+la+'&lon='+lo).then(function(r){return r.json();}).then(function(j){if(done)return;done=true;clearTimeout(t);var a=j.address||{};cb(a.neighbourhood||a.suburb||a.quarter||a.city_district||a.village||a.town||null);}).catch(function(){if(!done){done=true;cb(null);}});}
 function msg(h){det.innerHTML='<div class="ok-b">'+h+'</div>';}
 function mostrar(la,lo,nb){
- var c=cercana(la,lo);if(!c||c.d>600){msg('Todavía no tenemos técnicos en tu zona.');return;}
+ var c=cercana(la,lo);if(!c||c.d>600){msg('Todavía no tenemos técnicos en tu zona.');return;}if(nb&&nb.toLowerCase()===c.city.toLowerCase())nb=null;
  fetch(B.dataset.bu+'tecnicos.json').then(function(r){return r.json();}).then(function(T){
   var best=null;T.forEach(function(t){if(t.p!==c.cc)return;var d=dist(la,lo,t.la,t.lo);if(!best||d<best.d)best={t:t,d:d};});
   var num=(best&&best.t.w)||D[c.cc].wa,txt='Hola, necesito servicio técnico '+NM+' en '+(nb?nb+', ':'')+c.city+', '+D[c.cc].n+' (https://maps.google.com/?q='+la.toFixed(5)+','+lo.toFixed(5)+')';
