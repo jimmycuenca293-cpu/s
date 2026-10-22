@@ -234,13 +234,20 @@ def recorta(d, n=158):
     c = d[:n].rsplit(' ', 1)[0].rstrip(',;:')
     return c + ('.' if not c.endswith('.') else '')
 
-def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, jsonld=None, eq=None, falla=None, orden=True, fab=True, ci=None, noindex=False):
+def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, jsonld=None, eq=None, falla=None, orden=True, fab=True, ci=None, noindex=False, galeria=False):
     desc = recorta(desc)
     title = acortar(title, ([MA[m]['nombre']] + ([ci] if ci else ([PA[cc]['nombre']] if cc else []))) if m else ())
     url = f"{DOM}/{ruta}"; PAGES.append(url)
     mc = MA[m]["color"] if m else "#0f766e"; mt = MA[m].get("texto", "#fff") if m else "#fff"
     V = MA[m] if m else {}
     pal = f"--mc:{mc};--mt:{mt};--mc2:{V.get('pri2', '#0b3d38')};--acc:{V.get('acc', '#25d366')};--soft:{V.get('soft', '#e6f4f1')};--panel:{V.get('panel', '#f3f4f6')};--ink:{V.get('ink', '#0f172a')}"
+    if m: bc = [b for b in (bc or []) if b[1] != "/"] or None
+    if m and jsonld:
+        for j_ in jsonld:
+            if isinstance(j_, dict) and j_.get("@type") == "BreadcrumbList":
+                it_ = [x for x in j_["itemListElement"] if x["item"] != DOM + "/"]
+                for n_, x in enumerate(it_): x["position"] = n_ + 1
+                j_["itemListElement"] = it_
     bch = '<nav class="bc" aria-label="Migas de pan">' + " › ".join(f'<a href="{u}">{esc(t)}</a>' for t, u in bc) + "</nav>" if bc else ""
     hl = hreflangs(m, rel) if (m and cc and rel is not None) else ""
     gtm = f"<script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.start':new Date().getTime(),event:'gtm.js'}});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f)}})(window,document,'script','dataLayer','{CFG['gtm']}');</script>" if CFG["gtm"] else ""
@@ -254,7 +261,7 @@ def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, j
     fb = f'<a class="btn wa fab" data-evt="whatsapp" id="fab" href="{wa(wnum, "Hola, necesito servicio técnico " + MA[m]["nombre"] + " en " + PA[cc]["nombre"])}" rel="noopener">WhatsApp</a>' if (fab and cc and m) else ""
     if m and cc and (orden or cc):
         bnc = faq_banco(m, cc, ci, eq, falla)
-        body = ia_top(m, cc, ci, eq, falla) + "<!--TOC-->" + body + extras(m, cc, ci, eq, ruta) + bonus(m, cc, ci, eq, ruta) \
+        body = ia_top(m, cc, ci, eq, falla) + "<!--TOC-->" + body + extras(m, cc, ci, eq, ruta, galeria) + bonus(m, cc, ci, eq, ruta) \
             + sec(f"Más preguntas frecuentes sobre el servicio técnico {MA[m]['nombre']} en {lugar_de(cc, ci)}", faqh(bnc))
         _ya = False
         for j_ in (jsonld or []):
@@ -274,15 +281,18 @@ def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, j
                 + (f'<p class="telx">WhatsApp {esc(PA[cc]["tel"])}</p>' if (cc and PA[cc]["tel"]) else "") + '<button class="btn gps" id="gps" type="button">📍 Detectar mi ubicación</button><div id="det" role="status" aria-live="polite"></div></section>')
     body = body.replace('<!--TOC-->', toc) if '<!--TOC-->' in body else body
     if '<!--TOC-->' not in (body + 'x') and not (m and cc): ordh += toc
+    if m and cc: pie = f'<a href="{Unos(m)}">Nosotros</a> · <a href="{Uw(m, cc)}">Contacto</a> · <a href="{Upriv(m)}">Privacidad</a> · <a href="{Uleg(m)}">Aviso legal</a> · <a href="{Umapc(m, cc)}">Mapa del sitio</a>'
+    elif m: pie = f'<a href="{Unos(m)}">Nosotros</a> · <a href="{Upriv(m)}">Privacidad</a> · <a href="{Uleg(m)}">Aviso legal</a> · <a href="{Umap(m)}">Mapa del sitio</a>'
+    else: pie = '<a href="/nosotros/">Nosotros</a> · <a href="/contacto/">Contacto</a> · <a href="/politica-de-privacidad/">Privacidad</a> · <a href="/aviso-legal/">Aviso legal</a> · <a href="/mapa-del-sitio/">Mapa del sitio</a>'
     h = f"""<!doctype html><html lang="{locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><link rel="canonical" href="{url}">{hl}{ver}
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="geo.region" content="{cc.upper() if cc else ''}">
 <link rel="manifest" href="{man}"><meta name="theme-color" content="{mc}"><link rel="icon" href="{ico}"><link rel="apple-touch-icon" href="{ico}">
 <meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:type" content="website"><meta property="og:url" content="{url}"><meta property="og:image" content="{img}"><meta property="og:locale" content="{locale.replace('-','_')}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="{img}"><meta name="author" content="{esc(NOM)}"><meta property="article:modified_time" content="{HOY}">
 <link rel="stylesheet" href="/estilo.css">{ld}{gtm}</head><body data-marca="{m or ''}" data-nombre="{esc(MA[m]['nombre']) if m else ''}" data-pais="{cc or ''}" data-bu="{Um(m) if m else ''}" data-equipo="{eq or ''}" data-falla="{esc(falla or '')}" style="{pal}">
-<header class="h"><div class="w"><div class="top">{logo}<a class="al" href="/">Todas las marcas</a></div>{bch}<h1>{esc(h1)}</h1><p class="sub">{esc(sub)}</p></div></header>
+<header class="h"><div class="w"><div class="top">{logo}{"" if m else '<a class="al" href="/">Todas las marcas</a>'}</div>{bch}<h1>{esc(h1)}</h1><p class="sub">{esc(sub)}</p></div></header>
 <main class="w">{ordh}{body}</main>{fb}
-<footer><nav aria-label="Información del sitio"><a href="/nosotros/">Nosotros</a> · <a href="/contacto/">Contacto</a> · <a href="/politica-de-privacidad/">Privacidad</a> · <a href="/aviso-legal/">Aviso legal</a> · <a href="{(Um(m) + 'mapa-del-sitio/') if False else (_u(m, 'mapa-del-sitio') if m else '/mapa-del-sitio/')}">Mapa del sitio</a></nav><p>{esc(NOM)}{(' · Servicio técnico ' + esc(MA[m]['nombre'])) if m else ''}. Las marcas y logos pertenecen a sus respectivos propietarios.</p></footer>
+<footer><nav aria-label="Información del sitio">{pie}</nav><p>{esc(NOM)}{(' · Servicio técnico ' + esc(MA[m]['nombre'])) if m else ''}. Las marcas y logos pertenecen a sus respectivos propietarios.</p></footer>
 <script src="/datos.js" defer></script><script src="/geo.js" defer></script><script src="/app.js" defer></script></body></html>"""
     h = re.sub(r"<img (?![^>]*\bwidth=)", '<img width="900" height="600" decoding="async" ', h)
     if noindex: h = h.replace('content="index,follow,', 'content="noindex,follow,')
@@ -365,7 +375,7 @@ def faq_pais(m, cc):
      (f"¿En qué ciudades de {pn} tienen técnico {mn}?", "Tenemos cobertura en " + ", ".join(p["ppal"]) + ", y en otras " + str(len(p["ciudades"]) - len(p["ppal"])) + " ciudades del país."),
      (f"¿En qué barrios de {pn} atienden equipos {mn}?", "Atendemos, entre otros, " + ", ".join(n for n, t, c in zonas_de(cc)[:8]) + ".")]
 
-def extras(m, cc, ci, k, ruta):
+def extras(m, cc, ci, k, ruta, galeria=False):
     mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; I = INFO[cc]; lugar = ci or pn
     off = zlib.crc32(ruta.encode()) % 7
     out = []
@@ -403,6 +413,7 @@ def extras(m, cc, ci, k, ruta):
            f'<li><a href="{OFICIAL[m]}" target="_blank" rel="noopener">Sitio oficial de {esc(mn)}</a> (manuales, garantía y registro de producto)</li>',
            f'<li><a href="https://es.wikipedia.org/w/index.php?search={quote(mn)}" target="_blank" rel="noopener">{esc(mn)} en Wikipedia</a></li>',
            f'<li><a href="https://es.wikipedia.org/wiki/{WIKI_PAIS[cc]}" target="_blank" rel="noopener">Acerca de {esc(pn)} en Wikipedia</a></li>']
+    if galeria: out.append(sec(f"Galería de fotos {mn} en {lugar}: técnicos, equipos y repuestos", galeria_html(m, cc, lugar)))
     out.append(sec("Enlaces útiles", "<ul>" + "".join(ext) + "</ul><p style='color:var(--mu);font-size:.85rem'>Los enlaces externos llevan a sitios de terceros.</p>"))
     return "".join(out)
 
@@ -485,6 +496,12 @@ def intent_data(it, m, cc, ci=None):
          [f"Instalamos y reinstalamos {eq}: conexión de agua y desagüe, nivelación, voltaje y prueba final.", "Indica el tipo de equipo, la dirección y si hay conexiones nuevas por hacer."]),
     }
     return D[it]
+
+def Unos(m): return _u(m, "nosotros")
+def Upriv(m): return _u(m, "politica-de-privacidad")
+def Uleg(m): return _u(m, "aviso-legal")
+def Umap(m): return _u(m, "mapa-del-sitio")
+def Umapc(m, cc): return _u(m, "mapa-del-sitio", PS[cc])
 
 def Uw(m, cc): return _u(m, "whatsapp", PS[cc])
 def Uwc(m, cc, ci): return _u(m, "whatsapp", slugloc(ci, cc))
@@ -571,7 +588,20 @@ def bonus(m, cc, ci, k, ruta):
     off = zlib.crc32(ruta.encode()) % len(B)
     return "".join(B[(off + i) % len(B)] for i in range(4))
 
-SKIP_IMG = ("Preguntas", "Búsquedas", "Enlaces", "Explora", "Respuesta", "Datos clave", "Más ayuda", "Guías", "Por ciudad", "Servicio por ciudad", "Otras fallas", "Cerca de aquí", "Más cerca", "Ir a", "Información para asistentes")
+SKIP_IMG = ("Galería", "Preguntas", "Búsquedas", "Enlaces", "Explora", "Respuesta", "Datos clave", "Más ayuda", "Guías", "Por ciudad", "Servicio por ciudad", "Otras fallas", "Cerca de aquí", "Más cerca", "Ir a", "Información para asistentes")
+def galeria_html(m, cc, lg):
+    mn = MA[m]["nombre"]; fig = []
+    for kind in ("tecnico", "neveras", "lavadoras", "secadoras"):
+        for i, src in enumerate(POOL[m][kind]):
+            if not src.exists(): continue
+            if kind == "tecnico": alt = f"Técnico {mn} a domicilio en {lg}"; cap_ = f"Técnico {mn}"
+            else:
+                t_ = term(cc, kind) if cc else kind; alt = f"{cap(t_)} {mn}: servicio técnico en {lg}"; cap_ = f"{cap(t_)} {mn}"
+            fig.append(f'<figure><img loading="lazy" src="/img/{m}/{kind}-{i}.jpg" alt="{esc(alt)}"><figcaption>{esc(cap_)}</figcaption></figure>')
+    for i, r in enumerate(REPU.get(m, [])):
+        if r["src"].exists(): fig.append(f'<figure><img loading="lazy" src="/img/{m}/repuesto-{i}.jpg" alt="{esc(r["label"])} {esc(mn)}: repuesto con servicio técnico en {esc(lg)}"><figcaption>{esc(r["label"])}</figcaption></figure>')
+    return '<div class="gal">' + "".join(fig) + "</div>"
+
 def todas_imgs(m): return [(k, i) for k in ("tecnico", "neveras", "lavadoras", "secadoras") for i in range(len(POOL[m][k]))]
 def inyectar_imgs(body, m, cc, ci, ruta, maxn=9):
     L = todas_imgs(m); off = zlib.crc32(ruta.encode()) % len(L); n = [0]; mn = MA[m]["nombre"]; lg = lugar_de(cc, ci)
@@ -614,7 +644,7 @@ def build():
         lineas = "".join(f"<h3>{esc(cap(e['corto']))} {esc(mn)}</h3><p>{esc(txt(e['intro'], m, None))}</p><ul>" + "".join(f"<li>{esc(x)}</li>" for x in e["modelos"][:6]) + "</ul>" for k, e in EQ.items())
         pasos = "<ol><li><b>Elige tu país y ciudad.</b> Cada ciudad tiene su técnico y su información local.</li><li><b>Cuéntanos tu equipo y la falla</b> por WhatsApp, con el modelo si lo tienes.</li><li><b>El técnico confirma</b> horario y datos.</li><li><b>Diagnóstico y presupuesto</b> en tu casa, antes de reparar.</li><li><b>Reparación con garantía</b> de la pieza y la mano de obra.</li></ol>"
         body = sec("Elige tu país", pills([(p["nombre"], Uc(m, c)) for c, p in PA.items()])) + sec(f"Equipos {mn} que reparamos", f'<div class="g">{eqc}</div>') + sec(f"Líneas {mn} que atendemos", lineas) \
-            + (sec(f"Repuestos y piezas {mn}", repu_html(m, "pa", "tu país", n=12, link=False)) if REPU.get(m) else "") + sec(f"Servicio técnico {mn} por país y ciudad", porpais) + sec(f"Cómo pedir tu técnico {mn}", pasos) \
+            + (sec(f"Repuestos y piezas {mn}", repu_html(m, "pa", "tu país", n=12, link=False)) if REPU.get(m) else "") + sec(f"Galería de fotos {mn}: técnicos, equipos y repuestos", galeria_html(m, None, "tus ciudades")) + sec(f"Servicio técnico {mn} por país y ciudad", porpais) + sec(f"Cómo pedir tu técnico {mn}", pasos) \
             + sec("Preguntas frecuentes", faqh(fqb)) + sec(f"Búsquedas relacionadas con servicio técnico {mn}", "<ul class='kw'>" + "".join(f"<li>servicio técnico {esc(mn)} {esc(p['nombre'])}</li>" for p in PA.values()) + "</ul>")
         page(Um(m)[1:], f"Soporte técnico autorizado {mn}: técnico más cercano por WhatsApp",
              f"Servicio técnico {mn} a domicilio en 8 países. Activa tu ubicación, elige tu equipo y la falla, y envía tu solicitud por WhatsApp al técnico {mn} más cercano a tu barrio.",
@@ -634,7 +664,7 @@ def build():
             page(Uc(m, cc)[1:], f"Soporte técnico autorizado {mn} {pn}: {term(cc,'neveras')}, {term(cc,'lavadoras')} y {term(cc,'secadoras')}",
                  f"Servicio técnico {mn} en {pn}: reparación a domicilio de {term(cc,'neveras')}, {term(cc,'lavadoras')} y {term(cc,'secadoras')} {mn}. Pide el técnico más cercano a tu barrio por WhatsApp.",
                  f"Soporte técnico autorizado {mn} en {pn}", f"Reparación a domicilio de {term(cc,'neveras')}, {term(cc,'lavadoras')} y {term(cc,'secadoras')} {mn} en {', '.join(list(p['ciudades'])[:3])} y más.", body,
-                 bc=base_bc, m=m, cc=cc, rel=(lambda c2: Uc(m, c2)), jsonld=[svc_ld(m, cc), how_ld(m, cc), faq_ld(fq), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc))])])
+                 bc=base_bc, m=m, cc=cc, galeria=True, rel=(lambda c2: Uc(m, c2)), jsonld=[svc_ld(m, cc), how_ld(m, cc), faq_ld(fq), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc))])])
             bc_p = base_bc + [(pn, Uc(m, cc))]
             # ---- preguntas frecuentes (hub) y cerca de mí
             big = faq_pais(m, cc) + faq_gen(m, cc)
@@ -663,7 +693,7 @@ def build():
                     + (sec(f"Barrios de {ci} donde atendemos", pills(zc)) if zc else "") + sec(f"Preguntas frecuentes en {ci}", faqh(fq)) + sec("Búsquedas relacionadas", kw_html(m, cc, ci=ci))
                 page(Uci(m, cc, ci)[1:], f"Soporte técnico autorizado {mn} {ci}, {pn}: {term(cc,'neveras')}, lavadoras y secadoras",
                      f"Servicio técnico {mn} cerca de ti en {ci}, {reg} ({pn}): reparación a domicilio de {term(cc,'neveras')}, {term(cc,'lavadoras')} y {term(cc,'secadoras')} {mn}. WhatsApp del técnico más cercano.",
-                     f"Soporte técnico autorizado {mn} en {ci}", f"Técnico {mn} a domicilio en {ci}, {reg}, {pn}.", body, bc=bc_p, m=m, cc=cc, ci=ci, rel=None,
+                     f"Soporte técnico autorizado {mn} en {ci}", f"Técnico {mn} a domicilio en {ci}, {reg}, {pn}.", body, bc=bc_p, m=m, cc=cc, ci=ci, galeria=True, rel=None,
                      jsonld=[svc_ld(m, cc, ci), faq_ld(fq), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), (ci, DOM + Uci(m, cc, ci))])])
                 for k, e in (EQ.items() if es_p else []):
                     fq = faq_gen(m, cc, ci, k) + [(txt(q, m, cc, k), txt(a, m, cc, k)) for q, a in e["faq"][:3]]
@@ -696,7 +726,7 @@ def build():
                     + sec("Guías", pills(extra)) + sec("Preguntas frecuentes", faqh(fq)) + sec("Búsquedas relacionadas", kw_html(m, cc, k=k)) \
                     + sec("Por ciudad", pills([(f"{c}", Ucek(m, cc, c, k)) for c in p["ppal"]]))
                 page(Ue(m, cc, k)[1:], f"{t}: reparación a domicilio", f"{t}{' (' + a2 + ')' if a2 else ''}. Reparación a domicilio, diagnóstico y garantía. Solicita al técnico {mn} más cercano a tu barrio por WhatsApp.", t,
-                     txt(e["intro"], m, cc, k)[:170], body, bc=bc_p, m=m, cc=cc, rel=(lambda c2: Ue(m, c2, k)), eq=k,
+                     txt(e["intro"], m, cc, k)[:170], body, bc=bc_p, m=m, cc=cc, galeria=True, rel=(lambda c2: Ue(m, c2, k)), eq=k,
                      jsonld=[svc_ld(m, cc, None, k), faq_ld(fq), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), (cap(term(cc, k)), DOM + Ue(m, cc, k))])])
                 bc_k = bc_p + [(cap(term(cc, k)), Ue(m, cc, k))]
                 for f in e["fallas"]:
@@ -783,6 +813,28 @@ def build():
                         + sec("Búsquedas relacionadas", kw_html(m, cc, ci=ci))
                     page(ru[1:], ti, de, h1, de[:120], body, bc=bc_i, m=m, cc=cc, ci=ci, rel=((lambda c2, m=m, it2=it2: Ui(m, c2, it2)) if not ci else None),
                          jsonld=[svc_ld(m, cc, ci), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), (h1, DOM + ru)])])
+
+    # ---- institucionales por marca (sin mezclar marcas) y mapa por país (sin mezclar países)
+    for m2, v2 in MA.items():
+        mn2 = v2["nombre"]; globals()["EQ"] = EQB[m2]; bcm = [(mn2, Um(m2))]
+        page(Unos(m2)[1:], f"Nosotros: soporte técnico autorizado {mn2}", f"Quiénes somos y cómo trabajamos: servicio técnico a domicilio de neveras, lavadoras y secadoras {mn2}.", f"Nosotros: soporte técnico autorizado {mn2}", "Técnicos a domicilio.",
+             sec(f"Quiénes somos", f"<p>{esc(NOM)} conecta a clientes con técnicos de electrodomésticos {esc(mn2)}. Reparamos neveras, lavadoras y secadoras {esc(mn2)} a domicilio.</p><p>Cada solicitud llega por WhatsApp al técnico más cercano a tu barrio.</p>")
+             + sec("Cómo trabajamos", "<ol><li>Recibimos tu mensaje por WhatsApp.</li><li>El técnico confirma horario y datos del equipo.</li><li>Diagnostica en tu casa y te da el costo antes de reparar.</li><li>Repara y explica la garantía.</li></ol>"), bc=bcm, m=m2, orden=False, fab=False)
+        page(Upriv(m2)[1:], f"Política de privacidad y ubicación: servicio técnico {mn2}", "Cómo usamos tu ubicación y tus datos: solo en tu dispositivo, con tu permiso y sin guardarlos en nuestros servidores.", f"Política de privacidad: servicio técnico {mn2}", "Tu ubicación es tuya.",
+             sec("Ubicación", "<p>Solo pedimos tu ubicación cuando tocas «Detectar mi ubicación», y tu navegador te pide permiso. Con ella calculamos en tu dispositivo la ciudad y el técnico más cercano. No guardamos tu ubicación en nuestros servidores.</p>")
+             + sec("Servicios de terceros", "<p>Para mostrarte el nombre de tu barrio enviamos tus coordenadas aproximadas a OpenStreetMap (Nominatim). Al escribir por WhatsApp, tu mensaje y tu número los procesa WhatsApp según sus propias políticas. Si activamos Google Tag Manager, este mide visitas y clics en los botones de WhatsApp.</p>")
+             + sec("Tus decisiones", "<p>Puedes negar el permiso de ubicación y escribirnos igual por WhatsApp. Puedes borrar los datos del sitio desde la configuración de tu navegador.</p>"), bc=bcm, m=m2, orden=False, fab=False, noindex=True)
+        page(Uleg(m2)[1:], f"Aviso legal: servicio técnico {mn2}", f"Aviso legal: {mn2} y su logo pertenecen a su propietario.", f"Aviso legal: servicio técnico {mn2}", "Marca y responsabilidad.",
+             sec("Marca registrada", f"<p>{esc(mn2)} y su logo son marcas de su propietario. Se usan para identificar los equipos que reparamos.</p>")
+             + sec("Información del sitio", "<p>Los textos del sitio son orientativos: el diagnóstico, el costo y la garantía los confirma el técnico después de revisar tu equipo.</p>"), bc=bcm, m=m2, orden=False, fab=False, noindex=True)
+        for c2, p2 in PA.items():
+            pn2 = p2["nombre"]; reg3 = {}
+            for ci2, (r2, t2) in CITYINFO[c2].items(): reg3.setdefault(r2, []).append(ci2)
+            ciud = "".join(f"<h3>{esc(r2)}</h3>" + pills([(ci2, Uci(m2, c2, ci2)) for ci2 in cs2]) for r2, cs2 in reg3.items())
+            serv = pills([(f"Servicio técnico {mn2} {pn2}", Uc(m2, c2)), (f"WhatsApp {mn2} {pn2}", Uw(m2, c2)), (f"Blog {mn2} {pn2}", Ublog(m2, c2)), ("Preguntas frecuentes", Ufaq(m2, c2)), ("Cerca de mí", Ucerca(m2, c2))] + [(cap(term(c2, k)), Ue(m2, c2, k)) for k in EQ] + [(intent_data(x, m2, c2)[2], Ui(m2, c2, x)) for x in INTENTS])
+            barr = pills([(n2, Uz(m2, c2, n2)) for n2, t2, c3 in zonas_de(c2)])
+            page(Umapc(m2, c2)[1:], f"Mapa del sitio {mn2} {pn2}: ciudades y servicios", f"Todas las ciudades y servicios del soporte técnico {mn2} en {pn2}.", f"Mapa del sitio: soporte técnico autorizado {mn2} en {pn2}", "Todo en un solo lugar.",
+                 sec(f"Servicios {mn2} en {pn2}", serv) + sec(f"Ciudades de {pn2} con servicio {mn2}", ciud) + sec(f"Barrios de {pn2}", barr), bc=[(mn2, Um(m2)), (pn2, Uc(m2, c2))], m=m2, cc=c2, orden=False, fab=False)
     # ---- páginas de confianza (E-E-A-T) y mapas del sitio
     paises_l = ", ".join(p["nombre"] for p in PA.values()); marcas_l = ", ".join(v["nombre"] for v in MA.values())
     wa_l = "<ul>" + "".join(f'<li><b>{esc(p["nombre"])}:</b> <a href="{wa(p["wa"], "Hola, necesito servicio técnico")}" rel="noopener">WhatsApp {esc(p["tel"])}</a></li>' for p in PA.values()) + "</ul>"

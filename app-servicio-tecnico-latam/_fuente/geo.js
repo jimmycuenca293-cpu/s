@@ -15,8 +15,8 @@ function mostrar(la,lo,nb){
   var best=null;T.forEach(function(t){if(t.p!==c.cc)return;var d=dist(la,lo,t.la,t.lo);if(!best||d<best.d)best={t:t,d:d};});
   var num=(best&&best.t.w)||D[c.cc].wa,txt='Hola, necesito servicio técnico '+NM+' en '+(nb?nb+', ':'')+c.city+', '+D[c.cc].n+' (https://maps.google.com/?q='+la.toFixed(5)+','+lo.toFixed(5)+')';
   var url='https://wa.me/'+num+'?text='+encodeURIComponent(txt);
-  var otro=B.dataset.pais&&c.cc!==B.dataset.pais?'<br><b>Esta página es de '+esc(D[B.dataset.pais].n)+'.</b> <a href="/soporte-tecnico-autorizado-'+M+'-'+D[c.cc].ps+'/">Ver el servicio '+esc(NM)+' en '+esc(D[c.cc].n)+'</a>':'';
-  msg('<b>📍 Estás en '+esc((nb?nb+', ':'')+c.city+', '+D[c.cc].n)+'</b><br>Técnico '+esc(NM)+' más cercano: '+esc(best?best.t.n:'servicio técnico')+(best?' · a '+Math.round(best.d)+' km':'')+otro+'<p><a class="btn wa" data-evt="whatsapp" target="_blank" rel="noopener" href="'+url+'">💬 Escribir por WhatsApp</a></p><a href="/soporte-tecnico-autorizado-'+M+'-'+slugloc(c.city,c.cc)+'/">Ver servicio '+esc(NM)+' en '+esc(c.city)+'</a>');
+  var otro=B.dataset.pais&&c.cc!==B.dataset.pais?'<br><span class="mu">Tu solicitud se enviará al técnico de '+esc(D[c.cc].n)+'.</span>':'';
+  msg('<b>📍 Estás en '+esc((nb?nb+', ':'')+c.city+', '+D[c.cc].n)+'</b><br>Técnico '+esc(NM)+' más cercano: '+esc(best?best.t.n:'servicio técnico')+(best?' · a '+Math.round(best.d)+' km':'')+otro+'<p><a class="btn wa" data-evt="whatsapp" target="_blank" rel="noopener" href="'+url+'">💬 Escribir por WhatsApp</a></p>'+(B.dataset.pais&&c.cc!==B.dataset.pais?'':'<a href="/soporte-tecnico-autorizado-'+M+'-'+slugloc(c.city,c.cc)+'/">Ver servicio '+esc(NM)+' en '+esc(c.city)+'</a>'));
   var f=document.getElementById('fab');if(f)f.href=url;});}
 btn.addEventListener('click',function(){
  if(!navigator.geolocation){msg('Tu navegador no permite ubicación.');return;}
