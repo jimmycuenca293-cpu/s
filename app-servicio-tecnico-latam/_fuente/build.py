@@ -94,6 +94,32 @@ def copiar_pool():
                 if not src.exists(): print("⚠ falta", src); continue
                 im = Image.open(src).convert("RGB"); im.thumbnail((900, 900)); im.save(OUT / "img" / m / f"{k}-{i}.jpg", quality=80, optimize=True)
 
+
+# ---- repuestos (fotos de piezas por marca)
+FW = S / "filtroya-web"; UF = S / "us-filter-store" / "fotos"
+def _rp(tipo, label, path): return dict(tipo=tipo, label=label, src=path)
+REPU = {
+ "samsung": [_rp("bomba", "Bomba de desagüe de lavadora", FW / "imagenes-bombas/samsung" / f"bomba-{i}.png") for i in range(1, 7)]
+            + [_rp("atrapamotas", "Filtro atrapamotas de lavadora", FW / "imagenes-lavadoras/samsung" / n) for n in ("foto-1.png", "foto-2.png", "foto-3.png", "foto-4.webp", "foto-5.png", "foto-6.png")]
+            + [_rp("filtro-agua", "Filtro de agua de nevera", UF / f"{n}.jpg") for n in ("sam-cin-o", "sam-qin-o", "sam-cu1-o", "sam-ex-o")],
+ "lg": [_rp("bomba", "Bomba de desagüe de lavadora", FW / "imagenes-bombas/lg" / f"bomba-{i}.png") for i in range(1, 9)]
+       + [_rp("atrapamotas", "Filtro atrapamotas de lavadora", FW / "imagenes-lavadoras/lg" / f"foto-{i}.png") for i in range(1, 7)]
+       + [_rp("filtro-agua", "Filtro de agua de nevera", UF / f"{n}.jpg") for n in ("lg-1000-o", "lg-700-o", "lg-800-o", "lg-500-o", "lg-600-o", "lg-ex-o")],
+ "whirlpool": [_rp("filtro-agua", "Filtro de agua de nevera", UF / f"{n}.jpg") for n in ("wp-1-o", "wp-2-o", "wp-3-o", "wp-4-o", "wp-5-o", "wp-ex-o")],
+ "general-electric": [_rp("filtro-agua", "Filtro de agua de nevera", UF / f"{n}.jpg") for n in ("ge-mwf-o", "ge-xwf-o")],
+}
+def copiar_repuestos():
+    for m, L in REPU.items():
+        for i, r in enumerate(L):
+            if not r["src"].exists(): print("⚠ falta", r["src"]); continue
+            im = Image.open(r["src"]).convert("RGBA"); bg = Image.new("RGBA", im.size, (255, 255, 255, 255)); im = Image.alpha_composite(bg, im).convert("RGB")
+            im.thumbnail((700, 700)); im.save(OUT / "img" / m / f"repuesto-{i}.jpg", quality=82, optimize=True)
+def repu_html(m, cc, lg, tipos=None, n=12, link=True):
+    mn = MA[m]["nombre"]; L = [(i, r) for i, r in enumerate(REPU.get(m, [])) if (not tipos or r["tipo"] in tipos) and r["src"].exists()][:n]
+    if not L: return ""
+    h = '<div class="gal">' + "".join(f'<figure><img loading="lazy" src="/img/{m}/repuesto-{i}.jpg" alt="{esc(r["label"])} {esc(mn)}: repuesto con servicio técnico en {esc(lg)}"><figcaption>{esc(r["label"])} {esc(mn)}</figcaption></figure>' for i, r in L) + "</div>"
+    return h + (f'<p><a class="pill" href="{Ui(m, cc, "repuestos")}">Ver repuestos {esc(mn)} en {esc(PA[cc]["nombre"])}</a></p>' if link else "")
+
 # ---------- técnicos (editable en tecnicos.csv) ----------
 TEC = {}
 for r in csv.DictReader(open(RAIZ / "tecnicos.csv", encoding="utf-8")):
@@ -561,7 +587,7 @@ def inyectar_imgs(body, m, cc, ci, ruta, maxn=9):
 def build():
     if OUT.exists(): shutil.rmtree(OUT)
     OUT.mkdir(parents=True)
-    copiar_imagenes(); copiar_pool()
+    copiar_imagenes(); copiar_pool(); copiar_repuestos()
     faltan = [c for c in PA if not PA[c]["wa"]]
     shutil.copy(RAIZ / "_fuente" / "estilo.css", OUT / "estilo.css"); shutil.copy(RAIZ / "_fuente" / "geo.js", OUT / "geo.js")
     # ---- raíz
@@ -588,7 +614,7 @@ def build():
         lineas = "".join(f"<h3>{esc(cap(e['corto']))} {esc(mn)}</h3><p>{esc(txt(e['intro'], m, None))}</p><ul>" + "".join(f"<li>{esc(x)}</li>" for x in e["modelos"][:6]) + "</ul>" for k, e in EQ.items())
         pasos = "<ol><li><b>Elige tu país y ciudad.</b> Cada ciudad tiene su técnico y su información local.</li><li><b>Cuéntanos tu equipo y la falla</b> por WhatsApp, con el modelo si lo tienes.</li><li><b>El técnico confirma</b> horario y datos.</li><li><b>Diagnóstico y presupuesto</b> en tu casa, antes de reparar.</li><li><b>Reparación con garantía</b> de la pieza y la mano de obra.</li></ol>"
         body = sec("Elige tu país", pills([(p["nombre"], Uc(m, c)) for c, p in PA.items()])) + sec(f"Equipos {mn} que reparamos", f'<div class="g">{eqc}</div>') + sec(f"Líneas {mn} que atendemos", lineas) \
-            + sec(f"Servicio técnico {mn} por país y ciudad", porpais) + sec(f"Cómo pedir tu técnico {mn}", pasos) \
+            + (sec(f"Repuestos y piezas {mn}", repu_html(m, "pa", "tu país", n=12, link=False)) if REPU.get(m) else "") + sec(f"Servicio técnico {mn} por país y ciudad", porpais) + sec(f"Cómo pedir tu técnico {mn}", pasos) \
             + sec("Preguntas frecuentes", faqh(fqb)) + sec(f"Búsquedas relacionadas con servicio técnico {mn}", "<ul class='kw'>" + "".join(f"<li>servicio técnico {esc(mn)} {esc(p['nombre'])}</li>" for p in PA.values()) + "</ul>")
         page(Um(m)[1:], f"Soporte técnico autorizado {mn}: técnico más cercano por WhatsApp",
              f"Servicio técnico {mn} a domicilio en 8 países. Activa tu ubicación, elige tu equipo y la falla, y envía tu solicitud por WhatsApp al técnico {mn} más cercano a tu barrio.",
@@ -602,7 +628,7 @@ def build():
             eqcards = "".join(f'<a class="cd" href="{Ue(m,cc,k)}"><img src="{imgk(m,cc,k)}" alt="{esc(ALT(m,k,pn))}" loading="lazy"><h3>{esc(cap(term(cc,k)))} {esc(mn)} en {esc(pn)}</h3></a>' for k in EQ)
             body = sec(f"Equipos {mn} que reparamos en {pn}", f'<div class="g">{eqcards}</div>') \
                 + sec(f"Ciudades con técnico {mn} en {pn}", pills([(c, Uci(m, cc, c)) for c in p["ciudades"]])) \
-                + guia_pais(m, cc) + sec(f"Barrios y zonas donde atendemos {mn}", pills([(n, Uz(m, cc, n)) for n, t, c in zs])) \
+                + guia_pais(m, cc) + (sec(f"Repuestos y piezas {mn} en {pn}", repu_html(m, cc, pn, n=8)) if REPU.get(m) else "") + sec(f"Barrios y zonas donde atendemos {mn}", pills([(n, Uz(m, cc, n)) for n, t, c in zs])) \
                 + sec("Más ayuda", pills([(f"WhatsApp {mn} {pn}", Uw(m, cc)), (f"Blog {mn} {pn}", Ublog(m, cc)), ("Preguntas frecuentes", Ufaq(m, cc)), ("Técnico cerca de mí", Ucerca(m, cc))] + [(f"WhatsApp {mn} {c2}", Uwc(m, cc, c2)) for c2 in p["ppal"]])) \
                 + sec(f"Preguntas frecuentes sobre servicio técnico {mn} en {pn}", faqh(fq)) + sec("Búsquedas relacionadas", kw_html(m, cc))
             page(Uc(m, cc)[1:], f"Soporte técnico autorizado {mn} {pn}: {term(cc,'neveras')}, {term(cc,'lavadoras')} y {term(cc,'secadoras')}",
@@ -664,7 +690,9 @@ def build():
                 fq = [(txt(q, m, cc, k), txt(a, m, cc, k)) for q, a in e["faq"]] + faq_gen(m, cc, None, k)[:5]
                 mod = "".join(f"<li>{esc(x)}</li>" for x in e["modelos"])
                 extra = [("Mantenimiento", Umant(m, cc, k)), ("¿Cuánto cuesta reparar?", Ucosto(m, cc, k))] + ([("Códigos de error", Ucod(m, cc, k))] if (k == "lavadoras" and m in CODIGOS) else [])
-                body = sec(f"Fallas comunes en {eqn}", f'<div class="g">{fl}</div>') + sec(f"Modelos de {eqn} que atendemos", f"<ul>{mod}</ul>") \
+                _tp = {"neveras": ["filtro-agua"], "lavadoras": ["bomba", "atrapamotas"], "secadoras": []}[k]
+                _rg = repu_html(m, cc, pn, tipos=_tp, n=8) if _tp else ""
+                body = sec(f"Fallas comunes en {eqn}", f'<div class="g">{fl}</div>') + (sec(f"Repuestos y piezas para {eqn}", _rg) if _rg else "") + sec(f"Modelos de {eqn} que atendemos", f"<ul>{mod}</ul>") \
                     + sec("Guías", pills(extra)) + sec("Preguntas frecuentes", faqh(fq)) + sec("Búsquedas relacionadas", kw_html(m, cc, k=k)) \
                     + sec("Por ciudad", pills([(f"{c}", Ucek(m, cc, c, k)) for c in p["ppal"]]))
                 page(Ue(m, cc, k)[1:], f"{t}: reparación a domicilio", f"{t}{' (' + a2 + ')' if a2 else ''}. Reparación a domicilio, diagnóstico y garantía. Solicita al técnico {mn} más cercano a tu barrio por WhatsApp.", t,
@@ -748,7 +776,8 @@ def build():
                 lista = [(it, None)] if it != "@ciudades" else [("tecnico-a-domicilio", c2) for c2 in p["ppal"]]
                 for it2, ci in lista:
                     ti, de, h1, ps_ = intent_data(it2, m, cc, ci); ru = Ui(m, cc, it2) if not ci else Uic(m, cc, ci)
-                    body = sec(h1, "".join(f"<p>{esc(x)}</p>" for x in ps_) + f'<p><a class="btn wa" data-evt="whatsapp" href="{wa(p["wa"], "Hola, necesito servicio técnico " + mn + " en " + lugar_de(cc, ci))}" rel="noopener">Escribir por WhatsApp</a></p>') \
+                    gal = repu_html(m, cc, lugar_de(cc, ci), n=40, link=False) if it2 == "repuestos" else ""
+                    body = (sec(f"Repuestos {mn} que atendemos en {pn}", gal) if gal else "") + sec(h1, "".join(f"<p>{esc(x)}</p>" for x in ps_) + f'<p><a class="btn wa" data-evt="whatsapp" href="{wa(p["wa"], "Hola, necesito servicio técnico " + mn + " en " + lugar_de(cc, ci))}" rel="noopener">Escribir por WhatsApp</a></p>') \
                         + sec("Cómo trabajamos", "<ol><li>Escríbenos por WhatsApp con tu equipo y la falla.</li><li>El técnico más cercano confirma horario.</li><li>Diagnóstico y costo antes de reparar.</li><li>Reparación con garantía.</li></ol>") \
                         + sec("Más sobre el servicio técnico " + mn, pills([(f"WhatsApp {mn} {lugar_de(cc, ci)}", Uw(m, cc) if not ci else Uwc(m, cc, ci)), (f"{mn} en {lugar_de(cc, ci)}", Uc(m, cc) if not ci else Uci(m, cc, ci)), ("Preguntas frecuentes", Ufaq(m, cc)), (f"Blog {mn} {pn}", Ublog(m, cc))] + [(intent_data(x, m, cc)[2], Ui(m, cc, x)) for x in INTENTS if x != it2])) \
                         + sec("Búsquedas relacionadas", kw_html(m, cc, ci=ci))

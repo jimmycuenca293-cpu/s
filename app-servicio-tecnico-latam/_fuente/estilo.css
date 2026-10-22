@@ -53,3 +53,4 @@ footer{padding:28px 18px 40px;font-size:.82rem;color:var(--mu);text-align:center
 .ord .btn.gps{margin-top:2px}.ord .btn.wa{width:100%}
 .ph.prod{object-fit:contain;background:#fff;aspect-ratio:16/9}.telx{font-size:1.4rem;font-weight:800;margin:.2em 0 .6em;font-variant-numeric:tabular-nums}
 .ia{border-left:4px solid var(--acc,var(--mc));padding-left:14px}.ia p{margin:.6em 0}.res dl,dl.res{display:grid;grid-template-columns:auto 1fr;gap:6px 16px}
+.gal{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.gal figure{margin:0;background:#fff;border-radius:12px;padding:8px;color:#14202b}.gal img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block}.gal figcaption{font-size:.78rem;text-align:center;margin-top:4px}
