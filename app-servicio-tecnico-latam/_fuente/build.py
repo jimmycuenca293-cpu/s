@@ -115,6 +115,14 @@ def copiar_repuestos():
             im = Image.open(r["src"]).convert("RGBA"); bg = Image.new("RGBA", im.size, (255, 255, 255, 255)); im = Image.alpha_composite(bg, im).convert("RGB")
             im.thumbnail((700, 700)); im.save(OUT / "img" / m / f"repuesto-{i}.jpg", quality=82, optimize=True)
 def repu_html(m, cc, lg, tipos=None, n=12, link=True):
+    mn = MA[m]["nombre"]; ts = sorted({r["tipo"] for r in REPU.get(m, []) if (not tipos or r["tipo"] in tipos)})
+    if not ts: return ""
+    nom = {"bomba": "bombas de desagüe", "atrapamotas": "filtros atrapamotas", "filtro-agua": "filtros de agua"}
+    t = ", ".join(nom[x] for x in ts)
+    return (f"<p>Para equipos {esc(mn)} te ayudamos con repuestos y piezas como {esc(t)}. El técnico confirma cuál corresponde a tu modelo y su disponibilidad antes de instalarla.</p>"
+            + (f'<p><a class="pill" href="{Ui(m, cc, "repuestos")}">Ver repuestos {esc(mn)} en {esc(PA[cc]["nombre"])}</a></p>' if link else ""))
+
+def repu_html_viejo(m, cc, lg, tipos=None, n=12, link=True):
     mn = MA[m]["nombre"]; L = [(i, r) for i, r in enumerate(REPU.get(m, [])) if (not tipos or r["tipo"] in tipos) and r["src"].exists()][:n]
     if not L: return ""
     h = '<div class="gal">' + "".join(f'<figure><img loading="lazy" src="/img/{m}/repuesto-{i}.jpg" alt="{esc(r["label"])} {esc(mn)}: repuesto con servicio técnico en {esc(lg)}"><figcaption>{esc(r["label"])} {esc(mn)}</figcaption></figure>' for i, r in L) + "</div>"
@@ -270,7 +278,7 @@ def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, j
                 j_["mainEntity"] += [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in bnc if q not in _q]; _ya = True
         jsonld = (jsonld or []) + ([] if _ya else [faq_ld(bnc)]) + [{"@context": "https://schema.org", "@type": "WebPage", "name": title, "url": url, "dateModified": HOY, "inLanguage": "es", "speakable": {"@type": "SpeakableSpecification", "cssSelector": [".ia", "h1"]}}]
     body, toc = anclar(body)
-    if m and cc: body = inyectar_imgs(body, m, cc, ci, ruta)
+    if m and (cc or orden): body = inyectar_imgs(body, m, cc, ci, ruta)
     ld = "".join(f'<script type="application/ld+json">{json.dumps(j, ensure_ascii=False)}</script>' for j in (jsonld or []))
     ordh = ""
     if orden and m:
@@ -284,13 +292,17 @@ def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, j
     if m and cc: pie = f'<a href="{Unos(m)}">Nosotros</a> · <a href="{Uw(m, cc)}">Contacto</a> · <a href="{Upriv(m)}">Privacidad</a> · <a href="{Uleg(m)}">Aviso legal</a> · <a href="{Umapc(m, cc)}">Mapa del sitio</a>'
     elif m: pie = f'<a href="{Unos(m)}">Nosotros</a> · <a href="{Upriv(m)}">Privacidad</a> · <a href="{Uleg(m)}">Aviso legal</a> · <a href="{Umap(m)}">Mapa del sitio</a>'
     else: pie = '<a href="/nosotros/">Nosotros</a> · <a href="/contacto/">Contacto</a> · <a href="/politica-de-privacidad/">Privacidad</a> · <a href="/aviso-legal/">Aviso legal</a> · <a href="/mapa-del-sitio/">Mapa del sitio</a>'
+    hero_src = None; chips = ""
+    if m and (cc or orden):
+        _L = POOL[m]["tecnico"]; hero_src = f"/img/{m}/tecnico-{zlib.crc32(ruta.encode()) % len(_L)}.jpg"
+        chips = '<ul class="chips"><li>Servicio a domicilio</li><li>Presupuesto antes de reparar</li><li>Garantía</li>' + (f'<li>WhatsApp {esc(PA[cc]["tel"])}</li>' if (cc and PA[cc]["tel"]) else "") + "</ul>"
     h = f"""<!doctype html><html lang="{locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><link rel="canonical" href="{url}">{hl}{ver}
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="geo.region" content="{cc.upper() if cc else ''}">
 <link rel="manifest" href="{man}"><meta name="theme-color" content="{mc}"><link rel="icon" href="{ico}"><link rel="apple-touch-icon" href="{ico}">
 <meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:type" content="website"><meta property="og:url" content="{url}"><meta property="og:image" content="{img}"><meta property="og:locale" content="{locale.replace('-','_')}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="{img}"><meta name="author" content="{esc(NOM)}"><meta property="article:modified_time" content="{HOY}">
 <link rel="stylesheet" href="/estilo.css">{ld}{gtm}</head><body data-marca="{m or ''}" data-nombre="{esc(MA[m]['nombre']) if m else ''}" data-pais="{cc or ''}" data-bu="{Um(m) if m else ''}" data-equipo="{eq or ''}" data-falla="{esc(falla or '')}" style="{pal}">
-<header class="h"><div class="w"><div class="top">{logo}{"" if m else '<a class="al" href="/">Todas las marcas</a>'}</div>{bch}<h1>{esc(h1)}</h1><p class="sub">{esc(sub)}</p></div></header>
+<header class="h{' hero' if hero_src else ''}"{(' style="--hero:url(' + hero_src + ')"') if hero_src else ''}><div class="w"><div class="top">{logo}{"" if m else '<a class="al" href="/">Todas las marcas</a>'}</div>{bch}<h1>{esc(h1)}</h1><p class="sub">{esc(sub)}</p>{chips}</div></header>
 <main class="w">{ordh}{body}</main>{fb}
 <footer><nav aria-label="Información del sitio">{pie}</nav><p>{esc(NOM)}{(' · Servicio técnico ' + esc(MA[m]['nombre'])) if m else ''}. Las marcas y logos pertenecen a sus respectivos propietarios.</p></footer>
 <script src="/datos.js" defer></script><script src="/geo.js" defer></script><script src="/app.js" defer></script></body></html>"""
@@ -361,7 +373,7 @@ def anclar(body):
     body = re.sub(r'<section class="sec"><h2>(.*?)</h2>', sub, body)
     toc = ""
     if len(ids) >= 3:
-        toc = '<nav class="sec" aria-label="En esta página"><h3 style="margin:.8em 0 .5em">En esta página</h3>' + "".join(f'<a class="pill" href="#{i}">{esc(t)}</a>' for t, i in ids) + "</nav>"
+        toc = '<details class="sec toc"><summary>En esta página: ir a una sección</summary><div style="margin-top:10px">' + "".join(f'<a class="pill" href="#{i}">{esc(t)}</a>' for t, i in ids) + "</div></details>"
     return body, toc
 
 def faq_pais(m, cc):
@@ -413,7 +425,6 @@ def extras(m, cc, ci, k, ruta, galeria=False):
            f'<li><a href="{OFICIAL[m]}" target="_blank" rel="noopener">Sitio oficial de {esc(mn)}</a> (manuales, garantía y registro de producto)</li>',
            f'<li><a href="https://es.wikipedia.org/w/index.php?search={quote(mn)}" target="_blank" rel="noopener">{esc(mn)} en Wikipedia</a></li>',
            f'<li><a href="https://es.wikipedia.org/wiki/{WIKI_PAIS[cc]}" target="_blank" rel="noopener">Acerca de {esc(pn)} en Wikipedia</a></li>']
-    if galeria: out.append(sec(f"Galería de fotos {mn} en {lugar}: técnicos, equipos y repuestos", galeria_html(m, cc, lugar)))
     out.append(sec("Enlaces útiles", "<ul>" + "".join(ext) + "</ul><p style='color:var(--mu);font-size:.85rem'>Los enlaces externos llevan a sitios de terceros.</p>"))
     return "".join(out)
 
@@ -561,7 +572,7 @@ def ia_top(m, cc, ci, k, falla=None):
          f"<p><b>¿Qué reparan?</b> {esc(eq)}, a domicilio en {esc(lg)}" + (f" y en otras {len(p['ciudades'])} ciudades de {esc(pn)}" if not ci else f", {esc(pn)}") + ".</p>"
          + (f"<p><b>{esc(txt(falla, m, cc, k))}:</b> revisa las causas y los pasos de esta página; si no se resuelve, escribe al técnico {esc(mn)} por WhatsApp.</p>" if falla else "") + "</div>")
     dl = "".join(f"<dt>{a}</dt><dd>{b}</dd>" for a, b in [
-        ("Marca", esc(mn)), ("Servicio", f"Reparación y mantenimiento a domicilio de {esc(eq)}"), ("Ubicación", f"{esc(lg)}, {esc(pn)}"), ("WhatsApp", esc(tel)),
+        ("Marca", esc(mn)), ("Servicio", f"Reparación y mantenimiento a domicilio de {esc(eq)}"), ("Ubicación", f"{esc(lg)}, {esc(pn)}" if ci else esc(pn)), ("WhatsApp", esc(tel)),
         ("Cobertura", f"{len(p['ciudades'])} ciudades de {esc(pn)}"), ("Presupuesto", f"Se informa en {esc(p['moneda'])} antes de reparar"), ("Garantía", "Sobre la pieza y la mano de obra"), ("Idioma", "Español")])
     ficha = f'<dl class="res">{dl}</dl>'
     ia = ("<ul>"
@@ -588,7 +599,7 @@ def bonus(m, cc, ci, k, ruta):
     off = zlib.crc32(ruta.encode()) % len(B)
     return "".join(B[(off + i) % len(B)] for i in range(4))
 
-SKIP_IMG = ("Galería", "Preguntas", "Búsquedas", "Enlaces", "Explora", "Respuesta", "Datos clave", "Más ayuda", "Guías", "Por ciudad", "Servicio por ciudad", "Otras fallas", "Cerca de aquí", "Más cerca", "Ir a", "Información para asistentes")
+SKIP_IMG = ("Galería", "Preguntas", "Búsquedas", "Enlaces", "Explora", "Más ayuda", "Guías", "Por ciudad", "Servicio por ciudad", "Otras fallas", "Cerca de aquí", "Más cerca", "Ir a", "Información para asistentes")
 def galeria_html(m, cc, lg):
     mn = MA[m]["nombre"]; fig = []
     for kind in ("tecnico", "neveras", "lavadoras", "secadoras"):
@@ -603,16 +614,53 @@ def galeria_html(m, cc, lg):
     return '<div class="gal">' + "".join(fig) + "</div>"
 
 def todas_imgs(m): return [(k, i) for k in ("tecnico", "neveras", "lavadoras", "secadoras") for i in range(len(POOL[m][k]))]
-def inyectar_imgs(body, m, cc, ci, ruta, maxn=9):
-    L = todas_imgs(m); off = zlib.crc32(ruta.encode()) % len(L); n = [0]; mn = MA[m]["nombre"]; lg = lugar_de(cc, ci)
+def elegir_img(m, cc, titulo, usadas, off, lg):
+    """Foto acorde al tema de la sección: equipo, repuesto o técnico. Sin repetir en la página."""
+    mn = MA[m]["nombre"]; pn = PA[cc]["nombre"] if cc else ""; t = titulo.lower(); cc = cc or "pa"
+    def tomar(lista, rutafmt, k0):
+        n = len(lista)
+        for d in range(n):
+            idx = (off + k0 + d) % n
+            if rutafmt.format(idx) not in usadas: return rutafmt.format(idx)
+        return rutafmt.format((off + k0) % n)
+    if REPU.get(m) and any(x in t for x in ("repuesto", "pieza")):
+        L = [r for r in REPU[m] if r["src"].exists()]; src = tomar(L, f"/img/{m}/repuesto-{{}}.jpg", 0); r = REPU[m][int(re.search(r"-(\d+)\.jpg", src).group(1))]
+        return src, f"{r['label']} {mn}: repuesto con servicio técnico en {lg}", "prod"
+    for k, words in (("neveras", ("nevera", "refriger", "heladera")), ("lavadoras", ("lavadora", "lavarropa")), ("secadoras", ("secadora", "secarropa"))):
+        if any(w in t for w in words):
+            src = tomar(POOL[m][k], f"/img/{m}/{k}-{{}}.jpg", 0)
+            return src, f"{cap(term(cc, k))} {mn}: servicio técnico en {lg}" + (f", {pn}" if pn else ""), "prod"
+    src = tomar(POOL[m]["tecnico"], f"/img/{m}/tecnico-{{}}.jpg", 3)
+    return src, f"Técnico {mn} a domicilio en {lg}" + (f", {pn}" if pn else ""), "foto"
+
+def inyectar_imgs(body, m, cc, ci, ruta, maxn=14):
+    """Cada sección con foto al lado (alternando), y bandas con foto de fondo y llamado a WhatsApp."""
+    off = zlib.crc32(ruta.encode()) % 97; mn = MA[m]["nombre"]; lg = lugar_de(cc, ci) if cc else "tu ciudad"; tel = (PA[cc]["tel"] or "por WhatsApp") if cc else ""
+    usadas = set(); n = [0]; k = [0]
+    def band(idx):
+        if not cc: return ""
+        src = tomar_tec(idx)
+        usadas.add(src)
+        return (f'<div class="band" style="background-image:linear-gradient(120deg,color-mix(in srgb,var(--mc) 88%,transparent),color-mix(in srgb,var(--mc2) 72%,transparent)),url({src})">'
+                f'<p class="bt">¿Necesitas un técnico {esc(mn)} en {esc(lg)}?</p><p>Escríbenos y te respondemos con horario y costo antes de reparar.</p>'
+                f'<a class="btn wa" data-evt="whatsapp" href="{wa(PA[cc]["wa"], "Hola, necesito servicio técnico " + mn + " en " + lg)}" rel="noopener">WhatsApp {esc(tel)}</a></div>')
+    def tomar_tec(idx):
+        L = POOL[m]["tecnico"]
+        for d in range(len(L)):
+            src = f"/img/{m}/tecnico-{(off + idx * 5 + d) % len(L)}.jpg"
+            if src not in usadas: return src
+        return f"/img/{m}/tecnico-{(off + idx) % len(L)}.jpg"
     def sub(mm):
+        pre = ""
+        k[0] += 1
+        if k[0] in (3, 9, 15): pre = band(k[0])
         t = re.sub(r"<[^>]+>", "", mm.group(2))
-        if n[0] >= maxn or any(x in t for x in SKIP_IMG): return mm.group(0)
-        kind, i = L[(off + n[0] * 4) % len(L)]; n[0] += 1
-        if kind == "tecnico": alt = f"Técnico {mn} a domicilio en {lg}, {PA[cc]['nombre']}"; cls = "ph"
-        else: alt = f"{cap(term(cc, kind))} {mn}: servicio técnico en {lg}"; cls = "ph prod"
-        return mm.group(1) + mm.group(2) + f'<img class="{cls}" loading="lazy" src="/img/{m}/{kind}-{i}.jpg" alt="{esc(alt)}">'
-    return re.sub(r'(<section class="sec" id="[^"]*">)(<h2>.*?</h2>)', sub, body)
+        if n[0] >= maxn or any(x in t for x in SKIP_IMG): return pre + mm.group(0)
+        src, alt, cls = elegir_img(m, cc, t, usadas, off, lg); usadas.add(src); n[0] += 1
+        rev = " rev" if n[0] % 2 == 0 else ""
+        img = f'<div class="md {cls}"><img loading="lazy" src="{src}" alt="{esc(alt)}"></div>'
+        return pre + f'<section class="sec sp{rev}" id="{mm.group(1)}">{img}<div class="tx"><h2>{mm.group(2)}</h2>{mm.group(3)}</div></section>'
+    return re.sub(r'<section class="sec" id="([^"]*)"><h2>(.*?)</h2>(.*?)</section>', sub, body, flags=re.S)
 
 def build():
     if OUT.exists(): shutil.rmtree(OUT)
@@ -644,7 +692,7 @@ def build():
         lineas = "".join(f"<h3>{esc(cap(e['corto']))} {esc(mn)}</h3><p>{esc(txt(e['intro'], m, None))}</p><ul>" + "".join(f"<li>{esc(x)}</li>" for x in e["modelos"][:6]) + "</ul>" for k, e in EQ.items())
         pasos = "<ol><li><b>Elige tu país y ciudad.</b> Cada ciudad tiene su técnico y su información local.</li><li><b>Cuéntanos tu equipo y la falla</b> por WhatsApp, con el modelo si lo tienes.</li><li><b>El técnico confirma</b> horario y datos.</li><li><b>Diagnóstico y presupuesto</b> en tu casa, antes de reparar.</li><li><b>Reparación con garantía</b> de la pieza y la mano de obra.</li></ol>"
         body = sec("Elige tu país", pills([(p["nombre"], Uc(m, c)) for c, p in PA.items()])) + sec(f"Equipos {mn} que reparamos", f'<div class="g">{eqc}</div>') + sec(f"Líneas {mn} que atendemos", lineas) \
-            + (sec(f"Repuestos y piezas {mn}", repu_html(m, "pa", "tu país", n=12, link=False)) if REPU.get(m) else "") + sec(f"Galería de fotos {mn}: técnicos, equipos y repuestos", galeria_html(m, None, "tus ciudades")) + sec(f"Servicio técnico {mn} por país y ciudad", porpais) + sec(f"Cómo pedir tu técnico {mn}", pasos) \
+            + (sec(f"Repuestos y piezas {mn}", repu_html(m, "pa", "tu país", n=12, link=False)) if REPU.get(m) else "")  + sec(f"Servicio técnico {mn} por país y ciudad", porpais) + sec(f"Cómo pedir tu técnico {mn}", pasos) \
             + sec("Preguntas frecuentes", faqh(fqb)) + sec(f"Búsquedas relacionadas con servicio técnico {mn}", "<ul class='kw'>" + "".join(f"<li>servicio técnico {esc(mn)} {esc(p['nombre'])}</li>" for p in PA.values()) + "</ul>")
         page(Um(m)[1:], f"Soporte técnico autorizado {mn}: técnico más cercano por WhatsApp",
              f"Servicio técnico {mn} a domicilio en 8 países. Activa tu ubicación, elige tu equipo y la falla, y envía tu solicitud por WhatsApp al técnico {mn} más cercano a tu barrio.",
