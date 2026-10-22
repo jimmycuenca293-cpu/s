@@ -51,3 +51,5 @@ details{border-bottom:1px solid var(--ln);padding:12px 0}summary{cursor:pointer;
 footer{padding:28px 18px 40px;font-size:.82rem;color:var(--mu);text-align:center}footer a{color:inherit}
 .lg img[src*="general-electric"]{height:42px}
 .ord .btn.gps{margin-top:2px}.ord .btn.wa{width:100%}
+.ph.prod{object-fit:contain;background:#fff;aspect-ratio:16/9}.telx{font-size:1.4rem;font-weight:800;margin:.2em 0 .6em;font-variant-numeric:tabular-nums}
+.ia{border-left:4px solid var(--acc,var(--mc));padding-left:14px}.ia p{margin:.6em 0}.res dl,dl.res{display:grid;grid-template-columns:auto 1fr;gap:6px 16px}
