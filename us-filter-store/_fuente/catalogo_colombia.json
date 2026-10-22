@@ -1,0 +1,384 @@
+{
+ "sam-cin-o": {
+  "nombre": "Filtro Samsung HAF-CIN DA29-00020B",
+  "ref": "DA29-00020B",
+  "marca": "Samsung",
+  "precio": 115900,
+  "pack": 214900,
+  "slug": "filtro-samsung-haf-cin-da29-00020b",
+  "alias": [
+   "DA29-00020A",
+   "HAF-CIN",
+   "HAF-CIN/EXP",
+   "46-9101"
+  ],
+  "modelos": [
+   "RF28HMEDBSR",
+   "RF263BEAESR",
+   "RF28HFEDBSR",
+   "RF4287HARS",
+   "RF26J7500SR",
+   "RF23J9011SR"
+  ],
+  "nota": "",
+  "ubic": "interno",
+  "brand_dir": "samsung"
+ },
+ "sam-qin-o": {
+  "nombre": "Filtro Samsung HAF-QIN DA97-17376B",
+  "ref": "DA97-17376B",
+  "marca": "Samsung",
+  "precio": 115900,
+  "pack": 214900,
+  "slug": "filtro-samsung-haf-qin-da97-17376b",
+  "alias": [
+   "DA97-08006C",
+   "HAF-QIN",
+   "HAF-QIN/EXP"
+  ],
+  "modelos": [
+   "RF28R7351SR",
+   "RF22R7351SG",
+   "RF28R7201SR",
+   "RF23M8070SR"
+  ],
+  "nota": "",
+  "ubic": "interno",
+  "brand_dir": "samsung"
+ },
+ "sam-cu1-o": {
+  "nombre": "Filtro Samsung Aqua-Pure Plus DA29-00003G",
+  "ref": "DA29-00003G",
+  "marca": "Samsung",
+  "precio": 145900,
+  "pack": 274900,
+  "slug": "filtro-samsung-aqua-pure-plus-da29-00003g",
+  "alias": [
+   "DA29-00003B",
+   "DA29-00003F",
+   "HAFCU1",
+   "HAFCU1/XAA",
+   "HAFIN2",
+   "HAFIN2/EXP"
+  ],
+  "modelos": [
+   "RS2630SH",
+   "RS2530BSH",
+   "RS2555SL",
+   "RS261MDRS"
+  ],
+  "nota": "",
+  "ubic": "interno",
+  "brand_dir": "samsung"
+ },
+ "sam-ex-o": {
+  "nombre": "Filtro Samsung externo DA29-10105J",
+  "ref": "DA29-10105J",
+  "marca": "Samsung",
+  "precio": 81900,
+  "pack": 145900,
+  "slug": "filtro-samsung-externo-da29-10105j",
+  "alias": [
+   "HAFEX",
+   "HAFEX/EXP",
+   "WSF-100"
+  ],
+  "modelos": [],
+  "nota": "Va en la manguera de agua, por fuera del nevecón. Sirve para nevecones con dispensador que no traen filtro interno.",
+  "ubic": "externo",
+  "brand_dir": "samsung"
+ },
+ "lg-1000-o": {
+  "nombre": "Filtro LG LT1000P",
+  "ref": "LT1000P",
+  "marca": "LG",
+  "precio": 112900,
+  "pack": 208900,
+  "slug": "filtro-lg-lt1000p",
+  "alias": [
+   "LT1000PC",
+   "LT1000PCS",
+   "ADQ74793501",
+   "ADQ74793502",
+   "ADQ747935",
+   "MDJ64844601"
+  ],
+  "modelos": [
+   "LRMVS3006S",
+   "LRFVS3006S",
+   "LRMVC2306S"
+  ],
+  "nota": "",
+  "ubic": "interno",
+  "brand_dir": "lg"
+ },
+ "lg-700-o": {
+  "nombre": "Filtro LG LT700P",
+  "ref": "LT700P",
+  "marca": "LG",
+  "precio": 145900,
+  "pack": 274900,
+  "slug": "filtro-lg-lt700p",
+  "alias": [
+   "LT700PC",
+   "ADQ36006101",
+   "ADQ36006102",
+   "ADQ360061",
+   "46-9690"
+  ],
+  "modelos": [
+   "LFX28968ST",
+   "LFX25973ST",
+   "LMX25964ST",
+   "LFX31925ST"
+  ],
+  "nota": "",
+  "ubic": "interno",
+  "brand_dir": "lg"
+ },
+ "lg-800-o": {
+  "nombre": "Filtro LG LT800P",
+  "ref": "LT800P",
+  "marca": "LG",
+  "precio": 145900,
+  "pack": 274900,
+  "slug": "filtro-lg-lt800p",
+  "alias": [
+   "LT800PC",
+   "LT800PCS",
+   "ADQ73613401",
+   "ADQ73613402",
+   "ADQ75795104"
+  ],
+  "modelos": [
+   "LFXS26973S",
+   "LFXS28968S",
+   "LMXS28626S"
+  ],
+  "nota": "",
+  "ubic": "interno",
+  "brand_dir": "lg"
+ },
+ "lg-500-o": {
+  "nombre": "Filtro LG LT500P",
+  "ref": "LT500P",
+  "marca": "LG",
+  "precio": 145900,
+  "pack": 274900,
+  "slug": "filtro-lg-lt500p",
+  "alias": [
+   "5231JA2002A",
+   "5231JA2002B",
+   "GEN11042F-08",
+   "GEN11042FR-08",
+   "ADQ72910901",
+   "46-9890"
+  ],
+  "modelos": [
+   "LRSC26925TT",
+   "LSC27925ST",
+   "LSC27910ST"
+  ],
+  "nota": "",
+  "ubic": "interno",
+  "brand_dir": "lg"
+ },
+ "lg-600-o": {
+  "nombre": "Filtro LG LT600P 5231JA2006",
+  "ref": "5231JA2006",
+  "marca": "LG",
+  "precio": 145900,
+  "pack": 274900,
+  "slug": "filtro-lg-lt600p-5231ja2006",
+  "alias": [
+   "5231JA2006A",
+   "5231JA2006B",
+   "5231JA2006F",
+   "LT600P",
+   "LT600",
+   "46-9990"
+  ],
+  "modelos": [],
+  "nota": "Filtro interno largo. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.",
+  "ubic": "interno",
+  "brand_dir": "lg"
+ },
+ "lg-ex-o": {
+  "nombre": "Filtro LG externo ADQ73693903",
+  "ref": "ADQ73693903",
+  "marca": "LG",
+  "precio": 81900,
+  "pack": 145900,
+  "slug": "filtro-lg-externo-adq73693903",
+  "alias": [
+   "FSS-002",
+   "FSS002",
+   "5231JA2012A",
+   "5231JA2012B"
+  ],
+  "modelos": [],
+  "nota": "Va en la manguera de agua, por fuera del nevecón. Sirve para nevecones LG con dispensador que no traen filtro interno.",
+  "ubic": "externo",
+  "brand_dir": "lg"
+ },
+ "wp-1-o": {
+  "nombre": "Filtro Whirlpool EveryDrop 1 EDR1RXD1",
+  "ref": "EDR1RXD1",
+  "marca": "Whirlpool",
+  "precio": 145900,
+  "pack": 274900,
+  "slug": "filtro-whirlpool-everydrop-1-edr1rxd1",
+  "alias": [
+   "W10295370A",
+   "W10295370",
+   "FILTER1",
+   "P4RFWB",
+   "46-9930"
+  ],
+  "modelos": [
+   "WRF555SDFZ",
+   "WRF767SDHZ",
+   "WRX735SDHZ",
+   "KRFF305ESS"
+  ],
+  "nota": "",
+  "ubic": "interno",
+  "brand_dir": "whirlpool"
+ },
+ "wp-2-o": {
+  "nombre": "Filtro Whirlpool EveryDrop 2 EDR2RXD1",
+  "ref": "EDR2RXD1",
+  "marca": "Whirlpool",
+  "precio": 145900,
+  "pack": 274900,
+  "slug": "filtro-whirlpool-everydrop-2-edr2rxd1",
+  "alias": [
+   "W10413645A",
+   "W10413645",
+   "FILTER2",
+   "P8RFWB2L",
+   "46-9081"
+  ],
+  "modelos": [],
+  "nota": "Sirve para nevecones Whirlpool, Maytag, KitchenAid y Amana. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.",
+  "ubic": "interno",
+  "brand_dir": "whirlpool"
+ },
+ "wp-3-o": {
+  "nombre": "Filtro Whirlpool EveryDrop 3 EDR3RXD1",
+  "ref": "EDR3RXD1",
+  "marca": "Whirlpool",
+  "precio": 145900,
+  "pack": 274900,
+  "slug": "filtro-whirlpool-everydrop-3-edr3rxd1",
+  "alias": [
+   "4396841",
+   "4396710",
+   "W10193691",
+   "FILTER3",
+   "P1RFWB",
+   "46-9030"
+  ],
+  "modelos": [],
+  "nota": "Sirve para nevecones Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.",
+  "ubic": "interno",
+  "brand_dir": "whirlpool"
+ },
+ "wp-4-o": {
+  "nombre": "Filtro Whirlpool EveryDrop 4 EDR4RXD1",
+  "ref": "EDR4RXD1",
+  "marca": "Whirlpool",
+  "precio": 145900,
+  "pack": 274900,
+  "slug": "filtro-whirlpool-everydrop-4-edr4rxd1",
+  "alias": [
+   "UKF8001",
+   "UKF8001AXX",
+   "4396395",
+   "FILTER4",
+   "46-9006"
+  ],
+  "modelos": [
+   "MFI2570FEZ",
+   "WRF736SDAM",
+   "KRFF507ESS"
+  ],
+  "nota": "",
+  "ubic": "interno",
+  "brand_dir": "whirlpool"
+ },
+ "wp-5-o": {
+  "nombre": "Filtro Whirlpool EveryDrop 5 EDR5RXD1",
+  "ref": "EDR5RXD1",
+  "marca": "Whirlpool",
+  "precio": 145900,
+  "pack": 274900,
+  "slug": "filtro-whirlpool-everydrop-5-edr5rxd1",
+  "alias": [
+   "4396508",
+   "4396509",
+   "4396510",
+   "FILTER5",
+   "NLC240V",
+   "46-9010"
+  ],
+  "modelos": [],
+  "nota": "Sirve para nevecones Whirlpool, Maytag, KitchenAid, Jenn-Air y Amana. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.",
+  "ubic": "interno",
+  "brand_dir": "whirlpool"
+ },
+ "wp-ex-o": {
+  "nombre": "Filtro Whirlpool externo 4378411RB",
+  "ref": "4378411RB",
+  "marca": "Whirlpool",
+  "precio": 85900,
+  "pack": 155900,
+  "slug": "filtro-whirlpool-externo-4378411rb",
+  "alias": [
+   "4378411",
+   "WHKF-IMPL"
+  ],
+  "modelos": [],
+  "nota": "Va en la manguera de agua, por fuera del nevecón. Funciona con nevecones y máquinas de hielo de todas las marcas, incluidas Whirlpool, KitchenAid, Maytag, Amana y Estate.",
+  "ubic": "externo",
+  "brand_dir": "whirlpool"
+ },
+ "ge-mwf-o": {
+  "nombre": "Filtro GE MWF",
+  "ref": "MWF",
+  "marca": "GE",
+  "precio": 158900,
+  "pack": 299900,
+  "slug": "filtro-ge-mwf",
+  "alias": [
+   "MWFP",
+   "MWFA",
+   "MWFINT",
+   "GWF",
+   "GWFA",
+   "HWF",
+   "HWFA",
+   "SmartWater MWF",
+   "46-9991"
+  ],
+  "modelos": [],
+  "nota": "El de nevecones GE de dos puertas y French door con filtro adentro, arriba a la derecha. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.",
+  "ubic": "interno",
+  "brand_dir": "ge"
+ },
+ "ge-xwf-o": {
+  "nombre": "Filtro GE XWF",
+  "ref": "XWF",
+  "marca": "GE",
+  "precio": 158900,
+  "pack": 299900,
+  "slug": "filtro-ge-xwf",
+  "alias": [
+   "XWF-1"
+  ],
+  "modelos": [],
+  "nota": "El de los nevecones GE French door más nuevos. No es igual al XWFE. Para confirmar que es el tuyo, mándanos la foto del filtro viejo o de la etiqueta del nevecón.",
+  "ubic": "interno",
+  "brand_dir": "ge"
+ }
+}
