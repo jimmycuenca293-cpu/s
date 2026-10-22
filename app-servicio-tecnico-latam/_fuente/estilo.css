@@ -49,3 +49,4 @@ details{border-bottom:1px solid var(--ln);padding:12px 0}summary{cursor:pointer;
 .mk{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}.mk a{background:var(--card);border-radius:20px;overflow:hidden;text-decoration:none;box-shadow:0 8px 24px -16px rgba(2,6,23,.4);display:block}
 .mk .bar{height:6px;background:var(--mc)}.mk img.t{width:100%;aspect-ratio:16/10;object-fit:cover;display:block}.mk .in{padding:12px 14px 16px}.mk h3{font-size:.98rem}.mk .lg{box-shadow:none;border:1px solid var(--ln);margin-bottom:8px}
 footer{padding:28px 18px 40px;font-size:.82rem;color:var(--mu);text-align:center}footer a{color:inherit}
+.lg img[src*="general-electric"]{height:42px}
