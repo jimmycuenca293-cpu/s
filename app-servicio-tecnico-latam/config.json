@@ -288,32 +288,73 @@
  "marcas": {
   "samsung": {
    "nombre": "Samsung",
-   "color": "#1428a0"
+   "color": "#1428a0",
+   "pri2": "#0a1460",
+   "acc": "#00a3e0",
+   "soft": "#e6eaf8",
+   "panel": "#f2f4fb",
+   "ink": "#0b1440",
+   "texto": "#fff"
   },
   "lg": {
    "nombre": "LG",
-   "color": "#a50034"
+   "color": "#a50034",
+   "pri2": "#5c0020",
+   "acc": "#6b6b6b",
+   "soft": "#fbe6ec",
+   "panel": "#faf3f5",
+   "ink": "#25121a",
+   "texto": "#fff"
   },
   "whirlpool": {
    "nombre": "Whirlpool",
-   "color": "#f5b800",
-   "texto": "#222"
+   "color": "#26272b",
+   "texto": "#fff",
+   "pri2": "#0d0d10",
+   "acc": "#f2b705",
+   "soft": "#efe9d6",
+   "panel": "#f6f4ee",
+   "ink": "#17181b"
   },
   "mabe": {
    "nombre": "Mabe",
-   "color": "#0b6b3a"
+   "color": "#0b4f9c",
+   "pri2": "#062a57",
+   "acc": "#19a7e6",
+   "soft": "#e2ebf9",
+   "panel": "#f2f6fd",
+   "ink": "#0a1f3d",
+   "texto": "#fff"
   },
   "frigidaire": {
    "nombre": "Frigidaire",
-   "color": "#c8102e"
+   "color": "#c8102e",
+   "pri2": "#0c0a0a",
+   "acc": "#111111",
+   "soft": "#f6e3e5",
+   "panel": "#faf4f4",
+   "ink": "#17181b",
+   "texto": "#fff"
   },
   "electrolux": {
    "nombre": "Electrolux",
-   "color": "#0b3c7d"
+   "color": "#0a2342",
+   "pri2": "#04101f",
+   "acc": "#2f8fe0",
+   "soft": "#e3edf8",
+   "panel": "#f3f7fc",
+   "ink": "#0a1a2e",
+   "texto": "#fff"
   },
   "general-electric": {
    "nombre": "General Electric",
-   "color": "#1d4f91"
+   "color": "#0b4ea2",
+   "pri2": "#06182f",
+   "acc": "#3d9be9",
+   "soft": "#e3edf8",
+   "panel": "#f3f7fc",
+   "ink": "#0b1a30",
+   "texto": "#fff"
   }
  }
 }

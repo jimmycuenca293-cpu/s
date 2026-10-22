@@ -1,0 +1,1 @@
+{"name": "Servicio técnico Samsung", "short_name": "Samsung", "start_url": "/soporte-tecnico-autorizado-samsung/", "scope": "/soporte-tecnico-autorizado-samsung/", "display": "standalone", "background_color": "#ffffff", "theme_color": "#1428a0", "lang": "es", "icons": [{"src": "/img/samsung/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}]}

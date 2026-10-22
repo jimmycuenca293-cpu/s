@@ -12,8 +12,8 @@ function termino(k){var v=(D[S.pais]||{}).voc;return v?v[k]:O.equipos[k].t;}
 function cercana(la,lo){var b=null;for(var cc in D){var cs=D[cc].ciudades;for(var n in cs){var d=dist(la,lo,cs[n][0],cs[n][1]);if(!b||d<b.d)b={cc:cc,city:n,d:d};}}return b;}
 function barrio(la,lo,cb){var done=false,t=setTimeout(function(){if(!done){done=true;cb(null);}},4500);
  fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=16&accept-language=es&lat='+la+'&lon='+lo).then(function(r){return r.json();}).then(function(j){if(done)return;done=true;clearTimeout(t);var a=j.address||{};cb(a.neighbourhood||a.suburb||a.quarter||a.city_district||a.village||a.town||null);}).catch(function(){if(!done){done=true;cb(null);}});}
-function cargarTecs(cb){if(tecs)return cb(tecs);fetch((window.BASE||'/')+M+'/tecnicos.json').then(function(r){return r.json();}).then(function(t){tecs=t;cb(t);}).catch(function(){tecs=[];cb([]);});}
-function elegirTec(cb){cargarTecs(function(T){var best=null;T.forEach(function(t){if(t.p!==S.pais)return;var d=S.lat!=null?dist(S.lat,S.lon,t.la,t.lo):(t.c===S.ciudad?0:99999);if(!best||d<best.d)best={t:t,d:d};});S.tec=best?best.t:null;S.dkm=best&&S.lat!=null?Math.round(best.d):null;cb();});}
+function cargarTecs(cb){if(tecs)return cb(tecs);fetch((window.BASE?window.BASE.replace(/\/$/,'')+B.dataset.bu:B.dataset.bu)+'tecnicos.json').then(function(r){return r.json();}).then(function(t){tecs=t;cb(t);}).catch(function(){tecs=[];cb([]);});}
+function elegirTec(cb){cargarTecs(function(T){var best=null;T.forEach(function(t){if(t.p!==S.pais)return;var d=S.lat!=null?dist(S.lat,S.lon,t.la,t.lo):(t.c===S.ciudad?0:99999);if(!best||d<best.d)best={t:t,d:d};});S.tec=best?best.t:null;S.dkm=best&&S.lat!=null?Math.round(best.d):null;var f=document.getElementById('fab');if(f&&D[S.pais])f.href='https://wa.me/'+numero()+'?text='+encodeURIComponent('Hola, necesito servicio técnico '+NM+' en '+D[S.pais].n);cb();});}
 function numero(){return (S.tec&&S.tec.w)||(D[S.pais]||{}).wa||'';}
 function render(){
  var h='<ol class="stp" aria-label="Pasos de la solicitud">'+PASOS.map(function(p,i){return '<li class="'+(i===paso?'on':i<paso?'ok':'')+'">'+(i+1)+'. '+p+'</li>';}).join('')+'</ol>';
@@ -56,7 +56,8 @@ function wire(){
      if(!c||c.d>600){det.innerHTML='<div class="ok-b">Todavía no tenemos técnicos en tu zona. Elige país y ciudad abajo.</div>';return;}
      det.innerHTML='<div class="ok-b">Buscando tu barrio…</div>';
      barrio(la,lo,function(nb){S.lat=la;S.lon=lo;S.pais=c.cc;S.ciudad=c.city;S.barrio=nb||'';$('#p-pais').value=c.cc;ciudades();$('#p-ciudad').value=c.city;
-       elegirTec(function(){det.innerHTML='<div class="ok-b"><b>📍 Estás en '+esc((nb?nb+', ':'')+c.city+', '+D[c.cc].n)+'</b><br><span class="mu">Técnico '+esc(NM)+' más cercano: '+esc(S.tec?S.tec.n:'servicio técnico')+(S.dkm!=null?' · a '+S.dkm+' km':'')+'</span></div>';});});},
+       elegirTec(function(){var otro=B.dataset.pais&&c.cc!==B.dataset.pais?'<br><b>Esta página es de '+esc(D[B.dataset.pais].n)+'.</b> <a href="/soporte-tecnico-autorizado-'+M+'-'+D[c.cc].ps+'/">Ver el servicio '+esc(NM)+' en '+esc(D[c.cc].n)+'</a>. Tu solicitud se enviará al técnico de '+esc(D[c.cc].n)+'.':'';
+       det.innerHTML='<div class="ok-b"><b>📍 Estás en '+esc((nb?nb+', ':'')+c.city+', '+D[c.cc].n)+'</b><br><span class="mu">Técnico '+esc(NM)+' más cercano: '+esc(S.tec?S.tec.n:'servicio técnico')+(S.dkm!=null?' · a '+S.dkm+' km':'')+'</span>'+otro+'</div>';});});},
     function(e){det.innerHTML='<div class="ok-b">'+(e&&e.code===1?'No diste permiso de ubicación.':'No pudimos obtener tu ubicación.')+' Elige país y ciudad abajo.</div>';},{timeout:12000,maximumAge:600000});};
   $('#sig0').onclick=function(){var p=$('#p-pais').value,c=$('#p-ciudad').value;if(!p||!c){det.innerHTML='<div class="ok-b">Elige tu país y tu ciudad para continuar.</div>';return;}
    S.pais=p;S.ciudad=c;elegirTec(function(){paso=1;render();});};

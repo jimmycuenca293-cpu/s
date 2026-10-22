@@ -1,1 +1,0 @@
-{"name": "Servicio técnico LG", "short_name": "LG", "start_url": "/lg/", "scope": "/lg/", "display": "standalone", "background_color": "#ffffff", "theme_color": "#a50034", "lang": "es", "icons": [{"src": "/img/lg/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}]}
