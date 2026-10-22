@@ -50,3 +50,4 @@ details{border-bottom:1px solid var(--ln);padding:12px 0}summary{cursor:pointer;
 .mk .bar{height:6px;background:var(--mc)}.mk img.t{width:100%;aspect-ratio:16/10;object-fit:cover;display:block}.mk .in{padding:12px 14px 16px}.mk h3{font-size:.98rem}.mk .lg{box-shadow:none;border:1px solid var(--ln);margin-bottom:8px}
 footer{padding:28px 18px 40px;font-size:.82rem;color:var(--mu);text-align:center}footer a{color:inherit}
 .lg img[src*="general-electric"]{height:42px}
+.ord .btn.gps{margin-top:2px}.ord .btn.wa{width:100%}

@@ -5,333 +5,1467 @@ samsung,gt,Villa Nueva,Centro,14.525,-90.587,50769337976,Técnico Samsung Villa 
 samsung,gt,Quetzaltenango,Centro,14.8347,-91.5181,50769337976,Técnico Samsung Quetzaltenango
 samsung,gt,Antigua Guatemala,Centro,14.5586,-90.7295,50769337976,Técnico Samsung Antigua Guatemala
 samsung,gt,Escuintla,Centro,14.305,-90.785,50769337976,Técnico Samsung Escuintla
+samsung,gt,Cobán,Centro,15.47,-90.38,50769337976,Técnico Samsung Cobán
+samsung,gt,Huehuetenango,Centro,15.32,-91.47,50769337976,Técnico Samsung Huehuetenango
+samsung,gt,Puerto Barrios,Centro,15.73,-88.6,50769337976,Técnico Samsung Puerto Barrios
+samsung,gt,Chiquimula,Centro,14.8,-89.54,50769337976,Técnico Samsung Chiquimula
+samsung,gt,Zacapa,Centro,14.97,-89.53,50769337976,Técnico Samsung Zacapa
+samsung,gt,Jalapa,Centro,14.63,-89.99,50769337976,Técnico Samsung Jalapa
+samsung,gt,Retalhuleu,Centro,14.54,-91.68,50769337976,Técnico Samsung Retalhuleu
+samsung,gt,Mazatenango,Centro,14.53,-91.5,50769337976,Técnico Samsung Mazatenango
+samsung,gt,Flores,Centro,16.93,-89.89,50769337976,Técnico Samsung Flores
+samsung,gt,Chimaltenango,Centro,14.66,-90.82,50769337976,Técnico Samsung Chimaltenango
+samsung,gt,Salamá,Centro,15.1,-90.32,50769337976,Técnico Samsung Salamá
+samsung,gt,Sololá,Centro,14.77,-91.18,50769337976,Técnico Samsung Sololá
+samsung,gt,Totonicapán,Centro,14.91,-91.36,50769337976,Técnico Samsung Totonicapán
+samsung,gt,San Marcos,Centro,14.96,-91.8,50769337976,Técnico Samsung San Marcos
+samsung,gt,Jutiapa,Centro,14.29,-89.9,50769337976,Técnico Samsung Jutiapa
+samsung,gt,Santa Rosa de Lima,Centro,14.44,-90.28,50769337976,Técnico Samsung Santa Rosa de Lima
+samsung,gt,Santa Catarina Pinula,Centro,14.57,-90.49,50769337976,Técnico Samsung Santa Catarina Pinula
+samsung,gt,San Miguel Petapa,Centro,14.5,-90.55,50769337976,Técnico Samsung San Miguel Petapa
 samsung,pa,Ciudad de Panamá,Centro,8.9824,-79.5199,50769337976,Técnico Samsung Ciudad de Panamá
 samsung,pa,San Miguelito,Centro,9.0333,-79.5,50769337976,Técnico Samsung San Miguelito
 samsung,pa,Colón,Centro,9.3592,-79.9014,50769337976,Técnico Samsung Colón
 samsung,pa,David,Centro,8.4273,-82.4308,50769337976,Técnico Samsung David
 samsung,pa,La Chorrera,Centro,8.88,-79.783,50769337976,Técnico Samsung La Chorrera
 samsung,pa,Arraiján,Centro,8.95,-79.65,50769337976,Técnico Samsung Arraiján
+samsung,pa,Chitré,Centro,7.9667,-80.4333,50769337976,Técnico Samsung Chitré
+samsung,pa,Las Tablas,Centro,7.7667,-80.2833,50769337976,Técnico Samsung Las Tablas
+samsung,pa,Santiago de Veraguas,Centro,8.1,-80.98,50769337976,Técnico Samsung Santiago de Veraguas
+samsung,pa,Penonomé,Centro,8.52,-80.36,50769337976,Técnico Samsung Penonomé
+samsung,pa,Aguadulce,Centro,8.24,-80.55,50769337976,Técnico Samsung Aguadulce
+samsung,pa,Boquete,Centro,8.78,-82.44,50769337976,Técnico Samsung Boquete
+samsung,pa,Changuinola,Centro,9.43,-82.52,50769337976,Técnico Samsung Changuinola
+samsung,pa,Bocas del Toro,Centro,9.34,-82.24,50769337976,Técnico Samsung Bocas del Toro
+samsung,pa,Puerto Armuelles,Centro,8.28,-82.87,50769337976,Técnico Samsung Puerto Armuelles
+samsung,pa,Chepo,Centro,9.17,-79.1,50769337976,Técnico Samsung Chepo
+samsung,pa,La Palma,Centro,8.4,-78.15,50769337976,Técnico Samsung La Palma
+samsung,pa,Chame,Centro,8.59,-79.88,50769337976,Técnico Samsung Chame
+samsung,pa,Coronado,Centro,8.54,-79.9,50769337976,Técnico Samsung Coronado
+samsung,pa,Pacora,Centro,9.08,-79.28,50769337976,Técnico Samsung Pacora
 samsung,cr,San José,Centro,9.9281,-84.0907,50670055753,Técnico Samsung San José
 samsung,cr,Alajuela,Centro,10.0162,-84.2116,50670055753,Técnico Samsung Alajuela
 samsung,cr,Cartago,Centro,9.8644,-83.9194,50670055753,Técnico Samsung Cartago
 samsung,cr,Heredia,Centro,9.9986,-84.1165,50670055753,Técnico Samsung Heredia
 samsung,cr,Liberia,Centro,10.6346,-85.4377,50670055753,Técnico Samsung Liberia
 samsung,cr,Puntarenas,Centro,9.9763,-84.8384,50670055753,Técnico Samsung Puntarenas
+samsung,cr,Limón,Centro,9.99,-83.03,50670055753,Técnico Samsung Limón
+samsung,cr,San Carlos (Ciudad Quesada),Centro,10.32,-84.43,50670055753,Técnico Samsung San Carlos (Ciudad Quesada)
+samsung,cr,Pérez Zeledón,Centro,9.37,-83.7,50670055753,Técnico Samsung Pérez Zeledón
+samsung,cr,Escazú,Centro,9.92,-84.14,50670055753,Técnico Samsung Escazú
+samsung,cr,Santa Ana,Centro,9.93,-84.18,50670055753,Técnico Samsung Santa Ana
+samsung,cr,Curridabat,Centro,9.91,-84.04,50670055753,Técnico Samsung Curridabat
+samsung,cr,Desamparados,Centro,9.9,-84.07,50670055753,Técnico Samsung Desamparados
+samsung,cr,Tibás,Centro,9.96,-84.08,50670055753,Técnico Samsung Tibás
+samsung,cr,Moravia,Centro,9.96,-84.05,50670055753,Técnico Samsung Moravia
+samsung,cr,Grecia,Centro,10.07,-84.31,50670055753,Técnico Samsung Grecia
+samsung,cr,San Ramón,Centro,10.09,-84.47,50670055753,Técnico Samsung San Ramón
+samsung,cr,Nicoya,Centro,10.15,-85.45,50670055753,Técnico Samsung Nicoya
+samsung,cr,Santa Cruz,Centro,10.26,-85.58,50670055753,Técnico Samsung Santa Cruz
+samsung,cr,Cañas,Centro,10.43,-85.1,50670055753,Técnico Samsung Cañas
+samsung,cr,Golfito,Centro,8.64,-83.16,50670055753,Técnico Samsung Golfito
+samsung,cr,Quepos,Centro,9.43,-84.16,50670055753,Técnico Samsung Quepos
+samsung,cr,Turrialba,Centro,9.9,-83.68,50670055753,Técnico Samsung Turrialba
+samsung,cr,Guápiles,Centro,10.21,-83.79,50670055753,Técnico Samsung Guápiles
 samsung,ec,Quito,Centro,-0.1807,-78.4678,593993508191,Técnico Samsung Quito
 samsung,ec,Guayaquil,Centro,-2.17,-79.9224,593993508191,Técnico Samsung Guayaquil
 samsung,ec,Cuenca,Centro,-2.9001,-79.0059,593993508191,Técnico Samsung Cuenca
 samsung,ec,Ambato,Centro,-1.2491,-78.6168,593993508191,Técnico Samsung Ambato
 samsung,ec,Manta,Centro,-0.9677,-80.7089,593993508191,Técnico Samsung Manta
 samsung,ec,Loja,Centro,-3.9931,-79.2042,593993508191,Técnico Samsung Loja
+samsung,ec,Santo Domingo,Centro,-0.25,-79.17,593993508191,Técnico Samsung Santo Domingo
+samsung,ec,Machala,Centro,-3.26,-79.96,593993508191,Técnico Samsung Machala
+samsung,ec,Portoviejo,Centro,-1.05,-80.45,593993508191,Técnico Samsung Portoviejo
+samsung,ec,Riobamba,Centro,-1.67,-78.65,593993508191,Técnico Samsung Riobamba
+samsung,ec,Ibarra,Centro,0.35,-78.12,593993508191,Técnico Samsung Ibarra
+samsung,ec,Esmeraldas,Centro,0.96,-79.65,593993508191,Técnico Samsung Esmeraldas
+samsung,ec,Quevedo,Centro,-1.02,-79.46,593993508191,Técnico Samsung Quevedo
+samsung,ec,Latacunga,Centro,-0.93,-78.62,593993508191,Técnico Samsung Latacunga
+samsung,ec,Babahoyo,Centro,-1.8,-79.53,593993508191,Técnico Samsung Babahoyo
+samsung,ec,Tulcán,Centro,0.81,-77.72,593993508191,Técnico Samsung Tulcán
+samsung,ec,Azogues,Centro,-2.74,-78.85,593993508191,Técnico Samsung Azogues
+samsung,ec,Guaranda,Centro,-1.59,-79.0,593993508191,Técnico Samsung Guaranda
+samsung,ec,Puyo,Centro,-1.49,-78.0,593993508191,Técnico Samsung Puyo
+samsung,ec,Tena,Centro,-0.99,-77.81,593993508191,Técnico Samsung Tena
+samsung,ec,Nueva Loja (Lago Agrio),Centro,0.09,-76.89,593993508191,Técnico Samsung Nueva Loja (Lago Agrio)
+samsung,ec,Samborondón,Centro,-2.13,-79.87,593993508191,Técnico Samsung Samborondón
+samsung,ec,Daule,Centro,-1.86,-79.98,593993508191,Técnico Samsung Daule
+samsung,ec,Salinas,Centro,-2.22,-80.96,593993508191,Técnico Samsung Salinas
+samsung,ec,La Libertad,Centro,-2.23,-80.91,593993508191,Técnico Samsung La Libertad
+samsung,ec,Cayambe,Centro,0.04,-78.15,593993508191,Técnico Samsung Cayambe
+samsung,ec,Sangolquí,Centro,-0.33,-78.45,593993508191,Técnico Samsung Sangolquí
 samsung,sv,San Salvador,Centro,13.6929,-89.2182,50769337976,Técnico Samsung San Salvador
 samsung,sv,Santa Ana,Centro,13.9942,-89.5597,50769337976,Técnico Samsung Santa Ana
 samsung,sv,San Miguel,Centro,13.4833,-88.1833,50769337976,Técnico Samsung San Miguel
 samsung,sv,Soyapango,Centro,13.71,-89.14,50769337976,Técnico Samsung Soyapango
 samsung,sv,Santa Tecla,Centro,13.6769,-89.2797,50769337976,Técnico Samsung Santa Tecla
 samsung,sv,Sonsonate,Centro,13.7189,-89.7242,50769337976,Técnico Samsung Sonsonate
+samsung,sv,Apopa,Centro,13.8,-89.18,50769337976,Técnico Samsung Apopa
+samsung,sv,Mejicanos,Centro,13.74,-89.21,50769337976,Técnico Samsung Mejicanos
+samsung,sv,Delgado,Centro,13.72,-89.17,50769337976,Técnico Samsung Delgado
+samsung,sv,Ilopango,Centro,13.7,-89.11,50769337976,Técnico Samsung Ilopango
+samsung,sv,Usulután,Centro,13.35,-88.44,50769337976,Técnico Samsung Usulután
+samsung,sv,La Unión,Centro,13.34,-87.84,50769337976,Técnico Samsung La Unión
+samsung,sv,Zacatecoluca,Centro,13.51,-88.87,50769337976,Técnico Samsung Zacatecoluca
+samsung,sv,Cojutepeque,Centro,13.72,-88.93,50769337976,Técnico Samsung Cojutepeque
+samsung,sv,Chalatenango,Centro,14.04,-88.94,50769337976,Técnico Samsung Chalatenango
+samsung,sv,Ahuachapán,Centro,13.92,-89.85,50769337976,Técnico Samsung Ahuachapán
+samsung,sv,San Vicente,Centro,13.64,-88.78,50769337976,Técnico Samsung San Vicente
+samsung,sv,Sensuntepeque,Centro,13.88,-88.63,50769337976,Técnico Samsung Sensuntepeque
+samsung,sv,San Francisco Gotera,Centro,13.7,-88.1,50769337976,Técnico Samsung San Francisco Gotera
+samsung,sv,Antiguo Cuscatlán,Centro,13.67,-89.24,50769337976,Técnico Samsung Antiguo Cuscatlán
+samsung,sv,Colón,Centro,13.72,-89.36,50769337976,Técnico Samsung Colón
+samsung,sv,Quezaltepeque,Centro,13.83,-89.27,50769337976,Técnico Samsung Quezaltepeque
 samsung,py,Asunción,Centro,-25.2637,-57.5759,593993508191,Técnico Samsung Asunción
 samsung,py,Ciudad del Este,Centro,-25.5097,-54.6111,593993508191,Técnico Samsung Ciudad del Este
 samsung,py,Encarnación,Centro,-27.3306,-55.8667,593993508191,Técnico Samsung Encarnación
 samsung,py,San Lorenzo,Centro,-25.34,-57.51,593993508191,Técnico Samsung San Lorenzo
 samsung,py,Luque,Centro,-25.27,-57.49,593993508191,Técnico Samsung Luque
 samsung,py,Fernando de la Mora,Centro,-25.31,-57.55,593993508191,Técnico Samsung Fernando de la Mora
+samsung,py,Lambaré,Centro,-25.35,-57.61,593993508191,Técnico Samsung Lambaré
+samsung,py,Capiatá,Centro,-25.35,-57.45,593993508191,Técnico Samsung Capiatá
+samsung,py,Limpio,Centro,-25.17,-57.48,593993508191,Técnico Samsung Limpio
+samsung,py,Villa Elisa,Centro,-25.37,-57.59,593993508191,Técnico Samsung Villa Elisa
+samsung,py,Ñemby,Centro,-25.39,-57.54,593993508191,Técnico Samsung Ñemby
+samsung,py,Mariano Roque Alonso,Centro,-25.2,-57.53,593993508191,Técnico Samsung Mariano Roque Alonso
+samsung,py,Pedro Juan Caballero,Centro,-22.55,-55.73,593993508191,Técnico Samsung Pedro Juan Caballero
+samsung,py,Concepción,Centro,-23.41,-57.43,593993508191,Técnico Samsung Concepción
+samsung,py,Villarrica,Centro,-25.75,-56.43,593993508191,Técnico Samsung Villarrica
+samsung,py,Coronel Oviedo,Centro,-25.45,-56.44,593993508191,Técnico Samsung Coronel Oviedo
+samsung,py,Caaguazú,Centro,-25.47,-56.02,593993508191,Técnico Samsung Caaguazú
+samsung,py,Pilar,Centro,-26.86,-58.3,593993508191,Técnico Samsung Pilar
+samsung,py,San Juan Bautista,Centro,-26.67,-57.15,593993508191,Técnico Samsung San Juan Bautista
+samsung,py,Paraguarí,Centro,-25.62,-57.15,593993508191,Técnico Samsung Paraguarí
+samsung,py,Caacupé,Centro,-25.39,-57.14,593993508191,Técnico Samsung Caacupé
+samsung,py,Salto del Guairá,Centro,-24.06,-54.31,593993508191,Técnico Samsung Salto del Guairá
+samsung,py,Hernandarias,Centro,-25.4,-54.64,593993508191,Técnico Samsung Hernandarias
+samsung,py,Presidente Franco,Centro,-25.53,-54.61,593993508191,Técnico Samsung Presidente Franco
+samsung,py,Fuerte Olimpo,Centro,-21.04,-57.87,593993508191,Técnico Samsung Fuerte Olimpo
+samsung,py,Filadelfia,Centro,-22.35,-60.03,593993508191,Técnico Samsung Filadelfia
+samsung,py,Pozo Colorado,Centro,-23.49,-58.8,593993508191,Técnico Samsung Pozo Colorado
 samsung,co,Bogotá,Centro,4.711,-74.0721,573013810242,Técnico Samsung Bogotá
 samsung,co,Medellín,Centro,6.2442,-75.5812,573013810242,Técnico Samsung Medellín
 samsung,co,Cali,Centro,3.4516,-76.532,573013810242,Técnico Samsung Cali
 samsung,co,Barranquilla,Centro,10.9685,-74.7813,573013810242,Técnico Samsung Barranquilla
 samsung,co,Cartagena,Centro,10.391,-75.4794,573013810242,Técnico Samsung Cartagena
 samsung,co,Bucaramanga,Centro,7.1193,-73.1227,573013810242,Técnico Samsung Bucaramanga
+samsung,co,Cúcuta,Centro,7.894,-72.507,573013810242,Técnico Samsung Cúcuta
+samsung,co,Pereira,Centro,4.814,-75.696,573013810242,Técnico Samsung Pereira
+samsung,co,Santa Marta,Centro,11.241,-74.199,573013810242,Técnico Samsung Santa Marta
+samsung,co,Ibagué,Centro,4.438,-75.232,573013810242,Técnico Samsung Ibagué
+samsung,co,Manizales,Centro,5.07,-75.517,573013810242,Técnico Samsung Manizales
+samsung,co,Villavicencio,Centro,4.142,-73.627,573013810242,Técnico Samsung Villavicencio
+samsung,co,Pasto,Centro,1.214,-77.281,573013810242,Técnico Samsung Pasto
+samsung,co,Montería,Centro,8.75,-75.881,573013810242,Técnico Samsung Montería
+samsung,co,Neiva,Centro,2.927,-75.282,573013810242,Técnico Samsung Neiva
+samsung,co,Armenia,Centro,4.533,-75.681,573013810242,Técnico Samsung Armenia
+samsung,co,Popayán,Centro,2.444,-76.614,573013810242,Técnico Samsung Popayán
+samsung,co,Valledupar,Centro,10.477,-73.25,573013810242,Técnico Samsung Valledupar
+samsung,co,Sincelejo,Centro,9.304,-75.397,573013810242,Técnico Samsung Sincelejo
+samsung,co,Tunja,Centro,5.535,-73.367,573013810242,Técnico Samsung Tunja
+samsung,co,Riohacha,Centro,11.544,-72.907,573013810242,Técnico Samsung Riohacha
+samsung,co,Florencia,Centro,1.614,-75.606,573013810242,Técnico Samsung Florencia
+samsung,co,Yopal,Centro,5.337,-72.395,573013810242,Técnico Samsung Yopal
+samsung,co,Quibdó,Centro,5.692,-76.658,573013810242,Técnico Samsung Quibdó
+samsung,co,Soacha,Centro,4.579,-74.216,573013810242,Técnico Samsung Soacha
+samsung,co,Bello,Centro,6.337,-75.558,573013810242,Técnico Samsung Bello
+samsung,co,Soledad,Centro,10.918,-74.765,573013810242,Técnico Samsung Soledad
+samsung,co,Envigado,Centro,6.17,-75.583,573013810242,Técnico Samsung Envigado
+samsung,co,Itagüí,Centro,6.185,-75.599,573013810242,Técnico Samsung Itagüí
+samsung,co,Palmira,Centro,3.539,-76.303,573013810242,Técnico Samsung Palmira
+samsung,co,Buenaventura,Centro,3.883,-77.031,573013810242,Técnico Samsung Buenaventura
+samsung,co,Floridablanca,Centro,7.062,-73.086,573013810242,Técnico Samsung Floridablanca
+samsung,co,Girardot,Centro,4.303,-74.803,573013810242,Técnico Samsung Girardot
+samsung,co,Barrancabermeja,Centro,7.065,-73.854,573013810242,Técnico Samsung Barrancabermeja
+samsung,co,Sogamoso,Centro,5.714,-72.93,573013810242,Técnico Samsung Sogamoso
+samsung,co,Tuluá,Centro,4.085,-76.195,573013810242,Técnico Samsung Tuluá
+samsung,co,Chía,Centro,4.862,-74.033,573013810242,Técnico Samsung Chía
+samsung,co,Zipaquirá,Centro,5.022,-74.004,573013810242,Técnico Samsung Zipaquirá
 samsung,cl,Santiago,Centro,-33.4489,-70.6693,56983176106,Técnico Samsung Santiago
 samsung,cl,Valparaíso,Centro,-33.0472,-71.6127,56983176106,Técnico Samsung Valparaíso
 samsung,cl,Concepción,Centro,-36.8201,-73.0444,56983176106,Técnico Samsung Concepción
 samsung,cl,La Serena,Centro,-29.9027,-71.2519,56983176106,Técnico Samsung La Serena
 samsung,cl,Antofagasta,Centro,-23.6509,-70.3975,56983176106,Técnico Samsung Antofagasta
 samsung,cl,Temuco,Centro,-38.7359,-72.5904,56983176106,Técnico Samsung Temuco
+samsung,cl,Viña del Mar,Centro,-33.0245,-71.5518,56983176106,Técnico Samsung Viña del Mar
+samsung,cl,Rancagua,Centro,-34.17,-70.74,56983176106,Técnico Samsung Rancagua
+samsung,cl,Talca,Centro,-35.43,-71.66,56983176106,Técnico Samsung Talca
+samsung,cl,Arica,Centro,-18.48,-70.31,56983176106,Técnico Samsung Arica
+samsung,cl,Iquique,Centro,-20.21,-70.15,56983176106,Técnico Samsung Iquique
+samsung,cl,Puerto Montt,Centro,-41.47,-72.94,56983176106,Técnico Samsung Puerto Montt
+samsung,cl,Copiapó,Centro,-27.37,-70.33,56983176106,Técnico Samsung Copiapó
+samsung,cl,Chillán,Centro,-36.61,-72.1,56983176106,Técnico Samsung Chillán
+samsung,cl,Valdivia,Centro,-39.82,-73.25,56983176106,Técnico Samsung Valdivia
+samsung,cl,Punta Arenas,Centro,-53.16,-70.91,56983176106,Técnico Samsung Punta Arenas
+samsung,cl,Coyhaique,Centro,-45.57,-72.07,56983176106,Técnico Samsung Coyhaique
+samsung,cl,Osorno,Centro,-40.57,-73.14,56983176106,Técnico Samsung Osorno
+samsung,cl,Calama,Centro,-22.46,-68.93,56983176106,Técnico Samsung Calama
+samsung,cl,Los Ángeles,Centro,-37.47,-72.35,56983176106,Técnico Samsung Los Ángeles
+samsung,cl,Curicó,Centro,-34.98,-71.24,56983176106,Técnico Samsung Curicó
+samsung,cl,Quilpué,Centro,-33.05,-71.44,56983176106,Técnico Samsung Quilpué
+samsung,cl,Villa Alemana,Centro,-33.04,-71.37,56983176106,Técnico Samsung Villa Alemana
+samsung,cl,Puente Alto,Centro,-33.61,-70.58,56983176106,Técnico Samsung Puente Alto
+samsung,cl,Maipú,Centro,-33.51,-70.76,56983176106,Técnico Samsung Maipú
+samsung,cl,La Florida,Centro,-33.52,-70.6,56983176106,Técnico Samsung La Florida
+samsung,cl,Las Condes,Centro,-33.41,-70.57,56983176106,Técnico Samsung Las Condes
+samsung,cl,Providencia,Centro,-33.43,-70.61,56983176106,Técnico Samsung Providencia
 lg,gt,Ciudad de Guatemala,Centro,14.6349,-90.5069,50769337976,Técnico LG Ciudad de Guatemala
 lg,gt,Mixco,Centro,14.633,-90.607,50769337976,Técnico LG Mixco
 lg,gt,Villa Nueva,Centro,14.525,-90.587,50769337976,Técnico LG Villa Nueva
 lg,gt,Quetzaltenango,Centro,14.8347,-91.5181,50769337976,Técnico LG Quetzaltenango
 lg,gt,Antigua Guatemala,Centro,14.5586,-90.7295,50769337976,Técnico LG Antigua Guatemala
 lg,gt,Escuintla,Centro,14.305,-90.785,50769337976,Técnico LG Escuintla
+lg,gt,Cobán,Centro,15.47,-90.38,50769337976,Técnico LG Cobán
+lg,gt,Huehuetenango,Centro,15.32,-91.47,50769337976,Técnico LG Huehuetenango
+lg,gt,Puerto Barrios,Centro,15.73,-88.6,50769337976,Técnico LG Puerto Barrios
+lg,gt,Chiquimula,Centro,14.8,-89.54,50769337976,Técnico LG Chiquimula
+lg,gt,Zacapa,Centro,14.97,-89.53,50769337976,Técnico LG Zacapa
+lg,gt,Jalapa,Centro,14.63,-89.99,50769337976,Técnico LG Jalapa
+lg,gt,Retalhuleu,Centro,14.54,-91.68,50769337976,Técnico LG Retalhuleu
+lg,gt,Mazatenango,Centro,14.53,-91.5,50769337976,Técnico LG Mazatenango
+lg,gt,Flores,Centro,16.93,-89.89,50769337976,Técnico LG Flores
+lg,gt,Chimaltenango,Centro,14.66,-90.82,50769337976,Técnico LG Chimaltenango
+lg,gt,Salamá,Centro,15.1,-90.32,50769337976,Técnico LG Salamá
+lg,gt,Sololá,Centro,14.77,-91.18,50769337976,Técnico LG Sololá
+lg,gt,Totonicapán,Centro,14.91,-91.36,50769337976,Técnico LG Totonicapán
+lg,gt,San Marcos,Centro,14.96,-91.8,50769337976,Técnico LG San Marcos
+lg,gt,Jutiapa,Centro,14.29,-89.9,50769337976,Técnico LG Jutiapa
+lg,gt,Santa Rosa de Lima,Centro,14.44,-90.28,50769337976,Técnico LG Santa Rosa de Lima
+lg,gt,Santa Catarina Pinula,Centro,14.57,-90.49,50769337976,Técnico LG Santa Catarina Pinula
+lg,gt,San Miguel Petapa,Centro,14.5,-90.55,50769337976,Técnico LG San Miguel Petapa
 lg,pa,Ciudad de Panamá,Centro,8.9824,-79.5199,50769337976,Técnico LG Ciudad de Panamá
 lg,pa,San Miguelito,Centro,9.0333,-79.5,50769337976,Técnico LG San Miguelito
 lg,pa,Colón,Centro,9.3592,-79.9014,50769337976,Técnico LG Colón
 lg,pa,David,Centro,8.4273,-82.4308,50769337976,Técnico LG David
 lg,pa,La Chorrera,Centro,8.88,-79.783,50769337976,Técnico LG La Chorrera
 lg,pa,Arraiján,Centro,8.95,-79.65,50769337976,Técnico LG Arraiján
+lg,pa,Chitré,Centro,7.9667,-80.4333,50769337976,Técnico LG Chitré
+lg,pa,Las Tablas,Centro,7.7667,-80.2833,50769337976,Técnico LG Las Tablas
+lg,pa,Santiago de Veraguas,Centro,8.1,-80.98,50769337976,Técnico LG Santiago de Veraguas
+lg,pa,Penonomé,Centro,8.52,-80.36,50769337976,Técnico LG Penonomé
+lg,pa,Aguadulce,Centro,8.24,-80.55,50769337976,Técnico LG Aguadulce
+lg,pa,Boquete,Centro,8.78,-82.44,50769337976,Técnico LG Boquete
+lg,pa,Changuinola,Centro,9.43,-82.52,50769337976,Técnico LG Changuinola
+lg,pa,Bocas del Toro,Centro,9.34,-82.24,50769337976,Técnico LG Bocas del Toro
+lg,pa,Puerto Armuelles,Centro,8.28,-82.87,50769337976,Técnico LG Puerto Armuelles
+lg,pa,Chepo,Centro,9.17,-79.1,50769337976,Técnico LG Chepo
+lg,pa,La Palma,Centro,8.4,-78.15,50769337976,Técnico LG La Palma
+lg,pa,Chame,Centro,8.59,-79.88,50769337976,Técnico LG Chame
+lg,pa,Coronado,Centro,8.54,-79.9,50769337976,Técnico LG Coronado
+lg,pa,Pacora,Centro,9.08,-79.28,50769337976,Técnico LG Pacora
 lg,cr,San José,Centro,9.9281,-84.0907,50670055753,Técnico LG San José
 lg,cr,Alajuela,Centro,10.0162,-84.2116,50670055753,Técnico LG Alajuela
 lg,cr,Cartago,Centro,9.8644,-83.9194,50670055753,Técnico LG Cartago
 lg,cr,Heredia,Centro,9.9986,-84.1165,50670055753,Técnico LG Heredia
 lg,cr,Liberia,Centro,10.6346,-85.4377,50670055753,Técnico LG Liberia
 lg,cr,Puntarenas,Centro,9.9763,-84.8384,50670055753,Técnico LG Puntarenas
+lg,cr,Limón,Centro,9.99,-83.03,50670055753,Técnico LG Limón
+lg,cr,San Carlos (Ciudad Quesada),Centro,10.32,-84.43,50670055753,Técnico LG San Carlos (Ciudad Quesada)
+lg,cr,Pérez Zeledón,Centro,9.37,-83.7,50670055753,Técnico LG Pérez Zeledón
+lg,cr,Escazú,Centro,9.92,-84.14,50670055753,Técnico LG Escazú
+lg,cr,Santa Ana,Centro,9.93,-84.18,50670055753,Técnico LG Santa Ana
+lg,cr,Curridabat,Centro,9.91,-84.04,50670055753,Técnico LG Curridabat
+lg,cr,Desamparados,Centro,9.9,-84.07,50670055753,Técnico LG Desamparados
+lg,cr,Tibás,Centro,9.96,-84.08,50670055753,Técnico LG Tibás
+lg,cr,Moravia,Centro,9.96,-84.05,50670055753,Técnico LG Moravia
+lg,cr,Grecia,Centro,10.07,-84.31,50670055753,Técnico LG Grecia
+lg,cr,San Ramón,Centro,10.09,-84.47,50670055753,Técnico LG San Ramón
+lg,cr,Nicoya,Centro,10.15,-85.45,50670055753,Técnico LG Nicoya
+lg,cr,Santa Cruz,Centro,10.26,-85.58,50670055753,Técnico LG Santa Cruz
+lg,cr,Cañas,Centro,10.43,-85.1,50670055753,Técnico LG Cañas
+lg,cr,Golfito,Centro,8.64,-83.16,50670055753,Técnico LG Golfito
+lg,cr,Quepos,Centro,9.43,-84.16,50670055753,Técnico LG Quepos
+lg,cr,Turrialba,Centro,9.9,-83.68,50670055753,Técnico LG Turrialba
+lg,cr,Guápiles,Centro,10.21,-83.79,50670055753,Técnico LG Guápiles
 lg,ec,Quito,Centro,-0.1807,-78.4678,593993508191,Técnico LG Quito
 lg,ec,Guayaquil,Centro,-2.17,-79.9224,593993508191,Técnico LG Guayaquil
 lg,ec,Cuenca,Centro,-2.9001,-79.0059,593993508191,Técnico LG Cuenca
 lg,ec,Ambato,Centro,-1.2491,-78.6168,593993508191,Técnico LG Ambato
 lg,ec,Manta,Centro,-0.9677,-80.7089,593993508191,Técnico LG Manta
 lg,ec,Loja,Centro,-3.9931,-79.2042,593993508191,Técnico LG Loja
+lg,ec,Santo Domingo,Centro,-0.25,-79.17,593993508191,Técnico LG Santo Domingo
+lg,ec,Machala,Centro,-3.26,-79.96,593993508191,Técnico LG Machala
+lg,ec,Portoviejo,Centro,-1.05,-80.45,593993508191,Técnico LG Portoviejo
+lg,ec,Riobamba,Centro,-1.67,-78.65,593993508191,Técnico LG Riobamba
+lg,ec,Ibarra,Centro,0.35,-78.12,593993508191,Técnico LG Ibarra
+lg,ec,Esmeraldas,Centro,0.96,-79.65,593993508191,Técnico LG Esmeraldas
+lg,ec,Quevedo,Centro,-1.02,-79.46,593993508191,Técnico LG Quevedo
+lg,ec,Latacunga,Centro,-0.93,-78.62,593993508191,Técnico LG Latacunga
+lg,ec,Babahoyo,Centro,-1.8,-79.53,593993508191,Técnico LG Babahoyo
+lg,ec,Tulcán,Centro,0.81,-77.72,593993508191,Técnico LG Tulcán
+lg,ec,Azogues,Centro,-2.74,-78.85,593993508191,Técnico LG Azogues
+lg,ec,Guaranda,Centro,-1.59,-79.0,593993508191,Técnico LG Guaranda
+lg,ec,Puyo,Centro,-1.49,-78.0,593993508191,Técnico LG Puyo
+lg,ec,Tena,Centro,-0.99,-77.81,593993508191,Técnico LG Tena
+lg,ec,Nueva Loja (Lago Agrio),Centro,0.09,-76.89,593993508191,Técnico LG Nueva Loja (Lago Agrio)
+lg,ec,Samborondón,Centro,-2.13,-79.87,593993508191,Técnico LG Samborondón
+lg,ec,Daule,Centro,-1.86,-79.98,593993508191,Técnico LG Daule
+lg,ec,Salinas,Centro,-2.22,-80.96,593993508191,Técnico LG Salinas
+lg,ec,La Libertad,Centro,-2.23,-80.91,593993508191,Técnico LG La Libertad
+lg,ec,Cayambe,Centro,0.04,-78.15,593993508191,Técnico LG Cayambe
+lg,ec,Sangolquí,Centro,-0.33,-78.45,593993508191,Técnico LG Sangolquí
 lg,sv,San Salvador,Centro,13.6929,-89.2182,50769337976,Técnico LG San Salvador
 lg,sv,Santa Ana,Centro,13.9942,-89.5597,50769337976,Técnico LG Santa Ana
 lg,sv,San Miguel,Centro,13.4833,-88.1833,50769337976,Técnico LG San Miguel
 lg,sv,Soyapango,Centro,13.71,-89.14,50769337976,Técnico LG Soyapango
 lg,sv,Santa Tecla,Centro,13.6769,-89.2797,50769337976,Técnico LG Santa Tecla
 lg,sv,Sonsonate,Centro,13.7189,-89.7242,50769337976,Técnico LG Sonsonate
+lg,sv,Apopa,Centro,13.8,-89.18,50769337976,Técnico LG Apopa
+lg,sv,Mejicanos,Centro,13.74,-89.21,50769337976,Técnico LG Mejicanos
+lg,sv,Delgado,Centro,13.72,-89.17,50769337976,Técnico LG Delgado
+lg,sv,Ilopango,Centro,13.7,-89.11,50769337976,Técnico LG Ilopango
+lg,sv,Usulután,Centro,13.35,-88.44,50769337976,Técnico LG Usulután
+lg,sv,La Unión,Centro,13.34,-87.84,50769337976,Técnico LG La Unión
+lg,sv,Zacatecoluca,Centro,13.51,-88.87,50769337976,Técnico LG Zacatecoluca
+lg,sv,Cojutepeque,Centro,13.72,-88.93,50769337976,Técnico LG Cojutepeque
+lg,sv,Chalatenango,Centro,14.04,-88.94,50769337976,Técnico LG Chalatenango
+lg,sv,Ahuachapán,Centro,13.92,-89.85,50769337976,Técnico LG Ahuachapán
+lg,sv,San Vicente,Centro,13.64,-88.78,50769337976,Técnico LG San Vicente
+lg,sv,Sensuntepeque,Centro,13.88,-88.63,50769337976,Técnico LG Sensuntepeque
+lg,sv,San Francisco Gotera,Centro,13.7,-88.1,50769337976,Técnico LG San Francisco Gotera
+lg,sv,Antiguo Cuscatlán,Centro,13.67,-89.24,50769337976,Técnico LG Antiguo Cuscatlán
+lg,sv,Colón,Centro,13.72,-89.36,50769337976,Técnico LG Colón
+lg,sv,Quezaltepeque,Centro,13.83,-89.27,50769337976,Técnico LG Quezaltepeque
 lg,py,Asunción,Centro,-25.2637,-57.5759,593993508191,Técnico LG Asunción
 lg,py,Ciudad del Este,Centro,-25.5097,-54.6111,593993508191,Técnico LG Ciudad del Este
 lg,py,Encarnación,Centro,-27.3306,-55.8667,593993508191,Técnico LG Encarnación
 lg,py,San Lorenzo,Centro,-25.34,-57.51,593993508191,Técnico LG San Lorenzo
 lg,py,Luque,Centro,-25.27,-57.49,593993508191,Técnico LG Luque
 lg,py,Fernando de la Mora,Centro,-25.31,-57.55,593993508191,Técnico LG Fernando de la Mora
+lg,py,Lambaré,Centro,-25.35,-57.61,593993508191,Técnico LG Lambaré
+lg,py,Capiatá,Centro,-25.35,-57.45,593993508191,Técnico LG Capiatá
+lg,py,Limpio,Centro,-25.17,-57.48,593993508191,Técnico LG Limpio
+lg,py,Villa Elisa,Centro,-25.37,-57.59,593993508191,Técnico LG Villa Elisa
+lg,py,Ñemby,Centro,-25.39,-57.54,593993508191,Técnico LG Ñemby
+lg,py,Mariano Roque Alonso,Centro,-25.2,-57.53,593993508191,Técnico LG Mariano Roque Alonso
+lg,py,Pedro Juan Caballero,Centro,-22.55,-55.73,593993508191,Técnico LG Pedro Juan Caballero
+lg,py,Concepción,Centro,-23.41,-57.43,593993508191,Técnico LG Concepción
+lg,py,Villarrica,Centro,-25.75,-56.43,593993508191,Técnico LG Villarrica
+lg,py,Coronel Oviedo,Centro,-25.45,-56.44,593993508191,Técnico LG Coronel Oviedo
+lg,py,Caaguazú,Centro,-25.47,-56.02,593993508191,Técnico LG Caaguazú
+lg,py,Pilar,Centro,-26.86,-58.3,593993508191,Técnico LG Pilar
+lg,py,San Juan Bautista,Centro,-26.67,-57.15,593993508191,Técnico LG San Juan Bautista
+lg,py,Paraguarí,Centro,-25.62,-57.15,593993508191,Técnico LG Paraguarí
+lg,py,Caacupé,Centro,-25.39,-57.14,593993508191,Técnico LG Caacupé
+lg,py,Salto del Guairá,Centro,-24.06,-54.31,593993508191,Técnico LG Salto del Guairá
+lg,py,Hernandarias,Centro,-25.4,-54.64,593993508191,Técnico LG Hernandarias
+lg,py,Presidente Franco,Centro,-25.53,-54.61,593993508191,Técnico LG Presidente Franco
+lg,py,Fuerte Olimpo,Centro,-21.04,-57.87,593993508191,Técnico LG Fuerte Olimpo
+lg,py,Filadelfia,Centro,-22.35,-60.03,593993508191,Técnico LG Filadelfia
+lg,py,Pozo Colorado,Centro,-23.49,-58.8,593993508191,Técnico LG Pozo Colorado
 lg,co,Bogotá,Centro,4.711,-74.0721,573013810242,Técnico LG Bogotá
 lg,co,Medellín,Centro,6.2442,-75.5812,573013810242,Técnico LG Medellín
 lg,co,Cali,Centro,3.4516,-76.532,573013810242,Técnico LG Cali
 lg,co,Barranquilla,Centro,10.9685,-74.7813,573013810242,Técnico LG Barranquilla
 lg,co,Cartagena,Centro,10.391,-75.4794,573013810242,Técnico LG Cartagena
 lg,co,Bucaramanga,Centro,7.1193,-73.1227,573013810242,Técnico LG Bucaramanga
+lg,co,Cúcuta,Centro,7.894,-72.507,573013810242,Técnico LG Cúcuta
+lg,co,Pereira,Centro,4.814,-75.696,573013810242,Técnico LG Pereira
+lg,co,Santa Marta,Centro,11.241,-74.199,573013810242,Técnico LG Santa Marta
+lg,co,Ibagué,Centro,4.438,-75.232,573013810242,Técnico LG Ibagué
+lg,co,Manizales,Centro,5.07,-75.517,573013810242,Técnico LG Manizales
+lg,co,Villavicencio,Centro,4.142,-73.627,573013810242,Técnico LG Villavicencio
+lg,co,Pasto,Centro,1.214,-77.281,573013810242,Técnico LG Pasto
+lg,co,Montería,Centro,8.75,-75.881,573013810242,Técnico LG Montería
+lg,co,Neiva,Centro,2.927,-75.282,573013810242,Técnico LG Neiva
+lg,co,Armenia,Centro,4.533,-75.681,573013810242,Técnico LG Armenia
+lg,co,Popayán,Centro,2.444,-76.614,573013810242,Técnico LG Popayán
+lg,co,Valledupar,Centro,10.477,-73.25,573013810242,Técnico LG Valledupar
+lg,co,Sincelejo,Centro,9.304,-75.397,573013810242,Técnico LG Sincelejo
+lg,co,Tunja,Centro,5.535,-73.367,573013810242,Técnico LG Tunja
+lg,co,Riohacha,Centro,11.544,-72.907,573013810242,Técnico LG Riohacha
+lg,co,Florencia,Centro,1.614,-75.606,573013810242,Técnico LG Florencia
+lg,co,Yopal,Centro,5.337,-72.395,573013810242,Técnico LG Yopal
+lg,co,Quibdó,Centro,5.692,-76.658,573013810242,Técnico LG Quibdó
+lg,co,Soacha,Centro,4.579,-74.216,573013810242,Técnico LG Soacha
+lg,co,Bello,Centro,6.337,-75.558,573013810242,Técnico LG Bello
+lg,co,Soledad,Centro,10.918,-74.765,573013810242,Técnico LG Soledad
+lg,co,Envigado,Centro,6.17,-75.583,573013810242,Técnico LG Envigado
+lg,co,Itagüí,Centro,6.185,-75.599,573013810242,Técnico LG Itagüí
+lg,co,Palmira,Centro,3.539,-76.303,573013810242,Técnico LG Palmira
+lg,co,Buenaventura,Centro,3.883,-77.031,573013810242,Técnico LG Buenaventura
+lg,co,Floridablanca,Centro,7.062,-73.086,573013810242,Técnico LG Floridablanca
+lg,co,Girardot,Centro,4.303,-74.803,573013810242,Técnico LG Girardot
+lg,co,Barrancabermeja,Centro,7.065,-73.854,573013810242,Técnico LG Barrancabermeja
+lg,co,Sogamoso,Centro,5.714,-72.93,573013810242,Técnico LG Sogamoso
+lg,co,Tuluá,Centro,4.085,-76.195,573013810242,Técnico LG Tuluá
+lg,co,Chía,Centro,4.862,-74.033,573013810242,Técnico LG Chía
+lg,co,Zipaquirá,Centro,5.022,-74.004,573013810242,Técnico LG Zipaquirá
 lg,cl,Santiago,Centro,-33.4489,-70.6693,56983176106,Técnico LG Santiago
 lg,cl,Valparaíso,Centro,-33.0472,-71.6127,56983176106,Técnico LG Valparaíso
 lg,cl,Concepción,Centro,-36.8201,-73.0444,56983176106,Técnico LG Concepción
 lg,cl,La Serena,Centro,-29.9027,-71.2519,56983176106,Técnico LG La Serena
 lg,cl,Antofagasta,Centro,-23.6509,-70.3975,56983176106,Técnico LG Antofagasta
 lg,cl,Temuco,Centro,-38.7359,-72.5904,56983176106,Técnico LG Temuco
+lg,cl,Viña del Mar,Centro,-33.0245,-71.5518,56983176106,Técnico LG Viña del Mar
+lg,cl,Rancagua,Centro,-34.17,-70.74,56983176106,Técnico LG Rancagua
+lg,cl,Talca,Centro,-35.43,-71.66,56983176106,Técnico LG Talca
+lg,cl,Arica,Centro,-18.48,-70.31,56983176106,Técnico LG Arica
+lg,cl,Iquique,Centro,-20.21,-70.15,56983176106,Técnico LG Iquique
+lg,cl,Puerto Montt,Centro,-41.47,-72.94,56983176106,Técnico LG Puerto Montt
+lg,cl,Copiapó,Centro,-27.37,-70.33,56983176106,Técnico LG Copiapó
+lg,cl,Chillán,Centro,-36.61,-72.1,56983176106,Técnico LG Chillán
+lg,cl,Valdivia,Centro,-39.82,-73.25,56983176106,Técnico LG Valdivia
+lg,cl,Punta Arenas,Centro,-53.16,-70.91,56983176106,Técnico LG Punta Arenas
+lg,cl,Coyhaique,Centro,-45.57,-72.07,56983176106,Técnico LG Coyhaique
+lg,cl,Osorno,Centro,-40.57,-73.14,56983176106,Técnico LG Osorno
+lg,cl,Calama,Centro,-22.46,-68.93,56983176106,Técnico LG Calama
+lg,cl,Los Ángeles,Centro,-37.47,-72.35,56983176106,Técnico LG Los Ángeles
+lg,cl,Curicó,Centro,-34.98,-71.24,56983176106,Técnico LG Curicó
+lg,cl,Quilpué,Centro,-33.05,-71.44,56983176106,Técnico LG Quilpué
+lg,cl,Villa Alemana,Centro,-33.04,-71.37,56983176106,Técnico LG Villa Alemana
+lg,cl,Puente Alto,Centro,-33.61,-70.58,56983176106,Técnico LG Puente Alto
+lg,cl,Maipú,Centro,-33.51,-70.76,56983176106,Técnico LG Maipú
+lg,cl,La Florida,Centro,-33.52,-70.6,56983176106,Técnico LG La Florida
+lg,cl,Las Condes,Centro,-33.41,-70.57,56983176106,Técnico LG Las Condes
+lg,cl,Providencia,Centro,-33.43,-70.61,56983176106,Técnico LG Providencia
 whirlpool,gt,Ciudad de Guatemala,Centro,14.6349,-90.5069,50769337976,Técnico Whirlpool Ciudad de Guatemala
 whirlpool,gt,Mixco,Centro,14.633,-90.607,50769337976,Técnico Whirlpool Mixco
 whirlpool,gt,Villa Nueva,Centro,14.525,-90.587,50769337976,Técnico Whirlpool Villa Nueva
 whirlpool,gt,Quetzaltenango,Centro,14.8347,-91.5181,50769337976,Técnico Whirlpool Quetzaltenango
 whirlpool,gt,Antigua Guatemala,Centro,14.5586,-90.7295,50769337976,Técnico Whirlpool Antigua Guatemala
 whirlpool,gt,Escuintla,Centro,14.305,-90.785,50769337976,Técnico Whirlpool Escuintla
+whirlpool,gt,Cobán,Centro,15.47,-90.38,50769337976,Técnico Whirlpool Cobán
+whirlpool,gt,Huehuetenango,Centro,15.32,-91.47,50769337976,Técnico Whirlpool Huehuetenango
+whirlpool,gt,Puerto Barrios,Centro,15.73,-88.6,50769337976,Técnico Whirlpool Puerto Barrios
+whirlpool,gt,Chiquimula,Centro,14.8,-89.54,50769337976,Técnico Whirlpool Chiquimula
+whirlpool,gt,Zacapa,Centro,14.97,-89.53,50769337976,Técnico Whirlpool Zacapa
+whirlpool,gt,Jalapa,Centro,14.63,-89.99,50769337976,Técnico Whirlpool Jalapa
+whirlpool,gt,Retalhuleu,Centro,14.54,-91.68,50769337976,Técnico Whirlpool Retalhuleu
+whirlpool,gt,Mazatenango,Centro,14.53,-91.5,50769337976,Técnico Whirlpool Mazatenango
+whirlpool,gt,Flores,Centro,16.93,-89.89,50769337976,Técnico Whirlpool Flores
+whirlpool,gt,Chimaltenango,Centro,14.66,-90.82,50769337976,Técnico Whirlpool Chimaltenango
+whirlpool,gt,Salamá,Centro,15.1,-90.32,50769337976,Técnico Whirlpool Salamá
+whirlpool,gt,Sololá,Centro,14.77,-91.18,50769337976,Técnico Whirlpool Sololá
+whirlpool,gt,Totonicapán,Centro,14.91,-91.36,50769337976,Técnico Whirlpool Totonicapán
+whirlpool,gt,San Marcos,Centro,14.96,-91.8,50769337976,Técnico Whirlpool San Marcos
+whirlpool,gt,Jutiapa,Centro,14.29,-89.9,50769337976,Técnico Whirlpool Jutiapa
+whirlpool,gt,Santa Rosa de Lima,Centro,14.44,-90.28,50769337976,Técnico Whirlpool Santa Rosa de Lima
+whirlpool,gt,Santa Catarina Pinula,Centro,14.57,-90.49,50769337976,Técnico Whirlpool Santa Catarina Pinula
+whirlpool,gt,San Miguel Petapa,Centro,14.5,-90.55,50769337976,Técnico Whirlpool San Miguel Petapa
 whirlpool,pa,Ciudad de Panamá,Centro,8.9824,-79.5199,50769337976,Técnico Whirlpool Ciudad de Panamá
 whirlpool,pa,San Miguelito,Centro,9.0333,-79.5,50769337976,Técnico Whirlpool San Miguelito
 whirlpool,pa,Colón,Centro,9.3592,-79.9014,50769337976,Técnico Whirlpool Colón
 whirlpool,pa,David,Centro,8.4273,-82.4308,50769337976,Técnico Whirlpool David
 whirlpool,pa,La Chorrera,Centro,8.88,-79.783,50769337976,Técnico Whirlpool La Chorrera
 whirlpool,pa,Arraiján,Centro,8.95,-79.65,50769337976,Técnico Whirlpool Arraiján
+whirlpool,pa,Chitré,Centro,7.9667,-80.4333,50769337976,Técnico Whirlpool Chitré
+whirlpool,pa,Las Tablas,Centro,7.7667,-80.2833,50769337976,Técnico Whirlpool Las Tablas
+whirlpool,pa,Santiago de Veraguas,Centro,8.1,-80.98,50769337976,Técnico Whirlpool Santiago de Veraguas
+whirlpool,pa,Penonomé,Centro,8.52,-80.36,50769337976,Técnico Whirlpool Penonomé
+whirlpool,pa,Aguadulce,Centro,8.24,-80.55,50769337976,Técnico Whirlpool Aguadulce
+whirlpool,pa,Boquete,Centro,8.78,-82.44,50769337976,Técnico Whirlpool Boquete
+whirlpool,pa,Changuinola,Centro,9.43,-82.52,50769337976,Técnico Whirlpool Changuinola
+whirlpool,pa,Bocas del Toro,Centro,9.34,-82.24,50769337976,Técnico Whirlpool Bocas del Toro
+whirlpool,pa,Puerto Armuelles,Centro,8.28,-82.87,50769337976,Técnico Whirlpool Puerto Armuelles
+whirlpool,pa,Chepo,Centro,9.17,-79.1,50769337976,Técnico Whirlpool Chepo
+whirlpool,pa,La Palma,Centro,8.4,-78.15,50769337976,Técnico Whirlpool La Palma
+whirlpool,pa,Chame,Centro,8.59,-79.88,50769337976,Técnico Whirlpool Chame
+whirlpool,pa,Coronado,Centro,8.54,-79.9,50769337976,Técnico Whirlpool Coronado
+whirlpool,pa,Pacora,Centro,9.08,-79.28,50769337976,Técnico Whirlpool Pacora
 whirlpool,cr,San José,Centro,9.9281,-84.0907,50670055753,Técnico Whirlpool San José
 whirlpool,cr,Alajuela,Centro,10.0162,-84.2116,50670055753,Técnico Whirlpool Alajuela
 whirlpool,cr,Cartago,Centro,9.8644,-83.9194,50670055753,Técnico Whirlpool Cartago
 whirlpool,cr,Heredia,Centro,9.9986,-84.1165,50670055753,Técnico Whirlpool Heredia
 whirlpool,cr,Liberia,Centro,10.6346,-85.4377,50670055753,Técnico Whirlpool Liberia
 whirlpool,cr,Puntarenas,Centro,9.9763,-84.8384,50670055753,Técnico Whirlpool Puntarenas
+whirlpool,cr,Limón,Centro,9.99,-83.03,50670055753,Técnico Whirlpool Limón
+whirlpool,cr,San Carlos (Ciudad Quesada),Centro,10.32,-84.43,50670055753,Técnico Whirlpool San Carlos (Ciudad Quesada)
+whirlpool,cr,Pérez Zeledón,Centro,9.37,-83.7,50670055753,Técnico Whirlpool Pérez Zeledón
+whirlpool,cr,Escazú,Centro,9.92,-84.14,50670055753,Técnico Whirlpool Escazú
+whirlpool,cr,Santa Ana,Centro,9.93,-84.18,50670055753,Técnico Whirlpool Santa Ana
+whirlpool,cr,Curridabat,Centro,9.91,-84.04,50670055753,Técnico Whirlpool Curridabat
+whirlpool,cr,Desamparados,Centro,9.9,-84.07,50670055753,Técnico Whirlpool Desamparados
+whirlpool,cr,Tibás,Centro,9.96,-84.08,50670055753,Técnico Whirlpool Tibás
+whirlpool,cr,Moravia,Centro,9.96,-84.05,50670055753,Técnico Whirlpool Moravia
+whirlpool,cr,Grecia,Centro,10.07,-84.31,50670055753,Técnico Whirlpool Grecia
+whirlpool,cr,San Ramón,Centro,10.09,-84.47,50670055753,Técnico Whirlpool San Ramón
+whirlpool,cr,Nicoya,Centro,10.15,-85.45,50670055753,Técnico Whirlpool Nicoya
+whirlpool,cr,Santa Cruz,Centro,10.26,-85.58,50670055753,Técnico Whirlpool Santa Cruz
+whirlpool,cr,Cañas,Centro,10.43,-85.1,50670055753,Técnico Whirlpool Cañas
+whirlpool,cr,Golfito,Centro,8.64,-83.16,50670055753,Técnico Whirlpool Golfito
+whirlpool,cr,Quepos,Centro,9.43,-84.16,50670055753,Técnico Whirlpool Quepos
+whirlpool,cr,Turrialba,Centro,9.9,-83.68,50670055753,Técnico Whirlpool Turrialba
+whirlpool,cr,Guápiles,Centro,10.21,-83.79,50670055753,Técnico Whirlpool Guápiles
 whirlpool,ec,Quito,Centro,-0.1807,-78.4678,593993508191,Técnico Whirlpool Quito
 whirlpool,ec,Guayaquil,Centro,-2.17,-79.9224,593993508191,Técnico Whirlpool Guayaquil
 whirlpool,ec,Cuenca,Centro,-2.9001,-79.0059,593993508191,Técnico Whirlpool Cuenca
 whirlpool,ec,Ambato,Centro,-1.2491,-78.6168,593993508191,Técnico Whirlpool Ambato
 whirlpool,ec,Manta,Centro,-0.9677,-80.7089,593993508191,Técnico Whirlpool Manta
 whirlpool,ec,Loja,Centro,-3.9931,-79.2042,593993508191,Técnico Whirlpool Loja
+whirlpool,ec,Santo Domingo,Centro,-0.25,-79.17,593993508191,Técnico Whirlpool Santo Domingo
+whirlpool,ec,Machala,Centro,-3.26,-79.96,593993508191,Técnico Whirlpool Machala
+whirlpool,ec,Portoviejo,Centro,-1.05,-80.45,593993508191,Técnico Whirlpool Portoviejo
+whirlpool,ec,Riobamba,Centro,-1.67,-78.65,593993508191,Técnico Whirlpool Riobamba
+whirlpool,ec,Ibarra,Centro,0.35,-78.12,593993508191,Técnico Whirlpool Ibarra
+whirlpool,ec,Esmeraldas,Centro,0.96,-79.65,593993508191,Técnico Whirlpool Esmeraldas
+whirlpool,ec,Quevedo,Centro,-1.02,-79.46,593993508191,Técnico Whirlpool Quevedo
+whirlpool,ec,Latacunga,Centro,-0.93,-78.62,593993508191,Técnico Whirlpool Latacunga
+whirlpool,ec,Babahoyo,Centro,-1.8,-79.53,593993508191,Técnico Whirlpool Babahoyo
+whirlpool,ec,Tulcán,Centro,0.81,-77.72,593993508191,Técnico Whirlpool Tulcán
+whirlpool,ec,Azogues,Centro,-2.74,-78.85,593993508191,Técnico Whirlpool Azogues
+whirlpool,ec,Guaranda,Centro,-1.59,-79.0,593993508191,Técnico Whirlpool Guaranda
+whirlpool,ec,Puyo,Centro,-1.49,-78.0,593993508191,Técnico Whirlpool Puyo
+whirlpool,ec,Tena,Centro,-0.99,-77.81,593993508191,Técnico Whirlpool Tena
+whirlpool,ec,Nueva Loja (Lago Agrio),Centro,0.09,-76.89,593993508191,Técnico Whirlpool Nueva Loja (Lago Agrio)
+whirlpool,ec,Samborondón,Centro,-2.13,-79.87,593993508191,Técnico Whirlpool Samborondón
+whirlpool,ec,Daule,Centro,-1.86,-79.98,593993508191,Técnico Whirlpool Daule
+whirlpool,ec,Salinas,Centro,-2.22,-80.96,593993508191,Técnico Whirlpool Salinas
+whirlpool,ec,La Libertad,Centro,-2.23,-80.91,593993508191,Técnico Whirlpool La Libertad
+whirlpool,ec,Cayambe,Centro,0.04,-78.15,593993508191,Técnico Whirlpool Cayambe
+whirlpool,ec,Sangolquí,Centro,-0.33,-78.45,593993508191,Técnico Whirlpool Sangolquí
 whirlpool,sv,San Salvador,Centro,13.6929,-89.2182,50769337976,Técnico Whirlpool San Salvador
 whirlpool,sv,Santa Ana,Centro,13.9942,-89.5597,50769337976,Técnico Whirlpool Santa Ana
 whirlpool,sv,San Miguel,Centro,13.4833,-88.1833,50769337976,Técnico Whirlpool San Miguel
 whirlpool,sv,Soyapango,Centro,13.71,-89.14,50769337976,Técnico Whirlpool Soyapango
 whirlpool,sv,Santa Tecla,Centro,13.6769,-89.2797,50769337976,Técnico Whirlpool Santa Tecla
 whirlpool,sv,Sonsonate,Centro,13.7189,-89.7242,50769337976,Técnico Whirlpool Sonsonate
+whirlpool,sv,Apopa,Centro,13.8,-89.18,50769337976,Técnico Whirlpool Apopa
+whirlpool,sv,Mejicanos,Centro,13.74,-89.21,50769337976,Técnico Whirlpool Mejicanos
+whirlpool,sv,Delgado,Centro,13.72,-89.17,50769337976,Técnico Whirlpool Delgado
+whirlpool,sv,Ilopango,Centro,13.7,-89.11,50769337976,Técnico Whirlpool Ilopango
+whirlpool,sv,Usulután,Centro,13.35,-88.44,50769337976,Técnico Whirlpool Usulután
+whirlpool,sv,La Unión,Centro,13.34,-87.84,50769337976,Técnico Whirlpool La Unión
+whirlpool,sv,Zacatecoluca,Centro,13.51,-88.87,50769337976,Técnico Whirlpool Zacatecoluca
+whirlpool,sv,Cojutepeque,Centro,13.72,-88.93,50769337976,Técnico Whirlpool Cojutepeque
+whirlpool,sv,Chalatenango,Centro,14.04,-88.94,50769337976,Técnico Whirlpool Chalatenango
+whirlpool,sv,Ahuachapán,Centro,13.92,-89.85,50769337976,Técnico Whirlpool Ahuachapán
+whirlpool,sv,San Vicente,Centro,13.64,-88.78,50769337976,Técnico Whirlpool San Vicente
+whirlpool,sv,Sensuntepeque,Centro,13.88,-88.63,50769337976,Técnico Whirlpool Sensuntepeque
+whirlpool,sv,San Francisco Gotera,Centro,13.7,-88.1,50769337976,Técnico Whirlpool San Francisco Gotera
+whirlpool,sv,Antiguo Cuscatlán,Centro,13.67,-89.24,50769337976,Técnico Whirlpool Antiguo Cuscatlán
+whirlpool,sv,Colón,Centro,13.72,-89.36,50769337976,Técnico Whirlpool Colón
+whirlpool,sv,Quezaltepeque,Centro,13.83,-89.27,50769337976,Técnico Whirlpool Quezaltepeque
 whirlpool,py,Asunción,Centro,-25.2637,-57.5759,593993508191,Técnico Whirlpool Asunción
 whirlpool,py,Ciudad del Este,Centro,-25.5097,-54.6111,593993508191,Técnico Whirlpool Ciudad del Este
 whirlpool,py,Encarnación,Centro,-27.3306,-55.8667,593993508191,Técnico Whirlpool Encarnación
 whirlpool,py,San Lorenzo,Centro,-25.34,-57.51,593993508191,Técnico Whirlpool San Lorenzo
 whirlpool,py,Luque,Centro,-25.27,-57.49,593993508191,Técnico Whirlpool Luque
 whirlpool,py,Fernando de la Mora,Centro,-25.31,-57.55,593993508191,Técnico Whirlpool Fernando de la Mora
+whirlpool,py,Lambaré,Centro,-25.35,-57.61,593993508191,Técnico Whirlpool Lambaré
+whirlpool,py,Capiatá,Centro,-25.35,-57.45,593993508191,Técnico Whirlpool Capiatá
+whirlpool,py,Limpio,Centro,-25.17,-57.48,593993508191,Técnico Whirlpool Limpio
+whirlpool,py,Villa Elisa,Centro,-25.37,-57.59,593993508191,Técnico Whirlpool Villa Elisa
+whirlpool,py,Ñemby,Centro,-25.39,-57.54,593993508191,Técnico Whirlpool Ñemby
+whirlpool,py,Mariano Roque Alonso,Centro,-25.2,-57.53,593993508191,Técnico Whirlpool Mariano Roque Alonso
+whirlpool,py,Pedro Juan Caballero,Centro,-22.55,-55.73,593993508191,Técnico Whirlpool Pedro Juan Caballero
+whirlpool,py,Concepción,Centro,-23.41,-57.43,593993508191,Técnico Whirlpool Concepción
+whirlpool,py,Villarrica,Centro,-25.75,-56.43,593993508191,Técnico Whirlpool Villarrica
+whirlpool,py,Coronel Oviedo,Centro,-25.45,-56.44,593993508191,Técnico Whirlpool Coronel Oviedo
+whirlpool,py,Caaguazú,Centro,-25.47,-56.02,593993508191,Técnico Whirlpool Caaguazú
+whirlpool,py,Pilar,Centro,-26.86,-58.3,593993508191,Técnico Whirlpool Pilar
+whirlpool,py,San Juan Bautista,Centro,-26.67,-57.15,593993508191,Técnico Whirlpool San Juan Bautista
+whirlpool,py,Paraguarí,Centro,-25.62,-57.15,593993508191,Técnico Whirlpool Paraguarí
+whirlpool,py,Caacupé,Centro,-25.39,-57.14,593993508191,Técnico Whirlpool Caacupé
+whirlpool,py,Salto del Guairá,Centro,-24.06,-54.31,593993508191,Técnico Whirlpool Salto del Guairá
+whirlpool,py,Hernandarias,Centro,-25.4,-54.64,593993508191,Técnico Whirlpool Hernandarias
+whirlpool,py,Presidente Franco,Centro,-25.53,-54.61,593993508191,Técnico Whirlpool Presidente Franco
+whirlpool,py,Fuerte Olimpo,Centro,-21.04,-57.87,593993508191,Técnico Whirlpool Fuerte Olimpo
+whirlpool,py,Filadelfia,Centro,-22.35,-60.03,593993508191,Técnico Whirlpool Filadelfia
+whirlpool,py,Pozo Colorado,Centro,-23.49,-58.8,593993508191,Técnico Whirlpool Pozo Colorado
 whirlpool,co,Bogotá,Centro,4.711,-74.0721,573013810242,Técnico Whirlpool Bogotá
 whirlpool,co,Medellín,Centro,6.2442,-75.5812,573013810242,Técnico Whirlpool Medellín
 whirlpool,co,Cali,Centro,3.4516,-76.532,573013810242,Técnico Whirlpool Cali
 whirlpool,co,Barranquilla,Centro,10.9685,-74.7813,573013810242,Técnico Whirlpool Barranquilla
 whirlpool,co,Cartagena,Centro,10.391,-75.4794,573013810242,Técnico Whirlpool Cartagena
 whirlpool,co,Bucaramanga,Centro,7.1193,-73.1227,573013810242,Técnico Whirlpool Bucaramanga
+whirlpool,co,Cúcuta,Centro,7.894,-72.507,573013810242,Técnico Whirlpool Cúcuta
+whirlpool,co,Pereira,Centro,4.814,-75.696,573013810242,Técnico Whirlpool Pereira
+whirlpool,co,Santa Marta,Centro,11.241,-74.199,573013810242,Técnico Whirlpool Santa Marta
+whirlpool,co,Ibagué,Centro,4.438,-75.232,573013810242,Técnico Whirlpool Ibagué
+whirlpool,co,Manizales,Centro,5.07,-75.517,573013810242,Técnico Whirlpool Manizales
+whirlpool,co,Villavicencio,Centro,4.142,-73.627,573013810242,Técnico Whirlpool Villavicencio
+whirlpool,co,Pasto,Centro,1.214,-77.281,573013810242,Técnico Whirlpool Pasto
+whirlpool,co,Montería,Centro,8.75,-75.881,573013810242,Técnico Whirlpool Montería
+whirlpool,co,Neiva,Centro,2.927,-75.282,573013810242,Técnico Whirlpool Neiva
+whirlpool,co,Armenia,Centro,4.533,-75.681,573013810242,Técnico Whirlpool Armenia
+whirlpool,co,Popayán,Centro,2.444,-76.614,573013810242,Técnico Whirlpool Popayán
+whirlpool,co,Valledupar,Centro,10.477,-73.25,573013810242,Técnico Whirlpool Valledupar
+whirlpool,co,Sincelejo,Centro,9.304,-75.397,573013810242,Técnico Whirlpool Sincelejo
+whirlpool,co,Tunja,Centro,5.535,-73.367,573013810242,Técnico Whirlpool Tunja
+whirlpool,co,Riohacha,Centro,11.544,-72.907,573013810242,Técnico Whirlpool Riohacha
+whirlpool,co,Florencia,Centro,1.614,-75.606,573013810242,Técnico Whirlpool Florencia
+whirlpool,co,Yopal,Centro,5.337,-72.395,573013810242,Técnico Whirlpool Yopal
+whirlpool,co,Quibdó,Centro,5.692,-76.658,573013810242,Técnico Whirlpool Quibdó
+whirlpool,co,Soacha,Centro,4.579,-74.216,573013810242,Técnico Whirlpool Soacha
+whirlpool,co,Bello,Centro,6.337,-75.558,573013810242,Técnico Whirlpool Bello
+whirlpool,co,Soledad,Centro,10.918,-74.765,573013810242,Técnico Whirlpool Soledad
+whirlpool,co,Envigado,Centro,6.17,-75.583,573013810242,Técnico Whirlpool Envigado
+whirlpool,co,Itagüí,Centro,6.185,-75.599,573013810242,Técnico Whirlpool Itagüí
+whirlpool,co,Palmira,Centro,3.539,-76.303,573013810242,Técnico Whirlpool Palmira
+whirlpool,co,Buenaventura,Centro,3.883,-77.031,573013810242,Técnico Whirlpool Buenaventura
+whirlpool,co,Floridablanca,Centro,7.062,-73.086,573013810242,Técnico Whirlpool Floridablanca
+whirlpool,co,Girardot,Centro,4.303,-74.803,573013810242,Técnico Whirlpool Girardot
+whirlpool,co,Barrancabermeja,Centro,7.065,-73.854,573013810242,Técnico Whirlpool Barrancabermeja
+whirlpool,co,Sogamoso,Centro,5.714,-72.93,573013810242,Técnico Whirlpool Sogamoso
+whirlpool,co,Tuluá,Centro,4.085,-76.195,573013810242,Técnico Whirlpool Tuluá
+whirlpool,co,Chía,Centro,4.862,-74.033,573013810242,Técnico Whirlpool Chía
+whirlpool,co,Zipaquirá,Centro,5.022,-74.004,573013810242,Técnico Whirlpool Zipaquirá
 whirlpool,cl,Santiago,Centro,-33.4489,-70.6693,56983176106,Técnico Whirlpool Santiago
 whirlpool,cl,Valparaíso,Centro,-33.0472,-71.6127,56983176106,Técnico Whirlpool Valparaíso
 whirlpool,cl,Concepción,Centro,-36.8201,-73.0444,56983176106,Técnico Whirlpool Concepción
 whirlpool,cl,La Serena,Centro,-29.9027,-71.2519,56983176106,Técnico Whirlpool La Serena
 whirlpool,cl,Antofagasta,Centro,-23.6509,-70.3975,56983176106,Técnico Whirlpool Antofagasta
 whirlpool,cl,Temuco,Centro,-38.7359,-72.5904,56983176106,Técnico Whirlpool Temuco
+whirlpool,cl,Viña del Mar,Centro,-33.0245,-71.5518,56983176106,Técnico Whirlpool Viña del Mar
+whirlpool,cl,Rancagua,Centro,-34.17,-70.74,56983176106,Técnico Whirlpool Rancagua
+whirlpool,cl,Talca,Centro,-35.43,-71.66,56983176106,Técnico Whirlpool Talca
+whirlpool,cl,Arica,Centro,-18.48,-70.31,56983176106,Técnico Whirlpool Arica
+whirlpool,cl,Iquique,Centro,-20.21,-70.15,56983176106,Técnico Whirlpool Iquique
+whirlpool,cl,Puerto Montt,Centro,-41.47,-72.94,56983176106,Técnico Whirlpool Puerto Montt
+whirlpool,cl,Copiapó,Centro,-27.37,-70.33,56983176106,Técnico Whirlpool Copiapó
+whirlpool,cl,Chillán,Centro,-36.61,-72.1,56983176106,Técnico Whirlpool Chillán
+whirlpool,cl,Valdivia,Centro,-39.82,-73.25,56983176106,Técnico Whirlpool Valdivia
+whirlpool,cl,Punta Arenas,Centro,-53.16,-70.91,56983176106,Técnico Whirlpool Punta Arenas
+whirlpool,cl,Coyhaique,Centro,-45.57,-72.07,56983176106,Técnico Whirlpool Coyhaique
+whirlpool,cl,Osorno,Centro,-40.57,-73.14,56983176106,Técnico Whirlpool Osorno
+whirlpool,cl,Calama,Centro,-22.46,-68.93,56983176106,Técnico Whirlpool Calama
+whirlpool,cl,Los Ángeles,Centro,-37.47,-72.35,56983176106,Técnico Whirlpool Los Ángeles
+whirlpool,cl,Curicó,Centro,-34.98,-71.24,56983176106,Técnico Whirlpool Curicó
+whirlpool,cl,Quilpué,Centro,-33.05,-71.44,56983176106,Técnico Whirlpool Quilpué
+whirlpool,cl,Villa Alemana,Centro,-33.04,-71.37,56983176106,Técnico Whirlpool Villa Alemana
+whirlpool,cl,Puente Alto,Centro,-33.61,-70.58,56983176106,Técnico Whirlpool Puente Alto
+whirlpool,cl,Maipú,Centro,-33.51,-70.76,56983176106,Técnico Whirlpool Maipú
+whirlpool,cl,La Florida,Centro,-33.52,-70.6,56983176106,Técnico Whirlpool La Florida
+whirlpool,cl,Las Condes,Centro,-33.41,-70.57,56983176106,Técnico Whirlpool Las Condes
+whirlpool,cl,Providencia,Centro,-33.43,-70.61,56983176106,Técnico Whirlpool Providencia
 mabe,gt,Ciudad de Guatemala,Centro,14.6349,-90.5069,50769337976,Técnico Mabe Ciudad de Guatemala
 mabe,gt,Mixco,Centro,14.633,-90.607,50769337976,Técnico Mabe Mixco
 mabe,gt,Villa Nueva,Centro,14.525,-90.587,50769337976,Técnico Mabe Villa Nueva
 mabe,gt,Quetzaltenango,Centro,14.8347,-91.5181,50769337976,Técnico Mabe Quetzaltenango
 mabe,gt,Antigua Guatemala,Centro,14.5586,-90.7295,50769337976,Técnico Mabe Antigua Guatemala
 mabe,gt,Escuintla,Centro,14.305,-90.785,50769337976,Técnico Mabe Escuintla
+mabe,gt,Cobán,Centro,15.47,-90.38,50769337976,Técnico Mabe Cobán
+mabe,gt,Huehuetenango,Centro,15.32,-91.47,50769337976,Técnico Mabe Huehuetenango
+mabe,gt,Puerto Barrios,Centro,15.73,-88.6,50769337976,Técnico Mabe Puerto Barrios
+mabe,gt,Chiquimula,Centro,14.8,-89.54,50769337976,Técnico Mabe Chiquimula
+mabe,gt,Zacapa,Centro,14.97,-89.53,50769337976,Técnico Mabe Zacapa
+mabe,gt,Jalapa,Centro,14.63,-89.99,50769337976,Técnico Mabe Jalapa
+mabe,gt,Retalhuleu,Centro,14.54,-91.68,50769337976,Técnico Mabe Retalhuleu
+mabe,gt,Mazatenango,Centro,14.53,-91.5,50769337976,Técnico Mabe Mazatenango
+mabe,gt,Flores,Centro,16.93,-89.89,50769337976,Técnico Mabe Flores
+mabe,gt,Chimaltenango,Centro,14.66,-90.82,50769337976,Técnico Mabe Chimaltenango
+mabe,gt,Salamá,Centro,15.1,-90.32,50769337976,Técnico Mabe Salamá
+mabe,gt,Sololá,Centro,14.77,-91.18,50769337976,Técnico Mabe Sololá
+mabe,gt,Totonicapán,Centro,14.91,-91.36,50769337976,Técnico Mabe Totonicapán
+mabe,gt,San Marcos,Centro,14.96,-91.8,50769337976,Técnico Mabe San Marcos
+mabe,gt,Jutiapa,Centro,14.29,-89.9,50769337976,Técnico Mabe Jutiapa
+mabe,gt,Santa Rosa de Lima,Centro,14.44,-90.28,50769337976,Técnico Mabe Santa Rosa de Lima
+mabe,gt,Santa Catarina Pinula,Centro,14.57,-90.49,50769337976,Técnico Mabe Santa Catarina Pinula
+mabe,gt,San Miguel Petapa,Centro,14.5,-90.55,50769337976,Técnico Mabe San Miguel Petapa
 mabe,pa,Ciudad de Panamá,Centro,8.9824,-79.5199,50769337976,Técnico Mabe Ciudad de Panamá
 mabe,pa,San Miguelito,Centro,9.0333,-79.5,50769337976,Técnico Mabe San Miguelito
 mabe,pa,Colón,Centro,9.3592,-79.9014,50769337976,Técnico Mabe Colón
 mabe,pa,David,Centro,8.4273,-82.4308,50769337976,Técnico Mabe David
 mabe,pa,La Chorrera,Centro,8.88,-79.783,50769337976,Técnico Mabe La Chorrera
 mabe,pa,Arraiján,Centro,8.95,-79.65,50769337976,Técnico Mabe Arraiján
+mabe,pa,Chitré,Centro,7.9667,-80.4333,50769337976,Técnico Mabe Chitré
+mabe,pa,Las Tablas,Centro,7.7667,-80.2833,50769337976,Técnico Mabe Las Tablas
+mabe,pa,Santiago de Veraguas,Centro,8.1,-80.98,50769337976,Técnico Mabe Santiago de Veraguas
+mabe,pa,Penonomé,Centro,8.52,-80.36,50769337976,Técnico Mabe Penonomé
+mabe,pa,Aguadulce,Centro,8.24,-80.55,50769337976,Técnico Mabe Aguadulce
+mabe,pa,Boquete,Centro,8.78,-82.44,50769337976,Técnico Mabe Boquete
+mabe,pa,Changuinola,Centro,9.43,-82.52,50769337976,Técnico Mabe Changuinola
+mabe,pa,Bocas del Toro,Centro,9.34,-82.24,50769337976,Técnico Mabe Bocas del Toro
+mabe,pa,Puerto Armuelles,Centro,8.28,-82.87,50769337976,Técnico Mabe Puerto Armuelles
+mabe,pa,Chepo,Centro,9.17,-79.1,50769337976,Técnico Mabe Chepo
+mabe,pa,La Palma,Centro,8.4,-78.15,50769337976,Técnico Mabe La Palma
+mabe,pa,Chame,Centro,8.59,-79.88,50769337976,Técnico Mabe Chame
+mabe,pa,Coronado,Centro,8.54,-79.9,50769337976,Técnico Mabe Coronado
+mabe,pa,Pacora,Centro,9.08,-79.28,50769337976,Técnico Mabe Pacora
 mabe,cr,San José,Centro,9.9281,-84.0907,50670055753,Técnico Mabe San José
 mabe,cr,Alajuela,Centro,10.0162,-84.2116,50670055753,Técnico Mabe Alajuela
 mabe,cr,Cartago,Centro,9.8644,-83.9194,50670055753,Técnico Mabe Cartago
 mabe,cr,Heredia,Centro,9.9986,-84.1165,50670055753,Técnico Mabe Heredia
 mabe,cr,Liberia,Centro,10.6346,-85.4377,50670055753,Técnico Mabe Liberia
 mabe,cr,Puntarenas,Centro,9.9763,-84.8384,50670055753,Técnico Mabe Puntarenas
+mabe,cr,Limón,Centro,9.99,-83.03,50670055753,Técnico Mabe Limón
+mabe,cr,San Carlos (Ciudad Quesada),Centro,10.32,-84.43,50670055753,Técnico Mabe San Carlos (Ciudad Quesada)
+mabe,cr,Pérez Zeledón,Centro,9.37,-83.7,50670055753,Técnico Mabe Pérez Zeledón
+mabe,cr,Escazú,Centro,9.92,-84.14,50670055753,Técnico Mabe Escazú
+mabe,cr,Santa Ana,Centro,9.93,-84.18,50670055753,Técnico Mabe Santa Ana
+mabe,cr,Curridabat,Centro,9.91,-84.04,50670055753,Técnico Mabe Curridabat
+mabe,cr,Desamparados,Centro,9.9,-84.07,50670055753,Técnico Mabe Desamparados
+mabe,cr,Tibás,Centro,9.96,-84.08,50670055753,Técnico Mabe Tibás
+mabe,cr,Moravia,Centro,9.96,-84.05,50670055753,Técnico Mabe Moravia
+mabe,cr,Grecia,Centro,10.07,-84.31,50670055753,Técnico Mabe Grecia
+mabe,cr,San Ramón,Centro,10.09,-84.47,50670055753,Técnico Mabe San Ramón
+mabe,cr,Nicoya,Centro,10.15,-85.45,50670055753,Técnico Mabe Nicoya
+mabe,cr,Santa Cruz,Centro,10.26,-85.58,50670055753,Técnico Mabe Santa Cruz
+mabe,cr,Cañas,Centro,10.43,-85.1,50670055753,Técnico Mabe Cañas
+mabe,cr,Golfito,Centro,8.64,-83.16,50670055753,Técnico Mabe Golfito
+mabe,cr,Quepos,Centro,9.43,-84.16,50670055753,Técnico Mabe Quepos
+mabe,cr,Turrialba,Centro,9.9,-83.68,50670055753,Técnico Mabe Turrialba
+mabe,cr,Guápiles,Centro,10.21,-83.79,50670055753,Técnico Mabe Guápiles
 mabe,ec,Quito,Centro,-0.1807,-78.4678,593993508191,Técnico Mabe Quito
 mabe,ec,Guayaquil,Centro,-2.17,-79.9224,593993508191,Técnico Mabe Guayaquil
 mabe,ec,Cuenca,Centro,-2.9001,-79.0059,593993508191,Técnico Mabe Cuenca
 mabe,ec,Ambato,Centro,-1.2491,-78.6168,593993508191,Técnico Mabe Ambato
 mabe,ec,Manta,Centro,-0.9677,-80.7089,593993508191,Técnico Mabe Manta
 mabe,ec,Loja,Centro,-3.9931,-79.2042,593993508191,Técnico Mabe Loja
+mabe,ec,Santo Domingo,Centro,-0.25,-79.17,593993508191,Técnico Mabe Santo Domingo
+mabe,ec,Machala,Centro,-3.26,-79.96,593993508191,Técnico Mabe Machala
+mabe,ec,Portoviejo,Centro,-1.05,-80.45,593993508191,Técnico Mabe Portoviejo
+mabe,ec,Riobamba,Centro,-1.67,-78.65,593993508191,Técnico Mabe Riobamba
+mabe,ec,Ibarra,Centro,0.35,-78.12,593993508191,Técnico Mabe Ibarra
+mabe,ec,Esmeraldas,Centro,0.96,-79.65,593993508191,Técnico Mabe Esmeraldas
+mabe,ec,Quevedo,Centro,-1.02,-79.46,593993508191,Técnico Mabe Quevedo
+mabe,ec,Latacunga,Centro,-0.93,-78.62,593993508191,Técnico Mabe Latacunga
+mabe,ec,Babahoyo,Centro,-1.8,-79.53,593993508191,Técnico Mabe Babahoyo
+mabe,ec,Tulcán,Centro,0.81,-77.72,593993508191,Técnico Mabe Tulcán
+mabe,ec,Azogues,Centro,-2.74,-78.85,593993508191,Técnico Mabe Azogues
+mabe,ec,Guaranda,Centro,-1.59,-79.0,593993508191,Técnico Mabe Guaranda
+mabe,ec,Puyo,Centro,-1.49,-78.0,593993508191,Técnico Mabe Puyo
+mabe,ec,Tena,Centro,-0.99,-77.81,593993508191,Técnico Mabe Tena
+mabe,ec,Nueva Loja (Lago Agrio),Centro,0.09,-76.89,593993508191,Técnico Mabe Nueva Loja (Lago Agrio)
+mabe,ec,Samborondón,Centro,-2.13,-79.87,593993508191,Técnico Mabe Samborondón
+mabe,ec,Daule,Centro,-1.86,-79.98,593993508191,Técnico Mabe Daule
+mabe,ec,Salinas,Centro,-2.22,-80.96,593993508191,Técnico Mabe Salinas
+mabe,ec,La Libertad,Centro,-2.23,-80.91,593993508191,Técnico Mabe La Libertad
+mabe,ec,Cayambe,Centro,0.04,-78.15,593993508191,Técnico Mabe Cayambe
+mabe,ec,Sangolquí,Centro,-0.33,-78.45,593993508191,Técnico Mabe Sangolquí
 mabe,sv,San Salvador,Centro,13.6929,-89.2182,50769337976,Técnico Mabe San Salvador
 mabe,sv,Santa Ana,Centro,13.9942,-89.5597,50769337976,Técnico Mabe Santa Ana
 mabe,sv,San Miguel,Centro,13.4833,-88.1833,50769337976,Técnico Mabe San Miguel
 mabe,sv,Soyapango,Centro,13.71,-89.14,50769337976,Técnico Mabe Soyapango
 mabe,sv,Santa Tecla,Centro,13.6769,-89.2797,50769337976,Técnico Mabe Santa Tecla
 mabe,sv,Sonsonate,Centro,13.7189,-89.7242,50769337976,Técnico Mabe Sonsonate
+mabe,sv,Apopa,Centro,13.8,-89.18,50769337976,Técnico Mabe Apopa
+mabe,sv,Mejicanos,Centro,13.74,-89.21,50769337976,Técnico Mabe Mejicanos
+mabe,sv,Delgado,Centro,13.72,-89.17,50769337976,Técnico Mabe Delgado
+mabe,sv,Ilopango,Centro,13.7,-89.11,50769337976,Técnico Mabe Ilopango
+mabe,sv,Usulután,Centro,13.35,-88.44,50769337976,Técnico Mabe Usulután
+mabe,sv,La Unión,Centro,13.34,-87.84,50769337976,Técnico Mabe La Unión
+mabe,sv,Zacatecoluca,Centro,13.51,-88.87,50769337976,Técnico Mabe Zacatecoluca
+mabe,sv,Cojutepeque,Centro,13.72,-88.93,50769337976,Técnico Mabe Cojutepeque
+mabe,sv,Chalatenango,Centro,14.04,-88.94,50769337976,Técnico Mabe Chalatenango
+mabe,sv,Ahuachapán,Centro,13.92,-89.85,50769337976,Técnico Mabe Ahuachapán
+mabe,sv,San Vicente,Centro,13.64,-88.78,50769337976,Técnico Mabe San Vicente
+mabe,sv,Sensuntepeque,Centro,13.88,-88.63,50769337976,Técnico Mabe Sensuntepeque
+mabe,sv,San Francisco Gotera,Centro,13.7,-88.1,50769337976,Técnico Mabe San Francisco Gotera
+mabe,sv,Antiguo Cuscatlán,Centro,13.67,-89.24,50769337976,Técnico Mabe Antiguo Cuscatlán
+mabe,sv,Colón,Centro,13.72,-89.36,50769337976,Técnico Mabe Colón
+mabe,sv,Quezaltepeque,Centro,13.83,-89.27,50769337976,Técnico Mabe Quezaltepeque
 mabe,py,Asunción,Centro,-25.2637,-57.5759,593993508191,Técnico Mabe Asunción
 mabe,py,Ciudad del Este,Centro,-25.5097,-54.6111,593993508191,Técnico Mabe Ciudad del Este
 mabe,py,Encarnación,Centro,-27.3306,-55.8667,593993508191,Técnico Mabe Encarnación
 mabe,py,San Lorenzo,Centro,-25.34,-57.51,593993508191,Técnico Mabe San Lorenzo
 mabe,py,Luque,Centro,-25.27,-57.49,593993508191,Técnico Mabe Luque
 mabe,py,Fernando de la Mora,Centro,-25.31,-57.55,593993508191,Técnico Mabe Fernando de la Mora
+mabe,py,Lambaré,Centro,-25.35,-57.61,593993508191,Técnico Mabe Lambaré
+mabe,py,Capiatá,Centro,-25.35,-57.45,593993508191,Técnico Mabe Capiatá
+mabe,py,Limpio,Centro,-25.17,-57.48,593993508191,Técnico Mabe Limpio
+mabe,py,Villa Elisa,Centro,-25.37,-57.59,593993508191,Técnico Mabe Villa Elisa
+mabe,py,Ñemby,Centro,-25.39,-57.54,593993508191,Técnico Mabe Ñemby
+mabe,py,Mariano Roque Alonso,Centro,-25.2,-57.53,593993508191,Técnico Mabe Mariano Roque Alonso
+mabe,py,Pedro Juan Caballero,Centro,-22.55,-55.73,593993508191,Técnico Mabe Pedro Juan Caballero
+mabe,py,Concepción,Centro,-23.41,-57.43,593993508191,Técnico Mabe Concepción
+mabe,py,Villarrica,Centro,-25.75,-56.43,593993508191,Técnico Mabe Villarrica
+mabe,py,Coronel Oviedo,Centro,-25.45,-56.44,593993508191,Técnico Mabe Coronel Oviedo
+mabe,py,Caaguazú,Centro,-25.47,-56.02,593993508191,Técnico Mabe Caaguazú
+mabe,py,Pilar,Centro,-26.86,-58.3,593993508191,Técnico Mabe Pilar
+mabe,py,San Juan Bautista,Centro,-26.67,-57.15,593993508191,Técnico Mabe San Juan Bautista
+mabe,py,Paraguarí,Centro,-25.62,-57.15,593993508191,Técnico Mabe Paraguarí
+mabe,py,Caacupé,Centro,-25.39,-57.14,593993508191,Técnico Mabe Caacupé
+mabe,py,Salto del Guairá,Centro,-24.06,-54.31,593993508191,Técnico Mabe Salto del Guairá
+mabe,py,Hernandarias,Centro,-25.4,-54.64,593993508191,Técnico Mabe Hernandarias
+mabe,py,Presidente Franco,Centro,-25.53,-54.61,593993508191,Técnico Mabe Presidente Franco
+mabe,py,Fuerte Olimpo,Centro,-21.04,-57.87,593993508191,Técnico Mabe Fuerte Olimpo
+mabe,py,Filadelfia,Centro,-22.35,-60.03,593993508191,Técnico Mabe Filadelfia
+mabe,py,Pozo Colorado,Centro,-23.49,-58.8,593993508191,Técnico Mabe Pozo Colorado
 mabe,co,Bogotá,Centro,4.711,-74.0721,573013810242,Técnico Mabe Bogotá
 mabe,co,Medellín,Centro,6.2442,-75.5812,573013810242,Técnico Mabe Medellín
 mabe,co,Cali,Centro,3.4516,-76.532,573013810242,Técnico Mabe Cali
 mabe,co,Barranquilla,Centro,10.9685,-74.7813,573013810242,Técnico Mabe Barranquilla
 mabe,co,Cartagena,Centro,10.391,-75.4794,573013810242,Técnico Mabe Cartagena
 mabe,co,Bucaramanga,Centro,7.1193,-73.1227,573013810242,Técnico Mabe Bucaramanga
+mabe,co,Cúcuta,Centro,7.894,-72.507,573013810242,Técnico Mabe Cúcuta
+mabe,co,Pereira,Centro,4.814,-75.696,573013810242,Técnico Mabe Pereira
+mabe,co,Santa Marta,Centro,11.241,-74.199,573013810242,Técnico Mabe Santa Marta
+mabe,co,Ibagué,Centro,4.438,-75.232,573013810242,Técnico Mabe Ibagué
+mabe,co,Manizales,Centro,5.07,-75.517,573013810242,Técnico Mabe Manizales
+mabe,co,Villavicencio,Centro,4.142,-73.627,573013810242,Técnico Mabe Villavicencio
+mabe,co,Pasto,Centro,1.214,-77.281,573013810242,Técnico Mabe Pasto
+mabe,co,Montería,Centro,8.75,-75.881,573013810242,Técnico Mabe Montería
+mabe,co,Neiva,Centro,2.927,-75.282,573013810242,Técnico Mabe Neiva
+mabe,co,Armenia,Centro,4.533,-75.681,573013810242,Técnico Mabe Armenia
+mabe,co,Popayán,Centro,2.444,-76.614,573013810242,Técnico Mabe Popayán
+mabe,co,Valledupar,Centro,10.477,-73.25,573013810242,Técnico Mabe Valledupar
+mabe,co,Sincelejo,Centro,9.304,-75.397,573013810242,Técnico Mabe Sincelejo
+mabe,co,Tunja,Centro,5.535,-73.367,573013810242,Técnico Mabe Tunja
+mabe,co,Riohacha,Centro,11.544,-72.907,573013810242,Técnico Mabe Riohacha
+mabe,co,Florencia,Centro,1.614,-75.606,573013810242,Técnico Mabe Florencia
+mabe,co,Yopal,Centro,5.337,-72.395,573013810242,Técnico Mabe Yopal
+mabe,co,Quibdó,Centro,5.692,-76.658,573013810242,Técnico Mabe Quibdó
+mabe,co,Soacha,Centro,4.579,-74.216,573013810242,Técnico Mabe Soacha
+mabe,co,Bello,Centro,6.337,-75.558,573013810242,Técnico Mabe Bello
+mabe,co,Soledad,Centro,10.918,-74.765,573013810242,Técnico Mabe Soledad
+mabe,co,Envigado,Centro,6.17,-75.583,573013810242,Técnico Mabe Envigado
+mabe,co,Itagüí,Centro,6.185,-75.599,573013810242,Técnico Mabe Itagüí
+mabe,co,Palmira,Centro,3.539,-76.303,573013810242,Técnico Mabe Palmira
+mabe,co,Buenaventura,Centro,3.883,-77.031,573013810242,Técnico Mabe Buenaventura
+mabe,co,Floridablanca,Centro,7.062,-73.086,573013810242,Técnico Mabe Floridablanca
+mabe,co,Girardot,Centro,4.303,-74.803,573013810242,Técnico Mabe Girardot
+mabe,co,Barrancabermeja,Centro,7.065,-73.854,573013810242,Técnico Mabe Barrancabermeja
+mabe,co,Sogamoso,Centro,5.714,-72.93,573013810242,Técnico Mabe Sogamoso
+mabe,co,Tuluá,Centro,4.085,-76.195,573013810242,Técnico Mabe Tuluá
+mabe,co,Chía,Centro,4.862,-74.033,573013810242,Técnico Mabe Chía
+mabe,co,Zipaquirá,Centro,5.022,-74.004,573013810242,Técnico Mabe Zipaquirá
 mabe,cl,Santiago,Centro,-33.4489,-70.6693,56983176106,Técnico Mabe Santiago
 mabe,cl,Valparaíso,Centro,-33.0472,-71.6127,56983176106,Técnico Mabe Valparaíso
 mabe,cl,Concepción,Centro,-36.8201,-73.0444,56983176106,Técnico Mabe Concepción
 mabe,cl,La Serena,Centro,-29.9027,-71.2519,56983176106,Técnico Mabe La Serena
 mabe,cl,Antofagasta,Centro,-23.6509,-70.3975,56983176106,Técnico Mabe Antofagasta
 mabe,cl,Temuco,Centro,-38.7359,-72.5904,56983176106,Técnico Mabe Temuco
+mabe,cl,Viña del Mar,Centro,-33.0245,-71.5518,56983176106,Técnico Mabe Viña del Mar
+mabe,cl,Rancagua,Centro,-34.17,-70.74,56983176106,Técnico Mabe Rancagua
+mabe,cl,Talca,Centro,-35.43,-71.66,56983176106,Técnico Mabe Talca
+mabe,cl,Arica,Centro,-18.48,-70.31,56983176106,Técnico Mabe Arica
+mabe,cl,Iquique,Centro,-20.21,-70.15,56983176106,Técnico Mabe Iquique
+mabe,cl,Puerto Montt,Centro,-41.47,-72.94,56983176106,Técnico Mabe Puerto Montt
+mabe,cl,Copiapó,Centro,-27.37,-70.33,56983176106,Técnico Mabe Copiapó
+mabe,cl,Chillán,Centro,-36.61,-72.1,56983176106,Técnico Mabe Chillán
+mabe,cl,Valdivia,Centro,-39.82,-73.25,56983176106,Técnico Mabe Valdivia
+mabe,cl,Punta Arenas,Centro,-53.16,-70.91,56983176106,Técnico Mabe Punta Arenas
+mabe,cl,Coyhaique,Centro,-45.57,-72.07,56983176106,Técnico Mabe Coyhaique
+mabe,cl,Osorno,Centro,-40.57,-73.14,56983176106,Técnico Mabe Osorno
+mabe,cl,Calama,Centro,-22.46,-68.93,56983176106,Técnico Mabe Calama
+mabe,cl,Los Ángeles,Centro,-37.47,-72.35,56983176106,Técnico Mabe Los Ángeles
+mabe,cl,Curicó,Centro,-34.98,-71.24,56983176106,Técnico Mabe Curicó
+mabe,cl,Quilpué,Centro,-33.05,-71.44,56983176106,Técnico Mabe Quilpué
+mabe,cl,Villa Alemana,Centro,-33.04,-71.37,56983176106,Técnico Mabe Villa Alemana
+mabe,cl,Puente Alto,Centro,-33.61,-70.58,56983176106,Técnico Mabe Puente Alto
+mabe,cl,Maipú,Centro,-33.51,-70.76,56983176106,Técnico Mabe Maipú
+mabe,cl,La Florida,Centro,-33.52,-70.6,56983176106,Técnico Mabe La Florida
+mabe,cl,Las Condes,Centro,-33.41,-70.57,56983176106,Técnico Mabe Las Condes
+mabe,cl,Providencia,Centro,-33.43,-70.61,56983176106,Técnico Mabe Providencia
 frigidaire,gt,Ciudad de Guatemala,Centro,14.6349,-90.5069,50769337976,Técnico Frigidaire Ciudad de Guatemala
 frigidaire,gt,Mixco,Centro,14.633,-90.607,50769337976,Técnico Frigidaire Mixco
 frigidaire,gt,Villa Nueva,Centro,14.525,-90.587,50769337976,Técnico Frigidaire Villa Nueva
 frigidaire,gt,Quetzaltenango,Centro,14.8347,-91.5181,50769337976,Técnico Frigidaire Quetzaltenango
 frigidaire,gt,Antigua Guatemala,Centro,14.5586,-90.7295,50769337976,Técnico Frigidaire Antigua Guatemala
 frigidaire,gt,Escuintla,Centro,14.305,-90.785,50769337976,Técnico Frigidaire Escuintla
+frigidaire,gt,Cobán,Centro,15.47,-90.38,50769337976,Técnico Frigidaire Cobán
+frigidaire,gt,Huehuetenango,Centro,15.32,-91.47,50769337976,Técnico Frigidaire Huehuetenango
+frigidaire,gt,Puerto Barrios,Centro,15.73,-88.6,50769337976,Técnico Frigidaire Puerto Barrios
+frigidaire,gt,Chiquimula,Centro,14.8,-89.54,50769337976,Técnico Frigidaire Chiquimula
+frigidaire,gt,Zacapa,Centro,14.97,-89.53,50769337976,Técnico Frigidaire Zacapa
+frigidaire,gt,Jalapa,Centro,14.63,-89.99,50769337976,Técnico Frigidaire Jalapa
+frigidaire,gt,Retalhuleu,Centro,14.54,-91.68,50769337976,Técnico Frigidaire Retalhuleu
+frigidaire,gt,Mazatenango,Centro,14.53,-91.5,50769337976,Técnico Frigidaire Mazatenango
+frigidaire,gt,Flores,Centro,16.93,-89.89,50769337976,Técnico Frigidaire Flores
+frigidaire,gt,Chimaltenango,Centro,14.66,-90.82,50769337976,Técnico Frigidaire Chimaltenango
+frigidaire,gt,Salamá,Centro,15.1,-90.32,50769337976,Técnico Frigidaire Salamá
+frigidaire,gt,Sololá,Centro,14.77,-91.18,50769337976,Técnico Frigidaire Sololá
+frigidaire,gt,Totonicapán,Centro,14.91,-91.36,50769337976,Técnico Frigidaire Totonicapán
+frigidaire,gt,San Marcos,Centro,14.96,-91.8,50769337976,Técnico Frigidaire San Marcos
+frigidaire,gt,Jutiapa,Centro,14.29,-89.9,50769337976,Técnico Frigidaire Jutiapa
+frigidaire,gt,Santa Rosa de Lima,Centro,14.44,-90.28,50769337976,Técnico Frigidaire Santa Rosa de Lima
+frigidaire,gt,Santa Catarina Pinula,Centro,14.57,-90.49,50769337976,Técnico Frigidaire Santa Catarina Pinula
+frigidaire,gt,San Miguel Petapa,Centro,14.5,-90.55,50769337976,Técnico Frigidaire San Miguel Petapa
 frigidaire,pa,Ciudad de Panamá,Centro,8.9824,-79.5199,50769337976,Técnico Frigidaire Ciudad de Panamá
 frigidaire,pa,San Miguelito,Centro,9.0333,-79.5,50769337976,Técnico Frigidaire San Miguelito
 frigidaire,pa,Colón,Centro,9.3592,-79.9014,50769337976,Técnico Frigidaire Colón
 frigidaire,pa,David,Centro,8.4273,-82.4308,50769337976,Técnico Frigidaire David
 frigidaire,pa,La Chorrera,Centro,8.88,-79.783,50769337976,Técnico Frigidaire La Chorrera
 frigidaire,pa,Arraiján,Centro,8.95,-79.65,50769337976,Técnico Frigidaire Arraiján
+frigidaire,pa,Chitré,Centro,7.9667,-80.4333,50769337976,Técnico Frigidaire Chitré
+frigidaire,pa,Las Tablas,Centro,7.7667,-80.2833,50769337976,Técnico Frigidaire Las Tablas
+frigidaire,pa,Santiago de Veraguas,Centro,8.1,-80.98,50769337976,Técnico Frigidaire Santiago de Veraguas
+frigidaire,pa,Penonomé,Centro,8.52,-80.36,50769337976,Técnico Frigidaire Penonomé
+frigidaire,pa,Aguadulce,Centro,8.24,-80.55,50769337976,Técnico Frigidaire Aguadulce
+frigidaire,pa,Boquete,Centro,8.78,-82.44,50769337976,Técnico Frigidaire Boquete
+frigidaire,pa,Changuinola,Centro,9.43,-82.52,50769337976,Técnico Frigidaire Changuinola
+frigidaire,pa,Bocas del Toro,Centro,9.34,-82.24,50769337976,Técnico Frigidaire Bocas del Toro
+frigidaire,pa,Puerto Armuelles,Centro,8.28,-82.87,50769337976,Técnico Frigidaire Puerto Armuelles
+frigidaire,pa,Chepo,Centro,9.17,-79.1,50769337976,Técnico Frigidaire Chepo
+frigidaire,pa,La Palma,Centro,8.4,-78.15,50769337976,Técnico Frigidaire La Palma
+frigidaire,pa,Chame,Centro,8.59,-79.88,50769337976,Técnico Frigidaire Chame
+frigidaire,pa,Coronado,Centro,8.54,-79.9,50769337976,Técnico Frigidaire Coronado
+frigidaire,pa,Pacora,Centro,9.08,-79.28,50769337976,Técnico Frigidaire Pacora
 frigidaire,cr,San José,Centro,9.9281,-84.0907,50670055753,Técnico Frigidaire San José
 frigidaire,cr,Alajuela,Centro,10.0162,-84.2116,50670055753,Técnico Frigidaire Alajuela
 frigidaire,cr,Cartago,Centro,9.8644,-83.9194,50670055753,Técnico Frigidaire Cartago
 frigidaire,cr,Heredia,Centro,9.9986,-84.1165,50670055753,Técnico Frigidaire Heredia
 frigidaire,cr,Liberia,Centro,10.6346,-85.4377,50670055753,Técnico Frigidaire Liberia
 frigidaire,cr,Puntarenas,Centro,9.9763,-84.8384,50670055753,Técnico Frigidaire Puntarenas
+frigidaire,cr,Limón,Centro,9.99,-83.03,50670055753,Técnico Frigidaire Limón
+frigidaire,cr,San Carlos (Ciudad Quesada),Centro,10.32,-84.43,50670055753,Técnico Frigidaire San Carlos (Ciudad Quesada)
+frigidaire,cr,Pérez Zeledón,Centro,9.37,-83.7,50670055753,Técnico Frigidaire Pérez Zeledón
+frigidaire,cr,Escazú,Centro,9.92,-84.14,50670055753,Técnico Frigidaire Escazú
+frigidaire,cr,Santa Ana,Centro,9.93,-84.18,50670055753,Técnico Frigidaire Santa Ana
+frigidaire,cr,Curridabat,Centro,9.91,-84.04,50670055753,Técnico Frigidaire Curridabat
+frigidaire,cr,Desamparados,Centro,9.9,-84.07,50670055753,Técnico Frigidaire Desamparados
+frigidaire,cr,Tibás,Centro,9.96,-84.08,50670055753,Técnico Frigidaire Tibás
+frigidaire,cr,Moravia,Centro,9.96,-84.05,50670055753,Técnico Frigidaire Moravia
+frigidaire,cr,Grecia,Centro,10.07,-84.31,50670055753,Técnico Frigidaire Grecia
+frigidaire,cr,San Ramón,Centro,10.09,-84.47,50670055753,Técnico Frigidaire San Ramón
+frigidaire,cr,Nicoya,Centro,10.15,-85.45,50670055753,Técnico Frigidaire Nicoya
+frigidaire,cr,Santa Cruz,Centro,10.26,-85.58,50670055753,Técnico Frigidaire Santa Cruz
+frigidaire,cr,Cañas,Centro,10.43,-85.1,50670055753,Técnico Frigidaire Cañas
+frigidaire,cr,Golfito,Centro,8.64,-83.16,50670055753,Técnico Frigidaire Golfito
+frigidaire,cr,Quepos,Centro,9.43,-84.16,50670055753,Técnico Frigidaire Quepos
+frigidaire,cr,Turrialba,Centro,9.9,-83.68,50670055753,Técnico Frigidaire Turrialba
+frigidaire,cr,Guápiles,Centro,10.21,-83.79,50670055753,Técnico Frigidaire Guápiles
 frigidaire,ec,Quito,Centro,-0.1807,-78.4678,593993508191,Técnico Frigidaire Quito
 frigidaire,ec,Guayaquil,Centro,-2.17,-79.9224,593993508191,Técnico Frigidaire Guayaquil
 frigidaire,ec,Cuenca,Centro,-2.9001,-79.0059,593993508191,Técnico Frigidaire Cuenca
 frigidaire,ec,Ambato,Centro,-1.2491,-78.6168,593993508191,Técnico Frigidaire Ambato
 frigidaire,ec,Manta,Centro,-0.9677,-80.7089,593993508191,Técnico Frigidaire Manta
 frigidaire,ec,Loja,Centro,-3.9931,-79.2042,593993508191,Técnico Frigidaire Loja
+frigidaire,ec,Santo Domingo,Centro,-0.25,-79.17,593993508191,Técnico Frigidaire Santo Domingo
+frigidaire,ec,Machala,Centro,-3.26,-79.96,593993508191,Técnico Frigidaire Machala
+frigidaire,ec,Portoviejo,Centro,-1.05,-80.45,593993508191,Técnico Frigidaire Portoviejo
+frigidaire,ec,Riobamba,Centro,-1.67,-78.65,593993508191,Técnico Frigidaire Riobamba
+frigidaire,ec,Ibarra,Centro,0.35,-78.12,593993508191,Técnico Frigidaire Ibarra
+frigidaire,ec,Esmeraldas,Centro,0.96,-79.65,593993508191,Técnico Frigidaire Esmeraldas
+frigidaire,ec,Quevedo,Centro,-1.02,-79.46,593993508191,Técnico Frigidaire Quevedo
+frigidaire,ec,Latacunga,Centro,-0.93,-78.62,593993508191,Técnico Frigidaire Latacunga
+frigidaire,ec,Babahoyo,Centro,-1.8,-79.53,593993508191,Técnico Frigidaire Babahoyo
+frigidaire,ec,Tulcán,Centro,0.81,-77.72,593993508191,Técnico Frigidaire Tulcán
+frigidaire,ec,Azogues,Centro,-2.74,-78.85,593993508191,Técnico Frigidaire Azogues
+frigidaire,ec,Guaranda,Centro,-1.59,-79.0,593993508191,Técnico Frigidaire Guaranda
+frigidaire,ec,Puyo,Centro,-1.49,-78.0,593993508191,Técnico Frigidaire Puyo
+frigidaire,ec,Tena,Centro,-0.99,-77.81,593993508191,Técnico Frigidaire Tena
+frigidaire,ec,Nueva Loja (Lago Agrio),Centro,0.09,-76.89,593993508191,Técnico Frigidaire Nueva Loja (Lago Agrio)
+frigidaire,ec,Samborondón,Centro,-2.13,-79.87,593993508191,Técnico Frigidaire Samborondón
+frigidaire,ec,Daule,Centro,-1.86,-79.98,593993508191,Técnico Frigidaire Daule
+frigidaire,ec,Salinas,Centro,-2.22,-80.96,593993508191,Técnico Frigidaire Salinas
+frigidaire,ec,La Libertad,Centro,-2.23,-80.91,593993508191,Técnico Frigidaire La Libertad
+frigidaire,ec,Cayambe,Centro,0.04,-78.15,593993508191,Técnico Frigidaire Cayambe
+frigidaire,ec,Sangolquí,Centro,-0.33,-78.45,593993508191,Técnico Frigidaire Sangolquí
 frigidaire,sv,San Salvador,Centro,13.6929,-89.2182,50769337976,Técnico Frigidaire San Salvador
 frigidaire,sv,Santa Ana,Centro,13.9942,-89.5597,50769337976,Técnico Frigidaire Santa Ana
 frigidaire,sv,San Miguel,Centro,13.4833,-88.1833,50769337976,Técnico Frigidaire San Miguel
 frigidaire,sv,Soyapango,Centro,13.71,-89.14,50769337976,Técnico Frigidaire Soyapango
 frigidaire,sv,Santa Tecla,Centro,13.6769,-89.2797,50769337976,Técnico Frigidaire Santa Tecla
 frigidaire,sv,Sonsonate,Centro,13.7189,-89.7242,50769337976,Técnico Frigidaire Sonsonate
+frigidaire,sv,Apopa,Centro,13.8,-89.18,50769337976,Técnico Frigidaire Apopa
+frigidaire,sv,Mejicanos,Centro,13.74,-89.21,50769337976,Técnico Frigidaire Mejicanos
+frigidaire,sv,Delgado,Centro,13.72,-89.17,50769337976,Técnico Frigidaire Delgado
+frigidaire,sv,Ilopango,Centro,13.7,-89.11,50769337976,Técnico Frigidaire Ilopango
+frigidaire,sv,Usulután,Centro,13.35,-88.44,50769337976,Técnico Frigidaire Usulután
+frigidaire,sv,La Unión,Centro,13.34,-87.84,50769337976,Técnico Frigidaire La Unión
+frigidaire,sv,Zacatecoluca,Centro,13.51,-88.87,50769337976,Técnico Frigidaire Zacatecoluca
+frigidaire,sv,Cojutepeque,Centro,13.72,-88.93,50769337976,Técnico Frigidaire Cojutepeque
+frigidaire,sv,Chalatenango,Centro,14.04,-88.94,50769337976,Técnico Frigidaire Chalatenango
+frigidaire,sv,Ahuachapán,Centro,13.92,-89.85,50769337976,Técnico Frigidaire Ahuachapán
+frigidaire,sv,San Vicente,Centro,13.64,-88.78,50769337976,Técnico Frigidaire San Vicente
+frigidaire,sv,Sensuntepeque,Centro,13.88,-88.63,50769337976,Técnico Frigidaire Sensuntepeque
+frigidaire,sv,San Francisco Gotera,Centro,13.7,-88.1,50769337976,Técnico Frigidaire San Francisco Gotera
+frigidaire,sv,Antiguo Cuscatlán,Centro,13.67,-89.24,50769337976,Técnico Frigidaire Antiguo Cuscatlán
+frigidaire,sv,Colón,Centro,13.72,-89.36,50769337976,Técnico Frigidaire Colón
+frigidaire,sv,Quezaltepeque,Centro,13.83,-89.27,50769337976,Técnico Frigidaire Quezaltepeque
 frigidaire,py,Asunción,Centro,-25.2637,-57.5759,593993508191,Técnico Frigidaire Asunción
 frigidaire,py,Ciudad del Este,Centro,-25.5097,-54.6111,593993508191,Técnico Frigidaire Ciudad del Este
 frigidaire,py,Encarnación,Centro,-27.3306,-55.8667,593993508191,Técnico Frigidaire Encarnación
 frigidaire,py,San Lorenzo,Centro,-25.34,-57.51,593993508191,Técnico Frigidaire San Lorenzo
 frigidaire,py,Luque,Centro,-25.27,-57.49,593993508191,Técnico Frigidaire Luque
 frigidaire,py,Fernando de la Mora,Centro,-25.31,-57.55,593993508191,Técnico Frigidaire Fernando de la Mora
+frigidaire,py,Lambaré,Centro,-25.35,-57.61,593993508191,Técnico Frigidaire Lambaré
+frigidaire,py,Capiatá,Centro,-25.35,-57.45,593993508191,Técnico Frigidaire Capiatá
+frigidaire,py,Limpio,Centro,-25.17,-57.48,593993508191,Técnico Frigidaire Limpio
+frigidaire,py,Villa Elisa,Centro,-25.37,-57.59,593993508191,Técnico Frigidaire Villa Elisa
+frigidaire,py,Ñemby,Centro,-25.39,-57.54,593993508191,Técnico Frigidaire Ñemby
+frigidaire,py,Mariano Roque Alonso,Centro,-25.2,-57.53,593993508191,Técnico Frigidaire Mariano Roque Alonso
+frigidaire,py,Pedro Juan Caballero,Centro,-22.55,-55.73,593993508191,Técnico Frigidaire Pedro Juan Caballero
+frigidaire,py,Concepción,Centro,-23.41,-57.43,593993508191,Técnico Frigidaire Concepción
+frigidaire,py,Villarrica,Centro,-25.75,-56.43,593993508191,Técnico Frigidaire Villarrica
+frigidaire,py,Coronel Oviedo,Centro,-25.45,-56.44,593993508191,Técnico Frigidaire Coronel Oviedo
+frigidaire,py,Caaguazú,Centro,-25.47,-56.02,593993508191,Técnico Frigidaire Caaguazú
+frigidaire,py,Pilar,Centro,-26.86,-58.3,593993508191,Técnico Frigidaire Pilar
+frigidaire,py,San Juan Bautista,Centro,-26.67,-57.15,593993508191,Técnico Frigidaire San Juan Bautista
+frigidaire,py,Paraguarí,Centro,-25.62,-57.15,593993508191,Técnico Frigidaire Paraguarí
+frigidaire,py,Caacupé,Centro,-25.39,-57.14,593993508191,Técnico Frigidaire Caacupé
+frigidaire,py,Salto del Guairá,Centro,-24.06,-54.31,593993508191,Técnico Frigidaire Salto del Guairá
+frigidaire,py,Hernandarias,Centro,-25.4,-54.64,593993508191,Técnico Frigidaire Hernandarias
+frigidaire,py,Presidente Franco,Centro,-25.53,-54.61,593993508191,Técnico Frigidaire Presidente Franco
+frigidaire,py,Fuerte Olimpo,Centro,-21.04,-57.87,593993508191,Técnico Frigidaire Fuerte Olimpo
+frigidaire,py,Filadelfia,Centro,-22.35,-60.03,593993508191,Técnico Frigidaire Filadelfia
+frigidaire,py,Pozo Colorado,Centro,-23.49,-58.8,593993508191,Técnico Frigidaire Pozo Colorado
 frigidaire,co,Bogotá,Centro,4.711,-74.0721,573013810242,Técnico Frigidaire Bogotá
 frigidaire,co,Medellín,Centro,6.2442,-75.5812,573013810242,Técnico Frigidaire Medellín
 frigidaire,co,Cali,Centro,3.4516,-76.532,573013810242,Técnico Frigidaire Cali
 frigidaire,co,Barranquilla,Centro,10.9685,-74.7813,573013810242,Técnico Frigidaire Barranquilla
 frigidaire,co,Cartagena,Centro,10.391,-75.4794,573013810242,Técnico Frigidaire Cartagena
 frigidaire,co,Bucaramanga,Centro,7.1193,-73.1227,573013810242,Técnico Frigidaire Bucaramanga
+frigidaire,co,Cúcuta,Centro,7.894,-72.507,573013810242,Técnico Frigidaire Cúcuta
+frigidaire,co,Pereira,Centro,4.814,-75.696,573013810242,Técnico Frigidaire Pereira
+frigidaire,co,Santa Marta,Centro,11.241,-74.199,573013810242,Técnico Frigidaire Santa Marta
+frigidaire,co,Ibagué,Centro,4.438,-75.232,573013810242,Técnico Frigidaire Ibagué
+frigidaire,co,Manizales,Centro,5.07,-75.517,573013810242,Técnico Frigidaire Manizales
+frigidaire,co,Villavicencio,Centro,4.142,-73.627,573013810242,Técnico Frigidaire Villavicencio
+frigidaire,co,Pasto,Centro,1.214,-77.281,573013810242,Técnico Frigidaire Pasto
+frigidaire,co,Montería,Centro,8.75,-75.881,573013810242,Técnico Frigidaire Montería
+frigidaire,co,Neiva,Centro,2.927,-75.282,573013810242,Técnico Frigidaire Neiva
+frigidaire,co,Armenia,Centro,4.533,-75.681,573013810242,Técnico Frigidaire Armenia
+frigidaire,co,Popayán,Centro,2.444,-76.614,573013810242,Técnico Frigidaire Popayán
+frigidaire,co,Valledupar,Centro,10.477,-73.25,573013810242,Técnico Frigidaire Valledupar
+frigidaire,co,Sincelejo,Centro,9.304,-75.397,573013810242,Técnico Frigidaire Sincelejo
+frigidaire,co,Tunja,Centro,5.535,-73.367,573013810242,Técnico Frigidaire Tunja
+frigidaire,co,Riohacha,Centro,11.544,-72.907,573013810242,Técnico Frigidaire Riohacha
+frigidaire,co,Florencia,Centro,1.614,-75.606,573013810242,Técnico Frigidaire Florencia
+frigidaire,co,Yopal,Centro,5.337,-72.395,573013810242,Técnico Frigidaire Yopal
+frigidaire,co,Quibdó,Centro,5.692,-76.658,573013810242,Técnico Frigidaire Quibdó
+frigidaire,co,Soacha,Centro,4.579,-74.216,573013810242,Técnico Frigidaire Soacha
+frigidaire,co,Bello,Centro,6.337,-75.558,573013810242,Técnico Frigidaire Bello
+frigidaire,co,Soledad,Centro,10.918,-74.765,573013810242,Técnico Frigidaire Soledad
+frigidaire,co,Envigado,Centro,6.17,-75.583,573013810242,Técnico Frigidaire Envigado
+frigidaire,co,Itagüí,Centro,6.185,-75.599,573013810242,Técnico Frigidaire Itagüí
+frigidaire,co,Palmira,Centro,3.539,-76.303,573013810242,Técnico Frigidaire Palmira
+frigidaire,co,Buenaventura,Centro,3.883,-77.031,573013810242,Técnico Frigidaire Buenaventura
+frigidaire,co,Floridablanca,Centro,7.062,-73.086,573013810242,Técnico Frigidaire Floridablanca
+frigidaire,co,Girardot,Centro,4.303,-74.803,573013810242,Técnico Frigidaire Girardot
+frigidaire,co,Barrancabermeja,Centro,7.065,-73.854,573013810242,Técnico Frigidaire Barrancabermeja
+frigidaire,co,Sogamoso,Centro,5.714,-72.93,573013810242,Técnico Frigidaire Sogamoso
+frigidaire,co,Tuluá,Centro,4.085,-76.195,573013810242,Técnico Frigidaire Tuluá
+frigidaire,co,Chía,Centro,4.862,-74.033,573013810242,Técnico Frigidaire Chía
+frigidaire,co,Zipaquirá,Centro,5.022,-74.004,573013810242,Técnico Frigidaire Zipaquirá
 frigidaire,cl,Santiago,Centro,-33.4489,-70.6693,56983176106,Técnico Frigidaire Santiago
 frigidaire,cl,Valparaíso,Centro,-33.0472,-71.6127,56983176106,Técnico Frigidaire Valparaíso
 frigidaire,cl,Concepción,Centro,-36.8201,-73.0444,56983176106,Técnico Frigidaire Concepción
 frigidaire,cl,La Serena,Centro,-29.9027,-71.2519,56983176106,Técnico Frigidaire La Serena
 frigidaire,cl,Antofagasta,Centro,-23.6509,-70.3975,56983176106,Técnico Frigidaire Antofagasta
 frigidaire,cl,Temuco,Centro,-38.7359,-72.5904,56983176106,Técnico Frigidaire Temuco
+frigidaire,cl,Viña del Mar,Centro,-33.0245,-71.5518,56983176106,Técnico Frigidaire Viña del Mar
+frigidaire,cl,Rancagua,Centro,-34.17,-70.74,56983176106,Técnico Frigidaire Rancagua
+frigidaire,cl,Talca,Centro,-35.43,-71.66,56983176106,Técnico Frigidaire Talca
+frigidaire,cl,Arica,Centro,-18.48,-70.31,56983176106,Técnico Frigidaire Arica
+frigidaire,cl,Iquique,Centro,-20.21,-70.15,56983176106,Técnico Frigidaire Iquique
+frigidaire,cl,Puerto Montt,Centro,-41.47,-72.94,56983176106,Técnico Frigidaire Puerto Montt
+frigidaire,cl,Copiapó,Centro,-27.37,-70.33,56983176106,Técnico Frigidaire Copiapó
+frigidaire,cl,Chillán,Centro,-36.61,-72.1,56983176106,Técnico Frigidaire Chillán
+frigidaire,cl,Valdivia,Centro,-39.82,-73.25,56983176106,Técnico Frigidaire Valdivia
+frigidaire,cl,Punta Arenas,Centro,-53.16,-70.91,56983176106,Técnico Frigidaire Punta Arenas
+frigidaire,cl,Coyhaique,Centro,-45.57,-72.07,56983176106,Técnico Frigidaire Coyhaique
+frigidaire,cl,Osorno,Centro,-40.57,-73.14,56983176106,Técnico Frigidaire Osorno
+frigidaire,cl,Calama,Centro,-22.46,-68.93,56983176106,Técnico Frigidaire Calama
+frigidaire,cl,Los Ángeles,Centro,-37.47,-72.35,56983176106,Técnico Frigidaire Los Ángeles
+frigidaire,cl,Curicó,Centro,-34.98,-71.24,56983176106,Técnico Frigidaire Curicó
+frigidaire,cl,Quilpué,Centro,-33.05,-71.44,56983176106,Técnico Frigidaire Quilpué
+frigidaire,cl,Villa Alemana,Centro,-33.04,-71.37,56983176106,Técnico Frigidaire Villa Alemana
+frigidaire,cl,Puente Alto,Centro,-33.61,-70.58,56983176106,Técnico Frigidaire Puente Alto
+frigidaire,cl,Maipú,Centro,-33.51,-70.76,56983176106,Técnico Frigidaire Maipú
+frigidaire,cl,La Florida,Centro,-33.52,-70.6,56983176106,Técnico Frigidaire La Florida
+frigidaire,cl,Las Condes,Centro,-33.41,-70.57,56983176106,Técnico Frigidaire Las Condes
+frigidaire,cl,Providencia,Centro,-33.43,-70.61,56983176106,Técnico Frigidaire Providencia
 electrolux,gt,Ciudad de Guatemala,Centro,14.6349,-90.5069,50769337976,Técnico Electrolux Ciudad de Guatemala
 electrolux,gt,Mixco,Centro,14.633,-90.607,50769337976,Técnico Electrolux Mixco
 electrolux,gt,Villa Nueva,Centro,14.525,-90.587,50769337976,Técnico Electrolux Villa Nueva
 electrolux,gt,Quetzaltenango,Centro,14.8347,-91.5181,50769337976,Técnico Electrolux Quetzaltenango
 electrolux,gt,Antigua Guatemala,Centro,14.5586,-90.7295,50769337976,Técnico Electrolux Antigua Guatemala
 electrolux,gt,Escuintla,Centro,14.305,-90.785,50769337976,Técnico Electrolux Escuintla
+electrolux,gt,Cobán,Centro,15.47,-90.38,50769337976,Técnico Electrolux Cobán
+electrolux,gt,Huehuetenango,Centro,15.32,-91.47,50769337976,Técnico Electrolux Huehuetenango
+electrolux,gt,Puerto Barrios,Centro,15.73,-88.6,50769337976,Técnico Electrolux Puerto Barrios
+electrolux,gt,Chiquimula,Centro,14.8,-89.54,50769337976,Técnico Electrolux Chiquimula
+electrolux,gt,Zacapa,Centro,14.97,-89.53,50769337976,Técnico Electrolux Zacapa
+electrolux,gt,Jalapa,Centro,14.63,-89.99,50769337976,Técnico Electrolux Jalapa
+electrolux,gt,Retalhuleu,Centro,14.54,-91.68,50769337976,Técnico Electrolux Retalhuleu
+electrolux,gt,Mazatenango,Centro,14.53,-91.5,50769337976,Técnico Electrolux Mazatenango
+electrolux,gt,Flores,Centro,16.93,-89.89,50769337976,Técnico Electrolux Flores
+electrolux,gt,Chimaltenango,Centro,14.66,-90.82,50769337976,Técnico Electrolux Chimaltenango
+electrolux,gt,Salamá,Centro,15.1,-90.32,50769337976,Técnico Electrolux Salamá
+electrolux,gt,Sololá,Centro,14.77,-91.18,50769337976,Técnico Electrolux Sololá
+electrolux,gt,Totonicapán,Centro,14.91,-91.36,50769337976,Técnico Electrolux Totonicapán
+electrolux,gt,San Marcos,Centro,14.96,-91.8,50769337976,Técnico Electrolux San Marcos
+electrolux,gt,Jutiapa,Centro,14.29,-89.9,50769337976,Técnico Electrolux Jutiapa
+electrolux,gt,Santa Rosa de Lima,Centro,14.44,-90.28,50769337976,Técnico Electrolux Santa Rosa de Lima
+electrolux,gt,Santa Catarina Pinula,Centro,14.57,-90.49,50769337976,Técnico Electrolux Santa Catarina Pinula
+electrolux,gt,San Miguel Petapa,Centro,14.5,-90.55,50769337976,Técnico Electrolux San Miguel Petapa
 electrolux,pa,Ciudad de Panamá,Centro,8.9824,-79.5199,50769337976,Técnico Electrolux Ciudad de Panamá
 electrolux,pa,San Miguelito,Centro,9.0333,-79.5,50769337976,Técnico Electrolux San Miguelito
 electrolux,pa,Colón,Centro,9.3592,-79.9014,50769337976,Técnico Electrolux Colón
 electrolux,pa,David,Centro,8.4273,-82.4308,50769337976,Técnico Electrolux David
 electrolux,pa,La Chorrera,Centro,8.88,-79.783,50769337976,Técnico Electrolux La Chorrera
 electrolux,pa,Arraiján,Centro,8.95,-79.65,50769337976,Técnico Electrolux Arraiján
+electrolux,pa,Chitré,Centro,7.9667,-80.4333,50769337976,Técnico Electrolux Chitré
+electrolux,pa,Las Tablas,Centro,7.7667,-80.2833,50769337976,Técnico Electrolux Las Tablas
+electrolux,pa,Santiago de Veraguas,Centro,8.1,-80.98,50769337976,Técnico Electrolux Santiago de Veraguas
+electrolux,pa,Penonomé,Centro,8.52,-80.36,50769337976,Técnico Electrolux Penonomé
+electrolux,pa,Aguadulce,Centro,8.24,-80.55,50769337976,Técnico Electrolux Aguadulce
+electrolux,pa,Boquete,Centro,8.78,-82.44,50769337976,Técnico Electrolux Boquete
+electrolux,pa,Changuinola,Centro,9.43,-82.52,50769337976,Técnico Electrolux Changuinola
+electrolux,pa,Bocas del Toro,Centro,9.34,-82.24,50769337976,Técnico Electrolux Bocas del Toro
+electrolux,pa,Puerto Armuelles,Centro,8.28,-82.87,50769337976,Técnico Electrolux Puerto Armuelles
+electrolux,pa,Chepo,Centro,9.17,-79.1,50769337976,Técnico Electrolux Chepo
+electrolux,pa,La Palma,Centro,8.4,-78.15,50769337976,Técnico Electrolux La Palma
+electrolux,pa,Chame,Centro,8.59,-79.88,50769337976,Técnico Electrolux Chame
+electrolux,pa,Coronado,Centro,8.54,-79.9,50769337976,Técnico Electrolux Coronado
+electrolux,pa,Pacora,Centro,9.08,-79.28,50769337976,Técnico Electrolux Pacora
 electrolux,cr,San José,Centro,9.9281,-84.0907,50670055753,Técnico Electrolux San José
 electrolux,cr,Alajuela,Centro,10.0162,-84.2116,50670055753,Técnico Electrolux Alajuela
 electrolux,cr,Cartago,Centro,9.8644,-83.9194,50670055753,Técnico Electrolux Cartago
 electrolux,cr,Heredia,Centro,9.9986,-84.1165,50670055753,Técnico Electrolux Heredia
 electrolux,cr,Liberia,Centro,10.6346,-85.4377,50670055753,Técnico Electrolux Liberia
 electrolux,cr,Puntarenas,Centro,9.9763,-84.8384,50670055753,Técnico Electrolux Puntarenas
+electrolux,cr,Limón,Centro,9.99,-83.03,50670055753,Técnico Electrolux Limón
+electrolux,cr,San Carlos (Ciudad Quesada),Centro,10.32,-84.43,50670055753,Técnico Electrolux San Carlos (Ciudad Quesada)
+electrolux,cr,Pérez Zeledón,Centro,9.37,-83.7,50670055753,Técnico Electrolux Pérez Zeledón
+electrolux,cr,Escazú,Centro,9.92,-84.14,50670055753,Técnico Electrolux Escazú
+electrolux,cr,Santa Ana,Centro,9.93,-84.18,50670055753,Técnico Electrolux Santa Ana
+electrolux,cr,Curridabat,Centro,9.91,-84.04,50670055753,Técnico Electrolux Curridabat
+electrolux,cr,Desamparados,Centro,9.9,-84.07,50670055753,Técnico Electrolux Desamparados
+electrolux,cr,Tibás,Centro,9.96,-84.08,50670055753,Técnico Electrolux Tibás
+electrolux,cr,Moravia,Centro,9.96,-84.05,50670055753,Técnico Electrolux Moravia
+electrolux,cr,Grecia,Centro,10.07,-84.31,50670055753,Técnico Electrolux Grecia
+electrolux,cr,San Ramón,Centro,10.09,-84.47,50670055753,Técnico Electrolux San Ramón
+electrolux,cr,Nicoya,Centro,10.15,-85.45,50670055753,Técnico Electrolux Nicoya
+electrolux,cr,Santa Cruz,Centro,10.26,-85.58,50670055753,Técnico Electrolux Santa Cruz
+electrolux,cr,Cañas,Centro,10.43,-85.1,50670055753,Técnico Electrolux Cañas
+electrolux,cr,Golfito,Centro,8.64,-83.16,50670055753,Técnico Electrolux Golfito
+electrolux,cr,Quepos,Centro,9.43,-84.16,50670055753,Técnico Electrolux Quepos
+electrolux,cr,Turrialba,Centro,9.9,-83.68,50670055753,Técnico Electrolux Turrialba
+electrolux,cr,Guápiles,Centro,10.21,-83.79,50670055753,Técnico Electrolux Guápiles
 electrolux,ec,Quito,Centro,-0.1807,-78.4678,593993508191,Técnico Electrolux Quito
 electrolux,ec,Guayaquil,Centro,-2.17,-79.9224,593993508191,Técnico Electrolux Guayaquil
 electrolux,ec,Cuenca,Centro,-2.9001,-79.0059,593993508191,Técnico Electrolux Cuenca
 electrolux,ec,Ambato,Centro,-1.2491,-78.6168,593993508191,Técnico Electrolux Ambato
 electrolux,ec,Manta,Centro,-0.9677,-80.7089,593993508191,Técnico Electrolux Manta
 electrolux,ec,Loja,Centro,-3.9931,-79.2042,593993508191,Técnico Electrolux Loja
+electrolux,ec,Santo Domingo,Centro,-0.25,-79.17,593993508191,Técnico Electrolux Santo Domingo
+electrolux,ec,Machala,Centro,-3.26,-79.96,593993508191,Técnico Electrolux Machala
+electrolux,ec,Portoviejo,Centro,-1.05,-80.45,593993508191,Técnico Electrolux Portoviejo
+electrolux,ec,Riobamba,Centro,-1.67,-78.65,593993508191,Técnico Electrolux Riobamba
+electrolux,ec,Ibarra,Centro,0.35,-78.12,593993508191,Técnico Electrolux Ibarra
+electrolux,ec,Esmeraldas,Centro,0.96,-79.65,593993508191,Técnico Electrolux Esmeraldas
+electrolux,ec,Quevedo,Centro,-1.02,-79.46,593993508191,Técnico Electrolux Quevedo
+electrolux,ec,Latacunga,Centro,-0.93,-78.62,593993508191,Técnico Electrolux Latacunga
+electrolux,ec,Babahoyo,Centro,-1.8,-79.53,593993508191,Técnico Electrolux Babahoyo
+electrolux,ec,Tulcán,Centro,0.81,-77.72,593993508191,Técnico Electrolux Tulcán
+electrolux,ec,Azogues,Centro,-2.74,-78.85,593993508191,Técnico Electrolux Azogues
+electrolux,ec,Guaranda,Centro,-1.59,-79.0,593993508191,Técnico Electrolux Guaranda
+electrolux,ec,Puyo,Centro,-1.49,-78.0,593993508191,Técnico Electrolux Puyo
+electrolux,ec,Tena,Centro,-0.99,-77.81,593993508191,Técnico Electrolux Tena
+electrolux,ec,Nueva Loja (Lago Agrio),Centro,0.09,-76.89,593993508191,Técnico Electrolux Nueva Loja (Lago Agrio)
+electrolux,ec,Samborondón,Centro,-2.13,-79.87,593993508191,Técnico Electrolux Samborondón
+electrolux,ec,Daule,Centro,-1.86,-79.98,593993508191,Técnico Electrolux Daule
+electrolux,ec,Salinas,Centro,-2.22,-80.96,593993508191,Técnico Electrolux Salinas
+electrolux,ec,La Libertad,Centro,-2.23,-80.91,593993508191,Técnico Electrolux La Libertad
+electrolux,ec,Cayambe,Centro,0.04,-78.15,593993508191,Técnico Electrolux Cayambe
+electrolux,ec,Sangolquí,Centro,-0.33,-78.45,593993508191,Técnico Electrolux Sangolquí
 electrolux,sv,San Salvador,Centro,13.6929,-89.2182,50769337976,Técnico Electrolux San Salvador
 electrolux,sv,Santa Ana,Centro,13.9942,-89.5597,50769337976,Técnico Electrolux Santa Ana
 electrolux,sv,San Miguel,Centro,13.4833,-88.1833,50769337976,Técnico Electrolux San Miguel
 electrolux,sv,Soyapango,Centro,13.71,-89.14,50769337976,Técnico Electrolux Soyapango
 electrolux,sv,Santa Tecla,Centro,13.6769,-89.2797,50769337976,Técnico Electrolux Santa Tecla
 electrolux,sv,Sonsonate,Centro,13.7189,-89.7242,50769337976,Técnico Electrolux Sonsonate
+electrolux,sv,Apopa,Centro,13.8,-89.18,50769337976,Técnico Electrolux Apopa
+electrolux,sv,Mejicanos,Centro,13.74,-89.21,50769337976,Técnico Electrolux Mejicanos
+electrolux,sv,Delgado,Centro,13.72,-89.17,50769337976,Técnico Electrolux Delgado
+electrolux,sv,Ilopango,Centro,13.7,-89.11,50769337976,Técnico Electrolux Ilopango
+electrolux,sv,Usulután,Centro,13.35,-88.44,50769337976,Técnico Electrolux Usulután
+electrolux,sv,La Unión,Centro,13.34,-87.84,50769337976,Técnico Electrolux La Unión
+electrolux,sv,Zacatecoluca,Centro,13.51,-88.87,50769337976,Técnico Electrolux Zacatecoluca
+electrolux,sv,Cojutepeque,Centro,13.72,-88.93,50769337976,Técnico Electrolux Cojutepeque
+electrolux,sv,Chalatenango,Centro,14.04,-88.94,50769337976,Técnico Electrolux Chalatenango
+electrolux,sv,Ahuachapán,Centro,13.92,-89.85,50769337976,Técnico Electrolux Ahuachapán
+electrolux,sv,San Vicente,Centro,13.64,-88.78,50769337976,Técnico Electrolux San Vicente
+electrolux,sv,Sensuntepeque,Centro,13.88,-88.63,50769337976,Técnico Electrolux Sensuntepeque
+electrolux,sv,San Francisco Gotera,Centro,13.7,-88.1,50769337976,Técnico Electrolux San Francisco Gotera
+electrolux,sv,Antiguo Cuscatlán,Centro,13.67,-89.24,50769337976,Técnico Electrolux Antiguo Cuscatlán
+electrolux,sv,Colón,Centro,13.72,-89.36,50769337976,Técnico Electrolux Colón
+electrolux,sv,Quezaltepeque,Centro,13.83,-89.27,50769337976,Técnico Electrolux Quezaltepeque
 electrolux,py,Asunción,Centro,-25.2637,-57.5759,593993508191,Técnico Electrolux Asunción
 electrolux,py,Ciudad del Este,Centro,-25.5097,-54.6111,593993508191,Técnico Electrolux Ciudad del Este
 electrolux,py,Encarnación,Centro,-27.3306,-55.8667,593993508191,Técnico Electrolux Encarnación
 electrolux,py,San Lorenzo,Centro,-25.34,-57.51,593993508191,Técnico Electrolux San Lorenzo
 electrolux,py,Luque,Centro,-25.27,-57.49,593993508191,Técnico Electrolux Luque
 electrolux,py,Fernando de la Mora,Centro,-25.31,-57.55,593993508191,Técnico Electrolux Fernando de la Mora
+electrolux,py,Lambaré,Centro,-25.35,-57.61,593993508191,Técnico Electrolux Lambaré
+electrolux,py,Capiatá,Centro,-25.35,-57.45,593993508191,Técnico Electrolux Capiatá
+electrolux,py,Limpio,Centro,-25.17,-57.48,593993508191,Técnico Electrolux Limpio
+electrolux,py,Villa Elisa,Centro,-25.37,-57.59,593993508191,Técnico Electrolux Villa Elisa
+electrolux,py,Ñemby,Centro,-25.39,-57.54,593993508191,Técnico Electrolux Ñemby
+electrolux,py,Mariano Roque Alonso,Centro,-25.2,-57.53,593993508191,Técnico Electrolux Mariano Roque Alonso
+electrolux,py,Pedro Juan Caballero,Centro,-22.55,-55.73,593993508191,Técnico Electrolux Pedro Juan Caballero
+electrolux,py,Concepción,Centro,-23.41,-57.43,593993508191,Técnico Electrolux Concepción
+electrolux,py,Villarrica,Centro,-25.75,-56.43,593993508191,Técnico Electrolux Villarrica
+electrolux,py,Coronel Oviedo,Centro,-25.45,-56.44,593993508191,Técnico Electrolux Coronel Oviedo
+electrolux,py,Caaguazú,Centro,-25.47,-56.02,593993508191,Técnico Electrolux Caaguazú
+electrolux,py,Pilar,Centro,-26.86,-58.3,593993508191,Técnico Electrolux Pilar
+electrolux,py,San Juan Bautista,Centro,-26.67,-57.15,593993508191,Técnico Electrolux San Juan Bautista
+electrolux,py,Paraguarí,Centro,-25.62,-57.15,593993508191,Técnico Electrolux Paraguarí
+electrolux,py,Caacupé,Centro,-25.39,-57.14,593993508191,Técnico Electrolux Caacupé
+electrolux,py,Salto del Guairá,Centro,-24.06,-54.31,593993508191,Técnico Electrolux Salto del Guairá
+electrolux,py,Hernandarias,Centro,-25.4,-54.64,593993508191,Técnico Electrolux Hernandarias
+electrolux,py,Presidente Franco,Centro,-25.53,-54.61,593993508191,Técnico Electrolux Presidente Franco
+electrolux,py,Fuerte Olimpo,Centro,-21.04,-57.87,593993508191,Técnico Electrolux Fuerte Olimpo
+electrolux,py,Filadelfia,Centro,-22.35,-60.03,593993508191,Técnico Electrolux Filadelfia
+electrolux,py,Pozo Colorado,Centro,-23.49,-58.8,593993508191,Técnico Electrolux Pozo Colorado
 electrolux,co,Bogotá,Centro,4.711,-74.0721,573013810242,Técnico Electrolux Bogotá
 electrolux,co,Medellín,Centro,6.2442,-75.5812,573013810242,Técnico Electrolux Medellín
 electrolux,co,Cali,Centro,3.4516,-76.532,573013810242,Técnico Electrolux Cali
 electrolux,co,Barranquilla,Centro,10.9685,-74.7813,573013810242,Técnico Electrolux Barranquilla
 electrolux,co,Cartagena,Centro,10.391,-75.4794,573013810242,Técnico Electrolux Cartagena
 electrolux,co,Bucaramanga,Centro,7.1193,-73.1227,573013810242,Técnico Electrolux Bucaramanga
+electrolux,co,Cúcuta,Centro,7.894,-72.507,573013810242,Técnico Electrolux Cúcuta
+electrolux,co,Pereira,Centro,4.814,-75.696,573013810242,Técnico Electrolux Pereira
+electrolux,co,Santa Marta,Centro,11.241,-74.199,573013810242,Técnico Electrolux Santa Marta
+electrolux,co,Ibagué,Centro,4.438,-75.232,573013810242,Técnico Electrolux Ibagué
+electrolux,co,Manizales,Centro,5.07,-75.517,573013810242,Técnico Electrolux Manizales
+electrolux,co,Villavicencio,Centro,4.142,-73.627,573013810242,Técnico Electrolux Villavicencio
+electrolux,co,Pasto,Centro,1.214,-77.281,573013810242,Técnico Electrolux Pasto
+electrolux,co,Montería,Centro,8.75,-75.881,573013810242,Técnico Electrolux Montería
+electrolux,co,Neiva,Centro,2.927,-75.282,573013810242,Técnico Electrolux Neiva
+electrolux,co,Armenia,Centro,4.533,-75.681,573013810242,Técnico Electrolux Armenia
+electrolux,co,Popayán,Centro,2.444,-76.614,573013810242,Técnico Electrolux Popayán
+electrolux,co,Valledupar,Centro,10.477,-73.25,573013810242,Técnico Electrolux Valledupar
+electrolux,co,Sincelejo,Centro,9.304,-75.397,573013810242,Técnico Electrolux Sincelejo
+electrolux,co,Tunja,Centro,5.535,-73.367,573013810242,Técnico Electrolux Tunja
+electrolux,co,Riohacha,Centro,11.544,-72.907,573013810242,Técnico Electrolux Riohacha
+electrolux,co,Florencia,Centro,1.614,-75.606,573013810242,Técnico Electrolux Florencia
+electrolux,co,Yopal,Centro,5.337,-72.395,573013810242,Técnico Electrolux Yopal
+electrolux,co,Quibdó,Centro,5.692,-76.658,573013810242,Técnico Electrolux Quibdó
+electrolux,co,Soacha,Centro,4.579,-74.216,573013810242,Técnico Electrolux Soacha
+electrolux,co,Bello,Centro,6.337,-75.558,573013810242,Técnico Electrolux Bello
+electrolux,co,Soledad,Centro,10.918,-74.765,573013810242,Técnico Electrolux Soledad
+electrolux,co,Envigado,Centro,6.17,-75.583,573013810242,Técnico Electrolux Envigado
+electrolux,co,Itagüí,Centro,6.185,-75.599,573013810242,Técnico Electrolux Itagüí
+electrolux,co,Palmira,Centro,3.539,-76.303,573013810242,Técnico Electrolux Palmira
+electrolux,co,Buenaventura,Centro,3.883,-77.031,573013810242,Técnico Electrolux Buenaventura
+electrolux,co,Floridablanca,Centro,7.062,-73.086,573013810242,Técnico Electrolux Floridablanca
+electrolux,co,Girardot,Centro,4.303,-74.803,573013810242,Técnico Electrolux Girardot
+electrolux,co,Barrancabermeja,Centro,7.065,-73.854,573013810242,Técnico Electrolux Barrancabermeja
+electrolux,co,Sogamoso,Centro,5.714,-72.93,573013810242,Técnico Electrolux Sogamoso
+electrolux,co,Tuluá,Centro,4.085,-76.195,573013810242,Técnico Electrolux Tuluá
+electrolux,co,Chía,Centro,4.862,-74.033,573013810242,Técnico Electrolux Chía
+electrolux,co,Zipaquirá,Centro,5.022,-74.004,573013810242,Técnico Electrolux Zipaquirá
 electrolux,cl,Santiago,Centro,-33.4489,-70.6693,56983176106,Técnico Electrolux Santiago
 electrolux,cl,Valparaíso,Centro,-33.0472,-71.6127,56983176106,Técnico Electrolux Valparaíso
 electrolux,cl,Concepción,Centro,-36.8201,-73.0444,56983176106,Técnico Electrolux Concepción
 electrolux,cl,La Serena,Centro,-29.9027,-71.2519,56983176106,Técnico Electrolux La Serena
 electrolux,cl,Antofagasta,Centro,-23.6509,-70.3975,56983176106,Técnico Electrolux Antofagasta
 electrolux,cl,Temuco,Centro,-38.7359,-72.5904,56983176106,Técnico Electrolux Temuco
+electrolux,cl,Viña del Mar,Centro,-33.0245,-71.5518,56983176106,Técnico Electrolux Viña del Mar
+electrolux,cl,Rancagua,Centro,-34.17,-70.74,56983176106,Técnico Electrolux Rancagua
+electrolux,cl,Talca,Centro,-35.43,-71.66,56983176106,Técnico Electrolux Talca
+electrolux,cl,Arica,Centro,-18.48,-70.31,56983176106,Técnico Electrolux Arica
+electrolux,cl,Iquique,Centro,-20.21,-70.15,56983176106,Técnico Electrolux Iquique
+electrolux,cl,Puerto Montt,Centro,-41.47,-72.94,56983176106,Técnico Electrolux Puerto Montt
+electrolux,cl,Copiapó,Centro,-27.37,-70.33,56983176106,Técnico Electrolux Copiapó
+electrolux,cl,Chillán,Centro,-36.61,-72.1,56983176106,Técnico Electrolux Chillán
+electrolux,cl,Valdivia,Centro,-39.82,-73.25,56983176106,Técnico Electrolux Valdivia
+electrolux,cl,Punta Arenas,Centro,-53.16,-70.91,56983176106,Técnico Electrolux Punta Arenas
+electrolux,cl,Coyhaique,Centro,-45.57,-72.07,56983176106,Técnico Electrolux Coyhaique
+electrolux,cl,Osorno,Centro,-40.57,-73.14,56983176106,Técnico Electrolux Osorno
+electrolux,cl,Calama,Centro,-22.46,-68.93,56983176106,Técnico Electrolux Calama
+electrolux,cl,Los Ángeles,Centro,-37.47,-72.35,56983176106,Técnico Electrolux Los Ángeles
+electrolux,cl,Curicó,Centro,-34.98,-71.24,56983176106,Técnico Electrolux Curicó
+electrolux,cl,Quilpué,Centro,-33.05,-71.44,56983176106,Técnico Electrolux Quilpué
+electrolux,cl,Villa Alemana,Centro,-33.04,-71.37,56983176106,Técnico Electrolux Villa Alemana
+electrolux,cl,Puente Alto,Centro,-33.61,-70.58,56983176106,Técnico Electrolux Puente Alto
+electrolux,cl,Maipú,Centro,-33.51,-70.76,56983176106,Técnico Electrolux Maipú
+electrolux,cl,La Florida,Centro,-33.52,-70.6,56983176106,Técnico Electrolux La Florida
+electrolux,cl,Las Condes,Centro,-33.41,-70.57,56983176106,Técnico Electrolux Las Condes
+electrolux,cl,Providencia,Centro,-33.43,-70.61,56983176106,Técnico Electrolux Providencia
 general-electric,gt,Ciudad de Guatemala,Centro,14.6349,-90.5069,50769337976,Técnico General Electric Ciudad de Guatemala
 general-electric,gt,Mixco,Centro,14.633,-90.607,50769337976,Técnico General Electric Mixco
 general-electric,gt,Villa Nueva,Centro,14.525,-90.587,50769337976,Técnico General Electric Villa Nueva
 general-electric,gt,Quetzaltenango,Centro,14.8347,-91.5181,50769337976,Técnico General Electric Quetzaltenango
 general-electric,gt,Antigua Guatemala,Centro,14.5586,-90.7295,50769337976,Técnico General Electric Antigua Guatemala
 general-electric,gt,Escuintla,Centro,14.305,-90.785,50769337976,Técnico General Electric Escuintla
+general-electric,gt,Cobán,Centro,15.47,-90.38,50769337976,Técnico General Electric Cobán
+general-electric,gt,Huehuetenango,Centro,15.32,-91.47,50769337976,Técnico General Electric Huehuetenango
+general-electric,gt,Puerto Barrios,Centro,15.73,-88.6,50769337976,Técnico General Electric Puerto Barrios
+general-electric,gt,Chiquimula,Centro,14.8,-89.54,50769337976,Técnico General Electric Chiquimula
+general-electric,gt,Zacapa,Centro,14.97,-89.53,50769337976,Técnico General Electric Zacapa
+general-electric,gt,Jalapa,Centro,14.63,-89.99,50769337976,Técnico General Electric Jalapa
+general-electric,gt,Retalhuleu,Centro,14.54,-91.68,50769337976,Técnico General Electric Retalhuleu
+general-electric,gt,Mazatenango,Centro,14.53,-91.5,50769337976,Técnico General Electric Mazatenango
+general-electric,gt,Flores,Centro,16.93,-89.89,50769337976,Técnico General Electric Flores
+general-electric,gt,Chimaltenango,Centro,14.66,-90.82,50769337976,Técnico General Electric Chimaltenango
+general-electric,gt,Salamá,Centro,15.1,-90.32,50769337976,Técnico General Electric Salamá
+general-electric,gt,Sololá,Centro,14.77,-91.18,50769337976,Técnico General Electric Sololá
+general-electric,gt,Totonicapán,Centro,14.91,-91.36,50769337976,Técnico General Electric Totonicapán
+general-electric,gt,San Marcos,Centro,14.96,-91.8,50769337976,Técnico General Electric San Marcos
+general-electric,gt,Jutiapa,Centro,14.29,-89.9,50769337976,Técnico General Electric Jutiapa
+general-electric,gt,Santa Rosa de Lima,Centro,14.44,-90.28,50769337976,Técnico General Electric Santa Rosa de Lima
+general-electric,gt,Santa Catarina Pinula,Centro,14.57,-90.49,50769337976,Técnico General Electric Santa Catarina Pinula
+general-electric,gt,San Miguel Petapa,Centro,14.5,-90.55,50769337976,Técnico General Electric San Miguel Petapa
 general-electric,pa,Ciudad de Panamá,Centro,8.9824,-79.5199,50769337976,Técnico General Electric Ciudad de Panamá
 general-electric,pa,San Miguelito,Centro,9.0333,-79.5,50769337976,Técnico General Electric San Miguelito
 general-electric,pa,Colón,Centro,9.3592,-79.9014,50769337976,Técnico General Electric Colón
 general-electric,pa,David,Centro,8.4273,-82.4308,50769337976,Técnico General Electric David
 general-electric,pa,La Chorrera,Centro,8.88,-79.783,50769337976,Técnico General Electric La Chorrera
 general-electric,pa,Arraiján,Centro,8.95,-79.65,50769337976,Técnico General Electric Arraiján
+general-electric,pa,Chitré,Centro,7.9667,-80.4333,50769337976,Técnico General Electric Chitré
+general-electric,pa,Las Tablas,Centro,7.7667,-80.2833,50769337976,Técnico General Electric Las Tablas
+general-electric,pa,Santiago de Veraguas,Centro,8.1,-80.98,50769337976,Técnico General Electric Santiago de Veraguas
+general-electric,pa,Penonomé,Centro,8.52,-80.36,50769337976,Técnico General Electric Penonomé
+general-electric,pa,Aguadulce,Centro,8.24,-80.55,50769337976,Técnico General Electric Aguadulce
+general-electric,pa,Boquete,Centro,8.78,-82.44,50769337976,Técnico General Electric Boquete
+general-electric,pa,Changuinola,Centro,9.43,-82.52,50769337976,Técnico General Electric Changuinola
+general-electric,pa,Bocas del Toro,Centro,9.34,-82.24,50769337976,Técnico General Electric Bocas del Toro
+general-electric,pa,Puerto Armuelles,Centro,8.28,-82.87,50769337976,Técnico General Electric Puerto Armuelles
+general-electric,pa,Chepo,Centro,9.17,-79.1,50769337976,Técnico General Electric Chepo
+general-electric,pa,La Palma,Centro,8.4,-78.15,50769337976,Técnico General Electric La Palma
+general-electric,pa,Chame,Centro,8.59,-79.88,50769337976,Técnico General Electric Chame
+general-electric,pa,Coronado,Centro,8.54,-79.9,50769337976,Técnico General Electric Coronado
+general-electric,pa,Pacora,Centro,9.08,-79.28,50769337976,Técnico General Electric Pacora
 general-electric,cr,San José,Centro,9.9281,-84.0907,50670055753,Técnico General Electric San José
 general-electric,cr,Alajuela,Centro,10.0162,-84.2116,50670055753,Técnico General Electric Alajuela
 general-electric,cr,Cartago,Centro,9.8644,-83.9194,50670055753,Técnico General Electric Cartago
 general-electric,cr,Heredia,Centro,9.9986,-84.1165,50670055753,Técnico General Electric Heredia
 general-electric,cr,Liberia,Centro,10.6346,-85.4377,50670055753,Técnico General Electric Liberia
 general-electric,cr,Puntarenas,Centro,9.9763,-84.8384,50670055753,Técnico General Electric Puntarenas
+general-electric,cr,Limón,Centro,9.99,-83.03,50670055753,Técnico General Electric Limón
+general-electric,cr,San Carlos (Ciudad Quesada),Centro,10.32,-84.43,50670055753,Técnico General Electric San Carlos (Ciudad Quesada)
+general-electric,cr,Pérez Zeledón,Centro,9.37,-83.7,50670055753,Técnico General Electric Pérez Zeledón
+general-electric,cr,Escazú,Centro,9.92,-84.14,50670055753,Técnico General Electric Escazú
+general-electric,cr,Santa Ana,Centro,9.93,-84.18,50670055753,Técnico General Electric Santa Ana
+general-electric,cr,Curridabat,Centro,9.91,-84.04,50670055753,Técnico General Electric Curridabat
+general-electric,cr,Desamparados,Centro,9.9,-84.07,50670055753,Técnico General Electric Desamparados
+general-electric,cr,Tibás,Centro,9.96,-84.08,50670055753,Técnico General Electric Tibás
+general-electric,cr,Moravia,Centro,9.96,-84.05,50670055753,Técnico General Electric Moravia
+general-electric,cr,Grecia,Centro,10.07,-84.31,50670055753,Técnico General Electric Grecia
+general-electric,cr,San Ramón,Centro,10.09,-84.47,50670055753,Técnico General Electric San Ramón
+general-electric,cr,Nicoya,Centro,10.15,-85.45,50670055753,Técnico General Electric Nicoya
+general-electric,cr,Santa Cruz,Centro,10.26,-85.58,50670055753,Técnico General Electric Santa Cruz
+general-electric,cr,Cañas,Centro,10.43,-85.1,50670055753,Técnico General Electric Cañas
+general-electric,cr,Golfito,Centro,8.64,-83.16,50670055753,Técnico General Electric Golfito
+general-electric,cr,Quepos,Centro,9.43,-84.16,50670055753,Técnico General Electric Quepos
+general-electric,cr,Turrialba,Centro,9.9,-83.68,50670055753,Técnico General Electric Turrialba
+general-electric,cr,Guápiles,Centro,10.21,-83.79,50670055753,Técnico General Electric Guápiles
 general-electric,ec,Quito,Centro,-0.1807,-78.4678,593993508191,Técnico General Electric Quito
 general-electric,ec,Guayaquil,Centro,-2.17,-79.9224,593993508191,Técnico General Electric Guayaquil
 general-electric,ec,Cuenca,Centro,-2.9001,-79.0059,593993508191,Técnico General Electric Cuenca
 general-electric,ec,Ambato,Centro,-1.2491,-78.6168,593993508191,Técnico General Electric Ambato
 general-electric,ec,Manta,Centro,-0.9677,-80.7089,593993508191,Técnico General Electric Manta
 general-electric,ec,Loja,Centro,-3.9931,-79.2042,593993508191,Técnico General Electric Loja
+general-electric,ec,Santo Domingo,Centro,-0.25,-79.17,593993508191,Técnico General Electric Santo Domingo
+general-electric,ec,Machala,Centro,-3.26,-79.96,593993508191,Técnico General Electric Machala
+general-electric,ec,Portoviejo,Centro,-1.05,-80.45,593993508191,Técnico General Electric Portoviejo
+general-electric,ec,Riobamba,Centro,-1.67,-78.65,593993508191,Técnico General Electric Riobamba
+general-electric,ec,Ibarra,Centro,0.35,-78.12,593993508191,Técnico General Electric Ibarra
+general-electric,ec,Esmeraldas,Centro,0.96,-79.65,593993508191,Técnico General Electric Esmeraldas
+general-electric,ec,Quevedo,Centro,-1.02,-79.46,593993508191,Técnico General Electric Quevedo
+general-electric,ec,Latacunga,Centro,-0.93,-78.62,593993508191,Técnico General Electric Latacunga
+general-electric,ec,Babahoyo,Centro,-1.8,-79.53,593993508191,Técnico General Electric Babahoyo
+general-electric,ec,Tulcán,Centro,0.81,-77.72,593993508191,Técnico General Electric Tulcán
+general-electric,ec,Azogues,Centro,-2.74,-78.85,593993508191,Técnico General Electric Azogues
+general-electric,ec,Guaranda,Centro,-1.59,-79.0,593993508191,Técnico General Electric Guaranda
+general-electric,ec,Puyo,Centro,-1.49,-78.0,593993508191,Técnico General Electric Puyo
+general-electric,ec,Tena,Centro,-0.99,-77.81,593993508191,Técnico General Electric Tena
+general-electric,ec,Nueva Loja (Lago Agrio),Centro,0.09,-76.89,593993508191,Técnico General Electric Nueva Loja (Lago Agrio)
+general-electric,ec,Samborondón,Centro,-2.13,-79.87,593993508191,Técnico General Electric Samborondón
+general-electric,ec,Daule,Centro,-1.86,-79.98,593993508191,Técnico General Electric Daule
+general-electric,ec,Salinas,Centro,-2.22,-80.96,593993508191,Técnico General Electric Salinas
+general-electric,ec,La Libertad,Centro,-2.23,-80.91,593993508191,Técnico General Electric La Libertad
+general-electric,ec,Cayambe,Centro,0.04,-78.15,593993508191,Técnico General Electric Cayambe
+general-electric,ec,Sangolquí,Centro,-0.33,-78.45,593993508191,Técnico General Electric Sangolquí
 general-electric,sv,San Salvador,Centro,13.6929,-89.2182,50769337976,Técnico General Electric San Salvador
 general-electric,sv,Santa Ana,Centro,13.9942,-89.5597,50769337976,Técnico General Electric Santa Ana
 general-electric,sv,San Miguel,Centro,13.4833,-88.1833,50769337976,Técnico General Electric San Miguel
 general-electric,sv,Soyapango,Centro,13.71,-89.14,50769337976,Técnico General Electric Soyapango
 general-electric,sv,Santa Tecla,Centro,13.6769,-89.2797,50769337976,Técnico General Electric Santa Tecla
 general-electric,sv,Sonsonate,Centro,13.7189,-89.7242,50769337976,Técnico General Electric Sonsonate
+general-electric,sv,Apopa,Centro,13.8,-89.18,50769337976,Técnico General Electric Apopa
+general-electric,sv,Mejicanos,Centro,13.74,-89.21,50769337976,Técnico General Electric Mejicanos
+general-electric,sv,Delgado,Centro,13.72,-89.17,50769337976,Técnico General Electric Delgado
+general-electric,sv,Ilopango,Centro,13.7,-89.11,50769337976,Técnico General Electric Ilopango
+general-electric,sv,Usulután,Centro,13.35,-88.44,50769337976,Técnico General Electric Usulután
+general-electric,sv,La Unión,Centro,13.34,-87.84,50769337976,Técnico General Electric La Unión
+general-electric,sv,Zacatecoluca,Centro,13.51,-88.87,50769337976,Técnico General Electric Zacatecoluca
+general-electric,sv,Cojutepeque,Centro,13.72,-88.93,50769337976,Técnico General Electric Cojutepeque
+general-electric,sv,Chalatenango,Centro,14.04,-88.94,50769337976,Técnico General Electric Chalatenango
+general-electric,sv,Ahuachapán,Centro,13.92,-89.85,50769337976,Técnico General Electric Ahuachapán
+general-electric,sv,San Vicente,Centro,13.64,-88.78,50769337976,Técnico General Electric San Vicente
+general-electric,sv,Sensuntepeque,Centro,13.88,-88.63,50769337976,Técnico General Electric Sensuntepeque
+general-electric,sv,San Francisco Gotera,Centro,13.7,-88.1,50769337976,Técnico General Electric San Francisco Gotera
+general-electric,sv,Antiguo Cuscatlán,Centro,13.67,-89.24,50769337976,Técnico General Electric Antiguo Cuscatlán
+general-electric,sv,Colón,Centro,13.72,-89.36,50769337976,Técnico General Electric Colón
+general-electric,sv,Quezaltepeque,Centro,13.83,-89.27,50769337976,Técnico General Electric Quezaltepeque
 general-electric,py,Asunción,Centro,-25.2637,-57.5759,593993508191,Técnico General Electric Asunción
 general-electric,py,Ciudad del Este,Centro,-25.5097,-54.6111,593993508191,Técnico General Electric Ciudad del Este
 general-electric,py,Encarnación,Centro,-27.3306,-55.8667,593993508191,Técnico General Electric Encarnación
 general-electric,py,San Lorenzo,Centro,-25.34,-57.51,593993508191,Técnico General Electric San Lorenzo
 general-electric,py,Luque,Centro,-25.27,-57.49,593993508191,Técnico General Electric Luque
 general-electric,py,Fernando de la Mora,Centro,-25.31,-57.55,593993508191,Técnico General Electric Fernando de la Mora
+general-electric,py,Lambaré,Centro,-25.35,-57.61,593993508191,Técnico General Electric Lambaré
+general-electric,py,Capiatá,Centro,-25.35,-57.45,593993508191,Técnico General Electric Capiatá
+general-electric,py,Limpio,Centro,-25.17,-57.48,593993508191,Técnico General Electric Limpio
+general-electric,py,Villa Elisa,Centro,-25.37,-57.59,593993508191,Técnico General Electric Villa Elisa
+general-electric,py,Ñemby,Centro,-25.39,-57.54,593993508191,Técnico General Electric Ñemby
+general-electric,py,Mariano Roque Alonso,Centro,-25.2,-57.53,593993508191,Técnico General Electric Mariano Roque Alonso
+general-electric,py,Pedro Juan Caballero,Centro,-22.55,-55.73,593993508191,Técnico General Electric Pedro Juan Caballero
+general-electric,py,Concepción,Centro,-23.41,-57.43,593993508191,Técnico General Electric Concepción
+general-electric,py,Villarrica,Centro,-25.75,-56.43,593993508191,Técnico General Electric Villarrica
+general-electric,py,Coronel Oviedo,Centro,-25.45,-56.44,593993508191,Técnico General Electric Coronel Oviedo
+general-electric,py,Caaguazú,Centro,-25.47,-56.02,593993508191,Técnico General Electric Caaguazú
+general-electric,py,Pilar,Centro,-26.86,-58.3,593993508191,Técnico General Electric Pilar
+general-electric,py,San Juan Bautista,Centro,-26.67,-57.15,593993508191,Técnico General Electric San Juan Bautista
+general-electric,py,Paraguarí,Centro,-25.62,-57.15,593993508191,Técnico General Electric Paraguarí
+general-electric,py,Caacupé,Centro,-25.39,-57.14,593993508191,Técnico General Electric Caacupé
+general-electric,py,Salto del Guairá,Centro,-24.06,-54.31,593993508191,Técnico General Electric Salto del Guairá
+general-electric,py,Hernandarias,Centro,-25.4,-54.64,593993508191,Técnico General Electric Hernandarias
+general-electric,py,Presidente Franco,Centro,-25.53,-54.61,593993508191,Técnico General Electric Presidente Franco
+general-electric,py,Fuerte Olimpo,Centro,-21.04,-57.87,593993508191,Técnico General Electric Fuerte Olimpo
+general-electric,py,Filadelfia,Centro,-22.35,-60.03,593993508191,Técnico General Electric Filadelfia
+general-electric,py,Pozo Colorado,Centro,-23.49,-58.8,593993508191,Técnico General Electric Pozo Colorado
 general-electric,co,Bogotá,Centro,4.711,-74.0721,573013810242,Técnico General Electric Bogotá
 general-electric,co,Medellín,Centro,6.2442,-75.5812,573013810242,Técnico General Electric Medellín
 general-electric,co,Cali,Centro,3.4516,-76.532,573013810242,Técnico General Electric Cali
 general-electric,co,Barranquilla,Centro,10.9685,-74.7813,573013810242,Técnico General Electric Barranquilla
 general-electric,co,Cartagena,Centro,10.391,-75.4794,573013810242,Técnico General Electric Cartagena
 general-electric,co,Bucaramanga,Centro,7.1193,-73.1227,573013810242,Técnico General Electric Bucaramanga
+general-electric,co,Cúcuta,Centro,7.894,-72.507,573013810242,Técnico General Electric Cúcuta
+general-electric,co,Pereira,Centro,4.814,-75.696,573013810242,Técnico General Electric Pereira
+general-electric,co,Santa Marta,Centro,11.241,-74.199,573013810242,Técnico General Electric Santa Marta
+general-electric,co,Ibagué,Centro,4.438,-75.232,573013810242,Técnico General Electric Ibagué
+general-electric,co,Manizales,Centro,5.07,-75.517,573013810242,Técnico General Electric Manizales
+general-electric,co,Villavicencio,Centro,4.142,-73.627,573013810242,Técnico General Electric Villavicencio
+general-electric,co,Pasto,Centro,1.214,-77.281,573013810242,Técnico General Electric Pasto
+general-electric,co,Montería,Centro,8.75,-75.881,573013810242,Técnico General Electric Montería
+general-electric,co,Neiva,Centro,2.927,-75.282,573013810242,Técnico General Electric Neiva
+general-electric,co,Armenia,Centro,4.533,-75.681,573013810242,Técnico General Electric Armenia
+general-electric,co,Popayán,Centro,2.444,-76.614,573013810242,Técnico General Electric Popayán
+general-electric,co,Valledupar,Centro,10.477,-73.25,573013810242,Técnico General Electric Valledupar
+general-electric,co,Sincelejo,Centro,9.304,-75.397,573013810242,Técnico General Electric Sincelejo
+general-electric,co,Tunja,Centro,5.535,-73.367,573013810242,Técnico General Electric Tunja
+general-electric,co,Riohacha,Centro,11.544,-72.907,573013810242,Técnico General Electric Riohacha
+general-electric,co,Florencia,Centro,1.614,-75.606,573013810242,Técnico General Electric Florencia
+general-electric,co,Yopal,Centro,5.337,-72.395,573013810242,Técnico General Electric Yopal
+general-electric,co,Quibdó,Centro,5.692,-76.658,573013810242,Técnico General Electric Quibdó
+general-electric,co,Soacha,Centro,4.579,-74.216,573013810242,Técnico General Electric Soacha
+general-electric,co,Bello,Centro,6.337,-75.558,573013810242,Técnico General Electric Bello
+general-electric,co,Soledad,Centro,10.918,-74.765,573013810242,Técnico General Electric Soledad
+general-electric,co,Envigado,Centro,6.17,-75.583,573013810242,Técnico General Electric Envigado
+general-electric,co,Itagüí,Centro,6.185,-75.599,573013810242,Técnico General Electric Itagüí
+general-electric,co,Palmira,Centro,3.539,-76.303,573013810242,Técnico General Electric Palmira
+general-electric,co,Buenaventura,Centro,3.883,-77.031,573013810242,Técnico General Electric Buenaventura
+general-electric,co,Floridablanca,Centro,7.062,-73.086,573013810242,Técnico General Electric Floridablanca
+general-electric,co,Girardot,Centro,4.303,-74.803,573013810242,Técnico General Electric Girardot
+general-electric,co,Barrancabermeja,Centro,7.065,-73.854,573013810242,Técnico General Electric Barrancabermeja
+general-electric,co,Sogamoso,Centro,5.714,-72.93,573013810242,Técnico General Electric Sogamoso
+general-electric,co,Tuluá,Centro,4.085,-76.195,573013810242,Técnico General Electric Tuluá
+general-electric,co,Chía,Centro,4.862,-74.033,573013810242,Técnico General Electric Chía
+general-electric,co,Zipaquirá,Centro,5.022,-74.004,573013810242,Técnico General Electric Zipaquirá
 general-electric,cl,Santiago,Centro,-33.4489,-70.6693,56983176106,Técnico General Electric Santiago
 general-electric,cl,Valparaíso,Centro,-33.0472,-71.6127,56983176106,Técnico General Electric Valparaíso
 general-electric,cl,Concepción,Centro,-36.8201,-73.0444,56983176106,Técnico General Electric Concepción
 general-electric,cl,La Serena,Centro,-29.9027,-71.2519,56983176106,Técnico General Electric La Serena
 general-electric,cl,Antofagasta,Centro,-23.6509,-70.3975,56983176106,Técnico General Electric Antofagasta
 general-electric,cl,Temuco,Centro,-38.7359,-72.5904,56983176106,Técnico General Electric Temuco
+general-electric,cl,Viña del Mar,Centro,-33.0245,-71.5518,56983176106,Técnico General Electric Viña del Mar
+general-electric,cl,Rancagua,Centro,-34.17,-70.74,56983176106,Técnico General Electric Rancagua
+general-electric,cl,Talca,Centro,-35.43,-71.66,56983176106,Técnico General Electric Talca
+general-electric,cl,Arica,Centro,-18.48,-70.31,56983176106,Técnico General Electric Arica
+general-electric,cl,Iquique,Centro,-20.21,-70.15,56983176106,Técnico General Electric Iquique
+general-electric,cl,Puerto Montt,Centro,-41.47,-72.94,56983176106,Técnico General Electric Puerto Montt
+general-electric,cl,Copiapó,Centro,-27.37,-70.33,56983176106,Técnico General Electric Copiapó
+general-electric,cl,Chillán,Centro,-36.61,-72.1,56983176106,Técnico General Electric Chillán
+general-electric,cl,Valdivia,Centro,-39.82,-73.25,56983176106,Técnico General Electric Valdivia
+general-electric,cl,Punta Arenas,Centro,-53.16,-70.91,56983176106,Técnico General Electric Punta Arenas
+general-electric,cl,Coyhaique,Centro,-45.57,-72.07,56983176106,Técnico General Electric Coyhaique
+general-electric,cl,Osorno,Centro,-40.57,-73.14,56983176106,Técnico General Electric Osorno
+general-electric,cl,Calama,Centro,-22.46,-68.93,56983176106,Técnico General Electric Calama
+general-electric,cl,Los Ángeles,Centro,-37.47,-72.35,56983176106,Técnico General Electric Los Ángeles
+general-electric,cl,Curicó,Centro,-34.98,-71.24,56983176106,Técnico General Electric Curicó
+general-electric,cl,Quilpué,Centro,-33.05,-71.44,56983176106,Técnico General Electric Quilpué
+general-electric,cl,Villa Alemana,Centro,-33.04,-71.37,56983176106,Técnico General Electric Villa Alemana
+general-electric,cl,Puente Alto,Centro,-33.61,-70.58,56983176106,Técnico General Electric Puente Alto
+general-electric,cl,Maipú,Centro,-33.51,-70.76,56983176106,Técnico General Electric Maipú
+general-electric,cl,La Florida,Centro,-33.52,-70.6,56983176106,Técnico General Electric La Florida
+general-electric,cl,Las Condes,Centro,-33.41,-70.57,56983176106,Técnico General Electric Las Condes
+general-electric,cl,Providencia,Centro,-33.43,-70.61,56983176106,Técnico General Electric Providencia

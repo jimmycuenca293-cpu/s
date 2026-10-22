@@ -100,3 +100,14 @@ CIUDAD = {
  "Antofagasta": "Antofagasta está en el desierto, junto al mar: aire salino y agua dura que dejan sarro rápidamente.",
  "Temuco": "Temuco es lluviosa y fría, con mucha humedad en invierno.",
 }
+
+RESUMEN = {
+ "co": dict(capital="Bogotá", pob="unos 52 millones", moneda="peso colombiano (COP)", tel="+57", div="departamentos", huso="UTC−5"),
+ "pa": dict(capital="Ciudad de Panamá", pob="unos 4,4 millones", moneda="balboa, con circulación del dólar estadounidense (USD)", tel="+507", div="provincias", huso="UTC−5"),
+ "gt": dict(capital="Ciudad de Guatemala", pob="unos 18 millones", moneda="quetzal (GTQ)", tel="+502", div="departamentos", huso="UTC−6"),
+ "sv": dict(capital="San Salvador", pob="unos 6,3 millones", moneda="dólar estadounidense (USD)", tel="+503", div="departamentos", huso="UTC−6"),
+ "cr": dict(capital="San José", pob="unos 5,2 millones", moneda="colón costarricense (CRC)", tel="+506", div="provincias", huso="UTC−6"),
+ "ec": dict(capital="Quito", pob="unos 18 millones", moneda="dólar estadounidense (USD)", tel="+593", div="provincias", huso="UTC−5"),
+ "py": dict(capital="Asunción", pob="unos 6,8 millones", moneda="guaraní (PYG)", tel="+595", div="departamentos", huso="UTC−3"),
+ "cl": dict(capital="Santiago", pob="unos 19,6 millones", moneda="peso chileno (CLP)", tel="+56", div="regiones", huso="UTC−4 (UTC−3 en verano)"),
+}
