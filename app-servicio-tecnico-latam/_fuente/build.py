@@ -366,7 +366,7 @@ def extras(m, cc, ci, k, ruta):
         sen += f"<h3>{esc(cap(term(cc, x)))} {esc(mn)}</h3>" + pills([(txt(f[0], m, cc, x), Uf(m, cc, x, f[0])) for f in EQ[x]["fallas"][:6]])
     out.append(sec(f"Señales de que tu equipo {mn} necesita un técnico", sen))
     # 4 · explora (enlaces internos)
-    ex = [(f"Soporte técnico autorizado {mn}", Um(m)), (f"{mn} en {pn}", Uc(m, cc)), (f"WhatsApp {mn} {pn}", Uw(m, cc)), (f"Blog {mn} {pn}", Ublog(m, cc)), ("Preguntas frecuentes", Ufaq(m, cc)), ("Técnico cerca de mí", Ucerca(m, cc))] + ([(f"WhatsApp {mn} {ci}", Uwc(m, cc, ci))] if ci and ci in p["ppal"] else [])
+    ex = [(f"Soporte técnico autorizado {mn}", Um(m)), (f"{mn} en {pn}", Uc(m, cc)), (f"WhatsApp {mn} {pn}", Uw(m, cc)), (f"Blog {mn} {pn}", Ublog(m, cc)), ("Preguntas frecuentes", Ufaq(m, cc)), ("Técnico cerca de mí", Ucerca(m, cc))] + [(intent_data(x, m, cc)[2], Ui(m, cc, x)) for x in INTENTS] + ([(f"WhatsApp {mn} {ci}", Uwc(m, cc, ci)), (f"Técnico {mn} a domicilio en {ci}", Uic(m, cc, ci))] if ci and ci in p["ppal"] else [])
     ex += [(f"{cap(term(cc, x))} {mn} en {pn}", Ue(m, cc, x)) for x in EQ]
     ex += [(f"¿Cuánto cuesta reparar {sing(cc, x)} {mn}?", Ucosto(m, cc, x)) for x in EQ] + [(f"Mantenimiento de {term(cc, x)} {mn}", Umant(m, cc, x)) for x in EQ]
     ex += [(c, Uci(m, cc, c)) for c in list(p["ciudades"])[:16]] + [(n, Uz(m, cc, n)) for n, t, c in zonas_de(cc)[:8]]
@@ -426,6 +426,40 @@ def guia_ciudad(m, cc, ci):
 
 
 # ======================= SEO a fondo: IA, FAQ, imágenes, WhatsApp, blog =======================
+INTENTS = ["tecnico-a-domicilio", "telefono", "urgencias", "donde-reparar", "precios", "garantia", "repuestos", "centro-de-servicio", "reparacion-de-electrodomesticos", "mantenimiento-preventivo", "instalacion"]
+def Ui(m, cc, it): return _u(m, it, PS[cc])
+def Uic(m, cc, ci): return _u(m, "tecnico-a-domicilio", slugloc(ci, cc))
+
+def intent_data(it, m, cc, ci=None):
+    mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; lg = lugar_de(cc, ci); tel = p["tel"] or "por WhatsApp"
+    n, l, sec_ = term(cc, "neveras"), term(cc, "lavadoras"), term(cc, "secadoras")
+    eq = f"{n}, {l} y {sec_} {mn}"
+    D = {
+     "tecnico-a-domicilio": (f"Técnico {mn} a domicilio en {lg}", f"Técnico {mn} a domicilio en {lg}: reparación de {eq}. Escribe al {tel}.", f"Técnico {mn} a domicilio en {lg}",
+         [f"Si buscas un técnico {mn} a domicilio en {lg}, aquí lo encuentras: vamos a tu casa, apartamento u oficina para revisar y reparar {eq}.", "El técnico llega con herramientas, revisa el equipo en el sitio, te explica la falla y te da el costo antes de empezar."]),
+     "telefono": (f"Teléfono servicio técnico {mn} {pn}: WhatsApp y contacto", f"Teléfono y WhatsApp del servicio técnico {mn} en {pn}: {tel}. Escribe y un técnico te responde con horario y costo.", f"Teléfono del servicio técnico {mn} en {pn}",
+         [f"El teléfono y WhatsApp del servicio técnico {mn} en {pn} es {tel}.", "Atendemos principalmente por WhatsApp: puedes enviar fotos, el modelo y la falla para agilizar el diagnóstico."]),
+     "urgencias": (f"Servicio técnico {mn} urgente en {pn}: urgencias", f"Servicio técnico {mn} para urgencias en {pn}: nevera que no enfría, fugas de agua u olor a quemado. Escribe al {tel}.", f"Servicio técnico {mn} urgente en {pn}",
+         [f"Algunas fallas de equipos {mn} no pueden esperar: una {sing(cc,'neveras')} que no enfría, una fuga de agua o un olor a quemado.", "Indica en tu mensaje que es una urgencia para que el técnico más cercano la priorice. Mientras tanto, desconecta el equipo si hay chispas, olor a quemado o agua cerca de la corriente."]),
+     "donde-reparar": (f"¿Dónde reparar mi {mn} en {pn}? Servicio técnico a domicilio", f"¿Dónde reparar tu equipo {mn} en {pn}? Te lo reparamos en tu casa: {eq}. Escribe al {tel}.", f"¿Dónde reparar mi equipo {mn} en {pn}?",
+         [f"No necesitas llevar tu equipo {mn} a ningún lado: el técnico va a tu domicilio en {lg}.", "Esto evita el riesgo de mover una nevera, una lavadora o una secadora, y permite diagnosticar el equipo en su lugar de uso."]),
+     "precios": (f"Precios de reparación {mn} en {pn}: cuánto cuesta", f"Cuánto cuesta reparar equipos {mn} en {pn}: qué define el precio y cómo cotizar. Costos en {p['moneda']}. Escribe al {tel}.", f"Precios de reparación de equipos {mn} en {pn}",
+         [f"El precio de reparar un equipo {mn} en {pn} depende de la falla, de la pieza y de la mano de obra. Los costos se informan en {p['moneda']}.", "Por eso no damos una cifra sin ver el equipo: el técnico diagnostica y te da el costo exacto antes de reparar, sin compromiso."]),
+     "garantia": (f"Garantía en la reparación de equipos {mn} en {pn}", f"Qué garantía tiene la reparación de equipos {mn} en {pn} y qué hacer si tu equipo está en garantía del fabricante. Escribe al {tel}.", f"Garantía de reparación de equipos {mn} en {pn}",
+         [f"Cada reparación de un equipo {mn} incluye garantía sobre la pieza instalada y la mano de obra; el plazo se confirma antes de empezar.", f"Si tu {mn} todavía está dentro de la garantía del fabricante, conviene usarla primero. El técnico te orienta sobre qué cubre y qué no."]),
+     "repuestos": (f"Repuestos {mn} en {pn}: piezas para neveras, lavadoras y secadoras", f"Repuestos y piezas para equipos {mn} en {pn}: te informamos qué pieza hace falta y su disponibilidad antes de instalarla. Escribe al {tel}.", f"Repuestos para equipos {mn} en {pn}",
+         [f"Antes de cambiar una pieza de tu equipo {mn}, el técnico confirma cuál hace falta para tu modelo y su disponibilidad.", "Si hay más de una opción, te explica las diferencias para que decidas."]),
+     "centro-de-servicio": (f"Centro de servicio {mn} en {pn}: atención a domicilio", f"Centro de servicio técnico {mn} en {pn}: atendemos a domicilio en {len(p['ciudades'])} ciudades. Escribe al {tel}.", f"Centro de servicio {mn} en {pn}",
+         [f"Nuestro centro de servicio {mn} en {pn} funciona a domicilio: los técnicos van hasta donde está tu equipo.", f"Cubrimos {len(p['ciudades'])} ciudades de {pn}; activa tu ubicación en esta página para ver el técnico {mn} más cercano."]),
+     "reparacion-de-electrodomesticos": (f"Reparación de electrodomésticos {mn} en {pn}", f"Reparación de electrodomésticos {mn} en {pn}: {eq}. Técnicos a domicilio. Escribe al {tel}.", f"Reparación de electrodomésticos {mn} en {pn}",
+         [f"Reparamos los electrodomésticos {mn} más usados en el hogar: {eq}.", "Cada reparación incluye diagnóstico, presupuesto antes de empezar y garantía."]),
+     "mantenimiento-preventivo": (f"Mantenimiento preventivo de equipos {mn} en {pn}", f"Mantenimiento preventivo para {eq} en {pn}: limpieza, revisión y consejos. Escribe al {tel}.", f"Mantenimiento preventivo de equipos {mn} en {pn}",
+         [f"Un mantenimiento preventivo alarga la vida de tus equipos {mn} y evita fallas costosas.", "Incluye limpieza de filtros y rejillas, revisión de mangueras y empaques, y prueba de funcionamiento."]),
+     "instalacion": (f"Instalación de equipos {mn} en {pn}: lavadoras, secadoras y neveras", f"Instalación de {eq} en {pn}: conexión, nivelación y prueba. Escribe al {tel}.", f"Instalación de equipos {mn} en {pn}",
+         [f"Instalamos y reinstalamos {eq}: conexión de agua y desagüe, nivelación, voltaje y prueba final.", "Indica el tipo de equipo, la dirección y si hay conexiones nuevas por hacer."]),
+    }
+    return D[it]
+
 def Uw(m, cc): return _u(m, "whatsapp", PS[cc])
 def Uwc(m, cc, ci): return _u(m, "whatsapp", slugloc(ci, cc))
 def Ublog(m, cc): return _u(m, "blog", PS[cc])
@@ -704,6 +738,22 @@ def build():
                      bc=bc_b + [("Blog", Ublog(m, cc))], m=m, cc=cc, eq=k_, rel=(lambda c2, m=m, sl=q["slug"]: Upost(m, c2, sl)),
                      jsonld=[{"@context": "https://schema.org", "@type": "Article", "headline": ttl, "datePublished": HOY, "dateModified": HOY, "inLanguage": "es", "author": {"@type": "Organization", "name": NOM}, "publisher": {"@type": "Organization", "name": NOM}, "mainEntityOfPage": DOM + Upost(m, cc, q["slug"]), "image": DOM + f"/img/{m}/tecnico.jpg"},
                              bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), ("Blog", DOM + Ublog(m, cc)), (ttl, DOM + Upost(m, cc, q["slug"]))])])
+
+    # ---- páginas por intención de búsqueda (teléfono, a domicilio, urgencias, precios, garantía...)
+    for m, v in MA.items():
+        mn = v["nombre"]; globals()["EQ"] = EQB[m]
+        for cc, p in PA.items():
+            pn = p["nombre"]; bc_i = [("Inicio", "/"), (mn, Um(m)), (pn, Uc(m, cc))]
+            for it in INTENTS + ["@ciudades"]:
+                lista = [(it, None)] if it != "@ciudades" else [("tecnico-a-domicilio", c2) for c2 in p["ppal"]]
+                for it2, ci in lista:
+                    ti, de, h1, ps_ = intent_data(it2, m, cc, ci); ru = Ui(m, cc, it2) if not ci else Uic(m, cc, ci)
+                    body = sec(h1, "".join(f"<p>{esc(x)}</p>" for x in ps_) + f'<p><a class="btn wa" data-evt="whatsapp" href="{wa(p["wa"], "Hola, necesito servicio técnico " + mn + " en " + lugar_de(cc, ci))}" rel="noopener">Escribir por WhatsApp</a></p>') \
+                        + sec("Cómo trabajamos", "<ol><li>Escríbenos por WhatsApp con tu equipo y la falla.</li><li>El técnico más cercano confirma horario.</li><li>Diagnóstico y costo antes de reparar.</li><li>Reparación con garantía.</li></ol>") \
+                        + sec("Más sobre el servicio técnico " + mn, pills([(f"WhatsApp {mn} {lugar_de(cc, ci)}", Uw(m, cc) if not ci else Uwc(m, cc, ci)), (f"{mn} en {lugar_de(cc, ci)}", Uc(m, cc) if not ci else Uci(m, cc, ci)), ("Preguntas frecuentes", Ufaq(m, cc)), (f"Blog {mn} {pn}", Ublog(m, cc))] + [(intent_data(x, m, cc)[2], Ui(m, cc, x)) for x in INTENTS if x != it2])) \
+                        + sec("Búsquedas relacionadas", kw_html(m, cc, ci=ci))
+                    page(ru[1:], ti, de, h1, de[:120], body, bc=bc_i, m=m, cc=cc, ci=ci, rel=((lambda c2, m=m, it2=it2: Ui(m, c2, it2)) if not ci else None),
+                         jsonld=[svc_ld(m, cc, ci), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), (h1, DOM + ru)])])
     # ---- páginas de confianza (E-E-A-T) y mapas del sitio
     paises_l = ", ".join(p["nombre"] for p in PA.values()); marcas_l = ", ".join(v["nombre"] for v in MA.values())
     wa_l = "<ul>" + "".join(f'<li><b>{esc(p["nombre"])}:</b> <a href="{wa(p["wa"], "Hola, necesito servicio técnico")}" rel="noopener">WhatsApp {esc(p["tel"])}</a></li>' for p in PA.values()) + "</ul>"
