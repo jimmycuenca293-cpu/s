@@ -1,0 +1,3 @@
+DirectoryIndex index.html
+AddType application/manifest+json .webmanifest
+Header set Permissions-Policy "geolocation=(self)"

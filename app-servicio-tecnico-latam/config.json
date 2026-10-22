@@ -1,0 +1,319 @@
+{
+ "dominio": "https://soporte-tecnico-autorizado.com",
+ "nombre": "Soporte Técnico Autorizado",
+ "verificacion_gsc": "",
+ "gtm": "",
+ "paises": {
+  "gt": {
+   "nombre": "Guatemala",
+   "gentilicio": "guatemalteco",
+   "dial": "502",
+   "wa": "50769337976",
+   "tel": "+507 6933-7976",
+   "moneda": "GTQ",
+   "locale": "es-GT",
+   "ciudades": {
+    "Ciudad de Guatemala": [
+     14.6349,
+     -90.5069
+    ],
+    "Mixco": [
+     14.633,
+     -90.607
+    ],
+    "Villa Nueva": [
+     14.525,
+     -90.587
+    ],
+    "Quetzaltenango": [
+     14.8347,
+     -91.5181
+    ],
+    "Antigua Guatemala": [
+     14.5586,
+     -90.7295
+    ],
+    "Escuintla": [
+     14.305,
+     -90.785
+    ]
+   }
+  },
+  "pa": {
+   "nombre": "Panamá",
+   "gentilicio": "panameño",
+   "dial": "507",
+   "wa": "50769337976",
+   "tel": "+507 6933-7976",
+   "moneda": "USD",
+   "locale": "es-PA",
+   "ciudades": {
+    "Ciudad de Panamá": [
+     8.9824,
+     -79.5199
+    ],
+    "San Miguelito": [
+     9.0333,
+     -79.5
+    ],
+    "Colón": [
+     9.3592,
+     -79.9014
+    ],
+    "David": [
+     8.4273,
+     -82.4308
+    ],
+    "La Chorrera": [
+     8.88,
+     -79.783
+    ],
+    "Arraiján": [
+     8.95,
+     -79.65
+    ]
+   }
+  },
+  "cr": {
+   "nombre": "Costa Rica",
+   "gentilicio": "costarricense",
+   "dial": "506",
+   "wa": "50670055753",
+   "tel": "+506 7005-5753",
+   "moneda": "CRC",
+   "locale": "es-CR",
+   "ciudades": {
+    "San José": [
+     9.9281,
+     -84.0907
+    ],
+    "Alajuela": [
+     10.0162,
+     -84.2116
+    ],
+    "Cartago": [
+     9.8644,
+     -83.9194
+    ],
+    "Heredia": [
+     9.9986,
+     -84.1165
+    ],
+    "Liberia": [
+     10.6346,
+     -85.4377
+    ],
+    "Puntarenas": [
+     9.9763,
+     -84.8384
+    ]
+   }
+  },
+  "ec": {
+   "nombre": "Ecuador",
+   "gentilicio": "ecuatoriano",
+   "dial": "593",
+   "wa": "593993508191",
+   "tel": "+593 99 350 8191",
+   "moneda": "USD",
+   "locale": "es-EC",
+   "ciudades": {
+    "Quito": [
+     -0.1807,
+     -78.4678
+    ],
+    "Guayaquil": [
+     -2.17,
+     -79.9224
+    ],
+    "Cuenca": [
+     -2.9001,
+     -79.0059
+    ],
+    "Ambato": [
+     -1.2491,
+     -78.6168
+    ],
+    "Manta": [
+     -0.9677,
+     -80.7089
+    ],
+    "Loja": [
+     -3.9931,
+     -79.2042
+    ]
+   }
+  },
+  "sv": {
+   "nombre": "El Salvador",
+   "gentilicio": "salvadoreño",
+   "dial": "503",
+   "wa": "50769337976",
+   "tel": "+507 6933-7976",
+   "moneda": "USD",
+   "locale": "es-SV",
+   "ciudades": {
+    "San Salvador": [
+     13.6929,
+     -89.2182
+    ],
+    "Santa Ana": [
+     13.9942,
+     -89.5597
+    ],
+    "San Miguel": [
+     13.4833,
+     -88.1833
+    ],
+    "Soyapango": [
+     13.71,
+     -89.14
+    ],
+    "Santa Tecla": [
+     13.6769,
+     -89.2797
+    ],
+    "Sonsonate": [
+     13.7189,
+     -89.7242
+    ]
+   }
+  },
+  "py": {
+   "nombre": "Paraguay",
+   "gentilicio": "paraguayo",
+   "dial": "595",
+   "wa": "593993508191",
+   "tel": "+593 99 350 8191",
+   "moneda": "PYG",
+   "locale": "es-PY",
+   "ciudades": {
+    "Asunción": [
+     -25.2637,
+     -57.5759
+    ],
+    "Ciudad del Este": [
+     -25.5097,
+     -54.6111
+    ],
+    "Encarnación": [
+     -27.3306,
+     -55.8667
+    ],
+    "San Lorenzo": [
+     -25.34,
+     -57.51
+    ],
+    "Luque": [
+     -25.27,
+     -57.49
+    ],
+    "Fernando de la Mora": [
+     -25.31,
+     -57.55
+    ]
+   }
+  },
+  "co": {
+   "nombre": "Colombia",
+   "gentilicio": "colombiano",
+   "dial": "57",
+   "wa": "573013810242",
+   "tel": "+57 301 381 0242",
+   "moneda": "COP",
+   "locale": "es-CO",
+   "ciudades": {
+    "Bogotá": [
+     4.711,
+     -74.0721
+    ],
+    "Medellín": [
+     6.2442,
+     -75.5812
+    ],
+    "Cali": [
+     3.4516,
+     -76.532
+    ],
+    "Barranquilla": [
+     10.9685,
+     -74.7813
+    ],
+    "Cartagena": [
+     10.391,
+     -75.4794
+    ],
+    "Bucaramanga": [
+     7.1193,
+     -73.1227
+    ]
+   }
+  },
+  "cl": {
+   "nombre": "Chile",
+   "gentilicio": "chileno",
+   "dial": "56",
+   "wa": "56983176106",
+   "tel": "+56 9 8317 6106",
+   "moneda": "CLP",
+   "locale": "es-CL",
+   "ciudades": {
+    "Santiago": [
+     -33.4489,
+     -70.6693
+    ],
+    "Valparaíso": [
+     -33.0472,
+     -71.6127
+    ],
+    "Concepción": [
+     -36.8201,
+     -73.0444
+    ],
+    "La Serena": [
+     -29.9027,
+     -71.2519
+    ],
+    "Antofagasta": [
+     -23.6509,
+     -70.3975
+    ],
+    "Temuco": [
+     -38.7359,
+     -72.5904
+    ]
+   }
+  }
+ },
+ "marcas": {
+  "samsung": {
+   "nombre": "Samsung",
+   "color": "#1428a0"
+  },
+  "lg": {
+   "nombre": "LG",
+   "color": "#a50034"
+  },
+  "whirlpool": {
+   "nombre": "Whirlpool",
+   "color": "#f5b800",
+   "texto": "#222"
+  },
+  "mabe": {
+   "nombre": "Mabe",
+   "color": "#0b6b3a"
+  },
+  "frigidaire": {
+   "nombre": "Frigidaire",
+   "color": "#c8102e"
+  },
+  "electrolux": {
+   "nombre": "Electrolux",
+   "color": "#0b3c7d"
+  },
+  "general-electric": {
+   "nombre": "General Electric",
+   "color": "#1d4f91"
+  }
+ }
+}

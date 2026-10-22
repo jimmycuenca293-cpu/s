@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://soporte-tecnico-autorizado.com/sitemap.xml
