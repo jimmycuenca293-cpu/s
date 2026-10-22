@@ -12,7 +12,7 @@ RAIZ = AQUI.parent
 LISTA = Path(sys.argv[1])
 
 # supuestos (editables en la hoja «Supuestos»)
-A = dict(fee_pct=0.054, fee_fijo=0.30, flete_pct=0.08, envio=7.50, envio_pack=9.50, ganancia_min=6.0, margen_min=0.15, piso=4.0)
+A = dict(fee_pct=0.054, fee_fijo=0.30, flete_pct=0.08, envio=7.50, envio_pack=9.50, ganancia_min=10.0, margen_min=0.15, piso=10.0)
 
 # producto de la tienda -> (fila del proveedor, precio de la calle USD, rango visto, fuente/nota)
 MERCADO = {
@@ -21,6 +21,10 @@ MERCADO = {
     "DA29-10105J / HAF-EX": (19.0, "eBay 15–18 + envío; filtro en línea 4378411RB a 23.49 (Slyman)", "ebay, slymanbros.com"),
     "LT1000P": (54.99, "Genuino 54.99; terceros desde 12.95", "allfilters.com, star-power.com"),
     "LT800P": (54.97, "PC Richard 54.97", "pcrichard.com"),
+    "DA29-00003G / HAF-CU1 / HAF-FIN2": (44.0, "Home Depot genuino 49.99; Allfilters 36.99 (agotado); terceros 12.95", "homedepot.com, allfilters.com"),
+    "LT600P": (54.99, "Allfilters 54.99 (5231JA2006F); terceros 12.95–14.80", "allfilters.com, freshwatersystems.com"),
+    "ADQ73693903 / FSS-002": (None, "LG Parts lista 77.95; en otros países unos US$19–20. Sin precio claro en EE. UU.", "lgparts.com, eBay UK"),
+    "LT700P without T code": (None, "Si es el LG original compite con 45–51; si NO es original, el mercado de compatibles está en 12–25 y no alcanza para ganar el mínimo", "walmart.com, atomicfilters.com"),
     "LT700P": (49.99, "Walmart 50.99; Atomic 44.95; genérico 11–25", "walmart.com, atomicfilters.com"),
     "LT500P": (54.99, "Allfilters 54.99; terceros 12.95", "allfilters.com"),
     "EDR1RXD1": (49.98, "Amazon 49.98; lista 59.99; ofertas 30–33", "slickdeals.net, walmart.com"),
@@ -58,10 +62,11 @@ def calcular(costo):
 
 def recomendado(costo, calle):
     L, C, piso, obj = calcular(costo)
-    if calle is None: return up99(obj), "Sin precio de mercado: precio objetivo"
-    if obj <= calle * 1.12: return up99(obj), "Competitivo"
-    if piso <= calle * 1.10: return max(up99(piso), up99(calle * 1.04)), "Ganancia justa: igualar al mercado"
-    return None, "No vender suelto: el mercado está casi al precio de costo"
+    if calle is None: return None, "Sin dato de mercado en EE. UU.: verifica antes de publicar el precio"
+    k = up99(obj) / calle
+    if k <= 1.05: return up99(obj), "Competitivo"
+    if k <= 1.15: return up99(obj), "Un poco sobre el mercado: aceptable con envío gratis y buen servicio"
+    return None, "No competitivo: solo lo vendes ganando el mínimo si bajas el costo (ver última columna)"
 
 
 out = RAIZ / "precios"; out.mkdir(exist_ok=True)
@@ -82,7 +87,7 @@ for c, w in zip("ABC", (46, 12, 90)): s.column_dimensions[c].width = w
 
 p = wb.create_sheet("Precios de venta")
 H = ["Marca", "Referencia", "Producto en la tienda", "Costo proveedor (USD)", "Costo puesto en depósito", "Costo + envío al cliente", "Precio mínimo (ganancia ≥ piso)", "Precio objetivo", "Precio de la calle (mercado)", "PRECIO DE VENTA 1 filtro",
-     "Ganancia por filtro (USD)", "Margen %", "Precio paquete de 2", "Ganancia paquete (USD)", "Veredicto", "Precios vistos en el mercado", "Fuente", "Cartón", "Nota del proveedor"]
+     "Ganancia por filtro (USD)", "Margen %", "Precio paquete de 2", "Ganancia paquete (USD)", "Veredicto", "Precios vistos en el mercado", "Fuente", "Cartón", "Nota del proveedor", "Costo máximo del proveedor para ganar el mínimo vendiendo al precio de la calle"]
 p.append(H)
 datos = []
 r0 = 2
@@ -108,27 +113,28 @@ for i, (m, ref, costo, carton, pallet, nota) in enumerate(filas):
               (f"=K{rr}/J{rr}" if rec else None),
               ((f"=ROUNDUP(MAX(2*J{rr}*0.92,(2*E{rr}+{SUP['envio2']}+{SUP['fijo']}+8)/(1-{SUP['fee']})),0)-0.01") if rec else None),
               ((f"=M{rr}-M{rr}*{SUP['fee']}-{SUP['fijo']}-2*E{rr}-{SUP['envio2']}") if rec else None),
-              verd, (mk[1] if mk else "Sin datos de mercado"), (mk[2] if mk else ""), carton, datos[-1]["nota"]])
+              verd, (mk[1] if mk else "Sin datos de mercado"), (mk[2] if mk else ""), carton, datos[-1]["nota"],
+              (f"=(I{rr}*(1-{SUP['fee']})-{SUP['fijo']}-{SUP['envio']}-{SUP['piso']})/(1+{SUP['flete']})" if calle else None)])
 fmt_usd = '"$"#,##0.00'
 head = PatternFill("solid", fgColor="0A5EA8"); thin = Side(style="thin", color="D9E4EE")
 for c in range(1, len(H) + 1):
     x = p.cell(1, c); x.font = Font(bold=True, color="FFFFFF"); x.fill = head; x.alignment = Alignment(wrap_text=True, vertical="center")
-    p.column_dimensions[get_column_letter(c)].width = [11, 32, 14, 12, 12, 12, 13, 12, 13, 15, 12, 9, 13, 13, 34, 52, 30, 8, 40][c - 1]
+    p.column_dimensions[get_column_letter(c)].width = [11, 32, 14, 12, 12, 12, 13, 12, 13, 15, 12, 9, 13, 13, 40, 52, 30, 8, 40, 22][c - 1]
 p.row_dimensions[1].height = 48
 for rr in range(2, len(datos) + 2):
-    for c in (4, 5, 6, 7, 8, 9, 10, 11, 13, 14): p.cell(rr, c).number_format = fmt_usd
+    for c in (4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 20): p.cell(rr, c).number_format = fmt_usd
     p.cell(rr, 12).number_format = "0.0%"
     p.cell(rr, 10).fill = PatternFill("solid", fgColor="E3F6EC"); p.cell(rr, 10).font = Font(bold=True)
     v = p.cell(rr, 15).value or ""
-    if v.startswith("No vender"): p.cell(rr, 15).fill = PatternFill("solid", fgColor="FDE2E2")
-    elif v.startswith("Ganancia justa"): p.cell(rr, 15).fill = PatternFill("solid", fgColor="FFF3CD")
+    if v.startswith("No competitivo"): p.cell(rr, 15).fill = PatternFill("solid", fgColor="FDE2E2")
+    elif v.startswith("Un poco") or v.startswith("Sin dato"): p.cell(rr, 15).fill = PatternFill("solid", fgColor="FFF3CD")
 p.freeze_panes = "C2"
 n = wb.create_sheet("Cómo leer")
 for t in ["Cómo se calcula el precio",
           "1. Costo puesto en depósito = precio del proveedor + flete y gastos (%).",
           "2. Costo + envío al cliente = lo anterior + etiqueta y empaque. El precio de venta incluye envío (envío gratis para el cliente).",
           "3. Precio mínimo: el menor precio con el que ganas el «piso» (USD) después de la comisión de PayPal.",
-          "4. Precio objetivo: el menor precio que deja al menos la ganancia mínima y el margen mínimo.",
+          "4. Precio objetivo: el menor precio que deja al menos $10 de ganancia (y 15 % de margen).",
           "5. Precio de la calle: lo que he visto que cobran otras tiendas por el filtro original (capturas de búsqueda, pueden haber cambiado: verifícalos en Amazon, Walmart y Home Depot antes de publicar).",
           "6. PRECIO DE VENTA: el objetivo si es competitivo; si no, se iguala al mercado siempre que quede ganancia; si el mercado está casi al precio de costo, no conviene venderlo suelto.",
           "7. Paquete de 2: descuento de 8 % (mínimo $8 de ganancia): invita a comprar de a 2 y diluye el envío.",
@@ -156,4 +162,5 @@ for d in datos:
     if d["pid"] or d["mk"]:
         L, C, piso, obj = calcular(d["costo"])
         g = (d["rec"] - d["rec"] * A["fee_pct"] - A["fee_fijo"] - C) if d["rec"] else None
-        print(f"{d['ref'][:34]:34} costo {d['costo']:6.2f} | piso {up99(piso):6.2f} obj {up99(obj):6.2f} calle {d['calle'] or 0:6.2f} -> VENTA {d['rec'] or 0:6.2f} gan {g if g is None else round(g,2)} | {d['verd']}")
+        cm = ((d['calle'] * (1 - A['fee_pct']) - A['fee_fijo'] - A['envio'] - A['piso']) / (1 + A['flete_pct'])) if d['calle'] else None
+        print(f"{d['ref'][:34]:34} costo {d['costo']:6.2f} | piso {up99(piso):6.2f} obj {up99(obj):6.2f} calle {d['calle'] or 0:6.2f} -> VENTA {d['rec'] or 0:6.2f} gan {g if g is None else round(g,2)} | costo max {cm if cm is None else round(cm,2)} | {d['verd'][:40]}")
