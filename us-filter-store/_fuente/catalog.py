@@ -67,7 +67,7 @@ def load():
         title = f"{i['short']} {ref} Refrigerator Water Filter" if ref.upper() not in i["short"].upper() and ref.upper() != i["line"].upper() else f"{i['short']} Refrigerator Water Filter"
         p = dict(id=pid, brand=v["brand_dir"], brand_name=b["name"], line=i["line"], kind=i["kind"], ref=ref, aliases=list(dict.fromkeys(v["alias"])), models=v["modelos"],
                  title=title, short=i["short"], also=i["also"], note=NOTES.get(pid, ""), photo=pid,
-                 slug=slug(f"{i['short']} {ref} water filter"))
+                 slug=slug(f"{i['short']} water filter" if slug(ref) in slug(i["short"]) else f"{i['short']} {ref} water filter"))
         P.append(p)
     return P
 

@@ -7,10 +7,10 @@
 - [Samsung HAF-QIN DA97-17376B Refrigerator Water Filter](https://fridgefilterdepot.com/filters/samsung-haf-qin-da97-17376b-water-filter/): part DA97-17376B, also Samsung HAF-QIN/EXP, DA97-08006C.
 - [Samsung Aqua-Pure Plus HAF-CU1 DA29-00003G Refrigerator Water Filter](https://fridgefilterdepot.com/filters/samsung-aqua-pure-plus-haf-cu1-da29-00003g-water-filter/): part DA29-00003G, also HAFCU1/XAA, HAFIN2/EXP, DA29-00003B, DA29-00003F.
 - [Samsung HAF-EX external DA29-10105J Refrigerator Water Filter](https://fridgefilterdepot.com/filters/samsung-haf-ex-external-da29-10105j-water-filter/): part DA29-10105J, also HAFEX/EXP, WSF-100.
-- [LG LT1000P Refrigerator Water Filter](https://fridgefilterdepot.com/filters/lg-lt1000p-lt1000p-water-filter/): part LT1000P, also LT1000PC, LT1000PCS, ADQ74793501, ADQ74793502, MDJ64844601.
-- [LG LT700P Refrigerator Water Filter](https://fridgefilterdepot.com/filters/lg-lt700p-lt700p-water-filter/): part LT700P, also LT700PC, ADQ36006101, ADQ36006102.
-- [LG LT800P Refrigerator Water Filter](https://fridgefilterdepot.com/filters/lg-lt800p-lt800p-water-filter/): part LT800P, also LT800PC, LT800PCS, ADQ73613401, ADQ73613402.
-- [LG LT500P Refrigerator Water Filter](https://fridgefilterdepot.com/filters/lg-lt500p-lt500p-water-filter/): part LT500P, also 5231JA2002A, 5231JA2002B, ADQ72910901.
+- [LG LT1000P Refrigerator Water Filter](https://fridgefilterdepot.com/filters/lg-lt1000p-water-filter/): part LT1000P, also LT1000PC, LT1000PCS, ADQ74793501, ADQ74793502, MDJ64844601.
+- [LG LT700P Refrigerator Water Filter](https://fridgefilterdepot.com/filters/lg-lt700p-water-filter/): part LT700P, also LT700PC, ADQ36006101, ADQ36006102.
+- [LG LT800P Refrigerator Water Filter](https://fridgefilterdepot.com/filters/lg-lt800p-water-filter/): part LT800P, also LT800PC, LT800PCS, ADQ73613401, ADQ73613402.
+- [LG LT500P Refrigerator Water Filter](https://fridgefilterdepot.com/filters/lg-lt500p-water-filter/): part LT500P, also 5231JA2002A, 5231JA2002B, ADQ72910901.
 - [LG LT600P 5231JA2006 Refrigerator Water Filter](https://fridgefilterdepot.com/filters/lg-lt600p-5231ja2006-water-filter/): part 5231JA2006, also 5231JA2006A, 5231JA2006B, 5231JA2006F.
 - [LG external ADQ73693903 Refrigerator Water Filter](https://fridgefilterdepot.com/filters/lg-external-adq73693903-water-filter/): part ADQ73693903, also FSS002, 5231JA2012A, 5231JA2012B.
 - [Whirlpool EveryDrop 1 EDR1RXD1 Refrigerator Water Filter](https://fridgefilterdepot.com/filters/whirlpool-everydrop-1-edr1rxd1-water-filter/): part EDR1RXD1, also W10295370A, W10295370, FILTER1, P4RFWB.
@@ -19,8 +19,8 @@
 - [Whirlpool EveryDrop 4 EDR4RXD1 Refrigerator Water Filter](https://fridgefilterdepot.com/filters/whirlpool-everydrop-4-edr4rxd1-water-filter/): part EDR4RXD1, also UKF8001, UKF8001AXX, 4396395, FILTER4.
 - [Whirlpool EveryDrop 5 EDR5RXD1 Refrigerator Water Filter](https://fridgefilterdepot.com/filters/whirlpool-everydrop-5-edr5rxd1-water-filter/): part EDR5RXD1, also 4396508, 4396509, 4396510, FILTER5, NLC240V.
 - [Whirlpool external inline 4378411RB Refrigerator Water Filter](https://fridgefilterdepot.com/filters/whirlpool-external-inline-4378411rb-water-filter/): part 4378411RB, also 4378411, WHKF-IMPL.
-- [GE MWF SmartWater Refrigerator Water Filter](https://fridgefilterdepot.com/filters/ge-mwf-smartwater-mwf-water-filter/): part MWF, also MWFP, MWFA, MWFINT, GWF, GWFA, HWF, HWFA.
-- [GE XWF Refrigerator Water Filter](https://fridgefilterdepot.com/filters/ge-xwf-xwf-water-filter/): part XWF, also XWF-1.
+- [GE MWF SmartWater Refrigerator Water Filter](https://fridgefilterdepot.com/filters/ge-mwf-smartwater-water-filter/): part MWF, also MWFP, MWFA, MWFINT, GWF, GWFA, HWF, HWFA.
+- [GE XWF Refrigerator Water Filter](https://fridgefilterdepot.com/filters/ge-xwf-water-filter/): part XWF, also XWF-1.
 
 ## Guides
 - [How often should you change a refrigerator water filter?](https://fridgefilterdepot.com/guides/how-often-to-change-a-refrigerator-water-filter/)
