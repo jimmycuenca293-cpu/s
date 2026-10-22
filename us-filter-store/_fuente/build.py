@@ -142,7 +142,7 @@ function boot(prices){
     createOrder:function(d,a){var q=qtyInfo(),it=q.total.toFixed(2);return a.order.create({purchase_units:[{description:name+' x'+q.n,custom_id:sku+'|'+q.n,amount:{currency_code:'USD',value:(q.total+ship).toFixed(2),breakdown:{item_total:{currency_code:'USD',value:it},shipping:{currency_code:'USD',value:ship.toFixed(2)}}},items:[{name:name,sku:sku,unit_amount:{currency_code:'USD',value:q.unit.toFixed(2)},quantity:String(q.n)}]}],application_context:{shipping_preference:'GET_FROM_FILE'}})},
     onApprove:function(d,a){return a.order.capture().then(function(){dataLayer.push({event:'purchase_paypal',sku:sku});location.href='/thank-you/'})}}).render(pp)}
   if(S.paypalClientId){var s=document.createElement('script');s.src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(S.paypalClientId)+'&currency=USD&components=buttons&enable-funding=card';s.onload=render;document.head.appendChild(s)}
-  else{pp.innerHTML='<p class="note">Online checkout with PayPal is coming soon. To order now, message us on WhatsApp.</p>'}
+  else if(!box.dataset.link){pp.innerHTML='<p class="note">Online checkout with PayPal is coming soon. To order now, message us on WhatsApp.</p>'}
  });
 }
 fetch('/assets/prices.json').then(function(r){return r.ok?r.json():{}}).catch(function(){return {}}).then(boot);
@@ -298,12 +298,15 @@ def buy_box(p):
         opts = "".join(f'<option value="{n}">{n} filter{"s" if n > 1 else ""}</option>' for n in range(1, 7))
         if pack: opts += f'<option value="pack">2-pack (best value)</option>'
         paywrap = (f'<div class="paywrap"><label for="q-{p["id"]}">Quantity</label><select class="q" id="q-{p["id"]}">{opts}</select><div class="pp" aria-label="PayPal checkout"></div>'
-                   '<p class="note">Pay securely with PayPal or a credit/debit card. Your shipping address is collected at checkout.</p></div>')
+                   + (('<p class="links" style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 0">'
+                       + (f'<a class="btn big" href="{e(pr["link"])}" target="_blank" rel="noopener">Pay with PayPal: 1 filter</a>' if pr.get("link") else "")
+                       + (f'<a class="btn big out" href="{e(pr["link_pack"])}" target="_blank" rel="noopener">Pay with PayPal: 2-pack</a>' if pr.get("link_pack") else "") + "</p>") if (pr.get("link") or pr.get("link_pack")) else "")
+                   + '<p class="note">Pay securely with PayPal or a credit/debit card. Your shipping address is collected at checkout.</p></div>')
         head = '<div class="price">$0.00</div>'
     else:
         paywrap = '<div class="paywrap" hidden></div>'
         head = '<div class="price">Message us for price</div><p class="note">We will reply with the price and delivery details for your address.</p>'
-    return (f'<div class="buy" data-sku="{p["id"]}" data-name="{e(p["title"])}" data-price="{price or ""}" data-pack="{pack or ""}">{head}{paywrap}<p style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 0">{wa}{em}</p></div>')
+    return (f'<div class="buy" data-sku="{p["id"]}" data-name="{e(p["title"])}" data-price="{price or ""}" data-pack="{pack or ""}" data-link="{"1" if (pr.get("link") or pr.get("link_pack")) else ""}">{head}{paywrap}<p style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 0">{wa}{em}</p></div>')
 
 
 def product_pages():

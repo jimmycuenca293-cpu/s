@@ -79,5 +79,6 @@ def prices():
         for ln in f.read_text(encoding="utf-8").splitlines()[1:]:
             c = [x.strip() for x in ln.split(",")]
             if len(c) >= 2 and c[0]:
-                out[c[0]] = dict(price=float(c[1]) if c[1] else None, pack=float(c[2]) if len(c) > 2 and c[2] else None, stock=(c[3].lower() != "no") if len(c) > 3 and c[3] else True)
+                out[c[0]] = dict(price=float(c[1]) if c[1] else None, pack=float(c[2]) if len(c) > 2 and c[2] else None, stock=(c[3].lower() != "no") if len(c) > 3 and c[3] else True,
+                             link=c[4] if len(c) > 4 and c[4] else "", link_pack=c[5] if len(c) > 5 and c[5] else "")
     return out

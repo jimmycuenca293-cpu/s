@@ -149,17 +149,19 @@ wb.save(out / "precios-de-venta.xlsx")
 
 # prices.csv del sitio: solo los que sí conviene vender
 tienda = {d["pid"]: d for d in datos if d["pid"] and d["rec"]}
-ids = [l.split(",")[0] for l in (RAIZ / "prices.csv").read_text().splitlines()[1:]]
+prev = {r[0]: r for r in csv.reader(open(RAIZ / "prices.csv"))}
+ids = [k for k in prev if k != "id"]
+def enlaces(i): return (prev[i] + [""] * 6)[4:6]
 with open(RAIZ / "prices.csv", "w", newline="") as f:
-    w = csv.writer(f); w.writerow(["id", "price_usd", "pack2_usd", "in_stock"])
+    w = csv.writer(f); w.writerow(["id", "price_usd", "pack2_usd", "in_stock", "paypal_link_1_filter", "paypal_link_2_pack"])
     for i in ids:
         d = tienda.get(i)
         if d:
             L, C, piso, obj = calcular(d["costo"])
             pk = max(2 * d["rec"] * 0.92, (2 * L + A["envio_pack"] + A["fee_fijo"] + 8) / (1 - A["fee_pct"]))
-            w.writerow([i, f"{d['rec']:.2f}", f"{up99(pk):.2f}", "yes"])
+            w.writerow([i, f"{d['rec']:.2f}", f"{up99(pk):.2f}", "yes"] + enlaces(i))
         else:
-            w.writerow([i, "", "", "yes"])
+            w.writerow([i, "", "", "yes"] + enlaces(i))
 for d in datos:
     if d["pid"] or d["mk"]:
         L, C, piso, obj = calcular(d["costo"])

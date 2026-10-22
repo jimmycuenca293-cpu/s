@@ -19,7 +19,7 @@ function boot(prices){
     createOrder:function(d,a){var q=qtyInfo(),it=q.total.toFixed(2);return a.order.create({purchase_units:[{description:name+' x'+q.n,custom_id:sku+'|'+q.n,amount:{currency_code:'USD',value:(q.total+ship).toFixed(2),breakdown:{item_total:{currency_code:'USD',value:it},shipping:{currency_code:'USD',value:ship.toFixed(2)}}},items:[{name:name,sku:sku,unit_amount:{currency_code:'USD',value:q.unit.toFixed(2)},quantity:String(q.n)}]}],application_context:{shipping_preference:'GET_FROM_FILE'}})},
     onApprove:function(d,a){return a.order.capture().then(function(){dataLayer.push({event:'purchase_paypal',sku:sku});location.href='/thank-you/'})}}).render(pp)}
   if(S.paypalClientId){var s=document.createElement('script');s.src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(S.paypalClientId)+'&currency=USD&components=buttons&enable-funding=card';s.onload=render;document.head.appendChild(s)}
-  else{pp.innerHTML='<p class="note">Online checkout with PayPal is coming soon. To order now, message us on WhatsApp.</p>'}
+  else if(!box.dataset.link){pp.innerHTML='<p class="note">Online checkout with PayPal is coming soon. To order now, message us on WhatsApp.</p>'}
  });
 }
 fetch('/assets/prices.json').then(function(r){return r.ok?r.json():{}}).catch(function(){return {}}).then(boot);
