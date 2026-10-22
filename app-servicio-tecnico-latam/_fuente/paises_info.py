@@ -111,3 +111,15 @@ RESUMEN = {
  "py": dict(capital="Asunción", pob="unos 6,8 millones", moneda="guaraní (PYG)", tel="+595", div="departamentos", huso="UTC−3"),
  "cl": dict(capital="Santiago", pob="unos 19,6 millones", moneda="peso chileno (CLP)", tel="+56", div="regiones", huso="UTC−4 (UTC−3 en verano)"),
 }
+
+# Autoridades por país. url=None -> se enlaza una búsqueda (solo se enlaza directo donde el dominio está confirmado)
+RECURSOS = {
+ "co": dict(cons=("Superintendencia de Industria y Comercio (SIC)", None), clima=("IDEAM", None)),
+ "pa": dict(cons=("ACODECO", None), clima=("Instituto de Meteorología e Hidrología de Panamá (IMHPA)", None)),
+ "gt": dict(cons=("DIACO", None), clima=("INSIVUMEH", "https://www.insivumeh.gob.gt/")),
+ "sv": dict(cons=("Defensoría del Consumidor", "https://www.defensoria.gob.sv/"), clima=("MARN", None)),
+ "cr": dict(cons=("MEIC", None), clima=("Instituto Meteorológico Nacional (IMN)", None)),
+ "ec": dict(cons=("Defensoría del Pueblo", None), clima=("INAMHI", None)),
+ "py": dict(cons=("SEDECO", None), clima=("Dirección de Meteorología e Hidrología", None)),
+ "cl": dict(cons=("SERNAC", "https://www.sernac.cl/"), clima=("Dirección Meteorológica de Chile", None)),
+}
