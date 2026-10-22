@@ -1,1 +1,5 @@
 __pycache__/
+
+app-servicio-tecnico-latam/site/
+app-servicio-tecnico-latam/entrega/*.zip
+app-servicio-tecnico-latam/vista/
