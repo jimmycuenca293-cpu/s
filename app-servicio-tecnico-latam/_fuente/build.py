@@ -316,8 +316,10 @@ def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, j
                 _q = {x["name"] for x in j_["mainEntity"]}
                 j_["mainEntity"] += [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in bnc if q not in _q]; _ya = True
         jsonld = (jsonld or []) + ([] if _ya else [faq_ld(bnc)]) + [{"@context": "https://schema.org", "@type": "WebPage", "name": title, "url": url, "dateModified": HOY, "inLanguage": "es", "speakable": {"@type": "SpeakableSpecification", "cssSelector": [".ia", "h1"]}, "significantLink": [DOM + Uc(m, cc), DOM + Uw(m, cc), DOM + Ufaq(m, cc), DOM + Ublog(m, cc), DOM + Ui(m, cc, "tecnico-a-domicilio")], "potentialAction": {"@type": "CommunicateAction", "name": "Escribir por WhatsApp", "target": wa(PA[cc]["wa"])}}]
+    if m and cc:
+        body, _pf = organizar(body, m, cc, ci)
+        if _pf: jsonld = [j_ for j_ in jsonld if not (isinstance(j_, dict) and j_.get("@type") == "FAQPage")] + [faq_ld(_pf)]
     body, toc = anclar(body)
-    if m and cc: body = qa_secciones(body, ruta)
     if m and (cc or orden): body = inyectar_imgs(body, m, cc, ci, ruta)
     ld = "".join(f'<script type="application/ld+json">{json.dumps(j, ensure_ascii=False)}</script>' for j in (jsonld or []))
     ordh = ""
@@ -429,6 +431,52 @@ def qa_secciones(body, ruta):
         qa = f'<details class="qa"><summary>{esc(q)}</summary><p>{esc(a)} <a href="{u}">Enlace directo a esta sección</a></p></details>'
         return f'<section class="sec" id="{sid}"><h2>{titulo}</h2>{inner}{qa}</section>'
     return re.sub(r'<section class="sec" id="([^"]*)"><h2>(.*?)</h2>(.*?)</section>', sub, body, flags=re.S)
+
+def organizar(body, m, cc, ci):
+    """Ordena las secciones de servicio en un esquema fijo, une las repetidas y descarta el relleno."""
+    mn = MA[m]["nombre"]; lg = lugar_de(cc, ci); pn = PA[cc]["nombre"]
+    pat = re.compile(r'<section class="sec"><h2>(.*?)</h2>(.*?)</section>', re.S)
+    secs = [(re.sub(r"<[^>]+>", "", g.group(1)), g.group(1), g.group(2)) for g in pat.finditer(body)]
+    resto = pat.sub("", body)
+    DROP = re.compile(r"^(Contrata al técnico|Errores comunes|Cómo se dice|.*: datos útiles|Cuidado de tus equipos)")
+    GEO = re.compile(r"^(Ciudades|Comunas|Barrios|Por ciudad|Más cerca|Otros WhatsApp)")
+    FAQ = re.compile(r"^(Más preguntas frecuentes|Preguntas frecuentes)")
+    G = [("contacto", re.compile(r"^(Técnicos |Número de WhatsApp|Qué enviar|Qué pasa después)")), ("resp", re.compile(r"^(Respuesta rápida|Datos clave)")),
+         ("busca", re.compile(r"^Lo que más buscan")), ("serv", re.compile(r"^(Servicio técnico .*,|Equipos .* que reparamos|Servicios que ofrecemos|Fallas|Modelos|Repuestos y piezas)")),
+         ("visita", re.compile(r"^(Cómo es la visita|Qué revisa)")), ("geo", GEO), ("faq", FAQ),
+         ("util", re.compile(r"^(Señales|Reparar o reemplazar|Cómo elegir)")), ("links", re.compile(r"^(Explora|Recursos|Búsquedas relacionadas|Más ayuda|Guías)"))]
+    orden = ["nuevo"] + [g for g, _ in G]
+    cub = {g: [] for g in orden}
+    for t, h, inner in secs:
+        if DROP.search(t): continue
+        g = next((g for g, r in G if r.search(t)), "nuevo"); cub[g].append((t, h, inner))
+    out = []
+    out += [sec(h, i) for t, h, i in cub["nuevo"]]
+    out += [sec(h, i) for t, h, i in cub["contacto"]]
+    if cub["resp"]:
+        r_ = next((i for t, h, i in cub["resp"] if t.startswith("Respuesta")), ""); d_ = next((i for t, h, i in cub["resp"] if t.startswith("Datos")), "")
+        out.append(sec(f"Teléfono, WhatsApp y datos del servicio técnico {mn} en {lg}", r_ + d_))
+    out += [sec(h, i) for t, h, i in cub["busca"]]
+    out += [sec(h, i) for t, h, i in cub["serv"]]
+    out += [sec(h, i) for t, h, i in cub["visita"]]
+    geo = cub["geo"]
+    if len(geo) > 1:
+        if any(" por " in t for t, h, i in geo): geo = [x for x in geo if not (x[0].startswith("Ciudades con técnico"))]
+        out.append(sec(f"Dónde atendemos el servicio técnico {mn} en {lg}" if ci else f"Dónde atendemos el servicio técnico {mn} en {pn}", "".join(f"<h3>{h}</h3>{i}" for t, h, i in geo)))
+    else: out += [sec(h, i) for t, h, i in geo]
+    pares = []
+    if cub["faq"]:
+        seen = set(); todos = []
+        for t, h, i in cub["faq"]:
+            for q, a in re.findall(r"<details><summary>(.*?)</summary><p>(.*?)</p></details>", i, re.S):
+                k_ = re.sub(r"\W+", " ", q.lower()).strip()
+                if k_ not in seen: seen.add(k_); todos.append((html.unescape(q), html.unescape(a)))
+        CK = re.compile(r"whatsapp|teléfono|número|contact|cerca|domicilio|cuesta|cobra|tarda|agendar|urgenc|garantía|barrio|atienden|ciudades|hay técnico|confianza|pago", re.I)
+        pares = ([x for x in todos if CK.search(x[0])] + [x for x in todos if not CK.search(x[0])])[:16]
+        out.append(sec(f"Preguntas frecuentes sobre el servicio técnico {mn} en {lg}", faqh(pares)))
+    out += [sec(h, i) for t, h, i in cub["util"]]
+    out += [sec(h, i) for t, h, i in cub["links"]]
+    return resto + "".join(out), pares
 
 def anclar(body):
     """Pone id a cada sección y arma el índice «En esta página»."""
@@ -681,14 +729,17 @@ def ia_top(m, cc, ci, k, falla=None):
         cards.append(("Lavadora LG error UE, OE, IE: qué significan", "UE: la carga está desbalanceada o la lavadora desnivelada. OE: no desagua (filtro o manguera). IE: no entra agua (llave cerrada o filtro de entrada sucio).", Ucod(m, cc, "lavadoras"), "Ver los códigos"))
     for x in eqs_:
         for f in EQ[x]["fallas"][:nf]: cards.append((_q(x, f[0]), _a(x, f), Uf(m, cc, x, f[0]), "Ver la solución"))
-    for x in eqs_:
-        cards.append((f"Cuánto cuesta reparar {art(cc, x)} {sing(cc, x)} {mn} en {lg}", f"Depende de la falla y la pieza. El técnico revisa en tu casa y te da el valor en {p['moneda']} antes de empezar; no se repara nada sin tu aprobación.", Ucosto(m, cc, x), "Ver precios"))
     if "lavadoras" in eqs_ and m in CODIGOS and m != "lg": cards.append((f"Lavadora {mn} código de error: qué significa", "Cada código indica una falla distinta (desagüe, entrada de agua, motor, balanceo). Aquí está la lista y qué hacer.", Ucod(m, cc, "lavadoras"), "Ver los códigos"))
-    cards += [(f"Servicio técnico {mn} en {lg}: técnico cerca de mí", f"Activa tu ubicación o escribe por WhatsApp: te mostramos el técnico {mn} más cercano a tu barrio.", u_wa, "Escribir por WhatsApp"),
-              (f"Teléfono y WhatsApp del servicio técnico {mn} en {pn}", f"Escribe al {tel} con la marca, el equipo, el modelo y la falla; así te atienden más rápido.", u_wa, "Ver el contacto"),
-              (f"Técnico {mn} urgente a domicilio en {lg}", "Cuéntanos la falla por WhatsApp y te damos el horario más cercano; las fugas de agua y la nevera sin enfriar tienen prioridad.", D_ + Ui(m, cc, "urgencias"), "Pedir visita"),
+    cards += [(f"Técnico {mn} urgente a domicilio en {lg}", "Cuéntanos la falla por WhatsApp y te damos el horario más cercano; las fugas de agua y la nevera sin enfriar tienen prioridad.", D_ + Ui(m, cc, "urgencias"), "Pedir visita"),
               (f"Servicio técnico autorizado {mn} o técnico independiente: ¿qué garantía tiene?", "La reparación incluye garantía sobre la pieza instalada y la mano de obra. Si tu equipo aún está en garantía de fábrica, consúltala antes de reparar por tu cuenta.", D_ + Ui(m, cc, "garantia"), "Ver la garantía"),
               (f"Repuestos originales {mn} en {pn}", "Te decimos qué pieza necesita tu modelo y su disponibilidad antes de instalarla.", D_ + Ui(m, cc, "repuestos"), "Ver repuestos")]
+    cc_ = [(f"Número de servicio técnico {mn} en {lg}", f"El WhatsApp y teléfono del servicio técnico {mn} para {lg} es {tel}. Escribe con el equipo, el modelo y la falla.", u_wa, "Ver el número"),
+           (f"WhatsApp de servicio técnico {mn} cerca de mí", f"Activa tu ubicación en esta página y te mostramos el técnico {mn} más cercano a tu barrio, con su botón de WhatsApp.", u_lg, "Ver el técnico más cercano"),
+           (f"Centro de servicio {mn} cerca de mí en {lg}", f"Atendemos a domicilio en {lg} y sus barrios, sin que tengas que llevar el equipo. Mira cómo funciona el centro de servicio.", D_ + Ui(m, cc, "centro-de-servicio"), "Ver el centro de servicio"),
+           (f"Servicio técnico {mn} a domicilio en {lg}", f"El técnico {mn} llega a tu casa o negocio, diagnostica en el sitio y te da el costo en {p['moneda']} antes de reparar.", D_ + Ui(m, cc, "tecnico-a-domicilio"), "Ver el servicio a domicilio"),
+           (f"Teléfono del servicio técnico {mn} en {pn}", f"Llama o escribe al {tel}. Si no contestan, déjanos un mensaje por WhatsApp y te respondemos.", D_ + Ui(m, cc, "telefono"), "Ver teléfonos"),
+           (f"Cuánto cuesta la visita del técnico {mn} en {lg}", f"Depende del equipo y la falla. El técnico revisa en tu casa y te da el valor en {p['moneda']} antes de empezar; si no lo apruebas, no se repara.", D_ + Ui(m, cc, "precios"), "Ver precios")]
+    cards = cc_ + cards
     ia = '<div class="qac">' + "".join(f'<article class="qa1"><h3>{esc(a)}</h3><p>{esc(rr)}</p><a class="btn" href="{D_ + u if u.startswith("/") else u}">{b}</a></article>' for a, rr, u, b in cards) + "</div>"
     ia += f'<p class="mu">Servicio técnico {esc(mn)} a domicilio en {esc(lg)}, {esc(pn)} · cobertura en {len(p["ciudades"])} ciudades · costo en {esc(p["moneda"])} informado antes de reparar · garantía sobre pieza y mano de obra · WhatsApp {esc(tel)}.</p>'
     return sec(f"Respuesta rápida: ¿dónde encuentro servicio técnico {mn} en {lg}?", r) + sec(f"Datos clave del servicio técnico {mn} en {lg}", ficha) + sec(f"Lo que más buscan sobre {mn} en {lg}", ia)
