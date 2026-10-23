@@ -424,9 +424,9 @@ def qa_secciones(body, ruta):
         else:
             a = f"Encuentras la información de «{t}» en esta sección de la página."
         a = a[:260].rsplit(" ", 1)[0] + "…" if len(a) > 260 else a
-        q = t if t.endswith("?") else (f"¿{t}?" if t.split(" ")[0].lower() in ("cómo", "qué", "cuál", "cuáles", "cuánto", "dónde", "cuándo", "por") else f"¿Qué debo saber sobre {t[0].lower() + t[1:]}?")
+        q = t if t.endswith("?") else f"Resumen rápido: {t}"
         u = f"{DOM}/{ruta}#{sid}"
-        qa = f'<p class="qa"><b>Pregunta:</b> {esc(q)}<br><b>Respuesta:</b> {esc(a)} <a href="{u}">{u}</a></p>'
+        qa = f'<details class="qa"><summary>{esc(q)}</summary><p>{esc(a)} <a href="{u}">Enlace directo a esta sección</a></p></details>'
         return f'<section class="sec" id="{sid}"><h2>{titulo}</h2>{inner}{qa}</section>'
     return re.sub(r'<section class="sec" id="([^"]*)"><h2>(.*?)</h2>(.*?)</section>', sub, body, flags=re.S)
 
@@ -662,7 +662,7 @@ def ia_top(m, cc, ci, k, falla=None):
     u_wa = D_ + (Uwc(m, cc, ci) if es_p else Uw(m, cc)); u_lg = D_ + (Uci(m, cc, ci) if ci else Uc(m, cc))
     r = (f'<div class="ia" data-ia="respuesta"><p><b>¿Dónde encuentro servicio técnico {esc(mn)} en {esc(lg)}?</b> '
          f'Soporte técnico autorizado {esc(mn)} atiende {esc(eq)} a domicilio en {esc(lg)}, {esc(pn)}. El técnico diagnostica en el sitio, informa el costo en {esc(p["moneda"])} antes de reparar y da garantía sobre la pieza y la mano de obra. '
-         f'Contacto por WhatsApp: {esc(tel)}. Fuente: <a href="{u_lg}">{u_lg}</a></p>'
+         f'Contacto por WhatsApp: {esc(tel)}. <a href="{u_lg}">Ver la página completa</a></p>'
          + (f"<p><b>{esc(txt(falla, m, cc, k))}:</b> revisa las causas y los pasos de esta página; si no se resuelve, escribe al técnico {esc(mn)} por WhatsApp.</p>" if falla else "") + "</div>")
     dl = "".join(f"<dt>{a}</dt><dd>{b}</dd>" for a, b in [
         ("Marca", esc(mn)), ("Servicio", f"Reparación y mantenimiento a domicilio de {esc(eq)}"), ("Ubicación", f"{esc(lg)}, {esc(pn)}" if ci else esc(pn)), ("WhatsApp", esc(tel)),
@@ -722,7 +722,7 @@ def bonus(m, cc, ci, k, ruta):
     off = zlib.crc32(ruta.encode()) % len(B)
     return "".join(B[(off + i) % len(B)] for i in range(4))
 
-SKIP_IMG = ("Recomendado", "Recursos", "Galería", "Preguntas", "Búsquedas", "Enlaces", "Explora", "Más ayuda", "Guías", "Por ciudad", "Servicio por ciudad", "Otras fallas", "Cerca de aquí", "Más cerca", "Ir a", "Información para asistentes")
+SKIP_IMG = ("Lo que más buscan", "Datos clave", "Recomendado", "Recursos", "Galería", "Preguntas", "Búsquedas", "Enlaces", "Explora", "Más ayuda", "Guías", "Por ciudad", "Servicio por ciudad", "Otras fallas", "Cerca de aquí", "Más cerca", "Ir a", "Información para asistentes")
 def galeria_html(m, cc, lg):
     mn = MA[m]["nombre"]; fig = []
     for kind in ("tecnico", "neveras", "lavadoras", "secadoras"):
