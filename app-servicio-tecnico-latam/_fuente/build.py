@@ -678,25 +678,30 @@ def ia_top(m, cc, ci, k, falla=None):
            (f"Guías y consejos de {mn} para {pn}", D_ + Ublog(m, cc))] + [(f"{cap(term(cc, x))} {mn} en {pn}", D_ + Ue(m, cc, x)) for x in EQ]
     def _q(x, f0):
         ft = txt(f0, m, cc, x); sg_ = sing(cc, x); r_ = re.sub(rf"^(La|El) {re.escape(sg_)}\s+", "", ft)
-        pre = "Mi " + sg_ + " " + mn + " " if r_ != ft else "Mi " + sg_ + " " + mn + ": "
         r_ = r_ if r_ != ft else ft[:1].lower() + ft[1:]
         r_ = re.sub(rf"\s+dentro de (la|el) {re.escape(sg_)}", " por dentro", r_)
-        return f"{pre}{r_}, ¿qué hago?"
+        r_ = re.sub(r"^no (.*) o hace poco$", r"no \1 o casi no hace", r_)
+        return f"{cap(sg_)} {mn} {r_}"
     def _a(x, f):
         t_ = txt(f[1], m, cc, x); t_ = re.split(r"(?<=[.!?])\s", t_)[0]
-        return "Suele ser: " + t_[:1].lower() + t_[1:170].rstrip(" ,;") + ("" if t_[-1:] in ".!?" else ".")
+        return "Suele ser: " + t_[:1].lower() + t_[1:170].rstrip(" ,;") + ("" if t_[-1:] in ".!?" else ".") + " Revisa los pasos y cuándo llamar al técnico."
     cards = []
     eqs_ = [k] if k else list(EQ)
     nf = 6 if k else 3
+    if m == "samsung" and "neveras" in eqs_:
+        cards.append((f"{cap(sing(cc, 'neveras'))} Samsung no enfría pero el congelador sí", "Revisa que la temperatura no haya cambiado y que el panel no muestre «OF OF» (modo demostración, que apaga el frío). También mira que nada tape las rejillas de aire y que no haya escarcha en el fondo del congelador.", Uf(m, cc, "neveras", EQ["neveras"]["fallas"][0][0]), "Ver los pasos"))
+    if m == "lg" and "lavadoras" in eqs_ and m in CODIGOS:
+        cards.append(("Lavadora LG error UE, OE, IE: qué significan", "UE: la carga está desbalanceada o la lavadora desnivelada. OE: no desagua (filtro o manguera). IE: no entra agua (llave cerrada o filtro de entrada sucio).", Ucod(m, cc, "lavadoras"), "Ver los códigos"))
     for x in eqs_:
         for f in EQ[x]["fallas"][:nf]: cards.append((_q(x, f[0]), _a(x, f), Uf(m, cc, x, f[0]), "Ver la solución"))
     for x in eqs_:
-        cards.append((f"¿Cuánto cuesta arreglar {art(cc, x)} {sing(cc, x)} {mn} en {lg}?", f"El técnico revisa en tu casa y te da el valor en {p['moneda']} antes de empezar. Aquí ves en qué se va el costo.", Ucosto(m, cc, x), "Ver precios"))
-    if "lavadoras" in eqs_ and m in CODIGOS: cards.append((f"¿Qué significa el código de error en mi lavadora {mn}?", "Cada código indica una falla distinta (desagüe, agua, motor, balanceo). Aquí está la lista y qué hacer.", Ucod(m, cc, "lavadoras"), "Ver los códigos"))
-    cards += [(f"Técnico {mn} cerca de mí en {lg}", f"Escríbenos por WhatsApp o activa tu ubicación y te mostramos el técnico {mn} más cercano a tu barrio.", u_wa, "Escribir por WhatsApp"),
-              (f"Necesito un técnico {mn} urgente, ¿vienen hoy?", "Cuéntanos la falla por WhatsApp y te damos el horario más cercano; las fugas y la nevera sin enfriar tienen prioridad.", D_ + Ui(m, cc, "urgencias"), "Pedir visita urgente"),
-              (f"¿La reparación de mi equipo {mn} tiene garantía?", "Sí, sobre la pieza instalada y la mano de obra, confirmada antes de empezar.", D_ + Ui(m, cc, "garantia"), "Ver la garantía"),
-              (f"¿Dónde consigo repuestos {mn} en {pn}?", "Te decimos qué pieza necesita tu modelo y su disponibilidad antes de instalarla.", D_ + Ui(m, cc, "repuestos"), "Ver repuestos")]
+        cards.append((f"Cuánto cuesta reparar {art(cc, x)} {sing(cc, x)} {mn} en {lg}", f"Depende de la falla y la pieza. El técnico revisa en tu casa y te da el valor en {p['moneda']} antes de empezar; no se repara nada sin tu aprobación.", Ucosto(m, cc, x), "Ver precios"))
+    if "lavadoras" in eqs_ and m in CODIGOS and m != "lg": cards.append((f"Lavadora {mn} código de error: qué significa", "Cada código indica una falla distinta (desagüe, entrada de agua, motor, balanceo). Aquí está la lista y qué hacer.", Ucod(m, cc, "lavadoras"), "Ver los códigos"))
+    cards += [(f"Servicio técnico {mn} en {lg}: técnico cerca de mí", f"Activa tu ubicación o escribe por WhatsApp: te mostramos el técnico {mn} más cercano a tu barrio.", u_wa, "Escribir por WhatsApp"),
+              (f"Teléfono y WhatsApp del servicio técnico {mn} en {pn}", f"Escribe al {tel} con la marca, el equipo, el modelo y la falla; así te atienden más rápido.", u_wa, "Ver el contacto"),
+              (f"Técnico {mn} urgente a domicilio en {lg}", "Cuéntanos la falla por WhatsApp y te damos el horario más cercano; las fugas de agua y la nevera sin enfriar tienen prioridad.", D_ + Ui(m, cc, "urgencias"), "Pedir visita"),
+              (f"Servicio técnico autorizado {mn} o técnico independiente: ¿qué garantía tiene?", "La reparación incluye garantía sobre la pieza instalada y la mano de obra. Si tu equipo aún está en garantía de fábrica, consúltala antes de reparar por tu cuenta.", D_ + Ui(m, cc, "garantia"), "Ver la garantía"),
+              (f"Repuestos originales {mn} en {pn}", "Te decimos qué pieza necesita tu modelo y su disponibilidad antes de instalarla.", D_ + Ui(m, cc, "repuestos"), "Ver repuestos")]
     ia = '<div class="qac">' + "".join(f'<article class="qa1"><h3>{esc(a)}</h3><p>{esc(rr)}</p><a class="btn" href="{D_ + u if u.startswith("/") else u}">{b}</a></article>' for a, rr, u, b in cards) + "</div>"
     ia += f'<p class="mu">Servicio técnico {esc(mn)} a domicilio en {esc(lg)}, {esc(pn)} · cobertura en {len(p["ciudades"])} ciudades · costo en {esc(p["moneda"])} informado antes de reparar · garantía sobre pieza y mano de obra · WhatsApp {esc(tel)}.</p>'
     return sec(f"Respuesta rápida: ¿dónde encuentro servicio técnico {mn} en {lg}?", r) + sec(f"Datos clave del servicio técnico {mn} en {lg}", ficha) + sec(f"Lo que más buscan sobre {mn} en {lg}", ia)
