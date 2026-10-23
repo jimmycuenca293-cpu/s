@@ -317,7 +317,7 @@ def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, j
                 j_["mainEntity"] += [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in bnc if q not in _q]; _ya = True
         jsonld = (jsonld or []) + ([] if _ya else [faq_ld(bnc)]) + [{"@context": "https://schema.org", "@type": "WebPage", "name": title, "url": url, "dateModified": HOY, "inLanguage": "es", "speakable": {"@type": "SpeakableSpecification", "cssSelector": [".ia", "h1"]}, "significantLink": [DOM + Uc(m, cc), DOM + Uw(m, cc), DOM + Ufaq(m, cc), DOM + Ublog(m, cc), DOM + Ui(m, cc, "tecnico-a-domicilio")], "potentialAction": {"@type": "CommunicateAction", "name": "Escribir por WhatsApp", "target": wa(PA[cc]["wa"])}}]
     if m and cc:
-        body, _pf = organizar(body, m, cc, ci)
+        body, _pf = organizar(body, m, cc, ci, falla)
         if _pf: jsonld = [j_ for j_ in jsonld if not (isinstance(j_, dict) and j_.get("@type") == "FAQPage")] + [faq_ld(_pf)]
     body, toc = anclar(body)
     if m and (cc or orden): body = inyectar_imgs(body, m, cc, ci, ruta)
@@ -401,6 +401,7 @@ def pills(items): return "".join(f'<a class="pill" href="{u}">{esc(t)}</a>' for 
 
 
 from paises_info import INFO, CIUDAD, RESUMEN, RECURSOS
+from soluciones import guia as guia_falla
 import zlib
 OFICIAL = {"samsung": "https://www.samsung.com/", "lg": "https://www.lg.com/", "whirlpool": "https://www.whirlpool.com/", "mabe": "https://www.mabe.com.mx/",
            "frigidaire": "https://www.frigidaire.com/", "electrolux": "https://www.electrolux.com/", "general-electric": "https://www.geappliances.com/"}
@@ -432,18 +433,18 @@ def qa_secciones(body, ruta):
         return f'<section class="sec" id="{sid}"><h2>{titulo}</h2>{inner}{qa}</section>'
     return re.sub(r'<section class="sec" id="([^"]*)"><h2>(.*?)</h2>(.*?)</section>', sub, body, flags=re.S)
 
-def organizar(body, m, cc, ci):
+def organizar(body, m, cc, ci, falla=None):
     """Ordena las secciones de servicio en un esquema fijo, une las repetidas y descarta el relleno."""
     mn = MA[m]["nombre"]; lg = lugar_de(cc, ci); pn = PA[cc]["nombre"]
     pat = re.compile(r'<section class="sec"><h2>(.*?)</h2>(.*?)</section>', re.S)
     secs = [(re.sub(r"<[^>]+>", "", g.group(1)), g.group(1), g.group(2)) for g in pat.finditer(body)]
     resto = pat.sub("", body)
-    DROP = re.compile(r"^(Contrata al técnico|Errores comunes|Cómo se dice|.*: datos útiles|Cuidado de tus equipos)")
-    GEO = re.compile(r"^(Ciudades|Comunas|Barrios|Por ciudad|Más cerca|Otros WhatsApp)")
+    DROP = re.compile(r"^(Contrata al técnico|Errores comunes|Cómo se dice|.*: datos útiles|Cuidado de tus equipos" + ("|Lo que más buscan|Servicios que ofrecemos|Cómo es la visita|Qué revisa el técnico|Señales|Reparar o reemplazar" if falla else "") + ")")
+    GEO = re.compile(r"^(Ciudades|Comunas|Barrios|Por ciudad|Servicio por ciudad|Más cerca|Otros WhatsApp)")
     FAQ = re.compile(r"^(Más preguntas frecuentes|Preguntas frecuentes)")
     G = [("contacto", re.compile(r"^(Técnicos |Número de WhatsApp|Qué enviar|Qué pasa después)")), ("resp", re.compile(r"^(Respuesta rápida|Datos clave)")),
          ("busca", re.compile(r"^Lo que más buscan")), ("serv", re.compile(r"^(Servicio técnico .*,|Equipos .* que reparamos|Servicios que ofrecemos|Fallas|Modelos|Repuestos y piezas)")),
-         ("visita", re.compile(r"^(Cómo es la visita|Qué revisa)")), ("geo", GEO), ("faq", FAQ),
+         ("visita", re.compile(r"^(Cómo es la visita|Qué revisa el técnico)")), ("geo", GEO), ("faq", FAQ),
          ("util", re.compile(r"^(Señales|Reparar o reemplazar|Cómo elegir)")), ("links", re.compile(r"^(Explora|Recursos|Búsquedas relacionadas|Más ayuda|Guías)"))]
     orden = ["nuevo"] + [g for g, _ in G]
     cub = {g: [] for g in orden}
@@ -696,7 +697,7 @@ def ia_top(m, cc, ci, k, falla=None):
     es_p = bool(ci) and ci in p["ppal"]
     u_wa = D_ + (Uwc(m, cc, ci) if es_p else Uw(m, cc)); u_lg = D_ + (Uci(m, cc, ci) if ci else Uc(m, cc))
     r = (f'<div class="ia" data-ia="respuesta"><p><b>¿Dónde encuentro servicio técnico {esc(mn)} en {esc(lg)}?</b> '
-         f'Soporte técnico autorizado {esc(mn)} atiende {esc(eq)} a domicilio en {esc(lg)}, {esc(pn)}. El técnico diagnostica en el sitio, informa el costo en {esc(p["moneda"])} antes de reparar y da garantía sobre la pieza y la mano de obra. '
+         f'Soporte técnico autorizado {esc(mn)} atiende {esc(eq)} a domicilio en {esc(lg) if lg == pn else esc(lg) + ', ' + esc(pn)}. El técnico diagnostica en el sitio, informa el costo en {esc(p["moneda"])} antes de reparar y da garantía sobre la pieza y la mano de obra. '
          f'Contacto por WhatsApp: {esc(tel)}. <a href="{u_lg}">Ver la página completa</a></p>'
          + (f"<p><b>{esc(txt(falla, m, cc, k))}:</b> revisa las causas y los pasos de esta página; si no se resuelve, escribe al técnico {esc(mn)} por WhatsApp.</p>" if falla else "") + "</div>")
     dl = "".join(f"<dt>{a}</dt><dd>{b}</dd>" for a, b in [
@@ -756,7 +757,7 @@ def bonus(m, cc, ci, k, ruta):
     off = zlib.crc32(ruta.encode()) % len(B)
     return "".join(B[(off + i) % len(B)] for i in range(4))
 
-SKIP_IMG = ("Lo que más buscan", "Datos clave", "Recomendado", "Recursos", "Galería", "Preguntas", "Búsquedas", "Enlaces", "Explora", "Más ayuda", "Guías", "Por ciudad", "Servicio por ciudad", "Otras fallas", "Cerca de aquí", "Más cerca", "Ir a", "Información para asistentes")
+SKIP_IMG = ("Causas más comunes", "Preguntas sobre esta falla", "Lo que más buscan", "Datos clave", "Recomendado", "Recursos", "Galería", "Preguntas", "Búsquedas", "Enlaces", "Explora", "Más ayuda", "Guías", "Por ciudad", "Servicio por ciudad", "Otras fallas", "Cerca de aquí", "Más cerca", "Ir a", "Información para asistentes")
 def galeria_html(m, cc, lg):
     mn = MA[m]["nombre"]; fig = []
     for kind in ("tecnico", "neveras", "lavadoras", "secadoras"):
@@ -921,12 +922,30 @@ def build():
                           (f"¿Es peligroso seguir usando mi {sing(cc,k)} {mn} así?", f"Nivel de urgencia: {f[2].lower()}. " + txt(f[3], m, cc, k)),
                           (f"¿Cuánto cuesta arreglar esta falla en {pn}?", f"Depende de la pieza y la mano de obra. El técnico {mn} confirma el costo en {p['moneda']} antes de reparar."),
                           (f"¿Puedo arreglarlo yo mismo?", "Puedes revisar lo básico (energía, llaves de agua, limpieza). Para piezas internas conviene un técnico, para evitar daños mayores.")]
-                    body = sec("¿Por qué pasa?", f"<p>{esc(txt(f[1],m,cc,k))}</p>") + sec("Qué hacer mientras llega el técnico", f"<p>{esc(txt(f[3],m,cc,k))}</p><p><span class='urg'>Urgencia: {esc(f[2])}</span></p>") \
-                        + sec("Preguntas frecuentes", faqh(fq)) + sec("Otras fallas frecuentes", otras) + sec("Búsquedas relacionadas", kw_html(m, cc, k=k, falla=f[0])) \
-                        + sec("Servicio por ciudad", pills([(c, Ucek(m, cc, c, k)) for c in p["ppal"]]))
+                    g_ = guia_falla(f[0], k)
+                    wl_ = wa(p["wa"], f"Hola, necesito servicio técnico {mn} en {pn}: {ft}")
+                    if g_:
+                        T_ = lambda x: txt(x, m, cc, k)
+                        pas_ = "".join(f"<li>{esc(T_(x))}</li>" for x in g_["pasos"])
+                        tb_ = "".join(f"<tr><td><b>{esc(T_(a))}</b></td><td>{esc(T_(b_))}</td><td>{esc(T_(c_))}</td><td><span class='quien {'t' if d_ == 'Técnico' else 'u'}'>{esc(d_)}</span></td></tr>" for a, b_, c_, d_ in g_["causas"])
+                        body = sec(f"Resumen: {ft}", f"<p>{esc(T_(g_['resumen']))}</p><p><span class='urg'>Urgencia: {esc(f[2])}</span></p>") \
+                            + sec("Qué revisar primero, paso a paso", f"<ol class='pasos'>{pas_}</ol><p class='mu'>Tiempo aproximado: 15 a 30 minutos. No necesitas herramientas especiales; si un paso te da dudas, no lo hagas y escribe al técnico.</p>") \
+                            + sec("Causas más comunes y cómo reconocerlas", f"<div class='tbl'><table><thead><tr><th>Causa</th><th>Cómo reconocerla</th><th>Qué se hace</th><th>Quién</th></tr></thead><tbody>{tb_}</tbody></table></div>") \
+                            + sec("Qué NO hacer", "<ul class='no'>" + "".join(f"<li>{esc(T_(x))}</li>" for x in g_["nohacer"]) + "</ul>") \
+                            + sec(f"Cuándo llamar al técnico {mn}", "<ul>" + "".join(f"<li>{esc(T_(x))}</li>" for x in g_["llamar"]) + f"</ul><p><a class='btn wa' data-evt='whatsapp' href='{wl_}' rel='noopener'>Escribir al técnico {esc(mn)} por WhatsApp</a></p>") \
+                            + sec(f"Qué hace el técnico {mn} en la visita", f"<p>{esc(T_(g_['visita']))}</p><p><b>Cuánto toma:</b> {esc(T_(g_['tiempo']))}</p><p><b>Costo:</b> {esc(T_(g_['costo']))} Moneda: {esc(p['moneda'])}.</p><h3>Cómo evitar que vuelva a pasar</h3><ul>" + "".join(f"<li>{esc(T_(x))}</li>" for x in g_["prevencion"]) + "</ul>") \
+                            + sec("Preguntas sobre esta falla", faqh([(T_(q_), T_(a_)) for q_, a_ in g_["faq"]])) \
+                            + sec("Otras fallas frecuentes", otras) + sec("Búsquedas relacionadas", kw_html(m, cc, k=k, falla=f[0])) \
+                            + sec("Servicio por ciudad", pills([(c, Ucek(m, cc, c, k)) for c in p["ppal"]]))
+                        ldx_ = [{"@context": "https://schema.org", "@type": "HowTo", "name": f"{ft}: qué revisar antes de llamar al técnico {mn}", "step": [{"@type": "HowToStep", "position": i_ + 1, "text": T_(x)} for i_, x in enumerate(g_["pasos"])]}]
+                    else:
+                        ldx_ = []
+                        body = sec("¿Por qué pasa?", f"<p>{esc(txt(f[1],m,cc,k))}</p>") + sec("Qué hacer mientras llega el técnico", f"<p>{esc(txt(f[3],m,cc,k))}</p><p><span class='urg'>Urgencia: {esc(f[2])}</span></p>") \
+                            + sec("Preguntas frecuentes", faqh(fq)) + sec("Otras fallas frecuentes", otras) + sec("Búsquedas relacionadas", kw_html(m, cc, k=k, falla=f[0])) \
+                            + sec("Servicio por ciudad", pills([(c, Ucek(m, cc, c, k)) for c in p["ppal"]]))
                     page(Uf(m, cc, k, f[0])[1:], f"{ft} – soporte técnico autorizado {mn} {pn}", f"{ft} en tu {sing(cc,k)} {mn} ({pn}): causas, qué hacer y cuándo llamar al técnico. Solicita servicio a domicilio por WhatsApp.",
                          f"{ft}: soporte técnico autorizado {mn} en {pn}", f"Causas, qué hacer y técnico {mn} a domicilio.", body, bc=bc_k, m=m, cc=cc, rel=(lambda c2: Uf(m, c2, k, f[0])), eq=k, falla=txt(f[0], m, cc, k),
-                         jsonld=[faq_ld(fq), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), (cap(term(cc, k)), DOM + Ue(m, cc, k)), (ft, DOM + Uf(m, cc, k, f[0]))])])
+                         jsonld=ldx_ + [faq_ld(fq), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), (cap(term(cc, k)), DOM + Ue(m, cc, k)), (ft, DOM + Uf(m, cc, k, f[0]))])])
                 # mantenimiento
                 mant = "".join(f"<li>{esc(txt(x,m,cc,k))}</li>" for x in e["mant"])
                 page(Umant(m, cc, k)[1:], f"Soporte técnico autorizado {mn} {pn}: mantenimiento de {term(cc,k)}", f"Cómo cuidar tu {sing(cc,k)} {mn} y cuándo pedir mantenimiento a domicilio en {pn}.",
