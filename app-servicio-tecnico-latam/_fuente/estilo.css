@@ -75,3 +75,4 @@ dl.res,.res dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;backgrou
 .foot .fnum{font-size:1.2rem;font-weight:800;color:#fff}
 /* 8. utilidades e impresión */
 @media print{.nav,.fab,.band,.foot,.btn{display:none!important}.sec{box-shadow:none}}
+.qa{margin:16px 0 0;padding:12px 14px;border-radius:var(--r-s);background:var(--tint);border-left:4px solid var(--acc,var(--mc));font-size:.88rem;color:var(--mu);word-break:break-word}.qa b{color:var(--tx)}.qa a{color:var(--mc);font-size:.8rem}

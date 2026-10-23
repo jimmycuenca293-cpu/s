@@ -25,14 +25,17 @@ MODS = {}
 EQB = {m: _cargar(m) for m in MA}   # contenido propio de cada marca: no se mezclan términos
 EQ = EQB["samsung"]
 ESTRICTO = "--estricto" in sys.argv
-from ciudades import C as CIU, CLIMA, TIPOF
+from ciudades import C as CIU, CLIMA, TIPOF, PPAL, SECTOR_CL
+RM = "Región Metropolitana de Santiago"
 CITYINFO = {}
 for _cc, _lst in CIU.items():
     _orig = PA[_cc]["ciudades"]; _nueva = dict(_orig); CITYINFO[_cc] = {}
     for _n, _reg, _la, _lo, _t in _lst:
         CITYINFO[_cc][_n] = (_reg, _t)
         if _n not in _nueva: _nueva[_n] = [_la, _lo]
-    PA[_cc]["ciudades"] = _nueva; PA[_cc]["ppal"] = list(_nueva)[:12]
+    PA[_cc]["ciudades"] = _nueva
+    _pp = PPAL.get(_cc)
+    PA[_cc]["ppal"] = list(_nueva) if _pp == "TODAS" else (list(dict.fromkeys(x for x in _pp if x in _nueva)) if _pp else list(_nueva)[:12])
 esc = html.escape
 
 def slug(s):
@@ -313,6 +316,7 @@ def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, j
                 j_["mainEntity"] += [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in bnc if q not in _q]; _ya = True
         jsonld = (jsonld or []) + ([] if _ya else [faq_ld(bnc)]) + [{"@context": "https://schema.org", "@type": "WebPage", "name": title, "url": url, "dateModified": HOY, "inLanguage": "es", "speakable": {"@type": "SpeakableSpecification", "cssSelector": [".ia", "h1"]}, "significantLink": [DOM + Uc(m, cc), DOM + Uw(m, cc), DOM + Ufaq(m, cc), DOM + Ublog(m, cc), DOM + Ui(m, cc, "tecnico-a-domicilio")], "potentialAction": {"@type": "CommunicateAction", "name": "Escribir por WhatsApp", "target": wa(PA[cc]["wa"])}}]
     body, toc = anclar(body)
+    if m and cc: body = qa_secciones(body, ruta)
     if m and (cc or orden): body = inyectar_imgs(body, m, cc, ci, ruta)
     ld = "".join(f'<script type="application/ld+json">{json.dumps(j, ensure_ascii=False)}</script>' for j in (jsonld or []))
     ordh = ""
@@ -399,6 +403,32 @@ OFICIAL = {"samsung": "https://www.samsung.com/", "lg": "https://www.lg.com/", "
            "frigidaire": "https://www.frigidaire.com/", "electrolux": "https://www.electrolux.com/", "general-electric": "https://www.geappliances.com/"}
 WIKI_PAIS = {"co": "Colombia", "pa": "Panamá", "gt": "Guatemala", "sv": "El_Salvador", "cr": "Costa_Rica", "ec": "Ecuador", "py": "Paraguay", "cl": "Chile"}
 
+def qa_secciones(body, ruta):
+    """Al final de cada sección: pregunta, respuesta corta y enlace directo a esa sección (para que las IA la citen)."""
+    SK = ("Preguntas", "Más preguntas", "Búsquedas", "Respuesta directa", "Recomendado", "Datos clave", "Recursos", "Explora", "Guías", "Enlaces", "En esta página", "Por ciudad", "Servicio por ciudad")
+    def sub(mm):
+        sid, titulo, inner = mm.group(1), mm.group(2), mm.group(3)
+        t = re.sub(r"<[^>]+>", "", titulo)
+        if any(x in t for x in SK): return mm.group(0)
+        pil = [re.sub(r"<[^>]+>", "", x) for x in re.findall(r'<a class="pill"[^>]*>(.*?)</a>', inner)]
+        h3s = [re.sub(r"<[^>]+>", "", x) for x in re.findall(r"<h3>(.*?)</h3>", inner)]
+        ps_ = re.findall(r"<(?:p|li)(?: [^>]*)?>(.*?)</(?:p|li)>", re.sub(r'<a class="pill"[^>]*>.*?</a>', "", inner), flags=re.S)
+        ptxt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", " ".join(ps_))).strip()
+        if len(ptxt) >= 40:
+            fr = re.split(r"(?<=[.!?])\s", ptxt); a = " ".join(fr[:2])
+        elif pil or h3s:
+            bs_ = [re.sub(r"<[^>]+>", "", x) for x in re.findall(r"<b>(.*?)</b>", inner)]
+            full = [x for x in (h3s + bs_ + pil) if x not in ("WhatsApp", "Más lugares")]; it = full[:10]
+            a = "Incluye: " + ", ".join(it) + ("." if len(full) <= 10 else " y más.")
+        else:
+            a = f"Encuentras la información de «{t}» en esta sección de la página."
+        a = a[:260].rsplit(" ", 1)[0] + "…" if len(a) > 260 else a
+        q = t if t.endswith("?") else (f"¿{t}?" if t.split(" ")[0].lower() in ("cómo", "qué", "cuál", "cuáles", "cuánto", "dónde", "cuándo", "por") else f"¿Qué debo saber sobre {t[0].lower() + t[1:]}?")
+        u = f"{DOM}/{ruta}#{sid}"
+        qa = f'<p class="qa"><b>Pregunta:</b> {esc(q)}<br><b>Respuesta:</b> {esc(a)} <a href="{u}">{u}</a></p>'
+        return f'<section class="sec" id="{sid}"><h2>{titulo}</h2>{inner}{qa}</section>'
+    return re.sub(r'<section class="sec" id="([^"]*)"><h2>(.*?)</h2>(.*?)</section>', sub, body, flags=re.S)
+
 def anclar(body):
     """Pone id a cada sección y arma el índice «En esta página»."""
     ids = []
@@ -483,7 +513,7 @@ def guia_pais(m, cc):
         f"<p>El soporte técnico autorizado {esc(mn)} en {esc(pn)} atiende neveras, lavadoras y secadoras en {len(p['ciudades'])} ciudades de {len(set(r for r, t in CITYINFO[cc].values()))} {esc(R['div'])}. "
         f"Cada ciudad tiene su página con técnicos, clima, fallas frecuentes y preguntas.</p>"))
     reg = {}
-    for c, (r, t) in CITYINFO[cc].items(): reg.setdefault(r, []).append(c)
+    for c, (r, t) in CITYINFO[cc].items(): reg.setdefault(etiqueta_region(cc, c, r), []).append(c)
     html = "".join(f"<h3>{esc(r)}</h3>" + pills([(c, Uci(m, cc, c)) for c in cs]) for r, cs in reg.items())
     out.append(sec(f"Ciudades con servicio técnico {mn} en {pn}, por {R['div'][:-1] if R['div'].endswith('s') else R['div']}", html))
     tipos = {}
@@ -505,15 +535,15 @@ def guia_pais(m, cc):
     return "".join(out)
 
 def guia_ciudad(m, cc, ci):
-    mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; reg, tipo = CITYINFO[cc].get(ci, (pn, "templado")); cn, ce = CLIMA[tipo]
-    out = [sec(f"{ci}: {cn} en {reg}", f"<p>{esc(ci)} es una ciudad de {esc(reg)}, {esc(pn)}, con {esc(cn)}. {esc(ce)}</p>"
+    mn = MA[m]["nombre"]; p = PA[cc]; pn = PN(cc, ci); reg, tipo = CITYINFO[cc].get(ci, (pn, "templado")); cn, ce = CLIMA[tipo]
+    noun = "comuna" if es_comuna(cc, ci) else "ciudad"; reg_t = f"{etiqueta_region(cc, ci, reg)}" if es_comuna(cc, ci) else reg
+    out = [sec(f"{ci}: {cn} en {reg_t}", f"<p>{esc(ci)} es una {noun} de {esc(reg_t)}, {esc(pn)}, con {esc(cn)}. {esc(ce)}</p>"
         f"<p>El servicio técnico {esc(mn)} en {esc(ci)} atiende {esc(term(cc,'neveras'))}, {esc(term(cc,'lavadoras'))} y {esc(term(cc,'secadoras'))} a domicilio, en el centro y en los barrios cercanos.</p>")]
     f = "".join(f"<h3>{esc(cap(term(cc, k)))} {esc(mn)} en {esc(ci)}</h3><p>{esc(TIPOF[tipo][k])}</p>" for k in EQ)
     out.append(sec(f"Fallas frecuentes de equipos {mn} en {ci}", f))
-    mates = [c for c, (r, t) in CITYINFO[cc].items() if r == reg and c != ci][:10]
-    otras = [c for c in list(p["ciudades"])[:10] if c != ci and c not in mates]
-    cerca = pills([(c, Uci(m, cc, c)) for c in mates]) if mates else ""
-    out.append(sec(f"Otras ciudades con servicio técnico {mn} en {pn}", (f"<h3>En {esc(reg)}</h3>{cerca}" if cerca else "") + "<h3>Más ciudades</h3>" + pills([(c, Uci(m, cc, c)) for c in otras])))
+    mates = cercanas(cc, ci, 12)
+    otras = [c for c in p["ppal"][:12] if c != ci and c not in mates]
+    out.append(sec(f"{'Comunas' if noun == 'comuna' else 'Ciudades'} cercanas a {ci} con servicio técnico {mn}", pills([(c, Uci(m, cc, c)) for c in mates]) + (("<h3>Más lugares</h3>" + pills([(c, Uci(m, cc, c)) for c in otras])) if otras else "")))
     return "".join(out), mates
 
 
@@ -523,7 +553,7 @@ def Ui(m, cc, it): return _u(m, it, PS[cc])
 def Uic(m, cc, ci): return _u(m, "tecnico-a-domicilio", slugloc(ci, cc))
 
 def intent_data(it, m, cc, ci=None):
-    mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; lg = lugar_de(cc, ci); tel = p["tel"] or "por WhatsApp"
+    mn = MA[m]["nombre"]; p = PA[cc]; pn = PN(cc, ci); lg = lugar_de(cc, ci); tel = p["tel"] or "por WhatsApp"
     n, l, sec_ = term(cc, "neveras"), term(cc, "lavadoras"), term(cc, "secadoras")
     eq = f"{n}, {l} y {sec_} {mn}"
     D = {
@@ -565,6 +595,19 @@ def Uw(m, cc): return _u(m, "whatsapp", PS[cc])
 def Uwc(m, cc, ci): return _u(m, "whatsapp", slugloc(ci, cc))
 def Ublog(m, cc): return _u(m, "blog", PS[cc])
 def Upost(m, cc, slug_): return _u(m, "blog", slug_, PS[cc])
+
+def es_comuna(cc, ci): return cc == "cl" and bool(ci) and CITYINFO["cl"].get(ci, ("", ""))[0] == RM
+def PN(cc, ci=None): return "Santiago de Chile" if es_comuna(cc, ci) else PA[cc]["nombre"]
+def etiqueta_region(cc, c, r): return f"Santiago de Chile · {SECTOR_CL[c]}" if (cc == "cl" and r == RM and c in SECTOR_CL) else r
+import math
+def cercanas(cc, ci, n=10):
+    la, lo = PA[cc]["ciudades"][ci]; L = []
+    for c2, (a, b) in PA[cc]["ciudades"].items():
+        if c2 == ci: continue
+        x = (a - la) * math.pi / 180; y = (b - lo) * math.pi / 180
+        h = math.sin(x / 2) ** 2 + math.cos(la * math.pi / 180) * math.cos(a * math.pi / 180) * math.sin(y / 2) ** 2
+        L.append((2 * 6371 * math.asin(math.sqrt(h)), c2))
+    return [c for d, c in sorted(L)[:n]]
 
 def lugar_de(cc, ci): return ci or PA[cc]["nombre"]
 
@@ -612,7 +655,7 @@ def faq_banco(m, cc, ci=None, k=None, falla=None):
     return out
 
 def ia_top(m, cc, ci, k, falla=None):
-    mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; lg = lugar_de(cc, ci); tel = p["tel"] or "por WhatsApp"; D_ = DOM
+    mn = MA[m]["nombre"]; p = PA[cc]; pn = PN(cc, ci); lg = lugar_de(cc, ci); tel = p["tel"] or "por WhatsApp"; D_ = DOM
     eq = f"{term(cc,k)} {mn}" if k else f"{term(cc,'neveras')}, {term(cc,'lavadoras')} y {term(cc,'secadoras')} {mn}"
     es_p = bool(ci) and ci in p["ppal"]
     u_wa = D_ + (Uwc(m, cc, ci) if es_p else Uw(m, cc)); u_lg = D_ + (Uci(m, cc, ci) if ci else Uc(m, cc))
@@ -768,25 +811,25 @@ def build():
                       (f"¿Cuánto tarda el técnico {mn} en llegar a {ci}?", "Depende de la zona y de la urgencia; te confirmamos el horario por WhatsApp apenas recibimos tu mensaje."),
                       (f"¿El clima de {ci} afecta mi equipo {mn}?", f"{ci} tiene {cn}. {ce}"),
                       (f"¿Atienden fuera del centro de {ci}?", f"Sí, en barrios y zonas cercanas de {ci}, {reg}."),
-                      (f"¿Qué otras ciudades de {reg} atienden?", ("Atendemos " + ", ".join(mates[:6]) + " y más.") if mates else f"Atendemos varias ciudades de {pn}; mira la lista en esta página.")] + faq_gen(m, cc, ci)[2:6]
+                      (f"¿Qué otras ciudades de {reg} atienden?", ("Atendemos " + ", ".join(mates[:6]) + " y más.") if mates else f"Atendemos varias ciudades de {PN(cc, ci)}; mira la lista en esta página.")] + faq_gen(m, cc, ci)[2:6]
                 th = "".join(f'<div class="cd"><b>{esc(t["n"])}</b><br><span style="color:var(--mu)">{esc(t["z"])}, {esc(ci)}</span><p><a class="pill" data-evt="whatsapp" href="{wa(t["w"], f"Hola, necesito servicio técnico {mn} en {ci}")}" rel="noopener">WhatsApp</a></p></div>' for t in tecs)
                 zc = [(n, Uz(m, cc, n)) for n, t, c in zs if c == ci]
                 es_p = ci in p["ppal"]
                 eqh = "".join(f'<a class="cd" href="{Ucek(m,cc,ci,k) if es_p else Ue(m,cc,k)}"><img src="{imgk(m,cc,k,1)}" alt="{esc(ALT(m,k,ci))}" loading="lazy"><h3>{esc(cap(term(cc,k)))} {esc(mn)} en {esc(ci if es_p else pn)}</h3></a>' for k in EQ)
                 body = sec(f"Técnicos {mn} en {ci}", f'<div class="g">{th}</div>') + gc + sec(f"Equipos {mn} que reparamos en {ci}", f'<div class="g">{eqh}</div>') \
                     + (sec(f"Barrios de {ci} donde atendemos", pills(zc)) if zc else "") + sec(f"Preguntas frecuentes en {ci}", faqh(fq)) + sec("Búsquedas relacionadas", kw_html(m, cc, ci=ci))
-                page(Uci(m, cc, ci)[1:], f"Soporte técnico autorizado {mn} {ci}, {pn}: {term(cc,'neveras')}, lavadoras y secadoras",
-                     f"Servicio técnico {mn} cerca de ti en {ci}, {reg} ({pn}): reparación a domicilio de {term(cc,'neveras')}, {term(cc,'lavadoras')} y {term(cc,'secadoras')} {mn}. WhatsApp del técnico más cercano.",
-                     f"Soporte técnico autorizado {mn} en {ci}", f"Técnico {mn} a domicilio en {ci}, {reg}, {pn}.", body, bc=bc_p, m=m, cc=cc, ci=ci, galeria=True, rel=None,
+                page(Uci(m, cc, ci)[1:], f"Soporte técnico autorizado {mn} {ci}, {PN(cc, ci)}: {term(cc,'neveras')}, lavadoras y secadoras",
+                     f"Servicio técnico {mn} cerca de ti en {ci}, {reg} ({PN(cc, ci)}): reparación a domicilio de {term(cc,'neveras')}, {term(cc,'lavadoras')} y {term(cc,'secadoras')} {mn}. WhatsApp del técnico más cercano.",
+                     f"Soporte técnico autorizado {mn} en {ci}", f"Técnico {mn} a domicilio en {ci}, {reg}, {PN(cc, ci)}.", body, bc=bc_p, m=m, cc=cc, ci=ci, galeria=True, rel=None,
                      jsonld=[svc_ld(m, cc, ci), faq_ld(fq), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), (ci, DOM + Uci(m, cc, ci))])])
                 for k, e in (EQ.items() if es_p else []):
                     fq = faq_gen(m, cc, ci, k) + [(txt(q, m, cc, k), txt(a, m, cc, k)) for q, a in e["faq"][:3]]
                     fl = pills([(txt(f[0], m, cc, k), Uf(m, cc, k, f[0])) for f in e["fallas"][:6]])
                     body = sec(f"Fallas frecuentes en {term(cc,k)} {mn} en {ci}", fl) + sec(f"Preguntas frecuentes", faqh(fq)) + sec("Búsquedas relacionadas", kw_html(m, cc, ci=ci, k=k)) \
-                        + sec("Más cerca de ti", pills([(f"{mn} en {ci}", Uci(m, cc, ci)), (f"{cap(term(cc,k))} {mn} en {pn}", Ue(m, cc, k))]))
+                        + sec("Más cerca de ti", pills([(f"{mn} en {ci}", Uci(m, cc, ci)), (f"{cap(term(cc,k))} {mn} en {PN(cc, ci)}", Ue(m, cc, k))]))
                     t = f"Soporte técnico autorizado {mn}: {term(cc,k)} en {ci}"
-                    page(Ucek(m, cc, ci, k)[1:], f"{t}, {pn}: técnico a domicilio", f"{t}: técnico {mn} a domicilio en {ci}, {pn}. Diagnóstico, repuestos y garantía. Pide tu solicitud por WhatsApp.", t,
-                         f"Técnico {mn} a domicilio en {ci}, {pn}.", body, bc=bc_p + [(ci, Uci(m, cc, ci))], m=m, cc=cc, ci=ci, rel=None, eq=k,
+                    page(Ucek(m, cc, ci, k)[1:], f"{t}, {PN(cc, ci)}: técnico a domicilio", f"{t}: técnico {mn} a domicilio en {ci}, {PN(cc, ci)}. Diagnóstico, repuestos y garantía. Pide tu solicitud por WhatsApp.", t,
+                         f"Técnico {mn} a domicilio en {ci}, {PN(cc, ci)}.", body, bc=bc_p + [(ci, Uci(m, cc, ci))], m=m, cc=cc, ci=ci, rel=None, eq=k,
                          jsonld=[svc_ld(m, cc, ci, k), faq_ld(fq), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), (ci, DOM + Uci(m, cc, ci)), (cap(term(cc, k)), DOM + Ucek(m, cc, ci, k))])])
             # ---- barrios / zonas
             for n, tipo, ci in zs:
@@ -863,7 +906,7 @@ def build():
                     + sec(f"Qué pasa después de escribir al WhatsApp {mn} de {lg}", "<ol><li>Recibimos tu mensaje y lo pasamos al técnico más cercano a tu barrio.</li><li>El técnico confirma horario y datos del equipo.</li><li>Diagnostica en tu casa y te da el costo antes de reparar.</li><li>Repara y te explica la garantía.</li></ol>") \
                     + sec(f"Otros WhatsApp del servicio técnico {mn} en {pn}", pills([(f"WhatsApp {mn} {c2}", Uwc(m, cc, c2)) for c2 in p["ppal"] if c2 != ci] + ([(f"WhatsApp {mn} {pn}", Uw(m, cc))] if ci else []))) \
                     + sec("Búsquedas relacionadas", kw_html(m, cc, ci=ci))
-                page(ru[1:], f"WhatsApp servicio técnico {mn} {lg}: número y atención", f"WhatsApp del servicio técnico {mn} en {lg}, {pn}: {tel}. Escribe con tu equipo y tu falla y un técnico te responde con horario y costo antes de reparar.",
+                page(ru[1:], f"WhatsApp servicio técnico {mn} {lg}: número y atención", f"WhatsApp del servicio técnico {mn} en {lg}, {PN(cc, ci)}: {tel}. Escribe con tu equipo y tu falla y un técnico te responde con horario y costo antes de reparar.",
                      f"WhatsApp del servicio técnico {mn} en {lg}", f"Número {tel}. Técnico {mn} a domicilio.", body, bc=bc_b, m=m, cc=cc, ci=ci,
                      rel=((lambda c2, m=m: Uw(m, c2)) if not ci else None), jsonld=[svc_ld(m, cc, ci), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), (f"WhatsApp {lg}", DOM + ru)])])
             # blog
@@ -914,7 +957,7 @@ def build():
                  sec("Marca registrada", f"<p>{esc(mn2)} y su logo son marcas de su propietario. Se usan para identificar los equipos que reparamos.</p>")
                  + sec("Información del sitio", "<p>Los textos del sitio son orientativos: el diagnóstico, el costo y la garantía los confirma el técnico después de revisar tu equipo.</p>"), bc=bcm, m=m2, cc=c2, orden=False, fab=False, noindex=True)
             reg3 = {}
-            for ci2, (r2, t2) in CITYINFO[c2].items(): reg3.setdefault(r2, []).append(ci2)
+            for ci2, (r2, t2) in CITYINFO[c2].items(): reg3.setdefault(etiqueta_region(c2, ci2, r2), []).append(ci2)
             ciud = "".join(f"<h3>{esc(r2)}</h3>" + pills([(ci2, Uci(m2, c2, ci2)) for ci2 in cs2]) for r2, cs2 in reg3.items())
             serv = pills([(f"Servicio técnico {mn2} {pn2}", Uc(m2, c2)), (f"WhatsApp {mn2} {pn2}", Uw(m2, c2)), (f"Blog {mn2} {pn2}", Ublog(m2, c2)), ("Preguntas frecuentes", Ufaq(m2, c2)), ("Cerca de mí", Ucerca(m2, c2))] + [(cap(term(c2, k)), Ue(m2, c2, k)) for k in EQ] + [(intent_data(x, m2, c2)[2], Ui(m2, c2, x)) for x in INTENTS])
             barr = pills([(n2, Uz(m2, c2, n2)) for n2, t2, c3 in zonas_de(c2)])
