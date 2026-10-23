@@ -545,6 +545,10 @@ def extras(m, cc, ci, k, ruta, galeria=False):
     return "".join(out)
 
 
+def prov_html(grupos):
+    """Lista compacta: una fila por provincia o región, con sus ciudades en una sola línea de enlaces."""
+    return '<ul class="prov">' + "".join(f'<li><b>{esc(r)}</b><span>' + ", ".join(f'<a href="{u}">{esc(c)}</a>' for c, u in cs) + "</span></li>" for r, cs in grupos) + "</ul>"
+
 def guia_pais(m, cc):
     mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; I = INFO[cc]; R = RESUMEN[cc]
     out = []
@@ -556,7 +560,7 @@ def guia_pais(m, cc):
         f"Cada ciudad tiene su página con técnicos, fallas frecuentes, costos y preguntas.</p>"))
     reg = {}
     for c, (r, t) in CITYINFO[cc].items(): reg.setdefault(etiqueta_region(cc, c, r), []).append(c)
-    html = "".join(f"<h3>{esc(r)}</h3>" + pills([(c, Uci(m, cc, c)) for c in cs]) for r, cs in reg.items())
+    html = prov_html([(r, [(c, Uci(m, cc, c)) for c in cs]) for r, cs in reg.items()])
     out.append(sec(f"Ciudades con servicio técnico {mn} en {pn}, por {R['div'][:-1] if R['div'].endswith('s') else R['div']}", html))
     tipos = {}
     for c, (r, t) in CITYINFO[cc].items(): tipos.setdefault(t, []).append(c)
@@ -1036,7 +1040,7 @@ def build():
                  + sec("Información del sitio", "<p>Los textos del sitio son orientativos: el diagnóstico, el costo y la garantía los confirma el técnico después de revisar tu equipo.</p>"), bc=bcm, m=m2, cc=c2, orden=False, fab=False, noindex=True)
             reg3 = {}
             for ci2, (r2, t2) in CITYINFO[c2].items(): reg3.setdefault(etiqueta_region(c2, ci2, r2), []).append(ci2)
-            ciud = "".join(f"<h3>{esc(r2)}</h3>" + pills([(ci2, Uci(m2, c2, ci2)) for ci2 in cs2]) for r2, cs2 in reg3.items())
+            ciud = prov_html([(r2, [(ci2, Uci(m2, c2, ci2)) for ci2 in cs2]) for r2, cs2 in reg3.items()])
             serv = pills([(f"Servicio técnico {mn2} {pn2}", Uc(m2, c2)), (f"WhatsApp {mn2} {pn2}", Uw(m2, c2)), (f"Blog {mn2} {pn2}", Ublog(m2, c2)), ("Preguntas frecuentes", Ufaq(m2, c2)), ("Cerca de mí", Ucerca(m2, c2))] + [(cap(term(c2, k)), Ue(m2, c2, k)) for k in EQ] + [(intent_data(x, m2, c2)[2], Ui(m2, c2, x)) for x in INTENTS])
             barr = pills([(n2, Uz(m2, c2, n2)) for n2, t2, c3 in zonas_de(c2)])
             page(Umapc(m2, c2)[1:], f"Mapa del sitio {mn2} {pn2}: ciudades y servicios", f"Todas las ciudades y servicios del soporte técnico {mn2} en {pn2}.", f"Mapa del sitio: soporte técnico autorizado {mn2} en {pn2}", "Todo en un solo lugar.",
