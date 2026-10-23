@@ -210,6 +210,8 @@ def Uz(m, cc, n):
 def Uf(m, cc, k, f0): return _u(m, slug(txt(f0, m, cc, k)), PS[cc])
 def Ufaq(m, cc): return _u(m, "preguntas-frecuentes", PS[cc])
 def Ucerca(m, cc): return _u(m, "cerca-de-mi", PS[cc])
+def Uinst(m, cc, k): return _u(m, "instalacion", slug(term(cc, k)), PS[cc])
+def Urep(m, cc, k): return _u(m, "reparacion", slug(term(cc, k)), PS[cc])
 def Umant(m, cc, k): return _u(m, "mantenimiento", slug(term(cc, k)), PS[cc])
 def Ucosto(m, cc, k): return _u(m, "cuanto-cuesta-reparar", slug(term(cc, k)), PS[cc])
 def Ucod(m, cc, k): return _u(m, "codigos-de-error", slug(term(cc, k)), PS[cc])
@@ -402,6 +404,7 @@ def pills(items): return "".join(f'<a class="pill" href="{u}">{esc(t)}</a>' for 
 
 from paises_info import INFO, CIUDAD, RESUMEN, RECURSOS
 from soluciones import guia as guia_falla
+from equipos_guias import INST, REP, MANT
 import zlib
 OFICIAL = {"samsung": "https://www.samsung.com/", "lg": "https://www.lg.com/", "whirlpool": "https://www.whirlpool.com/", "mabe": "https://www.mabe.com.mx/",
            "frigidaire": "https://www.frigidaire.com/", "electrolux": "https://www.electrolux.com/", "general-electric": "https://www.geappliances.com/"}
@@ -433,6 +436,16 @@ def qa_secciones(body, ruta):
         return f'<section class="sec" id="{sid}"><h2>{titulo}</h2>{inner}{qa}</section>'
     return re.sub(r'<section class="sec" id="([^"]*)"><h2>(.*?)</h2>(.*?)</section>', sub, body, flags=re.S)
 
+def contacto_html(m, cc, ci):
+    mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; lg = lugar_de(cc, ci); tel = p["tel"] or "WhatsApp"
+    dig = re.sub(r"\D", "", p["tel"] or p["wa"])
+    wl = wa(p["wa"], f"Hola, necesito servicio técnico {mn} en {lg}")
+    c = [("Teléfono", f"Llama o escribe al {tel}: servicio técnico {mn} para {lg}.", f"tel:+{dig}", "Llamar"),
+         (f"WhatsApp {mn}", f"Escribe con el equipo, el modelo y la falla; el técnico más cercano a tu barrio te responde.", wl, "Abrir WhatsApp"),
+         ("Servicio al cliente", f"Atención al cliente de {mn} en {pn}: cómo contactar al soporte técnico autorizado.", Ui(m, cc, "servicio-al-cliente"), "Ver servicio al cliente"),
+         ("Cerca de ti", f"Activa tu ubicación y te mostramos el técnico {mn} más cercano a tu barrio.", Ucerca(m, cc), "Ver el técnico más cercano")]
+    return '<div class="qac">' + "".join(f'<article class="qa1"><h3>{esc(a)}</h3><p>{esc(b)}</p><a class="btn" href="{u}" rel="noopener">{t}</a></article>' for a, b, u, t in c) + "</div>"
+
 def organizar(body, m, cc, ci, falla=None):
     """Ordena las secciones de servicio en un esquema fijo, une las repetidas y descarta el relleno."""
     mn = MA[m]["nombre"]; lg = lugar_de(cc, ci); pn = PA[cc]["nombre"]
@@ -444,7 +457,7 @@ def organizar(body, m, cc, ci, falla=None):
     FAQ = re.compile(r"^(Más preguntas frecuentes|Preguntas frecuentes)")
     G = [("contacto", re.compile(r"^(Técnicos |Número de WhatsApp|Qué enviar|Qué pasa después)")), ("resp", re.compile(r"^(Respuesta rápida|Datos clave)")),
          ("busca", re.compile(r"^Lo que más buscan")), ("serv", re.compile(r"^(Servicio técnico .*,|Equipos .* que reparamos|Servicios que ofrecemos|Fallas|Modelos|Repuestos y piezas)")),
-         ("visita", re.compile(r"^(Cómo es la visita|Qué revisa el técnico)")), ("geo", GEO), ("faq", FAQ),
+         ("equipos", re.compile(r"^(Todo sobre|Reparación, instalación)")), ("visita", re.compile(r"^(Cómo es la visita|Qué revisa el técnico)")), ("geo", GEO), ("faq", FAQ), ("blog", re.compile(r"^Del blog")),
          ("util", re.compile(r"^(Señales|Reparar o reemplazar|Cómo elegir)")), ("links", re.compile(r"^(Explora|Recursos|Búsquedas relacionadas|Más ayuda|Guías)"))]
     if any(t.startswith(("Fallas", "Señales de que")) and t.startswith("Fallas") for t, h, i in secs): secs = [x for x in secs if not x[0].startswith("Señales de que")]
     orden = ["nuevo"] + [g for g, _ in G]
@@ -452,14 +465,17 @@ def organizar(body, m, cc, ci, falla=None):
     for t, h, inner in secs:
         if DROP.search(t): continue
         g = next((g for g, r in G if r.search(t)), "nuevo"); cub[g].append((t, h, inner))
+    if cub["nuevo"]:   # página con contenido propio (falla, reparación, instalación, intención, blog): sin relleno genérico
+        cub["serv"] = [x for x in cub["serv"] if not x[0].startswith("Servicios que ofrecemos")]; cub["visita"] = []; cub["util"] = []
     out = []
     out += [sec(h, i) for t, h, i in cub["nuevo"]]
     out += [sec(h, i) for t, h, i in cub["contacto"]]
     if cub["resp"]:
         r_ = next((i for t, h, i in cub["resp"] if t.startswith("Respuesta")), ""); d_ = next((i for t, h, i in cub["resp"] if t.startswith("Datos")), "")
-        out.append(sec(f"Teléfono, WhatsApp y datos del servicio técnico {mn} en {lg}", r_ + d_))
+        out.append(sec(f"Contacto: teléfono, WhatsApp y servicio al cliente {mn} en {lg}", contacto_html(m, cc, ci) + r_ + d_))
     out += [sec(h, i) for t, h, i in cub["busca"]]
     out += [sec(h, i) for t, h, i in cub["serv"]]
+    out += [sec(h, i) for t, h, i in cub["equipos"]]
     out += [sec(h, i) for t, h, i in cub["visita"]]
     geo = cub["geo"]
     if len(geo) > 1:
@@ -474,8 +490,9 @@ def organizar(body, m, cc, ci, falla=None):
                 k_ = re.sub(r"\W+", " ", q.lower()).strip()
                 if k_ not in seen: seen.add(k_); todos.append((html.unescape(q), html.unescape(a)))
         CK = re.compile(r"whatsapp|teléfono|número|contact|cerca|domicilio|cuesta|cobra|tarda|agendar|urgenc|garantía|barrio|atienden|ciudades|hay técnico|confianza|pago", re.I)
-        pares = ([x for x in todos if CK.search(x[0])] + [x for x in todos if not CK.search(x[0])])[:16]
+        pares = ([x for x in todos if CK.search(x[0])] + [x for x in todos if not CK.search(x[0])])[:24]
         out.append(sec(f"Preguntas frecuentes sobre el servicio técnico {mn} en {lg}", faqh(pares)))
+    out += [sec(h, i) for t, h, i in cub["blog"]]
     out += [sec(h, i) for t, h, i in cub["util"]]
     out += [sec(h, i) for t, h, i in cub["links"]]
     return resto + "".join(out), pares
@@ -523,10 +540,16 @@ def extras(m, cc, ci, k, ruta, galeria=False):
         sen += f"<h3>{esc(cap(term(cc, x)))} {esc(mn)}</h3>" + pills([(txt(f[0], m, cc, x), Uf(m, cc, x, f[0])) for f in EQ[x]["fallas"][:6]])
     out.append(sec(f"Señales de que tu equipo {mn} necesita un técnico", sen))
     # 4 · explora (enlaces internos)
-    cont = [(f"WhatsApp {mn} {pn}", Uw(m, cc)), ("Técnico cerca de mí", Ucerca(m, cc))] + ([(f"WhatsApp {mn} {ci}", Uwc(m, cc, ci))] if (ci and ci in p["ppal"]) else []) + [(intent_data(x, m, cc)[2], Ui(m, cc, x)) for x in ("telefono", "urgencias") if x in INTENTS]
-    serv_ = [(intent_data(x, m, cc)[2], Ui(m, cc, x)) for x in INTENTS if x not in ("telefono", "urgencias")]
+    eqh = ""
+    for x in EQ:
+        eqh += f"<h3>{esc(cap(term(cc, x)))} {esc(mn)}</h3>" + pills([(f"Reparación de {term(cc, x)} {mn}", Urep(m, cc, x)), (f"Instalación de {term(cc, x)} {mn}", Uinst(m, cc, x)), (f"Mantenimiento de {term(cc, x)} {mn}", Umant(m, cc, x)), (f"¿Cuánto cuesta reparar {sing(cc, x)} {mn}?", Ucosto(m, cc, x))] + ([(f"Códigos de error de lavadoras {mn}", Ucod(m, cc, x))] if (x == "lavadoras" and m in CODIGOS) else []))
+    out.append(sec(f"Reparación, instalación y mantenimiento de tus electrodomésticos {mn}", eqh))
+    _ps = posts_de(m); _ps = ([q for q in _ps if q["eq"] == k] + [q for q in _ps if q["eq"] != k])[:4] if k else _ps[:4]
+    out.append(sec(f"Del blog: guías de {mn} para {pn}", '<div class="g">' + "".join(f'<a class="cd" href="{Upost(m, cc, q["slug"])}"><span class="urg">{esc(cap(term(cc, q["eq"])) if q["eq"] else "Guía")}</span><h3>{esc(txt(q["title"], m, cc, q["eq"]))}</h3><p style="margin:0;color:var(--mu)">{esc(txt(q["desc"], m, cc, q["eq"])[:110])}…</p></a>' for q in _ps) + "</div>" + f'<p><a class="pill" href="{Ublog(m, cc)}">Ver todo el blog de {esc(mn)} en {esc(pn)}</a></p>'))
+    cont = [(f"WhatsApp {mn} {pn}", Uw(m, cc)), ("Técnico cerca de mí", Ucerca(m, cc))] + ([(f"WhatsApp {mn} {ci}", Uwc(m, cc, ci))] if (ci and ci in p["ppal"]) else []) + [(intent_data(x, m, cc)[2], Ui(m, cc, x)) for x in ("telefono", "urgencias", "servicio-al-cliente", "numero-de-servicio-tecnico") if x in INTENTS]
+    serv_ = [(intent_data(x, m, cc)[2], Ui(m, cc, x)) for x in INTENTS if x not in ("telefono", "urgencias", "servicio-al-cliente", "numero-de-servicio-tecnico")]
     ex_html = "<h3>Contacto</h3>" + pills(cont) + "<h3>Servicios, precios y garantía</h3>" + pills(serv_)
-    for x in EQ: ex_html += f"<h3>{esc(cap(term(cc, x)))} {esc(mn)}</h3>" + pills([(f"{cap(term(cc, x))} {mn} en {pn}", Ue(m, cc, x)), (f"¿Cuánto cuesta reparar {sing(cc, x)} {mn}?", Ucosto(m, cc, x)), (f"Mantenimiento de {term(cc, x)} {mn}", Umant(m, cc, x))])
+    ex_html += "<h3>Electrodomésticos</h3>" + pills([(f"{cap(term(cc, x))} {mn} en {pn}", Ue(m, cc, x)) for x in EQ])
     ex_html += "<h3>Información</h3>" + pills([(f"{mn} en {pn}", Uc(m, cc)), (f"Blog {mn} {pn}", Ublog(m, cc)), ("Preguntas frecuentes", Ufaq(m, cc))])
     out.append(sec(f"Explora más sobre {mn} en {pn}", ex_html))
     # 5 · enlaces externos
@@ -597,7 +620,7 @@ def guia_ciudad(m, cc, ci):
 
 
 # ======================= SEO a fondo: IA, FAQ, imágenes, WhatsApp, blog =======================
-INTENTS = ["tecnico-a-domicilio", "telefono", "urgencias", "donde-reparar", "precios", "garantia", "repuestos", "centro-de-servicio", "reparacion-de-electrodomesticos", "mantenimiento-preventivo", "instalacion"]
+INTENTS = ["tecnico-a-domicilio", "telefono", "urgencias", "donde-reparar", "precios", "garantia", "repuestos", "centro-de-servicio", "reparacion-de-electrodomesticos", "mantenimiento-preventivo", "instalacion", "servicio-al-cliente", "numero-de-servicio-tecnico"]
 def Ui(m, cc, it): return _u(m, it, PS[cc])
 def Uic(m, cc, ci): return _u(m, "tecnico-a-domicilio", slugloc(ci, cc))
 
@@ -606,7 +629,7 @@ def intent_data(it, m, cc, ci=None):
     n, l, sec_ = term(cc, "neveras"), term(cc, "lavadoras"), term(cc, "secadoras")
     eq = f"{n}, {l} y {sec_} {mn}"
     D = {
-     "tecnico-a-domicilio": (f"Técnico {mn} a domicilio en {lg}" + (f", {pn}" if ci else ""), f"Técnico {mn} a domicilio en {lg}, {pn}: reparación de {eq}. Escribe al {tel}.", f"Técnico {mn} a domicilio en {lg}" + (f", {pn}" if ci else ""),
+     "tecnico-a-domicilio": (f"Técnico {mn} a domicilio en {lg}" + (f", {pn}" if ci else ""), f"Técnico {mn} a domicilio en {lg}{'' if lg == pn else ', ' + pn}: reparación de {eq}. Escribe al {tel}.", f"Técnico {mn} a domicilio en {lg}" + (f", {pn}" if ci else ""),
          [f"Si buscas un técnico {mn} a domicilio en {lg}, aquí lo encuentras: vamos a tu casa, apartamento u oficina para revisar y reparar {eq}.", "El técnico llega con herramientas, revisa el equipo en el sitio, te explica la falla y te da el costo antes de empezar."]),
      "telefono": (f"Teléfono servicio técnico {mn} {pn}: WhatsApp y contacto", f"Teléfono y WhatsApp del servicio técnico {mn} en {pn}: {tel}. Escribe y un técnico te responde con horario y costo.", f"Teléfono del servicio técnico {mn} en {pn}",
          [f"El teléfono y WhatsApp del servicio técnico {mn} en {pn} es {tel}.", "Atendemos principalmente por WhatsApp: puedes enviar fotos, el modelo y la falla para agilizar el diagnóstico."]),
@@ -628,6 +651,10 @@ def intent_data(it, m, cc, ci=None):
          [f"Un mantenimiento preventivo alarga la vida de tus equipos {mn} y evita fallas costosas.", "Incluye limpieza de filtros y rejillas, revisión de mangueras y empaques, y prueba de funcionamiento."]),
      "instalacion": (f"Instalación de equipos {mn} en {pn}: lavadoras, secadoras y neveras", f"Instalación de {eq} en {pn}: conexión, nivelación y prueba. Escribe al {tel}.", f"Instalación de equipos {mn} en {pn}",
          [f"Instalamos y reinstalamos {eq}: conexión de agua y desagüe, nivelación, voltaje y prueba final.", "Indica el tipo de equipo, la dirección y si hay conexiones nuevas por hacer."]),
+     "servicio-al-cliente": (f"Servicio al cliente {mn} en {pn}: teléfono y WhatsApp", f"Servicio al cliente de {mn} en {pn}: cómo contactar al soporte técnico autorizado, teléfono y WhatsApp {tel}. Atención por marca y ubicación.", f"Servicio al cliente {mn} en {pn}",
+         [f"Si buscas el servicio al cliente de {mn} en {pn} para pedir un técnico, aquí tienes el contacto del soporte técnico autorizado: {tel}.", "Atendemos por WhatsApp según tu ubicación: te asignamos el técnico más cercano a tu barrio, con horario y costo antes de reparar."]),
+     "numero-de-servicio-tecnico": (f"Número de servicio técnico {mn} en {pn}: WhatsApp y teléfono", f"Número de servicio técnico {mn} en {pn}: {tel}. Escribe con la marca, el equipo, el modelo y la falla para que un técnico te responda con horario y costo.", f"Número de servicio técnico {mn} en {pn}",
+         [f"El número del servicio técnico {mn} en {pn} es {tel}.", "Escribe por WhatsApp con el equipo, el modelo y la falla: así el técnico llega preparado con la pieza correcta."]),
     }
     return D[it]
 
@@ -642,6 +669,14 @@ def Umod(m, cc, k, mod): return _u(m, "reparacion", slug(term(cc, k)), slug(mode
 
 def Uw(m, cc): return _u(m, "whatsapp", PS[cc])
 def Uwc(m, cc, ci): return _u(m, "whatsapp", slugloc(ci, cc))
+def posts_de(m):
+    out = []; vistos = set()
+    for t_ in MODS[m].BLOG:
+        if t_[0] in vistos: continue
+        vistos.add(t_[0])
+        out.append(dict(slug=re.sub(r"(^|-)(samsung|lg|whirlpool|mabe|frigidaire|electrolux|general-electric)(?=-|$)", lambda x: x.group(1) + m, re.sub(r"(^|-)panama(?=-|$)", "", t_[0])).strip("-"), title=t_[1], eq=t_[2] if t_[2] in EQB[m] else None, desc=t_[3]))
+    return out
+
 def Ublog(m, cc): return _u(m, "blog", PS[cc])
 def Upost(m, cc, slug_): return _u(m, "blog", slug_, PS[cc])
 
@@ -687,6 +722,10 @@ def faq_banco(m, cc, ci=None, k=None, falla=None):
      (f"¿Reparan equipos {mn} antiguos o descontinuados?", "En muchos casos sí; depende de la disponibilidad de la pieza. El técnico revisa el equipo y te dice con claridad si es viable repararlo."),
      (f"¿Instalan o reinstalan equipos {mn} al mudarme?", "Sí, coordinamos la instalación o reinstalación de neveras, lavadoras y secadoras. Indica el tipo de equipo, la dirección y si hay conexiones nuevas por hacer."),
      (f"¿Qué ciudades de {pn} atiende el soporte técnico {mn}?", "Atendemos " + ", ".join(list(p["ciudades"])[:12]) + f" y otras {max(0, len(p['ciudades']) - 12)} ciudades del país."),
+     (f"¿Cuál es el servicio al cliente de {mn} en {pn}?", f"El soporte técnico autorizado {mn} atiende por WhatsApp y teléfono en el {tel}. Escribe con la marca, el equipo, el modelo y la falla."),
+     (f"¿Cuál es el número de servicio técnico {mn} en {lg}?", f"El número es {tel}. Atendemos por WhatsApp según tu ubicación."),
+     (f"¿Instalan {eq} en {lg}?", "Sí. Instalamos nevera, lavadora y secadora: ubicación, nivelación, conexiones y prueba final. Pide la instalación por WhatsApp con la dirección y el tipo de equipo."),
+     (f"¿Hacen mantenimiento preventivo a {eq}?", "Sí, a domicilio. Se revisan las partes de desgaste, se limpia lo que acumula suciedad y se prueba el funcionamiento."),
      (f"¿Cuánto cobra un técnico {mn} por la visita en {lg}?", f"El valor depende del equipo, la falla y la pieza. El técnico lo revisa en tu casa y te da el costo en {p['moneda']} antes de empezar; si no lo apruebas, no se repara."),
      (f"¿Puedo agendar el técnico {mn} para hoy o mañana en {lg}?", "Escribe por WhatsApp con la falla y tu barrio: te confirmamos el horario más cercano disponible."),
      (f"¿El técnico {mn} lleva repuestos?", "Lleva las piezas más comunes; si tu modelo necesita una pieza especial, te decimos cuánto demora y su costo antes de pedirla."),
@@ -752,9 +791,16 @@ def ia_top(m, cc, ci, k, falla=None):
            (f"Servicio técnico {mn} a domicilio en {lg}", f"El técnico {mn} llega a tu casa o negocio, diagnostica en el sitio y te da el costo en {p['moneda']} antes de reparar.", D_ + Ui(m, cc, "tecnico-a-domicilio"), "Ver el servicio a domicilio"),
            (f"Teléfono del servicio técnico {mn} en {pn}", f"Llama o escribe al {tel}. Si no contestan, déjanos un mensaje por WhatsApp y te respondemos.", D_ + Ui(m, cc, "telefono"), "Ver teléfonos"),
            (f"Cuánto cuesta la visita del técnico {mn} en {lg}", f"Depende del equipo y la falla. El técnico revisa en tu casa y te da el valor en {p['moneda']} antes de empezar; si no lo apruebas, no se repara.", D_ + Ui(m, cc, "precios"), "Ver precios")]
+    cc_ += [(f"Servicio al cliente {mn} en {pn}: teléfono y WhatsApp", f"Contacto del soporte técnico autorizado {mn} en {pn}: {tel}. Te asignamos el técnico más cercano a tu ubicación.", D_ + Ui(m, cc, "servicio-al-cliente"), "Ver servicio al cliente"),
+            (f"Número de servicio técnico {mn} {pn}", f"El número de servicio técnico {mn} en {pn} es {tel}.", D_ + Ui(m, cc, "numero-de-servicio-tecnico"), "Ver el número"),
+            (f"Guías y consejos {mn} para {pn}: blog", "Fallas, códigos de error y mantenimiento explicados paso a paso.", D_ + Ublog(m, cc), "Ver el blog")]
+    for x in eqs_:
+        cc_ += [(f"Reparación de {term(cc, x)} {mn} en {lg}", f"Diagnóstico en tu casa, causa explicada y costo en {p['moneda']} antes de reparar.", D_ + Urep(m, cc, x), "Ver la reparación"),
+                (f"Instalación de {term(cc, x)} {mn} en {lg}", "Ubicación, conexiones, nivelación y prueba final.", D_ + Uinst(m, cc, x), "Ver la instalación"),
+                (f"Mantenimiento de {term(cc, x)} {mn}", "Qué hacer cada mes, cada 6 meses y cada año.", D_ + Umant(m, cc, x), "Ver el mantenimiento")]
     cards = cc_ + cards
     ia = '<div class="qac">' + "".join(f'<article class="qa1"><h3>{esc(a)}</h3><p>{esc(rr)}</p><a class="btn" href="{D_ + u if u.startswith("/") else u}">{b}</a></article>' for a, rr, u, b in cards) + "</div>"
-    ia += f'<p class="mu">Servicio técnico {esc(mn)} a domicilio en {esc(lg)}, {esc(pn)} · cobertura en {len(p["ciudades"])} ciudades · costo en {esc(p["moneda"])} informado antes de reparar · garantía sobre pieza y mano de obra · WhatsApp {esc(tel)}.</p>'
+    ia += f'<p class="mu">Servicio técnico {esc(mn)} a domicilio en {esc(lg) if lg == pn else esc(lg) + ', ' + esc(pn)} · cobertura en {len(p["ciudades"])} ciudades · costo en {esc(p["moneda"])} informado antes de reparar · garantía sobre pieza y mano de obra · WhatsApp {esc(tel)}.</p>'
     return sec(f"Respuesta rápida: ¿dónde encuentro servicio técnico {mn} en {lg}?", r) + sec(f"Datos clave del servicio técnico {mn} en {lg}", ficha) + sec(f"Lo que más buscan sobre {mn} en {lg}", ia)
 
 def bonus(m, cc, ci, k, ruta):
@@ -769,7 +815,7 @@ def bonus(m, cc, ci, k, ruta):
     off = zlib.crc32(ruta.encode()) % len(B)
     return "".join(B[(off + i) % len(B)] for i in range(4))
 
-SKIP_IMG = ("Causas más comunes", "Preguntas sobre esta falla", "Lo que más buscan", "Datos clave", "Recomendado", "Recursos", "Galería", "Preguntas", "Búsquedas", "Enlaces", "Explora", "Más ayuda", "Guías", "Por ciudad", "Servicio por ciudad", "Otras fallas", "Cerca de aquí", "Más cerca", "Ir a", "Información para asistentes")
+SKIP_IMG = ("Contacto:", "Causas más comunes", "Preguntas sobre esta falla", "Lo que más buscan", "Datos clave", "Recomendado", "Recursos", "Galería", "Preguntas", "Búsquedas", "Enlaces", "Explora", "Más ayuda", "Guías", "Por ciudad", "Servicio por ciudad", "Otras fallas", "Cerca de aquí", "Más cerca", "Ir a", "Información para asistentes")
 def galeria_html(m, cc, lg):
     mn = MA[m]["nombre"]; fig = []
     for kind in ("tecnico", "neveras", "lavadoras", "secadoras"):
@@ -799,9 +845,9 @@ def elegir_img(m, cc, titulo, usadas, off, lg):
     for k, words in (("neveras", ("nevera", "refriger", "heladera")), ("lavadoras", ("lavadora", "lavarropa")), ("secadoras", ("secadora", "secarropa"))):
         if any(w in t for w in words):
             src = tomar(POOL[m][k], f"/img/{m}/{k}-{{}}.jpg", 0)
-            return src, f"{cap(term(cc, k))} {mn}: servicio técnico en {lg}" + (f", {pn}" if pn else ""), "prod"
+            return src, f"{cap(term(cc, k))} {mn}: servicio técnico en {lg}" + (f", {pn}" if (pn and pn != lg) else ""), "prod"
     src = tomar(POOL[m]["tecnico"], f"/img/{m}/tecnico-{{}}.jpg", 3)
-    return src, f"Técnico {mn} a domicilio en {lg}" + (f", {pn}" if pn else ""), "foto"
+    return src, f"Técnico {mn} a domicilio en {lg}" + (f", {pn}" if (pn and pn != lg) else ""), "foto"
 
 def inyectar_imgs(body, m, cc, ci, ruta, maxn=14):
     """Cada sección con foto al lado (alternando), y bandas con foto de fondo y llamado a WhatsApp."""
@@ -921,7 +967,12 @@ def build():
                 extra = [("Mantenimiento", Umant(m, cc, k)), ("¿Cuánto cuesta reparar?", Ucosto(m, cc, k))] + ([("Códigos de error", Ucod(m, cc, k))] if (k == "lavadoras" and m in CODIGOS) else [])
                 _tp = {"neveras": ["filtro-agua"], "lavadoras": ["bomba", "atrapamotas"], "secadoras": []}[k]
                 _rg = repu_html(m, cc, pn, tipos=_tp, n=8) if _tp else ""
-                body = sec(f"Fallas comunes en {eqn}", f'<div class="g">{fl}</div>') + (sec(f"Repuestos y piezas para {eqn}", _rg) if _rg else "") + sec(f"Modelos de {eqn} que atendemos", mod) \
+                hub_ = '<div class="qac">' + "".join(f'<article class="qa1"><h3>{esc(a_)}</h3><p>{esc(b_)}</p><a class="btn" href="{u_}">{c_}</a></article>' for a_, b_, u_, c_ in [
+                    (f"Reparación de {eqn}", f"Diagnóstico en tu casa, causa explicada y costo en {p['moneda']} antes de reparar.", Urep(m, cc, k), "Ver la reparación"),
+                    (f"Instalación de {eqn}", "Ubicación, nivelación, conexiones y prueba final, hechas por un técnico.", Uinst(m, cc, k), "Ver la instalación"),
+                    (f"Mantenimiento de {eqn}", "Qué hacer cada mes, cada 6 meses y cada año para que dure más.", Umant(m, cc, k), "Ver el mantenimiento"),
+                    (f"Cuánto cuesta reparar {sing(cc, k)} {mn}", "Qué define el precio y cómo cotizar sin compromiso.", Ucosto(m, cc, k), "Ver precios")]) + "</div>"
+                body = sec(f"Todo sobre {eqn}: reparación, instalación y mantenimiento", hub_) + sec(f"Fallas comunes en {eqn}", f'<div class="g">{fl}</div>') + (sec(f"Repuestos y piezas para {eqn}", _rg) if _rg else "") + sec(f"Modelos de {eqn} que atendemos", mod) \
                     + sec("Guías", pills(extra)) + sec("Preguntas frecuentes", faqh(fq)) + sec("Búsquedas relacionadas", kw_html(m, cc, k=k)) \
                     + sec("Por ciudad", prov_html(grupos_ppal(cc, lambda c: Ucek(m, cc, c, k))))
                 page(Ue(m, cc, k)[1:], f"{t}: reparación a domicilio", f"{t}{' (' + a2 + ')' if a2 else ''}. Reparación a domicilio, diagnóstico y garantía. Solicita al técnico {mn} más cercano a tu barrio por WhatsApp.", t,
@@ -958,11 +1009,36 @@ def build():
                     page(Uf(m, cc, k, f[0])[1:], f"{ft} – soporte técnico autorizado {mn} {pn}", f"{ft} en tu {sing(cc,k)} {mn} ({pn}): causas, qué hacer y cuándo llamar al técnico. Solicita servicio a domicilio por WhatsApp.",
                          f"{ft}: soporte técnico autorizado {mn} en {pn}", f"Causas, qué hacer y técnico {mn} a domicilio.", body, bc=bc_k, m=m, cc=cc, rel=(lambda c2: Uf(m, c2, k, f[0])), eq=k, falla=txt(f[0], m, cc, k),
                          jsonld=ldx_ + [faq_ld(fq), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), (cap(term(cc, k)), DOM + Ue(m, cc, k)), (ft, DOM + Uf(m, cc, k, f[0]))])])
-                # mantenimiento
+                # mantenimiento (calendario + qué incluye)
+                T_ = lambda x: txt(x, m, cc, k)
                 mant = "".join(f"<li>{esc(txt(x,m,cc,k))}</li>" for x in e["mant"])
-                page(Umant(m, cc, k)[1:], f"Soporte técnico autorizado {mn} {pn}: mantenimiento de {term(cc,k)}", f"Cómo cuidar tu {sing(cc,k)} {mn} y cuándo pedir mantenimiento a domicilio en {pn}.",
-                     f"Mantenimiento de {eqn} en {pn}: soporte técnico autorizado", "Hábitos simples que alargan la vida del equipo.", sec("Consejos de mantenimiento", f"<ul>{mant}</ul>") + sec("Búsquedas relacionadas", kw_html(m, cc, k=k)),
-                     bc=bc_k, m=m, cc=cc, rel=(lambda c2: Umant(m, c2, k)), eq=k, jsonld=[bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), ("Mantenimiento", DOM + Umant(m, cc, k))])])
+                cal = "<div class='tbl'><table><thead><tr><th>Cuándo</th><th>Qué hacer</th></tr></thead><tbody>" + "".join(f"<tr><td><b>{esc(a_)}</b></td><td>{esc(T_(b_))}</td></tr>" for a_, b_ in MANT[k]) + "</tbody></table></div>"
+                wl_k = wa(p["wa"], f"Hola, necesito mantenimiento de {term(cc, k)} {mn} en {pn}")
+                fqm = [(f"¿Cada cuánto se hace mantenimiento a {art(cc, k)} {sing(cc,k)} {mn}?", T_("Una revisión profesional al año y limpiezas sencillas por tu cuenta cada mes y cada seis meses, según el calendario de esta página.")), (f"¿Qué incluye el mantenimiento a domicilio de {term(cc,k)} {mn}?", T_("Limpieza de las partes que acumulan suciedad, revisión de piezas de desgaste, prueba de funcionamiento y recomendaciones para tu uso.")), (f"¿Vale la pena el mantenimiento preventivo?", "Sí: evita fallas costosas y alarga la vida del equipo; casi siempre cuesta menos que una reparación mayor.")]
+                page(Umant(m, cc, k)[1:], f"Mantenimiento de {term(cc,k)} {mn} en {pn}: soporte técnico autorizado", f"Cómo y cada cuánto hacer mantenimiento a {art(cc, k)} {sing(cc,k)} {mn} en {pn}: calendario, qué incluye y cuándo pedir mantenimiento a domicilio.",
+                     f"Mantenimiento de {eqn} en {pn}: soporte técnico autorizado", "Calendario simple para que el equipo dure más.", sec(f"Calendario de mantenimiento de {eqn}", cal + f"<p><a class='btn wa' data-evt='whatsapp' href='{wl_k}' rel='noopener'>Pedir mantenimiento por WhatsApp</a></p>") + sec("Consejos de mantenimiento", f"<ul>{mant}</ul>") + sec("Preguntas sobre el mantenimiento", faqh(fqm)) + sec("Más sobre este electrodoméstico", pills([(f"Reparación de {eqn}", Urep(m, cc, k)), (f"Instalación de {eqn}", Uinst(m, cc, k)), (f"{cap(term(cc, k))} {mn} en {pn}", Ue(m, cc, k)), (f"¿Cuánto cuesta reparar {sing(cc,k)} {mn}?", Ucosto(m, cc, k))])) + sec("Búsquedas relacionadas", kw_html(m, cc, k=k)),
+                     bc=bc_k, m=m, cc=cc, rel=None, eq=k, jsonld=[faq_ld(fqm), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), ("Mantenimiento", DOM + Umant(m, cc, k))])])
+                # reparación
+                R_ = REP[k]; wl_r = wa(p["wa"], f"Hola, necesito reparar {art(cc, k)} {sing(cc, k)} {mn} en {pn}")
+                fqr = [(T_(q_), T_(a_)) for q_, a_ in R_["faq"]]
+                pr_ = "".join(f"<li>{esc(T_(x))}</li>" for x in R_["proceso"]); pz_ = "".join(f"<li>{esc(T_(x))}</li>" for x in R_["piezas"])
+                page(Urep(m, cc, k)[1:], f"Reparación de {term(cc,k)} {mn} a domicilio en {pn}: soporte técnico autorizado", f"Reparación a domicilio de {term(cc,k)} {mn} en {pn}: diagnóstico en tu casa, piezas más comunes, costo informado antes de reparar y garantía. WhatsApp {p['tel'] or 'del técnico'}.",
+                     f"Reparación de {eqn} a domicilio en {pn}", "Diagnóstico en tu casa, causa explicada y costo antes de reparar.",
+                     sec(f"Reparación de {eqn} en {pn}", f"<p>{esc(T_(R_['resumen']))}</p><p><a class='btn wa' data-evt='whatsapp' href='{wl_r}' rel='noopener'>Pedir reparación por WhatsApp</a></p>") + sec("Cómo es el proceso de reparación", f"<ol class='pasos'>{pr_}</ol>") \
+                     + sec(f"Fallas más comunes de {eqn} y su solución", f'<div class="g">{fl}</div>') + sec("Piezas que se cambian con más frecuencia", f"<ul>{pz_}</ul>") + sec("¿Reparar o reemplazar?", f"<p>{esc(T_(R_['decidir']))}</p>") \
+                     + sec("Preguntas sobre la reparación", faqh(fqr)) + sec("Más sobre este electrodoméstico", pills([(f"Instalación de {eqn}", Uinst(m, cc, k)), (f"Mantenimiento de {eqn}", Umant(m, cc, k)), (f"{cap(term(cc, k))} {mn} en {pn}", Ue(m, cc, k)), (f"¿Cuánto cuesta reparar {sing(cc,k)} {mn}?", Ucosto(m, cc, k))])) + sec("Búsquedas relacionadas", kw_html(m, cc, k=k)),
+                     bc=bc_k, m=m, cc=cc, rel=None, eq=k, jsonld=[svc_ld(m, cc, None, k), {"@context": "https://schema.org", "@type": "HowTo", "name": f"Cómo es la reparación de {eqn}", "step": [{"@type": "HowToStep", "position": i_ + 1, "text": T_(x)} for i_, x in enumerate(R_["proceso"])]}, faq_ld(fqr), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), ("Reparación", DOM + Urep(m, cc, k))])])
+                # instalación
+                I_ = INST[k]; wl_i = wa(p["wa"], f"Hola, necesito instalar {art(cc, k)} {sing(cc, k)} {mn} en {pn}")
+                fqi = [(T_(q_), T_(a_)) for q_, a_ in I_["faq"]]
+                ul_ = lambda L: "".join(f"<li>{esc(T_(x))}</li>" for x in L)
+                page(Uinst(m, cc, k)[1:], f"Instalación de {term(cc,k)} {mn} en {pn}: soporte técnico autorizado", f"Instalación de {term(cc,k)} {mn} en {pn}: qué incluye, cómo prepararte, errores comunes y cuándo conviene un técnico. Escribe al {p['tel'] or 'técnico'}.",
+                     f"Instalación de {eqn} en {pn}", "Ubicación, conexiones, nivelación y prueba final.",
+                     sec(f"Instalación de {eqn} en {pn}", f"<p>{esc(T_(I_['resumen']))}</p><p><a class='btn wa' data-evt='whatsapp' href='{wl_i}' rel='noopener'>Pedir instalación por WhatsApp</a></p>") + sec("Qué incluye la instalación", f"<ul>{ul_(I_['incluye'])}</ul>") \
+                     + sec("Antes de la visita del técnico", f"<ul>{ul_(I_['antes'])}</ul>") + sec("Cómo se instala, paso a paso", f"<ol class='pasos'>{ul_(I_['pasos'])}</ol>") + sec("Errores comunes al instalar", f"<ul class='no'>{ul_(I_['errores'])}</ul>") \
+                     + sec("¿Cuándo conviene instalación profesional?", f"<p>{esc(T_(I_['cuando']))}</p><p><b>Costo:</b> {esc(T_(I_['costo']))} Moneda: {esc(p['moneda'])}.</p>") + sec("Preguntas sobre la instalación", faqh(fqi)) \
+                     + sec("Más sobre este electrodoméstico", pills([(f"Reparación de {eqn}", Urep(m, cc, k)), (f"Mantenimiento de {eqn}", Umant(m, cc, k)), (f"{cap(term(cc, k))} {mn} en {pn}", Ue(m, cc, k))])) + sec("Búsquedas relacionadas", kw_html(m, cc, k=k)),
+                     bc=bc_k, m=m, cc=cc, rel=None, eq=k, jsonld=[{"@context": "https://schema.org", "@type": "HowTo", "name": f"Cómo se instala {art(cc, k)} {sing(cc, k)} {mn}", "step": [{"@type": "HowToStep", "position": i_ + 1, "text": T_(x)} for i_, x in enumerate(I_["pasos"])]}, faq_ld(fqi), bc_ld([("Inicio", DOM + "/"), (mn, DOM + Um(m)), (pn, DOM + Uc(m, cc)), ("Instalación", DOM + Uinst(m, cc, k))])])
                 # costo
                 fq = faq_gen(m, cc, None, k)[2:5]
                 body = sec("Qué define el costo", "<ul><li>La falla: una pieza pequeña no cuesta como una tarjeta o un compresor.</li><li>La pieza: disponibilidad y tipo de repuesto.</li><li>La mano de obra y el tiempo de la visita.</li><li>La zona: distancia entre el técnico y tu barrio.</li></ul>") \
