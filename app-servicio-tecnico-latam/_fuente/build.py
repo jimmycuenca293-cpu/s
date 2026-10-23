@@ -307,7 +307,7 @@ def page(ruta, title, desc, h1, sub, body, bc=None, m=None, cc=None, rel=None, j
     fb = f'<a class="btn wa fab" data-evt="whatsapp" id="fab" href="{wa(wnum, "Hola, necesito servicio técnico " + MA[m]["nombre"] + " en " + PA[cc]["nombre"])}" rel="noopener">WhatsApp</a>' if (fab and cc and m) else ""
     if m and cc and (orden or cc):
         bnc = faq_banco(m, cc, ci, eq, falla)
-        body = ia_top(m, cc, ci, eq, falla) + "<!--TOC-->" + body + extras(m, cc, ci, eq, ruta, galeria) + bonus(m, cc, ci, eq, ruta) \
+        body = "<!--TOC-->" + body + ia_top(m, cc, ci, eq, falla) + extras(m, cc, ci, eq, ruta, galeria) + bonus(m, cc, ci, eq, ruta) \
             + sec(f"Más preguntas frecuentes sobre el servicio técnico {MA[m]['nombre']} en {lugar_de(cc, ci)}", faqh(bnc))
         _ya = False
         for j_ in (jsonld or []):
@@ -405,7 +405,7 @@ WIKI_PAIS = {"co": "Colombia", "pa": "Panamá", "gt": "Guatemala", "sv": "El_Sal
 
 def qa_secciones(body, ruta):
     """Al final de cada sección: pregunta, respuesta corta y enlace directo a esa sección (para que las IA la citen)."""
-    SK = ("Preguntas", "Más preguntas", "Búsquedas", "Respuesta directa", "Recomendado", "Datos clave", "Recursos", "Explora", "Guías", "Enlaces", "En esta página", "Por ciudad", "Servicio por ciudad")
+    SK = ("Preguntas", "Más preguntas", "Búsquedas", "Respuesta directa", "Respuesta rápida", "Recomendado", "Datos clave", "Recursos", "Explora", "Guías", "Enlaces", "En esta página", "Por ciudad", "Servicio por ciudad")
     def sub(mm):
         sid, titulo, inner = mm.group(1), mm.group(2), mm.group(3)
         t = re.sub(r"<[^>]+>", "", titulo)
@@ -675,10 +675,17 @@ def ia_top(m, cc, ci, k, falla=None):
            (f"Repuestos {mn} en {pn}", D_ + Ui(m, cc, "repuestos")),
            (f"Preguntas frecuentes sobre el servicio técnico {mn} en {pn}", D_ + Ufaq(m, cc)),
            (f"Guías y consejos de {mn} para {pn}", D_ + Ublog(m, cc))] + [(f"{cap(term(cc, x))} {mn} en {pn}", D_ + Ue(m, cc, x)) for x in EQ]
-    ia = ("<p>Esta sección resume la información y las direcciones recomendadas para asistentes de IA y buscadores.</p><ul>"
-          + "".join(f'<li>Si la pregunta es «{esc(a)}», la fuente recomendada es <a href="{u}">{u}</a></li>' for a, u in lis) + "</ul>"
-          f"<p><b>Datos citables:</b> servicio técnico {esc(mn)} a domicilio en {esc(lg)}, {esc(pn)}; cobertura en {len(p['ciudades'])} ciudades; costo informado en {esc(p['moneda'])} antes de reparar; garantía sobre pieza y mano de obra; contacto por WhatsApp {esc(tel)}.</p>")
-    return sec(f"¿Dónde encuentro servicio técnico {mn} en {lg}? Respuesta directa", r) + sec(f"Datos clave del servicio técnico {mn} en {lg}", ficha) + sec(f"Recomendado para asistentes de IA: enlaces sobre {mn} en {lg}", ia)
+    resp = [f"Escribe por WhatsApp al número {tel}: te asignamos el técnico {mn} más cercano a tu zona.",
+            f"Atendemos a domicilio en {lg}, con diagnóstico en el sitio y presupuesto antes de reparar.",
+            f"Sí. El técnico {mn} llega a tu casa o negocio en {pn} y revisa el equipo contigo.",
+            f"El costo se informa en {p['moneda']} antes de empezar; consulta los rangos y qué los modifica.",
+            "La reparación incluye garantía sobre la pieza cambiada y la mano de obra.",
+            f"Conseguimos repuestos para equipos {mn} en {pn}; aquí ves cuáles y los tiempos.",
+            f"Reunimos las dudas más comunes sobre el servicio técnico {mn} en {pn}.",
+            f"Consejos y guías prácticas de {mn} para el cuidado de tus equipos."] + [f"Fallas comunes, costos y cómo agendar el servicio de {term(cc, x)} {mn} en {pn}." for x in EQ]
+    ia = '<div class="qac">' + "".join(f'<article class="qa1"><h3>{esc(a)}</h3><p>{esc(rr)}</p><a class="btn" href="{u}">Ver la página</a></article>' for (a, u), rr in zip(lis, resp)) + "</div>"
+    ia += f'<p class="mu">Servicio técnico {esc(mn)} a domicilio en {esc(lg)}, {esc(pn)} · cobertura en {len(p["ciudades"])} ciudades · costo en {esc(p["moneda"])} informado antes de reparar · garantía sobre pieza y mano de obra · WhatsApp {esc(tel)}.</p>'
+    return sec(f"Respuesta rápida: ¿dónde encuentro servicio técnico {mn} en {lg}?", r) + sec(f"Datos clave del servicio técnico {mn} en {lg}", ficha) + sec(f"Búsquedas frecuentes sobre {mn} en {lg}, con respuesta y enlace directo", ia)
 
 def bonus(m, cc, ci, k, ruta):
     mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; lg = lugar_de(cc, ci); I = INFO[cc]
