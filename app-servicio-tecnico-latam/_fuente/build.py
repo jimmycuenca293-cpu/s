@@ -445,10 +445,6 @@ def anclar(body):
 def faq_pais(m, cc):
     mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; I = INFO[cc]
     return [
-     (f"¿Mi equipo {mn} funciona con el voltaje de {pn}?", f"En {pn} la red eléctrica es de {I['volt']}. Los equipos {mn} vendidos en el país vienen preparados para ese voltaje; si tu equipo llegó de otro país, el técnico revisa la compatibilidad antes de conectarlo."),
-     (f"¿Qué hago con los bajones de luz y las tormentas en {pn}?", f"{I['rayos']} Desconecta el equipo durante tormentas fuertes y usa un protector de voltaje para neveras, lavadoras y secadoras {mn}."),
-     (f"¿El clima de {pn} afecta mi {mn}?", f"{I['clima']} Con ese ambiente conviene limpiar rejillas y filtros con más frecuencia y revisar las gomas de las puertas."),
-     (f"¿El agua de {pn} daña mi lavadora {mn}?", f"{I['agua']} Un mantenimiento periódico alarga la vida de válvulas, resistencias y mangueras."),
      (f"¿Cómo se llama en {pn} la nevera, la lavadora y la secadora?", f"En {pn} la nevera suele llamarse «{term(cc,'neveras')}» (también «{alt(cc,'neveras') or term(cc,'neveras')}»), la lavadora «{term(cc,'lavadoras')}» y la secadora «{term(cc,'secadoras')}». Atendemos todas, sin importar cómo las llames."),
      (f"¿En qué ciudades de {pn} tienen técnico {mn}?", "Tenemos cobertura en " + ", ".join(p["ppal"]) + ", y en otras " + str(len(p["ciudades"]) - len(p["ppal"])) + " ciudades del país."),
      (f"¿En qué barrios de {pn} atienden equipos {mn}?", "Atendemos, entre otros, " + ", ".join(n for n, t, c in zonas_de(cc)[:8]) + ".")]
@@ -458,14 +454,11 @@ def extras(m, cc, ci, k, ruta, galeria=False):
     off = zlib.crc32(ruta.encode()) % 7
     out = []
     # 1 · lo local
-    loc = f"<p>{esc(I['clima'])}</p>"
-    if ci:
-        _t = CITYINFO[cc].get(ci, ("", "templado"))[1]
-        loc += f"<p><b>{esc(ci)}:</b> {esc(CIUDAD.get(ci) or (ci + ' tiene ' + CLIMA[_t][0] + '. ' + CLIMA[_t][1]))}</p>"
-    loc += f"<p>{esc(I['rayos'])} {esc(I['agua'])}</p><p>La red eléctrica de {esc(pn)} es de {esc(I['volt'])}.</p>"
+    loc = (f"<p>El técnico {esc(mn)} llega a tu casa o negocio en {esc(lugar)} con herramienta y diagnostica el equipo en el sitio. Te informa el costo en {esc(p['moneda'])} antes de empezar, repara con tu aprobación y deja garantía sobre la pieza y la mano de obra.</p>"
+           f"<p>Atendemos {esc(term(cc,'neveras'))}, {esc(term(cc,'lavadoras'))} y {esc(term(cc,'secadoras'))} {esc(mn)}. Escribe por WhatsApp con el equipo, el modelo y la falla, o activa tu ubicación para ver el técnico más cercano.</p>")
     if k: loc += f"<p><b>Consejo para {esc(term(cc,k))} {esc(mn)} en {esc(pn)}:</b> {esc(I['tip'][k])}</p>"
     loc += f'<img class="ph" loading="lazy" src="{imgk(m, cc, "tecnico", off)}" alt="{esc(ALT(m, "tecnico", lugar))}" width="900" height="560">'
-    out.append(sec(f"Lo que debes saber en {lugar} sobre tu {mn}", loc))
+    out.append(sec(f"Contrata al técnico {mn} en {lugar}: qué incluye el servicio", loc))
     # 2 · la visita
     pasos = [("Recibimos tu solicitud", f"Llega por WhatsApp con la marca ({mn}), el equipo, la falla y tu ubicación en {lugar}."),
              ("Te contactamos", f"El técnico {mn} más cercano a tu barrio te escribe para confirmar horario y datos del equipo."),
@@ -494,7 +487,6 @@ def extras(m, cc, ci, k, ruta, galeria=False):
         ext(f"https://www.openstreetmap.org/search?query={quote(lugar + ', ' + pn)}", f"Mapa de {lugar}: OpenStreetMap", "Mapa abierto para ubicar tu barrio."),
         ext(OFICIAL[m], f"Sitio oficial de {mn}", "Manuales, garantía y registro de producto."),
         ext(cons_u or busq(f"{cons_n} {pn} sitio oficial"), f"Defensa del consumidor en {pn}: {cons_n}", "Tus derechos como consumidor y cómo presentar un reclamo."),
-        ext(cli_u or busq(f"{cli_n} {pn} sitio oficial"), f"Clima y alertas en {pn}: {cli_n}", "Pronósticos y alertas de tormentas que afectan tus equipos."),
         ext(f"https://es.wikipedia.org/w/index.php?search={quote(mn)}", f"{mn} en Wikipedia", "Historia y datos generales de la marca."),
         ext(f"https://es.wikipedia.org/wiki/{WIKI_PAIS[cc]}", f"{pn} en Wikipedia", "Información general del país."),
         ext(f"https://es.wikipedia.org/w/index.php?search={quote(lugar)}", f"{lugar} en Wikipedia", "Datos de la ciudad o zona."),
@@ -509,10 +501,10 @@ def guia_pais(m, cc):
     out = []
     out.append(sec(f"{pn}: datos útiles antes de pedir un técnico {mn}",
         f"<ul><li><b>Capital:</b> {esc(R['capital'])}</li><li><b>Moneda:</b> {esc(R['moneda'])}</li>"
-        f"<li><b>Código telefónico:</b> {esc(R['tel'])}</li><li><b>Husos horarios:</b> {esc(R['huso'])}</li><li><b>Red eléctrica:</b> {esc(I['volt'])}</li>"
+        f"<li><b>Código telefónico:</b> {esc(R['tel'])}</li><li><b>Husos horarios:</b> {esc(R['huso'])}</li>"
         f"<li><b>División administrativa:</b> {esc(R['div'])}</li></ul>"
         f"<p>El soporte técnico autorizado {esc(mn)} en {esc(pn)} atiende neveras, lavadoras y secadoras en {len(p['ciudades'])} ciudades de {len(set(r for r, t in CITYINFO[cc].values()))} {esc(R['div'])}. "
-        f"Cada ciudad tiene su página con técnicos, clima, fallas frecuentes y preguntas.</p>"))
+        f"Cada ciudad tiene su página con técnicos, fallas frecuentes, costos y preguntas.</p>"))
     reg = {}
     for c, (r, t) in CITYINFO[cc].items(): reg.setdefault(etiqueta_region(cc, c, r), []).append(c)
     html = "".join(f"<h3>{esc(r)}</h3>" + pills([(c, Uci(m, cc, c)) for c in cs]) for r, cs in reg.items())
@@ -520,11 +512,6 @@ def guia_pais(m, cc):
     tipos = {}
     for c, (r, t) in CITYINFO[cc].items(): tipos.setdefault(t, []).append(c)
     cl = "".join(f"<h3>{esc(CLIMA[t][0].capitalize())}</h3><p>{esc(CLIMA[t][1])}</p><p>Ciudades: {esc(', '.join(cs[:8]))}.</p>" for t, cs in tipos.items())
-    out.append(sec(f"Clima de {pn} y cómo afecta a tus electrodomésticos {mn}", f"<p>{esc(I['clima'])}</p>{cl}"))
-    out.append(sec(f"Red eléctrica en {pn}: voltaje y protección",
-        f"<p>En {esc(pn)} la red es de {esc(I['volt'])}. {esc(I['rayos'])}</p><ul><li>Usa un protector o regulador de voltaje para la nevera, la lavadora y la secadora.</li><li>Desconecta los equipos durante tormentas fuertes.</li>"
-        f"<li>Si un equipo {esc(mn)} llegó de otro país, confirma que su voltaje coincide con el de {esc(pn)} antes de conectarlo.</li><li>No uses extensiones delgadas: la nevera necesita un tomacorriente propio.</li></ul>"))
-    out.append(sec(f"El agua en {pn} y las lavadoras {mn}", f"<p>{esc(I['agua'])}</p><ul><li>Revisa y limpia el filtro de entrada de agua cada pocos meses.</li><li>Usa un limpiador anti-sarro para lavadoras de forma periódica.</li><li>Verifica que las mangueras no estén dobladas ni aplastadas.</li></ul>"))
     cu = "".join(f"<h3>{esc(cap(term(cc, k)))} {esc(mn)}</h3><p>{esc(I['tip'][k])}</p><ul>" + "".join(f"<li>{esc(txt(x, m, cc, k))}</li>" for x in EQ[k]["mant"][:3]) + "</ul>" for k in EQ)
     out.append(sec(f"Cuidado de tus equipos {mn} en {pn}", cu))
     out.append(sec(f"Cómo elegir un buen técnico {mn} en {pn}",
@@ -538,9 +525,9 @@ def guia_pais(m, cc):
 def guia_ciudad(m, cc, ci):
     mn = MA[m]["nombre"]; p = PA[cc]; pn = PN(cc, ci); reg, tipo = CITYINFO[cc].get(ci, (pn, "templado")); cn, ce = CLIMA[tipo]
     noun = "comuna" if es_comuna(cc, ci) else "ciudad"; reg_t = f"{etiqueta_region(cc, ci, reg)}" if es_comuna(cc, ci) else reg
-    out = [sec(f"{ci}: {cn} en {reg_t}", f"<p>{esc(ci)} es una {noun} de {esc(reg_t)}, {esc(pn)}, con {esc(cn)}. {esc(ce)}</p>"
+    out = [sec(f"Servicio técnico {mn} en {ci}, {reg_t}", f"<p>{esc(ci)} es una {noun} de {esc(reg_t)}, {esc(pn)}.</p>"
         f"<p>El servicio técnico {esc(mn)} en {esc(ci)} atiende {esc(term(cc,'neveras'))}, {esc(term(cc,'lavadoras'))} y {esc(term(cc,'secadoras'))} a domicilio, en el centro y en los barrios cercanos.</p>")]
-    f = "".join(f"<h3>{esc(cap(term(cc, k)))} {esc(mn)} en {esc(ci)}</h3><p>{esc(TIPOF[tipo][k])}</p>" for k in EQ)
+    f = "".join(f"<h3>{esc(cap(term(cc, k)))} {esc(mn)} en {esc(ci)}</h3>" + pills([(txt(x[0], m, cc, k), Uf(m, cc, k, x[0])) for x in EQ[k]["fallas"][:6]]) for k in EQ)
     out.append(sec(f"Fallas frecuentes de equipos {mn} en {ci}", f))
     mates = cercanas(cc, ci, 12)
     otras = [c for c in p["ppal"][:12] if c != ci and c not in mates]
@@ -636,14 +623,14 @@ def faq_banco(m, cc, ci=None, k=None, falla=None):
      (f"¿Cuáles son las señales de que debo llamar a un técnico {mn}?", "Ruidos nuevos y constantes, fugas de agua, olor a quemado, el equipo que no enfría, no centrifuga o no seca, códigos de error que no se quitan, o disparos frecuentes del breaker."),
      (f"¿Qué puedo revisar yo mismo antes de llamar?", "Que esté conectado y llegue energía, que las llaves de agua estén abiertas, que las mangueras no estén dobladas, que la puerta cierre bien y que los filtros estén limpios. No abras paneles internos con el equipo conectado."),
      (f"¿Qué pasa si sigo usando el equipo con la falla?", "Depende de la falla: algunas son menores, pero otras pueden dañar el compresor, la bomba o la tarjeta. Ante olor a quemado, chispas o fugas, desconecta el equipo y llama a un técnico."),
-     (f"¿El voltaje de {pn} afecta mi equipo {mn}?", f"En {pn} la red es de {I['volt']}. Un equipo preparado para ese voltaje funciona sin problema; las variaciones y los picos de tensión son los que dañan tarjetas y compresores, por eso conviene un protector."),
-     (f"¿Qué hago con las tormentas y los bajones de luz en {pn}?", f"{I['rayos']} Desconecta el equipo en tormentas fuertes y usa un protector de voltaje."),
-     (f"¿El clima de {lg} afecta a mi {mn}?", (CIUDAD.get(ci) if ci and ci in CIUDAD else I['clima']) + " Con ese ambiente, limpia rejillas y filtros con más frecuencia y revisa los empaques de las puertas."),
-     (f"¿El agua de {pn} daña las lavadoras {mn}?", f"{I['agua']} Limpia el filtro de entrada y usa un limpiador anti-sarro de forma periódica."),
-     (f"¿Cómo ahorro energía con mi {sg} {mn} en {pn}?", "Mantén limpias las rejillas, no sobrecargues el equipo, usa programas adecuados a la carga y no dejes la puerta abierta. Un equipo bien mantenido consume menos."),
      (f"¿Reparan equipos {mn} antiguos o descontinuados?", "En muchos casos sí; depende de la disponibilidad de la pieza. El técnico revisa el equipo y te dice con claridad si es viable repararlo."),
      (f"¿Instalan o reinstalan equipos {mn} al mudarme?", "Sí, coordinamos la instalación o reinstalación de neveras, lavadoras y secadoras. Indica el tipo de equipo, la dirección y si hay conexiones nuevas por hacer."),
      (f"¿Qué ciudades de {pn} atiende el soporte técnico {mn}?", "Atendemos " + ", ".join(list(p["ciudades"])[:12]) + f" y otras {max(0, len(p['ciudades']) - 12)} ciudades del país."),
+     (f"¿Cuánto cobra un técnico {mn} por la visita en {lg}?", f"El valor depende del equipo, la falla y la pieza. El técnico lo revisa en tu casa y te da el costo en {p['moneda']} antes de empezar; si no lo apruebas, no se repara."),
+     (f"¿Puedo agendar el técnico {mn} para hoy o mañana en {lg}?", "Escribe por WhatsApp con la falla y tu barrio: te confirmamos el horario más cercano disponible."),
+     (f"¿El técnico {mn} lleva repuestos?", "Lleva las piezas más comunes; si tu modelo necesita una pieza especial, te decimos cuánto demora y su costo antes de pedirla."),
+     (f"¿Cómo sé que el técnico {mn} es de confianza?", "Te informa el costo antes de empezar, explica la falla en palabras simples, repara con tu aprobación y da garantía sobre la pieza y la mano de obra."),
+     (f"¿Cómo pago el servicio técnico {mn}?", "La forma de pago la acuerdas con el técnico antes de empezar; confírmala por WhatsApp al agendar."),
      (f"¿El técnico {mn} atiende en mi barrio de {lg}?", f"Sí, atendemos el centro y los barrios cercanos de {lg}. Activa tu ubicación o escribe tu barrio por WhatsApp para confirmarlo."),
     ]
     if k == "neveras": Q += [(f"¿Por qué mi {sg} {mn} hace ruido?", "Puede ser el ventilador con hielo o desgastado, el compresor al arrancar, o el equipo mal nivelado. Un ruido nuevo y constante merece revisión."), (f"¿Por qué mi {sg} {mn} huele mal?", "Alimentos derramados, desagüe sucio o filtro de olores saturado. Limpia con agua tibia y bicarbonato; si persiste, revisa el desagüe.")]
@@ -712,12 +699,8 @@ def bonus(m, cc, ci, k, ruta):
     B = []
     B.append(sec(f"Servicios que ofrecemos para {eq} en {lg}", "".join(f"<h3>{esc(txt(v[1], m, cc))}</h3><p>{esc(txt(v[2], m, cc))}</p><ul>" + "".join(f"<li>{esc(txt(x, m, cc))}</li>" for x in v[3]) + "</ul>" for v in MODS[m].SERVICIOS.values())))
     B.append(sec(f"Qué revisa el técnico {mn} en tu equipo", "<ol><li>Alimentación eléctrica y estado del cable y del tomacorriente.</li><li>Conexiones de agua, mangueras y desagües (en lavadoras).</li><li>Sensores, tarjeta de control y códigos de error.</li><li>Motor, compresor o bomba según el equipo.</li><li>Empaques, filtros y ventilación.</li><li>Prueba final del funcionamiento contigo presente.</li></ol>"))
-    B.append(sec(f"Errores comunes que dañan tus equipos {mn} en {pn}", "<ul><li>Conectar varios equipos grandes en la misma extensión.</li><li>No limpiar filtros, rejillas y gomas de las puertas.</li><li>Sobrecargar la lavadora o la secadora.</li><li>Ignorar los códigos de error o los ruidos nuevos.</li><li>Dejar la puerta de la nevera abierta o mal cerrada.</li><li>No usar protector de voltaje en zonas con tormentas.</li></ul>"))
+    B.append(sec(f"Errores comunes que dañan tus equipos {mn} en {pn}", "<ul><li>Conectar varios equipos grandes en la misma extensión.</li><li>No limpiar filtros, rejillas y gomas de las puertas.</li><li>Sobrecargar la lavadora o la secadora.</li><li>Ignorar los códigos de error o los ruidos nuevos.</li><li>Dejar la puerta de la nevera abierta o mal cerrada.</li><li>Seguir usando el equipo con una falla evidente en vez de llamar a tiempo.</li></ul>"))
     B.append(sec(f"Reparar o reemplazar tu equipo {mn}: cómo decidir", "<p>Una regla práctica: si el costo de la reparación supera la mitad del precio de un equipo nuevo equivalente, o el equipo ya superó su vida útil promedio y falla seguido, conviene evaluar el reemplazo. Si la falla es de una pieza accesible y el equipo está en buen estado, repararlo suele ser la opción más económica. El técnico te da el diagnóstico y las opciones antes de que decidas.</p>"))
-    B.append(sec(f"Ahorro de energía con equipos {mn} en {pn}", f"<p>En {esc(pn)} la red es de {esc(I['volt'])}. Para gastar menos: mantén limpias las rejillas y los filtros, no sobrecargues los equipos, usa programas acordes a la carga y revisa los empaques de las puertas. {esc(I['tip']['neveras'])}</p>"))
-    B.append(sec(f"Mitos y verdades de los electrodomésticos {mn}", "<ul><li><b>Mito:</b> una nevera con más hielo enfría mejor. <b>Verdad:</b> la escarcha en exceso bloquea el aire y fuerza el compresor.</li><li><b>Mito:</b> más detergente lava mejor. <b>Verdad:</b> el exceso deja residuos, moho y malos olores.</li><li><b>Mito:</b> la secadora seca igual con el filtro sucio. <b>Verdad:</b> tarda más, gasta más y puede sobrecalentarse.</li><li><b>Mito:</b> si hace ruido pero funciona, no importa. <b>Verdad:</b> un ruido nuevo suele avisar de una falla en camino.</li></ul>"))
-    B.append(sec(f"Glosario técnico para entender a tu técnico {mn}", "<ul><li><b>Compresor:</b> el motor que mueve el gas refrigerante de la nevera.</li><li><b>Evaporador:</b> la pieza que enfría el aire dentro de la nevera.</li><li><b>Tarjeta de control:</b> el cerebro electrónico del equipo.</li><li><b>Termistor o sensor:</b> mide la temperatura y avisa a la tarjeta.</li><li><b>Bomba de desagüe:</b> saca el agua de la lavadora.</li><li><b>Resistencia:</b> calienta el aire o el agua.</li></ul>"))
-    B.append(sec(f"Cómo cuidar tu {mn} en el clima de {lg}", f"<p>{esc((CIUDAD.get(ci) if ci and ci in CIUDAD else I['clima']))} {esc(I['rayos'])} {esc(I['agua'])}</p>"))
     B = [b for b in B if b]
     off = zlib.crc32(ruta.encode()) % len(B)
     return "".join(B[(off + i) % len(B)] for i in range(4))
@@ -835,7 +818,6 @@ def build():
                 gc, mates = guia_ciudad(m, cc, ci)
                 fq = [(f"¿Hay técnico {mn} en {ci}?", f"Sí. Atendemos neveras, lavadoras y secadoras {mn} a domicilio en {ci}, {reg}, y en sus barrios cercanos."),
                       (f"¿Cuánto tarda el técnico {mn} en llegar a {ci}?", "Depende de la zona y de la urgencia; te confirmamos el horario por WhatsApp apenas recibimos tu mensaje."),
-                      (f"¿El clima de {ci} afecta mi equipo {mn}?", f"{ci} tiene {cn}. {ce}"),
                       (f"¿Atienden fuera del centro de {ci}?", f"Sí, en barrios y zonas cercanas de {ci}, {reg}."),
                       (f"¿Qué otras ciudades de {reg} atienden?", ("Atendemos " + ", ".join(mates[:6]) + " y más.") if mates else f"Atendemos varias ciudades de {PN(cc, ci)}; mira la lista en esta página.")] + faq_gen(m, cc, ci)[2:6]
                 th = "".join(f'<div class="cd"><b>{esc(t["n"])}</b><br><span style="color:var(--mu)">{esc(t["z"])}, {esc(ci)}</span><p><a class="pill" data-evt="whatsapp" href="{wa(t["w"], f"Hola, necesito servicio técnico {mn} en {ci}")}" rel="noopener">WhatsApp</a></p></div>' for t in tecs)
