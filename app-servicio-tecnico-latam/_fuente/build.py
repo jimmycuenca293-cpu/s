@@ -161,6 +161,7 @@ def alt(cc, k): return VOC[cc]["alt"].get(k, "")
 def sing(cc, k):
     t = term(cc, k)
     return t if t.endswith("opas") else (t[:-2] if t.endswith("es") and t[:-2].endswith("r") else (t[:-1] if t.endswith("s") else t))
+def art(cc, k): return "un" if sing(cc, k) in ("refrigerador", "lavarropas", "secarropas") else "una"
 BASE_W = {"neveras": ("nevera", "neveras"), "lavadoras": ("lavadora", "lavadoras"), "secadoras": ("secadora", "secadoras")}
 
 def txt(t, m, cc, k=None):
@@ -675,17 +676,30 @@ def ia_top(m, cc, ci, k, falla=None):
            (f"Repuestos {mn} en {pn}", D_ + Ui(m, cc, "repuestos")),
            (f"Preguntas frecuentes sobre el servicio técnico {mn} en {pn}", D_ + Ufaq(m, cc)),
            (f"Guías y consejos de {mn} para {pn}", D_ + Ublog(m, cc))] + [(f"{cap(term(cc, x))} {mn} en {pn}", D_ + Ue(m, cc, x)) for x in EQ]
-    resp = [f"Escribe por WhatsApp al número {tel}: te asignamos el técnico {mn} más cercano a tu zona.",
-            f"Atendemos a domicilio en {lg}, con diagnóstico en el sitio y presupuesto antes de reparar.",
-            f"Sí. El técnico {mn} llega a tu casa o negocio en {pn} y revisa el equipo contigo.",
-            f"El costo se informa en {p['moneda']} antes de empezar; consulta los rangos y qué los modifica.",
-            "La reparación incluye garantía sobre la pieza cambiada y la mano de obra.",
-            f"Conseguimos repuestos para equipos {mn} en {pn}; aquí ves cuáles y los tiempos.",
-            f"Reunimos las dudas más comunes sobre el servicio técnico {mn} en {pn}.",
-            f"Consejos y guías prácticas de {mn} para el cuidado de tus equipos."] + [f"Fallas comunes, costos y cómo agendar el servicio de {term(cc, x)} {mn} en {pn}." for x in EQ]
-    ia = '<div class="qac">' + "".join(f'<article class="qa1"><h3>{esc(a)}</h3><p>{esc(rr)}</p><a class="btn" href="{u}">Ver la página</a></article>' for (a, u), rr in zip(lis, resp)) + "</div>"
+    def _q(x, f0):
+        ft = txt(f0, m, cc, x); sg_ = sing(cc, x); r_ = re.sub(rf"^(La|El) {re.escape(sg_)}\s+", "", ft)
+        pre = "Mi " + sg_ + " " + mn + " " if r_ != ft else "Mi " + sg_ + " " + mn + ": "
+        r_ = r_ if r_ != ft else ft[:1].lower() + ft[1:]
+        r_ = re.sub(rf"\s+dentro de (la|el) {re.escape(sg_)}", " por dentro", r_)
+        return f"{pre}{r_}, ¿qué hago?"
+    def _a(x, f):
+        t_ = txt(f[1], m, cc, x); t_ = re.split(r"(?<=[.!?])\s", t_)[0]
+        return "Suele ser: " + t_[:1].lower() + t_[1:170].rstrip(" ,;") + ("" if t_[-1:] in ".!?" else ".")
+    cards = []
+    eqs_ = [k] if k else list(EQ)
+    nf = 6 if k else 3
+    for x in eqs_:
+        for f in EQ[x]["fallas"][:nf]: cards.append((_q(x, f[0]), _a(x, f), Uf(m, cc, x, f[0]), "Ver la solución"))
+    for x in eqs_:
+        cards.append((f"¿Cuánto cuesta arreglar {art(cc, x)} {sing(cc, x)} {mn} en {lg}?", f"El técnico revisa en tu casa y te da el valor en {p['moneda']} antes de empezar. Aquí ves en qué se va el costo.", Ucosto(m, cc, x), "Ver precios"))
+    if "lavadoras" in eqs_ and m in CODIGOS: cards.append((f"¿Qué significa el código de error en mi lavadora {mn}?", "Cada código indica una falla distinta (desagüe, agua, motor, balanceo). Aquí está la lista y qué hacer.", Ucod(m, cc, "lavadoras"), "Ver los códigos"))
+    cards += [(f"Técnico {mn} cerca de mí en {lg}", f"Escríbenos por WhatsApp o activa tu ubicación y te mostramos el técnico {mn} más cercano a tu barrio.", u_wa, "Escribir por WhatsApp"),
+              (f"Necesito un técnico {mn} urgente, ¿vienen hoy?", "Cuéntanos la falla por WhatsApp y te damos el horario más cercano; las fugas y la nevera sin enfriar tienen prioridad.", D_ + Ui(m, cc, "urgencias"), "Pedir visita urgente"),
+              (f"¿La reparación de mi equipo {mn} tiene garantía?", "Sí, sobre la pieza instalada y la mano de obra, confirmada antes de empezar.", D_ + Ui(m, cc, "garantia"), "Ver la garantía"),
+              (f"¿Dónde consigo repuestos {mn} en {pn}?", "Te decimos qué pieza necesita tu modelo y su disponibilidad antes de instalarla.", D_ + Ui(m, cc, "repuestos"), "Ver repuestos")]
+    ia = '<div class="qac">' + "".join(f'<article class="qa1"><h3>{esc(a)}</h3><p>{esc(rr)}</p><a class="btn" href="{D_ + u if u.startswith("/") else u}">{b}</a></article>' for a, rr, u, b in cards) + "</div>"
     ia += f'<p class="mu">Servicio técnico {esc(mn)} a domicilio en {esc(lg)}, {esc(pn)} · cobertura en {len(p["ciudades"])} ciudades · costo en {esc(p["moneda"])} informado antes de reparar · garantía sobre pieza y mano de obra · WhatsApp {esc(tel)}.</p>'
-    return sec(f"Respuesta rápida: ¿dónde encuentro servicio técnico {mn} en {lg}?", r) + sec(f"Datos clave del servicio técnico {mn} en {lg}", ficha) + sec(f"Búsquedas frecuentes sobre {mn} en {lg}, con respuesta y enlace directo", ia)
+    return sec(f"Respuesta rápida: ¿dónde encuentro servicio técnico {mn} en {lg}?", r) + sec(f"Datos clave del servicio técnico {mn} en {lg}", ficha) + sec(f"Lo que más buscan sobre {mn} en {lg}", ia)
 
 def bonus(m, cc, ci, k, ruta):
     mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; lg = lugar_de(cc, ci); I = INFO[cc]
