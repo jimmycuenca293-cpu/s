@@ -29,7 +29,7 @@ CSS = """:root{--mc:%(c)s;--ink:#0f172a;--mu:#475569;--panel:#f1f5f9}*{box-sizin
 a{color:inherit}.w{max-width:1080px;margin:0 auto;padding:0 16px}
 .top{position:sticky;top:0;z-index:20;background:#fff;box-shadow:0 1px 10px rgba(0,0,0,.08)}.top .w{display:flex;align-items:center;gap:10px;padding:8px 16px}.top img{height:30px}.top .sp{flex:1}
 .b{display:inline-flex;align-items:center;justify-content:center;border-radius:14px;padding:13px 20px;font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:1rem}.wa{background:#25d366;color:#0b2e17}.ll{background:#fff;color:var(--mc);border:2px solid var(--mc)}
-.hero{color:#fff;background:linear-gradient(110deg,color-mix(in srgb,var(--mc) 92%%,#000),color-mix(in srgb,var(--mc) 70%%,transparent)),url(%(hero)s) center/cover}.hero .w{padding:36px 16px 52px;display:grid;gap:16px}.hero h1{margin:0;font-size:clamp(1.8rem,5vw,2.9rem);line-height:1.1;max-width:20ch}.hero p{margin:0;font-size:1.1rem;max-width:48ch}
+.hero{color:#fff;background:linear-gradient(120deg,#0b2d54,var(--mc))}.hero .w{padding:36px 16px 52px;display:grid;gap:16px;grid-template-columns:1fr}.hero .t{display:grid;gap:16px;align-content:center}.fr{background:#fff;border-radius:18px;padding:14px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}.fr img{max-height:340px;width:auto;max-width:100%%}@media(min-width:800px){.hero .w{grid-template-columns:1.5fr 1fr;align-items:center}}.foto{width:100%%;height:auto;border-radius:16px;display:block}.hero h1{margin:0;font-size:clamp(1.8rem,5vw,2.9rem);line-height:1.1;max-width:20ch}.hero p{margin:0;font-size:1.1rem;max-width:48ch}
 .chips{display:flex;gap:8px;flex-wrap:wrap;list-style:none;margin:0;padding:0}.chips li{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:6px 12px;border-radius:99px;font-size:.88rem;font-weight:600}.cta{display:flex;gap:12px;flex-wrap:wrap}
 .card{background:#fff;border-radius:18px;padding:22px;margin:18px 0;box-shadow:0 6px 24px rgba(0,0,0,.06)}.card h2{margin:0 0 12px;font-size:1.35rem;color:var(--mc)}.card h3{margin:14px 0 6px}.sel{margin-top:-30px;position:relative}
 .ci{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 12px}.ci button{border:2px solid #e2e8f0;background:#fff;border-radius:99px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer}.ci button[aria-pressed=true]{background:var(--mc);border-color:var(--mc);color:#fff}
@@ -46,6 +46,13 @@ footer{max-width:1080px;margin:0 auto;padding:18px 16px;font-size:.8rem;color:#6
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;box-shadow:0 -4px 18px rgba(0,0,0,.14);padding:10px 12px;display:flex;gap:10px}.bar .b{flex:1;padding:12px}@media(min-width:900px){.bar{display:none}body{padding-bottom:0}}
 """
 
+FOTOS = RAIZ.parent
+NEVERA = {"samsung": FOTOS / "servicio-tecnico-samsung-panama/images/fotos/prod-nevera-sbs.jpg",
+          "lg": FOTOS / "servicio-tecnico-lg-panama/images/fotos/prod-nevera-top.jpg",
+          "whirlpool": FOTOS / "servicio-tecnico-whirlpool-panama/images/fotos/prod-nevera-sbs.jpg"}
+ALT = {"samsung": "Nevecón Samsung side by side con dispensador de agua", "lg": "Nevecón LG french door con dispensador de agua y hielo", "whirlpool": "Nevecón Whirlpool side by side con dispensador de agua"}
+AGUA = FOTOS / "filtroya-web/imagenes-ads/agua-dispensador.jpg"
+
 def b64(path, w, h, fmt="JPEG", q=62):
     im = Image.open(path)
     im = im.convert("RGBA") if fmt == "PNG" else im.convert("RGB")
@@ -55,9 +62,8 @@ def b64(path, w, h, fmt="JPEG", q=62):
 def slug_marca(m): return f"soporte-tecnico-autorizado-{m}-instalacion-nevecones-cali-yumbo-palmira-colombia"
 
 def pagina_marca(m):
-    n = N[m]; d = D[m]; color = CFG["marcas"][m]["color"]
-    hero = b64(SITE / "img" / m / "tecnico-3.jpg" if (SITE / "img" / m / "tecnico-3.jpg").exists() else SITE / "img" / m / "tecnico-0.jpg", 1200, 700)
-    logo = b64(SITE / "img" / m / "logo.png", 220, 70, "PNG")
+    n = N[m]; d = D[m]; color = "#0f4c81"
+    nev = b64(NEVERA[m], 600, 900, q=85); agua = b64(AGUA, 900, 600, q=70)
     ref = f"ads-nevecones-{m}"
     tipos = [("Side by Side con agua y hielo", "Dos puertas verticales, con dispensador de agua y fábrica de hielo."), ("French Door con agua y hielo", "Puertas dobles arriba y cajón de congelador abajo, con dispensador de agua y fábrica de hielo.")]
     tipos_h = "".join(f'<div class="mod"><b>{H.escape(a)}</b>{H.escape(b)}</div>' for a, b in tipos)
@@ -76,24 +82,24 @@ def pagina_marca(m):
            ("¿Atienden en Cali, Yumbo y Palmira?", "Sí, atendemos las tres ciudades y sus barrios cercanos. Escribe tu barrio por WhatsApp para confirmar el horario.")]
     faq_h = "".join(f"<details><summary>{H.escape(q)}</summary><p>{H.escape(a)}</p></details>" for q, a in faq)
     ver = f'<meta name="google-site-verification" content="{CFG["verificacion_gsc"]}">' if CFG.get("verificacion_gsc") else ""
-    css = CSS % dict(c=color, hero=hero)
+    css = CSS % dict(c=color)
     h1 = f"Instalación de nevecones {n} en Cali, Yumbo y Palmira"
     return f'''<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Instalación de nevecones {n} en Cali, Yumbo y Palmira</title>
 <meta name="description" content="Instalación de nevecones {n} en Cali, Yumbo y Palmira: modelos, instalación del filtro de agua, fábrica de hielo y conexión de agua. Costo antes de empezar.">
 <meta name="robots" content="noindex,follow">{ver}<link rel="canonical" href="https://soporte-tecnico-autorizado.com/ads/{slug_marca(m)}/"><style>{css}</style></head><body>
-<header class="top"><div class="w"><img src="{logo}" alt="Logo {n}"><span class="sp"></span><a class="b ll" data-e="llamar" href="tel:+{TEL}">Llamar</a><a class="b wa" data-e="whatsapp" data-wa href="#">WhatsApp</a></div></header>
-<section class="hero"><div class="w"><h1>{h1}</h1><p>Instalamos tu nevecón {n} con conexión de agua, filtro y fábrica de hielo. Te damos el costo antes de empezar.</p>
+<header class="top"><div class="w"><b>Instalación de nevecones {n}</b><span class="sp"></span><a class="b ll" data-e="llamar" href="tel:+{TEL}">Llamar</a><a class="b wa" data-e="whatsapp" data-wa href="#">WhatsApp</a></div></header>
+<section class="hero"><div class="w"><div class="t"><h1>{h1}</h1><p>Instalamos tu nevecón {n} con conexión de agua, filtro y fábrica de hielo. Te damos el costo antes de empezar.</p>
 <ul class="chips"><li>A domicilio</li><li>Filtro de agua</li><li>Fábrica de hielo</li><li>Costo antes de empezar</li></ul>
-<div class="cta"><a class="b wa" data-e="whatsapp" data-wa href="#">Escribir por WhatsApp</a><a class="b ll" data-e="llamar" href="tel:+{TEL}">Llamar {TELV}</a></div></div></section>
+<div class="cta"><a class="b wa" data-e="whatsapp" data-wa href="#">Escribir por WhatsApp</a><a class="b ll" data-e="llamar" href="tel:+{TEL}">Llamar {TELV}</a></div></div><div class="fr"><img src="{nev}" alt="{ALT[m]}" width="300" height="540"></div></div></section>
 <main class="w">
 <section class="card sel"><h2>Elige tu ciudad</h2><div class="ci" id="ci">{"".join(f'<button type="button" data-c="{c}" aria-pressed="false">{c}</button>' for c in CIUDADES)}</div><div class="res" id="res">Selecciona tu ciudad para pedir la instalación.</div><a class="b wa" data-e="whatsapp" data-wa href="#">Pedir instalación por WhatsApp</a></section>
 <section class="card"><h2>¿Qué necesitas para tu nevecón {n}?</h2><div class="g" id="need"></div></section>
-<section class="card"><h2>Modelos de nevecones {n} que instalamos</h2><div class="g">{tipos_h}</div><p style="margin-top:12px">Escríbenos con el modelo de tu nevecón {n} (etiqueta dentro del compartimento) y te confirmamos la instalación y el filtro que necesita.</p></section>
+<section class="card"><h2>Modelos de nevecones {n} que instalamos</h2><div class="two"><div><div class="g">{tipos_h}</div></div><div class="fr"><img src="{nev}" alt="{ALT[m]}" width="300" height="540" style="max-height:300px"></div></div><p style="margin-top:12px">Escríbenos con el modelo de tu nevecón {n} (etiqueta dentro del compartimento) y te confirmamos la instalación y el filtro que necesita.</p></section>
 <section class="card"><h2>Instalación del filtro de agua del nevecón {n}</h2><p>{H.escape(d["filtro"])}</p><div class="note">Son referencias frecuentes. Cada modelo puede usar una distinta: confirma con la etiqueta de tu nevecón o escríbenos con el modelo y te decimos cuál necesita.</div>
 <div class="two"><div><h3>Cómo se instala</h3><ol class="st">{pf}</ol></div><div><h3>Detalle de tu marca</h3><p>{H.escape(d["paso"])}</p><h3>¿Cuándo cambiarlo?</h3><p>Normalmente cada 6 meses, o antes si se enciende la luz del filtro, si baja el caudal de agua o si el agua y el hielo cambian de sabor.</p><p><a class="b wa" data-e="whatsapp" data-wa-s="Instalar o cambiar el filtro de agua" href="#">Consultar mi filtro por WhatsApp</a></p></div></div></section>
 <section class="card"><h2>Instalación de la fábrica de hielo del nevecón {n}</h2><p>El técnico activa la fábrica de hielo según tu modelo y comprueba que entre agua y que produzca hielo.</p><ol class="st">{ph}</ol></section>
-<section class="card"><h2>Conexión de agua y dispensador</h2><ul class="ben"><li>Manguera de agua sin dobleces ni aplastamientos detrás del equipo.</li><li>Llave de paso accesible para cerrar el agua cuando haga falta.</li><li>Presión de agua suficiente: si es muy baja, el dispensador sale lento y el hielo sale pequeño.</li><li>Purga del sistema antes de tomar el primer vaso de agua.</li><li>Revisión de fugas en las uniones al terminar.</li><li>Prueba del dispensador de agua y de hielo con el equipo funcionando.</li></ul></section>
+<section class="card"><h2>Conexión de agua y dispensador</h2><div class="two"><img class="foto" src="{agua}" alt="Persona sirviéndose agua del dispensador de un nevecón" width="900" height="600"><ul class="ben"><li>Manguera de agua sin dobleces ni aplastamientos detrás del equipo.</li><li>Llave de paso accesible para cerrar el agua cuando haga falta.</li><li>Presión de agua suficiente: si es muy baja, el dispensador sale lento y el hielo sale pequeño.</li><li>Purga del sistema antes de tomar el primer vaso de agua.</li><li>Revisión de fugas en las uniones al terminar.</li><li>Prueba del dispensador de agua y de hielo con el equipo funcionando.</li></ul></div></section>
 <section class="card"><h2>Qué incluye la instalación de tu nevecón {n}</h2><ul class="ben"><li>Revisión del lugar: espacio, piso firme y ventilación a los lados y atrás.</li><li>Nivelación del equipo con las patas ajustables.</li><li>Conexión a un tomacorriente con tierra, sin extensiones ni regletas.</li><li>Conexión de agua, filtro y fábrica de hielo.</li><li>Ajuste de la temperatura y verificación del enfriamiento.</li><li>Explicación del uso básico y del cambio de filtro.</li></ul>
 <h3>Antes de la visita</h3><ul class="ben"><li>Mide el espacio y la puerta de entrada para que el equipo pase.</li><li>Si el nevecón viajó acostado, déjalo reposar de pie varias horas antes de conectarlo; confirma el tiempo en el manual.</li><li>Ten un tomacorriente con tierra cerca y una llave de agua accesible.</li><li>Limpia el interior con un paño húmedo antes de usarlo.</li></ul></section>
 <section class="card"><h2>Preguntas frecuentes sobre la instalación de nevecones {n}</h2>{faq_h}</section>
@@ -112,15 +118,14 @@ document.addEventListener("click",function(e){{var a=e.target.closest("[data-e]"
 def pagina_entrada(enlace):
     """enlace(m) -> dirección de la página de cada marca."""
     ver = f'<meta name="google-site-verification" content="{CFG["verificacion_gsc"]}">' if CFG.get("verificacion_gsc") else ""
-    hero = b64(SITE / "img" / "samsung" / "tecnico-3.jpg", 1200, 700)
-    css = CSS % dict(c="#0f4c81", hero=hero)
-    tarj = "".join(f'<a class="mk" href="{enlace(m)}" style="--c:{CFG["marcas"][m]["color"]}"><img src="{b64(SITE / "img" / m / "logo.png", 220, 70, "PNG")}" alt="{N[m]}"><b>Nevecones {N[m]}</b><span>Filtro, hielo y agua</span></a>' for m in N)
-    extra = ".mk{display:grid;place-items:center;gap:6px;text-align:center;background:#fff;border:2px solid #e2e8f0;border-radius:16px;padding:18px 10px;text-decoration:none;min-height:150px}.mk:hover{border-color:var(--c)}.mk img{max-height:34px;max-width:80%}.mk span{font-size:.85rem;color:var(--mu)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}"
+    css = CSS % dict(c="#0f4c81")
+    tarj = "".join(f'<a class="mk" href="{enlace(m)}"><img src="{b64(NEVERA[m], 300, 450, q=80)}" alt="{ALT[m]}"><b>Nevecones {N[m]}</b><span>Filtro, hielo y agua</span></a>' for m in N)
+    extra = ".mk{display:grid;place-items:center;gap:6px;text-align:center;background:#fff;border:2px solid #e2e8f0;border-radius:16px;padding:18px 10px;text-decoration:none;min-height:260px}.mk:hover{border-color:var(--mc)}.mk img{max-height:170px;width:auto;max-width:90%}.mk span{font-size:.85rem;color:var(--mu)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}"
     return f'''<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Instalación de nevecones por marca en Cali, Yumbo y Palmira</title><meta name="description" content="Instalación de nevecones por marca en Cali, Yumbo y Palmira: filtro de agua, fábrica de hielo y conexión de agua. Elige tu marca.">
 <meta name="robots" content="noindex,follow">{ver}<style>{css}{extra}</style></head><body>
 <header class="top"><div class="w"><b style="flex:1">Instalación de nevecones · Cali, Yumbo y Palmira</b><a class="b ll" href="tel:+{TEL}">Llamar</a><a class="b wa" href="https://wa.me/{TEL}?text=Hola%2C%20necesito%20instalaci%C3%B3n%20de%20nevec%C3%B3n">WhatsApp</a></div></header>
-<section class="hero"><div class="w"><h1>Instalación de nevecones por marca en Cali, Yumbo y Palmira</h1><p>Elige la marca de tu nevecón y ve los modelos, la instalación del filtro, la fábrica de hielo y la conexión de agua.</p></div></section>
+<section class="hero"><div class="w"><div class="t"><h1>Instalación de nevecones por marca en Cali, Yumbo y Palmira</h1><p>Elige la marca de tu nevecón y ve la instalación del filtro, la fábrica de hielo y la conexión de agua.</p></div></div></section>
 <main class="w"><section class="card sel"><h2>Elige la marca de tu nevecón</h2><div class="grid">{tarj}</div></section></main>
 <footer>Servicio técnico independiente. Las marcas y sus logotipos pertenecen a sus respectivos propietarios; este sitio no está afiliado ni patrocinado por ellas.</footer></body></html>'''
 
