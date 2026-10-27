@@ -47,7 +47,8 @@ header b{font-size:18px}nav a{margin-right:14px;text-decoration:none;font-weight
 .gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .card{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px}
 .card h3{margin:0;font-size:17px}.card p{margin:0;color:var(--m);font-size:14px}
-.ico{height:92px;border-radius:10px;background:linear-gradient(135deg,#dbe8ff,#eef4ff);display:grid;place-items:center;color:#0b5fff}
+.ico.foto{height:130px;background:#fff;gap:6px;padding:6px}.ico.foto img{height:100%;min-width:0;flex:1 1 0;object-fit:contain;max-width:100%}
+.ico{height:92px;border-radius:10px;background:linear-gradient(135deg,#dbe8ff,#eef4ff);display:grid;place-items:center;color:#0b5fff}.ico.foto{display:flex}
 .pr{font-size:24px;font-weight:800}.pr small{font-size:13px;font-weight:600;color:var(--ok)}
 .btn{display:inline-block;background:var(--a);color:#fff;padding:11px 16px;border-radius:10px;text-decoration:none;font-weight:700;text-align:center}
 .btn.o{background:transparent;color:var(--a);border:2px solid var(--a)}.btn.g{background:#16a34a}
@@ -59,10 +60,14 @@ footer{margin-top:40px;padding:24px 0;border-top:1px solid var(--b);color:var(--
 .wa{position:fixed;right:14px;bottom:14px;z-index:9}@media(max-width:560px){h1{font-size:25px}}"""
 ICON = '<svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">%s</svg>'
 ICONOS = {"manguera-1-4-5m": '<path d="M3 17c4 0 4-10 9-10s5 10 9 10"/>', "llave-galapago": '<circle cx="12" cy="12" r="3"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/>',
-          "manguera-5-16-5m": '<path d="M3 17c4 0 4-10 9-10s5 10 9 10"/>', "llave-multiproposito": '<path d="M4 12h16M12 12V6m-3 0h6"/>', "acople-reduccion": '<path d="M3 9h6l2 2v2l-2 2H3M21 9h-4l-2 2v2l2 2h4"/>',
+          "manguera-5-16-5m": '<path d="M3 17c4 0 4-10 9-10s5 10 9 10"/>', "llave-multiproposito": '<path d="M4 12h16M12 12V6m-3 0h6"/>', "acople-rapido-1-4": '<path d="M3 9h6l2 2v2l-2 2H3M21 9h-4l-2 2v2l2 2h4"/>',
           "filtro-externo-samsung": '<rect x="8" y="3" width="8" height="18" rx="3"/><path d="M8 9h8M8 15h8"/>', "filtro-externo-lg": '<rect x="8" y="3" width="8" height="18" rx="3"/><path d="M8 9h8M8 15h8"/>', "filtro-externo-whirlpool": '<rect x="8" y="3" width="8" height="18" rx="3"/><path d="M8 9h8M8 15h8"/>',
           "filtro-externo": '<rect x="8" y="3" width="8" height="18" rx="3"/><path d="M8 9h8M8 15h8"/>', "servicio-instalacion": '<path d="M14 7l3-3 3 3-3 3zM3 21l10-10"/>'}
-def ico(p):
+def ico(p, base="/"):
+    ids = [p["id"]] if p["tipo"] != "combo" else list(dict.fromkeys(i for i in p["inc"] if P_[i]["tipo"] != "servicio"))
+    fotos = [i for i in ids if (AQUI / "fotos" / f"{i}.jpg").exists()][:3]
+    if fotos:
+        return '<div class="ico foto">' + "".join(f'<img src="{base}img/{i}.jpg" alt="{esc(P_[i]["nombre"])}" loading="lazy">' for i in fotos) + "</div>"
     k = ICONOS.get(p["id"], '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 11h16"/>')
     return f'<div class="ico">{ICON % k}</div>'
 
@@ -87,7 +92,7 @@ def tarjeta(p, cali, base):
     inc = ""
     if p["inc"]:
         inc = "<p>Incluye: " + ", ".join(esc(P_[i]["corto"]) for i in p["inc"] if not P_[i]["cali"] or cali) + (" + instalación" if cali and any(P_[i]["cali"] for i in p["inc"]) else "") + "</p>"
-    return f'''<div class="card">{ico(p)}<h3><a href="{base}p/{p["id"]}/" style="color:inherit;text-decoration:none">{esc(p["nombre"])}</a></h3>{inc}{precio(p, cali)}{comprar(p, cali)}</div>'''
+    return f'''<div class="card">{ico(p, base)}<h3><a href="{base}p/{p["id"]}/" style="color:inherit;text-decoration:none">{esc(p["nombre"])}</a></h3>{inc}{precio(p, cali)}{comprar(p, cali)}</div>'''
 
 def pagina(titulo, desc, cuerpo, cali, base, canon, ld=""):
     nav = f'<a href="{base}">Inicio</a><a href="{base}#combos">Combos</a><a href="{base}guia-llaves/">¿Qué llave necesito?</a>' + (f'<a href="{base}#instalacion">Instalación</a>' if cali else "")
@@ -120,13 +125,15 @@ def sitio(P, cali, out):
         h += '''<h2 id="instalacion">Instalación de nevecones en Cali</h2><div class="box"><p>Bajamos y montamos las puertas, ubicamos y nivelamos el nevecón, lo conectamos al punto de agua (con la manguera sin recortar), cambiamos el filtro y purgamos. Servicio solo en Cali.</p></div>'''
     h += f"<h2>Preguntas frecuentes</h2>{faq_html(cali)}"
     out.mkdir(parents=True, exist_ok=True)
+    (out / "img").mkdir(exist_ok=True)
+    for f in (AQUI / "fotos").glob("*.jpg"): shutil.copy(f, out / "img" / f.name)
     (out / "index.html").write_text(pagina("Kits de instalación para nevecón" + (" en Cali" if cali else ""), "Manguera de 1/4, llaves galápago, acoples y filtro externo para nevecones, con envío gratis.", h, cali, base, dom + "/"), "utf-8")
     for p in vis:
         d = out / "p" / p["id"]; d.mkdir(parents=True, exist_ok=True)
         inc = ""
         if p["inc"]:
             inc = "<h2>Qué incluye</h2><ul>" + "".join(f'<li><a href="{base}p/{i}/">{esc(P[i]["nombre"])}</a></li>' for i in p["inc"] if cali or not P[i]["cali"]) + "</ul>"
-        body = f'<section class="hero"><h1>{esc(p["nombre"])}</h1><p>{esc(p["descripcion"])}</p></section><div class="box">{ico(p)}{precio(p, cali)}<p>{comprar(p, cali)}</p></div>{inc}<h2>Preguntas frecuentes</h2>{faq_html(cali)}'
+        body = f'<section class="hero"><h1>{esc(p["nombre"])}</h1><p>{esc(p["descripcion"])}</p></section><div class="box">{ico(p, base)}{precio(p, cali)}<p>{comprar(p, cali)}</p></div>{inc}<h2>Preguntas frecuentes</h2>{faq_html(cali)}'
         (d / "index.html").write_text(pagina(p["nombre"], p["descripcion"][:155], body, cali, base, f"{dom}/p/{p['id']}/"), "utf-8")
     g = out / "guia-llaves"; g.mkdir(exist_ok=True)
     gb = '''<section class="hero"><h1>¿Qué llave necesito para el agua de mi nevecón?</h1><p>La manguera del nevecón es de 1/4 de pulgada. Lo que cambia es cómo tomas el agua en tu punto.</p></section>
