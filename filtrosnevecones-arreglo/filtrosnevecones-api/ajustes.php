@@ -7,6 +7,9 @@ return [
     // Correo(s) donde te llegan los datos de cada pedido. Puedes poner varios separados por coma: 'uno@gmail.com, otro@gmail.com'
     'correo_avisos' => 'serviciotecnicoyrepuestoscali@gmail.com',
 
+    // Formulario de cada pedido (FormSubmit): llega a 'correo_avisos' en cuanto el cliente le da a pagar. La primera vez FormSubmit manda un correo con «Activate Form».
+    'formulario' => ['activo' => true, 'proveedor' => 'formsubmit'],
+
     // Correo que SALE de la tienda (el buzón que creaste en Hostinger > Correos).
     // Pon aquí la clave de ESE buzón (la que usas para entrar a su webmail), entre las comillas de 'clave'. Es lo único que falta.
     'smtp' => [
