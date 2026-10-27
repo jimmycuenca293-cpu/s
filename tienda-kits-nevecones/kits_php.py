@@ -198,10 +198,20 @@ def preparar_fotos(out):
 def php_str(s): return "'" + s.replace("\\", "\\\\").replace("'", "\\'") + "'"
 
 
+def links_pago():
+    """links-pago.csv (pid,link): enlaces de pago de Wompi por producto. Se usan cuando la tienda no tiene llaves de Wompi en config.php, igual que en los filtros."""
+    f = AQUI / "links-pago.csv"
+    if not f.exists(): return {}
+    import csv
+    return {r["pid"].strip(): r["link"].strip() for r in csv.DictReader(open(f, encoding="utf-8")) if r.get("link", "").strip().startswith("https://")}
+
+
 def catalogo_php():
     filas = []
+    L = links_pago()
     for p in PROD.values():
-        filas.append(f"  {php_str(p['pid'])} => ['nombre' => {php_str(p['nombre'])}, 'ref' => {php_str(p['ref'])}, 'marca' => 'Kits', 'precio' => {p['precio']}, 'pack' => 0, "
+        lp = f"'link_pago' => {php_str(L[p['pid']])}, " if p["pid"] in L else ""
+        filas.append(f"  {php_str(p['pid'])} => ['nombre' => {php_str(p['nombre'])}, 'ref' => {php_str(p['ref'])}, 'marca' => 'Kits', 'precio' => {p['precio']}, {lp}'pack' => 0, "
                      f"'slug' => {php_str(p['slug'])}, 'ubic' => 'kit', 'url' => {php_str(SLUG_BASE + '/' + p['slug'] + '/')}],")
     return "<?php\n// Generado por kits_php.py. Productos de la tienda de kits: el servidor cobra de aquí.\nreturn [\n" + "\n".join(filas) + "\n];\n"
 
