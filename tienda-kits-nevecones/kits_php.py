@@ -82,6 +82,7 @@ for marca, k, fc, ref in (("Samsung", "sam", "f-sam", "DA29-10105J"), ("LG", "lg
     COMBOS.append((f"k-kit-{k}", f"kit-completo-nevecon-{marca.lower()}", f"Kit completo para nevecón {marca}: manguera 5 m + llave galápago + filtro externo {marca}",
                    f"Kit completo {marca}", f"KIT-{k.upper()}", [("k-man14-5", 1), ("k-galapago", 1), (f"f-{k}", 1)], BASE_M + COSTO["galapago"] + COSTO[fc]))
 
+FILTRO_PRECIO = {"f-sam": 81900, "f-lg": 81900, "f-wp": 85900}   # precio de venta en la tienda de filtros (envío gratis)
 FILTROS = {"f-sam": ("Samsung", "DA29-10105J", "sam-ex-o", "filtro-samsung-externo-da29-10105j", "Filtro Samsung externo DA29-10105J"),
            "f-lg": ("LG", "ADQ73693903", "lg-ex-o", "filtro-lg-externo-adq73693903", "Filtro LG externo ADQ73693903"),
            "f-wp": ("Whirlpool", "4378411RB", "wp-ex-o", "filtro-whirlpool-externo-4378411rb", "Filtro Whirlpool externo 4378411RB")}
@@ -317,7 +318,9 @@ def pagina_combo(p):
     sirve = "Un solo pedido con todo lo necesario para conectar el agua de tu nevecón, con un solo envío gratis y mejor precio que comprando las piezas por separado."
     desc_meta = f'{p["nombre"]}. {sirve} Envío gratis a toda Colombia.'
     ld = ld_prod(p, sirve)
-    sep = sum(PROD[c]["precio"] for c, n in p["comp"] if c in PROD for _ in range(n))
+    sep = sum((PROD[c]["precio"] if c in PROD else FILTRO_PRECIO[c]) * n for c, n in p["comp"])
+    ahorro = max(0, sep - p["precio"])
+    ahorro_li = (f'<li>Comprado por separado: <b>{cop(sep)}</b>. Con el combo <b>ahorras {cop(ahorro)}</b>.</li>' if ahorro > 0 else "")
     cuerpo = (f"<?php require __DIR__ . '/../../partes.php';\n$ld = str_replace('__BASE__', sitio()['base'], {php_str(ld)});\n"
               f"cabeza({php_str(p['nombre'] + ' | Envío gratis a toda Colombia')}, {php_str(desc_meta[:300])}, {php_str(SLUG_BASE + '/' + p['slug'] + '/')}, '<script type=\"application/ld+json\">' . $ld . '</script>'); ?>\n")
     lista = "".join(f'<li>{n} × <a href="{u}">{esc(nm)}</a></li>' for n, nm, u in comps)
@@ -333,7 +336,7 @@ def pagina_combo(p):
     <h1>{esc(p["nombre"])}</h1>
     <span class="m">Combo · Referencia <span class="ref">{esc(p["ref"])}</span></span>
     <span class="precio">{cop(p["precio"])}</span>
-    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li>Un solo envío para todo el kit.</li><li><b>Pago seguro en línea</b> con tarjeta, PSE, Nequi o botón Bancolombia.</li></ul>
+    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li>Un solo envío para todo el kit.</li>{ahorro_li}<li><b>Pago seguro en línea</b> con tarjeta, PSE, Nequi o botón Bancolombia.</li></ul>
     <div class="compra"><button class="btn block" type="button" data-add="{p["pid"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["pid"]}" data-ir="1">Comprar ahora</button></div>
     <span class="m">Pago seguro en línea: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span><?= medios_pago_html() ?>
   </div>
