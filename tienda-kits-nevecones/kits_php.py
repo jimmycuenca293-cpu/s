@@ -17,7 +17,7 @@ AQUI = Path(__file__).parent
 SALIDA = Path(sys.argv[1])
 INDEX_TIENDA = Path(sys.argv[2]) if len(sys.argv) > 2 else None
 ENVIO = 16000
-GAN = {"solo": 15000, "combo": 25000, "man_5m": 13000, "acople": 8000}   # ganancia limpia: sueltas, combos, por cada 5 m de manguera, por acople
+GAN = {"solo": 15000, "combo": 25000, "man_5m": 13000, "man_extra": 5000, "acople": 8000}   # ganancia limpia: sueltas, combos, 13.000 los primeros 5 m de manguera y 5.000 por cada 5 m adicionales, por acople
 WOMPI_PCT, WOMPI_FIJO = 0.0265 * 1.19, 700 * 1.19
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{int(n):,}".replace(",", ".")
@@ -52,7 +52,7 @@ for t, q, nom in (("14", "1/4", "man14_m"), ("516", "5/16", "man516_m")):
     for m in MET:
         c = COSTO[nom] * m
         add(f"k-man{t}-{m}", slug=f"manguera-{q.replace('/', '-')}-para-nevecon", grupo=f"man{t}", metros=m, tipo="solo",
-            nombre=f'Manguera de {q}" x {m} metros', corto=f'Manguera {q}"', ref=f"MANG-{t}-{m}M", costo=c, precio=precio(c, GAN["man_5m"] * m // 5),
+            nombre=f'Manguera de {q}" x {m} metros', corto=f'Manguera {q}"', ref=f"MANG-{t}-{m}M", costo=c, precio=precio(c, GAN["man_5m"] + GAN["man_extra"] * (m // 5 - 1)),
             foto=f"manguera-{q.replace('/', '-')}-5m")
 
 add("k-galapago", slug="llave-galapago-para-nevecon", tipo="solo", nombre="Llave galápago con racores, anillo y tuerca", corto="Llave galápago", ref="LLAVE-GALAPAGO",
