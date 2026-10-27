@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Tienda de kits de instalación para nevecones.
 Lee productos.csv (costo, envio, link_pago) y genera site/colombia (kits, envío gratis) y site/cali (kits + instalación).
-Precio = costo + envío + GANANCIA. Combo: suma de costos de sus piezas + un solo envío (el mayor) + GANANCIA.
+Precio = (costo + envío + ganancia + comisión fija Wompi) / (1 - % Wompi). Combo: suma de costos de sus piezas + un solo envío (el mayor; 0 si incluye instalación).
 Sin costo => "Consultar por WhatsApp". Sin link_pago => botón de WhatsApp con el pedido ya escrito.
 Uso: python3 kits.py [dominio_colombia] [dominio_cali]
 """
 import csv, html, shutil, sys, urllib.parse, zipfile
 from pathlib import Path
 AQUI = Path(__file__).parent
-GANANCIA = 40000
+GANANCIA = {"individual": 15000, "servicio": 0, "combo": 25000}   # ganancia limpia por pedido, editable
+WOMPI_FIJO, WOMPI_PCT = 700 * 1.19, 0.0265 * 1.19           # comisión Wompi + IVA (aproximada: confírmala en tu panel)
 WA = "573013810242"; TEL = "+57 301 381 0242"
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{int(n):,}".replace(",", ".")
@@ -30,8 +31,8 @@ def cargar():
         if p["tipo"] == "combo":
             cs = [P[i]["costo"] for i in p["inc"]]
             p["costo"] = None if None in cs else sum(cs)
-            p["envio"] = max([P[i]["envio"] for i in p["inc"]] or [0])
-        p["precio"] = None if p["costo"] is None else p["costo"] + p["envio"] + GANANCIA
+            p["envio"] = 0 if any(P[i]["tipo"] == "servicio" for i in p["inc"]) else max([P[i]["envio"] for i in p["inc"]] or [0])
+        p["precio"] = None if p["costo"] is None else int(round((p["costo"] + p["envio"] + GANANCIA[p["tipo"]] + WOMPI_FIJO) / (1 - WOMPI_PCT) / 500)) * 500
     return P
 
 CSS = """:root{--bg:#f6f8fb;--c:#fff;--t:#14213d;--m:#5b6679;--a:#0b5fff;--a2:#0a3fa8;--ok:#16a34a;--b:#dfe5ee}
@@ -55,8 +56,9 @@ details{background:var(--c);border:1px solid var(--b);border-radius:10px;padding
 footer{margin-top:40px;padding:24px 0;border-top:1px solid var(--b);color:var(--m);font-size:14px}
 .wa{position:fixed;right:14px;bottom:14px;z-index:9}@media(max-width:560px){h1{font-size:25px}}"""
 ICON = '<svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">%s</svg>'
-ICONOS = {"manguera-5m": '<path d="M3 17c4 0 4-10 9-10s5 10 9 10"/>', "llave-galapago": '<circle cx="12" cy="12" r="3"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/>',
-          "llave-paso-1-4": '<path d="M4 12h16M12 12V6m-3 0h6"/>', "acople-reduccion": '<path d="M3 9h6l2 2v2l-2 2H3M21 9h-4l-2 2v2l2 2h4"/>',
+ICONOS = {"manguera-1-4-5m": '<path d="M3 17c4 0 4-10 9-10s5 10 9 10"/>', "llave-galapago": '<circle cx="12" cy="12" r="3"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/>',
+          "manguera-5-16-5m": '<path d="M3 17c4 0 4-10 9-10s5 10 9 10"/>', "llave-multiproposito": '<path d="M4 12h16M12 12V6m-3 0h6"/>', "acople-reduccion": '<path d="M3 9h6l2 2v2l-2 2H3M21 9h-4l-2 2v2l2 2h4"/>',
+          "filtro-externo-samsung": '<rect x="8" y="3" width="8" height="18" rx="3"/><path d="M8 9h8M8 15h8"/>', "filtro-externo-lg": '<rect x="8" y="3" width="8" height="18" rx="3"/><path d="M8 9h8M8 15h8"/>', "filtro-externo-whirlpool": '<rect x="8" y="3" width="8" height="18" rx="3"/><path d="M8 9h8M8 15h8"/>',
           "filtro-externo": '<rect x="8" y="3" width="8" height="18" rx="3"/><path d="M8 9h8M8 15h8"/>', "servicio-instalacion": '<path d="M14 7l3-3 3 3-3 3zM3 21l10-10"/>'}
 def ico(p):
     k = ICONOS.get(p["id"], '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 11h16"/>')
@@ -96,7 +98,7 @@ def pagina(titulo, desc, cuerpo, cali, base, canon, ld=""):
 <a class="btn g wa" href="{wa("Hola, necesito ayuda con un kit de instalación para mi nevecón")}">WhatsApp</a></body></html>'''
 
 FAQ = [("¿Por qué no recorto la manguera?", "Una manguera más corta de lo necesario pierde presión y el dispensador de agua puede fallar. Por eso el kit trae 5 metros: se deja la manguera completa."),
-       ("¿Qué llave necesito?", "Depende de tu punto de agua. La llave galápago toma el agua del tubo sin cortarlo y trae racores, anillo y tuerca. Si ya tienes una llave de paso, hay una opción que se conecta directo a la manguera de 1/4 de pulgada. Mira la guía «¿Qué llave necesito?»."),
+       ("¿Qué llave necesito?", "Depende de tu punto de agua. La llave galápago toma el agua del tubo sin cortarlo y trae racores, anillo y tuerca. Si ya tienes una llave, puedes usar la llave multipropósito y los acoples que haga falta. Mira la guía «¿Qué llave necesito?»."),
        ("¿El envío tiene costo?", "No. El envío es gratis a toda Colombia; ya está incluido en el precio."),
        ("¿Dónde en el filtro va la flecha?", "El filtro externo se instala con la flecha apuntando hacia el nevecón, y después se purga el agua (unos 4 litros) antes de usarla."),
        ("¿Pueden instalarme el nevecón?", "La instalación solo está disponible en Cali. En el resto de Colombia vendemos el kit con envío gratis y tú o tu técnico lo instalan.")]
@@ -128,8 +130,8 @@ def sitio(P, cali, out):
     gb = '''<section class="hero"><h1>¿Qué llave necesito para el agua de mi nevecón?</h1><p>La manguera del nevecón es de 1/4 de pulgada. Lo que cambia es cómo tomas el agua en tu punto.</p></section>
 <table><tr><th>Tu punto de agua</th><th>Qué usar</th></tr>
 <tr><td>Tubo sin llave disponible</td><td>Llave galápago (trae racores, anillo y tuerca)</td></tr>
-<tr><td>Ya tienes una llave de paso</td><td>Llave de paso para manguera de 1/4", y acople o reducción si hace falta</td></tr>
-<tr><td>Quieres agua filtrada</td><td>Filtro externo en línea, con la flecha hacia el nevecón</td></tr></table>
+<tr><td>Ya tienes una llave de paso</td><td>Llave multipropósito, y acople o reducción si hace falta</td></tr>
+<tr><td>Quieres agua filtrada</td><td>Filtro externo de tu marca (Samsung, LG o Whirlpool), con la flecha hacia el nevecón</td></tr></table>
 <p>¿No estás seguro? Escríbenos por WhatsApp con una foto de tu punto de agua.</p>'''
     (g / "index.html").write_text(pagina("¿Qué llave necesito para mi nevecón?", "Guía para elegir llave galápago, llave de paso, acople o filtro para conectar el agua del nevecón.", gb, cali, base, dom + "/guia-llaves/"), "utf-8")
 
