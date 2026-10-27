@@ -977,7 +977,6 @@ def generar_anuncios():
         for cc, p in PA.items():
             for ci in [None] + list(p["ppal"]):
                 for k in [None] + list(EQ): landing_ads(m, cc, ci, k)
-        for ci in ("Cali", "Yumbo", "Palmira"): landing_ads(m, "co", ci, None, nev=True)
     (OUT / "anuncios.css").write_text((RAIZ / "_fuente" / "anuncios.css").read_text(encoding="utf-8"), encoding="utf-8")
     dest = RAIZ / "entrega"; dest.mkdir(exist_ok=True)
     with open(dest / "anuncios-google-ads.csv", "w", newline="", encoding="utf-8-sig") as f:
