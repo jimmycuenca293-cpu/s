@@ -13,8 +13,10 @@ WOMPI_FIJO, WOMPI_PCT = 700 * 1.19, 0.0265 * 1.19           # comisión Wompi + 
 WA = "573013810242"; TEL = "+57 301 381 0242"
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{int(n):,}".replace(",", ".")
-DOM = {"colombia": (sys.argv[1] if len(sys.argv) > 1 else "https://kitsnevecones.example"),
-       "cali": (sys.argv[2] if len(sys.argv) > 2 else "https://kitsnevecones.example/cali")}
+DOMINIO = sys.argv[1] if len(sys.argv) > 1 else "https://filtrosaguanevecones.com"
+# carpeta de cada tienda dentro del dominio (no pisa nada de la tienda de filtros)
+CARPETA = {"colombia": "kits-instalacion-nevecones", "cali": "kits-instalacion-nevecones-cali"}
+DOM = {k: f"{DOMINIO}/{v}" for k, v in CARPETA.items()}
 
 def num(s):
     s = (s or "").strip().replace(".", "").replace("$", "").replace(" ", "")
@@ -107,7 +109,7 @@ def faq_html(cali):
     return "".join(f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in f)
 
 def sitio(P, cali, out):
-    base = "/" ; dom = DOM["cali" if cali else "colombia"].rstrip("/")
+    base = "/" + CARPETA["cali" if cali else "colombia"] + "/" ; dom = DOM["cali" if cali else "colombia"].rstrip("/")
     vis = visibles(P, cali)
     ind = [p for p in vis if p["tipo"] == "individual"]; com = [p for p in vis if p["tipo"] == "combo"]
     h = f'''<section class="hero"><span class="badge">Envío gratis a toda Colombia</span><h1>Kit de instalación para nevecón{" en Cali" if cali else ""}</h1>
