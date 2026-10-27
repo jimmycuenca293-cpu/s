@@ -430,6 +430,9 @@ function form_payload(string $asunto, array $campos): array
     }
     $datos = ['_subject' => $asunto, '_template' => 'table', '_captcha' => 'false', 'Resumen del pedido' => $resumen] + $campos;
     if ($mail) $datos['_replyto'] = $mail;
+    // Si hay más de un correo en correo_avisos, los demás reciben copia del formulario
+    $otros = array_slice(correos_destino(), 1);
+    if ($otros) $datos['_cc'] = implode(',', $otros);
     return ['url' => (string) ($f['url'] ?? 'https://formsubmit.co/ajax/') . rawurlencode(correo_destino()), 'datos' => $datos];
 }
 

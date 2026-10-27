@@ -5,7 +5,7 @@ return [
     'negocio'  => ['telefono' => '301 381 0242'],
 
     // Correo(s) donde te llegan los datos de cada pedido. Puedes poner varios separados por coma: 'uno@gmail.com, otro@gmail.com'
-    'correo_avisos' => 'serviciotecnicoyrepuestoscali@gmail.com',
+    'correo_avisos' => 'serviciotecnicoyrepuestoscali@gmail.com, jimmycuenca293@gmail.com',
 
     // Formulario de cada pedido (FormSubmit): llega a 'correo_avisos' en cuanto el cliente le da a pagar. La primera vez FormSubmit manda un correo con «Activate Form».
     'formulario' => ['activo' => true, 'proveedor' => 'formsubmit'],
