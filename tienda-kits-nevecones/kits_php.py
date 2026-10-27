@@ -156,7 +156,7 @@ FAQ_COMUN = [
     ("¿Cómo pago?", "En línea y de forma segura con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia, con Wompi. Recibes el recibo en tu correo."),
     ("¿Cuánto demora en llegar?", "De 2 a 3 días hábiles a las principales ciudades. Te enviamos el número de guía."),
     ("¿No sé cuál necesito, me ayudan?", "Sí. Escríbenos por WhatsApp con una foto de tu punto de agua y de la manguera del nevecón y te decimos qué llevar. También puedes mirar la guía «Cómo conectar el agua de tu nevecón»."),
-    ("¿Hacen la instalación?", "La instalación del nevecón solo la hacemos en Cali. En el resto de Colombia enviamos el kit con envío gratis y lo instalas tú o tu técnico con la guía de cada producto."),
+    ("¿Quién instala el kit?", "Cada producto trae su paso a paso en esta página y la guía «Cómo conectar el agua de tu nevecón». Si tienes dudas, escríbenos por WhatsApp y te guiamos."),
 ]
 
 
@@ -292,7 +292,7 @@ def pagina_producto(p):
 <section class="caja tutorial" id="instalacion"><h2>Cómo instalarlo paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in T["pasos"])}</ol>
 <p class="m">¿Tienes dudas? Escríbenos por WhatsApp y te guiamos. Mira también la guía <a href="{SLUG_BASE}/guia-conexion-agua-nevecon/">Cómo conectar el agua de tu nevecón</a>.</p></section>
 <section style="display:flex;flex-direction:column;gap:8px"><h2>Preguntas frecuentes</h2>{faq_html()}</section>
-<p class="m"><a href="{SLUG_BASE}/">← Ver todos los productos</a> · ¿Instalas en Cali? <a href="{SLUG_CALI}/">Mira la versión con instalación</a>.</p>
+<p class="m"><a href="{SLUG_BASE}/">← Ver todos los productos</a></p>
 '''
     if g:
         cuerpo += """<script>
@@ -340,7 +340,7 @@ def pagina_combo(p):
 </div>
 <section class="caja"><h2>Qué incluye</h2><ul class="ok">{lista}</ul><p>{esc(sirve)}</p></section>
 <section class="caja tutorial" id="instalacion"><h2>Cómo instalarlo paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in pasos)}</ol>
-<p class="m">Mira la guía completa: <a href="{SLUG_BASE}/guia-conexion-agua-nevecon/">Cómo conectar el agua de tu nevecón</a>. ¿Estás en Cali y quieres que lo instalemos? <a href="{SLUG_CALI}/">Mira la versión con instalación</a>.</p></section>
+<p class="m">Mira la guía completa: <a href="{SLUG_BASE}/guia-conexion-agua-nevecon/">Cómo conectar el agua de tu nevecón</a>.</p></section>
 <section style="display:flex;flex-direction:column;gap:8px"><h2>Preguntas frecuentes</h2>{faq_html()}</section>
 <?php pie(); ?>
 '''
@@ -432,8 +432,7 @@ def portada(cali):
     lead = ("Compra el kit con envío gratis y, si estás en Cali, pide que instalemos tu nevecón. Manguera de 1/4\", llaves, acoples y filtros externos Samsung, LG y Whirlpool." if cali else
             "Manguera de 1/4\" y 5/16\" por metros, llaves, acoples rápidos y filtros externos. Cada pieza por separado o en combo, pago seguro en línea y te llega en 2 a 3 días hábiles.")
     faq = faq_html()
-    otra = (f'<a href="{SLUG_BASE}/"><b>🚚 Kits con envío a toda Colombia</b><span>Sin instalación, con envío gratis</span></a>' if cali else
-            f'<a href="{SLUG_CALI}/"><b>🔧 Instalación en Cali</b><span>Kit + instalación de tu nevecón</span></a>')
+    otra = ""
     return f"""<?php require __DIR__ . '/../partes.php'; $S = sitio(); $n = $S['negocio'];
 $ld = str_replace('__BASE__', $S['base'], {php_str(ld)}); ?>
 <!doctype html>
@@ -460,7 +459,7 @@ $ld = str_replace('__BASE__', $S['base'], {php_str(ld)}); ?>
   <div class="wrap">
     <div class="top">
       <a class="logo" href="/" style="color:inherit;text-decoration:none"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#1236a8"/><path d="M12 3.5C9.3 7.1 6.6 9.9 6.6 13.4a5.4 5.4 0 0 0 10.8 0c0-3.5-2.7-6.3-5.4-9.9z" fill="#38d6ff"/><path d="M12 11.2v4.8M9.9 12.4l4.2 2.4M14.1 12.4l-4.2 2.4" stroke="#0b1f6b" stroke-width="1.15" stroke-linecap="round" fill="none"/></svg><span class="lg-t">Filtros<b>Nevecones</b><small>Colombia</small></span></a>
-      <nav class="hero-nav"><a href="/filtrosnevecones-tienda/">Filtros</a><a href="{SLUG_BASE}/">Kits</a><a href="{SLUG_CALI}/">Instalación en Cali</a><a href="{SLUG_BASE}/guia-conexion-agua-nevecon/">Guía</a></nav>
+      <nav class="hero-nav"><a href="/filtrosnevecones-tienda/">Filtros</a><a href="{SLUG_BASE}/">Kits</a><a href="{SLUG_BASE}/guia-conexion-agua-nevecon/">Guía</a></nav>
       <a class="cart-top" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a>
     </div>
     <h1>{esc(h1)}</h1>
@@ -489,7 +488,7 @@ $ld = str_replace('__BASE__', $S['base'], {php_str(ld)}); ?>
   <section class="pasos3" aria-label="Cómo comprar"><h2 style="font-size:19px">Compra en 3 pasos</h2><div class="p3-grid">
 <div><span>1</span><b>Escoge tu kit</b><p>Combos listos o piezas por separado: manguera por metros, llave, acoples y filtro externo de tu marca.</p></div>
 <div><span>2</span><b>Paga seguro en línea</b><p>Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia, en página de pago segura.</p></div>
-<div><span>3</span><b>Recíbelo en tu casa</b><p>Envío gratis a toda Colombia en 2 a 3 días hábiles. Lo instalas con nuestro paso a paso{" o agendas la instalación en Cali" if cali else ""}.</p></div>
+<div><span>3</span><b>Recíbelo en tu casa</b><p>Envío gratis a toda Colombia en 2 a 3 días hábiles. Lo instalas con nuestro paso a paso.</p></div>
 </div></section>
   <section style="display:flex;flex-direction:column;gap:8px"><h2 style="font-size:19px">Preguntas frecuentes</h2><div class="faqs">{faq.replace("<details>", '<details class="faq">')}</div></section>
   <section class="explora" aria-label="Información"><h2 style="font-size:19px">Información</h2><div class="ex-grid">
@@ -604,7 +603,7 @@ def guia():
 <li>Abre el agua despacio y revisa que no gotee. Después conecta el nevecón y saca unos 4 litros de agua por el dispensador para purgar el aire.</li>
 <li>Si el agua sale con poca presión, revisa que la manguera no esté doblada. Si la presión del punto de agua es muy baja, puede hacer falta una bomba propulsora.</li></ol></section>
 <section style="display:flex;flex-direction:column;gap:8px"><h2>Preguntas frecuentes</h2>{faq_html()}</section>
-<p><a class="btn" href="{SLUG_BASE}/">Ver kits y productos</a> <a class="btn ghost" href="{SLUG_CALI}/">Instalación en Cali</a></p>
+<p><a class="btn" href="{SLUG_BASE}/">Ver kits y productos</a></p>
 <?php pie(); ?>
 '''
     return h
@@ -616,7 +615,7 @@ def main():
     (out / "filtrosnevecones-api").mkdir(parents=True)
     preparar_fotos(out)
     (out / "filtrosnevecones-api" / "catalogo-kits.php").write_text(catalogo_php(), "utf-8")
-    for carpeta, cali in (("kits-instalacion-nevecones", False), ("kits-instalacion-nevecones-cali", True)):
+    for carpeta, cali in (("kits-instalacion-nevecones", False),):
         d = out / carpeta; d.mkdir(parents=True)
         (d / "index.php").write_text(portada(cali) if INDEX_TIENDA else listado(cali), "utf-8")
     base = out / "kits-instalacion-nevecones"

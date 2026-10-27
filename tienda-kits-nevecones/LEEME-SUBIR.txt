@@ -11,9 +11,8 @@ DESPUÉS
   3. Entra a tudominio.com/diagnostico.php: el correo debe decir OK. Haz una compra de prueba.
   4. En Wompi revisa la URL de eventos: https://filtrosaguanevecones.com/filtrosnevecones-api/wompi.php y llaves pub_prod_.
 
-URLS NUEVAS
+URLS NUEVAS (la instalación en Cali va aparte, no está en esta tienda)
   Kits (toda Colombia):          https://filtrosaguanevecones.com/kits-instalacion-nevecones/
-  Kits + instalación (Cali):     https://filtrosaguanevecones.com/kits-instalacion-nevecones-cali/
   Guía de conexión:              https://filtrosaguanevecones.com/kits-instalacion-nevecones/guia-conexion-agua-nevecon/
 Las URLs de la tienda de filtros no cambiaron. Solo se agregó el enlace «Kits de instalación» en el menú y en el pie.
 Los kits se pagan en el mismo carrito de la tienda (Wompi); los precios se cambian en kits_php.py y se vuelve a generar.
