@@ -29,9 +29,9 @@ def precio(costo, tipo):
     return int(math.ceil(raw / 1000) * 1000 - 100)  # termina en 900 como la tienda de filtros
 
 
-# costo de cada pieza (pesos). Los filtros externos se despejaron del precio de la tienda de filtros con su misma fórmula (envío 15.200).
+# costo de cada pieza (pesos). Filtros externos: $22.500 cada uno según el proveedor de Colombia.
 COSTO = {"man14_m": 1500, "man516_m": 2000, "galapago": 15000, "plastica": 20000, "multi": 14000, "acople": 4000,
-         "f-sam": 23300, "f-lg": 23300, "f-wp": 27200}
+         "f-sam": 22500, "f-lg": 22500, "f-wp": 22500}
 
 SLUG_BASE = "/kits-instalacion-nevecones"
 SLUG_CALI = "/kits-instalacion-nevecones-cali"
