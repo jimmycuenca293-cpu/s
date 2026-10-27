@@ -72,8 +72,6 @@ COMBOS = [
      [("k-man14-5", 1), ("k-plastica", 1)], BASE_M + COSTO["plastica"]),
     ("k-kit-516", "kit-manguera-5-16-llave-galapago", "Kit: manguera 5/16\" 5 m + llave galápago", "Kit manguera 5/16\"", "KIT-5-16",
      [("k-man516-5", 1), ("k-galapago", 1)], COSTO["man516_m"] * 5 + COSTO["galapago"]),
-    ("k-kit-acoples", "kit-basico-con-acoples-rapidos", "Kit básico + 2 acoples rápidos de 1/4\"", "Kit con acoples", "KIT-ACOPLES",
-     [("k-man14-5", 1), ("k-galapago", 1), ("k-acople14", 2)], BASE_M + COSTO["galapago"] + 2 * COSTO["acople"]),
 ]
 for marca, k, fc, ref in (("Samsung", "sam", "f-sam", "DA29-10105J"), ("LG", "lg", "f-lg", "ADQ73693903"), ("Whirlpool", "wp", "f-wp", "4378411RB")):
     COMBOS.append((f"k-kit-{k}", f"kit-completo-nevecon-{marca.lower()}", f"Kit completo para nevecón {marca}: manguera 5 m + llave galápago + filtro externo {marca}",
