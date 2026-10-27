@@ -5,7 +5,7 @@ Precio = (costo + envío + ganancia + comisión fija Wompi) / (1 - % Wompi). Com
 Sin costo => "Consultar por WhatsApp". Sin link_pago => botón de WhatsApp con el pedido ya escrito.
 Uso: python3 kits.py [dominio_colombia] [dominio_cali]
 """
-import csv, html, shutil, sys, urllib.parse, zipfile
+import csv, html, json, re, shutil, sys, urllib.parse, zipfile
 from pathlib import Path
 AQUI = Path(__file__).parent
 GANANCIA = {"individual": 15000, "servicio": 0, "combo": 25000}   # ganancia limpia por pedido, editable
@@ -26,7 +26,7 @@ def cargar():
     P = {}
     for r in csv.DictReader(open(AQUI / "productos.csv", encoding="utf-8")):
         r["costo"], r["envio"] = num(r["costo"]), num(r["envio"]) or 0
-        r["cali"] = r["solo_cali"].strip() == "1"
+        r["cali"] = r["solo_cali"].strip() == "1"; r["grupo"] = r.get("grupo") or ""; r["variante"] = r.get("variante") or ""
         r["inc"] = [x for x in r["incluye"].split(";") if x]
         P[r["id"]] = r
     for p in P.values():
@@ -49,7 +49,7 @@ header b{font-size:18px}nav a{margin-right:14px;text-decoration:none;font-weight
 .card h3{margin:0;font-size:17px}.card p{margin:0;color:var(--m);font-size:14px}
 .ico.foto{height:130px;background:#fff;gap:6px;padding:6px}.ico.foto img{height:100%;min-width:0;flex:1 1 0;object-fit:contain;max-width:100%}
 .ico{height:92px;border-radius:10px;background:linear-gradient(135deg,#dbe8ff,#eef4ff);display:grid;place-items:center;color:#0b5fff}.ico.foto{display:flex}
-.pr{font-size:24px;font-weight:800}.pr small{font-size:13px;font-weight:600;color:var(--ok)}
+select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--b);background:var(--c);color:var(--t);font:inherit}.pp{font-size:24px;font-weight:800}.pp small{font-size:13px;font-weight:600;color:var(--ok)}.pr{font-size:24px;font-weight:800}.pr small{font-size:13px;font-weight:600;color:var(--ok)}
 .btn{display:inline-block;background:var(--a);color:#fff;padding:11px 16px;border-radius:10px;text-decoration:none;font-weight:700;text-align:center}
 .btn.o{background:transparent;color:var(--a);border:2px solid var(--a)}.btn.g{background:#16a34a}
 .badge{display:inline-block;background:#e8f7ee;color:#157a3a;border-radius:99px;padding:2px 10px;font-size:12.5px;font-weight:700}
@@ -94,6 +94,25 @@ def tarjeta(p, cali, base):
         inc = "<p>Incluye: " + ", ".join(esc(P_[i]["corto"]) for i in p["inc"] if not P_[i]["cali"] or cali) + (" + instalación" if cali and any(P_[i]["cali"] for i in p["inc"]) else "") + "</p>"
     return f'''<div class="card">{ico(p, base)}<h3><a href="{base}p/{p["id"]}/" style="color:inherit;text-decoration:none">{esc(p["nombre"])}</a></h3>{inc}{precio(p, cali)}{comprar(p, cali)}</div>'''
 
+def tarjeta_grupo(vs, cali, base):
+    vs = [v for v in vs]
+    datos = [{"m": v["variante"], "p": precio(v, cali), "b": comprar(v, cali), "h": f'{base}p/{v["id"]}/'} for v in vs]
+    t = re.sub(r" x \d+ metros.*", "", vs[0]["nombre"]) + " para nevecón"
+    ops = "".join(f'<option value="{i}">{esc(v["variante"])}' + (f' · {cop(v["precio"])}' if v["precio"] else "") + "</option>" for i, v in enumerate(vs))
+    return f'''<div class="card grupo" data-v="{esc(json.dumps(datos))}">{ico(vs[0], base)}<h3>{esc(t)}</h3><p>Elige cuántos metros necesitas. Más metros, menos pagas por metro, porque el envío es uno solo.</p>
+<select aria-label="Metros de manguera">{ops}</select><div class="pp">{datos[0]["p"]}</div><div class="bb">{datos[0]["b"]}</div></div>'''
+
+JS_GRUPO = """<script>document.querySelectorAll('.grupo').forEach(function(c){var d=JSON.parse(c.dataset.v),s=c.querySelector('select');s.addEventListener('change',function(){var v=d[s.value];c.querySelector('.pp').innerHTML=v.p;c.querySelector('.bb').innerHTML=v.b})})</script>"""
+
+def lista_individual(ind, cali, base):
+    h, vistos = [], set()
+    for p in ind:
+        if p["grupo"]:
+            if p["grupo"] in vistos: continue
+            vistos.add(p["grupo"]); h.append(tarjeta_grupo([v for v in ind if v["grupo"] == p["grupo"]], cali, base))
+        else: h.append(tarjeta(p, cali, base))
+    return "".join(h)
+
 def pagina(titulo, desc, cuerpo, cali, base, canon, ld=""):
     nav = f'<a href="{base}">Inicio</a><a href="{base}#combos">Combos</a><a href="{base}guia-llaves/">¿Qué llave necesito?</a>' + (f'<a href="{base}#instalacion">Instalación</a>' if cali else "")
     return f'''<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -102,7 +121,7 @@ def pagina(titulo, desc, cuerpo, cali, base, canon, ld=""):
 <header><div class="w"><b>Kits de instalación para nevecón{" · Cali" if cali else ""}</b><nav>{nav}</nav></div></header>
 <main class="w">{cuerpo}</main>
 <footer><div class="w">Tienda independiente de repuestos e instalación; no somos el fabricante ni servicio técnico oficial de ninguna marca. Envío gratis a toda Colombia. Atención por WhatsApp {TEL}.</div></footer>
-<a class="btn g wa" href="{wa("Hola, necesito ayuda con un kit de instalación para mi nevecón")}">WhatsApp</a></body></html>'''
+<a class="btn g wa" href="{wa("Hola, necesito ayuda con un kit de instalación para mi nevecón")}">WhatsApp</a>{JS_GRUPO}</body></html>'''
 
 FAQ = [("¿Por qué no recorto la manguera?", "Una manguera más corta de lo necesario pierde presión y el dispensador de agua puede fallar. Por eso el kit trae 5 metros: se deja la manguera completa."),
        ("¿Qué llave necesito?", "Depende de tu punto de agua. La llave galápago toma el agua del tubo sin cortarlo y trae racores, anillo y tuerca. Si ya tienes una llave, puedes usar la llave multipropósito y los acoples que haga falta. Mira la guía «¿Qué llave necesito?»."),
@@ -119,7 +138,7 @@ def sitio(P, cali, out):
     ind = [p for p in vis if p["tipo"] == "individual"]; com = [p for p in vis if p["tipo"] == "combo"]
     h = f'''<section class="hero"><span class="badge">Envío gratis a toda Colombia</span><h1>Kit de instalación para nevecón{" en Cali" if cali else ""}</h1>
 <p>Manguera de 1/4", llaves, acoples y filtro externo, cada pieza por separado o en combo. {"Si estás en Cali, también instalamos tu nevecón." if cali else "Pagas y te lo enviamos sin costo de envío."}</p></section>
-<h2>Productos por separado</h2><div class="gr">{"".join(tarjeta(p, cali, base) for p in ind)}</div>
+<h2>Productos por separado</h2><div class="gr">{lista_individual(ind, cali, base)}</div>
 <h2 id="combos">Combos</h2><div class="gr">{"".join(tarjeta(p, cali, base) for p in com)}</div>'''
     if cali:
         h += '''<h2 id="instalacion">Instalación de nevecones en Cali</h2><div class="box"><p>Bajamos y montamos las puertas, ubicamos y nivelamos el nevecón, lo conectamos al punto de agua (con la manguera sin recortar), cambiamos el filtro y purgamos. Servicio solo en Cali.</p></div>'''
