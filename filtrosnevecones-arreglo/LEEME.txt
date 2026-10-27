@@ -1,0 +1,20 @@
+ARREGLO DE LA TIENDA DE FILTROS (3 pasos)
+
+1) Sube estos archivos a public_html, respetando las carpetas (reemplaza los que ya existen). NO borres config.php ni la carpeta filtrosnevecones-data:
+   - index.php
+   - filtrosnevecones-api/lib.php
+   - filtrosnevecones-api/config.sample.php
+   - filtrosnevecones-api/ajustes.php   (archivo nuevo)
+
+2) Abre filtrosnevecones-api/ajustes.php en el administrador de archivos de Hostinger y escribe la clave del buzón
+   pedidos@filtrosaguanevecones.com entre las comillas de 'clave' => ''. Guarda.
+   (Si ese buzón no existe, créalo en Hostinger > Correos, o dime cuál usas.)
+   El WhatsApp ya queda en 301 381 0242 sin tocar config.php.
+
+3) Abre tudominio.com/diagnostico.php y mira que el correo diga OK. Luego haz una compra de prueba.
+
+Además, en Wompi (Desarrolladores) revisa que la «URL de eventos» sea:
+   https://filtrosaguanevecones.com/filtrosnevecones-api/wompi.php
+y que las llaves sean de producción (pub_prod_), no de prueba (pub_test_).
+
+Qué cambió: ajustes.php (cambios sin tocar config.php), WhatsApp 301 381 0242 y revisión automática en Wompi de los pedidos pendientes cada 10 minutos para mandarte el correo de «pedido pagado».
