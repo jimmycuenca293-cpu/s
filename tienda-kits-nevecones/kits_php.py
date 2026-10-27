@@ -17,7 +17,7 @@ AQUI = Path(__file__).parent
 SALIDA = Path(sys.argv[1])
 INDEX_TIENDA = Path(sys.argv[2]) if len(sys.argv) > 2 else None
 ENVIO = 16000
-GAN = {"solo": 15000, "combo": 25000}
+GAN = {"solo": 15000, "combo": 30000}
 WOMPI_PCT, WOMPI_FIJO = 0.0265 * 1.19, 700 * 1.19
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{int(n):,}".replace(",", ".")
