@@ -25,30 +25,36 @@ D = {
    paso="El técnico ubica el filtro de tu modelo, lo cambia y deja el sistema purgado."),
 }
 
-CSS = """:root{--mc:%(c)s;--ink:#0f172a;--mu:#475569;--panel:#f1f5f9}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--panel);padding-bottom:84px;line-height:1.5}
+CSS = """:root{--mc:%(c)s;--mh:%(mh)s;--h1:%(h1)s;--h2:%(h2)s;--ht:%(ht)s;--on:%(on)s;--chb:%(chb)s;--chd:%(chd)s;--ink:#0f172a;--mu:#475569;--panel:#f1f5f9}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--panel);padding-bottom:84px;line-height:1.5}
 a{color:inherit}.w{max-width:1080px;margin:0 auto;padding:0 16px}
 .top{position:sticky;top:0;z-index:20;background:#fff;box-shadow:0 1px 10px rgba(0,0,0,.08)}.top .w{display:flex;align-items:center;gap:10px;padding:8px 16px}.top img{height:30px}.top .sp{flex:1}
-.b{display:inline-flex;align-items:center;justify-content:center;border-radius:14px;padding:13px 20px;font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:1rem}.wa{background:#25d366;color:#0b2e17}.ll{background:#fff;color:var(--mc);border:2px solid var(--mc)}
-.hero{color:#fff;background:linear-gradient(120deg,#0b2d54,var(--mc))}.hero .w{padding:36px 16px 52px;display:grid;gap:16px;grid-template-columns:1fr}.hero .t{display:grid;gap:16px;align-content:center}.fr{background:#fff;border-radius:18px;padding:14px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}.fr img{max-height:340px;width:auto;max-width:100%%}@media(min-width:800px){.hero .w{grid-template-columns:1.5fr 1fr;align-items:center}}.foto{width:100%%;height:auto;border-radius:16px;display:block}.hero h1{margin:0;font-size:clamp(1.8rem,5vw,2.9rem);line-height:1.1;max-width:20ch}.hero p{margin:0;font-size:1.1rem;max-width:48ch}
-.chips{display:flex;gap:8px;flex-wrap:wrap;list-style:none;margin:0;padding:0}.chips li{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:6px 12px;border-radius:99px;font-size:.88rem;font-weight:600}.cta{display:flex;gap:12px;flex-wrap:wrap}
-.card{background:#fff;border-radius:18px;padding:22px;margin:18px 0;box-shadow:0 6px 24px rgba(0,0,0,.06)}.card h2{margin:0 0 12px;font-size:1.35rem;color:var(--mc)}.card h3{margin:14px 0 6px}.sel{margin-top:-30px;position:relative}
-.ci{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 12px}.ci button{border:2px solid #e2e8f0;background:#fff;border-radius:99px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer}.ci button[aria-pressed=true]{background:var(--mc);border-color:var(--mc);color:#fff}
+.b{display:inline-flex;align-items:center;justify-content:center;border-radius:14px;padding:13px 20px;font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:1rem}.wa{background:#25d366;color:#0b2e17}.ll{background:#fff;color:var(--mh);border:2px solid var(--mh)}
+.hero{color:var(--ht);background:linear-gradient(120deg,var(--h1),var(--h2))}.hero .w{padding:36px 16px 52px;display:grid;gap:16px;grid-template-columns:1fr}.hero .t{display:grid;gap:16px;align-content:center}.fr{background:#fff;border-radius:18px;padding:14px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}.fr img{max-height:340px;width:auto;max-width:100%%}@media(min-width:800px){.hero .w{grid-template-columns:1.5fr 1fr;align-items:center}}.foto{width:100%%;height:auto;border-radius:16px;display:block}.hero h1{margin:0;font-size:clamp(1.8rem,5vw,2.9rem);line-height:1.1;max-width:20ch}.hero p{margin:0;font-size:1.1rem;max-width:48ch}
+.chips{display:flex;gap:8px;flex-wrap:wrap;list-style:none;margin:0;padding:0}.chips li{background:var(--chb);border:1px solid var(--chd);padding:6px 12px;border-radius:99px;font-size:.88rem;font-weight:600}.cta{display:flex;gap:12px;flex-wrap:wrap}
+.card{background:#fff;border-radius:18px;padding:22px;margin:18px 0;box-shadow:0 6px 24px rgba(0,0,0,.06)}.card h2{margin:0 0 12px;font-size:1.35rem;color:var(--mh)}.card h3{margin:14px 0 6px}.sel{margin-top:-30px;position:relative}
+.ci{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 12px}.ci button{border:2px solid #e2e8f0;background:#fff;border-radius:99px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer}.ci button[aria-pressed=true]{background:var(--mc);border-color:var(--mc);color:var(--on)}
 .res{padding:12px 14px;border-radius:12px;background:#ecfdf3;font-weight:600;margin-bottom:12px}
 .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}.ben{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}.ben li{padding-left:28px;position:relative}.ben li::before{content:"✓";position:absolute;left:0;color:#128c4a;font-weight:800}
 .f{display:flex;justify-content:space-between;gap:10px;background:var(--panel);border-radius:12px;padding:14px 16px;text-decoration:none;font-weight:600;border:1px solid rgba(0,0,0,.06)}.f::after{content:"→ WhatsApp";font-size:.8rem;color:#128c4a;white-space:nowrap}
 .mod{background:var(--panel);border-radius:12px;padding:14px 16px;border:1px solid rgba(0,0,0,.06)}.mod b{display:block}
-.st{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;gap:10px}.st li{counter-increment:s;background:var(--panel);border-radius:12px;padding:14px 14px 14px 56px;position:relative}.st li::before{content:counter(s);position:absolute;left:14px;top:12px;width:30px;height:30px;border-radius:50%%;background:var(--mc);color:#fff;display:grid;place-items:center;font-weight:700}.st b{display:block}
+.st{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;gap:10px}.st li{counter-increment:s;background:var(--panel);border-radius:12px;padding:14px 14px 14px 56px;position:relative}.st li::before{content:counter(s);position:absolute;left:14px;top:12px;width:30px;height:30px;border-radius:50%%;background:var(--mc);color:var(--on);display:grid;place-items:center;font-weight:700}.st b{display:block}
 .tw{overflow-x:auto;margin-top:10px}.tw table{width:100%%;border-collapse:collapse;font-size:.92rem}.tw th,.tw td{text-align:left;padding:10px 12px;border-bottom:1px solid #e2e8f0;vertical-align:top}.tw th{background:var(--panel)}.tw tr[hidden]{display:none}
-.bus{width:100%%;padding:13px 16px;font:inherit;border:2px solid #cbd5e1;border-radius:12px;margin-top:6px}.bus:focus{outline:0;border-color:var(--mc)}
+.bus{width:100%%;padding:13px 16px;font:inherit;border:2px solid #cbd5e1;border-radius:12px;margin-top:6px}.bus:focus{outline:0;border-color:var(--mh)}
 .note{background:#fff7ed;border-left:4px solid #f59e0b;padding:10px 14px;border-radius:8px;margin:12px 0;font-size:.95rem}
 .two{display:grid;gap:18px;grid-template-columns:1fr}@media(min-width:800px){.two{grid-template-columns:1fr 1fr}}
 details{border-bottom:1px solid #e2e8f0;padding:12px 0}summary{cursor:pointer;font-weight:700}details p{margin:8px 0 0;color:var(--mu)}
-.end{background:linear-gradient(110deg,var(--mc),color-mix(in srgb,var(--mc) 60%%,#000));color:#fff;text-align:center}.end h2{color:#fff}.end .cta{justify-content:center;margin-top:14px}
+.end{background:linear-gradient(110deg,var(--h1),var(--h2));color:var(--ht);text-align:center}.end h2{color:var(--ht)}.end .cta{justify-content:center;margin-top:14px}
 footer{max-width:1080px;margin:0 auto;padding:18px 16px;font-size:.8rem;color:#64748b}
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;box-shadow:0 -4px 18px rgba(0,0,0,.14);padding:10px 12px;display:flex;gap:10px}.bar .b{flex:1;padding:12px}@media(min-width:900px){.bar{display:none}body{padding-bottom:0}}
 """
 
 CAT = json.load(open(RAIZ.parent / "us-filter-store/_fuente/catalogo_colombia.json", encoding="utf-8"))
+PAL = {
+ "samsung": dict(c="#1428a0", mh="#1428a0", h1="#0a1a6b", h2="#1428a0", ht="#ffffff", on="#ffffff", chb="rgba(255,255,255,.16)", chd="rgba(255,255,255,.35)"),
+ "lg": dict(c="#c8102e", mh="#a50034", h1="#7d0026", h2="#c8102e", ht="#ffffff", on="#ffffff", chb="rgba(255,255,255,.16)", chd="rgba(255,255,255,.4)"),
+ "whirlpool": dict(c="#f5b800", mh="#8a6100", h1="#ffd84a", h2="#f5b800", ht="#1f2937", on="#1f2937", chb="rgba(0,0,0,.08)", chd="rgba(0,0,0,.25)"),
+ "neutro": dict(c="#0f4c81", mh="#0f4c81", h1="#0b2d54", h2="#0f4c81", ht="#ffffff", on="#ffffff", chb="rgba(255,255,255,.16)", chd="rgba(255,255,255,.35)"),
+}
 MARCA_CAT = {"samsung": "Samsung", "lg": "LG", "whirlpool": "Whirlpool"}
 
 def tabla_modelos(m):
@@ -77,7 +83,7 @@ def b64(path, w, h, fmt="JPEG", q=62):
 def slug_marca(m): return f"soporte-tecnico-autorizado-{m}-instalacion-nevecones-cali-yumbo-palmira-colombia"
 
 def pagina_marca(m):
-    n = N[m]; d = D[m]; color = "#0f4c81"
+    n = N[m]; d = D[m]
     nev = b64(NEVERA[m], 600, 900, q=85); agua = b64(AGUA, 900, 600, q=70)
     ref = f"ads-nevecones-{m}"
     tipos = [("Side by Side con agua y hielo", "Dos puertas verticales, con dispensador de agua y fábrica de hielo."), ("French Door con agua y hielo", "Puertas dobles arriba y cajón de congelador abajo, con dispensador de agua y fábrica de hielo.")]
@@ -100,7 +106,7 @@ def pagina_marca(m):
            ("¿Atienden en Cali, Yumbo y Palmira?", "Sí, atendemos las tres ciudades y sus barrios cercanos. Escribe tu barrio por WhatsApp para confirmar el horario.")]
     faq_h = "".join(f"<details><summary>{H.escape(q)}</summary><p>{H.escape(a)}</p></details>" for q, a in faq)
     ver = f'<meta name="google-site-verification" content="{CFG["verificacion_gsc"]}">' if CFG.get("verificacion_gsc") else ""
-    css = CSS % dict(c=color)
+    css = CSS % PAL[m]
     h1 = f"Instalación de nevecones {n} en Cali, Yumbo y Palmira"
     return f'''<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Instalación de nevecones {n} en Cali, Yumbo y Palmira</title>
@@ -142,8 +148,8 @@ document.addEventListener("click",function(e){{var a=e.target.closest("[data-e]"
 def pagina_entrada(enlace):
     """enlace(m) -> dirección de la página de cada marca."""
     ver = f'<meta name="google-site-verification" content="{CFG["verificacion_gsc"]}">' if CFG.get("verificacion_gsc") else ""
-    css = CSS % dict(c="#0f4c81")
-    tarj = "".join(f'<a class="mk" href="{enlace(m)}"><img src="{b64(NEVERA[m], 300, 450, q=80)}" alt="{ALT[m]}"><b>Nevecones {N[m]}</b><span>Filtro, hielo y agua</span></a>' for m in N)
+    css = CSS % PAL["neutro"]
+    tarj = "".join(f'<a class="mk" href="{enlace(m)}" style="border-top:6px solid {PAL[m]['c']}"><img src="{b64(NEVERA[m], 300, 450, q=80)}" alt="{ALT[m]}"><b>Nevecones {N[m]}</b><span>Filtro, hielo y agua</span></a>' for m in N)
     extra = ".mk{display:grid;place-items:center;gap:6px;text-align:center;background:#fff;border:2px solid #e2e8f0;border-radius:16px;padding:18px 10px;text-decoration:none;min-height:260px}.mk:hover{border-color:var(--mc)}.mk img{max-height:170px;width:auto;max-width:90%}.mk span{font-size:.85rem;color:var(--mu)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}"
     return f'''<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Instalación de nevecones por marca en Cali, Yumbo y Palmira</title><meta name="description" content="Instalación de nevecones por marca en Cali, Yumbo y Palmira: filtro de agua, fábrica de hielo y conexión de agua. Elige tu marca.">
