@@ -30,7 +30,7 @@ def precio(costo, tipo):
 
 
 # costo de cada pieza (pesos). Filtros externos (proveedor de Colombia): Samsung y LG $22.500, Whirlpool $30.000.
-COSTO = {"man14_m": 1500, "man516_m": 2000, "galapago": 15000, "plastica": 20000, "multi": 14000, "acople": 4000,
+COSTO = {"man14_m": 1500, "man516_m": 2000, "galapago": 15000, "plastica": 20000, "acople": 4000,
          "f-sam": 22500, "f-lg": 22500, "f-wp": 30000}
 
 SLUG_BASE = "/kits-instalacion-nevecones"
@@ -58,8 +58,6 @@ add("k-galapago", slug="llave-galapago-para-nevecon", tipo="solo", nombre="Llave
     costo=COSTO["galapago"], precio=precio(COSTO["galapago"], "solo"), foto="llave-galapago")
 add("k-plastica", slug="llave-plastica-acople-rapido-para-nevecon", tipo="solo", nombre="Llave plástica con acople rápido", corto="Llave plástica", ref="LLAVE-PLASTICA",
     costo=COSTO["plastica"], precio=precio(COSTO["plastica"], "solo"), foto="llave-plastica")
-add("k-multi", slug="llave-multiproposito-para-nevecon", tipo="solo", nombre="Llave multipropósito", corto="Llave multipropósito", ref="LLAVE-MULTI",
-    costo=COSTO["multi"], precio=precio(COSTO["multi"], "solo"), foto="llave-multiproposito")
 add("k-acople14", slug="acople-rapido-manguera-1-4", tipo="solo", nombre='Acople rápido para manguera de 1/4"', corto='Acople rápido 1/4"', ref="ACOPLE-1-4",
     costo=COSTO["acople"], precio=precio(COSTO["acople"], "solo"), foto="acople-rapido-1-4")
 add("k-acople516", slug="acople-rapido-manguera-5-16", tipo="solo", nombre='Acople rápido para manguera de 5/16"', corto='Acople rápido 5/16"', ref="ACOPLE-5-16",
@@ -73,8 +71,6 @@ COMBOS = [
      [("k-man14-5", 1), ("k-plastica", 1)], BASE_M + COSTO["plastica"]),
     ("k-kit-516", "kit-manguera-5-16-llave-galapago", "Kit: manguera 5/16\" 5 m + llave galápago", "Kit manguera 5/16\"", "KIT-5-16",
      [("k-man516-5", 1), ("k-galapago", 1)], COSTO["man516_m"] * 5 + COSTO["galapago"]),
-    ("k-kit-multi", "kit-manguera-galapago-multiproposito", "Kit: manguera 1/4\" 5 m + llave galápago + llave multipropósito", "Kit con multipropósito", "KIT-MULTI",
-     [("k-man14-5", 1), ("k-galapago", 1), ("k-multi", 1)], BASE_M + COSTO["galapago"] + COSTO["multi"]),
     ("k-kit-acoples", "kit-basico-con-acoples-rapidos", "Kit básico + 2 acoples rápidos de 1/4\"", "Kit con acoples", "KIT-ACOPLES",
      [("k-man14-5", 1), ("k-galapago", 1), ("k-acople14", 2)], BASE_M + COSTO["galapago"] + 2 * COSTO["acople"]),
 ]
@@ -131,12 +127,6 @@ TEXTO = {
                             "Corta la punta de la manguera derecha y empújala hasta el fondo en la conexión rápida azul.",
                             "Hala suave para confirmar que quedó firme. Para soltarla, presiona el anillo azul y saca la manguera.",
                             "Abre el agua despacio y revisa que no gotee."]),
-    "multi": dict(desc="Llave multipropósito para tomar y controlar el agua en el punto de conexión del nevecón.",
-                  sirve=["Controla el paso del agua hacia la manguera del nevecón, para cerrar el agua cuando cambias el filtro o mueves el nevecón.",
-                         "Si no sabes si es la que necesitas, escríbenos por WhatsApp con una foto de tu punto de agua y te decimos cuál usar."],
-                  ficha=[("Tipo", "Llave multipropósito")],
-                  pasos=["Cierra el paso general del agua.", "Instala la llave en tu punto de agua siguiendo el tipo de conexión de tu instalación (usa cinta de teflón en las roscas).",
-                         "Conecta la manguera del nevecón.", "Abre el agua despacio y revisa que no gotee."]),
     "acople14": dict(desc="Acople rápido de unión recta para empalmar manguera de 1/4 de pulgada, sin herramientas.",
                      sirve=["Une dos tramos de manguera de 1/4 de pulgada, por ejemplo cuando necesitas alargar la manguera o cambiar un tramo dañado.",
                             "La manguera se empuja hasta el fondo y queda sujeta. Para soltarla se presiona el anillo azul y se hala."],
@@ -150,7 +140,7 @@ TEXTO = {
                       pasos=["Cierra el agua.", "Corta las puntas de las mangueras rectas y sin rebabas.", "Empuja cada manguera hasta el fondo en su lado del acople.",
                              "Hala suave para confirmar que quedó firme y abre el agua despacio."]),
 }
-TEXTO_DE = {"k-galapago": "galapago", "k-plastica": "plastica", "k-multi": "multi", "k-acople14": "acople14", "k-acople516": "acople516"}
+TEXTO_DE = {"k-galapago": "galapago", "k-plastica": "plastica", "k-acople14": "acople14", "k-acople516": "acople516"}
 
 FAQ_COMUN = [
     ("¿Cuánto cuesta el envío?", "Nada. El envío es gratis a toda Colombia y ya está incluido en el precio que ves."),
@@ -395,7 +385,7 @@ def css_tienda():
 
 
 CATS = [("top", "Más pedidos", ""), ("combos", "Combos", "#1f4fd1"), ("mangueras", "Mangueras", "#c4004f"), ("llaves", "Llaves", "#7b3fa8"), ("acoples", "Acoples", "#1d5fae")]
-CAT_DE = {"man14": "mangueras", "man516": "mangueras", "k-galapago": "llaves", "k-plastica": "llaves", "k-multi": "llaves", "k-acople14": "acoples", "k-acople516": "acoples"}
+CAT_DE = {"man14": "mangueras", "man516": "mangueras", "k-galapago": "llaves", "k-plastica": "llaves", "k-acople14": "acoples", "k-acople516": "acoples"}
 POPULARES = ["k-kit-basico", "k-kit-sam", "k-kit-lg", "k-galapago", "man14", "k-kit-wp", "k-acople14", "k-plastica"]
 
 
@@ -593,7 +583,7 @@ def guia():
 <li><b>Filtro externo</b> (opcional, recomendado): mejora el sabor del agua y del hielo y protege la válvula del nevecón.</li></ul></section>
 <section class="caja"><h2>Qué llave necesito según mi punto de agua</h2>
 <dl class="dq"><dt>Tubo sin salida libre</dt><dd>Llave galápago (se abraza al tubo y toma el agua sin cortarlo).</dd>
-<dt>Salida con rosca disponible</dt><dd>Llave plástica con acople rápido, o llave multipropósito.</dd>
+<dt>Salida con rosca disponible</dt><dd>Llave plástica con acople rápido.</dd>
 <dt>Necesito más largo</dt><dd>Manguera de 10, 15 o 20 metros, o un acople rápido para empalmar.</dd>
 <dt>Quiero agua filtrada</dt><dd>Filtro externo de tu marca (Samsung, LG o Whirlpool), con la flecha hacia el nevecón.</dd></dl>
 <p class="m">¿No estás seguro? Escríbenos por WhatsApp con una foto de tu punto de agua.</p></section>
