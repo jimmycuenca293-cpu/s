@@ -1,0 +1,28 @@
+/* Páginas de aterrizaje para Google Ads: una sola acción (WhatsApp o llamar), sin menú ni enlaces de salida */
+.ad{background:var(--panel);color:var(--ink);padding-bottom:84px}
+.ad *{box-sizing:border-box}
+.ad-top{position:sticky;top:0;z-index:20;background:#fff;box-shadow:0 1px 10px rgba(0,0,0,.08)}
+.ad-top .in{max-width:1100px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:10px}
+.ad-top img{height:30px;width:auto;display:block}.ad-top .sp{flex:1}
+.ad .b{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:13px 20px;font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:1rem;line-height:1.2}
+.ad .b.wa{background:#25d366;color:#0b2e17}.ad .b.ll{background:#fff;color:var(--mc);border:2px solid var(--mc)}.ad .b.gp{background:var(--soft);color:var(--ink);border:1px dashed var(--mc);width:100%}
+.ad-hero{position:relative;color:#fff;background:linear-gradient(110deg,color-mix(in srgb,var(--mc) 92%,#000),color-mix(in srgb,var(--mc2) 80%,transparent)),var(--hero) center/cover}
+.ad-hero .in{max-width:1100px;margin:0 auto;padding:36px 16px 44px;display:grid;gap:18px}
+.ad-hero h1{font-size:clamp(1.8rem,5vw,3rem);line-height:1.1;margin:0;max-width:18ch}
+.ad-hero p{margin:0;font-size:1.1rem;max-width:42ch;opacity:.95}
+.ad-hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+.ad-chips{display:flex;gap:8px;flex-wrap:wrap;list-style:none;margin:0;padding:0}.ad-chips li{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:6px 12px;border-radius:99px;font-size:.88rem;font-weight:600}
+.ad-w{max-width:1100px;margin:0 auto;padding:0 16px}
+.ad-card{background:#fff;border-radius:18px;padding:22px;margin:18px 0;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+.ad-card h2{margin:0 0 12px;font-size:1.35rem;color:var(--mc)}
+.ad-geo{margin-top:-26px;position:relative}.ad-geo #det{margin-top:10px}
+.ad-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.ad-f{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--panel);border-radius:12px;padding:14px 16px;text-decoration:none;color:var(--ink);font-weight:600;border:1px solid rgba(0,0,0,.06)}.ad-f::after{content:"→ WhatsApp";font-size:.8rem;color:#128c4a;white-space:nowrap}
+.ad-steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}.ad-steps li{counter-increment:s;background:var(--panel);border-radius:12px;padding:16px 16px 16px 56px;position:relative}.ad-steps li::before{content:counter(s);position:absolute;left:14px;top:14px;width:30px;height:30px;border-radius:50%;background:var(--mc);color:var(--mt,#fff);display:grid;place-items:center;font-weight:700}.ad-steps b{display:block}
+.ad-ben{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}.ad-ben li{padding-left:30px;position:relative;font-weight:600}.ad-ben li::before{content:"✓";position:absolute;left:0;color:#128c4a;font-weight:800}
+.ad-two{display:grid;gap:18px;grid-template-columns:1fr}@media(min-width:800px){.ad-two{grid-template-columns:1fr 1fr;align-items:center}}.ad-two img{width:100%;height:auto;border-radius:16px;display:block}
+.ad details{border-bottom:1px solid rgba(0,0,0,.08);padding:12px 0}.ad summary{cursor:pointer;font-weight:700}.ad details p{margin:8px 0 0;color:#475569}
+.ad-end{background:linear-gradient(110deg,var(--mc),var(--mc2));color:#fff;text-align:center}.ad-end h2{color:#fff}.ad-end .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.ad-foot{max-width:1100px;margin:0 auto;padding:18px 16px;font-size:.8rem;color:#64748b}.ad-foot a{color:inherit}
+.ad-bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;box-shadow:0 -4px 18px rgba(0,0,0,.14);padding:10px 12px;display:flex;gap:10px}.ad-bar .b{flex:1;padding:12px}
+@media(min-width:900px){.ad-bar{display:none}.ad{padding-bottom:0}}

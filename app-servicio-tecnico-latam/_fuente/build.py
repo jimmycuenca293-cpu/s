@@ -878,6 +878,112 @@ def inyectar_imgs(body, m, cc, ci, ruta, maxn=14):
         return pre + f'<section class="sec sp{rev}" id="{mm.group(1)}">{img}<div class="tx"><h2>{mm.group(2)}</h2>{mm.group(3)}</div></section>'
     return re.sub(r'<section class="sec" id="([^"]*)"><h2>(.*?)</h2>(.*?)</section>', sub, body, flags=re.S)
 
+# ======================= Páginas de aterrizaje para Google Ads (/ads/, sin indexar) =======================
+ADS_FILAS = []
+
+def acorta_n(t, n):
+    t = re.sub(r"\s+", " ", t).strip()
+    return t if len(t) <= n else t[:n].rsplit(" ", 1)[0].rstrip(",.:;-")
+
+def landing_ads(m, cc, ci=None, k=None, nev=False):
+    mn = MA[m]["nombre"]; p = PA[cc]; pn = p["nombre"]; lg = lugar_de(cc, ci); tel = p["tel"] or "WhatsApp"
+    base = _u(m, "instalacion", "nevecones", slugloc(ci, cc)) if nev else ((Ucek(m, cc, ci, k) if ci else Ue(m, cc, k)) if k else (Uci(m, cc, ci) if ci else Uc(m, cc)))
+    ruta = "ads" + base; ref = "ads-" + base.strip("/").replace("soporte-tecnico-autorizado-", "")
+    seo = (Ucek(m, cc, ci, k) if ci else Ue(m, cc, k)) if k else (Uci(m, cc, ci) if ci else Uc(m, cc))
+    eq = f"{term(cc, k)} {mn}" if k else f"{term(cc, 'neveras')}, {term(cc, 'lavadoras')} y {term(cc, 'secadoras')} {mn}"
+    h1 = (f"Reparación de {term(cc, k)} {mn} en {lg}" if k else f"Servicio técnico {mn} en {lg}")
+    sub = f"Técnico {mn} a domicilio en {lg}: revisa tu equipo en casa, te da el costo antes de reparar y deja garantía."
+    if nev:
+        h1 = f"Instalación de nevecón {mn} en {lg}"
+        sub = f"Instalamos tu nevecón {mn} en {lg}: ubicación, nivelación, conexión de agua, filtro y prueba de agua y hielo. Te damos el costo antes de empezar."
+    def wl(extra=""): return wa(p["wa"], (f"Hola, necesito instalación de nevecón {mn} en {lg}" if nev else f"Hola, necesito servicio técnico {mn} en {lg}") + (f". Equipo: {term(cc, k)}" if k else "") + ((f". Servicio: {extra}" if nev else f". Falla: {extra}") if extra else "") + f" [{ref}]")
+    dig = re.sub(r"\D", "", p["tel"] or p["wa"])
+    V = MA[m]; mc = V["color"]; mt = V.get("texto", "#fff")
+    pal = f"--mc:{mc};--mt:{mt};--mc2:{V.get('pri2', '#0b3d38')};--acc:{V.get('acc', '#25d366')};--soft:{V.get('soft', '#e6f4f1')};--panel:{V.get('panel', '#f3f4f6')};--ink:{V.get('ink', '#0f172a')}"
+    _L = POOL[m]["tecnico"]; hero = f"/img/{m}/tecnico-{zlib.crc32(ruta.encode()) % len(_L)}.jpg"
+    off = zlib.crc32(ruta.encode()) % 7
+    ks = [k] if k else list(EQ)
+    fal = []
+    for x in ks:
+        for f in EQ[x]["fallas"][:6 if k else 2]: fal.append((txt(f[0], m, cc, x), (term(cc, x) + " " + mn) if not k else ""))
+    if nev: fal = [(x, "") for x in ("Instalar mi nevecón", "Instalar o cambiar el filtro de agua", "Conectar el agua y el hielo", "Se prendió la luz del filtro", "El dispensador no saca agua", "Reinstalar mi nevecón en una mudanza")]
+    fal_h = "".join(f'<a class="ad-f" data-evt="whatsapp" href="{wl(t_)}" rel="noopener">{esc(t_)}</a>' for t_, _ in fal)
+    pas = [("Escríbenos por WhatsApp", f"Cuéntanos el equipo, el modelo y la falla. Te respondemos con horario."), ("Diagnóstico en tu casa", f"El técnico {mn} revisa el equipo y te da el costo en {p['moneda']} antes de empezar."), ("Reparación con garantía", "Reparamos con tu aprobación y damos garantía sobre la pieza y la mano de obra.")]
+    pas_h = "".join(f"<li><b>{esc(a)}</b>{esc(b)}</li>" for a, b in pas)
+    ben = [f"Técnico a domicilio en {lg}", "Presupuesto antes de reparar", "Garantía en pieza y mano de obra", "Te asignamos el técnico más cercano a tu barrio"]
+    if nev:
+        pas = [("Escríbenos con marca y modelo", "El modelo está en una etiqueta dentro del compartimento. Con él confirmamos el filtro compatible."), ("Confirmamos horario y costo", f"Te decimos cuándo llega el técnico y el costo en {p['moneda']} antes de empezar."), ("Instalación y prueba", "Ubicación, nivelación, agua, filtro y prueba de agua y hielo con el equipo funcionando.")]
+        pas_h = "".join(f"<li><b>{esc(a)}</b>{esc(b)}</li>" for a, b in pas)
+        ben = [f"Instalación a domicilio en {lg}", "Conexión de agua y filtro", "Costo antes de empezar", "Prueba final de agua y hielo"]
+    ben_h = "".join(f"<li>{esc(x)}</li>" for x in ben)
+    CK = re.compile(r"cuesta|cobra|tarda|garantía|barrio|fines de semana|urgenc", re.I)
+    fq = [x for x in faq_banco(m, cc, ci, k) if CK.search(x[0])][:5]
+    extra_h = ""; tit_g = f"¿Qué le pasa a tu equipo {esc(mn)}?"
+    if nev:
+        tit_g = f"¿Qué necesitas para tu nevecón {esc(mn)}?"
+        I_ = INST["neveras"]; T_ = lambda x: txt(x, m, cc, "neveras")
+        mods = "".join(f'<li>{esc(modelo_corto(x))}</li>' for x in EQ["neveras"]["modelos"])
+        extra_h = (f'<section class="ad-card"><h2>Qué incluye la instalación de tu nevecón {esc(mn)}</h2><ul class="ad-ben">' + "".join(f"<li>{esc(T_(x))}</li>" for x in I_["incluye"]) + '</ul></section>'
+                   f'<section class="ad-card"><div class="ad-two"><div><h2>El filtro de agua de tu nevecón {esc(mn)}</h2><p>El filtro mejora el sabor del agua y del hielo y protege la válvula. Normalmente se cambia cada 6 meses, o antes si se enciende la luz del filtro.</p><p>Instalamos el filtro compatible con tu modelo. Escríbenos con la marca y el modelo (etiqueta dentro del compartimento) y te confirmamos cuál necesitas.</p>'
+                   f'<p><a class="b wa" data-evt="whatsapp" href="{wl("Instalar o cambiar el filtro de agua")}" rel="noopener">Consultar mi filtro por WhatsApp</a></p></div><div><h3>Líneas {esc(mn)} que instalamos</h3><ul class="ad-ben">{mods}</ul></div></div></section>'
+                   f'<section class="ad-card"><h2>Antes de la visita</h2><ul class="ad-ben">' + "".join(f"<li>{esc(T_(x))}</li>" for x in I_["antes"]) + "</ul></section>")
+        fq = [(f"¿Cuánto cuesta la instalación de un nevecón {mn} en {lg}?", f"Depende de si solo se ubica y se conecta, o si también necesita conexión de agua, filtro y accesorios. El costo se informa en {p['moneda']} antes de empezar."),
+              (f"¿Instalan la conexión de agua y el filtro del nevecón?", "Sí: se conecta el agua con manguera y llave de paso, se instala el filtro y se purga el sistema antes de probar el agua y el hielo."),
+              ("¿Cada cuánto se cambia el filtro del nevecón?", "Normalmente cada 6 meses o cuando se enciende la luz del filtro; con agua muy dura, antes."),
+              (f"¿Qué filtro necesita mi nevecón {mn}?", "Depende del modelo. Escríbenos con la marca y la etiqueta del modelo y te confirmamos el filtro compatible."),
+              (f"¿Atienden en {lg}?", f"Sí, atendemos {lg} y sus barrios cercanos. Escribe tu barrio por WhatsApp para confirmar horario.")]
+    fq_h = "".join(f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in fq)
+    img = imgk(m, cc, k or "tecnico", off)
+    title = acorta_n(f"{h1}: técnico a domicilio", 60); desc = acorta_n(f"Técnico {mn} a domicilio en {lg}. Escribe por WhatsApp y recibe horario y costo antes de reparar. Garantía en la reparación.", 155)
+    if nev: title = acorta_n(f"Instalación de nevecón {mn} en {lg}: agua y filtro", 60); desc = acorta_n(f"Instalación de nevecón {mn} en {lg}: ubicación, conexión de agua, filtro y prueba. Escribe por WhatsApp y recibe horario y costo.", 155)
+    gtm = (f"<script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.start':new Date().getTime(),event:'gtm.js'}});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);}})(window,document,'script','dataLayer','{CFG['gtm']}');</script>") if CFG.get("gtm") else ""
+    ver = f'<meta name="google-site-verification" content="{CFG["verificacion_gsc"]}">' if CFG.get("verificacion_gsc") else ""
+    evt = ("<script>document.addEventListener('click',function(e){var a=e.target.closest('[data-evt]');if(!a)return;window.dataLayer=window.dataLayer||[];"
+           f"window.dataLayer.push({{event:a.getAttribute('data-evt'),marca:'{m}',pais:'{cc}',lugar:{json.dumps(lg, ensure_ascii=False)},equipo:'{k or ''}',landing:'{ref}'}});}});</script>")
+    barra = (f'<div class="ad-bar"><a class="b wa" data-evt="whatsapp" href="{wl()}" rel="noopener">WhatsApp</a><a class="b ll" data-evt="llamar" href="tel:+{dig}">Llamar</a></div>')
+    legal = (f"{esc(NOM)} es un servicio técnico independiente. {esc(mn)} y su logotipo son marcas de sus respectivos propietarios; este sitio no está afiliado ni patrocinado por {esc(mn)}. "
+             f'<a href="{Upriv(m, cc)}" rel="nofollow">Privacidad</a> · <a href="{Uleg(m, cc)}" rel="nofollow">Aviso legal</a> · <a href="{seo}">Ver todos los servicios de {esc(mn)} en {esc(lg)}</a>')
+    h = f"""<!doctype html><html lang="{p['locale']}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><meta name="robots" content="noindex,follow"><link rel="canonical" href="{DOM}/{ruta}">{ver}
+<meta name="theme-color" content="{mc}"><link rel="icon" href="/img/{m}/logo.png"><link rel="stylesheet" href="/estilo.css"><link rel="stylesheet" href="/anuncios.css">{gtm}</head>
+<body class="ad" data-marca="{m}" data-nombre="{esc(mn)}" data-pais="{cc}" data-bu="{Uc(m, cc)}" style="{pal}">
+<header class="ad-top"><div class="in"><img src="/img/{m}/logo.png" alt="Logo {esc(mn)}" width="120" height="30"><span class="sp"></span><a class="b ll" data-evt="llamar" href="tel:+{dig}">Llamar</a><a class="b wa" data-evt="whatsapp" href="{wl()}" rel="noopener">WhatsApp</a></div></header>
+<section class="ad-hero" style="--hero:url({hero})"><div class="in"><h1>{esc(h1)}</h1><p>{esc(sub)}</p>
+<ul class="ad-chips">{"<li>A domicilio</li><li>Costo antes de empezar</li><li>Filtro de agua</li>" if nev else "<li>A domicilio</li><li>Presupuesto antes de reparar</li><li>Garantía</li>"}</ul>
+<div class="cta"><a class="b wa" data-evt="whatsapp" href="{wl()}" rel="noopener">Escribir por WhatsApp</a><a class="b ll" data-evt="llamar" href="tel:+{dig}">Llamar {esc(tel)}</a></div></div></section>
+<main class="ad-w">
+<section class="ad-card ad-geo"><h2>Encuentra el técnico {esc(mn)} más cercano</h2><button class="b gp" id="gps" type="button">📍 Detectar mi ubicación</button><div id="det" role="status" aria-live="polite"></div></section>
+<section class="ad-card"><h2>{tit_g}</h2><div class="ad-grid">{fal_h}</div></section>{extra_h}
+<section class="ad-card"><h2>Así funciona</h2><ol class="ad-steps">{pas_h}</ol></section>
+<section class="ad-card"><div class="ad-two"><div><h2>Por qué pedir tu técnico {esc(mn)} aquí</h2><ul class="ad-ben">{ben_h}</ul><p style="margin-top:16px"><a class="b wa" data-evt="whatsapp" href="{wl()}" rel="noopener">Pedir mi técnico por WhatsApp</a></p></div><img src="{img}" alt="{esc(ALT(m, 'tecnico', lg))}" width="900" height="600" loading="lazy"></div></section>
+<section class="ad-card"><h2>Preguntas frecuentes</h2>{fq_h}</section>
+<section class="ad-card ad-end"><h2>¿Necesitas un técnico {esc(mn)} en {esc(lg)}?</h2><p>Escríbenos y te respondemos con horario y costo antes de reparar.</p><div class="cta"><a class="b wa" data-evt="whatsapp" href="{wl()}" rel="noopener">WhatsApp {esc(tel)}</a><a class="b ll" data-evt="llamar" href="tel:+{dig}">Llamar</a></div></section>
+</main><footer class="ad-foot">{legal}</footer>{barra}
+<script src="/datos-{PS[cc]}.js" defer></script><script src="/geo.js" defer></script>{evt}</body></html>"""
+    p_ = OUT / ruta / "index.html"; p_.parent.mkdir(parents=True, exist_ok=True); p_.write_text(h, encoding="utf-8")
+    # fila para la plantilla de anuncios (CSV): títulos ≤30 y descripciones ≤90 caracteres
+    t1 = acorta_n(f"Instalación de Nevecón {mn}" if nev else f"Servicio técnico {mn}", 30); t2 = acorta_n("Agua, Hielo y Filtro" if nev else (f"{term(cc, k).capitalize()} {mn}" if k else f"Técnico {mn} a domicilio"), 30); t3 = acorta_n(lg if lg != pn else f"En {pn}", 30)
+    cand = ([f"Instalación de nevecón {mn} en {lg} con agua y filtro. Costo antes de empezar.", f"Instalación de nevecón {mn} en {lg}. Escríbenos por WhatsApp."] if nev else [f"Técnico {mn} a domicilio en {lg}. Escríbenos por WhatsApp y recibe horario y costo.", f"Técnico {mn} a domicilio en {lg}. Escríbenos por WhatsApp.", f"Técnico {mn} en {lg}. Escríbenos por WhatsApp."])
+    d1 = next((x for x in cand if len(x) <= 90), acorta_n(cand[-1], 90))
+    d2 = acorta_n("Presupuesto antes de reparar y garantía en la pieza y la mano de obra.", 90)
+    if nev: kws = [f"instalación de nevecón {mn} {lg}", f"instalar filtro nevecón {mn} {lg}", f"instalación de nevecones por marca {lg}", f"técnico instalación nevecón {lg}"]
+    else: kws = [f"servicio técnico {mn} {lg}", f"técnico {mn} a domicilio {lg}"] + ([f"reparación {term(cc, k)} {mn} {lg}", f"{term(cc, k)} {mn} {lg} no funciona"] if k else [f"reparación electrodomésticos {mn} {lg}", f"teléfono servicio técnico {mn} {lg}"])
+    ADS_FILAS.append([mn, pn, ci or "", "nevecones" if nev else (term(cc, k) if k else "todos"), f"{DOM}/{ruta}", t1, t2, t3, d1, d2, " | ".join(kws)])
+
+def generar_anuncios():
+    import csv
+    for m, v in MA.items():
+        globals()["EQ"] = EQB[m]
+        for cc, p in PA.items():
+            for ci in [None] + list(p["ppal"]):
+                for k in [None] + list(EQ): landing_ads(m, cc, ci, k)
+        for ci in ("Cali", "Yumbo", "Palmira"): landing_ads(m, "co", ci, None, nev=True)
+    (OUT / "anuncios.css").write_text((RAIZ / "_fuente" / "anuncios.css").read_text(encoding="utf-8"), encoding="utf-8")
+    dest = RAIZ / "entrega"; dest.mkdir(exist_ok=True)
+    with open(dest / "anuncios-google-ads.csv", "w", newline="", encoding="utf-8-sig") as f:
+        w = csv.writer(f); w.writerow(["Marca", "País", "Ciudad", "Equipo", "URL final", "Título 1", "Título 2", "Título 3", "Descripción 1", "Descripción 2", "Palabras clave sugeridas (concordancia de frase)"]); w.writerows(ADS_FILAS)
+    print(f"{len(ADS_FILAS)} páginas de anuncios")
+
 def build():
     if OUT.exists(): shutil.rmtree(OUT)
     OUT.mkdir(parents=True)
@@ -1230,6 +1336,7 @@ ExpiresByType application/javascript "access plus 1 month"
     page("404/", f"Página no encontrada | {NOM}", "La página que buscas no existe.", "Página no encontrada", "Revisa la dirección o vuelve al inicio.", sec("¿Qué hacer?", '<p><a class="btn pr" href="/">Ir al inicio</a></p>'), orden=False, fab=False, noindex=True)
     (OUT / "404.html").write_text((OUT / "404" / "index.html").read_text(encoding="utf-8"), encoding="utf-8"); shutil.rmtree(OUT / "404")
     print(f"{len(set(PAGES))} páginas")
+    generar_anuncios()
     if faltan:
         print("⚠ FALTAN WhatsApp para: " + ", ".join(PA[c]["nombre"] for c in faltan))
         if ESTRICTO: sys.exit(1)
