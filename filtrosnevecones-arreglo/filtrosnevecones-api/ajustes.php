@@ -4,7 +4,7 @@ return [
     'whatsapp' => '3013810242',
     'negocio'  => ['telefono' => '301 381 0242'],
 
-    // Correo donde te llegan los datos de cada pedido
+    // Correo(s) donde te llegan los datos de cada pedido. Puedes poner varios separados por coma: 'uno@gmail.com, otro@gmail.com'
     'correo_avisos' => 'serviciotecnicoyrepuestoscali@gmail.com',
 
     // Correo que SALE de la tienda (el buzón que creaste en Hostinger > Correos).

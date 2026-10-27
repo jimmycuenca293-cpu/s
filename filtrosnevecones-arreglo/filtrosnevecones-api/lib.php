@@ -369,11 +369,18 @@ function enviar_correo(string $para, string $asunto, string $html, ?string &$mot
 // No depende del correo del hosting. La primera vez FormSubmit manda un correo de activación a correo_avisos: hay que tocar «Activate».
 // Devuelve ['ok' => bool, 'mensaje' => texto].
 // Correo donde llegan los pedidos. Si en config.php quedó vacío o con el ejemplo, se usa el de la tienda.
+function correos_destino(): array
+{
+    $l = [];
+    foreach (preg_split('/[;,\s]+/', trim((string) (cfg()['correo_avisos'] ?? ''))) as $e) {
+        if (filter_var($e, FILTER_VALIDATE_EMAIL) && !str_contains($e, 'tucorreo') && !in_array($e, $l, true)) $l[] = $e;
+    }
+    return $l ?: ['serviciotecnicoyrepuestoscali@gmail.com'];
+}
+
 function correo_destino(): string
 {
-    $v = trim((string) (cfg()['correo_avisos'] ?? ''));
-    if (filter_var($v, FILTER_VALIDATE_EMAIL) && !str_contains($v, 'tucorreo')) return $v;
-    return 'serviciotecnicoyrepuestoscali@gmail.com';
+    return correos_destino()[0];
 }
 
 // Anota cada intento de aviso (para verlo en el diagnóstico y reintentar los que fallaron)
@@ -386,8 +393,13 @@ function anotar_aviso(string $ref, string $tipo, string $canal, bool $ok, string
 // Devuelve true si llegó por al menos uno.
 function avisar_por_todos(array $p, string $tipo, string $asunto, string $html): bool
 {
-    $ok1 = enviar_correo(correo_destino(), $asunto, $html, $m1);
-    anotar_aviso($p['ref'], $tipo, 'correo', $ok1, (string) $m1);
+    // Se manda a cada correo de 'correo_avisos' (se pueden poner varios separados por coma)
+    $ok1 = false; $m1 = '';
+    foreach (correos_destino() as $dest) {
+        $r1 = enviar_correo($dest, $asunto, $html, $mm);
+        $ok1 = $ok1 || $r1; $m1 .= ($mm ? $dest . ': ' . $mm . ' ' : '');
+    }
+    anotar_aviso($p['ref'], $tipo, 'correo', $ok1, trim($m1));
     if (form_en_navegador()) return $ok1;  // el formulario lo manda el navegador del cliente
     $r = enviar_formulario($asunto, campos_pedido($p));
     anotar_aviso($p['ref'], $tipo, 'formulario', $r['ok'], $r['mensaje']);
