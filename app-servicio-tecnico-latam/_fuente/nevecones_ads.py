@@ -68,11 +68,10 @@ def tabla_modelos(m):
     return filas
 
 FOTOS = RAIZ.parent
-NEVERA = {"samsung": FOTOS / "servicio-tecnico-samsung-panama/images/fotos/prod-nevera-sbs.jpg",
-          "lg": FOTOS / "servicio-tecnico-lg-panama/images/fotos/prod-nevera-top.jpg",
-          "whirlpool": FOTOS / "servicio-tecnico-whirlpool-panama/images/fotos/prod-nevera-sbs.jpg"}
+FDIR = RAIZ / "_fuente" / "fotos-nevecones"   # fotos de neveras de otros proyectos, con la marca impresa en el equipo ya borrada
+NEVERA = {m: FDIR / f"{m}.jpg" for m in ("samsung", "lg", "whirlpool")}
 ALT = {"samsung": "Nevecón Samsung side by side con dispensador de agua", "lg": "Nevecón LG french door con dispensador de agua y hielo", "whirlpool": "Nevecón Whirlpool side by side con dispensador de agua"}
-AGUA = FOTOS / "filtroya-web/imagenes-ads/agua-dispensador.jpg"
+AGUA = FDIR / "agua.jpg"
 
 def b64(path, w, h, fmt="JPEG", q=62):
     im = Image.open(path)
