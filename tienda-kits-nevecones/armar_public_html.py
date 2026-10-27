@@ -32,6 +32,11 @@ rep(c, '$("#totales").innerHTML = `<div class="tl"><span>${n} ${n === 1 ? "filtr
     '$("#c-rec").closest("label").hidden = L.every(l => P[l.pid].ubic === "kit");\n    const solo = L.every(l => P[l.pid].ubic === "kit");\n    $("#totales").innerHTML = `<div class="tl"><span>${n} ${solo ? (n === 1 ? "producto" : "productos") : (n === 1 ? "filtro" : "filtros")}</span>')
 subprocess.run([sys.executable, str(AQUI / "kits_php.py"), str(t / "overlay"), str(b / "index.php")], check=True)
 shutil.copytree(t / "overlay", b, dirs_exist_ok=True)
+# portada de la tienda de filtros: se avisa que también hay kits (sin tocar nada más)
+bh = (t / "overlay" / "_bloque-home.html").read_text(encoding="utf-8"); (b / "_bloque-home.html").unlink(missing_ok=True)
+ix = b / "index.php"
+rep(ix, '<section class="explora" aria-label="Explora la tienda">', bh + '<section class="explora" aria-label="Explora la tienda">')
+rep(ix, '<nav class="hero-nav"><a href="/filtrosnevecones-tienda/">Tienda</a>', '<nav class="hero-nav"><a href="/filtrosnevecones-tienda/">Tienda</a><a href="/kits-instalacion-nevecones/">Kits</a>')
 (b / "LEEME-SUBIR.txt").write_text(open(AQUI / "LEEME-SUBIR.txt", encoding="utf-8").read(), encoding="utf-8")
 if zout.exists(): zout.unlink()
 with zipfile.ZipFile(zout, "w", zipfile.ZIP_DEFLATED) as z:

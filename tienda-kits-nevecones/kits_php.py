@@ -573,6 +573,25 @@ ver();
 """
 
 
+
+def bloque_home():
+    """Sección para la portada de la tienda de filtros: avisa que también se venden kits, mangueras, llaves y acoples."""
+    pids = ["k-kit-sam", "k-kit-lg", "k-kit-wp", "k-kit-basico", "k-galapago", "k-man14-5"]
+    tarj = []
+    for pid in pids:
+        p = PROD[pid]
+        pie = "Combo" if p["tipo"] == "combo" else ("Llave" if "galapago" in pid else "Manguera 1/4\"")
+        tarj.append(f'<article class="card"><a class="pbig" href="{SLUG_BASE}/{p["slug"]}/" aria-label="Ver {esc(p["nombre"])}" style="text-decoration:none"><img src="{foto_url(p)}" alt="{esc(p["nombre"])}" loading="lazy"></a>'
+                    f'<div class="cinfo"><span class="brand">{pie}</span><h3><a href="{SLUG_BASE}/{p["slug"]}/" style="color:inherit;text-decoration:none">{esc(p["corto"] if p["tipo"] == "combo" else p["nombre"])}</a></h3></div>'
+                    f'<div><div class="price">{cop(p["precio"])}</div><div class="eta"><span>Envío gratis a toda Colombia</span></div></div>'
+                    f'<div class="actions"><button class="btn" type="button" data-add="{p["pid"]}" data-ir="1" style="flex:1">Pedir</button></div></article>')
+    return (f'<section class="kits-home" aria-label="Kits de instalación para nevecón" style="display:flex;flex-direction:column;gap:12px">'
+            f'<h2 style="font-size:19px">Además de filtros: kits de instalación y combos</h2>'
+            f'<p class="sub">Vendemos manguera de 1/4" y 5/16" (5, 10, 15 o 20 metros), llaves galápago y plásticas, acoples rápidos y combos completos con el filtro de tu marca. Envío gratis a toda Colombia.</p>'
+            f'<div class="grid">{"".join(tarj)}</div>'
+            f'<a class="btn block" href="{SLUG_BASE}/">Ver todos los kits y piezas</a></section>\n')
+
+
 def guia():
     desc = "Qué necesitas para conectar el agua de tu nevecón: manguera de 1/4, llave galápago o plástica, acoples, filtro externo y paso a paso con purga."
     ld = json.dumps({"@context": "https://schema.org", "@type": "HowTo", "name": "Cómo conectar el agua de tu nevecón",
@@ -627,6 +646,7 @@ def main():
         vistos.add(p["slug"])
         d = base / p["slug"]; d.mkdir(); (d / "index.php").write_text(pagina_producto(p), "utf-8")
     d = base / "guia-conexion-agua-nevecon"; d.mkdir(); (d / "index.php").write_text(guia(), "utf-8")
+    (out / "_bloque-home.html").write_text(bloque_home(), "utf-8")
     print(len(PROD), "productos;", sum(1 for _ in out.rglob("*.php")), "archivos php")
     for p in PROD.values():
         if p["tipo"] == "combo" or p.get("metros") in (None, 5): print(f"  {p['pid']:16s} {p['precio']:>7}  {p['nombre'][:60]}")
