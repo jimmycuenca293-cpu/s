@@ -38,6 +38,8 @@ a{color:inherit}.w{max-width:1080px;margin:0 auto;padding:0 16px}
 .f{display:flex;justify-content:space-between;gap:10px;background:var(--panel);border-radius:12px;padding:14px 16px;text-decoration:none;font-weight:600;border:1px solid rgba(0,0,0,.06)}.f::after{content:"→ WhatsApp";font-size:.8rem;color:#128c4a;white-space:nowrap}
 .mod{background:var(--panel);border-radius:12px;padding:14px 16px;border:1px solid rgba(0,0,0,.06)}.mod b{display:block}
 .st{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;gap:10px}.st li{counter-increment:s;background:var(--panel);border-radius:12px;padding:14px 14px 14px 56px;position:relative}.st li::before{content:counter(s);position:absolute;left:14px;top:12px;width:30px;height:30px;border-radius:50%%;background:var(--mc);color:#fff;display:grid;place-items:center;font-weight:700}.st b{display:block}
+.tw{overflow-x:auto;margin-top:10px}.tw table{width:100%%;border-collapse:collapse;font-size:.92rem}.tw th,.tw td{text-align:left;padding:10px 12px;border-bottom:1px solid #e2e8f0;vertical-align:top}.tw th{background:var(--panel)}.tw tr[hidden]{display:none}
+.bus{width:100%%;padding:13px 16px;font:inherit;border:2px solid #cbd5e1;border-radius:12px;margin-top:6px}.bus:focus{outline:0;border-color:var(--mc)}
 .note{background:#fff7ed;border-left:4px solid #f59e0b;padding:10px 14px;border-radius:8px;margin:12px 0;font-size:.95rem}
 .two{display:grid;gap:18px;grid-template-columns:1fr}@media(min-width:800px){.two{grid-template-columns:1fr 1fr}}
 details{border-bottom:1px solid #e2e8f0;padding:12px 0}summary{cursor:pointer;font-weight:700}details p{margin:8px 0 0;color:var(--mu)}
@@ -45,6 +47,19 @@ details{border-bottom:1px solid #e2e8f0;padding:12px 0}summary{cursor:pointer;fo
 footer{max-width:1080px;margin:0 auto;padding:18px 16px;font-size:.8rem;color:#64748b}
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;box-shadow:0 -4px 18px rgba(0,0,0,.14);padding:10px 12px;display:flex;gap:10px}.bar .b{flex:1;padding:12px}@media(min-width:900px){.bar{display:none}body{padding-bottom:0}}
 """
+
+CAT = json.load(open(RAIZ.parent / "us-filter-store/_fuente/catalogo_colombia.json", encoding="utf-8"))
+MARCA_CAT = {"samsung": "Samsung", "lg": "LG", "whirlpool": "Whirlpool"}
+
+def tabla_modelos(m):
+    """Filas del catálogo propio (referencias de filtro y modelos de nevecón) de la marca."""
+    filas = []
+    for k, v in CAT.items():
+        if v["marca"] != MARCA_CAT[m]: continue
+        ext = v.get("ubic") == "externo"
+        mod = ", ".join(v.get("modelos") or []) or ("Sirve a nevecones con dispensador de agua; confirma con tu modelo." if ext else "Confirma con la foto del filtro o la etiqueta de tu modelo.")
+        filas.append((v["nombre"].replace("Filtro ", "", 1), v["ref"], ", ".join(v.get("alias") or []) or "-", "Externo (va en la manguera del agua)" if ext else "Interno (cartucho dentro del nevecón)", mod))
+    return filas
 
 FOTOS = RAIZ.parent
 NEVERA = {"samsung": FOTOS / "servicio-tecnico-samsung-panama/images/fotos/prod-nevera-sbs.jpg",
@@ -68,6 +83,9 @@ def pagina_marca(m):
     tipos = [("Side by Side con agua y hielo", "Dos puertas verticales, con dispensador de agua y fábrica de hielo."), ("French Door con agua y hielo", "Puertas dobles arriba y cajón de congelador abajo, con dispensador de agua y fábrica de hielo.")]
     tipos_h = "".join(f'<div class="mod"><b>{H.escape(a)}</b>{H.escape(b)}</div>' for a, b in tipos)
     pasos_filtro = ["Se cierra la llave de agua y se ubica el filtro de tu modelo.", "Se retira el filtro usado (puede salir un poco de agua).", "Se coloca el filtro nuevo hasta que encaje y se cierra la tapa.", "Se purga el sistema dejando correr agua varios minutos para sacar el aire del circuito.", "Se reinicia el indicador de cambio de filtro si tu modelo lo tiene.", "Se revisa que no haya fugas y se anota la fecha del próximo cambio."]
+    filas = tabla_modelos(m)
+    filas_h = "".join("<tr>" + "".join(f"<td>{H.escape(c)}</td>" for c in f) + "</tr>" for f in filas)
+    ejemplo = next((f[4].split(",")[0] for f in filas if f[4].startswith(("RF", "RS", "L", "W", "G"))), filas[0][1])
     pf = "".join(f"<li>{H.escape(x)}</li>" for x in pasos_filtro)
     pasos_hielo = [("Conexión de agua", "Manguera hasta la entrada de agua del nevecón, con llave de paso accesible y sin dobleces."), ("Encendido de la fábrica", "Se activa la fábrica de hielo según tu modelo y se confirma que quede funcionando."), ("Purga", "Se deja correr agua para eliminar el aire de la línea antes de la primera producción."), ("Primeras tandas", "Normalmente las primeras 24 horas el hielo sale poco; se desechan los primeros cubos. El manual de tu modelo confirma los tiempos.")]
     ph = "".join(f"<li><b>{H.escape(a)}</b>{H.escape(b)}</li>" for a, b in pasos_hielo)
@@ -95,7 +113,11 @@ def pagina_marca(m):
 <main class="w">
 <section class="card sel"><h2>Elige tu ciudad</h2><div class="ci" id="ci">{"".join(f'<button type="button" data-c="{c}" aria-pressed="false">{c}</button>' for c in CIUDADES)}</div><div class="res" id="res">Selecciona tu ciudad para pedir la instalación.</div><a class="b wa" data-e="whatsapp" data-wa href="#">Pedir instalación por WhatsApp</a></section>
 <section class="card"><h2>¿Qué necesitas para tu nevecón {n}?</h2><div class="g" id="need"></div></section>
-<section class="card"><h2>Modelos de nevecones {n} que instalamos</h2><div class="two"><div><div class="g">{tipos_h}</div></div><div class="fr"><img src="{nev}" alt="{ALT[m]}" width="300" height="540" style="max-height:300px"></div></div><p style="margin-top:12px">Escríbenos con el modelo de tu nevecón {n} (etiqueta dentro del compartimento) y te confirmamos la instalación y el filtro que necesita.</p></section>
+<section class="card"><h2>Modelos de nevecones {n} que instalamos</h2><div class="two"><div><p>Instalamos nevecones {n} con dispensador de agua y fábrica de hielo, como los side by side y los french door. Abajo puedes buscar la referencia de tu modelo.</p></div><div class="fr"><img src="{nev}" alt="{ALT[m]}" width="300" height="540" style="max-height:300px"></div></div><p style="margin-top:12px">Escríbenos con el modelo de tu nevecón {n} (etiqueta dentro del compartimento) y te confirmamos la instalación y el filtro que necesita.</p></section>
+<section class="card"><h2>Encuentra la referencia de tu nevecón {n}</h2><p>Escribe el modelo de tu nevecón (etiqueta dentro del compartimento) o la referencia del filtro, y te mostramos cuál le corresponde.</p>
+<input class="bus" id="bus" type="search" placeholder="Ej. {ejemplo}" autocomplete="off" aria-label="Buscar modelo o referencia"><div class="tw"><table><thead><tr><th>Filtro</th><th>Referencia</th><th>También se conoce como</th><th>Ubicación</th><th>Modelos de nevecón (ejemplos)</th></tr></thead><tbody id="tb">{filas_h}</tbody></table></div>
+<p id="nada" class="note" hidden>No aparece ese modelo en la lista. Escríbenos con la etiqueta de tu nevecón y te confirmamos el filtro y la instalación. <a href="#" data-wa-q="1" data-e="whatsapp" style="font-weight:700">Escribir mi modelo por WhatsApp</a></p>
+<p style="font-size:.9rem;color:var(--mu)">Son ejemplos de modelos. Si el tuyo no está, escríbenos con la etiqueta y lo confirmamos.</p></section>
 <section class="card"><h2>Instalación del filtro de agua del nevecón {n}</h2><p>{H.escape(d["filtro"])}</p><div class="note">Son referencias frecuentes. Cada modelo puede usar una distinta: confirma con la etiqueta de tu nevecón o escríbenos con el modelo y te decimos cuál necesita.</div>
 <div class="two"><div><h3>Cómo se instala</h3><ol class="st">{pf}</ol></div><div><h3>Detalle de tu marca</h3><p>{H.escape(d["paso"])}</p><h3>¿Cuándo cambiarlo?</h3><p>Normalmente cada 6 meses, o antes si se enciende la luz del filtro, si baja el caudal de agua o si el agua y el hielo cambian de sabor.</p><p><a class="b wa" data-e="whatsapp" data-wa-s="Instalar o cambiar el filtro de agua" href="#">Consultar mi filtro por WhatsApp</a></p></div></div></section>
 <section class="card"><h2>Instalación de la fábrica de hielo del nevecón {n}</h2><p>El técnico activa la fábrica de hielo según tu modelo y comprueba que entre agua y que produzca hielo.</p><ol class="st">{ph}</ol></section>
@@ -112,6 +134,8 @@ function pintar(){{document.querySelectorAll("[data-wa]").forEach(function(a){{a
 document.getElementById("need").innerHTML=NEC.map(function(x){{return '<a class="f" data-e="whatsapp" href="'+msg(x)+'">'+x+'</a>';}}).join("");
 document.getElementById("res").textContent=ciudad?"Instalación de nevecón "+M+" en "+ciudad+": toca el botón y te respondemos con horario y costo.":"Selecciona tu ciudad para pedir la instalación.";
 document.querySelectorAll("#ci button").forEach(function(b){{b.setAttribute("aria-pressed",b.dataset.c===ciudad);}});}}
+var bus=document.getElementById("bus");function norm(t){{return t.toLowerCase().replace(/[^a-z0-9]/g,"");}}
+bus.addEventListener("input",function(){{var q=norm(bus.value),rows=document.querySelectorAll("#tb tr"),n=0;rows.forEach(function(r){{var ok=!q||norm(r.textContent).indexOf(q)>-1;r.hidden=!ok;if(ok)n++;}});document.getElementById("nada").hidden=!(q&&n===0);var a=document.querySelector("[data-wa-q]");if(a)a.href=msg("Mi modelo es "+bus.value);}});
 document.getElementById("ci").addEventListener("click",function(e){{var b=e.target.closest("button");if(b){{ciudad=b.dataset.c;pintar();}}}});
 document.addEventListener("click",function(e){{var a=e.target.closest("[data-e]");if(!a)return;window.dataLayer=window.dataLayer||[];window.dataLayer.push({{event:a.dataset.e,marca:M,ciudad:ciudad,landing:R}});}});pintar();</script></body></html>'''
 
