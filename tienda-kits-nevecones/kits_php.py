@@ -15,6 +15,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 AQUI = Path(__file__).parent
 SALIDA = Path(sys.argv[1])
+INDEX_TIENDA = Path(sys.argv[2]) if len(sys.argv) > 2 else None
 ENVIO = 16000
 GAN = {"solo": 15000, "combo": 25000}
 WOMPI_PCT, WOMPI_FIJO = 0.0265 * 1.19, 700 * 1.19
@@ -385,6 +386,192 @@ def listado(cali):
     return h
 
 
+def css_tienda():
+    t = INDEX_TIENDA.read_text(encoding="utf-8")
+    return "".join(f"<style>{b}</style>\n" for b in re.findall(r"<style>(.*?)</style>", t, re.S))
+
+
+CATS = [("top", "Más pedidos", ""), ("combos", "Combos", "#1f4fd1"), ("mangueras", "Mangueras", "#c4004f"), ("llaves", "Llaves", "#7b3fa8"), ("acoples", "Acoples", "#1d5fae")]
+CAT_DE = {"man14": "mangueras", "man516": "mangueras", "k-galapago": "llaves", "k-plastica": "llaves", "k-multi": "llaves", "k-acople14": "acoples", "k-acople516": "acoples"}
+POPULARES = ["k-kit-basico", "k-kit-sam", "k-kit-lg", "k-galapago", "man14", "k-kit-wp", "k-acople14", "k-plastica"]
+
+
+def datos_js():
+    items, vistos = [], set()
+    for p in PROD.values():
+        if p.get("grupo"):
+            if p["grupo"] in vistos: continue
+            vistos.add(p["grupo"]); vs = [v for v in PROD.values() if v.get("grupo") == p["grupo"]]
+            q = "1/4" if p["grupo"] == "man14" else "5/16"
+            items.append({"id": p["grupo"], "cat": "mangueras", "nombre": f'Manguera de {q}" para nevecón', "marca": "Manguera · por metros", "ref": f"{q} de pulgada · 5, 10, 15 o 20 m",
+                          "foto": foto_url(p), "url": SLUG_BASE + "/" + p["slug"] + "/", "vars": [{"pid": v["pid"], "m": v["metros"], "precio": v["precio"]} for v in vs],
+                          "kw": f"manguera tubo agua {q} metros"})
+        else:
+            cat = "combos" if p["tipo"] == "combo" else CAT_DE[p["pid"]]
+            items.append({"id": p["pid"], "cat": cat, "nombre": p["nombre"], "marca": "Combo" if p["tipo"] == "combo" else {"llaves": "Llave", "acoples": "Acople rápido"}[cat],
+                          "ref": p["ref"], "foto": foto_url(p), "url": SLUG_BASE + "/" + p["slug"] + "/", "precio": p["precio"], "pid": p["pid"],
+                          "kw": p["nombre"] + " " + p["corto"]})
+    return items
+
+
+def portada(cali):
+    ruta = (SLUG_CALI if cali else SLUG_BASE) + "/"
+    titulo = ("Kits de instalación para nevecón en Cali, con instalación | Envío gratis" if cali else "Kits de instalación para nevecón: manguera, llaves y filtros | Envío gratis a toda Colombia")
+    desc = ("Compra kits de instalación para tu nevecón y agenda la instalación en Cali: manguera de 1/4, llaves, acoples y filtros externos Samsung, LG y Whirlpool. Envío gratis y pago en línea." if cali else
+            "Manguera de 1/4 y 5/16 por metros, llaves galápago, acoples rápidos y filtros externos para conectar el agua de tu nevecón. Combos con envío gratis a toda Colombia. Paga con tarjeta, PSE o Nequi.")
+    ld = json.dumps({"@context": "https://schema.org", "@graph": [
+        {"@type": "WebSite", "name": "Kits de instalación para nevecón", "url": "__BASE__" + ruta, "inLanguage": "es-CO"},
+        {"@type": "ItemList", "name": "Kits de instalación para nevecón", "itemListElement": [
+            {"@type": "ListItem", "position": i + 1, "name": p["nombre"], "url": "__BASE__" + SLUG_BASE + "/" + p["slug"] + "/"} for i, p in enumerate(PROD.values())]}]}, ensure_ascii=False)
+    chips = "".join(f'<button type="button" data-q="{esc(q)}">{esc(q)}</button>' for q in ("galápago", "manguera 1/4", "kit Samsung", "kit LG", "acople"))
+    banner = ""
+    if cali:
+        banner = (f'<div class="note info"><b>Instalación de nevecones en Cali.</b> Bajamos y montamos las puertas, ubicamos y nivelamos el nevecón, lo conectamos al punto de agua, cambiamos el filtro y purgamos. '
+                  f'Se agenda por WhatsApp. <a class="btn wa" style="margin-top:8px" href="{wa_php("Hola, quiero la instalación de mi nevecón en Cali")}" target="_blank" rel="noopener">Agendar instalación por WhatsApp</a></div>')
+    h1 = "Kits de instalación para tu nevecón en Cali" if cali else "Kits de instalación para nevecón, con envío gratis a toda Colombia"
+    lead = ("Compra el kit con envío gratis y, si estás en Cali, pide que instalemos tu nevecón. Manguera de 1/4\", llaves, acoples y filtros externos Samsung, LG y Whirlpool." if cali else
+            "Manguera de 1/4\" y 5/16\" por metros, llaves, acoples rápidos y filtros externos. Cada pieza por separado o en combo, pago seguro en línea y te llega en 2 a 3 días hábiles.")
+    faq = faq_html()
+    otra = (f'<a href="{SLUG_BASE}/"><b>🚚 Kits con envío a toda Colombia</b><span>Sin instalación, con envío gratis</span></a>' if cali else
+            f'<a href="{SLUG_CALI}/"><b>🔧 Instalación en Cali</b><span>Kit + instalación de tu nevecón</span></a>')
+    return f"""<?php require __DIR__ . '/../partes.php'; $S = sitio(); $n = $S['negocio'];
+$ld = str_replace('__BASE__', $S['base'], {php_str(ld)}); ?>
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{esc(titulo)}</title>
+<meta name="description" content="{esc(desc)}">
+<link rel="canonical" href="<?= h($S['base']) ?>{ruta}">
+<meta property="og:type" content="website"><meta property="og:title" content="{esc(titulo)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="<?= h($S['base']) ?>{ruta}"><meta property="og:image" content="<?= h($S['base']) ?>/filtrosnevecones-img/compartir.jpg"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="<?= h($n['nombre']) ?>">
+<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/filtrosnevecones-img/apple-touch-icon.png">
+<meta name="theme-color" content="#0b1f6b"><link rel="icon" href="/filtrosnevecones-img/icono.svg" type="image/svg+xml">
+<?= verificacion_html() . analytics_html() ?>
+<script>window.FY_WA = <?= json_encode((strlen($w = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? ''))) === 10 ? '57' : '') . $w) ?>;</script>
+<script type="application/ld+json"><?= json_encode(json_decode($ld), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?></script>
+<script src="/filtrosnevecones-carrito.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+{css_tienda()}</head>
+<body>
+<?= gtm_body_html() . anuncio_html() ?>
+<header class="hero">
+  <div class="wrap">
+    <div class="top">
+      <a class="logo" href="/" style="color:inherit;text-decoration:none"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#1236a8"/><path d="M12 3.5C9.3 7.1 6.6 9.9 6.6 13.4a5.4 5.4 0 0 0 10.8 0c0-3.5-2.7-6.3-5.4-9.9z" fill="#38d6ff"/><path d="M12 11.2v4.8M9.9 12.4l4.2 2.4M14.1 12.4l-4.2 2.4" stroke="#0b1f6b" stroke-width="1.15" stroke-linecap="round" fill="none"/></svg><span class="lg-t">Filtros<b>Nevecones</b><small>Colombia</small></span></a>
+      <nav class="hero-nav"><a href="/filtrosnevecones-tienda/">Filtros</a><a href="{SLUG_BASE}/">Kits</a><a href="{SLUG_CALI}/">Instalación en Cali</a><a href="{SLUG_BASE}/guia-conexion-agua-nevecon/">Guía</a></nav>
+      <a class="cart-top" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a>
+    </div>
+    <h1>{esc(h1)}</h1>
+    <p class="lead">{esc(lead)}</p>
+    <form class="searchbox" id="search-form" role="search">
+      <input id="q" type="search" placeholder="Busca: galápago, manguera, kit Samsung…" autocomplete="off" aria-label="Buscar un producto">
+      <button type="submit">Buscar</button>
+    </form>
+    <div class="chips" id="chips" aria-label="Búsquedas frecuentes">{chips}</div>
+  </div>
+</header>
+<main class="wrap">
+<section id="v-buscar" style="display:flex;flex-direction:column;gap:20px">
+  <div class="trust"><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg><b>Envío gratis</b>A toda Colombia, 2 a 3 días hábiles</div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4A8 8 0 1 1 8 18.8z"/></svg><b>Asesor por WhatsApp</b>Te ayudamos a escoger el tuyo</div></div>
+  {banner}
+  <span id="catalogo"></span><h2 id="list-title" class="cat-title">Más pedidos</h2>
+  <div class="brandbar" id="brandbar"><div class="brands" id="brands" role="tablist" aria-label="Categorías"></div></div>
+  <div class="cat-meta"><p class="sub" id="list-sub"></p></div>
+  <div class="grid" id="grid"></div>
+  <section class="explora" aria-label="Explora la tienda"><h2 style="font-size:19px">Explora la tienda</h2><div class="ex-grid">
+<a href="{SLUG_BASE}/guia-conexion-agua-nevecon/"><b>🔧 Cómo conectar el agua</b><span>Qué necesitas y paso a paso</span></a>
+<a href="/filtrosnevecones-tienda/"><b>💧 Filtros de agua</b><span>Todos los filtros con envío gratis</span></a>
+{otra}
+<a href="/filtrosnevecones-instalacion/"><b>🧰 Cómo instalar tu filtro</b><span>Paso a paso para cada referencia</span></a>
+</div></section>
+  <section class="pasos3" aria-label="Cómo comprar"><h2 style="font-size:19px">Compra en 3 pasos</h2><div class="p3-grid">
+<div><span>1</span><b>Escoge tu kit</b><p>Combos listos o piezas por separado: manguera por metros, llave, acoples y filtro externo de tu marca.</p></div>
+<div><span>2</span><b>Paga seguro en línea</b><p>Tarjeta débito o crédito, PSE, Nequi o botón Bancolombia, en página de pago segura.</p></div>
+<div><span>3</span><b>Recíbelo en tu casa</b><p>Envío gratis a toda Colombia en 2 a 3 días hábiles. Lo instalas con nuestro paso a paso{" o agendas la instalación en Cali" if cali else ""}.</p></div>
+</div></section>
+  <section style="display:flex;flex-direction:column;gap:8px"><h2 style="font-size:19px">Preguntas frecuentes</h2><div class="faqs">{faq.replace("<details>", '<details class="faq">')}</div></section>
+  <section class="explora" aria-label="Información"><h2 style="font-size:19px">Información</h2><div class="ex-grid">
+<a href="/terminos.php"><b>📄 Términos y condiciones</b><span>Compras, precios y entregas</span></a>
+<a href="/privacidad.php"><b>🔒 Tratamiento de datos</b><span>Cómo cuidamos tu información</span></a>
+<a href="/garantia-y-retracto.php"><b>↩️ Garantía y retracto</b><span>Garantía legal y 5 días de retracto</span></a>
+</div></section>
+</section>
+</main>
+<nav class="tabs bnav" role="tablist" aria-label="Secciones" style="grid-template-columns:repeat(3,1fr)">
+  <button role="tab" aria-selected="true" type="button" onclick="scrollTo({{top:0,behavior:'smooth'}})"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>Buscar</button>
+  <button role="tab" aria-selected="false" type="button" onclick="location.href='/filtrosnevecones-tienda/'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5C9.3 7.1 6.6 9.9 6.6 13.4a5.4 5.4 0 0 0 10.8 0c0-3.5-2.7-6.3-5.4-9.9z"/></svg>Filtros</button>
+  <button role="tab" aria-selected="false" type="button" onclick="location.href='/carrito.php'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>Carrito</button>
+</nav>
+<a class="wa-flot" id="wa-flot" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-4-.6-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg><span>Asesor</span></a>
+<?= pie_html() ?>
+<script>
+const DATA = {json.dumps(datos_js(), ensure_ascii=False)};
+const CATS = {json.dumps([[a, b, c] for a, b, c in CATS], ensure_ascii=False)};
+const POP = {json.dumps(POPULARES)};
+const CALI = {"true" if cali else "false"};
+const $ = s => document.querySelector(s), esc = s => String(s).replace(/[&<>"]/g, c => ({{"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}}[c]));
+const COP = n => "$ " + String(n).replace(/\\B(?=(\\d{{3}})+(?!\\d))/g, ".");
+const norm = s => String(s).normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+const WA = (window.FY_WA || "573013810242");
+$("#wa-flot").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent("Hola, necesito ayuda con un kit de instalación para mi nevecón");
+const ICON = {{truck: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>',
+  share: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.2 10.9l7.6-3.8M8.2 13.1l7.6 3.8"/></svg>'}};
+let cat = "top";
+function precioDe(p) {{ return p.vars ? p.vars[0].precio : p.precio; }}
+function card(p) {{
+  const pid = p.vars ? p.vars[0].pid : p.pid;
+  const sel = p.vars ? `<select class="msel" aria-label="Metros de manguera" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--bg)">${{p.vars.map(v => `<option value="${{v.pid}}" data-p="${{v.precio}}">${{v.m}} metros · ${{COP(v.precio)}}</option>`).join("")}}</select>` : "";
+  const txt = `${{p.nombre}} por ${{COP(precioDe(p))}} con envío gratis: ${{location.origin}}${{p.url}}`;
+  return `<article class="card rise" data-id="${{p.id}}">
+    <a class="pbig" href="${{p.url}}" aria-label="Ver ${{esc(p.nombre)}}" style="text-decoration:none"><img src="${{p.foto}}" alt="${{esc(p.nombre)}}" loading="lazy"></a>
+    <div class="cinfo"><span class="brand">${{esc(p.marca)}}</span><h3><a href="${{p.url}}" style="color:inherit;text-decoration:none">${{esc(p.nombre)}}</a></h3><span class="ref">${{esc(p.ref)}}</span></div>
+    ${{sel}}
+    <div><div class="price">${{COP(precioDe(p))}}</div><div class="eta">${{ICON.truck}}<span>Envío gratis · 2 a 3 días hábiles</span></div></div>
+    <div class="actions"><button class="btn" type="button" data-add="${{pid}}" data-ir="1" style="flex:1">Pedir</button><a class="icon-btn" href="https://wa.me/?text=${{encodeURIComponent(txt)}}" target="_blank" rel="noopener" aria-label="Compartir">${{ICON.share}}</a></div>
+  </article>`;
+}}
+function brands() {{
+  $("#brands").innerHTML = CATS.map(([k, t, c]) => {{
+    const n = k === "top" ? 0 : DATA.filter(p => p.cat === k).length;
+    return `<button type="button" role="tab" data-cat="${{k}}" aria-selected="${{k === cat}}"${{c ? ` style="--c:${{c}}"` : ""}}>${{c ? "<i></i>" : ""}}${{esc(t)}}${{n ? `<small>${{n}}</small>` : ""}}</button>`;
+  }}).join("");
+}}
+function pintar(list, titulo, sub) {{
+  brands();
+  $("#list-title").textContent = titulo; $("#list-sub").textContent = sub || ""; $("#list-sub").hidden = !sub;
+  $("#grid").innerHTML = list.length ? list.map(card).join("") : `<div class="check"><b>No encontramos ese producto.</b><span class="sub">Escríbenos por WhatsApp y te ayudamos a escoger.</span><a class="btn wa" href="https://wa.me/${{WA}}?text=${{encodeURIComponent("Hola, busco un producto para instalar mi nevecón")}}" target="_blank" rel="noopener">Escríbenos</a></div>`;
+}}
+function ver() {{
+  if (cat === "top") return pintar(POP.map(id => DATA.find(p => p.id === id)).filter(Boolean), "Más pedidos", "Combos y piezas que más se compran. Envío gratis a toda Colombia.");
+  const t = CATS.find(c => c[0] === cat)[1];
+  pintar(DATA.filter(p => p.cat === cat), t, "");
+}}
+document.addEventListener("click", e => {{
+  const b = e.target.closest("[data-cat]"); if (b) {{ cat = b.dataset.cat; $("#q").value = ""; ver(); b.scrollIntoView({{behavior: "smooth", block: "nearest", inline: "center"}}); return; }}
+  const c = e.target.closest("#chips [data-q]"); if (c) {{ $("#q").value = c.dataset.q; buscar(c.dataset.q); }}
+}});
+document.addEventListener("change", e => {{
+  const s = e.target.closest(".msel"); if (!s) return;
+  const c = s.closest(".card"), o = s.options[s.selectedIndex];
+  c.querySelector(".price").textContent = COP(o.dataset.p); c.querySelector("[data-add]").dataset.add = o.value;
+}});
+function buscar(q) {{
+  q = norm(q).trim(); if (!q) return ver();
+  const ws = q.split(/\\s+/);
+  const hits = DATA.filter(p => {{ const t = norm(p.nombre + " " + p.kw + " " + p.ref + " " + p.marca); return ws.every(w => t.includes(w)); }});
+  pintar(hits, hits.length ? `Resultados para “${{q}}”` : `Sin resultados para “${{q}}”`, hits.length ? "" : "Prueba con otra palabra, por ejemplo galápago, manguera o kit.");
+}}
+$("#search-form").addEventListener("submit", e => {{ e.preventDefault(); buscar($("#q").value); $("#list-title").scrollIntoView({{behavior: "smooth", block: "start"}}); }});
+$("#q").addEventListener("input", e => {{ if (!e.target.value.trim()) ver(); }});
+ver();
+</script>
+</body>
+</html>
+"""
+
+
 def guia():
     desc = "Qué necesitas para conectar el agua de tu nevecón: manguera de 1/4, llave galápago o plástica, acoples, filtro externo y paso a paso con purga."
     ld = json.dumps({"@context": "https://schema.org", "@type": "HowTo", "name": "Cómo conectar el agua de tu nevecón",
@@ -431,7 +618,7 @@ def main():
     (out / "filtrosnevecones-api" / "catalogo-kits.php").write_text(catalogo_php(), "utf-8")
     for carpeta, cali in (("kits-instalacion-nevecones", False), ("kits-instalacion-nevecones-cali", True)):
         d = out / carpeta; d.mkdir(parents=True)
-        (d / "index.php").write_text(listado(cali), "utf-8")
+        (d / "index.php").write_text(portada(cali) if INDEX_TIENDA else listado(cali), "utf-8")
     base = out / "kits-instalacion-nevecones"
     vistos = set()
     for p in PROD.values():

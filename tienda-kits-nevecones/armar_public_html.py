@@ -30,7 +30,7 @@ rep(c, 'href="/filtrosnevecones-filtro/${p.slug}/"', 'href="${p.url || \'/filtro
 rep(c, "${!l.pack ? `<button type=\"button\" class=\"link\" data-topack", "${!l.pack && p.pack ? `<button type=\"button\" class=\"link\" data-topack")
 rep(c, '$("#totales").innerHTML = `<div class="tl"><span>${n} ${n === 1 ? "filtro" : "filtros"}</span>',
     '$("#c-rec").closest("label").hidden = L.every(l => P[l.pid].ubic === "kit");\n    const solo = L.every(l => P[l.pid].ubic === "kit");\n    $("#totales").innerHTML = `<div class="tl"><span>${n} ${solo ? (n === 1 ? "producto" : "productos") : (n === 1 ? "filtro" : "filtros")}</span>')
-subprocess.run([sys.executable, str(AQUI / "kits_php.py"), str(t / "overlay")], check=True)
+subprocess.run([sys.executable, str(AQUI / "kits_php.py"), str(t / "overlay"), str(b / "index.php")], check=True)
 shutil.copytree(t / "overlay", b, dirs_exist_ok=True)
 (b / "LEEME-SUBIR.txt").write_text(open(AQUI / "LEEME-SUBIR.txt", encoding="utf-8").read(), encoding="utf-8")
 if zout.exists(): zout.unlink()
