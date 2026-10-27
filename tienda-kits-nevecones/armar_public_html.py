@@ -18,7 +18,10 @@ def rep(path, a, c, veces=1):
 
 p = b / "partes.php"
 rep(p, '<a href="/filtrosnevecones-instalacion/">Cómo instalar tu filtro</a>', '<a href="/filtrosnevecones-instalacion/">Cómo instalar tu filtro</a><a href="/kits-instalacion-nevecones/">Kits de instalación del nevecón</a>')
-rep(p, '<nav class="topnav"><a href="/filtrosnevecones-tienda/">Tienda</a>', '<nav class="topnav"><a href="/filtrosnevecones-tienda/">Tienda</a><a href="/kits-instalacion-nevecones/">Kits de instalación</a>')
+rep(p, '<nav class="topnav"><a href="/filtrosnevecones-tienda/">Tienda</a>', '<nav class="topnav"><a href="/filtrosnevecones-tienda/">Tienda</a><a href="/kits-instalacion-nevecones/">Kits</a>')
+# celulares angostos: el menú de arriba pasa a una segunda fila en vez de encimarse con el logo
+css = b / "filtrosnevecones-estilo.css"
+css.write_text(css.read_text(encoding="utf-8") + "\n/* menú en celulares angostos */\n@media (max-width:560px){header.top .wrap{flex-wrap:wrap;row-gap:4px}.topnav{flex-wrap:wrap;gap:2px;margin-left:auto}.topnav>a{padding:8px 9px;font-size:14px}}\n", encoding="utf-8")
 l = b / "filtrosnevecones-api" / "lib.php"
 rep(l, "function calcular_items(array $items): array\n{\n    $cat = catalogo()['productos'];",
     "// Productos que se pueden comprar: filtros + kits de instalación (catalogo-kits.php)\nfunction productos_compra(): array\n{\n    static $p = null;\n    if ($p === null) { $f = __DIR__ . '/catalogo-kits.php'; $p = catalogo()['productos'] + (is_file($f) ? require $f : []); }\n    return $p;\n}\n\nfunction calcular_items(array $items): array\n{\n    $cat = productos_compra();")
