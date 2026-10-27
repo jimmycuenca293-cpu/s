@@ -17,7 +17,7 @@ AQUI = Path(__file__).parent
 SALIDA = Path(sys.argv[1])
 INDEX_TIENDA = Path(sys.argv[2]) if len(sys.argv) > 2 else None
 ENVIO = 16000
-GAN = {"solo": 15000, "combo": 30000}
+GAN = {"solo": 15000, "combo": 25000, "man_5m": 13000, "acople": 8000}   # ganancia limpia: sueltas, combos, por cada 5 m de manguera, por acople
 WOMPI_PCT, WOMPI_FIJO = 0.0265 * 1.19, 700 * 1.19
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{int(n):,}".replace(",", ".")
@@ -25,7 +25,8 @@ P_ = lambda s: s  # marcador: texto fijo
 
 
 def precio(costo, tipo):
-    raw = (costo + ENVIO + GAN[tipo] + WOMPI_FIJO) / (1 - WOMPI_PCT)
+    gan = GAN[tipo] if isinstance(tipo, str) else tipo
+    raw = (costo + ENVIO + gan + WOMPI_FIJO) / (1 - WOMPI_PCT)
     return int(math.ceil(raw / 1000) * 1000 - 100)  # termina en 900 como la tienda de filtros
 
 
@@ -51,7 +52,7 @@ for t, q, nom in (("14", "1/4", "man14_m"), ("516", "5/16", "man516_m")):
     for m in MET:
         c = COSTO[nom] * m
         add(f"k-man{t}-{m}", slug=f"manguera-{q.replace('/', '-')}-para-nevecon", grupo=f"man{t}", metros=m, tipo="solo",
-            nombre=f'Manguera de {q}" x {m} metros', corto=f'Manguera {q}"', ref=f"MANG-{t}-{m}M", costo=c, precio=precio(c, "solo"),
+            nombre=f'Manguera de {q}" x {m} metros', corto=f'Manguera {q}"', ref=f"MANG-{t}-{m}M", costo=c, precio=precio(c, GAN["man_5m"] * m // 5),
             foto=f"manguera-{q.replace('/', '-')}-5m")
 
 add("k-galapago", slug="llave-galapago-para-nevecon", tipo="solo", nombre="Llave galápago con racores, anillo y tuerca", corto="Llave galápago", ref="LLAVE-GALAPAGO",
@@ -59,9 +60,9 @@ add("k-galapago", slug="llave-galapago-para-nevecon", tipo="solo", nombre="Llave
 add("k-plastica", slug="llave-plastica-acople-rapido-para-nevecon", tipo="solo", nombre="Llave plástica con acople rápido", corto="Llave plástica", ref="LLAVE-PLASTICA",
     costo=COSTO["plastica"], precio=precio(COSTO["plastica"], "solo"), foto="llave-plastica")
 add("k-acople14", slug="acople-rapido-manguera-1-4", tipo="solo", nombre='Acople rápido para manguera de 1/4"', corto='Acople rápido 1/4"', ref="ACOPLE-1-4",
-    costo=COSTO["acople"], precio=precio(COSTO["acople"], "solo"), foto="acople-rapido-1-4")
+    costo=COSTO["acople"], precio=precio(COSTO["acople"], GAN["acople"]), foto="acople-rapido-1-4")
 add("k-acople516", slug="acople-rapido-manguera-5-16", tipo="solo", nombre='Acople rápido para manguera de 5/16"', corto='Acople rápido 5/16"', ref="ACOPLE-5-16",
-    costo=COSTO["acople"], precio=precio(COSTO["acople"], "solo"), foto="acople-rapido-5-16")
+    costo=COSTO["acople"], precio=precio(COSTO["acople"], GAN["acople"]), foto="acople-rapido-5-16")
 
 BASE_M = COSTO["man14_m"] * 5
 COMBOS = [
