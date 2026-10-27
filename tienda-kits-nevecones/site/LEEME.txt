@@ -1,0 +1,2 @@
+colombia/ -> dominio principal (kits, envío gratis, sin instalación)
+cali/ -> URL aparte para Cali (kits + instalación)
