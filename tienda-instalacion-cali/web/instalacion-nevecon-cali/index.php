@@ -21,7 +21,7 @@ $m = fn(int $x) => cop($x);
 <section class="ic-hero"><div class="in">
   <div>
     <span class="eyebrow">Instalación a domicilio · Cali, Jamundí, Yumbo y Palmira</span>
-    <h1>Te instalamos el agua del nevecón en tu casa</h1>
+    <h1>Instalación de agua para tu nevecón, a domicilio</h1>
     <p class="lead">Un técnico llega el día y la hora que tú escoges, conecta tu nevecón con llave galápago profesional y manguera, y pone el filtro externo si lo quieres. El saldo lo pagas al terminar, cuando ya ves el agua funcionando.</p>
     <div class="acc"><a class="btn" href="#reservar">Escoger día y hora</a><a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, quiero una instalación de agua para mi nevecón.') ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a></div>
     <ul><li>1 año de garantía en la instalación</li><li>Reservas en línea y pagas el saldo al terminar</li><li>Cambias el día o la hora gratis, avisando con 24 horas</li></ul>
