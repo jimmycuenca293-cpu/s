@@ -58,6 +58,14 @@ rep(pe, "empty($cat['productos'][$l0['pid']]['link_pago'])", "empty(productos_co
 rep(pe, "'Por ahora el pago en línea es de un filtro a la vez. Deja una sola unidad en el carrito.'", "'Por ahora el pago en línea es de un producto a la vez. Deja solo uno en el carrito, págalo y luego compra el siguiente. (Si pones las llaves de Wompi, puedes pagar varios juntos.)'")
 rep(pe, "'Este filtro todavía no tiene pago en línea.", "'Este producto todavía no tiene pago en línea.")
 rep(c, '<h2><span class="np">4</span>Resumen y pago</h2>', '<h2>Resumen de tu pedido</h2>')
+# link de pago (sin llaves de Wompi): con varios productos se paga uno a la vez, y el carrito conserva el resto
+rep(c, '$("#pagar").textContent = `Pagar ${cop(t)}`;', '$("#pagar").textContent = `Pagar ${cop(t)}`;\n' + r"""    if (C.pago_link && (L.length > 1 || L[0].cant > 1)) {
+      const l0 = L[0], p0 = P[l0.pid], u0 = l0.pack ? p0.pack : p0.precio, resto = total() - u0;
+      $("#totales").innerHTML = `<div class="tl"><span>Pagas ahora</span><span>${cop(u0)}</span></div><div class="tl"><span>Envío</span><span class="gratis">Gratis</span></div><div class="tl total"><span>Total de este pago</span><span>${cop(u0)}</span></div><div class="note info" style="margin-top:8px">Hoy el pago en línea es de un producto a la vez. Pagas <b>${esc(p0.nombre)}</b> y después vuelves al carrito por lo demás (quedan ${cop(resto)}).</div>`;
+      $("#pagar").textContent = `Pagar ${cop(u0)}`;
+    }""")
+rep(c, 'const L = lineas(), t = total() + (C.pago_link ? 0 : instalacion());', 'const L0 = lineas(), sec = C.pago_link && (L0.length > 1 || L0[0].cant > 1);\n      const L = sec ? [{ pid: L0[0].pid, pack: L0[0].pack, cant: 1 }] : L0;\n      const t = sec ? (L0[0].pack ? P[L0[0].pid].pack : P[L0[0].pid].precio) : total() + (C.pago_link ? 0 : instalacion());')
+rep(c, 'ls.set("fy_orders", o.slice(0, 50));', 'ls.set("fy_orders", o.slice(0, 50));\n      if (sec) { const c2 = lineas(); if (c2[0].cant > 1) c2[0].cant--; else c2.splice(0, 1); FYCart.guardar(c2); }')
 subprocess.run([sys.executable, str(AQUI / "kits_php.py"), str(t / "overlay"), str(b / "index.php")], check=True)
 shutil.copytree(t / "overlay", b, dirs_exist_ok=True)
 # portada de la tienda de filtros: se avisa que también hay kits (sin tocar nada más)
