@@ -257,6 +257,24 @@ def faq_html(extra=()):
     return "".join(f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in list(extra) + FAQ_COMUN)
 
 
+
+def relacionados(p):
+    """Hasta 4 productos para seguir comprando: los combos que incluyen la pieza, u otros combos y piezas."""
+    cand, vistos = [], set()
+    def add(q):
+        k = q.get("grupo") or q["pid"]
+        if q["pid"] == p["pid"] or (p.get("grupo") and q.get("grupo") == p["grupo"]) or k in vistos: return
+        vistos.add(k); cand.append(q)
+    if p["tipo"] != "combo":
+        for q in PROD.values():
+            if q["tipo"] == "combo" and any(c == p["pid"] or (PROD[c].get("grupo") and PROD[c].get("grupo") == p.get("grupo")) for c, _n in q["comp"] if c in PROD): add(q)
+    for q in PROD.values():
+        if q["tipo"] == "combo": add(q)
+    for q in PROD.values():
+        if q["tipo"] == "solo": add(q)
+    tarj = [tarjeta_grupo(q["grupo"]) if q.get("grupo") else tarjeta(q) for q in cand[:4]]
+    return f'<section style="display:flex;flex-direction:column;gap:8px"><h2>También te puede servir</h2><div class="grid">{"".join(tarj)}</div></section>{JS_SEL}'
+
 def pagina_producto(p):
     g = p.get("grupo")
     if p["tipo"] == "combo":
@@ -291,6 +309,7 @@ def pagina_producto(p):
 <section class="caja datos"><h2>Ficha técnica y datos rápidos</h2><dl class="dq">{"".join(f"<dt>{esc(a)}</dt><dd>{esc(b)}</dd>" for a, b in T["ficha"])}<dt>Envío</dt><dd>Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades</dd><dt>Referencia</dt><dd>{esc(p["ref"])}</dd></dl></section>
 <section class="caja tutorial" id="instalacion"><h2>Cómo instalarlo paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in T["pasos"])}</ol>
 <p class="m">¿Tienes dudas? Escríbenos por WhatsApp y te guiamos. Mira también la guía <a href="{SLUG_BASE}/guia-conexion-agua-nevecon/">Cómo conectar el agua de tu nevecón</a>.</p></section>
+{relacionados(p)}
 <section style="display:flex;flex-direction:column;gap:8px"><h2>Preguntas frecuentes</h2>{faq_html()}</section>
 <p class="m"><a href="{SLUG_BASE}/">← Ver todos los productos</a></p>
 '''
@@ -343,6 +362,7 @@ def pagina_combo(p):
 <section class="caja"><h2>Qué incluye</h2><ul class="ok">{lista}</ul><p>{esc(sirve)}</p></section>
 <section class="caja tutorial" id="instalacion"><h2>Cómo instalarlo paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in pasos)}</ol>
 <p class="m">Mira la guía completa: <a href="{SLUG_BASE}/guia-conexion-agua-nevecon/">Cómo conectar el agua de tu nevecón</a>.</p></section>
+{relacionados(p)}
 <section style="display:flex;flex-direction:column;gap:8px"><h2>Preguntas frecuentes</h2>{faq_html()}</section>
 <?php pie(); ?>
 '''
@@ -476,6 +496,16 @@ $ld = str_replace('__BASE__', $S['base'], {php_str(ld)}); ?>
 <main class="wrap">
 <section id="v-buscar" style="display:flex;flex-direction:column;gap:20px">
   <div class="trust"><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg><b>Envío gratis</b>A toda Colombia, 2 a 3 días hábiles</div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4A8 8 0 1 1 8 18.8z"/></svg><b>Asesor por WhatsApp</b>Te ayudamos a escoger el tuyo</div></div>
+  <section class="explora" aria-label="¿Qué necesitas?"><h2 style="font-size:19px">¿Qué necesitas?</h2><div class="ex-grid">
+<a href="#catalogo" data-go="combos"><b>📦 Kits completos</b><span>Manguera + llave + filtro de tu marca</span></a>
+<a href="#catalogo" data-go="mangueras"><b>〰️ Mangueras</b><span>1/4" y 5/16", de 5 a 20 metros</span></a>
+<a href="#catalogo" data-go="llaves"><b>🚰 Llaves</b><span>Galápago y plástica</span></a>
+<a href="#catalogo" data-go="acoples"><b>🔌 Acoples rápidos</b><span>Para empalmar la manguera</span></a>
+<a href="/filtrosnevecones-tienda/"><b>💧 Filtros de agua</b><span>Samsung, LG, Whirlpool, GE y más</span></a>
+<a href="{SLUG_BASE}/guia-conexion-agua-nevecon/"><b>❓ No sé qué necesito</b><span>Guía paso a paso para escoger</span></a>
+</div></section>
+  <div class="check"><b>¿De qué marca es tu nevecón?</b><span class="sub">Ve directo al kit completo con el filtro de tu marca.</span><div class="row">
+<a class="btn" href="{SLUG_BASE}/kit-completo-nevecon-samsung/">Samsung</a><a class="btn" href="{SLUG_BASE}/kit-completo-nevecon-lg/">LG</a><a class="btn" href="{SLUG_BASE}/kit-completo-nevecon-whirlpool/">Whirlpool</a></div></div>
   {banner}
   <span id="catalogo"></span><h2 id="list-title" class="cat-title">Más pedidos</h2>
   <div class="brandbar" id="brandbar"><div class="brands" id="brands" role="tablist" aria-label="Categorías"></div></div>
@@ -500,7 +530,7 @@ $ld = str_replace('__BASE__', $S['base'], {php_str(ld)}); ?>
 </div></section>
 </section>
 </main>
-<nav class="tabs bnav" role="tablist" aria-label="Secciones" style="grid-template-columns:repeat(3,1fr)">
+<nav class="tabs bnav" role="tablist" aria-label="Secciones" style="grid-template-columns:repeat(3,1fr)!important">
   <button role="tab" aria-selected="true" type="button" onclick="scrollTo({{top:0,behavior:'smooth'}})"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>Buscar</button>
   <button role="tab" aria-selected="false" type="button" onclick="location.href='/filtrosnevecones-tienda/'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5C9.3 7.1 6.6 9.9 6.6 13.4a5.4 5.4 0 0 0 10.8 0c0-3.5-2.7-6.3-5.4-9.9z"/></svg>Filtros</button>
   <button role="tab" aria-selected="false" type="button" onclick="location.href='/carrito.php'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>Carrito</button>
@@ -531,6 +561,7 @@ function card(p) {{
     ${{sel}}
     <div><div class="price">${{COP(precioDe(p))}}</div><div class="eta">${{ICON.truck}}<span>Envío gratis · 2 a 3 días hábiles</span></div></div>
     <div class="actions"><button class="btn" type="button" data-add="${{pid}}" data-ir="1" style="flex:1">Pedir</button><a class="icon-btn" href="https://wa.me/?text=${{encodeURIComponent(txt)}}" target="_blank" rel="noopener" aria-label="Compartir">${{ICON.share}}</a></div>
+    <a class="btn ghost block" href="${{p.url}}">Ver detalles</a>
   </article>`;
 }}
 function brands() {{
@@ -550,6 +581,7 @@ function ver() {{
   pintar(DATA.filter(p => p.cat === cat), t, "");
 }}
 document.addEventListener("click", e => {{
+  const g = e.target.closest("[data-go]"); if (g) {{ e.preventDefault(); cat = g.dataset.go; $("#q").value = ""; ver(); $("#catalogo").scrollIntoView({{behavior: "smooth", block: "start"}}); return; }}
   const b = e.target.closest("[data-cat]"); if (b) {{ cat = b.dataset.cat; $("#q").value = ""; ver(); b.scrollIntoView({{behavior: "smooth", block: "nearest", inline: "center"}}); return; }}
   const c = e.target.closest("#chips [data-q]"); if (c) {{ $("#q").value = c.dataset.q; buscar(c.dataset.q); }}
 }});
