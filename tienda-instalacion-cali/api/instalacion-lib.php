@@ -44,6 +44,8 @@ function inst_db(): PDO
         servicio TEXT, total INTEGER, reserva INTEGER, saldo INTEGER, fecha TEXT, franja INTEGER,
         zona TEXT, metros TEXT, marca_nevecon TEXT, modelo TEXT, toma TEXT, nombre TEXT, email TEXT, tel TEXT,
         barrio TEXT, dir TEXT, detalle TEXT, notas TEXT, ip TEXT, pagado_en TEXT, nota_tecnico TEXT, avisado_pago INTEGER DEFAULT 0)');
+    $cols = array_column($pdo->query('PRAGMA table_info(instalaciones)')->fetchAll(), 'name');
+    if (!in_array('forma_pago', $cols, true)) $pdo->exec('ALTER TABLE instalaciones ADD COLUMN forma_pago TEXT DEFAULT "reserva"');
     $pdo->exec('CREATE INDEX IF NOT EXISTS inst_fecha ON instalaciones (fecha, franja)');
     return $pdo;
 }
@@ -150,6 +152,7 @@ function inst_crear(array $v): string
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
             $ref, date('c'), $v['servicio'], $v['total'], $v['reserva'], $v['saldo'], $v['fecha'], $v['franja'], $v['zona'], $v['metros'], $v['marca_nevecon'], $v['modelo'], $v['toma'],
             $v['nombre'], $v['email'], $v['tel'], $v['barrio'], $v['dir'], $v['detalle'], $v['notas'], $v['ip']]);
+        $pdo->prepare('UPDATE instalaciones SET forma_pago = ? WHERE ref = ?')->execute([$v['forma_pago'] ?? 'reserva', $ref]);
         $pdo->exec('COMMIT');
     } catch (Throwable $e) { try { $pdo->exec('ROLLBACK'); } catch (Throwable $x) {} throw $e; }
     return $ref;
@@ -173,8 +176,10 @@ function inst_resumen_filas(array $r, bool $tecnico): array
         'Reserva' => $r['ref'], 'Estado' => inst_estado_txt($r['estado']),
         'Servicio' => $s['nombre'], 'Día' => inst_fecha_txt($r['fecha']), 'Hora' => inst_franja_txt((int) $r['franja']),
         'Zona' => $z, 'Dirección' => $r['dir'] . ', ' . $r['barrio'], 'Manguera' => inst_metros_txt($r['metros']),
-        'Total del servicio' => cop((int) $r['total']), 'Reserva en línea' => cop((int) $r['reserva']), 'Saldo al terminar' => cop((int) $r['saldo']),
-    ];
+        'Total del servicio' => cop((int) $r['total']),
+    ] + (($r['forma_pago'] ?? 'reserva') === 'total'
+        ? ['Forma de pago' => 'Paga el TOTAL en línea (' . cop((int) $r['total']) . '): enviarle el link de pago por WhatsApp']
+        : ['Forma de pago' => 'Reserva en línea y el resto en efectivo al técnico', 'Reserva en línea' => cop((int) $r['reserva']), 'Saldo en efectivo al terminar' => cop((int) $r['saldo'])]);
     if ($tecnico) $f += ['Cliente' => $r['nombre'], 'Celular' => $r['tel'], 'Correo' => $r['email'], 'Nevecón' => trim($r['marca_nevecon'] . ' ' . $r['modelo']) ?: '-',
         'Toma de agua' => inst_toma_txt($r['toma']), 'Detalle de la dirección' => $r['detalle'] ?: '-', 'Notas del cliente' => $r['notas'] ?: '-'];
     return $f;
@@ -196,7 +201,7 @@ function inst_campos_hoja(array $r): array
         'Barrio' => $r['barrio'], 'Direccion' => $r['dir'] . ($r['detalle'] ? ' (' . $r['detalle'] . ')' : ''),
         'Indicaciones' => trim('Toma de agua: ' . inst_toma_txt($r['toma']) . '. Manguera: ' . inst_metros_txt($r['metros']) . '. ' . ($r['notas'] ?: ''), ' '),
         'Productos' => $s . ' | DÍA: ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']),
-        'Total' => cop((int) $r['total']) . ' (reserva ' . cop((int) $r['reserva']) . ' + saldo al terminar ' . cop((int) $r['saldo']) . ')',
+        'Total' => cop((int) $r['total']) . (($r['forma_pago'] ?? 'reserva') === 'total' ? ' (PAGA EL TOTAL EN LÍNEA: enviarle link por WhatsApp)' : ' (reserva ' . cop((int) $r['reserva']) . ' + saldo en efectivo al terminar ' . cop((int) $r['saldo']) . ')'),
         'Entrega' => 'Instalación a domicilio el ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']), 'Modelo del nevecon' => trim($r['marca_nevecon'] . ' ' . $r['modelo']) ?: '-'];
 }
 
@@ -230,11 +235,14 @@ function inst_tel_wa(): string
 function inst_correo_cliente(array $r): void
 {
     $tel = cfg()['negocio']['telefono'] ?? '301 381 0242';
-    $pagar = $r['estado'] === 'esperando_pago'
-        ? '<p><b>Falta un paso:</b> paga la reserva de ' . h(cop((int) $r['reserva'])) . ' para asegurar tu horario. <a href="' . h(inst_url_reserva($r['ref'])) . '">Pagar la reserva</a></p>'
-        : '<p>Tu reserva está confirmada. El técnico llega en el horario que escogiste.</p>';
-    $html = '<h2 style="margin:0 0 8px">Tu instalación quedó agendada</h2>' . $pagar . inst_tabla($r, false)
-        . '<p>El saldo de ' . h(cop((int) $r['saldo'])) . ' lo pagas al terminar la instalación, cuando ya veas el agua funcionando. Tienes 1 año de garantía.</p>'
+    $total = ($r['forma_pago'] ?? 'reserva') === 'total';
+    if ($r['estado'] === 'esperando_pago') $pagar = $total
+        ? '<p><b>Falta un paso:</b> escríbenos por WhatsApp al ' . h($tel) . ' y te enviamos el link para pagar el total (' . h(cop((int) $r['total'])) . '). Así queda confirmada tu instalación. <a href="' . h(inst_url_reserva($r['ref'])) . '">Ver mi reserva</a></p>'
+        : '<p><b>Falta un paso:</b> paga la reserva de ' . h(cop((int) $r['reserva'])) . ' para asegurar tu horario. <a href="' . h(inst_url_reserva($r['ref'])) . '">Pagar la reserva</a></p>';
+    else $pagar = '<p>Tu reserva está confirmada. El técnico llega en el horario que escogiste.</p>';
+    $fin = $total ? '<p>Ya pagaste todo en línea: al terminar no tienes que pagar nada más. Tienes 1 año de garantía.</p>'
+        : '<p>El saldo de ' . h(cop((int) $r['saldo'])) . ' lo pagas en efectivo al técnico al terminar la instalación, cuando ya veas el agua funcionando. Tienes 1 año de garantía.</p>';
+    $html = '<h2 style="margin:0 0 8px">Tu instalación quedó agendada</h2>' . $pagar . inst_tabla($r, false) . $fin
         . '<p>¿Necesitas cambiar el día o la hora? Avísanos con 24 horas y la reprogramamos sin costo: WhatsApp ' . h($tel) . '.</p>';
     enviar_correo($r['email'], 'Tu instalación ' . $r['ref'] . ': ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']), $html);
 }

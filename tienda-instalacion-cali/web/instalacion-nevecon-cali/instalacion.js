@@ -23,11 +23,14 @@
     const L = [["Servicio", p.s.corto], ["Zona", p.z ? p.z.nombre + (p.z.recargo ? " (+" + cop(p.z.recargo) + ")" : "") : "Escoge tu zona"],
       ["Manguera", metrosTxt[p.m] + (p.extra ? " (+" + cop(p.extra) + ")" : "")], ["Día", dia ? dia.txt : "Escoge el día"], ["Hora", hr ? hr.txt : "Escoge la hora"]];
     $("#lineas").innerHTML = L.map(([a, b]) => `<div class="l"><span>${a}</span><b>${esc(b)}</b></div>`).join("");
-    $("#total").textContent = cop(p.total); $("#reserva").textContent = cop(p.reserva); $("#saldo").textContent = cop(p.saldo);
-    $("#enviar").textContent = "Reservar y pagar " + cop(p.reserva);
-    $("#barra-r").textContent = "Reserva " + cop(p.reserva); $("#barra-t").textContent = "Total " + cop(p.total) + " · saldo al terminar " + cop(p.saldo);
+    const tot = radio("forma_pago") === "total";
+    $("#total").textContent = cop(p.total); $("#reserva").textContent = cop(tot ? p.total : p.reserva);
+    $("#ahora-t").textContent = tot ? "Pagas el total en línea" : "Pagas ahora para reservar";
+    $("#ahora-s").innerHTML = tot ? "Te enviamos el link de pago por WhatsApp. Al terminar no pagas nada más." : 'Y el saldo de <b id="saldo" style="display:inline;font-size:inherit">' + cop(p.saldo) + "</b> en efectivo al técnico, al terminar.";
+    $("#enviar").textContent = tot ? "Reservar y pagar el total " + cop(p.total) : "Reservar y pagar " + cop(p.reserva);
+    $("#barra-r").textContent = tot ? "Total " + cop(p.total) : "Reserva " + cop(p.reserva); $("#barra-t").textContent = tot ? "Pago en línea del total" : "Total " + cop(p.total) + " · saldo en efectivo " + cop(p.saldo);
     $("#p1").classList.toggle("hecho", !!p.s); $("#p2").classList.toggle("hecho", !!p.z); $("#p3").classList.add("hecho");
-    $("#p4").classList.toggle("hecho", !!(dia && hr)); $("#p5").classList.toggle("hecho", !!(val("nombre") && val("tel") && val("email") && val("barrio") && val("dir")));
+    $("#p4").classList.toggle("hecho", !!(dia && hr)); $("#p6").classList.toggle("hecho", !!(val("nombre") && val("tel") && val("email") && val("barrio") && val("dir")));
   }
   function pintarFechas() {
     const box = $("#fechas");
@@ -63,9 +66,9 @@
     if (!st.fecha || st.franja < 0) F.push(["p4", "el día y la hora"]);
     const c = { nombre: val("nombre").length >= 3, tel: /^3\d{9}$/.test(val("tel").replace(/\D/g, "").replace(/^57(?=3\d{9}$)/, "")), email: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val("email")),
       marca: !!val("marca_nevecon"), barrio: !!val("barrio"), dir: val("dir").length >= 5 };
-    if (!c.nombre) F.push(["p5", "tu nombre"]); if (!c.tel) F.push(["p5", "un celular válido (10 dígitos que empiezan por 3)"]); if (!c.email) F.push(["p5", "un correo válido"]);
-    if (!c.marca) F.push(["p5", "la marca del nevecón"]); if (!c.barrio) F.push(["p5", "el barrio"]); if (!c.dir) F.push(["p5", "la dirección"]);
-    if (!f.elements.acepto.checked) F.push(["p5", "aceptar las condiciones"]);
+    if (!c.nombre) F.push(["p6", "tu nombre"]); if (!c.tel) F.push(["p6", "un celular válido (10 dígitos que empiezan por 3)"]); if (!c.email) F.push(["p6", "un correo válido"]);
+    if (!c.marca) F.push(["p6", "la marca del nevecón"]); if (!c.barrio) F.push(["p6", "el barrio"]); if (!c.dir) F.push(["p6", "la dirección"]);
+    if (!f.elements.acepto.checked) F.push(["p6", "aceptar las condiciones"]);
     return F;
   }
   $("#barra-b").addEventListener("click", e => {
@@ -77,7 +80,7 @@
     const err = $("#err"), b = $("#enviar"), F = faltantes();
     if (F.length) { err.textContent = "Falta " + [...new Set(F.map(x => x[1]))].join(", ") + "."; document.getElementById(F[0][0]).scrollIntoView({ behavior: "smooth", block: "start" }); return; }
     const p = precio(), old = b.textContent; b.disabled = true; b.textContent = "Apartando tu horario…"; err.textContent = "";
-    const body = { servicio: radio("servicio"), zona: radio("zona"), metros: val("metros"), total: p.total, fecha: st.fecha, franja: st.franja, acepto: f.elements.acepto.checked, web: val("web") };
+    const body = { servicio: radio("servicio"), zona: radio("zona"), metros: val("metros"), total: p.total, fecha: st.fecha, franja: st.franja, acepto: f.elements.acepto.checked, web: val("web"), forma_pago: radio("forma_pago") };
     ["nombre", "tel", "email", "marca_nevecon", "modelo", "toma", "barrio", "dir", "detalle", "notas"].forEach(k => body[k] = val(k));
     try {
       const r = await fetch("/filtrosnevecones-api/instalacion.php?a=reservar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });

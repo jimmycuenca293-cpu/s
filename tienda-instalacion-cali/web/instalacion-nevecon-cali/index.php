@@ -48,9 +48,21 @@ $m = fn(int $x) => cop($x);
 <section class="ic-sec"><span class="eyebrow">Cómo funciona</span><h2>Cuatro pasos, sin sorpresas</h2>
   <div class="ic-grid">
     <div class="ic-card"><span class="n">1</span><h3>Escoges tu servicio</h3><p>Tu zona, tu marca de filtro, el día y la hora que más te sirven. El precio final lo ves antes de pagar.</p></div>
-    <div class="ic-card"><span class="n">2</span><h3>Pagas la reserva</h3><p>Una parte pequeña en línea, con Wompi (tarjeta, PSE o Nequi). Así tu horario queda apartado solo para ti.</p></div>
+    <div class="ic-card"><span class="n">2</span><h3>Pagas la reserva</h3><p>Una parte en línea, con Wompi (tarjeta, PSE o Nequi), o el total si prefieres. Así tu horario queda apartado solo para ti.</p></div>
     <div class="ic-card"><span class="n">3</span><h3>El técnico llega</h3><p>En el horario que escogiste. Instala, prueba que no haya fugas y te muestra el agua funcionando.</p></div>
-    <div class="ic-card"><span class="n">4</span><h3>Pagas el saldo al terminar</h3><p>Solo cuando todo quedó bien. Te quedan 1 año de garantía y la guía para cambiar tu filtro a tiempo.</p></div>
+    <div class="ic-card"><span class="n">4</span><h3>Pagas el saldo al terminar</h3><p>En efectivo al técnico, solo cuando todo quedó bien. Te queda 1 año de garantía en la instalación.</p></div>
+  </div></section>
+
+<section class="ic-sec" id="pagos"><span class="eyebrow">Formas de pago</span><h2>Tú escoges cómo pagar</h2>
+  <div class="ic-grid">
+    <div class="ic-card ic-pago"><span class="tag">La más usada</span><h3>Reservas y pagas el resto al terminar</h3>
+      <p>Pagas en línea una <b>reserva</b> (<?= $m($C['servicios']['basica']['reserva']) ?> en la básica, <?= $m($C['servicios']['filtro-samsung']['reserva']) ?> con filtro Samsung o LG, <?= $m($C['servicios']['filtro-whirlpool']['reserva']) ?> con filtro Whirlpool). Esa reserva aparta tu día y tu hora para tomar el servicio.</p>
+      <p>Cuando el técnico termina y ves el agua funcionando, le pagas el <b>saldo en efectivo</b>, directamente a él.</p></div>
+    <div class="ic-card ic-pago"><h3>Pagas el total en línea</h3>
+      <p>Si prefieres no manejar efectivo, paga <b>todo</b> por adelantado. Escoges esta opción al reservar y te enviamos por WhatsApp el link de pago por el valor exacto. Al terminar no pagas nada más.</p></div>
+    <div class="ic-card ic-pago"><h3>Medios de pago en línea</h3>
+      <p>Tarjeta débito o crédito, PSE y Nequi, en la página segura de Wompi. Nosotros nunca vemos los datos de tu tarjeta.</p>
+      <p>Al terminar la instalación: <b>efectivo</b> al técnico.</p></div>
   </div></section>
 
 <section class="ic-sec" id="reservar"><span class="eyebrow">Reserva tu instalación</span><h2>Escoge el servicio, el día y la hora</h2>
@@ -80,7 +92,11 @@ $m = fn(int $x) => cop($x);
       <div class="ic-fechas" id="fechas" role="group" aria-label="Día"><span class="m">Cargando los días disponibles…</span></div>
       <div class="ic-horas" id="horas" role="group" aria-label="Hora"></div>
       <p class="m" style="font-size:13.5px">Atendemos de lunes a sábado, de 8:00 a. m. a 5:00 p. m. ¿Lo necesitas hoy o mañana mismo? Escríbenos por WhatsApp.</p></section>
-    <section class="ic-paso" id="p5"><h3><i>5</i>Tus datos y la dirección</h3>
+        <section class="ic-paso" id="p5"><h3><i>5</i>¿Cómo quieres pagar?</h3>
+      <div class="ic-opciones" role="radiogroup" aria-label="Forma de pago">
+        <label class="ic-op"><input type="radio" name="forma_pago" value="reserva" checked><span><b>Reserva ahora y el resto al terminar</b><small>Pagas la reserva en línea y el saldo en efectivo al técnico cuando termine.</small></span></label>
+        <label class="ic-op"><input type="radio" name="forma_pago" value="total"><span><b>Pago el total en línea</b><small>Te enviamos por WhatsApp el link para pagar todo. Al terminar no pagas nada más.</small></span></label></div></section>
+    <section class="ic-paso" id="p6"><h3><i>6</i>Tus datos y la dirección</h3>
       <div class="ic-campos">
         <label>Nombre completo<input name="nombre" autocomplete="name" maxlength="80" required></label>
         <label>Celular (WhatsApp)<input name="tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="300 123 4567" maxlength="16" required></label>
@@ -99,7 +115,7 @@ $m = fn(int $x) => cop($x);
   <aside class="ic-res" aria-live="polite"><h3>Tu reserva</h3>
     <div id="lineas"></div>
     <div class="tot"><span>Total</span><span id="total">—</span></div>
-    <div class="ahora"><span>Pagas ahora para reservar</span><b id="reserva">—</b><span class="m">Y el saldo de <b id="saldo" style="display:inline;font-size:inherit">—</b> al terminar.</span></div>
+    <div class="ahora"><span id="ahora-t">Pagas ahora para reservar</span><b id="reserva">—</b><span class="m" id="ahora-s">Y el saldo de <b id="saldo" style="display:inline;font-size:inherit">—</b> en efectivo al técnico, al terminar.</span></div>
     <div class="ic-err" id="err" role="alert"></div>
     <button class="btn" type="submit" id="enviar">Reservar y pagar</button>
     <div class="ic-sellos"><span>🔒 Pago seguro con Wompi</span><span>🛠 1 año de garantía</span><span>↺ Reprogramación gratis</span></div>
@@ -110,7 +126,7 @@ $m = fn(int $x) => cop($x);
 
 <section class="ic-sec" id="condiciones"><span class="eyebrow">Condiciones del servicio</span><h2>Lo que debes saber antes de reservar</h2>
   <div class="ic-grid">
-    <div class="ic-card"><h3>Reserva y saldo</h3><p>La reserva se paga en línea y aparta tu horario. El saldo se paga al terminar la instalación, cuando ya verificaste que todo funciona.</p></div>
+    <div class="ic-card"><h3>Reserva y saldo</h3><p>La reserva se paga en línea y aparta tu horario. El saldo se paga en efectivo al técnico al terminar, cuando ya verificaste que todo funciona. También puedes pagar el total en línea.</p></div>
     <div class="ic-card"><h3>Cambios y cancelaciones</h3><p>Avisando con 24 horas, reprogramamos sin costo o te devolvemos la reserva. Si el técnico llega y no hay nadie para recibirlo, la reserva no se devuelve.</p></div>
     <div class="ic-card"><h3>Garantía de 1 año</h3><p>Cubre fugas y fallas causadas por la instalación. No cubre daños del nevecón, de las tuberías de tu casa ni mal uso.</p></div>
     <div class="ic-card"><h3>Tu punto de agua</h3><p>Instalamos desde un punto de agua que ya exista y esté en buen estado. Si hace falta trabajo adicional en tuberías, el técnico te lo cotiza antes de empezar.</p></div>
@@ -119,7 +135,7 @@ $m = fn(int $x) => cop($x);
 <section class="ic-sec"><span class="eyebrow">Preguntas frecuentes</span><h2>Lo que más nos preguntan</h2><div>
   <details class="ic-faq"><summary>¿Cuánto cuesta en total?</summary><p>En Cali, <?= $m($C['servicios']['basica']['precio']) ?> la instalación básica, <?= $m($C['servicios']['filtro-samsung']['precio']) ?> con filtro Samsung o LG y <?= $m($C['servicios']['filtro-whirlpool']['precio']) ?> con filtro Whirlpool. En Jamundí se suman <?= $m($C['zonas']['jamundi']['recargo']) ?>; en Yumbo y Palmira, <?= $m($C['zonas']['yumbo']['recargo']) ?>. El total exacto lo ves en tu reserva antes de pagar.</p></details>
   <details class="ic-faq"><summary>¿Cuánto pago ahora y cuánto al terminar?</summary><p>Ahora pagas una reserva de <?= $m($C['servicios']['basica']['reserva']) ?> (básica), <?= $m($C['servicios']['filtro-samsung']['reserva']) ?> (con filtro Samsung o LG) o <?= $m($C['servicios']['filtro-whirlpool']['reserva']) ?> (con filtro Whirlpool). El resto lo pagas al terminar.</p></details>
-  <details class="ic-faq"><summary>¿Cómo pago el saldo?</summary><p>Al terminar la instalación, directamente al técnico. Te confirmamos los medios disponibles al agendar tu reserva.</p></details>
+  <details class="ic-faq"><summary>¿Cómo pago el saldo?</summary><p>En efectivo, directamente al técnico, cuando termina la instalación y ves el agua funcionando. Si prefieres no manejar efectivo, escoge «Pago el total en línea» al reservar.</p></details>
   <details class="ic-faq"><summary>¿Qué pasa si necesito más manguera?</summary><p>La instalación incluye hasta 5 metros. Cada 5 metros adicionales cuestan <?= $m($C['metro_extra']) ?>. Si no sabes la distancia, el técnico la mide en tu casa antes de empezar.</p></details>
   <details class="ic-faq"><summary>¿Cómo sé qué filtro externo necesita mi nevecón?</summary><p>El servicio con filtro incluye el filtro de la marca que escojas (Samsung, LG o Whirlpool). Si tienes dudas, escríbenos por WhatsApp al <?= h($tel) ?> con la marca y el modelo de tu nevecón y te lo confirmamos.</p></details>
   <details class="ic-faq"><summary>¿Puedo cambiar el día o la hora?</summary><p>Sí. Avísanos con 24 horas de anticipación por WhatsApp y lo reprogramamos sin costo.</p></details>

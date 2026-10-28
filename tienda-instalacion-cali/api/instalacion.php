@@ -42,7 +42,7 @@ if (!in_array($fecha, inst_fechas(), true) || $franja < 0 || $franja >= count($c
 $v = ['servicio' => $serv, 'zona' => $zona, 'metros' => $metros, 'total' => $P['total'], 'reserva' => $P['reserva'], 'saldo' => $P['saldo'], 'fecha' => $fecha, 'franja' => $franja,
     'marca_nevecon' => $t('marca_nevecon', 40), 'modelo' => $t('modelo', 40), 'toma' => in_array($t('toma', 20), ['llave', 'tubo', 'lavaplatos', 'nose'], true) ? $t('toma', 20) : 'nose',
     'nombre' => $t('nombre', 80), 'email' => $t('email', 120), 'tel' => preg_replace('/\D/', '', $t('tel', 20)), 'barrio' => $t('barrio', 80), 'dir' => $t('dir', 160),
-    'detalle' => $t('detalle', 160), 'notas' => $t('notas', 300), 'ip' => $ip];
+    'detalle' => $t('detalle', 160), 'notas' => $t('notas', 300), 'ip' => $ip, 'forma_pago' => $t('forma_pago', 10) === 'total' ? 'total' : 'reserva'];
 if (strlen($v['tel']) === 12 && str_starts_with($v['tel'], '57')) $v['tel'] = substr($v['tel'], 2);
 if (mb_strlen($v['nombre']) < 3) fail('Escribe tu nombre completo.');
 if (!filter_var($v['email'], FILTER_VALIDATE_EMAIL)) fail('Escribe un correo válido.');
@@ -58,9 +58,9 @@ if ((int) $st->fetchColumn() >= 5) fail('Demasiados intentos. Espera un rato o e
 $ref = inst_crear($v);
 if ($ref === '') fail('Ese horario se acaba de ocupar. Escoge otro, por favor.', 409);
 $r = inst_buscar($ref);
-$asunto = 'NUEVA INSTALACIÓN ' . $ref . ' — ' . inst_fecha_txt($fecha, false) . ' ' . inst_franja_txt($franja) . ' — ' . $c['zonas'][$zona]['nombre'] . ' — ' . $v['nombre'];
-out_y_seguir(['ok' => true, 'ref' => $ref, 'url' => inst_url_reserva($ref), 'total' => $P['total'], 'reserva' => $P['reserva']], function () use ($r, $asunto) {
-    inst_avisar($r, 'reserva', $asunto, '<h2 style="margin:0 0 8px">Nueva instalación agendada</h2><p>El cliente quedó en la pantalla para pagar la reserva. El horario está apartado por ' . INST_RETENER_MIN . ' minutos; cuando veas el pago en Wompi, confírmala en tu panel.</p>'
+$asunto = ($v['forma_pago'] === 'total' ? 'PAGA EL TOTAL · ' : '') . 'NUEVA INSTALACIÓN ' . $ref . ' — ' . inst_fecha_txt($fecha, false) . ' ' . inst_franja_txt($franja) . ' — ' . $c['zonas'][$zona]['nombre'] . ' — ' . $v['nombre'];
+out_y_seguir(['ok' => true, 'ref' => $ref, 'url' => inst_url_reserva($ref), 'total' => $P['total'], 'reserva' => $v['forma_pago'] === 'total' ? $P['total'] : $P['reserva']], function () use ($r, $asunto) {
+    inst_avisar($r, 'reserva', $asunto, '<h2 style="margin:0 0 8px">Nueva instalación agendada</h2><p>' . ($r['forma_pago'] === 'total' ? '<b>El cliente quiere pagar el TOTAL en línea (' . cop((int) $r['total']) . '): mándale por WhatsApp un link de Wompi por ese valor.</b> ' : '') . 'El cliente quedó en la pantalla para pagar la reserva. El horario está apartado por ' . INST_RETENER_MIN . ' minutos; cuando veas el pago en Wompi, confírmala en tu panel.</p>'
         . inst_tabla($r, true) . '<p><a href="https://wa.me/57' . h($r['tel']) . '">Escribirle al cliente por WhatsApp</a> · <a href="' . h(base_url()) . '/admin-instalaciones.php">Abrir el panel de instalaciones</a></p>');
     inst_correo_cliente($r);
 });

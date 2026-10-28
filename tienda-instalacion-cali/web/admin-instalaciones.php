@@ -37,8 +37,9 @@ if ($ok_csrf && isset($_POST['accion'])) {
                 inst_db()->prepare('UPDATE instalaciones SET estado = ?, pagado_en = CASE WHEN ? = "reservada" THEN ? ELSE pagado_en END WHERE ref = ?')->execute([$nuevo, $nuevo, date('c'), $r['ref']]);
                 $r = inst_buscar($r['ref']);
                 if ($nuevo === 'reservada') enviar_correo($r['email'], 'Reserva confirmada ' . $r['ref'] . ': ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']),
-                    '<h2 style="margin:0 0 8px">¡Tu reserva está confirmada!</h2><p>Recibimos el pago de tu reserva. El técnico llega en el horario que escogiste.</p>' . inst_tabla($r, false)
-                    . '<p>El saldo de ' . h(cop((int) $r['saldo'])) . ' lo pagas al terminar. Tienes 1 año de garantía en la instalación.</p>');
+                    '<h2 style="margin:0 0 8px">¡Tu reserva está confirmada!</h2><p>Recibimos tu pago. El técnico llega en el horario que escogiste.</p>' . inst_tabla($r, false)
+                    . (($r['forma_pago'] ?? 'reserva') === 'total' ? '<p>Ya pagaste todo: al terminar no pagas nada más. Tienes 1 año de garantía en la instalación.</p>'
+                        : '<p>El saldo de ' . h(cop((int) $r['saldo'])) . ' lo pagas en efectivo al técnico al terminar. Tienes 1 año de garantía en la instalación.</p>'));
                 $msg = 'Reserva ' . $r['ref'] . ': ' . inst_estado_txt($nuevo) . '.' . ($nuevo === 'reservada' ? ' Le avisamos al cliente por correo.' : '');
             }
         }
