@@ -389,6 +389,31 @@ function anotar_aviso(string $ref, string $tipo, string $canal, bool $ok, string
     try { db()->prepare('INSERT INTO avisos (creado, ref, tipo, canal, ok, mensaje) VALUES (?,?,?,?,?,?)')->execute([date('c'), $ref, $tipo, $canal, (int) $ok, mb_substr($mensaje, 0, 300)]); } catch (Throwable $e) {}
 }
 
+// ---- Hoja de pedidos (Google Apps Script) ----
+function hoja_activa(): bool
+{
+    $h = cfg()['hoja'] ?? [];
+    return str_starts_with((string) ($h['url'] ?? ''), 'https://script.google.com/') && (string) ($h['clave'] ?? '') !== '';
+}
+
+function enviar_hoja(array $p, string $tipo, string $asunto): array
+{
+    $h = cfg()['hoja'] ?? [];
+    $cuerpo = json_encode(['clave' => (string) $h['clave'], 'tipo' => $tipo, 'asunto' => $asunto, 'campos' => campos_pedido($p)], JSON_UNESCAPED_UNICODE);
+    $ch = curl_init((string) $h['url']);
+    curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $cuerpo, CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => true, CURLOPT_MAXREDIRS => 5,
+        CURLOPT_TIMEOUT => 20, CURLOPT_HTTPHEADER => ['Content-Type: application/json']]);
+    $res = curl_exec($ch);
+    $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $err = curl_error($ch);
+    curl_close($ch);
+    $j = json_decode((string) $res, true);
+    $ok = $code >= 200 && $code < 300 && is_array($j) && !empty($j['ok']);
+    $msg = $ok ? '' : (is_array($j) ? (string) ($j['mensaje'] ?? 'Respuesta no válida') : ($err ?: "Respuesta $code"));
+    if (!$ok) @file_put_contents(__DIR__ . '/../filtrosnevecones-data/correos.log', date('c') . " HOJA FALLÓ ({$p['ref']}): $msg\n----\n", FILE_APPEND);
+    return ['ok' => $ok, 'mensaje' => $msg];
+}
+
 // Avisa de un pedido por los dos caminos (correo y formulario). tipo: 'pendiente' o 'pagado'.
 // Devuelve true si llegó por al menos uno.
 function avisar_por_todos(array $p, string $tipo, string $asunto, string $html): bool
@@ -400,11 +425,18 @@ function avisar_por_todos(array $p, string $tipo, string $asunto, string $html):
         $ok1 = $ok1 || $r1; $m1 .= ($mm ? $dest . ': ' . $mm . ' ' : '');
     }
     anotar_aviso($p['ref'], $tipo, 'correo', $ok1, trim($m1));
-    if (form_en_navegador()) return $ok1;  // el formulario lo manda el navegador del cliente
+    // Hoja de pedidos en Google (Apps Script): guarda el pedido en una hoja y te manda un correo desde tu Gmail. No depende del correo del hosting.
+    $okH = false;
+    if (hoja_activa()) {
+        $rh = enviar_hoja($p, $tipo, $asunto);
+        anotar_aviso($p['ref'], $tipo, 'hoja', $rh['ok'], $rh['mensaje']);
+        $okH = $rh['ok'];
+    }
+    if (form_en_navegador()) return $ok1 || $okH;  // el formulario lo manda el navegador del cliente
     $r = enviar_formulario($asunto, campos_pedido($p));
     anotar_aviso($p['ref'], $tipo, 'formulario', $r['ok'], $r['mensaje']);
     $GLOBALS['ult_aviso'] = ['correo' => $ok1, 'form' => $r['ok']];
-    return $ok1 || $r['ok'];
+    return $ok1 || $okH || $r['ok'];
 }
 
 // El formulario siempre sale desde el navegador del cliente (FormSubmit y Web3Forms lo reciben mejor así que desde el servidor)

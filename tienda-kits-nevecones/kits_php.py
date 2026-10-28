@@ -436,6 +436,71 @@ def datos_js():
     return items
 
 
+def asistente():
+    """Asistente «Encuentra tu kit»: 4 preguntas y arma la recomendación con piezas reales de la tienda (se agrega todo al carrito de un clic)."""
+    P2 = lambda pid: {"pid": pid, "n": PROD[pid]["nombre"], "p": PROD[pid]["precio"], "u": SLUG_BASE + "/" + PROD[pid]["slug"] + "/"}
+    cfg = {
+        "kits": {"sam": P2("k-kit-sam"), "lg": P2("k-kit-lg"), "wp": P2("k-kit-wp"), "basico": P2("k-kit-basico"), "plastica": P2("k-kit-plastica")},
+        "man": {"10": P2("k-man14-10"), "15": P2("k-man14-15"), "20": P2("k-man14-20")},
+        "llave": {"galapago": P2("k-galapago"), "plastica": P2("k-plastica")},
+        "filtro": {"sam": {"pid": "sam-ex-o", "n": FILTROS["f-sam"][4], "p": FILTRO_PRECIO["f-sam"], "u": "/filtrosnevecones-filtro/" + FILTROS["f-sam"][3] + "/"},
+                   "lg": {"pid": "lg-ex-o", "n": FILTROS["f-lg"][4], "p": FILTRO_PRECIO["f-lg"], "u": "/filtrosnevecones-filtro/" + FILTROS["f-lg"][3] + "/"},
+                   "wp": {"pid": "wp-ex-o", "n": FILTROS["f-wp"][4], "p": FILTRO_PRECIO["f-wp"], "u": "/filtrosnevecones-filtro/" + FILTROS["f-wp"][3] + "/"}},
+    }
+    html_ = """<section class="check asist" id="asist" aria-label="Encuentra tu kit" style="border:2px solid var(--accent)">
+  <b style="font-size:19px">🧭 Encuentra tu kit en 30 segundos</b>
+  <span class="sub" id="as-sub">Responde 4 preguntas y te armamos lo que necesitas, con precio y envío gratis.</span>
+  <div id="as-q"></div>
+  <div class="row" id="as-op"></div>
+  <button type="button" class="linkbtn" id="as-reset" hidden style="align-self:flex-start">↺ Empezar de nuevo</button>
+</section>
+"""
+    js = """
+(function () {
+  var A = __CFG__, r = {}, paso = 0;
+  var Q = [
+    ["¿De qué marca es tu nevecón?", "marca", [["Samsung", "sam"], ["LG", "lg"], ["Whirlpool", "wp"], ["Otra marca", "otra"]]],
+    ["¿A qué distancia está el punto de agua del nevecón?", "dist", [["Hasta 5 metros", "5"], ["De 5 a 10 metros", "10"], ["De 10 a 15 metros", "15"], ["De 15 a 20 metros", "20"]]],
+    ["¿Cómo es tu punto de agua?", "llave", [["Un tubo sin salida libre", "galapago"], ["Ya tiene salida con rosca", "plastica"], ["No sé", "galapago"]]],
+    ["¿Quieres agregar el filtro externo?", "filtro", [["Sí, con filtro", "si"], ["No, sin filtro", "no"]]]
+  ];
+  var q = document.getElementById("as-q"), op = document.getElementById("as-op"), rs = document.getElementById("as-reset"), sub = document.getElementById("as-sub");
+  function cop2(n) { return "$ " + String(n).replace(/\\B(?=(\\d{3})+(?!\\d))/g, "."); }
+  function pintar() {
+    rs.hidden = paso === 0;
+    if (paso < Q.length) {
+      sub.textContent = "Pregunta " + (paso + 1) + " de " + Q.length;
+      q.innerHTML = "<b>" + Q[paso][0] + "</b>";
+      op.innerHTML = Q[paso][2].map(function (o) { return '<button type="button" class="btn ghost" data-v="' + o[1] + '">' + o[0] + "</button>"; }).join("");
+      return;
+    }
+    var items = [], conFiltro = r.filtro === "si" && r.marca !== "otra", f = A.filtro[r.marca];
+    if (r.dist === "5") {
+      if (r.llave === "galapago") items = conFiltro ? [A.kits[r.marca]] : [A.kits.basico];
+      else items = conFiltro ? [A.kits.plastica, f] : [A.kits.plastica];
+    } else {
+      items = [A.man[r.dist], A.llave[r.llave]].concat(conFiltro ? [f] : []);
+    }
+    var tot = items.reduce(function (a, x) { return a + x.p; }, 0);
+    sub.textContent = "Esto es lo que te recomendamos";
+    q.innerHTML = "<ul class='ok'>" + items.map(function (x) { return "<li><a href='" + x.u + "'><b>" + x.n + "</b></a> · " + cop2(x.p) + "</li>"; }).join("") + "</ul>" +
+      "<div class='price'>" + cop2(tot) + " <small style='font-size:13px;font-weight:600;color:var(--ok)'>envío gratis</small></div>" +
+      (r.filtro === "si" && r.marca === "otra" ? "<p class='sub'>Para otras marcas, escríbenos por WhatsApp con la referencia de tu filtro y lo agregamos.</p>" : "") +
+      (r.dist !== "5" ? "<p class='sub'>Como el punto de agua queda a más de 5 metros, armamos las piezas con la manguera del largo que necesitas.</p>" : "");
+    op.innerHTML = '<button type="button" class="btn" id="as-add">Agregar todo al carrito</button><a class="btn ghost" href="https://wa.me/' + (window.FY_WA || "573013810242") + '?text=' + encodeURIComponent("Hola, necesito ayuda para escoger mi kit de instalación") + '" target="_blank" rel="noopener">Preguntar por WhatsApp</a>';
+    document.getElementById("as-add").onclick = function () {
+      items.forEach(function (x) { if (window.FYCart) FYCart.agregar(x.pid, false, 1); });
+      location.href = "/carrito.php";
+    };
+  }
+  op.addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; r[Q[paso][1]] = b.dataset.v; paso++; pintar(); });
+  rs.addEventListener("click", function () { r = {}; paso = 0; pintar(); });
+  pintar();
+})();
+""".replace("__CFG__", __import__("json").dumps(cfg, ensure_ascii=False))
+    return html_, js
+
+
 def portada(cali):
     ruta = (SLUG_CALI if cali else SLUG_BASE) + "/"
     titulo = ("Kits de instalación para nevecón en Cali, con instalación | Envío gratis" if cali else "Kits de instalación para nevecón: manguera, llaves y filtros | Envío gratis a toda Colombia")
@@ -454,6 +519,7 @@ def portada(cali):
     lead = ("Compra el kit con envío gratis y, si estás en Cali, pide que instalemos tu nevecón. Manguera de 1/4\", llaves, acoples y filtros externos Samsung, LG y Whirlpool." if cali else
             "Manguera de 1/4\" y 5/16\" por metros, llaves, acoples rápidos y filtros externos. Cada pieza por separado o en combo, pago seguro en línea y te llega en 2 a 3 días hábiles.")
     faq = faq_html()
+    asis_html, asis_js = asistente()
     otra = ""
     return f"""<?php require __DIR__ . '/../partes.php'; $S = sitio(); $n = $S['negocio'];
 $ld = str_replace('__BASE__', $S['base'], {php_str(ld)}); ?>
@@ -496,6 +562,7 @@ $ld = str_replace('__BASE__', $S['base'], {php_str(ld)}); ?>
 <main class="wrap">
 <section id="v-buscar" style="display:flex;flex-direction:column;gap:20px">
   <div class="trust"><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg><b>Envío gratis</b>A toda Colombia, 2 a 3 días hábiles</div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><b>Pago seguro</b>Tarjeta, PSE, Nequi o Bancolombia en línea</div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4A8 8 0 1 1 8 18.8z"/></svg><b>Asesor por WhatsApp</b>Te ayudamos a escoger el tuyo</div></div>
+  {asis_html}
   <section class="explora" aria-label="¿Qué necesitas?"><h2 style="font-size:19px">¿Qué necesitas?</h2><div class="ex-grid">
 <a href="#catalogo" data-go="combos"><b>📦 Kits completos</b><span>Manguera + llave + filtro de tu marca</span></a>
 <a href="#catalogo" data-go="mangueras"><b>〰️ Mangueras</b><span>1/4" y 5/16", de 5 a 20 metros</span></a>
@@ -599,6 +666,7 @@ function buscar(q) {{
 $("#search-form").addEventListener("submit", e => {{ e.preventDefault(); buscar($("#q").value); $("#list-title").scrollIntoView({{behavior: "smooth", block: "start"}}); }});
 $("#q").addEventListener("input", e => {{ if (!e.target.value.trim()) ver(); }});
 ver();
+{asis_js}
 </script>
 </body>
 </html>

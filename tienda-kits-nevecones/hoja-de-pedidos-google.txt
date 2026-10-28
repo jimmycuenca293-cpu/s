@@ -1,0 +1,53 @@
+HOJA DE PEDIDOS EN GOOGLE (la forma más segura de que te lleguen los datos del cliente)
+
+Cada pedido se guarda en una hoja de Google Sheets (nombre, celular, correo, ciudad, barrio, dirección, productos y total)
+y además te llega un correo enviado desde TU Gmail, que casi nunca cae en spam. No depende del correo del hosting.
+
+PASOS (10 minutos, una sola vez)
+1. Entra a sheets.new con tu cuenta de Gmail (jimmycuenca293@gmail.com) y ponle de nombre «Pedidos tienda».
+2. Menú Extensiones > Apps Script. Borra todo lo que haya y pega EL CÓDIGO de abajo.
+3. En la primera línea cambia PON-AQUI-UNA-CLAVE-LARGA por una clave larga que inventes (solo letras y números). Guárdala: la vas a pegar también en la tienda.
+4. Arriba elige la función «probar» y toca Ejecutar. Google te pide permisos: acéptalos. Te llega un correo de prueba.
+5. Toca Implementar > Nueva implementación > engranaje > «Aplicación web».
+   - Ejecutar como: Yo
+   - Quién tiene acceso: Cualquier persona
+   Toca Implementar y copia la URL que termina en /exec.
+6. En tu hosting abre filtrosnevecones-api/ajustes.php y llena la parte 'hoja':
+      'hoja' => ['url' => 'LA_URL_QUE_COPIASTE', 'clave' => 'LA_MISMA_CLAVE'],
+7. Haz una compra de prueba: debe aparecer una fila nueva en la hoja «Pedidos» y llegarte el correo.
+
+CÓDIGO PARA PEGAR EN APPS SCRIPT
+------------------------------------------------------------
+const CLAVE = 'PON-AQUI-UNA-CLAVE-LARGA';
+const CORREOS = 'jimmycuenca293@gmail.com,serviciotecnicoyrepuestoscali@gmail.com';
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function doPost(e) {
+  try {
+    const d = JSON.parse(e.postData.contents);
+    if (d.clave !== CLAVE) return salida(false, 'Clave incorrecta');
+    const libro = SpreadsheetApp.getActiveSpreadsheet();
+    const hoja = libro.getSheetByName('Pedidos') || libro.insertSheet('Pedidos');
+    const campos = d.campos || {};
+    const cols = Object.keys(campos);
+    if (hoja.getLastRow() === 0) hoja.appendRow(['Fecha', 'Tipo'].concat(cols));
+    hoja.appendRow([new Date(), d.tipo].concat(cols.map(function (k) { return campos[k]; })));
+    const filas = cols.map(function (k) { return '<tr><td><b>' + esc(k) + '</b></td><td>' + esc(campos[k]) + '</td></tr>'; }).join('');
+    MailApp.sendEmail({ to: CORREOS, subject: d.asunto || 'Nuevo pedido', htmlBody: '<table cellpadding="6" border="1" style="border-collapse:collapse;font-family:Arial">' + filas + '</table>' });
+    return salida(true, '');
+  } catch (err) {
+    return salida(false, String(err));
+  }
+}
+
+function salida(ok, mensaje) {
+  return ContentService.createTextOutput(JSON.stringify({ ok: ok, mensaje: mensaje })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function probar() {
+  MailApp.sendEmail(CORREOS, 'Prueba de la hoja de pedidos', 'Si lees esto, el correo funciona.');
+}
+------------------------------------------------------------

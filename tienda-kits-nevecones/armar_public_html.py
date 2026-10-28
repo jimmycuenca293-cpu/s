@@ -60,6 +60,7 @@ ix = b / "index.php"
 rep(ix, '<div class="grid" id="grid"></div>', '<div class="grid" id="grid"></div>\n' + bh)
 rep(ix, '<a href="/filtrosnevecones-tienda/"><b>🛒 Tienda</b>', '<a href="/kits-instalacion-nevecones/"><b>🔧 Kits de instalación</b><span>Manguera, llaves, acoples y combos</span></a>\n<a href="/filtrosnevecones-tienda/"><b>🛒 Tienda</b>')
 rep(ix, '<nav class="hero-nav"><a href="/filtrosnevecones-tienda/">Tienda</a>', '<nav class="hero-nav"><a href="/filtrosnevecones-tienda/">Tienda</a><a href="/kits-instalacion-nevecones/">Kits</a>')
+(b / "filtrosnevecones-api" / "hoja-de-pedidos-google.txt").write_text(open(AQUI / "hoja-de-pedidos-google.txt", encoding="utf-8").read(), encoding="utf-8")
 (b / "LEEME-SUBIR.txt").write_text(open(AQUI / "LEEME-SUBIR.txt", encoding="utf-8").read(), encoding="utf-8")
 if zout.exists(): zout.unlink()
 with zipfile.ZipFile(zout, "w", zipfile.ZIP_DEFLATED) as z:
