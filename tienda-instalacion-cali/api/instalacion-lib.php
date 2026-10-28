@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-// Instalación a domicilio del kit de agua del nevecón (Cali, Jamundí, Yumbo y Palmira): precios, agenda y reservas.
+// Instalación a domicilio del kit de agua del nevecón (Cali y Jamundí): precios, agenda y reservas.
 require_once __DIR__ . '/lib.php';
 date_default_timezone_set('America/Bogota');
 
@@ -18,8 +18,7 @@ function inst_config(): array
             'filtro-lg'        => ['nombre' => 'Instalación con filtro externo LG', 'corto' => 'Con filtro LG', 'precio' => 169900, 'reserva' => 90000, 'filtro' => $f('LG', 'ADQ73693903', 'lg-ex-o')],
             'filtro-whirlpool' => ['nombre' => 'Instalación con filtro externo Whirlpool', 'corto' => 'Con filtro Whirlpool', 'precio' => 179900, 'reserva' => 100000, 'filtro' => $f('Whirlpool', '4378411RB', 'wp-ex-o')],
         ],
-        'zonas' => ['cali' => ['nombre' => 'Cali', 'recargo' => 0], 'jamundi' => ['nombre' => 'Jamundí', 'recargo' => 15000],
-                    'yumbo' => ['nombre' => 'Yumbo', 'recargo' => 20000], 'palmira' => ['nombre' => 'Palmira', 'recargo' => 20000]],
+        'zonas' => ['cali' => ['nombre' => 'Cali', 'recargo' => 0], 'jamundi' => ['nombre' => 'Jamundí', 'recargo' => 15000]],
         'metro_extra' => 14000,   // cada 5 m de manguera adicionales a los 5 m incluidos
         'franjas' => [[8, 0, 9, 30], [9, 30, 11, 0], [11, 0, 12, 30], [13, 30, 15, 0], [15, 30, 17, 0]],
         'dias_adelante' => 21,
