@@ -38,7 +38,9 @@ shutil.copytree(t / "overlay", b, dirs_exist_ok=True)
 # portada de la tienda de filtros: se avisa que también hay kits (sin tocar nada más)
 bh = (t / "overlay" / "_bloque-home.html").read_text(encoding="utf-8"); (b / "_bloque-home.html").unlink(missing_ok=True)
 ix = b / "index.php"
-rep(ix, '<section class="explora" aria-label="Explora la tienda">', bh + '<section class="explora" aria-label="Explora la tienda">')
+# los filtros siguen primero: los kits van DEBAJO del catálogo de filtros, y en «Explora la tienda» hay un acceso directo
+rep(ix, '<div class="grid" id="grid"></div>', '<div class="grid" id="grid"></div>\n' + bh)
+rep(ix, '<a href="/filtrosnevecones-tienda/"><b>🛒 Tienda</b>', '<a href="/kits-instalacion-nevecones/"><b>🔧 Kits de instalación</b><span>Manguera, llaves, acoples y combos</span></a>\n<a href="/filtrosnevecones-tienda/"><b>🛒 Tienda</b>')
 rep(ix, '<nav class="hero-nav"><a href="/filtrosnevecones-tienda/">Tienda</a>', '<nav class="hero-nav"><a href="/filtrosnevecones-tienda/">Tienda</a><a href="/kits-instalacion-nevecones/">Kits</a>')
 (b / "LEEME-SUBIR.txt").write_text(open(AQUI / "LEEME-SUBIR.txt", encoding="utf-8").read(), encoding="utf-8")
 if zout.exists(): zout.unlink()
