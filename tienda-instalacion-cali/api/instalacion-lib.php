@@ -26,10 +26,13 @@ function inst_config(): array
         'bloqueados' => [],        // fechas sin servicio: ['2026-12-08', ...]
         'links' => ['basica' => '', 'filtro-samsung' => '', 'filtro-lg' => '', 'filtro-whirlpool' => ''],
     ];
-    $o = cfg()['instalacion'] ?? [];
+    // Ajustes propios de la instalación (links de pago de la reserva, clave del panel, fechas sin servicio): instalacion-ajustes.php
+    $f = __DIR__ . '/instalacion-ajustes.php';
+    $o = is_file($f) && is_array($a = require $f) ? $a : [];
     foreach (['servicios', 'zonas', 'links'] as $k) if (isset($o[$k]) && is_array($o[$k])) $base[$k] = array_replace_recursive($base[$k], $o[$k]);
     foreach (['metro_extra', 'dias_adelante'] as $k) if (isset($o[$k])) $base[$k] = (int) $o[$k];
     if (isset($o['bloqueados']) && is_array($o['bloqueados'])) $base['bloqueados'] = array_values($o['bloqueados']);
+    $base['clave_panel'] = (string) ($o['clave_panel'] ?? '');
     return $c = $base;
 }
 
@@ -115,7 +118,7 @@ function inst_precio(string $servicio, string $zona, string $metros): ?array
 
 function inst_token(string $ref): string
 {
-    $k = (string) (cfg()['wompi']['eventos'] ?? '') . (string) (cfg()['admin_clave'] ?? '') . 'inst-' . dirname(__DIR__);
+    $k = inst_config()['clave_panel'] . 'inst-' . dirname(__DIR__);
     return substr(hash_hmac('sha256', $ref, $k), 0, 16);
 }
 

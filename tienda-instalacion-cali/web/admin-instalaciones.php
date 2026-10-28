@@ -6,7 +6,7 @@ require_once __DIR__ . '/filtrosnevecones-api/instalacion-lib.php';
 session_set_cookie_params(['httponly' => true, 'samesite' => 'Strict', 'secure' => str_starts_with(base_url(), 'https')]);
 session_start();
 header('X-Robots-Tag: noindex');
-$clave = (string) (cfg()['admin_clave'] ?? '');
+$clave = inst_config()['clave_panel'];
 $msg = '';
 if (isset($_POST['salir'])) { $_SESSION = []; session_destroy(); header('Location: /admin-instalaciones.php'); exit; }
 if (isset($_POST['clave'])) {
@@ -15,7 +15,7 @@ if (isset($_POST['clave'])) {
     $msg = 'Clave incorrecta.';
 }
 cabeza('Instalaciones | ' . cfg()['negocio']['nombre'], 'Panel de instalaciones', '/admin-instalaciones.php', '', false);
-if ($clave === '') { echo '<div class="estado bad">Pon una clave en <b>admin_clave</b> dentro de filtrosnevecones-api/ajustes.php para usar este panel.</div>'; pie(); exit; }
+if ($clave === '') { echo '<div class="estado bad">Pon una clave en <b>clave_panel</b> dentro de filtrosnevecones-api/instalacion-ajustes.php para usar este panel.</div>'; pie(); exit; }
 if (empty($_SESSION['ok'])) {
     echo '<h1>Instalaciones</h1><form method="post" class="caja" style="max-width:360px"><label>Clave<br><input type="password" name="clave" autofocus style="width:100%"></label><button class="btn">Entrar</button>'
         . ($msg ? '<span class="m" style="color:var(--bad)">' . h($msg) . '</span>' : '') . '</form>';
