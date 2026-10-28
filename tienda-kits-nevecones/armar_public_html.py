@@ -51,6 +51,12 @@ rep(c, '<?php pie(); ?>', '''<div class="paybar" id="paybar" hidden><div class="
 })();
 </script>
 <?php pie(); ?>''')
+# pedido.php: los links de pago por producto también valen para los kits
+pe = b / "filtrosnevecones-api" / "pedido.php"
+rep(pe, "$link = (count($C['lineas']) === 1 && $C['unidades'] === 1) ? (string) ($cat['productos'][$l0['pid']]['link_pago'] ?? '') : '';", "$link = (count($C['lineas']) === 1 && $C['unidades'] === 1) ? (string) (productos_compra()[$l0['pid']]['link_pago'] ?? '') : '';")
+rep(pe, "empty($cat['productos'][$l0['pid']]['link_pago'])", "empty(productos_compra()[$l0['pid']]['link_pago'])")
+rep(pe, "'Por ahora el pago en línea es de un filtro a la vez. Deja una sola unidad en el carrito.'", "'Por ahora el pago en línea es de un producto a la vez. Deja solo uno en el carrito, págalo y luego compra el siguiente. (Si pones las llaves de Wompi, puedes pagar varios juntos.)'")
+rep(pe, "'Este filtro todavía no tiene pago en línea.", "'Este producto todavía no tiene pago en línea.")
 subprocess.run([sys.executable, str(AQUI / "kits_php.py"), str(t / "overlay"), str(b / "index.php")], check=True)
 shutil.copytree(t / "overlay", b, dirs_exist_ok=True)
 # portada de la tienda de filtros: se avisa que también hay kits (sin tocar nada más)

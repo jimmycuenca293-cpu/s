@@ -14,6 +14,10 @@ return [
     // Pasos en el archivo hoja-de-pedidos-google.txt
     'hoja' => ['url' => '', 'clave' => ''],
 
+    // Llaves de Wompi (panel de Wompi > Desarrolladores): con ellas el carrito cobra VARIOS productos juntos, confirma los pagos solo y te manda el correo de «pedido pagado».
+    // Sin ellas, cada producto se paga con su link de pago, de uno en uno. Llena las tres cosas con las llaves de PRODUCCIÓN (pub_prod_...).
+    'wompi' => ['public_key' => '', 'integridad' => '', 'eventos' => ''],
+
     // Correo que SALE de la tienda (el buzón que creaste en Hostinger > Correos).
     // Pon aquí la clave de ESE buzón (la que usas para entrar a su webmail), entre las comillas de 'clave'. Es lo único que falta.
     'smtp' => [
