@@ -66,6 +66,11 @@ rep(c, '$("#pagar").textContent = `Pagar ${cop(t)}`;', '$("#pagar").textContent 
     }""")
 rep(c, 'const L = lineas(), t = total() + (C.pago_link ? 0 : instalacion());', 'const L0 = lineas(), sec = C.pago_link && (L0.length > 1 || L0[0].cant > 1);\n      const L = sec ? [{ pid: L0[0].pid, pack: L0[0].pack, cant: 1 }] : L0;\n      const t = sec ? (L0[0].pack ? P[L0[0].pid].pack : P[L0[0].pid].precio) : total() + (C.pago_link ? 0 : instalacion());')
 rep(c, 'ls.set("fy_orders", o.slice(0, 50));', 'ls.set("fy_orders", o.slice(0, 50));\n      if (sec) { const c2 = lineas(); if (c2[0].cant > 1) c2[0].cant--; else c2.splice(0, 1); FYCart.guardar(c2); }')
+# mejoras de la tienda (animaciones, barra de compra, fecha de entrega, vistos recientemente, zoom): un archivo nuevo cargado junto al del carrito
+shutil.copy(AQUI / "filtrosnevecones-mejoras.js", b / "filtrosnevecones-mejoras.js")
+_cj = '<script src="/filtrosnevecones-carrito.js" defer></script>'
+for _f in ("partes.php", "index.php", "filtrosnevecones-marcas.php"):
+    rep(b / _f, _cj, _cj + '<script src="/filtrosnevecones-mejoras.js" defer></script>')
 subprocess.run([sys.executable, str(AQUI / "kits_php.py"), str(t / "overlay"), str(b / "index.php")], check=True)
 shutil.copytree(t / "overlay", b, dirs_exist_ok=True)
 # portada de la tienda de filtros: se avisa que también hay kits (sin tocar nada más)
