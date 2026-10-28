@@ -1,0 +1,34 @@
+Copia TODO lo de abajo y pégalo en Google Apps Script (la clave ya está puesta).
+
+const CLAVE = '1rrUFGq78kLQiFFGMIcpqs7l7eE2';
+const CORREOS = 'jimmycuenca293@gmail.com,serviciotecnicoyrepuestoscali@gmail.com';
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function doPost(e) {
+  try {
+    const d = JSON.parse(e.postData.contents);
+    if (d.clave !== CLAVE) return salida(false, 'Clave incorrecta');
+    const libro = SpreadsheetApp.getActiveSpreadsheet();
+    const hoja = libro.getSheetByName('Pedidos') || libro.insertSheet('Pedidos');
+    const campos = d.campos || {};
+    const cols = Object.keys(campos);
+    if (hoja.getLastRow() === 0) hoja.appendRow(['Fecha', 'Tipo'].concat(cols));
+    hoja.appendRow([new Date(), d.tipo].concat(cols.map(function (k) { return campos[k]; })));
+    const filas = cols.map(function (k) { return '<tr><td><b>' + esc(k) + '</b></td><td>' + esc(campos[k]) + '</td></tr>'; }).join('');
+    MailApp.sendEmail({ to: CORREOS, subject: d.asunto || 'Nuevo pedido', htmlBody: '<table cellpadding="6" border="1" style="border-collapse:collapse;font-family:Arial">' + filas + '</table>' });
+    return salida(true, '');
+  } catch (err) {
+    return salida(false, String(err));
+  }
+}
+
+function salida(ok, mensaje) {
+  return ContentService.createTextOutput(JSON.stringify({ ok: ok, mensaje: mensaje })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function probar() {
+  MailApp.sendEmail(CORREOS, 'Prueba de la hoja de pedidos', 'Si lees esto, el correo funciona.');
+}

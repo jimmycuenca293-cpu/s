@@ -1,0 +1,27 @@
+DATOS DEL CLIENTE A TU CORREO — PASO A PASO (10 minutos, una sola vez)
+
+La clave ya está puesta en el código y en la tienda. No tienes que inventar nada.
+
+A) SUBIR LA TIENDA
+ 1. En Hostinger > Administrador de archivos > carpeta public_html.
+ 2. Sube public_html-completo.zip y extráelo ahí, reemplazando los archivos.
+ 3. NO borres filtrosnevecones-api/config.php ni filtrosnevecones-data/pedidos.sqlite.
+
+B) CREAR LA HOJA EN GOOGLE
+ 1. Entra a sheets.new con jimmycuenca293@gmail.com. Ponle de nombre «Pedidos tienda».
+ 2. Menú Extensiones > Apps Script. Borra todo lo que haya.
+ 3. Abre el archivo 1-CODIGO-PARA-GOOGLE.txt, copia TODO y pégalo. Toca el disquete (Guardar).
+ 4. Arriba elige la función «probar» y toca Ejecutar. Acepta los permisos (Revisar permisos > tu cuenta > Avanzado > Ir a proyecto > Permitir).
+ 5. Te debe llegar un correo «Prueba de la hoja de pedidos». Si llegó, sigue.
+ 6. Arriba a la derecha: Implementar > Nueva implementación > engranaje > Aplicación web.
+      Ejecutar como: Yo      Quién tiene acceso: Cualquier persona
+    Toca Implementar y COPIA la dirección que termina en /exec.
+
+C) CONECTARLA A LA TIENDA
+ 1. En Hostinger abre public_html/filtrosnevecones-api/ajustes.php (botón de editar).
+ 2. Busca PEGA-AQUI-LA-DIRECCION-/exec y reemplázalo por la dirección que copiaste (sin borrar las comillas).
+ 3. Guarda.
+
+D) PROBAR
+ Haz un pedido en la tienda hasta el botón de pagar (no hace falta pagar). En la hoja «Pedidos» aparece una fila nueva y te llega un correo con nombre, celular, correo, ciudad, barrio, dirección y productos.
+ Llegan dos avisos por pedido: «esperando pago» (cuando el cliente le da a pagar) y «pagado» (cuando Wompi lo confirma, solo si pusiste las llaves de Wompi).
