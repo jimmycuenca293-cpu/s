@@ -58,6 +58,10 @@
     const a = e.target.closest("[data-f]"); if (a) { st.fecha = a.dataset.f; st.franja = -1; pintarFechas(); pintar(); $("#horas").scrollIntoView({ block: "nearest", behavior: "smooth" }); return; }
     const h = e.target.closest("[data-i]"); if (h) { st.franja = +h.dataset.i; pintarHoras(); pintar(); }
   });
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-pick]"); if (!b) return;
+    const r = f.querySelector(`input[name="servicio"][value="${b.dataset.pick}"]`); if (r) { r.checked = true; pintar(); }
+  });
   f.addEventListener("input", pintar); f.addEventListener("change", pintar);
 
   function faltantes() {

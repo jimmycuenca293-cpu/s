@@ -23,7 +23,7 @@ $m = fn(int $x) => cop($x);
     <span class="eyebrow">Instalación a domicilio · Cali, Jamundí, Yumbo y Palmira</span>
     <h1>Instalación de agua para tu nevecón, a domicilio</h1>
     <p class="lead">Un técnico llega el día y la hora que tú escoges, conecta tu nevecón con llave galápago profesional y manguera, y pone el filtro externo si lo quieres. El saldo lo pagas al terminar, cuando ya ves el agua funcionando.</p>
-    <div class="acc"><a class="btn" href="#reservar">Escoger día y hora</a><a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, quiero una instalación de agua para mi nevecón.') ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a></div>
+    <div class="acc"><a class="btn" href="#combos">Ver combos y reservar</a><a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, quiero una instalación de agua para mi nevecón.') ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a></div>
     <ul><li>1 año de garantía en la instalación</li><li>Reservas en línea y pagas el saldo al terminar</li><li>Cambias el día o la hora gratis, avisando con 24 horas</li></ul>
   </div>
   <aside class="ic-precio" aria-label="Precios de la instalación en Cali">
@@ -34,6 +34,22 @@ $m = fn(int $x) => cop($x);
     <small>Jamundí +<?= $m($C['zonas']['jamundi']['recargo']) ?> · Yumbo y Palmira +<?= $m($C['zonas']['yumbo']['recargo']) ?>. El precio ya incluye la llave, la manguera de hasta 5 m y la mano de obra.</small>
   </aside>
 </div></section>
+
+<section class="ic-sec" id="combos"><span class="eyebrow">Nuestros combos</span><h2>Escoge el servicio que necesitas</h2>
+  <p class="m">Todos incluyen la instalación a domicilio, llave galápago profesional con racores, hasta 5 m de manguera de 1/4", prueba de fugas y 1 año de garantía. Precios en Cali.</p>
+  <div class="ic-combos">
+  <?php foreach ($C['servicios'] as $id => $sv): $f = $sv['filtro']; ?>
+    <article class="ic-combo<?= $f ? '' : ' base' ?>">
+      <div class="foto"><?= $img($fotos[$id], $sv['nombre'], 120) ?></div>
+      <div class="cuerpo"><h3><?= h($sv['corto']) ?></h3>
+        <p class="m"><?= $f ? 'Incluye el filtro externo ' . h($f['marca']) . ' ' . h($f['ref']) . ' instalado en la línea de agua.' : 'La conexión del agua del nevecón, sin filtro. Sirve para cualquier marca.' ?></p>
+        <ul><li>Llave galápago y racores</li><li>Hasta 5 m de manguera</li><li><?= $f ? 'Filtro externo ' . h($f['marca']) : 'Prueba de fugas y purga' ?></li></ul></div>
+      <div class="cobro"><b><?= $m($sv['precio']) ?></b><small>Reservas con <?= $m($sv['reserva']) ?></small>
+        <a class="btn" href="#reservar" data-pick="<?= h($id) ?>">Quiero este</a></div>
+    </article>
+  <?php endforeach; ?></div>
+  <div class="ic-extras"><span><b>Más manguera:</b> cada 5 m extra <?= $m($C['metro_extra']) ?></span><span><b>Zonas:</b> Jamundí +<?= $m($C['zonas']['jamundi']['recargo']) ?> · Yumbo y Palmira +<?= $m($C['zonas']['yumbo']['recargo']) ?></span><span><b>Otra marca de nevecón:</b> escoge la instalación básica</span></div>
+</section>
 
 <section class="ic-sec"><span class="eyebrow">Qué incluye</span><h2>Todo lo necesario para que salga agua del dispensador</h2>
   <ul class="ic-incl">
