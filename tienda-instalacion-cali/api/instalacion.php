@@ -3,6 +3,30 @@ declare(strict_types=1);
 // API de la instalación a domicilio: horarios libres (GET ?a=dias), reservar (POST ?a=reservar) y avisar que ya pagó (POST ?a=pagado).
 require __DIR__ . '/instalacion-lib.php';
 
+// Cualquier error inesperado responde en JSON (y queda anotado) en vez de dejar la página sin agenda sin explicación
+set_exception_handler(function (Throwable $e): void {
+    @file_put_contents(__DIR__ . '/../filtrosnevecones-data/instalacion-errores.log', date('c') . ' ' . get_class($e) . ': ' . $e->getMessage() . ' (' . basename($e->getFile()) . ':' . $e->getLine() . ")\n", FILE_APPEND);
+    $ok = isset($_GET['clave']) && inst_config()['clave_panel'] !== '' && hash_equals(inst_config()['clave_panel'], (string) $_GET['clave']);
+    out(['error' => true, 'mensaje' => 'No pudimos cargar la agenda. Escríbenos por WhatsApp.', 'codigo' => 'E-' . substr(md5(get_class($e)), 0, 4)] + ($ok ? ['detalle' => get_class($e) . ': ' . $e->getMessage() . ' (' . basename($e->getFile()) . ':' . $e->getLine() . ')'] : []), 500);
+});
+
+// Diagnóstico para ti: instalacion.php?a=diag&clave=TU_CLAVE_DEL_PANEL
+if (($_GET['a'] ?? '') === 'diag') {
+    $cl = inst_config()['clave_panel'];
+    if ($cl === '' || !hash_equals($cl, (string) ($_GET['clave'] ?? ''))) fail('Clave incorrecta.', 403);
+    $r = ['php' => PHP_VERSION, 'extensiones' => array_combine(['pdo_sqlite', 'mbstring', 'curl', 'json', 'openssl'], array_map('extension_loaded', ['pdo_sqlite', 'mbstring', 'curl', 'json', 'openssl']))];
+    $dir = __DIR__ . '/../filtrosnevecones-data';
+    $r['carpeta_datos'] = ['existe' => is_dir($dir), 'se_puede_escribir' => is_dir($dir) && is_writable($dir)];
+    try { $t = inst_db()->query("SELECT name FROM sqlite_master WHERE type = 'table'")->fetchAll(PDO::FETCH_COLUMN); $r['base_de_datos'] = ['abre' => true, 'tablas' => $t, 'reservas' => (int) inst_db()->query('SELECT COUNT(*) FROM instalaciones')->fetchColumn()]; }
+    catch (Throwable $e) { $r['base_de_datos'] = ['abre' => false, 'error' => $e->getMessage()]; }
+    try { $r['agenda'] = ['dias' => count(inst_agenda()), 'primer_dia' => inst_agenda()[0]['fecha'] ?? null]; } catch (Throwable $e) { $r['agenda'] = ['error' => $e->getMessage()]; }
+    $r['hora_colombia'] = inst_ahora()->format('c');
+    $r['links_reserva'] = count(array_filter(inst_config()['links']));
+    $r['correo_configurado'] = (string) (cfg()['smtp']['clave'] ?? '') !== '';
+    $r['hoja_google'] = hoja_activa();
+    out($r);
+}
+
 $a = (string) ($_GET['a'] ?? '');
 if ($a === 'dias') out(['ahora' => inst_ahora()->format('c'), 'ts' => time(), 'anticipacion' => inst_config()['anticipacion_horas'], 'dias' => inst_agenda()]);
 

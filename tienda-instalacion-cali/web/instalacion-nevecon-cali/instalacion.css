@@ -203,7 +203,6 @@ details.ic-faq p{padding:0 0 15px;color:var(--muted);line-height:1.55}
 .ic-pbtn.principal{background:linear-gradient(135deg,#ff8a1f,#ff5a2e);border-color:transparent;color:#fff}
 .ic-pbtn.principal .s2{color:rgba(255,255,255,.92)}
 .ic-pasos2{margin:6px 0 0;padding-left:20px;display:grid;gap:8px;font-size:14.5px;line-height:1.45}
-.ic-combo .cobro .btn,.ic-combo .cobro .dos{display:none}
 
 .ic-otras{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:22px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}
 .ic-otras p{line-height:1.55}
@@ -220,3 +219,55 @@ details.ic-faq p{padding:0 0 15px;color:var(--muted);line-height:1.55}
 .ic-hero .ahora-co.cerrado .punto{background:#ffb347;animation:none}
 .ic-hero .ahora-co b{color:#fff}
 .ic-hero .ahora-co+.proximo{margin-top:10px}
+
+/* ===== tienda: portada compacta, fichas y página de reserva ===== */
+.ic-combo .cobro a.btn{display:flex;width:100%}
+.ic-combo .cobro .btn+.btn{margin-top:6px}
+.ic-combo .foto{display:block}
+.ic-combo h3 a{color:inherit;text-decoration:none}.ic-combo h3 a:hover{color:var(--accent)}
+.ic-hero-c{padding-block:34px 28px}
+.ic-hero-c .in{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)}
+.ic-confia{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ic-confia li{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:12px 14px;display:grid;gap:2px}
+.ic-confia b{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:16px}.ic-confia span{font-size:13px;opacity:.85}
+@media (max-width:900px){.ic-hero-c .in{grid-template-columns:minmax(0,1fr)}}
+/* ficha */
+.ic-ficha .miga,.ic-checkout .miga{font-size:14px;color:var(--muted);padding:18px 0 0}.ic-ficha .miga a,.ic-checkout .miga a{color:var(--muted)}
+.ic-prod{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px;align-items:start}
+.ic-galeria{display:grid;gap:12px;min-width:0}
+.ic-galeria .principal{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}.ic-galeria .principal img{width:100%;height:auto;display:block}
+.ic-galeria .piezas{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.ic-galeria figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;display:grid;gap:6px;text-align:center;font-size:12.5px;color:var(--muted)}
+.ic-galeria figure img{width:100%;height:90px;object-fit:contain;background:#fff;border-radius:10px}
+.ic-compra{display:grid;gap:14px;min-width:0;position:sticky;top:84px}
+.ic-compra h1{font-size:clamp(26px,3.4vw,36px);font-weight:800}
+.ic-precio-g{display:grid;gap:2px}.ic-precio-g b{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:40px;line-height:1}.ic-precio-g small{color:var(--muted)}
+.ic-fp{grid-template-columns:1fr!important}
+.ic-cta{width:100%;font-size:18px}
+.ic-sellos{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.ic-dos-col{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}
+.ic-incl.uno{grid-template-columns:1fr}
+.ic-noincl{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ic-noincl li{position:relative;padding-left:30px;line-height:1.45}
+.ic-noincl li::before{content:"–";position:absolute;left:0;top:0;width:21px;height:21px;border-radius:50%;background:var(--bad-soft);color:var(--bad);font-weight:900;display:grid;place-items:center}
+.ic-tabla th[scope],.ic-tabla tbody th{width:32%;text-transform:none;letter-spacing:0;font-size:14px;color:var(--muted)}
+.ic-otras-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.ic-mini{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;text-decoration:none;color:var(--ink)}
+.ic-mini img{width:84px;height:84px;border-radius:10px;border:1px solid var(--line);object-fit:cover}
+.ic-mini span{display:grid;gap:2px}.ic-mini small{font-weight:800;font-size:16px}
+.ic-barra-p{display:none}
+@media (max-width:900px){
+  .ic-prod,.ic-dos-col{grid-template-columns:minmax(0,1fr)}
+  .ic-compra{position:static}
+  .ic-barra-p{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.12);padding:10px max(16px,env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom));align-items:center;justify-content:space-between;gap:12px}
+  .ic-barra-p span{display:grid}.ic-barra-p span b{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:22px}.ic-barra-p small{color:var(--muted)}
+  body:has(.ic-barra-p) main.wrap{padding-bottom:90px}
+}
+/* reserva (checkout) */
+.ic-cab{display:grid;gap:6px}.ic-cab h1{font-size:clamp(28px,4vw,40px);font-weight:800}
+.ic-checkout{gap:20px}
+.ic .ic-op small b{display:inline}
+.ic-hero .ic-confia li{display:grid;gap:2px;font-weight:400}
+.ic-hero .ic-confia li::before{content:none;display:none}
+.ic-hero .ic-confia{margin:0}
+.ic-op picture{flex:none;width:76px;height:76px;display:block}.ic-op picture img{width:100%;height:100%}

@@ -4,7 +4,7 @@
   const I = window.INST, $ = s => document.querySelector(s), f = $("#f");
   const cop = n => "$ " + Math.round(n).toLocaleString("es-CO");
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-  const st = { fecha: "", franja: -1, dias: [], off: 0 };
+  const st = { fecha: "", franja: -1, dias: window.INST_DIAS || [], off: window.INST_TS ? window.INST_TS * 1000 - Date.now() : 0, err: "" };
   const val = n => (f.elements[n] && f.elements[n].value || "").trim();
   const radio = n => { const r = f.querySelector(`input[name="${n}"]:checked`); return r ? r.value : ""; };
   window.dataLayer = window.dataLayer || [];
@@ -54,7 +54,7 @@
   const DIAS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"], MESES = ["", "ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
   function pintarFechas() {
     const box = $("#cal");
-    if (!st.dias.length) { box.innerHTML = `<span class="m">No pudimos cargar la agenda. Recarga la página o escríbenos por WhatsApp.</span>`; return; }
+    if (!st.dias.length) { box.innerHTML = `<span class="m">${esc(st.err || "No pudimos cargar la agenda.")} </span><button type="button" class="btn ghost" data-reintentar>Reintentar</button> <a class="btn wa" href="https://wa.me/573013810242?text=${encodeURIComponent("Hola, no me carga el calendario para reservar la instalación.")}" target="_blank" rel="noopener">💬 Escribir por WhatsApp</a>`; $("#horas").innerHTML = ""; return; }
     const lead = (st.dias[0].dow + 6) % 7;
     let h = DIAS.map(d => `<span class="cab">${d}</span>`).join("") + '<span class="ic-d vacio"></span>'.repeat(lead);
     st.dias.forEach((d, i) => {
@@ -104,10 +104,13 @@
   setInterval(reloj, 1000); reloj();
   async function cargarDias(silencioso) {
     const tenia = st.franja >= 0 ? { fecha: st.fecha, franja: st.franja } : null;
-    try {
-      const r = await fetch("/filtrosnevecones-api/instalacion.php?a=dias", { cache: "no-store" }), j = await r.json();
-      st.dias = j.dias || []; if (j.ts) st.off = j.ts * 1000 - Date.now();
-    } catch { if (silencioso) return; st.dias = []; }
+    let j = null, estado = 0;
+    try { const r = await fetch("/filtrosnevecones-api/instalacion.php?a=dias", { cache: "no-store" }); estado = r.status; j = await r.json(); } catch (e) {}
+    if (j && Array.isArray(j.dias)) { st.dias = j.dias; st.err = ""; if (j.ts) st.off = j.ts * 1000 - Date.now(); }
+    else {
+      if (st.dias.length) return;   // se queda con la agenda con la que cargó la página
+      st.err = "No pudimos cargar la agenda" + (j && j.codigo ? " (código " + j.codigo + ")" : estado ? " (error " + estado + ")" : " (sin conexión)") + ".";
+    }
     if (st.fecha) {
       const d = st.dias.find(x => x.fecha === st.fecha), ok = d && d.franjas[st.franja] && d.franjas[st.franja].libre;
       if (!ok) { st.franja = -1; if (tenia) $("#aviso-horario").textContent = "El horario que habías escogido ya no está disponible (alguien lo reservó o ya falta poco). Escoge otro, por favor."; }
@@ -169,5 +172,8 @@
     if (e.target.name === "tel") { const d = e.target.value.replace(/\D/g, "").replace(/^57(?=3)/, "").slice(0, 10); e.target.value = d.replace(/(\d{3})(\d{0,3})(\d{0,4})/, (m, a, b, c) => [a, b, c].filter(Boolean).join(" ")); }
     try { const g = {}; KEEP.forEach(k => g[k] = val(k)); localStorage.setItem("ic_cliente", JSON.stringify(g)); } catch {}
   });
+  document.addEventListener("click", e => { if (e.target.closest("[data-reintentar]")) { st.err = "Cargando…"; pintarFechas(); cargarDias(); } });
+  if (!st.dias.length && window.INST_ERR) st.err = "No pudimos cargar la agenda (código " + window.INST_ERR + ").";
+  if (st.dias.length) { pintarFechas(); pintar(); proximo(); }
   cargarDias(); pintar();
 })();
