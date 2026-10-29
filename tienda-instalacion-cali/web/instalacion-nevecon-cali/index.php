@@ -10,17 +10,19 @@ $ld = ['@context' => 'https://schema.org', '@type' => 'Service', 'name' => 'Inst
     'areaServed' => array_map(fn($z) => ['@type' => 'City', 'name' => $z['nombre']], array_values($C['zonas'])),
     'provider' => ['@type' => 'LocalBusiness', 'name' => $n['nombre'], 'telephone' => '+57' . $wa],
     'offers' => ['@type' => 'AggregateOffer', 'priceCurrency' => 'COP', 'lowPrice' => $C['servicios']['basica']['precio'], 'highPrice' => $C['servicios']['filtro-whirlpool']['precio'] + 40000, 'offerCount' => 4]];
-cabeza('Instalación de nevecón a domicilio en Cali y Jamundí | ' . $n['nombre'],
+$m = fn(int $x) => cop($x);
+$recargos = implode(' · ', array_map(fn($z) => $z['nombre'] . ' +' . cop((int) $z['recargo']), array_filter($C['zonas'], fn($z) => $z['recargo'] > 0)));
+$nombres_zonas = implode(', ', array_slice(array_column($C['zonas'], 'nombre'), 0, -1)) . ' y ' . end($C['zonas'])['nombre'];
+cabeza('Instalación de nevecón a domicilio en Cali, Jamundí y Palmira | ' . $n['nombre'],
     'Un técnico instala el agua de tu nevecón en tu casa: llave galápago, manguera y filtro externo. Escoge el día y la hora, reserva en línea y paga el saldo al terminar. 1 año de garantía.',
     '/instalacion-nevecon-cali/', '<link rel="stylesheet" href="/instalacion-nevecon-cali/instalacion.css?v=' . $V . '"><script type="application/ld+json">' . json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) . '</script>');
 $img = fn(string $id, string $alt, int $w = 58) => '<picture><source srcset="/filtrosnevecones-img/' . $id . '-400.webp" type="image/webp"><img src="/filtrosnevecones-img/' . $id . '.jpg" alt="' . h($alt) . '" width="' . $w . '" height="' . $w . '" loading="lazy"></picture>';
 $fotos = ['basica' => 'k-galapago', 'filtro-samsung' => 'sam-ex-o', 'filtro-lg' => 'lg-ex-o', 'filtro-whirlpool' => 'wp-ex-o'];
-$m = fn(int $x) => cop($x);
 ?>
 <div class="ic">
 <section class="ic-hero"><div class="in">
   <div>
-    <span class="eyebrow">Instalación a domicilio · Cali y Jamundí</span>
+    <span class="eyebrow">Instalación a domicilio · <?= h($nombres_zonas) ?></span>
     <h1>Instalación de agua para tu nevecón, a domicilio</h1>
     <p class="lead">Un técnico llega el día y la hora que tú escoges, conecta tu nevecón con llave galápago profesional y manguera, y pone el filtro externo si lo quieres. El saldo lo pagas al terminar, cuando ya ves el agua funcionando.</p>
     <div class="acc"><a class="btn" href="#combos">Ver combos y reservar</a><a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, quiero una instalación de agua para mi nevecón.') ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a></div>
@@ -31,7 +33,7 @@ $m = fn(int $x) => cop($x);
     <div class="fila"><span>Instalación básica</span><b><?= $m($C['servicios']['basica']['precio']) ?></b></div>
     <div class="fila"><span>Con filtro Samsung o LG</span><b><?= $m($C['servicios']['filtro-samsung']['precio']) ?></b></div>
     <div class="fila"><span>Con filtro Whirlpool</span><b><?= $m($C['servicios']['filtro-whirlpool']['precio']) ?></b></div>
-    <small>En Jamundí +<?= $m($C['zonas']['jamundi']['recargo']) ?>. El precio ya incluye la llave, la manguera de hasta 5 m y la mano de obra.</small>
+    <small>Recargo por zona: <?= h($recargos) ?>. El precio ya incluye la llave, la manguera de hasta 5 m y la mano de obra.</small>
   </aside>
 </div></section>
 
@@ -48,7 +50,7 @@ $m = fn(int $x) => cop($x);
         <a class="btn" href="#reservar" data-pick="<?= h($id) ?>">Quiero este</a></div>
     </article>
   <?php endforeach; ?></div>
-  <div class="ic-extras"><span><b>Más manguera:</b> cada 5 m extra <?= $m($C['metro_extra']) ?></span><span><b>Zonas:</b> Jamundí +<?= $m($C['zonas']['jamundi']['recargo']) ?></span><span><b>Otra marca de nevecón:</b> escoge la instalación básica</span></div>
+  <div class="ic-extras"><span><b>Más manguera:</b> cada 5 m extra <?= $m($C['metro_extra']) ?></span><span><b>Recargo por zona:</b> <?= h($recargos) ?></span><span><b>Otra marca de nevecón:</b> escoge la instalación básica</span></div>
 </section>
 
 <section class="ic-sec"><span class="eyebrow">Qué incluye</span><h2>Todo lo necesario para que salga agua del dispensador</h2>
@@ -149,7 +151,7 @@ $m = fn(int $x) => cop($x);
   </div></section>
 
 <section class="ic-sec"><span class="eyebrow">Preguntas frecuentes</span><h2>Lo que más nos preguntan</h2><div>
-  <details class="ic-faq"><summary>¿Cuánto cuesta en total?</summary><p>En Cali, <?= $m($C['servicios']['basica']['precio']) ?> la instalación básica, <?= $m($C['servicios']['filtro-samsung']['precio']) ?> con filtro Samsung o LG y <?= $m($C['servicios']['filtro-whirlpool']['precio']) ?> con filtro Whirlpool. En Jamundí se suman <?= $m($C['zonas']['jamundi']['recargo']) ?>. El total exacto lo ves en tu reserva antes de pagar.</p></details>
+  <details class="ic-faq"><summary>¿Cuánto cuesta en total?</summary><p>En Cali, <?= $m($C['servicios']['basica']['precio']) ?> la instalación básica, <?= $m($C['servicios']['filtro-samsung']['precio']) ?> con filtro Samsung o LG y <?= $m($C['servicios']['filtro-whirlpool']['precio']) ?> con filtro Whirlpool. Según tu zona se suma un recargo por desplazamiento: <?= h($recargos) ?>. El total exacto lo ves en tu reserva antes de pagar.</p></details>
   <details class="ic-faq"><summary>¿Cuánto pago ahora y cuánto al terminar?</summary><p>Ahora pagas una reserva de <?= $m($C['servicios']['basica']['reserva']) ?> (básica), <?= $m($C['servicios']['filtro-samsung']['reserva']) ?> (con filtro Samsung o LG) o <?= $m($C['servicios']['filtro-whirlpool']['reserva']) ?> (con filtro Whirlpool). El resto lo pagas al terminar.</p></details>
   <details class="ic-faq"><summary>¿Cómo pago el saldo?</summary><p>En efectivo, directamente al técnico, cuando termina la instalación y ves el agua funcionando. Si prefieres no manejar efectivo, escoge «Pago el total en línea» al reservar.</p></details>
   <details class="ic-faq"><summary>¿Qué pasa si necesito más manguera?</summary><p>La instalación incluye hasta 5 metros. Cada 5 metros adicionales cuestan <?= $m($C['metro_extra']) ?>. Si no sabes la distancia, el técnico la mide en tu casa antes de empezar.</p></details>
