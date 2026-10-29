@@ -66,6 +66,6 @@ $r = inst_buscar($ref);
 $asunto = ($v['forma_pago'] === 'total' ? 'PAGA EL TOTAL · ' : '') . 'NUEVA INSTALACIÓN ' . $ref . ' — ' . inst_fecha_txt($fecha, false) . ' ' . inst_franja_txt($franja) . ' — ' . $c['zonas'][$zona]['nombre'] . ' — ' . $v['nombre'];
 out_y_seguir(['ok' => true, 'ref' => $ref, 'url' => inst_url_reserva($ref), 'total' => $P['total'], 'reserva' => $online], function () use ($r, $asunto) {
     inst_avisar($r, 'reserva', $asunto, '<h2 style="margin:0 0 8px">Nueva instalación agendada</h2><p>' . ($r['forma_pago'] === 'total' ? '<b>El cliente va a pagar el TOTAL en línea (' . cop((int) $r['reserva']) . ') con el link de Wompi de su servicio.</b> ' : '') . 'El cliente quedó en la pantalla para pagar. El horario está apartado por ' . INST_RETENER_MIN . ' minutos; cuando veas el pago en Wompi, confírmala en tu panel.</p>'
-        . inst_tabla($r, true) . '<p><a href="https://wa.me/57' . h($r['tel']) . '">Escribirle al cliente por WhatsApp</a> · <a href="' . h(base_url()) . '/admin-instalaciones.php">Abrir el panel de instalaciones</a></p>');
+        . inst_tabla($r, true) . '<p><b>Recuerda:</b> apenas confirmes el pago, escríbele por WhatsApp para confirmar la instalación y darle el nombre del técnico. <a href="https://wa.me/57' . h($r['tel']) . '">Escribirle al cliente por WhatsApp</a> · <a href="' . h(base_url()) . '/admin-instalaciones.php">Abrir el panel de instalaciones</a></p>');
     inst_correo_cliente($r);
 });

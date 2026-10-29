@@ -290,8 +290,8 @@ function inst_correo_cliente(array $r): void
 {
     $tel = cfg()['negocio']['telefono'] ?? '301 381 0242';
     $total = ($r['forma_pago'] ?? 'reserva') === 'total';
-    if ($r['estado'] === 'esperando_pago') $pagar = '<p><b>Falta un paso:</b> ' . ($total ? 'paga el total (' . h(cop((int) $r['reserva'])) . ')' : 'paga la reserva de ' . h(cop((int) $r['reserva']))) . ' para asegurar tu horario. <a href="' . h(inst_url_reserva($r['ref'])) . '">' . ($total ? 'Pagar ahora' : 'Pagar la reserva') . '</a></p>';
-    else $pagar = '<p>Tu reserva está confirmada. El técnico llega en el horario que escogiste.</p>';
+    if ($r['estado'] === 'esperando_pago') $pagar = '<p><b>Falta un paso:</b> ' . ($total ? 'paga el total (' . h(cop((int) $r['reserva'])) . ')' : 'paga la reserva de ' . h(cop((int) $r['reserva']))) . ' para asegurar tu horario. <a href="' . h(inst_url_reserva($r['ref'])) . '">' . ($total ? 'Pagar ahora' : 'Pagar la reserva') . '</a></p><p>Apenas pagues, <b>un asesor te escribe por WhatsApp</b> para confirmar tu instalación y darte el nombre del técnico.</p>';
+    else $pagar = '<p>Tu reserva está confirmada. Un asesor te escribe por WhatsApp para darte el nombre del técnico.</p>';
     $fin = $total ? ((int) $r['saldo'] > 0 ? '<p>Al terminar pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' por el recargo de zona o la manguera adicional. Tienes 1 año de garantía.</p>' : '<p>Pagas todo en línea: al terminar no tienes que pagar nada más. Tienes 1 año de garantía.</p>')
         : '<p>El saldo de ' . h(cop((int) $r['saldo'])) . ' lo pagas en efectivo al técnico al terminar la instalación, cuando ya veas el agua funcionando. Tienes 1 año de garantía.</p>';
     $html = '<h2 style="margin:0 0 8px">Tu instalación quedó agendada</h2>' . $pagar . inst_tabla($r, false) . $fin

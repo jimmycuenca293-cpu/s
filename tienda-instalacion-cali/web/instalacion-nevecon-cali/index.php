@@ -29,7 +29,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
     <p class="lead">Un técnico llega el día y la hora que tú escoges, conecta tu nevecón con llave galápago profesional y manguera, y pone el filtro externo si lo quieres. El saldo lo pagas al terminar, cuando ya ves el agua funcionando.</p>
     <div class="acc"><a class="btn" href="#combos">Ver combos y reservar</a><a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, quiero una instalación de agua para mi nevecón.') ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a></div>
     <p class="proximo" id="proximo" hidden></p>
-    <ul><li>1 año de garantía en la instalación</li><li>Pagas todo hoy o en 2 partes: el resto al técnico al terminar</li><li>Cambias el día o la hora gratis, avisando con 24 horas</li></ul>
+    <ul><li>1 año de garantía en la instalación</li><li>Pagas todo hoy o en 2 partes: el resto al técnico al terminar</li><li>Un asesor te escribe por WhatsApp para confirmar y darte el nombre del técnico</li><li>Cambias el día o la hora gratis, avisando con 24 horas</li></ul>
   </div>
   <aside class="ic-precio" aria-label="Precios de la instalación en Cali">
     <span class="eyebrow" style="color:#9fe8ff">Precios en Cali</span>
@@ -88,8 +88,8 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
   <div class="ic-grid">
     <div class="ic-card"><span class="n">1</span><h3>Escoges tu servicio</h3><p>Tu zona, tu marca de filtro, el día y la hora que más te sirven. El precio final lo ves antes de pagar.</p></div>
     <div class="ic-card"><span class="n">2</span><h3>Pagas hoy, en línea</h3><p>Todo el combo o solo una primera parte, con Wompi (tarjeta, PSE o Nequi). Así tu día y tu hora quedan apartados solo para ti.</p></div>
-    <div class="ic-card"><span class="n">3</span><h3>El técnico llega</h3><p>En el horario que escogiste. Instala, prueba que no haya fugas y te muestra el agua funcionando.</p></div>
-    <div class="ic-card"><span class="n">4</span><h3>Al terminar, el resto</h3><p>Si pagaste en 2 partes, el resto va en efectivo al técnico cuando todo quedó bien. Si pagaste todo, no pagas nada más. Tienes 1 año de garantía.</p></div>
+    <div class="ic-card"><span class="n">3</span><h3>Un asesor te escribe por WhatsApp</h3><p>Apenas haces la compra, un asesor te contacta para confirmar tu instalación y darte el <b>nombre del técnico</b> que va a tu casa.</p></div>
+    <div class="ic-card"><span class="n">4</span><h3>El técnico instala</h3><p>Llega en tu horario, instala, prueba que no haya fugas y te muestra el agua funcionando. Si pagaste en 2 partes, le pagas el resto en efectivo. Tienes 1 año de garantía.</p></div>
   </div></section>
 
 <section class="ic-sec" id="pagos"><span class="eyebrow">Formas de pago</span><h2>Dos formas de pagar. Tú escoges la que prefieras.</h2>
@@ -97,7 +97,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
     <div class="ic-card ic-pago"><span class="tag">Pago completo</span><h3>Pagar todo ahora</h3>
       <p>Pagas el combo completo hoy, en línea con Wompi (tarjeta, PSE o Nequi). Tu horario queda confirmado y <b>al terminar la instalación no pagas nada más</b>.</p></div>
     <div class="ic-card ic-pago"><span class="tag verde">Pago en 2 partes</span><h3>Una parte hoy y el resto al técnico</h3>
-      <ol class="ic-pasos2"><li><b>Hoy</b> pagas una primera parte en línea con Wompi. Con eso tu día y tu hora quedan apartados.</li><li><b>El técnico</b> llega, instala y te muestra el agua funcionando.</li><li><b>Al terminar</b> le pagas el resto <b>en efectivo, directamente al técnico</b>.</li></ol></div>
+      <ol class="ic-pasos2"><li><b>Hoy</b> pagas una primera parte en línea con Wompi. Con eso tu día y tu hora quedan apartados.</li><li><b>Un asesor</b> te escribe por WhatsApp para confirmar tu instalación y darte el nombre del técnico.</li><li><b>El técnico</b> llega, instala y te muestra el agua funcionando.</li><li><b>Al terminar</b> le pagas el resto <b>en efectivo, directamente al técnico</b>.</li></ol></div>
   </div>
   <div class="ic-tabla"><table><thead><tr><th>Combo (en Cali)</th><th>Pagar todo ahora</th><th>2 partes: hoy, en línea</th><th>2 partes: al técnico, en efectivo</th></tr></thead><tbody>
   <?php foreach ($C['servicios'] as $id => $sv): ?><tr><td><b><?= h($sv['corto']) ?></b></td><td><?= $m($sv['precio']) ?></td><td><?= $m($sv['reserva']) ?></td><td><?= $m($sv['precio'] - $sv['reserva']) ?></td></tr><?php endforeach; ?>
@@ -145,7 +145,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
     <section class="ic-paso" id="p6"><h3><i>6</i>Tus datos y la dirección</h3>
       <div class="ic-campos">
         <label>Nombre completo<input name="nombre" autocomplete="name" maxlength="80" required></label>
-        <label>Celular (WhatsApp)<input name="tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="300 123 4567" maxlength="16" required></label>
+        <label>Celular (WhatsApp)<small style="font-weight:500;color:var(--muted)">Aquí te escribe el asesor para confirmar y darte el nombre del técnico</small><input name="tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="300 123 4567" maxlength="16" required></label>
         <label class="ancho">Correo (te llega la confirmación)<input name="email" type="email" inputmode="email" autocomplete="email" placeholder="tucorreo@gmail.com" maxlength="120" required></label>
         <label>Marca del nevecón<select name="marca_nevecon" required><option value="">Escoge la marca</option><?php foreach (['Samsung', 'LG', 'Whirlpool', 'GE', 'KitchenAid', 'Mabe', 'Electrolux', 'Haceb', 'Otra'] as $mm) echo '<option>' . h($mm) . '</option>'; ?></select></label>
         <label id="otra-marca" hidden>¿De qué marca es?<input name="marca_otra" maxlength="30" placeholder="Por ejemplo: Mabe, Haceb, Electrolux"></label>
@@ -195,6 +195,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
   <details class="ic-faq"><summary>¿Cuánto pago ahora y cuánto al terminar?</summary><p>Tienes dos formas. <b>1. Pagar todo ahora</b> (<?= $m($C['servicios']['basica']['precio']) ?> la básica, <?= $m($C['servicios']['filtro-samsung']['precio']) ?> con filtro Samsung o LG, <?= $m($C['servicios']['filtro-whirlpool']['precio']) ?> con filtro Whirlpool) y al terminar no pagas nada más. <b>2. Pagas en 2 partes</b>: hoy <?= $m($C['servicios']['basica']['reserva']) ?>, <?= $m($C['servicios']['filtro-samsung']['reserva']) ?> o <?= $m($C['servicios']['filtro-whirlpool']['reserva']) ?> en línea, y el resto en efectivo al técnico cuando termina. El recargo de zona y la manguera adicional, si aplican, se pagan en efectivo al terminar (si pagas todo ahora en una zona con recargo, el recargo ya va incluido en el link de pago).</p></details>
   <details class="ic-faq"><summary>¿Cómo pago el saldo?</summary><p>En efectivo, directamente al técnico, cuando termina la instalación y ves el agua funcionando. Si prefieres pagar todo antes, escoge «Pago el total en línea» al reservar y pagas con Wompi (tarjeta, PSE o Nequi).</p></details>
   <details class="ic-faq"><summary>¿Qué pasa si necesito más manguera?</summary><p>La instalación incluye hasta 5 metros. Cada 5 metros adicionales cuestan <?= $m($C['metro_extra']) ?>. Si no sabes la distancia, el técnico la mide en tu casa antes de empezar.</p></details>
+  <details class="ic-faq"><summary>¿Quién va a mi casa y cómo me confirman?</summary><p>Apenas haces tu compra, <b>un asesor te contacta por WhatsApp</b> al número que dejaste, para confirmar tu instalación y decirte el <b>nombre del técnico</b> que te va a atender. Por eso es importante que el celular sea el de tu WhatsApp.</p></details>
   <details class="ic-faq"><summary>¿Y si mi nevecón es de otra marca?</summary><p>Sin problema. El filtro externo va conectado a la manguera, por fuera del nevecón, así que se puede usar un filtro Whirlpool, Samsung o LG en nevecones de otras marcas que tengan dispensador de agua. Escoge el combo con filtro, pon «Otra» como marca en el formulario y antes de la visita te escribimos para confirmar que le sirve.</p></details>
   <details class="ic-faq"><summary>¿Cómo sé qué filtro externo necesita mi nevecón?</summary><p>El servicio con filtro incluye el filtro de la marca que escojas (Samsung, LG o Whirlpool). Si tienes dudas, escríbenos por WhatsApp al <?= h($tel) ?> con la marca y el modelo de tu nevecón y te lo confirmamos.</p></details>
   <details class="ic-faq"><summary>¿Cuánto se demora la instalación?</summary><p>Depende de la distancia y de dónde esté el punto de agua. Cada cita tiene un espacio de hora y media en la agenda para trabajar con calma. Si hay que hacer algo adicional, el técnico te lo explica antes de empezar.</p></details>

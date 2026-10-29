@@ -28,7 +28,7 @@ $msgwa = rawurlencode('Hola, soy ' . $r['nombre'] . '. Sobre mi reserva de insta
     <a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, soy ' . $r['nombre'] . '. Reservé la instalación ' . $r['ref'] . ' y quiero pagar ' . cop((int) $r['reserva']) . '. ¿Me envías el link de pago?') ?>" target="_blank" rel="noopener" style="font-size:18px">💬 Pedir el link de pago por WhatsApp</a>
   <?php endif; ?>
 <?php elseif ($r['estado'] === 'reservada'): ?>
-  <div class="ic-estado ok"><b>¡Reserva confirmada!</b><span>El técnico llega el <?= h(inst_fecha_txt($r['fecha'])) ?>, <?= h(inst_franja_txt((int) $r['franja'])) ?>. <?= $total ? ((int) $r['saldo'] > 0 ? 'Pagaste el combo en línea. Al terminar pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' por el recargo de zona o la manguera adicional.' : 'Ya pagaste todo: al terminar no pagas nada más.') : 'El saldo de ' . h(cop((int) $r['saldo'])) . ' lo pagas en efectivo al técnico al terminar.' ?></span></div>
+  <div class="ic-estado ok"><b>¡Reserva confirmada!</b><span>Un asesor te escribe por WhatsApp para darte el nombre del técnico. La instalación es el <?= h(inst_fecha_txt($r['fecha'])) ?>, <?= h(inst_franja_txt((int) $r['franja'])) ?>. <?= $total ? ((int) $r['saldo'] > 0 ? 'Pagaste el combo en línea. Al terminar pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' por el recargo de zona o la manguera adicional.' : 'Ya pagaste todo: al terminar no pagas nada más.') : 'El saldo de ' . h(cop((int) $r['saldo'])) . ' lo pagas en efectivo al técnico al terminar.' ?></span></div>
 <?php elseif ($r['estado'] === 'completada'): ?>
   <div class="ic-estado ok"><b>Instalación completada</b><span>Gracias por confiar en nosotros. Tienes 1 año de garantía en la instalación.</span></div>
 <?php else: ?>
@@ -37,7 +37,8 @@ $msgwa = rawurlencode('Hola, soy ' . $r['nombre'] . '. Sobre mi reserva de insta
 <section class="ic-card" style="padding:18px"><h3 style="margin-bottom:6px">Resumen</h3><?= inst_tabla($r, false) ?></section>
 <section class="ic-card"><h3>Qué sigue</h3><ol class="ic-sigue">
   <?php if ($r['estado'] === 'esperando_pago'): ?><li><b>Pagas <?= $total ? 'el total' : 'la reserva' ?>.</b> Con eso queda confirmado tu horario.</li><?php else: ?><li><b>Tu horario está confirmado.</b></li><?php endif; ?>
-  <li><b>El día de la instalación</b> el técnico llega en el horario escogido. Te escribe por WhatsApp antes de salir.</li>
+  <li><b>Un asesor te escribe por WhatsApp</b> al <?= h($r['tel']) ?> para confirmar tu instalación y darte el <b>nombre del técnico</b>.</li>
+  <li><b>El día de la instalación</b> el técnico llega en el horario escogido.</li>
   <li><b>Revisas el agua funcionando</b> y <?= $total ? ((int) $r['saldo'] > 0 ? 'pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' (recargo de zona o manguera adicional).' : 'listo: ya pagaste todo.') : 'pagas el saldo en efectivo al técnico.' ?></li></ol>
   <p class="m" style="font-size:14px">Ten a mano: una persona adulta en casa, el nevecón con espacio para moverlo y a la vista el punto de agua.</p></section>
 <section class="ic-card"><h3>Guarda tu reserva</h3><p class="m" style="font-size:14px">Tu reserva es este enlace. Guárdalo o mándatelo por WhatsApp para tenerlo a mano.</p>
