@@ -245,3 +245,20 @@ function inst_correo_cliente(array $r): void
         . '<p>¿Necesitas cambiar el día o la hora? Avísanos con 24 horas y la reprogramamos sin costo: WhatsApp ' . h($tel) . '.</p>';
     enviar_correo($r['email'], 'Tu instalación ' . $r['ref'] . ': ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']), $html);
 }
+
+// Archivo de calendario (.ics) para que el cliente guarde la cita en su celular
+function inst_ics(array $r): string
+{
+    $f = inst_config()['franjas'][(int) $r['franja']] ?? [8, 0, 9, 30];
+    $d = str_replace('-', '', $r['fecha']);
+    $t = fn(int $h, int $m): string => str_pad((string) $h, 2, '0', STR_PAD_LEFT) . str_pad((string) $m, 2, '0', STR_PAD_LEFT) . '00';
+    $esc = fn(string $x): string => str_replace(["\\", ';', ',', "\n"], ['\\\\', '\\;', '\\,', '\\n'], $x);
+    $serv = inst_config()['servicios'][$r['servicio']]['nombre'] ?? 'Instalación';
+    $l = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Filtros Nevecones//Instalacion//ES', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT',
+        'UID:' . $r['ref'] . '@filtrosnevecones', 'DTSTAMP:' . gmdate('Ymd\THis\Z'),
+        'DTSTART;TZID=America/Bogota:' . $d . 'T' . $t($f[0], $f[1]), 'DTEND;TZID=America/Bogota:' . $d . 'T' . $t($f[2], $f[3]),
+        'SUMMARY:' . $esc($serv . ' en tu casa'), 'LOCATION:' . $esc($r['dir'] . ', ' . $r['barrio']),
+        'DESCRIPTION:' . $esc('Reserva ' . $r['ref'] . '. Saldo en efectivo al técnico al terminar: ' . cop((int) $r['saldo']) . '. WhatsApp ' . (cfg()['negocio']['telefono'] ?? '301 381 0242')),
+        'BEGIN:VALARM', 'TRIGGER:-PT1H', 'ACTION:DISPLAY', 'DESCRIPTION:Instalación del agua de tu nevecón en 1 hora', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'];
+    return implode("\r\n", $l) . "\r\n";
+}

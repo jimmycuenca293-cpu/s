@@ -26,6 +26,7 @@ $fotos = ['basica' => 'k-galapago', 'filtro-samsung' => 'sam-ex-o', 'filtro-lg' 
     <h1>Instalación de agua para tu nevecón, a domicilio</h1>
     <p class="lead">Un técnico llega el día y la hora que tú escoges, conecta tu nevecón con llave galápago profesional y manguera, y pone el filtro externo si lo quieres. El saldo lo pagas al terminar, cuando ya ves el agua funcionando.</p>
     <div class="acc"><a class="btn" href="#combos">Ver combos y reservar</a><a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, quiero una instalación de agua para mi nevecón.') ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a></div>
+    <p class="proximo" id="proximo" hidden></p>
     <ul><li>1 año de garantía en la instalación</li><li>Reservas en línea y pagas el saldo al terminar</li><li>Cambias el día o la hora gratis, avisando con 24 horas</li></ul>
   </div>
   <aside class="ic-precio" aria-label="Precios de la instalación en Cali">
@@ -150,12 +151,25 @@ $fotos = ['basica' => 'k-galapago', 'filtro-samsung' => 'sam-ex-o', 'filtro-lg' 
     <div class="ic-card"><h3>Tu punto de agua</h3><p>Instalamos desde un punto de agua que ya exista y esté en buen estado. Si hace falta trabajo adicional en tuberías, el técnico te lo cotiza antes de empezar.</p></div>
   </div></section>
 
+<section class="ic-sec"><span class="eyebrow">Para que todo salga bien</span><h2>Antes de que llegue el técnico</h2>
+  <div class="ic-grid">
+    <div class="ic-card"><h3>Una persona adulta en casa</h3><p>Alguien que reciba al técnico y revise contigo que el agua quedó funcionando.</p></div>
+    <div class="ic-card"><h3>Espacio para mover el nevecón</h3><p>Despeja el paso hacia la parte de atrás para poder conectar la manguera con calma.</p></div>
+    <div class="ic-card"><h3>El punto de agua a la vista</h3><p>Llave, toma o tubo de donde saldrá el agua. Si tienes duda, cuéntanos en el formulario o por WhatsApp.</p></div>
+    <div class="ic-card"><h3>El saldo listo</h3><p>Al terminar pagas el saldo en efectivo, o ya pagaste todo si escogiste el pago total en línea.</p></div>
+  </div></section>
+
+<section class="ic-cierre"><div><h2>Deja el agua de tu nevecón lista esta semana</h2><p>Escoge tu día y tu hora. Reservas en línea y pagas el resto al terminar, con 1 año de garantía.</p></div><a class="btn" href="#reservar">Reservar mi instalación</a></section>
+
 <section class="ic-sec"><span class="eyebrow">Preguntas frecuentes</span><h2>Lo que más nos preguntan</h2><div>
   <details class="ic-faq"><summary>¿Cuánto cuesta en total?</summary><p>En Cali, <?= $m($C['servicios']['basica']['precio']) ?> la instalación básica, <?= $m($C['servicios']['filtro-samsung']['precio']) ?> con filtro Samsung o LG y <?= $m($C['servicios']['filtro-whirlpool']['precio']) ?> con filtro Whirlpool. Según tu zona se suma un recargo por desplazamiento: <?= h($recargos) ?>. El total exacto lo ves en tu reserva antes de pagar.</p></details>
   <details class="ic-faq"><summary>¿Cuánto pago ahora y cuánto al terminar?</summary><p>Ahora pagas una reserva de <?= $m($C['servicios']['basica']['reserva']) ?> (básica), <?= $m($C['servicios']['filtro-samsung']['reserva']) ?> (con filtro Samsung o LG) o <?= $m($C['servicios']['filtro-whirlpool']['reserva']) ?> (con filtro Whirlpool). El resto lo pagas al terminar.</p></details>
   <details class="ic-faq"><summary>¿Cómo pago el saldo?</summary><p>En efectivo, directamente al técnico, cuando termina la instalación y ves el agua funcionando. Si prefieres no manejar efectivo, escoge «Pago el total en línea» al reservar.</p></details>
   <details class="ic-faq"><summary>¿Qué pasa si necesito más manguera?</summary><p>La instalación incluye hasta 5 metros. Cada 5 metros adicionales cuestan <?= $m($C['metro_extra']) ?>. Si no sabes la distancia, el técnico la mide en tu casa antes de empezar.</p></details>
   <details class="ic-faq"><summary>¿Cómo sé qué filtro externo necesita mi nevecón?</summary><p>El servicio con filtro incluye el filtro de la marca que escojas (Samsung, LG o Whirlpool). Si tienes dudas, escríbenos por WhatsApp al <?= h($tel) ?> con la marca y el modelo de tu nevecón y te lo confirmamos.</p></details>
+  <details class="ic-faq"><summary>¿Cuánto se demora la instalación?</summary><p>Depende de la distancia y de dónde esté el punto de agua. Cada cita tiene un espacio de hora y media en la agenda para trabajar con calma. Si hay que hacer algo adicional, el técnico te lo explica antes de empezar.</p></details>
+  <details class="ic-faq"><summary>¿Qué pasa si mi punto de agua está dañado o muy lejos?</summary><p>El técnico lo revisa al llegar. Si hace falta trabajo adicional en tuberías, te lo cotiza antes de empezar y tú decides. Si necesitas más manguera, cada 5 metros extra cuestan <?= $m($C['metro_extra']) ?>.</p></details>
+  <details class="ic-faq"><summary>¿Tengo que estar en casa?</summary><p>Sí, una persona adulta. Así revisan juntos que el agua salga bien antes de pagar el saldo.</p></details>
   <details class="ic-faq"><summary>¿Puedo cambiar el día o la hora?</summary><p>Sí. Avísanos con 24 horas de anticipación por WhatsApp y lo reprogramamos sin costo.</p></details>
 </div></section>
 

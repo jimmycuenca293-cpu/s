@@ -46,13 +46,21 @@
     if (!d) { box.innerHTML = `<span class="m">Escoge primero un día.</span>`; return; }
     box.innerHTML = d.franjas.map(x => `<button type="button" class="ic-hora" data-i="${x.i}" aria-pressed="${x.i === st.franja}" ${x.libre ? "" : "disabled"}>${esc(x.txt)}</button>`).join("");
   }
+  function proximo() {
+    const el = $("#proximo"); if (!el || !st.dias.length) return;
+    const sem = st.dias.slice(0, 6).reduce((n, d) => n + d.franjas.filter(x => x.libre).length, 0);
+    const d = st.dias.find(x => x.franjas.some(z => z.libre)); if (!d) return;
+    const h = d.franjas.find(z => z.libre);
+    el.textContent = "Próximo horario libre: " + d.txt + ", " + h.txt + (sem ? " · " + sem + (sem === 1 ? " cupo" : " cupos") + " en los próximos días" : "");
+    el.hidden = false;
+  }
   async function cargarDias() {
     try {
       const r = await fetch("/filtrosnevecones-api/instalacion.php?a=dias", { cache: "no-store" }), j = await r.json();
       st.dias = j.dias || [];
       if (st.fecha && !st.dias.find(d => d.fecha === st.fecha && d.franjas[st.franja] && d.franjas[st.franja].libre)) { st.franja = -1; }
     } catch { st.dias = []; }
-    pintarFechas(); pintar();
+    pintarFechas(); pintar(); proximo();
   }
   document.addEventListener("click", e => {
     const a = e.target.closest("[data-f]"); if (a) { st.fecha = a.dataset.f; st.franja = -1; pintarFechas(); pintar(); $("#horas").scrollIntoView({ block: "nearest", behavior: "smooth" }); return; }

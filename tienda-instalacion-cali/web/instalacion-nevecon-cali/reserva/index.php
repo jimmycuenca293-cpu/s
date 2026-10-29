@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../filtrosnevecones-api/instalacion-lib.php';
 header('X-Robots-Tag: noindex');
 $r = inst_buscar((string) ($_GET['ref'] ?? ''));
 $ok = $r && hash_equals(inst_token($r['ref']), (string) ($_GET['t'] ?? ''));
+if ($ok && isset($_GET['ics'])) { header('Content-Type: text/calendar; charset=utf-8'); header('Content-Disposition: attachment; filename="instalacion-' . $r['ref'] . '.ics"'); echo inst_ics($r); exit; }
 cabeza('Tu reserva de instalación | ' . cfg()['negocio']['nombre'], 'Tu reserva de instalación.', '/instalacion-nevecon-cali/reserva/', '<link rel="stylesheet" href="/instalacion-nevecon-cali/instalacion.css?v=20261029a">', false);
 $wa = inst_tel_wa(); $tel = cfg()['negocio']['telefono'] ?? '301 381 0242';
 if (!$ok) { echo '<div class="ic"><div class="ic-reserva"><h1>No encontramos esa reserva</h1><p class="m">Revisa el enlace que te llegó al correo o escríbenos por WhatsApp al ' . h($tel) . '.</p><a class="btn" href="/instalacion-nevecon-cali/">Hacer una reserva</a></div></div>'; pie(); exit; }
@@ -35,6 +36,12 @@ $msgwa = rawurlencode('Hola, soy ' . $r['nombre'] . '. Sobre mi reserva de insta
   <div class="ic-estado bad"><b>Esta reserva fue cancelada</b><span>Si quieres, haz una nueva reserva o escríbenos por WhatsApp.</span></div>
 <?php endif; ?>
 <section class="ic-card" style="padding:18px"><h3 style="margin-bottom:6px">Resumen</h3><?= inst_tabla($r, false) ?></section>
+<section class="ic-card"><h3>Qué sigue</h3><ol class="ic-sigue">
+  <?php if ($r['estado'] === 'esperando_pago'): ?><li><b>Pagas <?= $total ? 'el total' : 'la reserva' ?>.</b> Con eso queda confirmado tu horario.</li><?php else: ?><li><b>Tu horario está confirmado.</b></li><?php endif; ?>
+  <li><b>El día de la instalación</b> el técnico llega en el horario escogido. Te escribe por WhatsApp antes de salir.</li>
+  <li><b>Revisas el agua funcionando</b> y <?= $total ? 'listo: ya pagaste todo.' : 'pagas el saldo en efectivo al técnico.' ?></li></ol>
+  <p class="m" style="font-size:14px">Ten a mano: una persona adulta en casa, el nevecón con espacio para moverlo y a la vista el punto de agua.</p></section>
+<a class="btn ghost" href="?ref=<?= h(rawurlencode($r['ref'])) ?>&amp;t=<?= h((string) $_GET['t']) ?>&amp;ics=1">📅 Guardar en mi calendario</a>
 <p class="m">¿Necesitas cambiar el día o la hora? Avísanos con 24 horas y lo reprogramamos sin costo.</p>
 <a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= $msgwa ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a>
 <a class="btn ghost" href="/">Volver a la tienda</a>
