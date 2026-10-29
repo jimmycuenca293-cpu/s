@@ -13,7 +13,8 @@ $b = json_decode($raw, true);
 if (!is_array($b)) fail('Petición no válida.');
 $origen = (string) ($_SERVER['HTTP_ORIGIN'] ?? '');
 if ($origen !== '' && parse_url($origen, PHP_URL_HOST) !== parse_url(base_url(), PHP_URL_HOST)) fail('Origen no permitido.', 403);
-$ip = $_SERVER['REMOTE_ADDR'] ?? '';
+// IP real del cliente (el hosting puede ir detrás de un proxy)
+$ip = trim(explode(',', (string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? ''))[0]);
 
 if ($a === 'pagado') {
     $r = inst_buscar((string) ($b['ref'] ?? ''));
@@ -54,10 +55,10 @@ if (!preg_match('/^3\d{9}$/', $v['tel'])) fail('Escribe un celular válido (10 d
 if ($v['barrio'] === '' || mb_strlen($v['dir']) < 5) fail('Escribe el barrio y la dirección completa.');
 if ($v['marca_nevecon'] === '') fail('Escoge la marca de tu nevecón.');
 
-// Freno contra abusos: máximo 5 reservas sin pagar por hora desde la misma conexión
+// Freno contra abusos: máximo 8 reservas sin pagar por hora desde la misma conexión
 $st = inst_db()->prepare("SELECT COUNT(*) FROM instalaciones WHERE ip = ? AND estado = 'esperando_pago' AND creado > ?");
 $st->execute([$ip, date('c', time() - 3600)]);
-if ((int) $st->fetchColumn() >= 5) fail('Demasiados intentos. Espera un rato o escríbenos por WhatsApp.', 429);
+if ((int) $st->fetchColumn() >= 8) fail('Demasiados intentos. Espera un rato o escríbenos por WhatsApp.', 429);
 
 $ref = inst_crear($v);
 if ($ref === '') fail('Ese horario se acaba de ocupar. Escoge otro, por favor.', 409);

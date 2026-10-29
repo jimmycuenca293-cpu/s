@@ -40,8 +40,11 @@ $msgwa = rawurlencode('Hola, soy ' . $r['nombre'] . '. Sobre mi reserva de insta
   <li><b>El día de la instalación</b> el técnico llega en el horario escogido. Te escribe por WhatsApp antes de salir.</li>
   <li><b>Revisas el agua funcionando</b> y <?= $total ? ((int) $r['saldo'] > 0 ? 'pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' (recargo de zona o manguera adicional).' : 'listo: ya pagaste todo.') : 'pagas el saldo en efectivo al técnico.' ?></li></ol>
   <p class="m" style="font-size:14px">Ten a mano: una persona adulta en casa, el nevecón con espacio para moverlo y a la vista el punto de agua.</p></section>
+<section class="ic-card"><h3>Guarda tu reserva</h3><p class="m" style="font-size:14px">Tu reserva es este enlace. Guárdalo o mándatelo por WhatsApp para tenerlo a mano.</p>
+  <a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, hice la reserva de instalación ' . $r['ref'] . ' para el ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']) . '. Mi enlace: ' . inst_url_reserva($r['ref'])) ?>" target="_blank" rel="noopener">💬 Enviarme mi reserva por WhatsApp</a>
+  <button class="btn ghost" type="button" id="copiar">Copiar el enlace de mi reserva</button><span class="m" id="copiado" role="status"></span></section>
 <a class="btn ghost" href="?ref=<?= h(rawurlencode($r['ref'])) ?>&amp;t=<?= h((string) $_GET['t']) ?>&amp;ics=1">📅 Guardar en mi calendario</a>
-<p class="m">¿Necesitas cambiar el día o la hora? Avísanos con 24 horas y lo reprogramamos sin costo.</p>
+<p class="m">¿Necesitas cambiar el día o la hora, o cancelar? Avísanos con 24 horas por WhatsApp y lo reprogramamos sin costo.</p>
 <a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= $msgwa ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a>
 <a class="btn ghost" href="/">Volver a la tienda</a>
 </div></div>
@@ -62,4 +65,9 @@ document.getElementById("ya").addEventListener("click", async e => {
 });
 </script>
 <?php endif; ?>
+<script>
+document.getElementById("copiar").addEventListener("click", function () { var u = location.href.replace(/&ics=1/, ""), m = document.getElementById("copiado");
+  function ok() { m.textContent = "Enlace copiado."; }
+  try { navigator.clipboard.writeText(u).then(ok, function () { m.textContent = "Copia el enlace desde la barra de direcciones."; }); } catch (e) { m.textContent = "Copia el enlace desde la barra de direcciones."; } });
+</script>
 <?php pie(); ?>

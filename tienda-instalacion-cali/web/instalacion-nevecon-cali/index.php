@@ -41,17 +41,18 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
 </div></section>
 
 <section class="ic-sec" id="combos"><span class="eyebrow">Nuestros combos</span><h2>Escoge el servicio que necesitas</h2>
-  <p class="m">Todos incluyen la instalación a domicilio, llave galápago profesional con racores, hasta 5 m de manguera de 1/4", prueba de fugas y 1 año de garantía. Precios en Cali.</p>
+  <p class="m">Todos incluyen la instalación a domicilio, llave galápago profesional con racores, hasta 5 m de manguera de 1/4", prueba de fugas y 1 año de garantía. Escoge tu zona para ver los precios.</p>
+  <div class="ic-zonasel" role="group" aria-label="Ver precios por zona"><span>Ver precios en:</span><?php $zi = 0; foreach ($C['zonas'] as $zid => $z): ?><button type="button" data-zona="<?= h($zid) ?>" aria-pressed="<?= $zi++ === 0 ? 'true' : 'false' ?>"><?= h($z['nombre']) ?><?= $z['recargo'] ? ' (+' . $m($z['recargo']) . ')' : '' ?></button><?php endforeach; ?></div>
   <div class="ic-combos">
   <?php foreach ($C['servicios'] as $id => $sv): $f = $sv['filtro']; ?>
     <article class="ic-combo<?= $f ? '' : ' base' ?>">
       <div class="foto"><?= $imgc($id, $sv['nombre'] . ': manguera, llave galápago' . ($f ? ' y filtro externo' : ''), 320) ?></div>
       <div class="cuerpo"><h3><?= h($sv['corto']) ?></h3>
         <ul><li>Instalación a domicilio</li><li>Llave galápago profesional con racores</li><li>Manguera de 1/4" hasta 5 metros</li><?php if ($f): ?><li>Filtro externo <?= h($f['marca']) ?> <?= h($f['ref']) ?> instalado</li><?php endif; ?><li>Conexión al nevecón, prueba de fugas y purga</li><li>1 año de garantía</li><li>Sirve para otras marcas de nevecón con dispensador</li></ul></div>
-      <div class="cobro"><b><?= $m($sv['precio']) ?></b><small>Total del combo en Cali · escoge cómo pagar</small>
+      <div class="cobro" data-svc="<?= h($id) ?>"><b data-k="precio"><?= $m($sv['precio']) ?></b><small>Total del combo en <span data-k="zona">Cali</span> · escoge cómo pagar</small>
         <div class="ic-pagos2">
-          <a class="ic-pbtn principal" href="#reservar" data-pick="<?= h($id) ?>" data-forma="total"><span class="t">Pagar todo ahora</span><span class="s"><b><?= $nb($sv['precio']) ?></b> hoy, en línea</span><span class="s2">Al terminar no pagas nada más</span></a>
-          <a class="ic-pbtn" href="#reservar" data-pick="<?= h($id) ?>" data-forma="reserva"><span class="t">Pagar en 2 partes</span><span class="s"><b><?= $nb($sv['reserva']) ?></b> hoy, en línea</span><span class="s2">+ <b><?= $nb($sv['precio'] - $sv['reserva']) ?></b> en efectivo al técnico al terminar</span></a>
+          <a class="ic-pbtn principal" href="#reservar" data-pick="<?= h($id) ?>" data-forma="total"><span class="t">Pagar todo ahora</span><span class="s"><b data-k="online"><?= $nb($sv['precio']) ?></b> hoy, en línea</span><span class="s2" data-k="s2total">Al terminar no pagas nada más</span></a>
+          <a class="ic-pbtn" href="#reservar" data-pick="<?= h($id) ?>" data-forma="reserva"><span class="t">Pagar en 2 partes</span><span class="s"><b><?= $nb($sv['reserva']) ?></b> hoy, en línea</span><span class="s2">+ <b data-k="resto"><?= $nb($sv['precio'] - $sv['reserva']) ?></b> en efectivo al técnico al terminar</span></a>
         </div></div>
     </article>
   <?php endforeach; ?></div>
@@ -120,7 +121,8 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
       <div class="ic-opciones" role="radiogroup" aria-label="Zona">
       <?php foreach ($C['zonas'] as $id => $z): ?>
         <label class="ic-op"><input type="radio" name="zona" value="<?= h($id) ?>"><span><b><?= h($z['nombre']) ?></b><small><?= $z['recargo'] ? 'Recargo por desplazamiento +' . $m($z['recargo']) : 'Sin recargo' ?></small></span></label>
-      <?php endforeach; ?></div></section>
+      <?php endforeach; ?></div>
+      <p class="m" style="font-size:13.5px">Por ahora atendemos solo en <?= h($nombres_zonas) ?>. Si estás en otro lugar, escríbenos por WhatsApp y vemos si podemos ir.</p></section>
     <section class="ic-paso" id="p3"><h3><i>3</i>¿Qué tan lejos está el punto de agua del nevecón?</h3>
       <div class="ic-campos"><label class="ancho"><span>Distancia aproximada</span><select name="metros" id="metros">
         <option value="5">Hasta 5 metros (incluidos en el precio)</option>
@@ -201,7 +203,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
   <details class="ic-faq"><summary>¿Puedo cambiar el día o la hora?</summary><p>Sí. Avísanos con 24 horas de anticipación por WhatsApp y lo reprogramamos sin costo.</p></details>
 </div></section>
 
-<section class="ic-contacto"><div><span class="eyebrow">¿Tienes dudas?</span><b class="num">WhatsApp <?= h($tel) ?></b><span class="m">Lunes a sábado, de 8:00 a. m. a 5:00 p. m.</span></div>
+<section class="ic-contacto"><div><span class="eyebrow">¿Tienes dudas?</span><b class="num">WhatsApp <?= h($tel) ?></b><span class="m">Lunes a sábado, de 8:00 a. m. a 5:00 p. m.</span><span class="m" style="font-size:13px;display:block;margin-top:6px"><?= identificacion() ?></span></div>
   <a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, tengo una pregunta sobre la instalación del agua de mi nevecón.') ?>" target="_blank" rel="noopener">💬 Escribir por WhatsApp</a></section>
 </div>
 <script>window.INST = <?= json_encode($pub, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) ?>;</script>

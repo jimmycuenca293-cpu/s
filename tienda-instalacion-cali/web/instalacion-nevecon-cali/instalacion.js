@@ -10,6 +10,16 @@
   window.dataLayer = window.dataLayer || [];
 
   function marcaOtra() { const o = $("#otra-marca"); if (o) o.hidden = val("marca_nevecon") !== "Otra"; }
+  const nb = n => cop(n).replace(" ", "\u00a0");
+  function zonaCombos(z) {
+    const Z = I.zonas[z]; if (!Z) return;
+    document.querySelectorAll("[data-zona]").forEach(b => b.setAttribute("aria-pressed", b.dataset.zona === z));
+    document.querySelectorAll(".cobro[data-svc]").forEach(c => {
+      const sid = c.dataset.svc, s = I.servicios[sid], tot = s.precio + Z.recargo, on = ((I.total_online[sid] || {})[z]) || s.precio, set = (k, v) => { const e = c.querySelector(`[data-k="${k}"]`); if (e) e.textContent = v; };
+      set("precio", cop(tot)); set("zona", Z.nombre); set("online", nb(on)); set("resto", nb(tot - s.reserva));
+      set("s2total", tot - on > 0 ? "+ " + cop(tot - on) + " en efectivo al terminar (recargo de zona)" : "Al terminar no pagas nada más");
+    });
+  }
   function precio() {
     const s = I.servicios[radio("servicio")], z = I.zonas[radio("zona")], m = val("metros");
     if (!s) return null;
@@ -34,7 +44,7 @@
     if (ft) ft.textContent = "Pagas " + cop(online) + " hoy en línea con Wompi. Al terminar " + (p.total - online > 0 ? "solo pagas " + cop(p.total - online) + " en efectivo (" + (p.z && p.z.recargo && online < p.total - p.extra ? "recargo de zona" + (p.extra ? " y " : "") : "") + (p.extra ? "manguera adicional" : "") + ")." : "no pagas nada más.");
     if (fd) fd.textContent = "Hoy pagas " + cop(p.reserva) + " en línea. Al terminar le pagas " + cop(p.total - p.reserva) + " en efectivo al técnico.";
     $("#barra-r").textContent = "Hoy pagas " + cop(online);
-    $("#barra-t").textContent = tot ? (efec ? "Total " + cop(p.total) + " · efectivo " + cop(efec) : "Total " + cop(p.total) + " · pago único") : "Total " + cop(p.total) + " · saldo en efectivo " + cop(efec);
+    $("#barra-t").textContent = tot ? (efec ? "Total " + nb(p.total) + " · efectivo " + nb(efec) : "Total " + nb(p.total) + " · pago único") : "Total " + nb(p.total) + " · saldo en efectivo " + nb(efec);
     $("#p1").classList.toggle("hecho", !!p.s); $("#p2").classList.toggle("hecho", !!p.z); $("#p3").classList.add("hecho");
     const fa = [...new Set(faltantes().map(x => x[1]))];
     $("#falta").textContent = fa.length ? "Te falta: " + fa.join(", ") + "." : "¡Todo listo! Ya puedes reservar.";
@@ -99,12 +109,13 @@
     const h = e.target.closest("[data-i]"); if (h) { st.franja = +h.dataset.i; $("#aviso-horario").textContent = ""; pintarHoras(); pintar(); }
   });
   document.addEventListener("click", e => {
+    const zb = e.target.closest("[data-zona]"); if (zb) { const r = f.querySelector(`input[name="zona"][value="${zb.dataset.zona}"]`); if (r) r.checked = true; zonaCombos(zb.dataset.zona); pintar(); return; }
     const b = e.target.closest("[data-pick]"); if (!b) return;
     const r = f.querySelector(`input[name="servicio"][value="${b.dataset.pick}"]`); if (r) r.checked = true;
     const fp = b.dataset.forma && f.querySelector(`input[name="forma_pago"][value="${b.dataset.forma}"]`); if (fp) fp.checked = true;
     pintar();
   });
-  f.addEventListener("input", pintar); f.addEventListener("change", () => { marcaOtra(); pintar(); });
+  f.addEventListener("input", pintar); f.addEventListener("change", e => { marcaOtra(); if (e.target.name === "zona") zonaCombos(e.target.value); pintar(); });
 
   function faltantes() {
     const F = [];

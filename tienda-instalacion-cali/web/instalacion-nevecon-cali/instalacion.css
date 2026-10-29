@@ -209,3 +209,8 @@ details.ic-faq p{padding:0 0 15px;color:var(--muted);line-height:1.55}
 .ic-otras p{line-height:1.55}
 .ic-otras-btn{display:grid;gap:8px}
 @media (max-width:820px){.ic-otras{grid-template-columns:minmax(0,1fr)}}
+
+.ic-zonasel{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px}
+.ic-zonasel span{color:var(--muted);font-weight:700}
+.ic-zonasel button{font:inherit;font-weight:700;padding:8px 14px;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.ic-zonasel button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
