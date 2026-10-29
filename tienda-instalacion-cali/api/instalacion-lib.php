@@ -230,10 +230,10 @@ function inst_resumen_filas(array $r, bool $tecnico): array
         'Reserva' => $r['ref'], 'Estado' => inst_estado_txt($r['estado']),
         'Servicio' => $s['nombre'], 'Día' => inst_fecha_txt($r['fecha']), 'Hora' => inst_franja_txt((int) $r['franja']),
         'Zona' => $z, 'Dirección' => $r['dir'] . ', ' . $r['barrio'], 'Manguera' => inst_metros_txt($r['metros']),
-        'Total del servicio' => cop((int) $r['total']),
+        'Total de la instalación' => cop((int) $r['total']),
     ] + (($r['forma_pago'] ?? 'reserva') === 'total'
-        ? ['Forma de pago' => 'Paga el TOTAL en línea', 'Pago en línea (Wompi)' => cop((int) $r['reserva'])] + ((int) $r['saldo'] > 0 ? ['En efectivo al terminar' => cop((int) $r['saldo'])] : [])
-        : ['Forma de pago' => 'Reserva en línea y el resto en efectivo al técnico', 'Reserva en línea' => cop((int) $r['reserva']), 'Saldo en efectivo al terminar' => cop((int) $r['saldo'])]);
+        ? ['Forma de pago' => 'Paga el TOTAL en línea', 'Pagas hoy, en línea (Wompi)' => cop((int) $r['reserva'])] + ((int) $r['saldo'] > 0 ? ['En efectivo al terminar' => cop((int) $r['saldo'])] : [])
+        : ['Forma de pago' => 'Reserva en línea y el resto en efectivo al técnico', 'Pagas hoy, en línea' => cop((int) $r['reserva']), 'Resto en efectivo al técnico, al terminar' => cop((int) $r['saldo'])]);
     if ($tecnico) $f += ['Cliente' => $r['nombre'], 'Celular' => $r['tel'], 'Correo' => $r['email'], 'Nevecón' => trim($r['marca_nevecon'] . ' ' . $r['modelo']) ?: '-',
         'Toma de agua' => inst_toma_txt($r['toma']), 'Detalle de la dirección' => $r['detalle'] ?: '-', 'Notas del cliente' => $r['notas'] ?: '-'];
     return $f;
@@ -255,7 +255,7 @@ function inst_campos_hoja(array $r): array
         'Barrio' => $r['barrio'], 'Direccion' => $r['dir'] . ($r['detalle'] ? ' (' . $r['detalle'] . ')' : ''),
         'Indicaciones' => trim('Toma de agua: ' . inst_toma_txt($r['toma']) . '. Manguera: ' . inst_metros_txt($r['metros']) . '. ' . ($r['notas'] ?: ''), ' '),
         'Productos' => $s . ' | DÍA: ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']),
-        'Total' => cop((int) $r['total']) . (($r['forma_pago'] ?? 'reserva') === 'total' ? ' (PAGA EL TOTAL EN LÍNEA: ' . cop((int) $r['reserva']) . ((int) $r['saldo'] > 0 ? ' + ' . cop((int) $r['saldo']) . ' en efectivo al terminar por recargo de zona o manguera adicional' : '') . ')' : ' (reserva ' . cop((int) $r['reserva']) . ' + saldo en efectivo al terminar ' . cop((int) $r['saldo']) . ')'),
+        'Total' => cop((int) $r['total']) . (($r['forma_pago'] ?? 'reserva') === 'total' ? ' (PAGA EL TOTAL EN LÍNEA: ' . cop((int) $r['reserva']) . ((int) $r['saldo'] > 0 ? ' + ' . cop((int) $r['saldo']) . ' en efectivo al terminar por recargo de zona o manguera adicional' : '') . ')' : ' (1ª parte ' . cop((int) $r['reserva']) . ' + resto en efectivo al terminar ' . cop((int) $r['saldo']) . ')'),
         'Entrega' => 'Instalación a domicilio el ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']), 'Modelo del nevecon' => trim($r['marca_nevecon'] . ' ' . $r['modelo']) ?: '-'];
 }
 
@@ -293,7 +293,7 @@ function inst_correo_cliente(array $r): void
     if ($r['estado'] === 'esperando_pago') $pagar = '<p><b>Falta un paso:</b> ' . ($total ? 'paga el total (' . h(cop((int) $r['reserva'])) . ')' : 'paga la reserva de ' . h(cop((int) $r['reserva']))) . ' para asegurar tu horario. <a href="' . h(inst_url_reserva($r['ref'])) . '">' . ($total ? 'Pagar ahora' : 'Pagar la reserva') . '</a></p><p>Apenas pagues, <b>un asesor te escribe por WhatsApp</b> para confirmar tu instalación y darte el nombre del técnico.</p>';
     else $pagar = '<p>Tu reserva está confirmada. Un asesor te escribe por WhatsApp para darte el nombre del técnico.</p>';
     $fin = $total ? ((int) $r['saldo'] > 0 ? '<p>Al terminar pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' por el recargo de zona o la manguera adicional. Tienes 1 año de garantía.</p>' : '<p>Pagas todo en línea: al terminar no tienes que pagar nada más. Tienes 1 año de garantía.</p>')
-        : '<p>El saldo de ' . h(cop((int) $r['saldo'])) . ' lo pagas en efectivo al técnico al terminar la instalación, cuando ya veas el agua funcionando. Tienes 1 año de garantía.</p>';
+        : '<p>El resto, ' . h(cop((int) $r['saldo'])) . ', lo pagas en efectivo al técnico al terminar la instalación, cuando ya veas el agua funcionando. Tienes 1 año de garantía.</p>';
     $html = '<h2 style="margin:0 0 8px">Tu instalación quedó agendada</h2>' . $pagar . inst_tabla($r, false) . $fin
         . '<p>¿Necesitas cambiar el día o la hora? Avísanos con 24 horas y la reprogramamos sin costo: WhatsApp ' . h($tel) . '.</p>';
     enviar_correo($r['email'], 'Tu instalación ' . $r['ref'] . ': ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']), $html);
