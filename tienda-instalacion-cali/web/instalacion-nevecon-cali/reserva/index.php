@@ -59,6 +59,7 @@ $msgwa = rawurlencode('Hola, soy ' . $r['nombre'] . '. Sobre mi reserva de insta
 <?php endif; ?>
 <?php if ($r['estado'] === 'esperando_pago' && $link !== ''): ?>
 <script>
+var pg = document.getElementById("pagar"); if (pg) pg.addEventListener("click", function () { window.dataLayer = window.dataLayer || []; dataLayer.push({ event: "pago_wompi", value: <?= (int) $r['reserva'] ?>, currency: "COP", transaction_id: <?= json_encode($r['ref']) ?>, tipo: "instalacion" }); });
 document.getElementById("ya").addEventListener("click", async e => {
   const b = e.currentTarget, m = document.getElementById("ya-m"); b.disabled = true;
   try { const r = await fetch("/filtrosnevecones-api/instalacion.php?a=pagado", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ref: <?= json_encode($r['ref']) ?>, t: <?= json_encode((string) $_GET['t']) ?> }) });
