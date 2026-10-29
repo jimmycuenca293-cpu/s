@@ -153,12 +153,23 @@ function inst_precio(string $servicio, string $zona, string $metros): ?array
     return ['servicio' => $s, 'zona' => $z, 'extra' => (int) $extra, 'total' => $total, 'reserva' => (int) $s['reserva'], 'saldo' => $total - (int) $s['reserva']];
 }
 
-// Link de Wompi que le toca pagar al cliente: la reserva (monto fijo por servicio) o el combo completo (monto fijo por servicio). El recargo de zona y la manguera adicional se pagan en efectivo al terminar.
+// Pago completo: devuelve [monto que se paga en línea, link de Wompi]. Cada servicio puede tener un link por zona (el monto incluye el recargo de esa zona)
+// o un solo link con el precio base (entonces el recargo de zona se paga en efectivo al terminar).
+function inst_total_online(string $servicio, string $zona): array
+{
+    $c = inst_config(); $precio = (int) ($c['servicios'][$servicio]['precio'] ?? 0); $rec = (int) ($c['zonas'][$zona]['recargo'] ?? 0);
+    $l = $c['links_total'][$servicio] ?? '';
+    if (is_string($l)) return $l !== '' ? [$precio, $l] : [$precio + $rec, ''];
+    if (!empty($l[$zona])) return [$precio + $rec, (string) $l[$zona]];
+    $base = (string) ($l['cali'] ?? ''); if ($base !== '') return [$precio, $base];
+    return [$precio + $rec, ''];
+}
+
+// Link de Wompi que le toca pagar al cliente: la reserva (monto fijo por servicio) o el pago completo
 function inst_link_pago(array $r): string
 {
-    $c = inst_config();
-    if (($r['forma_pago'] ?? 'reserva') === 'total') return (string) ($c['links_total'][$r['servicio']] ?? '');
-    return (string) ($c['links'][$r['servicio']] ?? '');
+    if (($r['forma_pago'] ?? 'reserva') === 'total') return inst_total_online($r['servicio'], $r['zona'])[1];
+    return (string) (inst_config()['links'][$r['servicio']] ?? '');
 }
 
 function inst_token(string $ref): string
@@ -221,7 +232,7 @@ function inst_resumen_filas(array $r, bool $tecnico): array
         'Zona' => $z, 'Dirección' => $r['dir'] . ', ' . $r['barrio'], 'Manguera' => inst_metros_txt($r['metros']),
         'Total del servicio' => cop((int) $r['total']),
     ] + (($r['forma_pago'] ?? 'reserva') === 'total'
-        ? ['Forma de pago' => 'Paga el TOTAL en línea', 'Pago en línea (Wompi)' => cop((int) $r['reserva'])] + ((int) $r['saldo'] > 0 ? ['En efectivo al terminar (recargo de zona o manguera adicional)' => cop((int) $r['saldo'])] : [])
+        ? ['Forma de pago' => 'Paga el TOTAL en línea', 'Pago en línea (Wompi)' => cop((int) $r['reserva'])] + ((int) $r['saldo'] > 0 ? ['En efectivo al terminar' => cop((int) $r['saldo'])] : [])
         : ['Forma de pago' => 'Reserva en línea y el resto en efectivo al técnico', 'Reserva en línea' => cop((int) $r['reserva']), 'Saldo en efectivo al terminar' => cop((int) $r['saldo'])]);
     if ($tecnico) $f += ['Cliente' => $r['nombre'], 'Celular' => $r['tel'], 'Correo' => $r['email'], 'Nevecón' => trim($r['marca_nevecon'] . ' ' . $r['modelo']) ?: '-',
         'Toma de agua' => inst_toma_txt($r['toma']), 'Detalle de la dirección' => $r['detalle'] ?: '-', 'Notas del cliente' => $r['notas'] ?: '-'];

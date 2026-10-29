@@ -24,14 +24,14 @@
     const L = [["Servicio", p.s.corto], ["Zona", p.z ? p.z.nombre + (p.z.recargo ? " (+" + cop(p.z.recargo) + ")" : "") : "Escoge tu zona"],
       ["Manguera", metrosTxt[p.m] + (p.extra ? " (+" + cop(p.extra) + ")" : "")], ["Día", dia ? dia.txt : "Escoge el día"], ["Hora", hr ? hr.txt : "Escoge la hora"]];
     $("#lineas").innerHTML = L.map(([a, b]) => `<div class="l"><span>${a}</span><b>${esc(b)}</b></div>`).join("");
-    const tot = radio("forma_pago") === "total", online = tot ? p.s.precio : p.reserva, efec = p.total - online;
+    const tot = radio("forma_pago") === "total", online = tot ? (((I.total_online[radio("servicio")] || {})[radio("zona") || "cali"]) || p.s.precio) : p.reserva, efec = p.total - online;
     $("#total").textContent = cop(p.total); $("#reserva").textContent = cop(online);
     $("#ahora-t").textContent = tot ? "Hoy pagas, en línea" : "Hoy pagas la 1ª parte, en línea";
-    $("#ahora-s").innerHTML = tot ? (efec ? 'Y ' + cop(efec) + " en efectivo al técnico al terminar (recargo de zona o manguera adicional)." : "Con Wompi, desde la siguiente pantalla. Al terminar no pagas nada más.")
+    $("#ahora-s").innerHTML = tot ? (efec ? 'Y ' + cop(efec) + " en efectivo al técnico al terminar." : "Con Wompi, desde la siguiente pantalla. Al terminar no pagas nada más.")
       : 'Y el saldo de <b id="saldo" style="display:inline;font-size:inherit">' + cop(efec) + "</b> en efectivo al técnico, al terminar.";
     $("#enviar").textContent = tot ? "Reservar y pagar todo: " + cop(online) : "Reservar y pagar la 1ª parte: " + cop(online);
     const ft = $("#fp-total"), fd = $("#fp-dos");
-    if (ft) ft.textContent = "Pagas " + cop(p.s.precio) + " hoy en línea con Wompi. Al terminar " + (p.total - p.s.precio ? "solo pagas " + cop(p.total - p.s.precio) + " en efectivo (recargo de zona o manguera adicional)." : "no pagas nada más.");
+    if (ft) ft.textContent = "Pagas " + cop(online) + " hoy en línea con Wompi. Al terminar " + (p.total - online > 0 ? "solo pagas " + cop(p.total - online) + " en efectivo (" + (p.z && p.z.recargo && online < p.total - p.extra ? "recargo de zona" + (p.extra ? " y " : "") : "") + (p.extra ? "manguera adicional" : "") + ")." : "no pagas nada más.");
     if (fd) fd.textContent = "Hoy pagas " + cop(p.reserva) + " en línea. Al terminar le pagas " + cop(p.total - p.reserva) + " en efectivo al técnico.";
     $("#barra-r").textContent = "Hoy pagas " + cop(online);
     $("#barra-t").textContent = tot ? (efec ? "Total " + cop(p.total) + " · efectivo " + cop(efec) : "Total " + cop(p.total) + " · pago único") : "Total " + cop(p.total) + " · saldo en efectivo " + cop(efec);
