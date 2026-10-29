@@ -21,7 +21,8 @@ function inst_config(): array
         'zonas' => ['cali' => ['nombre' => 'Cali', 'recargo' => 0], 'jamundi' => ['nombre' => 'Jamundí', 'recargo' => 20000]],
         'metro_extra' => 14000,   // cada 5 m de manguera adicionales a los 5 m incluidos
         'franjas' => [[8, 0, 9, 30], [9, 30, 11, 0], [11, 0, 12, 30], [13, 30, 15, 0], [15, 30, 17, 0]],
-        'dias_adelante' => 21,
+        'dias_adelante' => 28,
+        'anticipacion_horas' => 3,   // un horario se ofrece solo si empieza dentro de más de estas horas
         'bloqueados' => [],        // fechas sin servicio: ['2026-12-08', ...]
         'links' => ['basica' => '', 'filtro-samsung' => '', 'filtro-lg' => '', 'filtro-whirlpool' => ''],
     ];
@@ -29,7 +30,7 @@ function inst_config(): array
     $f = __DIR__ . '/instalacion-ajustes.php';
     $o = is_file($f) && is_array($a = require $f) ? $a : [];
     foreach (['servicios', 'zonas', 'links'] as $k) if (isset($o[$k]) && is_array($o[$k])) $base[$k] = array_replace_recursive($base[$k], $o[$k]);
-    foreach (['metro_extra', 'dias_adelante'] as $k) if (isset($o[$k])) $base[$k] = (int) $o[$k];
+    foreach (['metro_extra', 'dias_adelante', 'anticipacion_horas'] as $k) if (isset($o[$k])) $base[$k] = (int) $o[$k];
     if (isset($o['bloqueados']) && is_array($o['bloqueados'])) $base['bloqueados'] = array_values($o['bloqueados']);
     $base['clave_panel'] = (string) ($o['clave_panel'] ?? '');
     return $c = $base;
@@ -69,14 +70,42 @@ function inst_fecha_txt(string $ymd, bool $larga = true): string
     return $larga ? ucfirst($dia) . ' ' . (int) $d->format('j') . ' de ' . $meses[(int) $d->format('n')] : mb_substr($dia, 0, 3) . ' ' . (int) $d->format('j');
 }
 
-// Fechas que se pueden reservar: desde mañana, de lunes a sábado, sin las fechas bloqueadas
+function inst_ahora(): DateTimeImmutable
+{
+    return new DateTimeImmutable('now', new DateTimeZone('America/Bogota'));
+}
+
+function inst_slot_inicio(string $ymd, int $i): ?DateTimeImmutable
+{
+    $f = inst_config()['franjas'][$i] ?? null;
+    if (!$f) return null;
+    return DateTimeImmutable::createFromFormat('Y-m-d H:i', $ymd . ' ' . sprintf('%02d:%02d', $f[0], $f[1]), new DateTimeZone('America/Bogota')) ?: null;
+}
+
+// Un horario se puede reservar solo si empieza con la anticipación mínima (por defecto 3 horas) desde la hora actual de Colombia
+function inst_slot_futuro(string $ymd, int $i): bool
+{
+    $s = inst_slot_inicio($ymd, $i);
+    return $s !== null && $s >= inst_ahora()->modify('+' . inst_config()['anticipacion_horas'] . ' hours');
+}
+
+function inst_dia_cerrado(string $ymd): string
+{
+    $d = DateTimeImmutable::createFromFormat('Y-m-d', $ymd, new DateTimeZone('America/Bogota'));
+    if ($d && $d->format('w') === '0') return 'Domingo: sin servicio';
+    if (in_array($ymd, inst_config()['bloqueados'], true)) return 'Sin servicio ese día';
+    return '';
+}
+
+// Días que se pueden reservar: de hoy en adelante, de lunes a sábado, con al menos un horario a tiempo
 function inst_fechas(): array
 {
     $c = inst_config(); $r = [];
-    $d = new DateTimeImmutable('tomorrow', new DateTimeZone('America/Bogota'));
+    $d = inst_ahora()->setTime(0, 0);
     for ($i = 0; $i < $c['dias_adelante']; $i++, $d = $d->modify('+1 day')) {
-        if ($d->format('w') === '0' || in_array($d->format('Y-m-d'), $c['bloqueados'], true)) continue;
-        $r[] = $d->format('Y-m-d');
+        $y = $d->format('Y-m-d');
+        if (inst_dia_cerrado($y) !== '') continue;
+        for ($k = 0; $k < count($c['franjas']); $k++) if (inst_slot_futuro($y, $k)) { $r[] = $y; break; }
     }
     return $r;
 }
@@ -93,15 +122,20 @@ function inst_ocupados(string $desde, string $hasta): array
 
 function inst_agenda(): array
 {
-    $f = inst_fechas();
-    if (!$f) return [];
-    $oc = inst_ocupados($f[0], end($f));
-    $n = count(inst_config()['franjas']);
+    $c = inst_config(); $n = count($c['franjas']);
+    $d = inst_ahora()->setTime(0, 0);
+    $hasta = $d->modify('+' . ($c['dias_adelante'] - 1) . ' days')->format('Y-m-d');
+    $oc = inst_ocupados($d->format('Y-m-d'), $hasta);
     $r = [];
-    foreach ($f as $d) {
-        $fr = [];
-        for ($i = 0; $i < $n; $i++) $fr[] = ['i' => $i, 'txt' => inst_franja_txt($i), 'libre' => !isset($oc[$d . '|' . $i])];
-        $r[] = ['fecha' => $d, 'txt' => inst_fecha_txt($d), 'corto' => inst_fecha_txt($d, false), 'franjas' => $fr];
+    for ($i = 0; $i < $c['dias_adelante']; $i++, $d = $d->modify('+1 day')) {
+        $y = $d->format('Y-m-d'); $cerrado = inst_dia_cerrado($y); $fr = []; $libres = 0;
+        for ($k = 0; $k < $n; $k++) {
+            $estado = $cerrado !== '' ? 'cerrado' : (!inst_slot_futuro($y, $k) ? 'pasado' : (isset($oc[$y . '|' . $k]) ? 'ocupado' : 'libre'));
+            if ($estado === 'libre') $libres++;
+            $fr[] = ['i' => $k, 'txt' => inst_franja_txt($k), 'estado' => $estado, 'libre' => $estado === 'libre'];
+        }
+        $r[] = ['fecha' => $y, 'txt' => inst_fecha_txt($y), 'corto' => inst_fecha_txt($y, false), 'dow' => (int) $d->format('w'), 'dia' => (int) $d->format('j'), 'mes' => (int) $d->format('n'),
+            'cerrado' => $cerrado !== '', 'motivo' => $cerrado, 'libres' => $libres, 'franjas' => $fr];
     }
     return $r;
 }

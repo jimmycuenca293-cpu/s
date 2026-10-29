@@ -5,7 +5,7 @@ require_once __DIR__ . '/../filtrosnevecones-api/instalacion-lib.php';
 $C = inst_config(); $n = cfg()['negocio']; $tel = $n['telefono'] ?? '301 381 0242'; $wa = inst_tel_wa();
 $V = '20261029a';
 $pub = ['servicios' => array_map(fn($s) => ['nombre' => $s['nombre'], 'corto' => $s['corto'], 'precio' => $s['precio'], 'reserva' => $s['reserva']], $C['servicios']),
-    'zonas' => $C['zonas'], 'metro_extra' => $C['metro_extra'], 'franjas' => count($C['franjas'])];
+    'zonas' => $C['zonas'], 'metro_extra' => $C['metro_extra'], 'franjas' => count($C['franjas']), 'anticipacion' => $C['anticipacion_horas']];
 $ld = ['@context' => 'https://schema.org', '@type' => 'Service', 'name' => 'Instalación de agua para nevecón a domicilio', 'serviceType' => 'Instalación de llave, manguera y filtro externo para nevecón',
     'areaServed' => array_map(fn($z) => ['@type' => 'City', 'name' => $z['nombre']], array_values($C['zonas'])),
     'provider' => ['@type' => 'LocalBusiness', 'name' => $n['nombre'], 'telephone' => '+57' . $wa],
@@ -108,10 +108,13 @@ $fotos = ['basica' => 'k-galapago', 'filtro-samsung' => 'sam-ex-o', 'filtro-lg' 
         <option value="nose">No lo sé: que el técnico la mida</option></select>
         <small>Si escoges «No lo sé» y se necesita más de 5 m, cada 5 m extra son <?= $m($C['metro_extra']) ?> y se pagan al terminar.</small></label></div></section>
     <section class="ic-paso" id="p4"><h3><i>4</i>¿Qué día y a qué hora?</h3>
-      <div class="ic-fechas" id="fechas" role="group" aria-label="Día"><span class="m">Cargando los días disponibles…</span></div>
+      <div class="ic-reloj"><span class="punto" aria-hidden="true"></span><span id="reloj">Hora de Colombia: cargando…</span></div>
+      <div class="ic-cal" id="cal" role="group" aria-label="Calendario de disponibilidad"><span class="m">Cargando los días disponibles…</span></div>
+      <div class="ic-leyenda"><span><i class="lib"></i>Disponible</span><span><i class="poc"></i>Pocos cupos</span><span><i class="lle"></i>Lleno o sin servicio</span></div>
+      <p class="ic-aviso" id="aviso-horario" role="status"></p>
       <div class="ic-horas" id="horas" role="group" aria-label="Hora"></div>
-      <p class="m" style="font-size:13.5px">Atendemos de lunes a sábado, de 8:00 a. m. a 5:00 p. m. ¿Lo necesitas hoy o mañana mismo? Escríbenos por WhatsApp.</p></section>
-        <section class="ic-paso" id="p5"><h3><i>5</i>¿Cómo quieres pagar?</h3>
+      <p class="m" style="font-size:13.5px">Atendemos de lunes a sábado, de 8:00 a. m. a 5:00 p. m. La agenda se actualiza sola: si alguien reserva un horario, desaparece al instante. Solo ves horarios que empiezan dentro de <?= (int) $C['anticipacion_horas'] ?> horas o más desde ahora. ¿Lo necesitas más pronto? Escríbenos por WhatsApp.</p></section>
+    <section class="ic-paso" id="p5"><h3><i>5</i>¿Cómo quieres pagar?</h3>
       <div class="ic-opciones" role="radiogroup" aria-label="Forma de pago">
         <label class="ic-op"><input type="radio" name="forma_pago" value="reserva" checked><span><b>Reserva ahora y el resto al terminar</b><small>Pagas la reserva en línea y el saldo en efectivo al técnico cuando termine.</small></span></label>
         <label class="ic-op"><input type="radio" name="forma_pago" value="total"><span><b>Pago el total en línea</b><small>Te enviamos por WhatsApp el link para pagar todo. Al terminar no pagas nada más.</small></span></label></div></section>
@@ -135,6 +138,7 @@ $fotos = ['basica' => 'k-galapago', 'filtro-samsung' => 'sam-ex-o', 'filtro-lg' 
     <div id="lineas"></div>
     <div class="tot"><span>Total</span><span id="total">—</span></div>
     <div class="ahora"><span id="ahora-t">Pagas ahora para reservar</span><b id="reserva">—</b><span class="m" id="ahora-s">Y el saldo de <b id="saldo" style="display:inline;font-size:inherit">—</b> en efectivo al técnico, al terminar.</span></div>
+    <p class="ic-falta" id="falta"></p>
     <div class="ic-err" id="err" role="alert"></div>
     <button class="btn" type="submit" id="enviar">Reservar y pagar</button>
     <div class="ic-sellos"><span>🔒 Pago seguro con Wompi</span><span>🛠 1 año de garantía</span><span>↺ Reprogramación gratis</span></div>

@@ -4,7 +4,7 @@
   const I = window.INST, $ = s => document.querySelector(s), f = $("#f");
   const cop = n => "$ " + Math.round(n).toLocaleString("es-CO");
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-  const st = { fecha: "", franja: -1, dias: [] };
+  const st = { fecha: "", franja: -1, dias: [], off: 0 };
   const val = n => (f.elements[n] && f.elements[n].value || "").trim();
   const radio = n => { const r = f.querySelector(`input[name="${n}"]:checked`); return r ? r.value : ""; };
   window.dataLayer = window.dataLayer || [];
@@ -19,7 +19,7 @@
   const metrosTxt = { 5: "Hasta 5 m (incluidos)", 10: "Hasta 10 m", 15: "Hasta 15 m", 20: "Hasta 20 m", nose: "El técnico la mide" };
   function pintar() {
     const p = precio(); if (!p) return;
-    const dia = st.dias.find(d => d.fecha === st.fecha), hr = dia && dia.franjas[st.franja];
+    const dia = st.dias.find(d => d.fecha === st.fecha), hr = dia && dia.franjas[st.franja] && dia.franjas[st.franja].libre ? dia.franjas[st.franja] : null;
     const L = [["Servicio", p.s.corto], ["Zona", p.z ? p.z.nombre + (p.z.recargo ? " (+" + cop(p.z.recargo) + ")" : "") : "Escoge tu zona"],
       ["Manguera", metrosTxt[p.m] + (p.extra ? " (+" + cop(p.extra) + ")" : "")], ["Día", dia ? dia.txt : "Escoge el día"], ["Hora", hr ? hr.txt : "Escoge la hora"]];
     $("#lineas").innerHTML = L.map(([a, b]) => `<div class="l"><span>${a}</span><b>${esc(b)}</b></div>`).join("");
@@ -30,41 +30,67 @@
     $("#enviar").textContent = tot ? "Reservar y pagar el total " + cop(p.total) : "Reservar y pagar " + cop(p.reserva);
     $("#barra-r").textContent = tot ? "Total " + cop(p.total) : "Reserva " + cop(p.reserva); $("#barra-t").textContent = tot ? "Pago en línea del total" : "Total " + cop(p.total) + " · saldo en efectivo " + cop(p.saldo);
     $("#p1").classList.toggle("hecho", !!p.s); $("#p2").classList.toggle("hecho", !!p.z); $("#p3").classList.add("hecho");
+    const fa = [...new Set(faltantes().map(x => x[1]))];
+    $("#falta").textContent = fa.length ? "Te falta: " + fa.join(", ") + "." : "¡Todo listo! Ya puedes reservar.";
+    $("#falta").classList.toggle("listo", !fa.length);
     $("#p4").classList.toggle("hecho", !!(dia && hr)); $("#p6").classList.toggle("hecho", !!(val("nombre") && val("tel") && val("email") && val("barrio") && val("dir")));
   }
+  const DIAS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"], MESES = ["", "ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
   function pintarFechas() {
-    const box = $("#fechas");
-    if (!st.dias.length) { box.innerHTML = `<span class="m">No hay días disponibles ahora. Escríbenos por WhatsApp.</span>`; return; }
-    box.innerHTML = st.dias.map(d => {
-      const libres = d.franjas.filter(x => x.libre).length, [dia, num] = d.corto.split(" ");
-      return `<button type="button" class="ic-fecha" data-f="${d.fecha}" aria-pressed="${d.fecha === st.fecha}" ${libres ? "" : "disabled"} aria-label="${esc(d.txt)}"><span>${esc(dia)}</span><b>${esc(num)}</b><span>${libres ? libres + (libres === 1 ? " cupo" : " cupos") : "lleno"}</span></button>`;
-    }).join("");
+    const box = $("#cal");
+    if (!st.dias.length) { box.innerHTML = `<span class="m">No pudimos cargar la agenda. Recarga la página o escríbenos por WhatsApp.</span>`; return; }
+    const lead = (st.dias[0].dow + 6) % 7;
+    let h = DIAS.map(d => `<span class="cab">${d}</span>`).join("") + '<span class="ic-d vacio"></span>'.repeat(lead);
+    st.dias.forEach((d, i) => {
+            const pasado = !d.cerrado && d.franjas.every(x => x.estado === "pasado");
+      const cls = d.cerrado || pasado ? "cerrado" : d.libres === 0 ? "lleno" : d.libres <= 2 ? "pocos" : "libre";
+      const txt = d.cerrado ? "—" : pasado ? "ya pasó" : d.libres === 0 ? "lleno" : d.libres === 1 ? "1 cupo" : d.libres + " cupos";
+      const lab = i === 0 ? "hoy" : d.dia === 1 ? MESES[d.mes] : "";
+      h += `<button type="button" class="ic-d ${cls}" data-f="${d.fecha}" aria-pressed="${d.fecha === st.fecha}" ${cls === "libre" || cls === "pocos" ? "" : "disabled"} aria-label="${esc(d.txt)}: ${esc(d.cerrado ? d.motivo : txt)}"><span class="mes">${esc(lab)}</span><b>${d.dia}</b><small>${txt}</small></button>`;
+    });
+    box.innerHTML = h;
     pintarHoras();
   }
+  const ETQ = { libre: "", ocupado: "Ocupado", pasado: "Muy pronto" };
   function pintarHoras() {
     const d = st.dias.find(x => x.fecha === st.fecha), box = $("#horas");
-    if (!d) { box.innerHTML = `<span class="m">Escoge primero un día.</span>`; return; }
-    box.innerHTML = d.franjas.map(x => `<button type="button" class="ic-hora" data-i="${x.i}" aria-pressed="${x.i === st.franja}" ${x.libre ? "" : "disabled"}>${esc(x.txt)}</button>`).join("");
+    if (!d) { box.innerHTML = `<span class="m">Escoge primero un día del calendario.</span>`; return; }
+    box.innerHTML = d.franjas.map(x => `<button type="button" class="ic-hora" data-i="${x.i}" aria-pressed="${x.i === st.franja && x.libre}" ${x.libre ? "" : "disabled"}><span>${esc(x.txt)}</span>${x.libre ? "" : `<small>${ETQ[x.estado] || ""}</small>`}</button>`).join("");
   }
   function proximo() {
     const el = $("#proximo"); if (!el || !st.dias.length) return;
-    const sem = st.dias.slice(0, 6).reduce((n, d) => n + d.franjas.filter(x => x.libre).length, 0);
-    const d = st.dias.find(x => x.franjas.some(z => z.libre)); if (!d) return;
+    const sem = st.dias.slice(0, 7).reduce((n, d) => n + d.libres, 0);
+    const d = st.dias.find(x => x.libres > 0); if (!d) { el.hidden = true; return; }
     const h = d.franjas.find(z => z.libre);
-    el.textContent = "Próximo horario libre: " + d.txt + ", " + h.txt + (sem ? " · " + sem + (sem === 1 ? " cupo" : " cupos") + " en los próximos días" : "");
+    el.textContent = "Próximo horario libre: " + d.txt + ", " + h.txt + (sem ? " · " + sem + (sem === 1 ? " cupo" : " cupos") + " en los próximos 7 días" : "");
     el.hidden = false;
   }
-  async function cargarDias() {
+  // Reloj con la hora de Colombia (se corrige con la hora del servidor, aunque el celular tenga la hora mal)
+  const fmtF = new Intl.DateTimeFormat("es-CO", { timeZone: "America/Bogota", weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const fmtH = new Intl.DateTimeFormat("es-CO", { timeZone: "America/Bogota", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true });
+  function reloj() {
+    const n = new Date(Date.now() + st.off), el = $("#reloj"); if (!el) return;
+    const f1 = fmtF.format(n); el.textContent = "Hoy es " + f1.charAt(0).toUpperCase() + f1.slice(1) + " · " + fmtH.format(n) + " (hora de Colombia)";
+  }
+  setInterval(reloj, 1000); reloj();
+  async function cargarDias(silencioso) {
+    const tenia = st.franja >= 0 ? { fecha: st.fecha, franja: st.franja } : null;
     try {
       const r = await fetch("/filtrosnevecones-api/instalacion.php?a=dias", { cache: "no-store" }), j = await r.json();
-      st.dias = j.dias || [];
-      if (st.fecha && !st.dias.find(d => d.fecha === st.fecha && d.franjas[st.franja] && d.franjas[st.franja].libre)) { st.franja = -1; }
-    } catch { st.dias = []; }
-    pintarFechas(); pintar(); proximo();
+      st.dias = j.dias || []; if (j.ts) st.off = j.ts * 1000 - Date.now();
+    } catch { if (silencioso) return; st.dias = []; }
+    if (st.fecha) {
+      const d = st.dias.find(x => x.fecha === st.fecha), ok = d && d.franjas[st.franja] && d.franjas[st.franja].libre;
+      if (!ok) { st.franja = -1; if (tenia) $("#aviso-horario").textContent = "El horario que habías escogido ya no está disponible (alguien lo reservó o ya falta poco). Escoge otro, por favor."; }
+      if (!d || !d.libres) { st.fecha = ""; st.franja = -1; }
+    }
+    pintarFechas(); pintar(); proximo(); reloj();
   }
+  setInterval(() => { if (!document.hidden) cargarDias(true); }, 30000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) cargarDias(true); });
   document.addEventListener("click", e => {
-    const a = e.target.closest("[data-f]"); if (a) { st.fecha = a.dataset.f; st.franja = -1; pintarFechas(); pintar(); $("#horas").scrollIntoView({ block: "nearest", behavior: "smooth" }); return; }
-    const h = e.target.closest("[data-i]"); if (h) { st.franja = +h.dataset.i; pintarHoras(); pintar(); }
+    const a = e.target.closest("[data-f]"); if (a) { st.fecha = a.dataset.f; st.franja = -1; $("#aviso-horario").textContent = ""; pintarFechas(); pintar(); $("#horas").scrollIntoView({ block: "nearest", behavior: "smooth" }); return; }
+    const h = e.target.closest("[data-i]"); if (h) { st.franja = +h.dataset.i; $("#aviso-horario").textContent = ""; pintarHoras(); pintar(); }
   });
   document.addEventListener("click", e => {
     const b = e.target.closest("[data-pick]"); if (!b) return;
@@ -102,6 +128,13 @@
       dataLayer.push({ event: "reserva_instalacion", value: j.total, currency: "COP", transaction_id: j.ref, eventCallback: ir, eventTimeout: 300 });
       setTimeout(ir, 350);
     } catch (x) { err.textContent = x.message; b.disabled = false; b.textContent = old; }
+  });
+  // Recuerda tus datos en este navegador para la próxima vez, y da formato al celular
+  const KEEP = ["nombre", "tel", "email", "marca_nevecon", "modelo", "barrio", "dir", "detalle"];
+  try { const g = JSON.parse(localStorage.getItem("ic_cliente") || "{}"); KEEP.forEach(k => { if (g[k] && f.elements[k] && !f.elements[k].value) f.elements[k].value = g[k]; }); } catch {}
+  f.addEventListener("input", e => {
+    if (e.target.name === "tel") { const d = e.target.value.replace(/\D/g, "").replace(/^57(?=3)/, "").slice(0, 10); e.target.value = d.replace(/(\d{3})(\d{0,3})(\d{0,4})/, (m, a, b, c) => [a, b, c].filter(Boolean).join(" ")); }
+    try { const g = {}; KEEP.forEach(k => g[k] = val(k)); localStorage.setItem("ic_cliente", JSON.stringify(g)); } catch {}
   });
   cargarDias(); pintar();
 })();

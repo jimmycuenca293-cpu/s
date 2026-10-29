@@ -147,3 +147,31 @@ details.ic-faq p{padding:0 0 15px;color:var(--muted);line-height:1.55}
 .ic-cierre .btn{background:#fff;color:#0b1f6b;border-color:#fff;font-size:17px}
 .ic-sigue{margin:8px 0;padding-left:20px;display:grid;gap:8px}
 @media (max-width:560px){.ic-cierre .btn{width:100%}}
+
+/* calendario de disponibilidad */
+.ic-reloj{display:flex;gap:10px;align-items:center;background:var(--accent-soft);border-radius:12px;padding:10px 14px;font-weight:700;font-size:14.5px;font-variant-numeric:tabular-nums}
+.ic-reloj .punto{width:10px;height:10px;border-radius:50%;background:#1fbf6a;flex:none;animation:icpulso 1.6s infinite}
+@keyframes icpulso{0%{box-shadow:0 0 0 0 rgba(31,191,106,.55)}70%{box-shadow:0 0 0 9px rgba(31,191,106,0)}100%{box-shadow:0 0 0 0 rgba(31,191,106,0)}}
+.ic-cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.ic-cal .cab{font-size:11.5px;text-align:center;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.ic-d{border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;padding:5px 1px;display:grid;gap:1px;text-align:center;cursor:pointer;min-height:60px;align-content:center;min-width:0}
+.ic-d .mes{font-size:9.5px;text-transform:uppercase;color:var(--accent);font-weight:800;min-height:11px;line-height:11px}
+.ic-d b{font-size:17px;line-height:1.1}
+.ic-d small{font-size:10.5px;color:var(--muted);line-height:1.15}
+.ic-d.libre{border-color:color-mix(in srgb,var(--ok) 50%,var(--line))}.ic-d.libre small{color:var(--ok);font-weight:700}
+.ic-d.pocos{border-color:#e8a317}.ic-d.pocos small{color:var(--warn);font-weight:700}
+.ic-d.lleno,.ic-d.cerrado{opacity:.5;cursor:not-allowed;background:transparent}.ic-d.lleno b{text-decoration:line-through}
+.ic-d[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ic-d[aria-pressed=true] .mes,.ic-d[aria-pressed=true] small{color:inherit}
+.ic-d.vacio{border:0;background:transparent;cursor:default}
+.ic-leyenda{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted)}
+.ic-leyenda i{display:inline-block;width:11px;height:11px;border-radius:4px;margin-right:6px;vertical-align:-1px;border:2px solid}
+.ic-leyenda .lib{border-color:var(--ok)}.ic-leyenda .poc{border-color:#e8a317}.ic-leyenda .lle{border-color:var(--line);background:var(--line)}
+.ic-aviso{background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:10px 12px;font-size:14px;font-weight:600}.ic-aviso:empty{display:none}
+.ic-hora{display:grid;gap:1px;line-height:1.2}.ic-hora small{font-size:11px;font-weight:600;color:var(--muted)}
+.ic-hora:disabled{text-decoration:none}.ic-hora:disabled span{text-decoration:line-through}
+.ic-hora[aria-pressed=true] small{color:inherit}
+.ic-falta{font-size:13.5px;color:var(--muted)}.ic-falta.listo{color:var(--ok);font-weight:700}
+.ic-cuenta{font-variant-numeric:tabular-nums;font-weight:800}
+@media (max-width:560px){.ic-d{min-height:54px}.ic-d b{font-size:15px}.ic-d small{font-size:9.5px}}
+@media (max-width:560px){.ic-d small{white-space:nowrap;font-size:9px}.ic-d{padding-inline:0}}

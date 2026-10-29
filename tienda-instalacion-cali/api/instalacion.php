@@ -4,7 +4,7 @@ declare(strict_types=1);
 require __DIR__ . '/instalacion-lib.php';
 
 $a = (string) ($_GET['a'] ?? '');
-if ($a === 'dias') out(['dias' => inst_agenda()]);
+if ($a === 'dias') out(['ahora' => inst_ahora()->format('c'), 'ts' => time(), 'anticipacion' => inst_config()['anticipacion_horas'], 'dias' => inst_agenda()]);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') fail('Método no permitido.', 405);
 $raw = file_get_contents('php://input', false, null, 0, 20001);
@@ -39,6 +39,7 @@ if ((int) ($b['total'] ?? -1) !== $P['total']) fail('El precio se actualizó. Re
 $t = fn(string $k, int $max = 160) => mb_substr(trim((string) ($b[$k] ?? '')), 0, $max);
 $fecha = $t('fecha', 10); $franja = (int) ($b['franja'] ?? -1);
 if (!in_array($fecha, inst_fechas(), true) || $franja < 0 || $franja >= count($c['franjas'])) fail('Escoge un día y una hora disponibles.');
+if (!inst_slot_futuro($fecha, $franja)) fail('Ese horario ya no está disponible: faltan menos de ' . $c['anticipacion_horas'] . ' horas. Escoge otro, por favor.', 409);
 $v = ['servicio' => $serv, 'zona' => $zona, 'metros' => $metros, 'total' => $P['total'], 'reserva' => $P['reserva'], 'saldo' => $P['saldo'], 'fecha' => $fecha, 'franja' => $franja,
     'marca_nevecon' => $t('marca_nevecon', 40), 'modelo' => $t('modelo', 40), 'toma' => in_array($t('toma', 20), ['llave', 'tubo', 'lavaplatos', 'nose'], true) ? $t('toma', 20) : 'nose',
     'nombre' => $t('nombre', 80), 'email' => $t('email', 120), 'tel' => preg_replace('/\D/', '', $t('tel', 20)), 'barrio' => $t('barrio', 80), 'dir' => $t('dir', 160),

@@ -12,15 +12,16 @@ if (!$ok) { echo '<div class="ic"><div class="ic-reserva"><h1>No encontramos esa
 $total = ($r['forma_pago'] ?? 'reserva') === 'total';
 $link = $total ? '' : (string) (inst_config()['links'][$r['servicio']] ?? '');
 $hasta = date('g:i a', strtotime($r['creado']) + INST_RETENER_MIN * 60);
+$resta = max(0, strtotime($r['creado']) + INST_RETENER_MIN * 60 - time());
 $msgwa = rawurlencode('Hola, soy ' . $r['nombre'] . '. Sobre mi reserva de instalación ' . $r['ref'] . ' del ' . inst_fecha_txt($r['fecha']) . ' a las ' . inst_franja_txt((int) $r['franja']) . '.');
 ?>
 <div class="ic"><div class="ic-reserva">
 <h1>Tu reserva de instalación</h1>
 <?php if ($r['estado'] === 'esperando_pago' && $total): ?>
-  <div class="ic-estado warn"><b>Falta pagar el total para confirmar tu instalación</b><span>Escogiste pagar todo en línea (<b><?= h(cop((int) $r['total'])) ?></b>). Escríbenos por WhatsApp y te enviamos el link de pago por ese valor. Tu horario queda apartado hasta las <?= h($hasta) ?>. Al terminar no pagas nada más.</span></div>
+  <div class="ic-estado warn"><b>Falta pagar el total para confirmar tu instalación</b><span>Escogiste pagar todo en línea (<b><?= h(cop((int) $r['total'])) ?></b>). Escríbenos por WhatsApp y te enviamos el link de pago por ese valor. Tu horario queda apartado <b class="ic-cuenta" id="cuenta"><?= sprintf('%02d:%02d', intdiv($resta, 60), $resta % 60) ?></b> más (hasta las <?= h($hasta) ?>). Al terminar no pagas nada más.</span></div>
   <a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, soy ' . $r['nombre'] . '. Reservé la instalación ' . $r['ref'] . ' y quiero pagar el total (' . cop((int) $r['total']) . '). ¿Me envías el link de pago?') ?>" target="_blank" rel="noopener" style="font-size:18px">💬 Pedir el link de pago por WhatsApp</a>
 <?php elseif ($r['estado'] === 'esperando_pago'): ?>
-  <div class="ic-estado warn"><b>Falta pagar la reserva para asegurar tu horario</b><span>Pagas <b><?= h(cop((int) $r['reserva'])) ?></b> ahora y el saldo de <?= h(cop((int) $r['saldo'])) ?> en efectivo al técnico, al terminar la instalación. Tu horario queda apartado hasta las <?= h($hasta) ?>.</span></div>
+  <div class="ic-estado warn"><b>Falta pagar la reserva para asegurar tu horario</b><span>Pagas <b><?= h(cop((int) $r['reserva'])) ?></b> ahora y el saldo de <?= h(cop((int) $r['saldo'])) ?> en efectivo al técnico, al terminar la instalación. Tu horario queda apartado <b class="ic-cuenta" id="cuenta"><?= sprintf('%02d:%02d', intdiv($resta, 60), $resta % 60) ?></b> más (hasta las <?= h($hasta) ?>).</span></div>
   <?php if ($link !== ''): ?>
     <a class="btn" id="pagar" href="<?= h($link) ?>" target="_blank" rel="noopener" style="font-size:18px">Pagar la reserva <?= h(cop((int) $r['reserva'])) ?> con Wompi</a>
     <p class="m" style="font-size:14px">Se abre la página segura de Wompi. En «Nombre» y «Correo» usa los mismos datos de tu reserva para que podamos encontrar tu pago. Cuando termines, toca el botón de abajo.</p>
@@ -46,6 +47,14 @@ $msgwa = rawurlencode('Hola, soy ' . $r['nombre'] . '. Sobre mi reserva de insta
 <a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= $msgwa ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a>
 <a class="btn ghost" href="/">Volver a la tienda</a>
 </div></div>
+<?php if ($r['estado'] === 'esperando_pago'): ?>
+<script>
+(function () { var el = document.getElementById("cuenta"); if (!el) return; var resta = <?= (int) $resta ?>, t0 = Date.now();
+  function p() { var s = Math.max(0, resta - Math.floor((Date.now() - t0) / 1000)); el.textContent = ("0" + Math.floor(s / 60)).slice(-2) + ":" + ("0" + (s % 60)).slice(-2);
+    if (!s) { el.parentNode.innerHTML = "<b>Tu horario ya no está apartado.</b> Si ya pagaste, escríbenos por WhatsApp con tu número de reserva. Si no, haz una nueva reserva."; clearInterval(iv); } }
+  var iv = setInterval(p, 1000); p(); })();
+</script>
+<?php endif; ?>
 <?php if ($r['estado'] === 'esperando_pago' && $link !== ''): ?>
 <script>
 document.getElementById("ya").addEventListener("click", async e => {
