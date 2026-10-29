@@ -16,7 +16,7 @@ $nb = fn(int $x) => str_replace(' ', "\u{00A0}", cop($x));
 $recargos = implode(' · ', array_map(fn($z) => $z['nombre'] . ' +' . cop((int) $z['recargo']), array_filter($C['zonas'], fn($z) => $z['recargo'] > 0)));
 $nombres_zonas = implode(', ', array_slice(array_column($C['zonas'], 'nombre'), 0, -1)) . ' y ' . end($C['zonas'])['nombre'];
 cabeza('Instalación de nevecón a domicilio en Cali y Jamundí | ' . $n['nombre'],
-    'Un técnico instala el agua de tu nevecón en tu casa: llave galápago, manguera y filtro externo. Escoge el día y la hora; paga todo hoy o en 2 partes, con el resto al técnico al terminar. 1 año de garantía.',
+    'Un técnico de nuestro equipo instala el agua de tu nevecón en tu casa: llave galápago, manguera y filtro externo. Escoge el día y la hora; paga todo hoy o en 2 partes, con el resto al técnico al terminar. 1 año de garantía.',
     '/instalacion-nevecon-cali/', '<link rel="stylesheet" href="/instalacion-nevecon-cali/instalacion.css?v=' . $V . '"><script type="application/ld+json">' . json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) . '</script>');
 $img = fn(string $id, string $alt, int $w = 58) => '<picture><source srcset="/filtrosnevecones-img/' . $id . '-400.webp" type="image/webp"><img src="/filtrosnevecones-img/' . $id . '.jpg" alt="' . h($alt) . '" width="' . $w . '" height="' . $w . '" loading="lazy"></picture>';
 $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instalacion-nevecon-cali/img/combo-' . $id . '.webp" type="image/webp"><img src="/instalacion-nevecon-cali/img/combo-' . $id . '.jpg" alt="' . h($alt) . '" width="' . $w . '" height="' . $w . '" loading="lazy"></picture>';
@@ -26,7 +26,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
   <div>
     <span class="eyebrow">Instalación a domicilio · <?= h($nombres_zonas) ?></span>
     <h1>Instalación de agua para tu nevecón, a domicilio</h1>
-    <p class="lead">Un técnico llega el día y la hora que tú escoges, conecta tu nevecón con llave galápago profesional y manguera, y pone el filtro externo si lo quieres. Pagas todo hoy en línea, o en 2 partes: una hoy y el resto al técnico cuando ya ves el agua funcionando.</p>
+    <p class="lead">Un técnico de nuestro equipo llega el día y la hora que tú escoges, conecta tu nevecón con llave galápago profesional y manguera, y pone el filtro externo si lo quieres. Pagas todo hoy en línea, o en 2 partes: una hoy y el resto al técnico cuando ya ves el agua funcionando.</p>
     <div class="acc"><a class="btn" href="#combos">Ver combos y reservar</a><a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, quiero una instalación de agua para mi nevecón.') ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a></div>
     <p class="ahora-co" id="ahora-co"><span class="punto" aria-hidden="true"></span><span id="ahora-co-t">Hora de Colombia: cargando…</span></p>
     <p class="proximo" id="proximo" hidden></p>
