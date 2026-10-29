@@ -175,3 +175,8 @@ details.ic-faq p{padding:0 0 15px;color:var(--muted);line-height:1.55}
 .ic-cuenta{font-variant-numeric:tabular-nums;font-weight:800}
 @media (max-width:560px){.ic-d{min-height:54px}.ic-d b{font-size:15px}.ic-d small{font-size:9.5px}}
 @media (max-width:560px){.ic-d small{white-space:nowrap;font-size:9px}.ic-d{padding-inline:0}}
+
+.ic-combo .foto{padding:0;aspect-ratio:1/1;overflow:hidden}.ic-combo .foto img{max-height:none;width:100%;height:100%;object-fit:cover}
+.ic-op img{width:76px;height:76px;border-radius:10px;border:1px solid var(--line);object-fit:cover}
+@media (max-width:560px){.ic-combo .foto{aspect-ratio:1/1}.ic-combo .foto img{max-height:none}}
+@media (max-width:560px){.ic-combo{display:flex;flex-direction:column;gap:12px}.ic-combo .foto{width:100%;max-width:360px;margin-inline:auto}}

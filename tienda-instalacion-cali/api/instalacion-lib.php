@@ -4,7 +4,8 @@ declare(strict_types=1);
 require_once __DIR__ . '/lib.php';
 date_default_timezone_set('America/Bogota');
 
-const INST_RETENER_MIN = 60;   // una reserva sin pagar aparta el horario este tiempo; pagada, lo aparta hasta que se complete o se cancele
+const INST_RETENER_MIN = 60;
+const INST_RETENER_PAGO_HORAS = 24;   // si el cliente avisó «ya pagué», el horario se aparta hasta que el técnico confirme (máx. este tiempo)   // una reserva sin pagar aparta el horario este tiempo; pagada, lo aparta hasta que se complete o se cancele
 
 function inst_config(): array
 {
@@ -113,8 +114,8 @@ function inst_fechas(): array
 // Horarios ocupados por reservas pagadas o recién creadas (aún dentro del tiempo para pagar)
 function inst_ocupados(string $desde, string $hasta): array
 {
-    $st = inst_db()->prepare("SELECT fecha, franja FROM instalaciones WHERE fecha BETWEEN ? AND ? AND (estado = 'reservada' OR (estado = 'esperando_pago' AND creado > ?))");
-    $st->execute([$desde, $hasta, date('c', time() - INST_RETENER_MIN * 60)]);
+    $st = inst_db()->prepare("SELECT fecha, franja FROM instalaciones WHERE fecha BETWEEN ? AND ? AND (estado = 'reservada' OR (estado = 'esperando_pago' AND (creado > ? OR (avisado_pago = 1 AND creado > ?))))");
+    $st->execute([$desde, $hasta, date('c', time() - INST_RETENER_MIN * 60), date('c', time() - INST_RETENER_PAGO_HORAS * 3600)]);
     $o = [];
     foreach ($st->fetchAll() as $r) $o[$r['fecha'] . '|' . $r['franja']] = true;
     return $o;

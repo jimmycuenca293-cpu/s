@@ -52,7 +52,7 @@ $msgwa = rawurlencode('Hola, soy ' . $r['nombre'] . '. Sobre mi reserva de insta
 (function () { var el = document.getElementById("cuenta"); if (!el) return; var resta = <?= (int) $resta ?>, t0 = Date.now();
   function p() { var s = Math.max(0, resta - Math.floor((Date.now() - t0) / 1000)); el.textContent = ("0" + Math.floor(s / 60)).slice(-2) + ":" + ("0" + (s % 60)).slice(-2);
     if (!s) { el.parentNode.innerHTML = "<b>Tu horario ya no está apartado.</b> Si ya pagaste, escríbenos por WhatsApp con tu número de reserva. Si no, haz una nueva reserva."; clearInterval(iv); } }
-  var iv = setInterval(p, 1000); p(); })();
+  var iv = window._icIv = setInterval(p, 1000); p(); })();
 </script>
 <?php endif; ?>
 <?php if ($r['estado'] === 'esperando_pago' && $link !== ''): ?>
@@ -60,7 +60,7 @@ $msgwa = rawurlencode('Hola, soy ' . $r['nombre'] . '. Sobre mi reserva de insta
 document.getElementById("ya").addEventListener("click", async e => {
   const b = e.currentTarget, m = document.getElementById("ya-m"); b.disabled = true;
   try { const r = await fetch("/filtrosnevecones-api/instalacion.php?a=pagado", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ref: <?= json_encode($r['ref']) ?>, t: <?= json_encode((string) $_GET['t']) ?> }) });
-    if (!r.ok) throw 0; m.textContent = "Listo. El técnico revisa tu pago y te confirma por correo y WhatsApp en poco tiempo."; } catch { m.textContent = "No pudimos avisar. Escríbenos por WhatsApp con tu número de reserva."; b.disabled = false; }
+    if (!r.ok) throw 0; m.textContent = "Listo. El técnico revisa tu pago y te confirma por correo y WhatsApp en poco tiempo."; var c = document.getElementById("cuenta"); if (c) { if (window._icIv) clearInterval(window._icIv); c.parentNode.innerHTML = "<b>Tu horario sigue apartado</b> mientras el técnico confirma tu pago."; } } catch { m.textContent = "No pudimos avisar. Escríbenos por WhatsApp con tu número de reserva."; b.disabled = false; }
 });
 </script>
 <?php endif; ?>

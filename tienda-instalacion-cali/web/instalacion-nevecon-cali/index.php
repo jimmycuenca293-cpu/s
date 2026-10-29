@@ -17,7 +17,7 @@ cabeza('Instalación de nevecón a domicilio en Cali y Jamundí | ' . $n['nombre
     'Un técnico instala el agua de tu nevecón en tu casa: llave galápago, manguera y filtro externo. Escoge el día y la hora, reserva en línea y paga el saldo al terminar. 1 año de garantía.',
     '/instalacion-nevecon-cali/', '<link rel="stylesheet" href="/instalacion-nevecon-cali/instalacion.css?v=' . $V . '"><script type="application/ld+json">' . json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) . '</script>');
 $img = fn(string $id, string $alt, int $w = 58) => '<picture><source srcset="/filtrosnevecones-img/' . $id . '-400.webp" type="image/webp"><img src="/filtrosnevecones-img/' . $id . '.jpg" alt="' . h($alt) . '" width="' . $w . '" height="' . $w . '" loading="lazy"></picture>';
-$fotos = ['basica' => 'k-galapago', 'filtro-samsung' => 'sam-ex-o', 'filtro-lg' => 'lg-ex-o', 'filtro-whirlpool' => 'wp-ex-o'];
+$imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instalacion-nevecon-cali/img/combo-' . $id . '.webp" type="image/webp"><img src="/instalacion-nevecon-cali/img/combo-' . $id . '.jpg" alt="' . h($alt) . '" width="' . $w . '" height="' . $w . '" loading="lazy"></picture>';
 ?>
 <div class="ic">
 <section class="ic-hero"><div class="in">
@@ -43,10 +43,9 @@ $fotos = ['basica' => 'k-galapago', 'filtro-samsung' => 'sam-ex-o', 'filtro-lg' 
   <div class="ic-combos">
   <?php foreach ($C['servicios'] as $id => $sv): $f = $sv['filtro']; ?>
     <article class="ic-combo<?= $f ? '' : ' base' ?>">
-      <div class="foto"><?= $img($fotos[$id], $sv['nombre'], 120) ?></div>
+      <div class="foto"><?= $imgc($id, $sv['nombre'] . ': manguera, llave galápago' . ($f ? ' y filtro externo' : ''), 320) ?></div>
       <div class="cuerpo"><h3><?= h($sv['corto']) ?></h3>
-        <p class="m"><?= $f ? 'Incluye el filtro externo ' . h($f['marca']) . ' ' . h($f['ref']) . ' instalado en la línea de agua.' : 'La conexión del agua del nevecón, sin filtro. Sirve para cualquier marca.' ?></p>
-        <ul><li>Llave galápago y racores</li><li>Hasta 5 m de manguera</li><li><?= $f ? 'Filtro externo ' . h($f['marca']) : 'Prueba de fugas y purga' ?></li></ul></div>
+        <ul><li>Instalación a domicilio</li><li>Llave galápago profesional con racores</li><li>Manguera de 1/4" hasta 5 metros</li><?php if ($f): ?><li>Filtro externo <?= h($f['marca']) ?> <?= h($f['ref']) ?> instalado</li><?php endif; ?><li>Conexión al nevecón, prueba de fugas y purga</li><li>1 año de garantía</li><?php if (!$f): ?><li>Sirve para cualquier marca de nevecón</li><?php endif; ?></ul></div>
       <div class="cobro"><b><?= $m($sv['precio']) ?></b><small>Reservas con <?= $m($sv['reserva']) ?></small>
         <a class="btn" href="#reservar" data-pick="<?= h($id) ?>">Quiero este</a></div>
     </article>
@@ -90,8 +89,8 @@ $fotos = ['basica' => 'k-galapago', 'filtro-samsung' => 'sam-ex-o', 'filtro-lg' 
     <section class="ic-paso" id="p1"><h3><i>1</i>¿Qué necesitas?</h3>
       <div class="ic-opciones" role="radiogroup" aria-label="Servicio">
       <?php foreach ($C['servicios'] as $id => $s): ?>
-        <label class="ic-op"><input type="radio" name="servicio" value="<?= h($id) ?>" <?= $id === 'basica' ? 'checked' : '' ?>><?= $img($fotos[$id], $s['nombre']) ?>
-          <span><b><?= h($s['corto']) ?></b><small><?= $s['filtro'] ? 'Incluye filtro externo ' . h($s['filtro']['marca']) . ' ' . h($s['filtro']['ref']) : 'Llave galápago y hasta 5 m de manguera' ?></small><span class="pr"><?= $m($s['precio']) ?></span></span></label>
+        <label class="ic-op"><input type="radio" name="servicio" value="<?= h($id) ?>" <?= $id === 'basica' ? 'checked' : '' ?>><?= $imgc($id, $s['nombre'] . ': manguera, llave galápago' . ($s['filtro'] ? ' y filtro externo' : ''), 76) ?>
+          <span><b><?= h($s['corto']) ?></b><small><?= $s['filtro'] ? 'Llave galápago + 5 m de manguera + filtro externo ' . h($s['filtro']['marca']) . ' ' . h($s['filtro']['ref']) : 'Llave galápago + hasta 5 m de manguera' ?></small><span class="pr"><?= $m($s['precio']) ?></span></span></label>
       <?php endforeach; ?></div>
       <p class="m" style="font-size:13.5px">¿Tu nevecón es de otra marca? Escoge la instalación básica o escríbenos por WhatsApp y te decimos qué filtro le sirve.</p></section>
     <section class="ic-paso" id="p2"><h3><i>2</i>¿En qué zona vives?</h3>
