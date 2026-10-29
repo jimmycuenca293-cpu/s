@@ -38,7 +38,7 @@ if ($ok_csrf && isset($_POST['accion'])) {
                 $r = inst_buscar($r['ref']);
                 if ($nuevo === 'reservada') enviar_correo($r['email'], 'Reserva confirmada ' . $r['ref'] . ': ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']),
                     '<h2 style="margin:0 0 8px">¡Tu reserva está confirmada!</h2><p>Recibimos tu pago. El técnico llega en el horario que escogiste.</p>' . inst_tabla($r, false)
-                    . (($r['forma_pago'] ?? 'reserva') === 'total' ? ((int) $r['saldo'] > 0 ? '<p>Al terminar pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' por la manguera adicional. Tienes 1 año de garantía en la instalación.</p>' : '<p>Ya pagaste todo: al terminar no pagas nada más. Tienes 1 año de garantía en la instalación.</p>')
+                    . (($r['forma_pago'] ?? 'reserva') === 'total' ? ((int) $r['saldo'] > 0 ? '<p>Al terminar pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' por el recargo de zona o la manguera adicional. Tienes 1 año de garantía en la instalación.</p>' : '<p>Ya pagaste todo: al terminar no pagas nada más. Tienes 1 año de garantía en la instalación.</p>')
                         : '<p>El saldo de ' . h(cop((int) $r['saldo'])) . ' lo pagas en efectivo al técnico al terminar. Tienes 1 año de garantía en la instalación.</p>'));
                 $msg = 'Reserva ' . $r['ref'] . ': ' . inst_estado_txt($nuevo) . '.' . ($nuevo === 'reservada' ? ' Le avisamos al cliente por correo.' : '');
             }

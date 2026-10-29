@@ -23,10 +23,10 @@
     const L = [["Servicio", p.s.corto], ["Zona", p.z ? p.z.nombre + (p.z.recargo ? " (+" + cop(p.z.recargo) + ")" : "") : "Escoge tu zona"],
       ["Manguera", metrosTxt[p.m] + (p.extra ? " (+" + cop(p.extra) + ")" : "")], ["Día", dia ? dia.txt : "Escoge el día"], ["Hora", hr ? hr.txt : "Escoge la hora"]];
     $("#lineas").innerHTML = L.map(([a, b]) => `<div class="l"><span>${a}</span><b>${esc(b)}</b></div>`).join("");
-    const tot = radio("forma_pago") === "total", online = tot ? p.total - p.extra : p.reserva, efec = p.total - online;
+    const tot = radio("forma_pago") === "total", online = tot ? p.s.precio : p.reserva, efec = p.total - online;
     $("#total").textContent = cop(p.total); $("#reserva").textContent = cop(online);
     $("#ahora-t").textContent = tot ? "Pagas ahora el total en línea" : "Pagas ahora para reservar";
-    $("#ahora-s").innerHTML = tot ? (efec ? 'Y ' + cop(efec) + " en efectivo al terminar, por la manguera adicional." : "Con Wompi, desde la siguiente pantalla. Al terminar no pagas nada más.")
+    $("#ahora-s").innerHTML = tot ? (efec ? 'Y ' + cop(efec) + " en efectivo al terminar (recargo de zona o manguera adicional)." : "Con Wompi, desde la siguiente pantalla. Al terminar no pagas nada más.")
       : 'Y el saldo de <b id="saldo" style="display:inline;font-size:inherit">' + cop(efec) + "</b> en efectivo al técnico, al terminar.";
     $("#enviar").textContent = tot ? "Reservar y pagar el total " + cop(online) : "Reservar y pagar " + cop(online);
     $("#barra-r").textContent = tot ? "Pagas " + cop(online) : "Reserva " + cop(online);
@@ -96,7 +96,9 @@
   });
   document.addEventListener("click", e => {
     const b = e.target.closest("[data-pick]"); if (!b) return;
-    const r = f.querySelector(`input[name="servicio"][value="${b.dataset.pick}"]`); if (r) { r.checked = true; pintar(); }
+    const r = f.querySelector(`input[name="servicio"][value="${b.dataset.pick}"]`); if (r) r.checked = true;
+    const fp = b.dataset.forma && f.querySelector(`input[name="forma_pago"][value="${b.dataset.forma}"]`); if (fp) fp.checked = true;
+    pintar();
   });
   f.addEventListener("input", pintar); f.addEventListener("change", pintar);
 

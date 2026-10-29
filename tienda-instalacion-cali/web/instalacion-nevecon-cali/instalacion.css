@@ -180,3 +180,17 @@ details.ic-faq p{padding:0 0 15px;color:var(--muted);line-height:1.55}
 .ic-op img{width:76px;height:76px;border-radius:10px;border:1px solid var(--line);object-fit:cover}
 @media (max-width:560px){.ic-combo .foto{aspect-ratio:1/1}.ic-combo .foto img{max-height:none}}
 @media (max-width:560px){.ic-combo{display:flex;flex-direction:column;gap:12px}.ic-combo .foto{width:100%;max-width:360px;margin-inline:auto}}
+
+.ic-combo .cobro .btn{width:100%}.ic-combo .cobro .btn+.btn{margin-top:6px}
+.ic-combo .cobro .dos{font-size:12.5px;line-height:1.4;margin-top:6px}
+.ic-grid.dos{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.ic-pago .tag.verde{background:var(--accent-soft);color:var(--accent)}
+.ic-tabla{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.ic-tabla table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px}
+.ic-tabla th,.ic-tabla td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line)}
+.ic-tabla th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.ic-tabla tr:last-child td{border-bottom:0}
+.ic-medios{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.ic-medios div{background:var(--accent-soft);border-radius:14px;padding:14px;display:grid;gap:4px;font-size:14.5px}
+.ic-medios span{color:var(--muted)}
+@media (max-width:560px){.ic-combo .cobro{display:grid;grid-template-columns:1fr;gap:0}.ic-combo .cobro .btn{grid-column:1;grid-row:auto}.ic-combo .cobro b,.ic-combo .cobro small{grid-column:1}}
+.ic-combo .cobro .btn .mto{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:19px;white-space:nowrap}.ic-combo .cobro .btn{text-align:center;line-height:1.2}

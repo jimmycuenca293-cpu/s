@@ -41,8 +41,8 @@ $fecha = $t('fecha', 10); $franja = (int) ($b['franja'] ?? -1);
 if (!in_array($fecha, inst_fechas(), true) || $franja < 0 || $franja >= count($c['franjas'])) fail('Escoge un día y una hora disponibles.');
 if (!inst_slot_futuro($fecha, $franja)) fail('Ese horario ya no está disponible: faltan menos de ' . $c['anticipacion_horas'] . ' horas. Escoge otro, por favor.', 409);
 $forma = $t('forma_pago', 10) === 'total' ? 'total' : 'reserva';
-// Pago total: en línea va el servicio y la zona; la manguera adicional (si la hay) se paga en efectivo al terminar
-$online = $forma === 'total' ? $P['total'] - $P['extra'] : $P['reserva'];
+// Pago total: en línea va el combo completo (precio del servicio); el recargo de zona y la manguera adicional se pagan en efectivo al terminar
+$online = $forma === 'total' ? (int) $P['servicio']['precio'] : $P['reserva'];
 $v = ['servicio' => $serv, 'zona' => $zona, 'metros' => $metros, 'total' => $P['total'], 'reserva' => $online, 'saldo' => $P['total'] - $online, 'fecha' => $fecha, 'franja' => $franja,
     'marca_nevecon' => $t('marca_nevecon', 40), 'modelo' => $t('modelo', 40), 'toma' => in_array($t('toma', 20), ['llave', 'tubo', 'lavaplatos', 'nose'], true) ? $t('toma', 20) : 'nose',
     'nombre' => $t('nombre', 80), 'email' => $t('email', 120), 'tel' => preg_replace('/\D/', '', $t('tel', 20)), 'barrio' => $t('barrio', 80), 'dir' => $t('dir', 160),
