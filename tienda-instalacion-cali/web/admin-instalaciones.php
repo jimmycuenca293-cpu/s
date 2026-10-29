@@ -27,20 +27,12 @@ if ($ok_csrf && isset($_POST['accion'])) {
     if ($r) {
         $nuevo = ['confirmar' => 'reservada', 'completar' => 'completada', 'cancelar' => 'cancelada'][$acc] ?? '';
         if ($nuevo !== '') {
-            $ocupado = false;
-            if ($nuevo === 'reservada') {   // por si otro cliente tomó el horario mientras esta reserva esperaba el pago
-                $st = inst_db()->prepare("SELECT COUNT(*) FROM instalaciones WHERE fecha = ? AND franja = ? AND estado = 'reservada' AND ref <> ?"); $st->execute([$r['fecha'], $r['franja'], $r['ref']]);
-                $ocupado = (int) $st->fetchColumn() > 0;
-            }
-            if ($ocupado) $msg = 'Ese horario ya tiene otra reserva confirmada. Cancela una de las dos o llama al cliente para cambiar el día.';
-            else {
-                inst_db()->prepare('UPDATE instalaciones SET estado = ?, pagado_en = CASE WHEN ? = "reservada" THEN ? ELSE pagado_en END WHERE ref = ?')->execute([$nuevo, $nuevo, date('c'), $r['ref']]);
-                $r = inst_buscar($r['ref']);
-                if ($nuevo === 'reservada') enviar_correo($r['email'], 'Reserva confirmada ' . $r['ref'] . ': ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']),
-                    '<h2 style="margin:0 0 8px">¡Tu reserva está confirmada!</h2><p>Recibimos tu pago. El técnico llega en el horario que escogiste.</p>' . inst_tabla($r, false)
-                    . (($r['forma_pago'] ?? 'reserva') === 'total' ? ((int) $r['saldo'] > 0 ? '<p>Al terminar pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' por el recargo de zona o la manguera adicional. Tienes 1 año de garantía en la instalación.</p>' : '<p>Ya pagaste todo: al terminar no pagas nada más. Tienes 1 año de garantía en la instalación.</p>')
-                        : '<p>El resto, ' . h(cop((int) $r['saldo'])) . ', lo pagas en efectivo al técnico al terminar. Tienes 1 año de garantía en la instalación.</p>'));
-                $msg = 'Reserva ' . $r['ref'] . ': ' . inst_estado_txt($nuevo) . '.' . ($nuevo === 'reservada' ? ' Le avisamos al cliente por correo.' : '');
+            if ($nuevo === 'reservada') {
+                if (inst_confirmar_reserva($r, 'panel')) $msg = 'Reserva ' . $r['ref'] . ': ' . inst_estado_txt('reservada') . '. Le avisamos al cliente por correo.';
+                else $msg = 'Ese horario ya tiene otra reserva confirmada. Cancela una de las dos o llama al cliente para cambiar el día.';
+            } else {
+                inst_db()->prepare('UPDATE instalaciones SET estado = ? WHERE ref = ?')->execute([$nuevo, $r['ref']]);
+                $msg = 'Reserva ' . $r['ref'] . ': ' . inst_estado_txt($nuevo) . '.';
             }
         }
     }

@@ -47,6 +47,7 @@ function inst_db(): PDO
         zona TEXT, metros TEXT, marca_nevecon TEXT, modelo TEXT, toma TEXT, nombre TEXT, email TEXT, tel TEXT,
         barrio TEXT, dir TEXT, detalle TEXT, notas TEXT, ip TEXT, pagado_en TEXT, nota_tecnico TEXT, avisado_pago INTEGER DEFAULT 0)');
     $cols = array_column($pdo->query('PRAGMA table_info(instalaciones)')->fetchAll(), 'name');
+    if (!in_array('tx_id', $cols, true)) $pdo->exec('ALTER TABLE instalaciones ADD COLUMN tx_id TEXT');
     if (!in_array('forma_pago', $cols, true)) $pdo->exec('ALTER TABLE instalaciones ADD COLUMN forma_pago TEXT DEFAULT "reserva"');
     $pdo->exec('CREATE INDEX IF NOT EXISTS inst_fecha ON instalaciones (fecha, franja)');
     return $pdo;
@@ -314,4 +315,46 @@ function inst_ics(array $r): string
         'DESCRIPTION:' . $esc('Reserva ' . $r['ref'] . ((int) $r['saldo'] > 0 ? '. En efectivo al técnico al terminar: ' . cop((int) $r['saldo']) : '. Todo pagado en línea') . '. WhatsApp ' . (cfg()['negocio']['telefono'] ?? '301 381 0242')),
         'BEGIN:VALARM', 'TRIGGER:-PT1H', 'ACTION:DISPLAY', 'DESCRIPTION:Instalación del agua de tu nevecón en 1 hora', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'];
     return implode("\r\n", $l) . "\r\n";
+}
+
+// Confirma la reserva (pago recibido): queda apartado el horario, le llega el correo al cliente y se te avisa. $via: 'panel' o 'wompi'
+function inst_confirmar_reserva(array $r, string $via, string $txid = ''): bool
+{
+    $st = inst_db()->prepare("SELECT COUNT(*) FROM instalaciones WHERE fecha = ? AND franja = ? AND estado = 'reservada' AND ref <> ?"); $st->execute([$r['fecha'], $r['franja'], $r['ref']]);
+    if ((int) $st->fetchColumn() > 0) return false;   // el horario ya lo tiene otra reserva confirmada
+    $up = inst_db()->prepare("UPDATE instalaciones SET estado = 'reservada', pagado_en = ?, tx_id = COALESCE(NULLIF(?, ''), tx_id) WHERE ref = ? AND estado = 'esperando_pago'");
+    $up->execute([date('c'), $txid, $r['ref']]);
+    if ($up->rowCount() !== 1) return true;   // ya estaba confirmada
+    $r = inst_buscar($r['ref']);
+    $total = ($r['forma_pago'] ?? 'reserva') === 'total';
+    enviar_correo($r['email'], 'Reserva confirmada ' . $r['ref'] . ': ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']),
+        '<h2 style="margin:0 0 8px">¡Tu reserva está confirmada!</h2><p>Recibimos tu pago. Un asesor te escribe por WhatsApp para darte el nombre del técnico.</p>' . inst_tabla($r, false)
+        . ($total ? ((int) $r['saldo'] > 0 ? '<p>Al terminar pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' por el recargo de zona o la manguera adicional. Tienes 1 año de garantía en la instalación.</p>' : '<p>Ya pagaste todo: al terminar no pagas nada más. Tienes 1 año de garantía en la instalación.</p>')
+            : '<p>El resto, ' . h(cop((int) $r['saldo'])) . ', lo pagas en efectivo al técnico al terminar. Tienes 1 año de garantía en la instalación.</p>'));
+    if ($via === 'wompi') inst_avisar($r, 'pago-confirmado', 'PAGO CONFIRMADO ' . $r['ref'] . ' — ' . inst_fecha_txt($r['fecha'], false) . ' ' . inst_franja_txt((int) $r['franja']) . ' — ' . $r['nombre'],
+        '<h2 style="margin:0 0 8px">Wompi confirmó el pago de esta instalación</h2><p>Ya está confirmada la reserva y le llegó el correo al cliente. <b>Escríbele por WhatsApp</b> para confirmar y darle el nombre del técnico.</p>' . inst_tabla($r, true)
+        . '<p><a href="https://wa.me/57' . h($r['tel']) . '">Escribirle al cliente</a></p>');
+    return true;
+}
+
+// Pago de Wompi con link de pago: se busca la reserva por correo (o celular) y monto exacto
+function inst_aplicar_pago_link(array $tx): ?array
+{
+    if (($tx['status'] ?? '') !== 'APPROVED' || ($tx['currency'] ?? 'COP') !== 'COP') return null;
+    [$email, $tel, $monto] = datos_pago_link($tx);
+    $txid = (string) ($tx['id'] ?? '');
+    if ($monto <= 0 || $monto != (int) $monto || $txid === '' || ($email === '' && $tel === '')) return null;
+    $ya = inst_db()->prepare('SELECT COUNT(*) FROM instalaciones WHERE tx_id = ?'); $ya->execute([$txid]);
+    if ((int) $ya->fetchColumn() > 0) return null;
+    $st = inst_db()->prepare("SELECT * FROM instalaciones WHERE estado = 'esperando_pago' AND reserva = ? ORDER BY creado ASC"); $st->execute([(int) $monto]);
+    foreach ($st->fetchAll() as $r) {
+        if (strtotime((string) $r['creado']) < time() - 5 * 86400) continue;
+        if (!(($email !== '' && strtolower((string) $r['email']) === $email) || ($tel !== '' && substr((string) $r['tel'], -10) === $tel))) continue;
+        if (inst_confirmar_reserva($r, 'wompi', $txid)) return inst_buscar($r['ref']);
+        // Pagó, pero otro cliente ya tiene confirmado ese horario: te avisamos para que lo resuelvas a mano
+        inst_avisar($r, 'conflicto', 'REVISAR: pagaron la reserva ' . $r['ref'] . ' pero el horario ya está ocupado',
+            '<h2 style="margin:0 0 8px">Pagaron una reserva cuyo horario ya está ocupado</h2><p>Wompi aprobó el pago de ' . h(cop((int) $monto)) . ', pero otra reserva confirmada tiene ese mismo día y hora. Escríbele al cliente para cambiarle el horario y luego confírmala en el panel.</p>' . inst_tabla($r, true));
+        return ['ref' => $r['ref'], 'estado' => 'conflicto de horario'];
+    }
+    return null;
 }
