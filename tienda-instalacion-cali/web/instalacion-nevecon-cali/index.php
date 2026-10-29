@@ -13,7 +13,7 @@ $ld = ['@context' => 'https://schema.org', '@type' => 'Service', 'name' => 'Inst
 $m = fn(int $x) => cop($x);
 $recargos = implode(' · ', array_map(fn($z) => $z['nombre'] . ' +' . cop((int) $z['recargo']), array_filter($C['zonas'], fn($z) => $z['recargo'] > 0)));
 $nombres_zonas = implode(', ', array_slice(array_column($C['zonas'], 'nombre'), 0, -1)) . ' y ' . end($C['zonas'])['nombre'];
-cabeza('Instalación de nevecón a domicilio en Cali, Jamundí y Palmira | ' . $n['nombre'],
+cabeza('Instalación de nevecón a domicilio en Cali y Jamundí | ' . $n['nombre'],
     'Un técnico instala el agua de tu nevecón en tu casa: llave galápago, manguera y filtro externo. Escoge el día y la hora, reserva en línea y paga el saldo al terminar. 1 año de garantía.',
     '/instalacion-nevecon-cali/', '<link rel="stylesheet" href="/instalacion-nevecon-cali/instalacion.css?v=' . $V . '"><script type="application/ld+json">' . json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) . '</script>');
 $img = fn(string $id, string $alt, int $w = 58) => '<picture><source srcset="/filtrosnevecones-img/' . $id . '-400.webp" type="image/webp"><img src="/filtrosnevecones-img/' . $id . '.jpg" alt="' . h($alt) . '" width="' . $w . '" height="' . $w . '" loading="lazy"></picture>';
