@@ -214,3 +214,9 @@ details.ic-faq p{padding:0 0 15px;color:var(--muted);line-height:1.55}
 .ic-zonasel span{color:var(--muted);font-weight:700}
 .ic-zonasel button{font:inherit;font-weight:700;padding:8px 14px;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
 .ic-zonasel button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.ic-hero .ahora-co{margin-top:16px;display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.4;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.95)}
+.ic-hero .ahora-co .punto{width:10px;height:10px;border-radius:50%;background:#35e08a;flex:none;margin-top:5px;animation:icpulso 1.6s infinite}
+.ic-hero .ahora-co.cerrado .punto{background:#ffb347;animation:none}
+.ic-hero .ahora-co b{color:#fff}
+.ic-hero .ahora-co+.proximo{margin-top:10px}

@@ -6,7 +6,7 @@ $C = inst_config(); $n = cfg()['negocio']; $tel = $n['telefono'] ?? '301 381 024
 $V = '20261029a';
 $pub = ['servicios' => array_map(fn($s) => ['nombre' => $s['nombre'], 'corto' => $s['corto'], 'precio' => $s['precio'], 'reserva' => $s['reserva']], $C['servicios']),
     'total_online' => array_map(fn($sid) => array_map(fn($zid) => inst_total_online($sid, $zid)[0], array_combine(array_keys($C['zonas']), array_keys($C['zonas']))), array_combine(array_keys($C['servicios']), array_keys($C['servicios']))),
-    'zonas' => $C['zonas'], 'metro_extra' => $C['metro_extra'], 'franjas' => count($C['franjas']), 'anticipacion' => $C['anticipacion_horas']];
+    'zonas' => $C['zonas'], 'metro_extra' => $C['metro_extra'], 'franjas' => count($C['franjas']), 'anticipacion' => $C['anticipacion_horas'], 'atencion' => [$C['franjas'][0][0], end($C['franjas'])[2]]];
 $ld = ['@context' => 'https://schema.org', '@type' => 'Service', 'name' => 'Instalación de agua para nevecón a domicilio', 'serviceType' => 'Instalación de llave, manguera y filtro externo para nevecón',
     'areaServed' => array_map(fn($z) => ['@type' => 'City', 'name' => $z['nombre']], array_values($C['zonas'])),
     'provider' => ['@type' => 'LocalBusiness', 'name' => $n['nombre'], 'telephone' => '+57' . $wa],
@@ -26,8 +26,9 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
   <div>
     <span class="eyebrow">Instalación a domicilio · <?= h($nombres_zonas) ?></span>
     <h1>Instalación de agua para tu nevecón, a domicilio</h1>
-    <p class="lead">Un técnico llega el día y la hora que tú escoges, conecta tu nevecón con llave galápago profesional y manguera, y pone el filtro externo si lo quieres. El saldo lo pagas al terminar, cuando ya ves el agua funcionando.</p>
+    <p class="lead">Un técnico llega el día y la hora que tú escoges, conecta tu nevecón con llave galápago profesional y manguera, y pone el filtro externo si lo quieres. Pagas todo hoy en línea, o en 2 partes: una hoy y el resto al técnico cuando ya ves el agua funcionando.</p>
     <div class="acc"><a class="btn" href="#combos">Ver combos y reservar</a><a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, quiero una instalación de agua para mi nevecón.') ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a></div>
+    <p class="ahora-co" id="ahora-co"><span class="punto" aria-hidden="true"></span><span id="ahora-co-t">Hora de Colombia: cargando…</span></p>
     <p class="proximo" id="proximo" hidden></p>
     <ul><li>1 año de garantía en la instalación</li><li>Pagas todo hoy o en 2 partes: el resto al técnico al terminar</li><li>Un asesor te escribe por WhatsApp para confirmar y darte el nombre del técnico</li><li>Cambias el día o la hora gratis, avisando con 24 horas</li></ul>
   </div>
@@ -97,7 +98,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
     <div class="ic-card ic-pago"><span class="tag">Pago completo</span><h3>Pagar todo ahora</h3>
       <p>Pagas el combo completo hoy, en línea con Wompi (tarjeta, PSE o Nequi). Tu horario queda confirmado y <b>al terminar la instalación no pagas nada más</b>.</p></div>
     <div class="ic-card ic-pago"><span class="tag verde">Pago en 2 partes</span><h3>Una parte hoy y el resto al técnico</h3>
-      <ol class="ic-pasos2"><li><b>Hoy</b> pagas una primera parte en línea con Wompi. Con eso tu día y tu hora quedan apartados.</li><li><b>Un asesor</b> te escribe por WhatsApp para confirmar tu instalación y darte el nombre del técnico.</li><li><b>El técnico</b> llega, instala y te muestra el agua funcionando.</li><li><b>Al terminar</b> le pagas el resto <b>en efectivo, directamente al técnico</b>.</li></ol></div>
+      <ol class="ic-pasos2"><li><b>Hoy</b> pagas una primera parte en línea con Wompi. Con eso tu día y tu hora quedan apartados.</li><li><b>Un asesor</b> te escribe por WhatsApp (lunes a sábado, de 8:00 a. m. a 5:00 p. m.) para confirmar tu instalación y darte el nombre del técnico.</li><li><b>El técnico</b> llega, instala y te muestra el agua funcionando.</li><li><b>Al terminar</b> le pagas el resto <b>en efectivo, directamente al técnico</b>.</li></ol></div>
   </div>
   <div class="ic-tabla"><table><thead><tr><th>Combo (en Cali)</th><th>Pagar todo ahora</th><th>2 partes: hoy, en línea</th><th>2 partes: al técnico, en efectivo</th></tr></thead><tbody>
   <?php foreach ($C['servicios'] as $id => $sv): ?><tr><td><b><?= h($sv['corto']) ?></b></td><td><?= $m($sv['precio']) ?></td><td><?= $m($sv['reserva']) ?></td><td><?= $m($sv['precio'] - $sv['reserva']) ?></td></tr><?php endforeach; ?>

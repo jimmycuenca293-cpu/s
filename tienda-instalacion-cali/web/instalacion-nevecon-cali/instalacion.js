@@ -84,9 +84,22 @@
   // Reloj con la hora de Colombia (se corrige con la hora del servidor, aunque el celular tenga la hora mal)
   const fmtF = new Intl.DateTimeFormat("es-CO", { timeZone: "America/Bogota", weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const fmtH = new Intl.DateTimeFormat("es-CO", { timeZone: "America/Bogota", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true });
+  // Hora y estado de atención de Colombia, siempre al día (se corrige con la hora del servidor)
+  const fmtP = new Intl.DateTimeFormat("en-US", { timeZone: "America/Bogota", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false });
+  const DN = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }, NOM = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+  function atencion(d) {
+    const p = Object.fromEntries(fmtP.formatToParts(d).map(x => [x.type, x.value])), dow = DN[p.weekday], h = (+p.hour % 24) + (+p.minute) / 60, [a, c] = I.atencion || [8, 17];
+    if (dow !== 0 && h >= a && h < c) return { abierto: true, txt: "<b>Asesores atendiendo ahora</b> (lunes a sábado, " + a + ":00 a. m. a " + (c - 12) + ":00 p. m.)" };
+    let sig = h < a && dow !== 0 ? 0 : 1, n = (dow + sig) % 7; while (n === 0) { sig++; n = (dow + sig) % 7; }
+    const cuando = sig === 0 ? "hoy" : sig === 1 ? "mañana " + NOM[n] : "el " + NOM[n];
+    return { abierto: false, txt: "<b>Atención cerrada ahora.</b> Te escribimos " + cuando + " desde las " + a + ":00 a. m." };
+  }
+  window.__icAtencion = atencion;
   function reloj() {
-    const n = new Date(Date.now() + st.off), el = $("#reloj"); if (!el) return;
-    const f1 = fmtF.format(n); el.textContent = "Hoy es " + f1.charAt(0).toUpperCase() + f1.slice(1) + " · " + fmtH.format(n) + " (hora de Colombia)";
+    const n = new Date(Date.now() + st.off), el = $("#reloj"), e2 = $("#ahora-co-t"), a = atencion(n);
+    const f1 = fmtF.format(n), fecha = f1.charAt(0).toUpperCase() + f1.slice(1);
+    if (el) el.textContent = "Hoy es " + fecha + " · " + fmtH.format(n) + " (hora de Colombia)";
+    if (e2) { e2.innerHTML = "Hoy es " + esc(fecha) + " · <b>" + fmtH.format(n) + "</b> (hora de Colombia)<br>" + a.txt; e2.parentNode.classList.toggle("cerrado", !a.abierto); }
   }
   setInterval(reloj, 1000); reloj();
   async function cargarDias(silencioso) {
