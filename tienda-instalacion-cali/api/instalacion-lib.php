@@ -26,11 +26,12 @@ function inst_config(): array
         'anticipacion_horas' => 3,   // un horario se ofrece solo si empieza dentro de más de estas horas
         'bloqueados' => [],        // fechas sin servicio: ['2026-12-08', ...]
         'links' => ['basica' => '', 'filtro-samsung' => '', 'filtro-lg' => '', 'filtro-whirlpool' => ''],
+        'links_total' => [],   // links de pago por el TOTAL: ['basica' => ['cali' => '...', 'jamundi' => '...'], ...]
     ];
     // Ajustes propios de la instalación (links de pago de la reserva, clave del panel, fechas sin servicio): instalacion-ajustes.php
     $f = __DIR__ . '/instalacion-ajustes.php';
     $o = is_file($f) && is_array($a = require $f) ? $a : [];
-    foreach (['servicios', 'zonas', 'links'] as $k) if (isset($o[$k]) && is_array($o[$k])) $base[$k] = array_replace_recursive($base[$k], $o[$k]);
+    foreach (['servicios', 'zonas', 'links', 'links_total'] as $k) if (isset($o[$k]) && is_array($o[$k])) $base[$k] = array_replace_recursive($base[$k], $o[$k]);
     foreach (['metro_extra', 'dias_adelante', 'anticipacion_horas'] as $k) if (isset($o[$k])) $base[$k] = (int) $o[$k];
     if (isset($o['bloqueados']) && is_array($o['bloqueados'])) $base['bloqueados'] = array_values($o['bloqueados']);
     $base['clave_panel'] = (string) ($o['clave_panel'] ?? '');
@@ -152,6 +153,14 @@ function inst_precio(string $servicio, string $zona, string $metros): ?array
     return ['servicio' => $s, 'zona' => $z, 'extra' => (int) $extra, 'total' => $total, 'reserva' => (int) $s['reserva'], 'saldo' => $total - (int) $s['reserva']];
 }
 
+// Link de Wompi que le toca pagar al cliente: la reserva (monto fijo por servicio) o el total (monto fijo por servicio y zona)
+function inst_link_pago(array $r): string
+{
+    $c = inst_config();
+    if (($r['forma_pago'] ?? 'reserva') === 'total') return (string) ($c['links_total'][$r['servicio']][$r['zona']] ?? '');
+    return (string) ($c['links'][$r['servicio']] ?? '');
+}
+
 function inst_token(string $ref): string
 {
     $k = inst_config()['clave_panel'] . 'inst-' . dirname(__DIR__);
@@ -200,7 +209,7 @@ function inst_buscar(string $ref): ?array
 
 function inst_estado_txt(string $e): string
 {
-    return ['esperando_pago' => 'Esperando el pago de la reserva', 'reservada' => 'Reserva confirmada', 'completada' => 'Instalación completada', 'cancelada' => 'Cancelada'][$e] ?? $e;
+    return ['esperando_pago' => 'Esperando el pago', 'reservada' => 'Reserva confirmada', 'completada' => 'Instalación completada', 'cancelada' => 'Cancelada'][$e] ?? $e;
 }
 
 function inst_resumen_filas(array $r, bool $tecnico): array
@@ -212,7 +221,7 @@ function inst_resumen_filas(array $r, bool $tecnico): array
         'Zona' => $z, 'Dirección' => $r['dir'] . ', ' . $r['barrio'], 'Manguera' => inst_metros_txt($r['metros']),
         'Total del servicio' => cop((int) $r['total']),
     ] + (($r['forma_pago'] ?? 'reserva') === 'total'
-        ? ['Forma de pago' => 'Paga el TOTAL en línea (' . cop((int) $r['total']) . '): enviarle el link de pago por WhatsApp']
+        ? ['Forma de pago' => 'Paga el TOTAL en línea', 'Pago en línea (Wompi)' => cop((int) $r['reserva'])] + ((int) $r['saldo'] > 0 ? ['En efectivo al terminar (manguera adicional)' => cop((int) $r['saldo'])] : [])
         : ['Forma de pago' => 'Reserva en línea y el resto en efectivo al técnico', 'Reserva en línea' => cop((int) $r['reserva']), 'Saldo en efectivo al terminar' => cop((int) $r['saldo'])]);
     if ($tecnico) $f += ['Cliente' => $r['nombre'], 'Celular' => $r['tel'], 'Correo' => $r['email'], 'Nevecón' => trim($r['marca_nevecon'] . ' ' . $r['modelo']) ?: '-',
         'Toma de agua' => inst_toma_txt($r['toma']), 'Detalle de la dirección' => $r['detalle'] ?: '-', 'Notas del cliente' => $r['notas'] ?: '-'];
@@ -235,7 +244,7 @@ function inst_campos_hoja(array $r): array
         'Barrio' => $r['barrio'], 'Direccion' => $r['dir'] . ($r['detalle'] ? ' (' . $r['detalle'] . ')' : ''),
         'Indicaciones' => trim('Toma de agua: ' . inst_toma_txt($r['toma']) . '. Manguera: ' . inst_metros_txt($r['metros']) . '. ' . ($r['notas'] ?: ''), ' '),
         'Productos' => $s . ' | DÍA: ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']),
-        'Total' => cop((int) $r['total']) . (($r['forma_pago'] ?? 'reserva') === 'total' ? ' (PAGA EL TOTAL EN LÍNEA: enviarle link por WhatsApp)' : ' (reserva ' . cop((int) $r['reserva']) . ' + saldo en efectivo al terminar ' . cop((int) $r['saldo']) . ')'),
+        'Total' => cop((int) $r['total']) . (($r['forma_pago'] ?? 'reserva') === 'total' ? ' (PAGA EL TOTAL EN LÍNEA: ' . cop((int) $r['reserva']) . ((int) $r['saldo'] > 0 ? ' + ' . cop((int) $r['saldo']) . ' en efectivo por manguera adicional' : '') . ')' : ' (reserva ' . cop((int) $r['reserva']) . ' + saldo en efectivo al terminar ' . cop((int) $r['saldo']) . ')'),
         'Entrega' => 'Instalación a domicilio el ' . inst_fecha_txt($r['fecha']) . ', ' . inst_franja_txt((int) $r['franja']), 'Modelo del nevecon' => trim($r['marca_nevecon'] . ' ' . $r['modelo']) ?: '-'];
 }
 
@@ -270,11 +279,9 @@ function inst_correo_cliente(array $r): void
 {
     $tel = cfg()['negocio']['telefono'] ?? '301 381 0242';
     $total = ($r['forma_pago'] ?? 'reserva') === 'total';
-    if ($r['estado'] === 'esperando_pago') $pagar = $total
-        ? '<p><b>Falta un paso:</b> escríbenos por WhatsApp al ' . h($tel) . ' y te enviamos el link para pagar el total (' . h(cop((int) $r['total'])) . '). Así queda confirmada tu instalación. <a href="' . h(inst_url_reserva($r['ref'])) . '">Ver mi reserva</a></p>'
-        : '<p><b>Falta un paso:</b> paga la reserva de ' . h(cop((int) $r['reserva'])) . ' para asegurar tu horario. <a href="' . h(inst_url_reserva($r['ref'])) . '">Pagar la reserva</a></p>';
+    if ($r['estado'] === 'esperando_pago') $pagar = '<p><b>Falta un paso:</b> ' . ($total ? 'paga el total (' . h(cop((int) $r['reserva'])) . ')' : 'paga la reserva de ' . h(cop((int) $r['reserva']))) . ' para asegurar tu horario. <a href="' . h(inst_url_reserva($r['ref'])) . '">' . ($total ? 'Pagar ahora' : 'Pagar la reserva') . '</a></p>';
     else $pagar = '<p>Tu reserva está confirmada. El técnico llega en el horario que escogiste.</p>';
-    $fin = $total ? '<p>Ya pagaste todo en línea: al terminar no tienes que pagar nada más. Tienes 1 año de garantía.</p>'
+    $fin = $total ? ((int) $r['saldo'] > 0 ? '<p>Al terminar pagas en efectivo ' . h(cop((int) $r['saldo'])) . ' por la manguera adicional. Tienes 1 año de garantía.</p>' : '<p>Pagas todo en línea: al terminar no tienes que pagar nada más. Tienes 1 año de garantía.</p>')
         : '<p>El saldo de ' . h(cop((int) $r['saldo'])) . ' lo pagas en efectivo al técnico al terminar la instalación, cuando ya veas el agua funcionando. Tienes 1 año de garantía.</p>';
     $html = '<h2 style="margin:0 0 8px">Tu instalación quedó agendada</h2>' . $pagar . inst_tabla($r, false) . $fin
         . '<p>¿Necesitas cambiar el día o la hora? Avísanos con 24 horas y la reprogramamos sin costo: WhatsApp ' . h($tel) . '.</p>';
@@ -293,7 +300,7 @@ function inst_ics(array $r): string
         'UID:' . $r['ref'] . '@filtrosnevecones', 'DTSTAMP:' . gmdate('Ymd\THis\Z'),
         'DTSTART;TZID=America/Bogota:' . $d . 'T' . $t($f[0], $f[1]), 'DTEND;TZID=America/Bogota:' . $d . 'T' . $t($f[2], $f[3]),
         'SUMMARY:' . $esc($serv . ' en tu casa'), 'LOCATION:' . $esc($r['dir'] . ', ' . $r['barrio']),
-        'DESCRIPTION:' . $esc('Reserva ' . $r['ref'] . '. Saldo en efectivo al técnico al terminar: ' . cop((int) $r['saldo']) . '. WhatsApp ' . (cfg()['negocio']['telefono'] ?? '301 381 0242')),
+        'DESCRIPTION:' . $esc('Reserva ' . $r['ref'] . ((int) $r['saldo'] > 0 ? '. En efectivo al técnico al terminar: ' . cop((int) $r['saldo']) : '. Todo pagado en línea') . '. WhatsApp ' . (cfg()['negocio']['telefono'] ?? '301 381 0242')),
         'BEGIN:VALARM', 'TRIGGER:-PT1H', 'ACTION:DISPLAY', 'DESCRIPTION:Instalación del agua de tu nevecón en 1 hora', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'];
     return implode("\r\n", $l) . "\r\n";
 }

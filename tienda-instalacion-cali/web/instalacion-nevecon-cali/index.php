@@ -77,7 +77,8 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
       <p>Pagas en línea una <b>reserva</b> (<?= $m($C['servicios']['basica']['reserva']) ?> en la básica, <?= $m($C['servicios']['filtro-samsung']['reserva']) ?> con filtro Samsung o LG, <?= $m($C['servicios']['filtro-whirlpool']['reserva']) ?> con filtro Whirlpool). Esa reserva aparta tu día y tu hora para tomar el servicio.</p>
       <p>Cuando el técnico termina y ves el agua funcionando, le pagas el <b>saldo en efectivo</b>, directamente a él.</p></div>
     <div class="ic-card ic-pago"><h3>Pagas el total en línea</h3>
-      <p>Si prefieres no manejar efectivo, paga <b>todo</b> por adelantado. Escoges esta opción al reservar y te enviamos por WhatsApp el link de pago por el valor exacto. Al terminar no pagas nada más.</p></div>
+      <p>Si prefieres pagar <b>todo de una vez</b>, escoge esta opción al reservar: en la pantalla siguiente aparece el botón de Wompi por el valor completo y quedas confirmado. Al terminar no pagas nada más.</p>
+      <p class="m" style="font-size:13.5px">Si pides manguera adicional, esa parte se paga en efectivo al terminar.</p></div>
     <div class="ic-card ic-pago"><h3>Medios de pago en línea</h3>
       <p>Tarjeta débito o crédito, PSE y Nequi, en la página segura de Wompi. Nosotros nunca vemos los datos de tu tarjeta.</p>
       <p>Al terminar la instalación: <b>efectivo</b> al técnico.</p></div>
@@ -116,7 +117,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
     <section class="ic-paso" id="p5"><h3><i>5</i>¿Cómo quieres pagar?</h3>
       <div class="ic-opciones" role="radiogroup" aria-label="Forma de pago">
         <label class="ic-op"><input type="radio" name="forma_pago" value="reserva" checked><span><b>Reserva ahora y el resto al terminar</b><small>Pagas la reserva en línea y el saldo en efectivo al técnico cuando termine.</small></span></label>
-        <label class="ic-op"><input type="radio" name="forma_pago" value="total"><span><b>Pago el total en línea</b><small>Te enviamos por WhatsApp el link para pagar todo. Al terminar no pagas nada más.</small></span></label></div></section>
+        <label class="ic-op"><input type="radio" name="forma_pago" value="total"><span><b>Pago el total en línea</b><small>Pagas todo con Wompi desde la siguiente pantalla. Al terminar no pagas nada más.</small></span></label></div></section>
     <section class="ic-paso" id="p6"><h3><i>6</i>Tus datos y la dirección</h3>
       <div class="ic-campos">
         <label>Nombre completo<input name="nombre" autocomplete="name" maxlength="80" required></label>
@@ -167,7 +168,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
 <section class="ic-sec"><span class="eyebrow">Preguntas frecuentes</span><h2>Lo que más nos preguntan</h2><div>
   <details class="ic-faq"><summary>¿Cuánto cuesta en total?</summary><p>En Cali, <?= $m($C['servicios']['basica']['precio']) ?> la instalación básica, <?= $m($C['servicios']['filtro-samsung']['precio']) ?> con filtro Samsung o LG y <?= $m($C['servicios']['filtro-whirlpool']['precio']) ?> con filtro Whirlpool. Según tu zona se suma un recargo por desplazamiento: <?= h($recargos) ?>. El total exacto lo ves en tu reserva antes de pagar.</p></details>
   <details class="ic-faq"><summary>¿Cuánto pago ahora y cuánto al terminar?</summary><p>Ahora pagas una reserva de <?= $m($C['servicios']['basica']['reserva']) ?> (básica), <?= $m($C['servicios']['filtro-samsung']['reserva']) ?> (con filtro Samsung o LG) o <?= $m($C['servicios']['filtro-whirlpool']['reserva']) ?> (con filtro Whirlpool). El resto lo pagas al terminar.</p></details>
-  <details class="ic-faq"><summary>¿Cómo pago el saldo?</summary><p>En efectivo, directamente al técnico, cuando termina la instalación y ves el agua funcionando. Si prefieres no manejar efectivo, escoge «Pago el total en línea» al reservar.</p></details>
+  <details class="ic-faq"><summary>¿Cómo pago el saldo?</summary><p>En efectivo, directamente al técnico, cuando termina la instalación y ves el agua funcionando. Si prefieres pagar todo antes, escoge «Pago el total en línea» al reservar y pagas con Wompi (tarjeta, PSE o Nequi).</p></details>
   <details class="ic-faq"><summary>¿Qué pasa si necesito más manguera?</summary><p>La instalación incluye hasta 5 metros. Cada 5 metros adicionales cuestan <?= $m($C['metro_extra']) ?>. Si no sabes la distancia, el técnico la mide en tu casa antes de empezar.</p></details>
   <details class="ic-faq"><summary>¿Cómo sé qué filtro externo necesita mi nevecón?</summary><p>El servicio con filtro incluye el filtro de la marca que escojas (Samsung, LG o Whirlpool). Si tienes dudas, escríbenos por WhatsApp al <?= h($tel) ?> con la marca y el modelo de tu nevecón y te lo confirmamos.</p></details>
   <details class="ic-faq"><summary>¿Cuánto se demora la instalación?</summary><p>Depende de la distancia y de dónde esté el punto de agua. Cada cita tiene un espacio de hora y media en la agenda para trabajar con calma. Si hay que hacer algo adicional, el técnico te lo explica antes de empezar.</p></details>

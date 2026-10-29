@@ -23,12 +23,14 @@
     const L = [["Servicio", p.s.corto], ["Zona", p.z ? p.z.nombre + (p.z.recargo ? " (+" + cop(p.z.recargo) + ")" : "") : "Escoge tu zona"],
       ["Manguera", metrosTxt[p.m] + (p.extra ? " (+" + cop(p.extra) + ")" : "")], ["Día", dia ? dia.txt : "Escoge el día"], ["Hora", hr ? hr.txt : "Escoge la hora"]];
     $("#lineas").innerHTML = L.map(([a, b]) => `<div class="l"><span>${a}</span><b>${esc(b)}</b></div>`).join("");
-    const tot = radio("forma_pago") === "total";
-    $("#total").textContent = cop(p.total); $("#reserva").textContent = cop(tot ? p.total : p.reserva);
-    $("#ahora-t").textContent = tot ? "Pagas el total en línea" : "Pagas ahora para reservar";
-    $("#ahora-s").innerHTML = tot ? "Te enviamos el link de pago por WhatsApp. Al terminar no pagas nada más." : 'Y el saldo de <b id="saldo" style="display:inline;font-size:inherit">' + cop(p.saldo) + "</b> en efectivo al técnico, al terminar.";
-    $("#enviar").textContent = tot ? "Reservar y pagar el total " + cop(p.total) : "Reservar y pagar " + cop(p.reserva);
-    $("#barra-r").textContent = tot ? "Total " + cop(p.total) : "Reserva " + cop(p.reserva); $("#barra-t").textContent = tot ? "Pago en línea del total" : "Total " + cop(p.total) + " · saldo en efectivo " + cop(p.saldo);
+    const tot = radio("forma_pago") === "total", online = tot ? p.total - p.extra : p.reserva, efec = p.total - online;
+    $("#total").textContent = cop(p.total); $("#reserva").textContent = cop(online);
+    $("#ahora-t").textContent = tot ? "Pagas ahora el total en línea" : "Pagas ahora para reservar";
+    $("#ahora-s").innerHTML = tot ? (efec ? 'Y ' + cop(efec) + " en efectivo al terminar, por la manguera adicional." : "Con Wompi, desde la siguiente pantalla. Al terminar no pagas nada más.")
+      : 'Y el saldo de <b id="saldo" style="display:inline;font-size:inherit">' + cop(efec) + "</b> en efectivo al técnico, al terminar.";
+    $("#enviar").textContent = tot ? "Reservar y pagar el total " + cop(online) : "Reservar y pagar " + cop(online);
+    $("#barra-r").textContent = tot ? "Pagas " + cop(online) : "Reserva " + cop(online);
+    $("#barra-t").textContent = tot ? (efec ? "Total " + cop(p.total) + " · efectivo " + cop(efec) : "Total " + cop(p.total) + " · pago único") : "Total " + cop(p.total) + " · saldo en efectivo " + cop(efec);
     $("#p1").classList.toggle("hecho", !!p.s); $("#p2").classList.toggle("hecho", !!p.z); $("#p3").classList.add("hecho");
     const fa = [...new Set(faltantes().map(x => x[1]))];
     $("#falta").textContent = fa.length ? "Te falta: " + fa.join(", ") + "." : "¡Todo listo! Ya puedes reservar.";
