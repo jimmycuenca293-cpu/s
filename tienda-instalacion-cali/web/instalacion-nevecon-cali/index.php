@@ -11,6 +11,7 @@ $ld = ['@context' => 'https://schema.org', '@type' => 'Service', 'name' => 'Inst
     'provider' => ['@type' => 'LocalBusiness', 'name' => $n['nombre'], 'telephone' => '+57' . $wa],
     'offers' => ['@type' => 'AggregateOffer', 'priceCurrency' => 'COP', 'lowPrice' => $C['servicios']['basica']['precio'], 'highPrice' => $C['servicios']['filtro-whirlpool']['precio'] + 40000, 'offerCount' => 4]];
 $m = fn(int $x) => cop($x);
+$nb = fn(int $x) => str_replace(' ', "\u{00A0}", cop($x));
 $recargos = implode(' · ', array_map(fn($z) => $z['nombre'] . ' +' . cop((int) $z['recargo']), array_filter($C['zonas'], fn($z) => $z['recargo'] > 0)));
 $nombres_zonas = implode(', ', array_slice(array_column($C['zonas'], 'nombre'), 0, -1)) . ' y ' . end($C['zonas'])['nombre'];
 cabeza('Instalación de nevecón a domicilio en Cali y Jamundí | ' . $n['nombre'],
@@ -27,7 +28,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
     <p class="lead">Un técnico llega el día y la hora que tú escoges, conecta tu nevecón con llave galápago profesional y manguera, y pone el filtro externo si lo quieres. El saldo lo pagas al terminar, cuando ya ves el agua funcionando.</p>
     <div class="acc"><a class="btn" href="#combos">Ver combos y reservar</a><a class="btn wa" href="https://wa.me/57<?= h($wa) ?>?text=<?= rawurlencode('Hola, quiero una instalación de agua para mi nevecón.') ?>" target="_blank" rel="noopener">💬 WhatsApp <?= h($tel) ?></a></div>
     <p class="proximo" id="proximo" hidden></p>
-    <ul><li>1 año de garantía en la instalación</li><li>Reservas en línea y pagas el saldo al terminar</li><li>Cambias el día o la hora gratis, avisando con 24 horas</li></ul>
+    <ul><li>1 año de garantía en la instalación</li><li>Pagas todo hoy o en 2 partes: el resto al técnico al terminar</li><li>Cambias el día o la hora gratis, avisando con 24 horas</li></ul>
   </div>
   <aside class="ic-precio" aria-label="Precios de la instalación en Cali">
     <span class="eyebrow" style="color:#9fe8ff">Precios en Cali</span>
@@ -45,15 +46,31 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
     <article class="ic-combo<?= $f ? '' : ' base' ?>">
       <div class="foto"><?= $imgc($id, $sv['nombre'] . ': manguera, llave galápago' . ($f ? ' y filtro externo' : ''), 320) ?></div>
       <div class="cuerpo"><h3><?= h($sv['corto']) ?></h3>
-        <ul><li>Instalación a domicilio</li><li>Llave galápago profesional con racores</li><li>Manguera de 1/4" hasta 5 metros</li><?php if ($f): ?><li>Filtro externo <?= h($f['marca']) ?> <?= h($f['ref']) ?> instalado</li><?php endif; ?><li>Conexión al nevecón, prueba de fugas y purga</li><li>1 año de garantía</li><?php if (!$f): ?><li>Sirve para cualquier marca de nevecón</li><?php endif; ?></ul></div>
-      <div class="cobro"><b><?= $m($sv['precio']) ?></b><small>Total en Cali · escoge cómo pagar</small>
-        <a class="btn" href="#reservar" data-pick="<?= h($id) ?>" data-forma="total">Pagar todo ahora<br><b class="mto"><?= str_replace(' ', "\u{00A0}", $m($sv['precio'])) ?></b></a>
-        <a class="btn ghost" href="#reservar" data-pick="<?= h($id) ?>" data-forma="reserva">Reservar con <?= str_replace(' ', "\u{00A0}", $m($sv['reserva'])) ?></a>
-        <p class="m dos">Con la reserva, el resto (<?= $m($sv['precio'] - $sv['reserva']) ?>) lo pagas en efectivo al técnico al terminar.</p></div>
+        <ul><li>Instalación a domicilio</li><li>Llave galápago profesional con racores</li><li>Manguera de 1/4" hasta 5 metros</li><?php if ($f): ?><li>Filtro externo <?= h($f['marca']) ?> <?= h($f['ref']) ?> instalado</li><?php endif; ?><li>Conexión al nevecón, prueba de fugas y purga</li><li>1 año de garantía</li><li>Sirve para otras marcas de nevecón con dispensador</li></ul></div>
+      <div class="cobro"><b><?= $m($sv['precio']) ?></b><small>Total del combo en Cali · escoge cómo pagar</small>
+        <div class="ic-pagos2">
+          <a class="ic-pbtn principal" href="#reservar" data-pick="<?= h($id) ?>" data-forma="total"><span class="t">Pagar todo ahora</span><span class="s"><b><?= $nb($sv['precio']) ?></b> hoy, en línea</span><span class="s2">Al terminar no pagas nada más</span></a>
+          <a class="ic-pbtn" href="#reservar" data-pick="<?= h($id) ?>" data-forma="reserva"><span class="t">Pagar en 2 partes</span><span class="s"><b><?= $nb($sv['reserva']) ?></b> hoy, en línea</span><span class="s2">+ <b><?= $nb($sv['precio'] - $sv['reserva']) ?></b> en efectivo al técnico al terminar</span></a>
+        </div></div>
     </article>
   <?php endforeach; ?></div>
-  <div class="ic-extras"><span><b>Más manguera:</b> cada 5 m extra <?= $m($C['metro_extra']) ?></span><span><b>Recargo por zona:</b> <?= h($recargos) ?></span><span><b>Otra marca de nevecón:</b> escoge la instalación básica</span></div>
+  <div class="ic-extras"><span><b>Más manguera:</b> cada 5 m extra <?= $m($C['metro_extra']) ?></span><span><b>Recargo por zona:</b> <?= h($recargos) ?></span><span><b>Otra marca de nevecón:</b> también puedes pedir el combo con filtro</span></div>
 </section>
+
+<section class="ic-sec" id="otras-marcas"><span class="eyebrow">Para cualquier marca de nevecón</span><h2>¿Tu nevecón es de otra marca? También lo instalamos</h2>
+  <div class="ic-otras">
+    <div>
+      <p>El filtro externo se conecta a la manguera <b>por fuera del nevecón</b>, antes de que el agua llegue al aparato. Por eso puedes ponerle a tu nevecón un filtro <b>Whirlpool, Samsung o LG</b>, aunque tu nevecón sea Mabe, Haceb, Electrolux, GE, Midea u otra marca, siempre que tenga dispensador de agua.</p>
+      <ol class="ic-pasos2"><li><b>Escoge el combo con filtro</b> de la marca que prefieras.</li><li><b>En el formulario</b> pon «Otra» como marca de tu nevecón y escribe cuál es, con el modelo si lo tienes.</li><li><b>Antes de la visita</b> te escribimos por WhatsApp para confirmar que el filtro y la conexión le sirven a tu nevecón.</li></ol>
+    </div>
+    <div class="ic-otras-btn">
+      <b>Combos con filtro que le sirven a cualquier marca</b>
+      <?php foreach (['filtro-whirlpool', 'filtro-samsung', 'filtro-lg'] as $fid): $sv = $C['servicios'][$fid]; ?>
+        <a class="ic-pbtn" href="#reservar" data-pick="<?= h($fid) ?>"><span class="t">Instalación con filtro <?= h($sv['filtro']['marca']) ?></span><span class="s"><b><?= $nb($sv['precio']) ?></b> en Cali · incluye llave y manguera</span></a>
+      <?php endforeach; ?>
+      <p class="m" style="font-size:13px">Si tu nevecón no tiene dispensador de agua o tienes dudas, escríbenos por WhatsApp antes de reservar.</p>
+    </div>
+  </div></section>
 
 <section class="ic-sec"><span class="eyebrow">Qué incluye</span><h2>Todo lo necesario para que salga agua del dispensador</h2>
   <ul class="ic-incl">
@@ -68,23 +85,23 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
 <section class="ic-sec"><span class="eyebrow">Cómo funciona</span><h2>Cuatro pasos, sin sorpresas</h2>
   <div class="ic-grid">
     <div class="ic-card"><span class="n">1</span><h3>Escoges tu servicio</h3><p>Tu zona, tu marca de filtro, el día y la hora que más te sirven. El precio final lo ves antes de pagar.</p></div>
-    <div class="ic-card"><span class="n">2</span><h3>Pagas la reserva</h3><p>Una parte en línea, con Wompi (tarjeta, PSE o Nequi), o el total si prefieres. Así tu horario queda apartado solo para ti.</p></div>
+    <div class="ic-card"><span class="n">2</span><h3>Pagas hoy, en línea</h3><p>Todo el combo o solo una primera parte, con Wompi (tarjeta, PSE o Nequi). Así tu día y tu hora quedan apartados solo para ti.</p></div>
     <div class="ic-card"><span class="n">3</span><h3>El técnico llega</h3><p>En el horario que escogiste. Instala, prueba que no haya fugas y te muestra el agua funcionando.</p></div>
-    <div class="ic-card"><span class="n">4</span><h3>Pagas el saldo al terminar</h3><p>En efectivo al técnico, solo cuando todo quedó bien. Te queda 1 año de garantía en la instalación.</p></div>
+    <div class="ic-card"><span class="n">4</span><h3>Al terminar, el resto</h3><p>Si pagaste en 2 partes, el resto va en efectivo al técnico cuando todo quedó bien. Si pagaste todo, no pagas nada más. Tienes 1 año de garantía.</p></div>
   </div></section>
 
 <section class="ic-sec" id="pagos"><span class="eyebrow">Formas de pago</span><h2>Dos formas de pagar. Tú escoges la que prefieras.</h2>
   <div class="ic-grid dos">
-    <div class="ic-card ic-pago"><span class="tag">Pago completo</span><h3>1. Pago todo ahora, en línea</h3>
-      <p>Pagas el combo completo con Wompi (tarjeta, PSE o Nequi) y tu horario queda confirmado. Al terminar la instalación no pagas nada más.</p></div>
-    <div class="ic-card ic-pago"><span class="tag verde">Pago en dos partes</span><h3>2. Reservo ahora y pago el resto al terminar</h3>
-      <p>Pagas solo una reserva en línea con Wompi, que aparta tu día y tu hora. El resto lo pagas <b>en efectivo al técnico</b>, cuando ya ves el agua funcionando.</p></div>
+    <div class="ic-card ic-pago"><span class="tag">Pago completo</span><h3>Pagar todo ahora</h3>
+      <p>Pagas el combo completo hoy, en línea con Wompi (tarjeta, PSE o Nequi). Tu horario queda confirmado y <b>al terminar la instalación no pagas nada más</b>.</p></div>
+    <div class="ic-card ic-pago"><span class="tag verde">Pago en 2 partes</span><h3>Una parte hoy y el resto al técnico</h3>
+      <ol class="ic-pasos2"><li><b>Hoy</b> pagas una primera parte en línea con Wompi. Con eso tu día y tu hora quedan apartados.</li><li><b>El técnico</b> llega, instala y te muestra el agua funcionando.</li><li><b>Al terminar</b> le pagas el resto <b>en efectivo, directamente al técnico</b>.</li></ol></div>
   </div>
-  <div class="ic-tabla"><table><thead><tr><th>Combo (en Cali)</th><th>1. Pagas ahora todo</th><th>2. Pagas ahora la reserva</th><th>2. Resto en efectivo al terminar</th></tr></thead><tbody>
+  <div class="ic-tabla"><table><thead><tr><th>Combo (en Cali)</th><th>Pagar todo ahora</th><th>2 partes: hoy, en línea</th><th>2 partes: al técnico, en efectivo</th></tr></thead><tbody>
   <?php foreach ($C['servicios'] as $id => $sv): ?><tr><td><b><?= h($sv['corto']) ?></b></td><td><?= $m($sv['precio']) ?></td><td><?= $m($sv['reserva']) ?></td><td><?= $m($sv['precio'] - $sv['reserva']) ?></td></tr><?php endforeach; ?>
   </tbody></table></div>
   <p class="m">En las dos formas, el recargo de zona (<?= h($recargos) ?>) y cada 5 m extra de manguera (+<?= $m($C['metro_extra']) ?>) se pagan en <b>efectivo al terminar</b>.</p>
-  <div class="ic-medios"><div><b>Pagos en línea</b><span>Tarjeta débito o crédito · PSE · Nequi, en la página segura de Wompi. Nosotros nunca vemos los datos de tu tarjeta.</span></div><div><b>Al terminar la instalación</b><span>Efectivo, directamente al técnico.</span></div></div>
+  <div class="ic-medios"><div><b>Pagos en línea (hoy)</b><span>Tarjeta débito o crédito · PSE · Nequi, en la página segura de Wompi. Nosotros nunca vemos los datos de tu tarjeta.</span></div><div><b>Al terminar la instalación</b><span>Efectivo, directamente al técnico.</span></div></div>
 </section>
 
 <section class="ic-sec" id="reservar"><span class="eyebrow">Reserva tu instalación</span><h2>Escoge el servicio, el día y la hora</h2>
@@ -96,7 +113,7 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
         <label class="ic-op"><input type="radio" name="servicio" value="<?= h($id) ?>" <?= $id === 'basica' ? 'checked' : '' ?>><?= $imgc($id, $s['nombre'] . ': manguera, llave galápago' . ($s['filtro'] ? ' y filtro externo' : ''), 76) ?>
           <span><b><?= h($s['corto']) ?></b><small><?= $s['filtro'] ? 'Llave galápago + 5 m de manguera + filtro externo ' . h($s['filtro']['marca']) . ' ' . h($s['filtro']['ref']) : 'Llave galápago + hasta 5 m de manguera' ?></small><span class="pr"><?= $m($s['precio']) ?></span></span></label>
       <?php endforeach; ?></div>
-      <p class="m" style="font-size:13.5px">¿Tu nevecón es de otra marca? Escoge la instalación básica o escríbenos por WhatsApp y te decimos qué filtro le sirve.</p></section>
+      <p class="m" style="font-size:13.5px">¿Tu nevecón es de otra marca? Puedes escoger cualquiera de estos combos: el filtro externo sirve en otras marcas con dispensador de agua. Lo confirmamos contigo por WhatsApp antes de la visita.</p></section>
     <section class="ic-paso" id="p2"><h3><i>2</i>¿En qué zona vives?</h3>
       <div class="ic-opciones" role="radiogroup" aria-label="Zona">
       <?php foreach ($C['zonas'] as $id => $z): ?>
@@ -117,16 +134,17 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
       <p class="ic-aviso" id="aviso-horario" role="status"></p>
       <div class="ic-horas" id="horas" role="group" aria-label="Hora"></div>
       <p class="m" style="font-size:13.5px">Atendemos de lunes a sábado, de 8:00 a. m. a 5:00 p. m. La agenda se actualiza sola: si alguien reserva un horario, desaparece al instante. Solo ves horarios que empiezan dentro de <?= (int) $C['anticipacion_horas'] ?> horas o más desde ahora. ¿Lo necesitas más pronto? Escríbenos por WhatsApp.</p></section>
-    <section class="ic-paso" id="p5"><h3><i>5</i>¿Cómo quieres pagar?</h3>
+    <section class="ic-paso" id="p5"><h3><i>5</i>¿Cómo quieres pagar? <small style="font-weight:500;color:var(--muted)">(los montos se ajustan a tu pedido)</small></h3>
       <div class="ic-opciones" role="radiogroup" aria-label="Forma de pago">
-        <label class="ic-op"><input type="radio" name="forma_pago" value="total"><span><b>Pago todo ahora</b><small>Pagas el combo completo en línea con Wompi. Al terminar no pagas nada más (salvo recargo de zona o manguera adicional, si aplica).</small></span></label>
-        <label class="ic-op"><input type="radio" name="forma_pago" value="reserva" checked><span><b>Reservo ahora y pago el resto al terminar</b><small>Pagas la reserva en línea con Wompi y el saldo en efectivo al técnico cuando termine.</small></span></label></div></section>
+        <label class="ic-op"><input type="radio" name="forma_pago" value="total"><span><b>Pagar todo ahora</b><small id="fp-total">Pagas el combo completo hoy, en línea con Wompi. Al terminar no pagas nada más.</small></span></label>
+        <label class="ic-op"><input type="radio" name="forma_pago" value="reserva" checked><span><b>Pagar en 2 partes</b><small id="fp-dos">Una parte hoy en línea y el resto en efectivo al técnico, al terminar.</small></span></label></div></section>
     <section class="ic-paso" id="p6"><h3><i>6</i>Tus datos y la dirección</h3>
       <div class="ic-campos">
         <label>Nombre completo<input name="nombre" autocomplete="name" maxlength="80" required></label>
         <label>Celular (WhatsApp)<input name="tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="300 123 4567" maxlength="16" required></label>
         <label class="ancho">Correo (te llega la confirmación)<input name="email" type="email" inputmode="email" autocomplete="email" placeholder="tucorreo@gmail.com" maxlength="120" required></label>
         <label>Marca del nevecón<select name="marca_nevecon" required><option value="">Escoge la marca</option><?php foreach (['Samsung', 'LG', 'Whirlpool', 'GE', 'KitchenAid', 'Mabe', 'Electrolux', 'Haceb', 'Otra'] as $mm) echo '<option>' . h($mm) . '</option>'; ?></select></label>
+        <label id="otra-marca" hidden>¿De qué marca es?<input name="marca_otra" maxlength="30" placeholder="Por ejemplo: Mabe, Haceb, Electrolux"></label>
         <label>Modelo (opcional)<input name="modelo" maxlength="40" placeholder="Está en la etiqueta del nevecón"></label>
         <label class="ancho">¿Dónde está el punto de agua?<select name="toma"><option value="llave">Llave o toma de agua visible en la cocina</option><option value="lavaplatos">Debajo del lavaplatos</option><option value="tubo">Tubo de agua en la pared</option><option value="nose">No lo sé</option></select></label>
         <label>Barrio<input name="barrio" maxlength="80" required></label>
@@ -170,9 +188,10 @@ $imgc = fn(string $id, string $alt, int $w) => '<picture><source srcset="/instal
 
 <section class="ic-sec"><span class="eyebrow">Preguntas frecuentes</span><h2>Lo que más nos preguntan</h2><div>
   <details class="ic-faq"><summary>¿Cuánto cuesta en total?</summary><p>En Cali, <?= $m($C['servicios']['basica']['precio']) ?> la instalación básica, <?= $m($C['servicios']['filtro-samsung']['precio']) ?> con filtro Samsung o LG y <?= $m($C['servicios']['filtro-whirlpool']['precio']) ?> con filtro Whirlpool. Según tu zona se suma un recargo por desplazamiento: <?= h($recargos) ?>. El total exacto lo ves en tu reserva antes de pagar.</p></details>
-  <details class="ic-faq"><summary>¿Cuánto pago ahora y cuánto al terminar?</summary><p>Tienes dos formas. <b>1. Pagas todo ahora</b> (<?= $m($C['servicios']['basica']['precio']) ?> la básica, <?= $m($C['servicios']['filtro-samsung']['precio']) ?> con filtro Samsung o LG, <?= $m($C['servicios']['filtro-whirlpool']['precio']) ?> con filtro Whirlpool) y al terminar no pagas nada más. <b>2. Reservas</b> con <?= $m($C['servicios']['basica']['reserva']) ?>, <?= $m($C['servicios']['filtro-samsung']['reserva']) ?> o <?= $m($C['servicios']['filtro-whirlpool']['reserva']) ?> y pagas el resto en efectivo al técnico al terminar. En las dos, el recargo de zona y la manguera adicional se pagan en efectivo al terminar.</p></details>
+  <details class="ic-faq"><summary>¿Cuánto pago ahora y cuánto al terminar?</summary><p>Tienes dos formas. <b>1. Pagar todo ahora</b> (<?= $m($C['servicios']['basica']['precio']) ?> la básica, <?= $m($C['servicios']['filtro-samsung']['precio']) ?> con filtro Samsung o LG, <?= $m($C['servicios']['filtro-whirlpool']['precio']) ?> con filtro Whirlpool) y al terminar no pagas nada más. <b>2. Pagas en 2 partes</b>: hoy <?= $m($C['servicios']['basica']['reserva']) ?>, <?= $m($C['servicios']['filtro-samsung']['reserva']) ?> o <?= $m($C['servicios']['filtro-whirlpool']['reserva']) ?> en línea, y el resto en efectivo al técnico cuando termina. En las dos, el recargo de zona y la manguera adicional se pagan en efectivo al terminar.</p></details>
   <details class="ic-faq"><summary>¿Cómo pago el saldo?</summary><p>En efectivo, directamente al técnico, cuando termina la instalación y ves el agua funcionando. Si prefieres pagar todo antes, escoge «Pago el total en línea» al reservar y pagas con Wompi (tarjeta, PSE o Nequi).</p></details>
   <details class="ic-faq"><summary>¿Qué pasa si necesito más manguera?</summary><p>La instalación incluye hasta 5 metros. Cada 5 metros adicionales cuestan <?= $m($C['metro_extra']) ?>. Si no sabes la distancia, el técnico la mide en tu casa antes de empezar.</p></details>
+  <details class="ic-faq"><summary>¿Y si mi nevecón es de otra marca?</summary><p>Sin problema. El filtro externo va conectado a la manguera, por fuera del nevecón, así que se puede usar un filtro Whirlpool, Samsung o LG en nevecones de otras marcas que tengan dispensador de agua. Escoge el combo con filtro, pon «Otra» como marca en el formulario y antes de la visita te escribimos para confirmar que le sirve.</p></details>
   <details class="ic-faq"><summary>¿Cómo sé qué filtro externo necesita mi nevecón?</summary><p>El servicio con filtro incluye el filtro de la marca que escojas (Samsung, LG o Whirlpool). Si tienes dudas, escríbenos por WhatsApp al <?= h($tel) ?> con la marca y el modelo de tu nevecón y te lo confirmamos.</p></details>
   <details class="ic-faq"><summary>¿Cuánto se demora la instalación?</summary><p>Depende de la distancia y de dónde esté el punto de agua. Cada cita tiene un espacio de hora y media en la agenda para trabajar con calma. Si hay que hacer algo adicional, el técnico te lo explica antes de empezar.</p></details>
   <details class="ic-faq"><summary>¿Qué pasa si mi punto de agua está dañado o muy lejos?</summary><p>El técnico lo revisa al llegar. Si hace falta trabajo adicional en tuberías, te lo cotiza antes de empezar y tú decides. Si necesitas más manguera, cada 5 metros extra cuestan <?= $m($C['metro_extra']) ?>.</p></details>
