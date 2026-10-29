@@ -19,7 +19,7 @@ function inst_config(): array
             'filtro-whirlpool' => ['nombre' => 'Instalación con filtro externo Whirlpool', 'corto' => 'Con filtro Whirlpool', 'precio' => 179900, 'reserva' => 100000, 'filtro' => $f('Whirlpool', '4378411RB', 'wp-ex-o')],
         ],
         'zonas' => ['cali' => ['nombre' => 'Cali', 'recargo' => 0], 'dapa' => ['nombre' => 'Dapa (Yumbo)', 'recargo' => 10000],
-                    'jamundi' => ['nombre' => 'Jamundí', 'recargo' => 20000], 'rozo' => ['nombre' => 'Rozo (Palmira)', 'recargo' => 20000], 'palmira' => ['nombre' => 'Palmira', 'recargo' => 25000]],
+                    'jamundi' => ['nombre' => 'Jamundí', 'recargo' => 20000], 'rozo' => ['nombre' => 'Rozo (Palmira)', 'recargo' => 30000], 'palmira' => ['nombre' => 'Palmira', 'recargo' => 35000]],
         'metro_extra' => 14000,   // cada 5 m de manguera adicionales a los 5 m incluidos
         'franjas' => [[8, 0, 9, 30], [9, 30, 11, 0], [11, 0, 12, 30], [13, 30, 15, 0], [15, 30, 17, 0]],
         'dias_adelante' => 21,
