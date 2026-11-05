@@ -1,7 +1,7 @@
 import re,os,json,urllib.request,html
 from urllib.parse import urljoin
-B='http://127.0.0.1:8721'
-urls=re.findall(r'<loc>https://mabequito.click(/[^<]*)</loc>',open('site/sitemap.xml').read())
+B='http://127.0.0.1:8751'
+urls=re.findall(r'<loc>https://serviciotecnicomabequito.click(/[^<]*)</loc>',open('site/sitemap.xml').read())
 bad=[];tit={};desc={};words={};seen=set()
 for u in urls:
     h=urllib.request.urlopen(B+u).read().decode()
@@ -13,7 +13,7 @@ for u in urls:
     tit[t]=u;desc[d]=u
     n=len(re.findall(r'<h1[ >]',h))
     if n!=1: bad.append((u,'h1',n))
-    if f'<link rel="canonical" href="https://mabequito.click{u}">' not in h: bad.append((u,'canonical'))
+    if f'<link rel="canonical" href="https://serviciotecnicomabequito.click{u}">' not in h: bad.append((u,'canonical'))
     for j in re.findall(r'<script type="application/ld\+json">(.*?)</script>',h,re.S):
         try: json.loads(j)
         except Exception: bad.append((u,'JSON-LD inválido'))
