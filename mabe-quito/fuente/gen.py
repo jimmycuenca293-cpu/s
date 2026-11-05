@@ -35,12 +35,12 @@ def head(slug,title,desc,ld=None,og='website',noindex=False):
 <title>{E(title)}</title><meta name="description" content="{E(desc)}">
 {'<meta name="robots" content="noindex">' if noindex else '<meta name="robots" content="index,follow,max-image-preview:large">'}
 <link rel="canonical" href="{canon}"><link rel="alternate" hreflang="es-EC" href="{canon}">
-{GSC}<meta name="theme-color" content="#0c2740"><meta name="geo.region" content="EC-P"><meta name="geo.placename" content="Quito">
+{GSC}<meta name="theme-color" content="#0b2a45"><meta name="geo.region" content="EC-P"><meta name="geo.placename" content="Quito">
 <meta property="og:type" content="{og}"><meta property="og:title" content="{E(title)}"><meta property="og:description" content="{E(desc)}"><meta property="og:url" content="{canon}"><meta property="og:locale" content="es_EC"><meta property="og:site_name" content="{NAME}"><meta property="og:image" content="{SITE}/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="{asset(slug,'favicon.png')}" type="image/png"><link rel="apple-touch-icon" href="{asset(slug,'apple-touch-icon.png')}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="{asset(slug,'estilo.css')}">{PRE if slug=='' else ''}{lds}</head><body>'''
 CORE=['reparacion-de-electrodomesticos-mabe-a-domicilio-quito','mantenimiento-preventivo-de-electrodomesticos-mabe-quito','instalacion-de-electrodomesticos-mabe-quito','diagnostico-de-electrodomesticos-mabe-quito','reparacion-de-tarjetas-electronicas-de-electrodomesticos-mabe-quito','repuestos-para-electrodomesticos-mabe-quito']
 CORE_LAB={CORE[0]:'Reparación a domicilio',CORE[1]:'Mantenimiento preventivo',CORE[2]:'Instalación',CORE[3]:'Diagnóstico',CORE[4]:'Tarjetas electrónicas',CORE[5]:'Repuestos'}
@@ -63,8 +63,10 @@ def header(slug):
             mov+=f'<b class="mh">{lab}</b>'+''.join(f'<a href="{u(t)}">{E(n)}</a>' for n,t in sub)
         else:
             top+=f'<a href="{u(s)}"{cur}>{lab}</a>'; mov+=f'<b class="mh">{lab}</b>'+f'<a href="{u(s)}">Ver {lab.lower()}</a>' if False else f'<a class="mh1" href="{u(s)}">{lab}</a>'
+    LOGO=f'<a class="logo" href="{u("")}" aria-label="{NAME}, inicio"><img class="logoimg" src="{asset(slug,"img/mabe-logo.png")}" alt="Mabe" width="200" height="60"><span class="wm"><small>Servicio técnico</small><b>QUITO</b></span></a>'
     return f'''<a class="saltar" href="#contenido">Saltar al contenido</a>
-<header class="top"><div class="wrap fila"><a class="logo" href="{u('')}" aria-label="{NAME}, inicio"><span class="mkimg"><img src="{asset(slug,'img/mabe-marca.png')}" alt="Mabe" width="360" height="107"></span><span class="wm"><small>Servicio técnico</small><b>MABE QUITO</b></span></a>
+<div class="topbar"><div class="wrap"><span>Servicio técnico Mabe Quito · reparación a domicilio</span><a href="{wa(WAHI)}" target="_blank" rel="noopener">WhatsApp {PHONE_TXT}</a></div></div>
+<header class="top"><div class="wrap fila">{LOGO}
 <nav class="menu" aria-label="Principal">{top}</nav>
 <a class="btn wa" href="{wa(WAHI)}" rel="noopener" target="_blank">{WA_SVG}<span>WhatsApp</span></a>
 <details class="mov"><summary aria-label="Abrir menú"><span></span></summary><nav aria-label="Menú móvil">{mov}</nav></details></div></header>
@@ -74,7 +76,7 @@ def footer(slug):
     eq=''.join(f'<li><a href="{u(EQ[k]["slug"])}">{E(EQ[k]["corto"])}</a></li>' for k in EQK)
     sv=''.join(f'<li><a href="{u(c)}">{CORE_LAB[c]}</a></li>' for c in CORE)
     cv=''.join(f'<li><a href="{u(SECTOR_HUBS[sc][0])}">{lab}</a></li>' for sc,lab in SEC_LAB)
-    return f'''</main><footer class="pie"><div class="wrap cols"><div><a class="logo" href="{u('')}"><span class="mkimg"><img src="{asset(slug,'img/mabe-marca.png')}" alt="Mabe" width="360" height="107"></span><span class="wm"><small>Servicio técnico</small><b>MABE QUITO</b></span></a><p>Servicio técnico Mabe Quito: reparación y mantenimiento a domicilio de electrodomésticos Mabe en Quito.</p><p><a class="tel" href="tel:{PHONE_TEL}">{PHONE_TXT}</a><br>WhatsApp y llamadas · +593 99 350 8191</p></div>
+    return f'''</main><footer class="pie"><div class="wrap cols"><div><a class="logo" href="{u('')}"><img class="logoimg" src="{asset(slug,'img/mabe-logo.png')}" alt="Mabe" width="200" height="60"><span class="wm"><small>Servicio técnico</small><b>QUITO</b></span></a><p>Servicio técnico Mabe Quito: reparación y mantenimiento a domicilio de electrodomésticos Mabe en Quito.</p><p><a class="tel" href="tel:{PHONE_TEL}">{PHONE_TXT}</a><br>WhatsApp y llamadas · +593 99 350 8191</p></div>
 <div><h2>Electrodomésticos</h2><ul>{eq}</ul></div>
 <div><h2>Servicios</h2><ul>{sv}<li><a href="{u('servicios')}">Todos los servicios</a></li></ul><h2 class="h2b">Cobertura</h2><ul>{cv}<li><a href="{u('zonas-de-servicio-quito')}">Todos los barrios</a></li></ul></div>
 <div><h2>Información</h2><ul><li><a href="{u('fallas-comunes')}">Fallas comunes</a></li><li><a href="{u('guias')}">Guías</a></li><li><a href="{u('como-trabajamos')}">Cómo trabajamos</a></li><li><a href="{u('preguntas-frecuentes')}">Preguntas frecuentes</a></li><li><a href="{u('contacto')}">Contacto</a></li><li><a href="{u('aviso-legal')}">Aviso legal</a></li><li><a href="{u('privacidad')}">Tratamiento de datos</a></li></ul></div></div>
@@ -241,7 +243,9 @@ def home():
     tecs=''.join(f'<div>{tec_fig(s,n)}</div>' for n in ('tecnico-cocina','tecnico-puerta','tecnico-manos'))
     if AUTH: ASI=f'<div class="tecs">{tecs}</div>'
     else: ASI='<div class="tecs dos">'+''.join(f'<div>{tec_fig(s,n)}</div>' for n in CLEAN)+'</div>'
-    hero=f'''<section class="hero"><div class="hero-bg"><img src="img/{HERO}.webp" srcset="img/{HERO}-m.webp 640w, img/{HERO}.webp 900w" sizes="100vw" width="900" height="{672 if AUTH else 503}" alt="{HERO_ALT}" fetchpriority="high" decoding="async"></div><div class="wrap hgrid"><div><p class="kick">Reparación de electrodomésticos a domicilio</p><h1>Servicio técnico Mabe Quito</h1><p class="lead">Reparación de electrodomésticos Mabe en Quito: refrigeradoras, lavadoras, secadoras, cocinas, hornos y más, en tu casa. Diagnóstico claro y costo antes de reparar.</p><div class="acc"><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a><a class="btn linea cl" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></div><ul class="pts"><li>A domicilio en Quito</li><li>Norte, centro, sur y valles</li><li>Te explicamos la falla antes de reparar</li></ul></div></div></section>'''
+    nz=len(ZSLUGS)
+    hero=f'''<section class="hero"><div class="wrap hgrid"><div class="htxt"><p class="kick">Reparación de electrodomésticos a domicilio</p><h1>Servicio técnico Mabe Quito</h1><p class="lead">Reparación de electrodomésticos Mabe en Quito: refrigeradoras, lavadoras, secadoras, cocinas, hornos y más, en tu casa. Diagnóstico claro y costo antes de reparar.</p><div class="acc"><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a><a class="btn linea grande" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></div><ul class="pts"><li>A domicilio en Quito</li><li>Norte, centro, sur y valles</li><li>Te explicamos la falla antes de reparar</li></ul></div><div class="hmedia"><img src="img/{HERO}.webp" srcset="img/{HERO}-m.webp 640w, img/{HERO}.webp 900w" sizes="(max-width:900px) 92vw, 560px" width="900" height="503" alt="{HERO_ALT}" fetchpriority="high" decoding="async"><div class="hbadge"><b>Costo antes de reparar</b><span>Diagnóstico claro, sin sorpresas</span></div></div></div></section>
+<div class="trust"><div class="wrap"><div><b>{len(EQK)}</b><span>tipos de electrodomésticos Mabe</span></div><div><b>{nz}</b><span>barrios y sectores de Quito</span></div><div><b>A domicilio</b><span>norte, centro, sur y valles</span></div><div><b>WhatsApp</b><span>respuesta directa al {PHONE_TXT}</span></div></div></div>'''
     body=f'''<section class="sec" id="servicios"><div class="wrap"><h2>Nuestros servicios</h2><p class="sub">Todo lo que hacemos por tus electrodomésticos Mabe en Quito.</p><div class="svcs">{sv}</div><p style="margin-top:22px"><a class="enlace" href="{url(s,'servicios')}">Ver todos los servicios, por equipo y por zona →</a></p></div></section>
 <section class="sec osc" id="electrodomesticos"><div class="wrap"><h2>Electrodomésticos que reparamos</h2><p class="sub">Elige tu equipo: cada uno tiene sus fallas, servicios y zonas.</p><div class="eqgrid">{eqs}</div></div></section>
 <section class="sec" id="cobertura"><div class="wrap"><h2>Cobertura: barrios de Quito</h2><p class="sub">Atendemos el norte, el centro, el sur y los valles. Elige tu barrio.</p><div class="covg">{cov}</div><p style="margin-top:22px"><a class="enlace" href="{url(s,'zonas-de-servicio-quito')}">Ver toda la cobertura →</a></p></div></section>
