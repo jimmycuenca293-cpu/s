@@ -51,11 +51,11 @@ g('como-pedir-servicio-tecnico-por-whatsapp-que-enviar','Cómo pedir servicio t�
   ('Fotos y video','Una foto de la etiqueta, una del equipo y, si es posible, un video corto del problema (ruido, código de error, fuga).'),
   ('Qué pasó antes','Cuenta si hubo corte de luz, golpe, cambio de lugar o si la falla es nueva o intermitente.'),
   ('Qué esperar','Te orientamos con lo que enviaste y coordinamos la visita. El diagnóstico definitivo se hace en el equipo.')])
-g('garantia-de-fabrica-y-servicio-tecnico-independiente-como-se-relacionan','Garantía de fábrica y servicio técnico independiente: cómo se relacionan','refrigeradoras','Si tu electrodoméstico Mabe está en garantía, qué conviene hacer antes de contratar un servicio técnico independiente.',
+g('garantia-de-fabrica-mabe-que-hacer-antes-de-reparar','Garantía de fábrica Mabe: qué hacer antes de reparar','refrigeradoras','Si tu electrodoméstico Mabe está en garantía, qué conviene revisar y hacer antes de pedir una reparación en Quito.',
  [('Si está en garantía','Revisa tu factura y las condiciones de la garantía. Mientras esté vigente, lo prudente es consultar primero con el fabricante o el punto de venta.'),
-  ('Si ya venció','Un servicio técnico independiente es una opción válida para el diagnóstico y la reparación.'),
+  ('Si ya venció','Un técnico a domicilio puede diagnosticar el equipo y repararlo si conviene.'),
   ('Cómo decidir','Compara qué incluye cada servicio, el costo de la visita, la garantía de la reparación y los tiempos.'),
-  ('Nuestra posición','Este sitio presta servicio técnico independiente y no es operado por Mabe. Te lo decimos desde el principio para que decidas con información.')])
+  ('Cómo te ayudamos','Escríbenos por WhatsApp con el modelo y la falla: te orientamos y, si corresponde, coordinamos la visita y te damos el costo antes de reparar.')])
 g('refrigeradora-nueva-mabe-que-hacer-los-primeros-dias','Refrigeradora nueva: qué hacer los primeros días','refrigeradoras','Cómo ubicar, nivelar y encender una refrigeradora nueva y qué es normal los primeros días.',
  [('Ubicación y nivelación','Colócala lejos de fuentes de calor, con espacio para ventilación y nivelada sobre sus patas.'),
   ('Antes de encender','Sigue las indicaciones del manual sobre el tiempo de reposo si fue transportada acostada y limpia el interior.'),

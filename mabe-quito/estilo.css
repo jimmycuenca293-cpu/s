@@ -128,3 +128,5 @@ header.top{background:var(--bg);color:#fff;position:sticky;top:0;z-index:50;bord
 .logo .wm b{font-size:24px;letter-spacing:3px}
 .pie .logo .mkimg img{height:30px}
 @media (max-width:560px){.mkimg{padding:5px 9px}.mkimg img{height:24px}.wm b{font-size:20px}.wm small{display:block;font-size:9px}}
+@media (max-width:560px){.fila{gap:8px}.wm b{font-size:16px;letter-spacing:1px}.wm small{font-size:8.5px;letter-spacing:1.2px}.mkimg{padding:4px 8px}.mkimg img{height:22px}}
+@media (max-width:400px){.wm small{display:none}.wm b{font-size:15px}}

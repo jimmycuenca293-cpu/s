@@ -17,11 +17,11 @@ for k,e in EQ.items():
       [(f'¿Cuánto tarda reparar {art} Mabe?','Depende de la falla; si hace falta una pieza, te avisamos el plazo antes de empezar.'),(f'¿Qué fallas son más comunes en {low1(e["corto"])} Mabe?','Entre las más consultadas: '+', '.join(fn[:3])+'.')])
     # B) dónde reparar
     t(f'donde-reparar-{sl}-mabe-quito',f'Dónde reparar {art} Mabe en Quito',f'Dónde reparar {sing} Mabe en Quito',
-      f'Dónde reparar {art} Mabe en Quito: servicio a domicilio, servicio oficial o taller independiente, y qué preguntar antes de elegir. WhatsApp {PHONE_TXT}.',[k],
-      f'Al buscar dónde reparar {art} Mabe en Quito hay tres caminos: el servicio oficial del fabricante, un taller o un técnico independiente a domicilio. Aquí te contamos cómo elegir; nosotros somos un servicio independiente y no estamos operados por Mabe.',
-      ['Si el equipo está en garantía de fábrica, consulta primero con el fabricante','Fuera de garantía, un técnico independiente a domicilio evita mover el equipo','Pide siempre diagnóstico y costo antes de aceptar la reparación','Pregunta qué garantía tiene la reparación y qué cubre'],
+      f'Dónde reparar {art} Mabe en Quito: servicio a domicilio o taller, y qué preguntar antes de elegir. WhatsApp {PHONE_TXT}.',[k],
+      f'Al buscar dónde reparar {art} Mabe en Quito conviene comparar: llevarla a un taller o pedir un técnico a domicilio. Estas son las claves para elegir bien.',
+      ['Si el equipo está en garantía de fábrica, consulta primero las condiciones con el fabricante','Fuera de garantía, un técnico a domicilio evita mover el equipo','Pide siempre diagnóstico y costo antes de aceptar la reparación','Pregunta qué garantía tiene la reparación y qué cubre'],
       f'{cap(e["quito"])}',
-      [(f'¿Es mejor reparar {art} en casa o llevarla a un taller?','Depende del tamaño y de la instalación. Los equipos grandes o empotrados se revisan mejor en casa.'),('¿Conviene un servicio oficial o uno independiente?','Mientras el equipo esté en garantía de fábrica, consulta primero con el fabricante. Después, un servicio independiente es una opción válida.')])
+      [(f'¿Es mejor reparar {art} en casa o llevarla a un taller?','Depende del tamaño y de la instalación. Los equipos grandes o empotrados se revisan mejor en casa.'),('¿Qué hago si el equipo está en garantía?','Revisa las condiciones de la garantía de fábrica antes de pedir una reparación.')])
     # C) cuánto cuesta
     t(f'cuanto-cuesta-reparar-{sl}-mabe-quito',f'Cuánto cuesta reparar {art} Mabe en Quito',f'Cuánto cuesta reparar {sing} Mabe en Quito',
       f'Cuánto cuesta reparar {art} Mabe en Quito: de qué depende el costo, qué piezas suelen cambiarse y cómo pedir una cotización clara. WhatsApp {PHONE_TXT}.',[k],
@@ -36,14 +36,14 @@ t('reparar-electrodomesticos-mabe-quito','Reparar electrodomésticos Mabe en Qui
  [('¿Puedo reparar mi electrodoméstico Mabe sin llevarlo a un taller?','Sí. Vamos a tu casa u oficina en Quito.'),('¿Qué necesito para pedir la visita?','Marca, modelo, falla y tu barrio. Una foto de la etiqueta ayuda.')])
 t('donde-reparar-electrodomesticos-mabe-quito','Dónde reparar electrodomésticos Mabe en Quito','Dónde reparar electrodomésticos Mabe en Quito','Dónde reparar electrodomésticos Mabe en Quito: opciones, garantía de fábrica, técnicos a domicilio y qué preguntar antes de contratar. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras'],
  'Hay varias formas de reparar un electrodoméstico Mabe en Quito. Te explicamos las opciones para que elijas con información y sin sorpresas.',
- ['Fabricante o servicio oficial: recomendable mientras haya garantía de fábrica','Técnico independiente a domicilio: sin mover el equipo','Taller: útil para equipos pequeños y fáciles de transportar','Compara diagnóstico, costo, garantía de la reparación y tiempos'],
- 'Si ya venció la garantía, un servicio independiente suele ser más ágil. Escríbenos y te orientamos.',
- [('¿Quién repara electrodomésticos Mabe en Quito?','Servicios del fabricante y técnicos independientes. Nosotros somos independientes, a domicilio.'),('¿Debo llevar el equipo?','No necesariamente: la mayoría se revisa en casa.')])
-t('mabe-quito-servicio-tecnico-y-reparacion','Mabe Quito: servicio técnico y reparación de electrodomésticos','Mabe Quito: servicio técnico y reparación','Mabe Quito: servicio técnico independiente y reparación de refrigeradoras, lavadoras, secadoras, cocinas y hornos Mabe a domicilio. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','secadoras','cocinas'],
- 'Si buscas Mabe en Quito para reparar un electrodoméstico, aquí encuentras servicio técnico independiente a domicilio para equipos Mabe, con diagnóstico claro y costo antes de reparar.',
- ['Equipos Mabe del hogar','Cobertura en norte, centro, sur y valles de Quito','Coordinación por WhatsApp','Aclaramos que no somos Mabe ni servicio oficial'],
+ ['Mientras haya garantía de fábrica, consulta primero sus condiciones','Técnico a domicilio: sin mover el equipo','Taller: útil para equipos pequeños y fáciles de transportar','Compara diagnóstico, costo, garantía de la reparación y tiempos'],
+ 'Si ya venció la garantía, un técnico a domicilio suele ser lo más ágil. Escríbenos y te orientamos.',
+ [('¿Quién repara electrodomésticos Mabe en Quito?','Hay talleres y técnicos a domicilio. Nosotros vamos a tu casa en Quito.'),('¿Debo llevar el equipo?','No necesariamente: la mayoría se revisa en casa.')])
+t('mabe-quito-servicio-tecnico-y-reparacion','Mabe Quito: servicio técnico y reparación de electrodomésticos','Mabe Quito: servicio técnico y reparación','Servicio técnico Mabe Quito: reparación de refrigeradoras, lavadoras, secadoras, cocinas y hornos Mabe a domicilio. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','secadoras','cocinas'],
+ 'Si buscas Mabe en Quito para reparar un electrodoméstico, aquí encuentras servicio técnico Mabe Quito a domicilio para equipos Mabe, con diagnóstico claro y costo antes de reparar.',
+ ['Equipos Mabe del hogar','Cobertura en norte, centro, sur y valles de Quito','Coordinación por WhatsApp','Costo confirmado antes de reparar'],
  'Esta página resume qué hacemos; cada equipo y cada zona tiene su propia información.',
- [('¿Son Mabe?','No. Somos un servicio técnico independiente y este sitio no es operado por Mabe.'),('¿Qué marcas reparan?','Nos enfocamos en Mabe.')])
+ [('¿Qué es Servicio Técnico Mabe Quito?','Un servicio técnico a domicilio para electrodomésticos Mabe en Quito: diagnóstico, reparación y mantenimiento.'),('¿Qué marcas reparan?','Nos enfocamos en Mabe.')])
 t('electrodomestico-mabe-no-funciona-que-hacer-en-quito','Electrodoméstico Mabe no funciona en Quito: qué hacer','Electrodoméstico Mabe no funciona: qué hacer','Mi electrodoméstico Mabe no funciona en Quito: primeras revisiones seguras, qué no hacer y cómo pedir un técnico a domicilio. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','cocinas'],
  'Cuando un electrodoméstico Mabe deja de funcionar, unos pasos simples ayudan a descartar causas sencillas y a evitar daños mayores antes de llamar al técnico.',
  ['Revisa tomacorriente, breaker y llaves de agua o gas','Anota el código de error si la pantalla lo muestra','No fuerces piezas ni abras paneles eléctricos','Escríbenos con el modelo y un video corto de la falla'],
