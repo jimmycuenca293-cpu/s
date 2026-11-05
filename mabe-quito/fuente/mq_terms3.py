@@ -4,7 +4,7 @@ from mq_eq2 import EQ
 from mq_base import PHONE_TXT
 def cap(s): return s[:1].upper()+s[1:]
 def low1(s): return s[:1].lower()+s[1:]
-SL={'refrigeradoras':'refrigeradora','congeladores':'congelador','lavadoras':'lavadora','secadoras':'secadora','centros-de-lavado':'centro-de-lavado','cocinas':'cocina','hornos':'horno','parrillas':'parrilla','campanas-extractoras':'campana-extractora','microondas':'microondas','lavavajillas':'lavavajillas'}
+SL={'refrigeradoras':'refrigeradora','congeladores':'congelador','lavadoras':'lavadora','secadoras':'secadora','centros-de-lavado':'centro-de-lavado','cocinas':'cocina','hornos':'horno','parrillas':'parrilla','campanas-extractoras':'campana-extractora'}
 for k,e in EQ.items():
     sing=e['sing']; art=e['art']; sl=SL[k]; fn=[low1(f[0]) for f in e['fallas'][:4]]
     causes=[f[1] for f in e['fallas'][:3]]
@@ -31,7 +31,7 @@ for k,e in EQ.items():
       [(f'¿Cuánto cuesta la visita de diagnóstico de {art}?','Escríbenos con el modelo y la falla; te confirmamos el costo de la visita antes de ir.'),('¿Cuándo conviene reemplazarlo en vez de repararlo?','Si la reparación se acerca al costo de un equipo nuevo y el equipo es muy antiguo, conviene evaluarlo. Te lo decimos con honestidad en el diagnóstico.')])
 t('reparar-electrodomesticos-mabe-quito','Reparar electrodomésticos Mabe en Quito','Reparar electrodomésticos Mabe en Quito','Reparar electrodomésticos Mabe en Quito: refrigeradoras, lavadoras, secadoras, cocinas y hornos a domicilio. Diagnóstico, costo antes de reparar. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','secadoras','cocinas'],
  'Si tu electrodoméstico Mabe falla, puedes repararlo sin moverlo: vamos a tu casa en Quito, diagnosticamos, te explicamos la falla y te damos el costo antes de reparar.',
- ['Refrigeradoras, congeladores, lavadoras, secadoras y centros de lavado','Cocinas, hornos, parrillas, campanas, microondas y lavavajillas','Visita a domicilio en norte, centro, sur y valles','Costo confirmado antes de reparar'],
+ ['Refrigeradoras, congeladores, lavadoras, secadoras y centros de lavado','Cocinas, hornos, parrillas y campanas extractoras','Visita a domicilio en norte, centro, sur y valles','Costo confirmado antes de reparar'],
  'Úsalo como punto de partida: elige tu equipo y revisa fallas comunes y cómo pedir la visita.',
  [('¿Puedo reparar mi electrodoméstico Mabe sin llevarlo a un taller?','Sí. Vamos a tu casa u oficina en Quito.'),('¿Qué necesito para pedir la visita?','Marca, modelo, falla y tu barrio. Una foto de la etiqueta ayuda.')])
 t('donde-reparar-electrodomesticos-mabe-quito','Dónde reparar electrodomésticos Mabe en Quito','Dónde reparar electrodomésticos Mabe en Quito','Dónde reparar electrodomésticos Mabe en Quito: opciones, garantía de fábrica, técnicos a domicilio y qué preguntar antes de contratar. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras'],

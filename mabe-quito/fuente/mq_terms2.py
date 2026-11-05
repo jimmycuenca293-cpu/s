@@ -135,7 +135,7 @@ t('servicio-tecnico-de-electrodomesticos-quito','Servicio técnico de electrodom
  'Si buscas servicio técnico de electrodomésticos en Quito, estamos enfocados en la marca Mabe: refrigeradoras, lavadoras, secadoras, centros de lavado, cocinas, hornos y más.',
  ['Equipos grandes del hogar','Visita a domicilio','Diagnóstico y costo antes de reparar','Atención en norte, centro, sur y valles'],
  'Escribe el modelo y la falla para recibir orientación inicial.',
- [('¿Reparan otras marcas?','Nos enfocamos en Mabe. Si es otra marca, consúltalo por WhatsApp.'),('¿Qué equipos atienden?','Refrigeradoras, congeladores, lavadoras, secadoras, centros de lavado, cocinas, hornos, parrillas, campanas, microondas y lavavajillas.')])
+ [('¿Reparan otras marcas?','Nos enfocamos en Mabe. Si es otra marca, consúltalo por WhatsApp.'),('¿Qué equipos atienden?','Refrigeradoras, congeladores, lavadoras, secadoras, centros de lavado, cocinas, hornos, parrillas y campanas extractoras.')])
 t('tecnico-de-electrodomesticos-a-domicilio-quito','Técnico de electrodomésticos a domicilio en Quito','Técnico de electrodomésticos a domicilio en Quito','Técnico de electrodomésticos a domicilio en Quito para equipos Mabe: visita a tu casa, diagnóstico claro y costo antes de reparar.',['refrigeradoras','lavadoras','secadoras'],
  'Un técnico de electrodomésticos a domicilio te ahorra el traslado y el riesgo de dañar el equipo al moverlo. En Quito atendemos casas, apartamentos y oficinas.',
  ['Visita a domicilio','Revisión en el lugar de uso','Reparación cuando se consigue el repuesto','Prueba final'],

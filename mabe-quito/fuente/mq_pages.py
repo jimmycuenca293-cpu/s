@@ -113,7 +113,7 @@ for z in Z:
     near=[ZD[x] for x in ZSLUGS if ZD[x]['sector']==sec_ and x!=zs][:8]
     s.append(('Zonas cercanas',f'<div class="chips">'+''.join(f'<a href="@servicio-tecnico-mabe-en-{d["slug"]}@">{E(d["nombre"])}</a>' for d in near)+'</div>'))
     faq=[(f'¿Atienden en {zn}?',f'Sí. Escríbenos tu dirección y una referencia por WhatsApp y coordinamos la visita en {zn}.'),
-         (f'¿Qué equipos Mabe reparan en {zn}?','Refrigeradoras, congeladores, lavadoras, secadoras, centros de lavado, cocinas, hornos, parrillas, campanas, microondas y lavavajillas.'),
+         (f'¿Qué equipos Mabe reparan en {zn}?','Refrigeradoras, congeladores, lavadoras, secadoras, centros de lavado, cocinas, hornos, parrillas y campanas extractoras.'),
          ('¿Cuánto cuesta la visita?',f'Escríbenos con el equipo, el modelo y la falla; te confirmamos el costo de la visita antes de ir.')]
     addp(zs and 'servicio-tecnico-mabe-en-'+zs,kind='zona',h1=h1,title=mktitle(f'Servicio técnico Mabe Quito: {zn}'),desc=clip(f'Servicio técnico Mabe a domicilio en {zn}, {sector}: refrigeradoras, lavadoras, secadoras, cocinas y hornos. Escríbenos por WhatsApp {PHONE_TXT}.',160),
          lead=f'Técnico a domicilio para electrodomésticos Mabe en {zn}, {sector}. Diagnóstico claro y costo antes de reparar.',sections=s,faq=faq,

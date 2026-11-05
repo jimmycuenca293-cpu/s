@@ -81,11 +81,6 @@ g('como-usar-bien-el-horno-evitar-fallas-y-malos-resultados','Cómo usar bien el
   ('No tapes el fondo','El papel aluminio en el fondo bloquea el calor y daña la resistencia o el quemador.'),
   ('Limpieza','Limpia derrames cuando el horno esté frío y no uses productos corrosivos.'),
   ('Si cocina desigual','Revisa que la puerta selle y pide revisión del sensor y el termostato.')])
-g('que-no-poner-en-el-microondas-y-por-que-hace-chispas','Qué no poner en el microondas y por qué hace chispas','microondas','Metales, recipientes y alimentos que causan chispas, y qué hacer si tu microondas ya las produjo.',
- [('Lo que provoca chispas','Metal, recipientes con borde dorado, papel aluminio arrugado y restos de grasa quemada.'),
-  ('Qué hacer','Apaga de inmediato, desconecta y revisa el interior; limpia los restos.'),
-  ('Cuándo hay daño','Si siguen las chispas sin nada metálico dentro, puede estar dañada la cubierta de la guía de ondas: no lo uses.'),
-  ('Cuidados','No lo enciendas vacío y limpia el interior con frecuencia.')])
 g('ruidos-en-la-lavadora-que-significan-y-cuando-llamar-al-tecnico','Ruidos en la lavadora: qué significan y cuándo llamar al técnico','lavadoras','Golpes, chirridos, zumbidos y rechinidos: cómo distinguir un ruido normal de una falla en la lavadora.',
  [('Ruidos normales','Agua entrando, desagüe y un zumbido suave del motor.'),
   ('Golpes al centrifugar','Carga desbalanceada o patas sin nivelar; si pasa con poca ropa, amortiguadores.'),
