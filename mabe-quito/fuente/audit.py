@@ -1,6 +1,6 @@
 import re,os,json,urllib.request,html
 from urllib.parse import urljoin
-B='http://127.0.0.1:8751'
+B='http://127.0.0.1:8761'
 urls=re.findall(r'<loc>https://serviciotecnicomabequito.click(/[^<]*)</loc>',open('site/sitemap.xml').read())
 bad=[];tit={};desc={};words={};seen=set()
 for u in urls:
@@ -17,6 +17,10 @@ for u in urls:
     for j in re.findall(r'<script type="application/ld\+json">(.*?)</script>',h,re.S):
         try: json.loads(j)
         except Exception: bad.append((u,'JSON-LD inválido'))
+    for im in re.findall(r'<img\b[^>]*>',h):
+        m=re.search(r'alt="([^"]*)"',im)
+        if not m or not m.group(1).strip(): bad.append((u,'imagen sin alt o alt vacío',re.search(r'src="([^"]*)"',im).group(1)))
+        elif 'tecnico' in im and False: pass
     txt=re.sub(r'<[^>]+>',' ',re.sub(r'<script[\s\S]*?</script>|<style[\s\S]*?</style>','',h)); words[u]=len(txt.split())
     for l in re.findall(r'(?:href|src)="([^"#]+)"',h):
         if l.startswith(('http','tel:','mailto:')): continue

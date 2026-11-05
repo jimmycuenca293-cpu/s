@@ -63,7 +63,7 @@ def header(slug):
             mov+=f'<b class="mh">{lab}</b>'+''.join(f'<a href="{u(t)}">{E(n)}</a>' for n,t in sub)
         else:
             top+=f'<a href="{u(s)}"{cur}>{lab}</a>'; mov+=f'<b class="mh">{lab}</b>'+f'<a href="{u(s)}">Ver {lab.lower()}</a>' if False else f'<a class="mh1" href="{u(s)}">{lab}</a>'
-    LOGO=f'<a class="logo" href="{u("")}" aria-label="{NAME}, inicio"><img class="logoimg" src="{asset(slug,"img/mabe-logo.png")}" alt="Mabe" width="200" height="60"><span class="wm"><small>Servicio técnico</small><b>QUITO</b></span></a>'
+    LOGO=f'<a class="logo" href="{u("")}" aria-label="{NAME}, inicio"><img class="logoimg" src="{asset(slug,"img/mabe-logo.png")}" alt="Mabe, servicio técnico Mabe Quito" width="200" height="60"><span class="wm"><small>Servicio técnico</small><b>QUITO</b></span></a>'
     return f'''<a class="saltar" href="#contenido">Saltar al contenido</a>
 <div class="topbar"><div class="wrap"><span>Servicio técnico Mabe Quito · reparación a domicilio</span><a href="{wa(WAHI)}" target="_blank" rel="noopener">WhatsApp {PHONE_TXT}</a></div></div>
 <header class="top"><div class="wrap fila">{LOGO}
@@ -76,7 +76,7 @@ def footer(slug):
     eq=''.join(f'<li><a href="{u(EQ[k]["slug"])}">{E(EQ[k]["corto"])}</a></li>' for k in EQK)
     sv=''.join(f'<li><a href="{u(c)}">{CORE_LAB[c]}</a></li>' for c in CORE)
     cv=''.join(f'<li><a href="{u(SECTOR_HUBS[sc][0])}">{lab}</a></li>' for sc,lab in SEC_LAB)
-    return f'''</main><footer class="pie"><div class="wrap cols"><div><a class="logo" href="{u('')}"><img class="logoimg" src="{asset(slug,'img/mabe-logo.png')}" alt="Mabe" width="200" height="60"><span class="wm"><small>Servicio técnico</small><b>QUITO</b></span></a><p>Servicio técnico Mabe Quito: reparación y mantenimiento a domicilio de electrodomésticos Mabe en Quito.</p><p><a class="tel" href="tel:{PHONE_TEL}">{PHONE_TXT}</a><br>WhatsApp y llamadas · +593 99 350 8191</p></div>
+    return f'''</main><footer class="pie"><div class="wrap cols"><div><a class="logo" href="{u('')}"><img class="logoimg" src="{asset(slug,'img/mabe-logo.png')}" alt="Mabe, servicio técnico Mabe Quito" width="200" height="60"><span class="wm"><small>Servicio técnico</small><b>QUITO</b></span></a><p>Servicio técnico Mabe Quito: reparación y mantenimiento a domicilio de electrodomésticos Mabe en Quito.</p><p><a class="tel" href="tel:{PHONE_TEL}">{PHONE_TXT}</a><br>WhatsApp y llamadas · +593 99 350 8191</p></div>
 <div><h2>Electrodomésticos</h2><ul>{eq}</ul></div>
 <div><h2>Servicios</h2><ul>{sv}<li><a href="{u('servicios')}">Todos los servicios</a></li></ul><h2 class="h2b">Cobertura</h2><ul>{cv}<li><a href="{u('zonas-de-servicio-quito')}">Todos los barrios</a></li></ul></div>
 <div><h2>Información</h2><ul><li><a href="{u('fallas-comunes')}">Fallas comunes</a></li><li><a href="{u('guias')}">Guías</a></li><li><a href="{u('como-trabajamos')}">Cómo trabajamos</a></li><li><a href="{u('preguntas-frecuentes')}">Preguntas frecuentes</a></li><li><a href="{u('contacto')}">Contacto</a></li><li><a href="{u('aviso-legal')}">Aviso legal</a></li><li><a href="{u('privacidad')}">Tratamiento de datos</a></li></ul></div></div>
@@ -92,7 +92,7 @@ def faq_html(faq): return '' if not faq else '<section class="faq"><h2>Preguntas
 def faq_ld(faq): return {'@context':'https://schema.org','@type':'FAQPage','mainEntity':[{'@type':'Question','name':q,'acceptedAnswer':{'@type':'Answer','text':a}} for q,a in faq]}
 def thumb(frm,k,cls=''):
     th=EQ[k].get('th')
-    if th: return f'<span class="ico th {cls}"><img src="{asset(frm,"img/"+th+"-s.webp")}" alt="" width="240" height="240" loading="eager" decoding="async"></span>'
+    if th: return f'<span class="ico th {cls}"><img src="{asset(frm,"img/"+th+"-s.webp")}" alt="{E(EQ[k]["sing"].capitalize())} Mabe" width="240" height="240" loading="eager" decoding="async"></span>'
     return ''
 def pth(frm,p,cls=''):
     if p.get('eq') and p['kind'] in ('service','falla','zxa','term','guia'): return thumb(frm,p['eq'],cls)
