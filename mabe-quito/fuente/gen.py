@@ -20,7 +20,7 @@ def url(frm,to):
 def asset(frm,name): return '../'*depth(frm)+name
 def wa(msg): return f'https://wa.me/{PHONE_INTL}?text='+urllib.parse.quote(msg)
 GSC=open('gsc-meta.txt',encoding='utf-8').read().strip() if os.path.exists('gsc-meta.txt') else ''
-HERO='portada' if AUTH else 'portada-cocina'
+HERO='portada' if AUTH else 'portada-saludo'
 PRE=f'<link rel="preload" as="image" href="img/{HERO}-m.webp" imagesrcset="img/{HERO}-m.webp 640w, img/{HERO}.webp 900w" imagesizes="100vw" fetchpriority="high">'
 def fix(h,slug):
     def r(m):
@@ -85,16 +85,21 @@ def related_html(slug,p):
 def cta_box(slug,p):
     return f'<aside class="caja"><h2>Servicio técnico Mabe Quito</h2><p>Escríbenos la marca, el modelo y qué falla presenta. Te orientamos por WhatsApp.</p><a class="btn wa grande" href="{wa(p["wamsg"])}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a><a class="btn linea" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></aside>'
 PH={'nevera-superior-negra':'Refrigeradora Mabe de congelador superior','nevera-superior-inox':'Refrigeradora Mabe de congelador superior en acero','nevera-side-by-side':'Refrigeradora Mabe Side by Side con dispensador','nevera-side-by-side-inox':'Refrigeradora Mabe Side by Side en acero','lavadora-superior':'Lavadora Mabe de carga superior','secadora':'Secadora Mabe','secadora-oscura':'Secadora Mabe de color oscuro','torre-lavado':'Centro de lavado Mabe (torre)','cocina-gas':'Cocina a gas Mabe de seis hornillas','horno-empotrable':'Horno empotrable Mabe','parrilla-gas':'Parrilla a gas Mabe de cuatro hornillas','campana-extractora':'Campana extractora Mabe','congelador-horizontal':'Congelador horizontal Mabe'}
-TECP={'tecnico-cliente':('Técnico explicando una falla a una clienta frente a la refrigeradora (imagen ilustrativa)',900,672),'tecnico-cocina':('Técnico con su caja de herramientas en una cocina con refrigeradora y lavadora (imagen ilustrativa)',900,672),'tecnico-puerta':('Técnico llegando a un domicilio (imagen ilustrativa)',900,672),'tecnico-manos':('Revisión de un electrodoméstico (imagen ilustrativa)',900,507)}
+TECP={'tecnico-saludo':('Técnico de Mabe saludando al cliente en la puerta de su casa (imagen ilustrativa)',900,503),'tecnico-cocina-gas':('Técnico revisando una cocina a gas en casa de una clienta (imagen ilustrativa)',900,503),'tecnico-cliente':('Técnico explicando una falla a una clienta frente a la refrigeradora (imagen ilustrativa)',900,672),'tecnico-cocina':('Técnico con su caja de herramientas en una cocina con refrigeradora y lavadora (imagen ilustrativa)',900,672),'tecnico-puerta':('Técnico llegando a un domicilio (imagen ilustrativa)',900,672),'tecnico-manos':('Revisión de un electrodoméstico (imagen ilustrativa)',900,507)}
 def fig(slug,n,eager=False):
     return f'<figure><img src="{asset(slug,"img/"+n+".webp")}" srcset="{asset(slug,"img/"+n+"-m.webp")} 460w, {asset(slug,"img/"+n+".webp")} 900w" sizes="(max-width:700px) 44vw, 330px" width="900" height="900" alt="{E(PH[n])}" loading="{"eager" if eager else "lazy"}" decoding="async"><figcaption>{E(PH[n])}</figcaption></figure>'
 def tec_fig(slug,n):
     alt,w,h=TECP[n]
     return f'<figure class="tec"><img src="{asset(slug,"img/"+n+".webp")}" srcset="{asset(slug,"img/"+n+"-m.webp")} 560w, {asset(slug,"img/"+n+".webp")} 900w" sizes="(max-width:700px) 92vw, 700px" width="{w}" height="{h}" alt="{E(alt)}" loading="lazy" decoding="async"><figcaption>{E(alt.replace(" (imagen ilustrativa)",""))} · imagen ilustrativa</figcaption></figure>'
 TECS=['tecnico-cliente','tecnico-cocina','tecnico-puerta','tecnico-manos']
+CLEAN=['tecnico-saludo','tecnico-cocina-gas']
 def tec_for(slug,p):
-    if not AUTH: return None
     k=p['kind']
+    if not AUTH:
+        if k=='service': return 'tecnico-cocina-gas' if p['eq'] in ('cocinas','hornos','parrillas','campanas-extractoras') else 'tecnico-saludo'
+        if k=='zona': return CLEAN[ZSLUGS.index(p['zone'])%2]
+        if k=='term': return CLEAN[sum(map(ord,slug))%2]
+        return None
     if k=='service': return {'refrigeradoras':'tecnico-cliente','lavadoras':'tecnico-cocina','secadoras':'tecnico-puerta','cocinas':'tecnico-manos','hornos':'tecnico-manos'}.get(p['eq'])
     if k=='zona': return TECS[ZSLUGS.index(p['zone'])%4]
     if k=='term': return TECS[sum(map(ord,slug))%4]
@@ -179,7 +184,7 @@ info_page('aviso-legal','Aviso legal','Aviso legal | Servicio Técnico Mabe Quit
 info_page('privacidad','Tratamiento de datos personales','Tratamiento de datos personales | Servicio Técnico Mabe Quito','Cómo trata Servicio Técnico Mabe Quito tus datos personales cuando nos escribes por WhatsApp o nos llamas para pedir una visita en Quito.','Qué datos recibimos y para qué los usamos.',
  f'<section><h2>Qué datos recibimos</h2><p>Cuando nos escribes por WhatsApp o nos llamas recibimos los datos que compartes: nombre, teléfono, barrio o dirección y datos del equipo.</p></section><section><h2>Para qué los usamos</h2><p>Solo para atender tu solicitud, coordinar la visita y dar seguimiento al servicio. No vendemos tus datos.</p></section><section><h2>Tus derechos</h2><p>Puedes pedirnos que corrijamos o eliminemos tus datos escribiendo al {PHONE_TXT}.</p></section>',icon='doc')
 # --- portada
-HERO_ALT='Técnico explicando una falla a una clienta frente a la refrigeradora (imagen ilustrativa)' if AUTH else 'Cocina con refrigeradora Mabe de dos puertas (imagen de referencia)'
+HERO_ALT='Técnico explicando una falla a una clienta frente a la refrigeradora (imagen ilustrativa)' if AUTH else 'Técnico de Mabe saludando al cliente en la puerta de su casa (imagen ilustrativa)'
 def home():
     s=''
     eqcards=''.join(f'<a class="svc" href="{url(s,EQ[k]["slug"])}">{thumb(s,k)}<b>{E(EQ[k]["h1"])}</b><span>{E(EQ[k]["intro"][:115])}…</span><i>Ver servicio →</i></a>' for k in EQK)
@@ -193,10 +198,10 @@ def home():
     ps=''.join(f'<li><b>{i+1}</b><div><h3>{E(a)}</h3><p>{E(b)}</p></div></li>' for i,(a,b) in enumerate([pasos[0],pasos[3],pasos[4],pasos[5]]))
     tecs=''.join(f'<div>{tec_fig(s,n)}</div>' for n in ('tecnico-cocina','tecnico-puerta','tecnico-manos'))
     if AUTH: ASI=f'<section class="sec osc"><div class="wrap"><h2>Así te atendemos</h2><p class="sub">Vamos hasta donde está tu equipo, lo revisamos y te explicamos antes de reparar.</p><div class="tecs">{tecs}</div><p class="refimg">Imágenes ilustrativas.</p></div></section>'
-    else: ASI='<section class="sec osc"><div class="wrap"><h2>Equipos Mabe que atendemos</h2><p class="sub">Algunos de los modelos de la marca que revisamos a domicilio en Quito.</p><div class="gal g3">'+''.join(fig(s,n) for n in ('nevera-side-by-side','lavadora-superior','secadora','torre-lavado','cocina-gas','horno-empotrable'))+'</div><p class="refimg">Imágenes de referencia de equipos Mabe.</p></div></section>'
+    else: ASI='<section class="sec osc"><div class="wrap"><h2>Así te atendemos</h2><p class="sub">Vamos hasta donde está tu equipo, lo revisamos y te explicamos antes de reparar.</p><div class="tecs dos">'+''.join(f'<div>{tec_fig(s,n)}</div>' for n in CLEAN)+'</div><p class="refimg">Imágenes ilustrativas.</p></div></section>\n<section class="sec"><div class="wrap"><h2>Equipos Mabe que atendemos</h2><p class="sub">Algunos de los modelos de la marca que revisamos a domicilio en Quito.</p><div class="gal g3">'+''.join(fig(s,n) for n in ('nevera-side-by-side','lavadora-superior','secadora','torre-lavado','cocina-gas','horno-empotrable'))+'</div><p class="refimg">Imágenes de referencia de equipos Mabe.</p></div></section>'
     qs=[('Para tu casa','Refrigeradoras, lavadoras, secadoras, cocinas y hornos Mabe en tu hogar.'),('Para apartamentos y conjuntos','Coordinamos acceso y horario con la administración.'),('Para pequeños negocios','Equipos Mabe en oficinas, locales y cafeterías pequeñas.')]
     qh=''.join(f'<div class="q"><h3>{a}</h3><p>{b}</p></div>' for a,b in qs)
-    hero=f'''<section class="hero"><div class="hero-bg"><img src="img/{HERO}.webp" srcset="img/{HERO}-m.webp 640w, img/{HERO}.webp 900w" sizes="100vw" width="900" height="{672 if AUTH else 900}" alt="{HERO_ALT}" fetchpriority="high" decoding="async"></div><div class="wrap hgrid"><div><p class="kick">Reparación de electrodomésticos a domicilio</p><h1>Servicio técnico Mabe Quito</h1><p class="lead">Reparación de electrodomésticos Mabe en Quito: refrigeradoras, lavadoras, secadoras, cocinas, hornos y más, en tu casa. Diagnóstico claro y costo antes de reparar.</p><div class="acc"><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a><a class="btn linea cl" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></div><ul class="pts"><li>A domicilio en Quito</li><li>Norte, centro, sur y valles</li><li>Te explicamos la falla antes de reparar</li></ul></div></div></section>'''
+    hero=f'''<section class="hero"><div class="hero-bg"><img src="img/{HERO}.webp" srcset="img/{HERO}-m.webp 640w, img/{HERO}.webp 900w" sizes="100vw" width="900" height="{672 if AUTH else 503}" alt="{HERO_ALT}" fetchpriority="high" decoding="async"></div><div class="wrap hgrid"><div><p class="kick">Reparación de electrodomésticos a domicilio</p><h1>Servicio técnico Mabe Quito</h1><p class="lead">Reparación de electrodomésticos Mabe en Quito: refrigeradoras, lavadoras, secadoras, cocinas, hornos y más, en tu casa. Diagnóstico claro y costo antes de reparar.</p><div class="acc"><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a><a class="btn linea cl" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></div><ul class="pts"><li>A domicilio en Quito</li><li>Norte, centro, sur y valles</li><li>Te explicamos la falla antes de reparar</li></ul></div></div></section>'''
     body=f'''<section class="sec" id="electrodomesticos"><div class="wrap"><h2>Electrodomésticos Mabe que reparamos en Quito</h2><p class="sub">Elige tu equipo para ver fallas comunes, mantenimiento y cómo pedir la visita.</p><div class="svcs">{eqcards}</div></div></section>
 <section class="sec osc" id="servicios"><div class="wrap"><h2>Lo que más se busca en Quito</h2><p class="sub">Servicios, equipos y zonas: cada búsqueda tiene su página con respuestas claras.</p>{termchips}</div></section>
 <section class="sec"><div class="wrap"><h2>¿Qué le pasa a tu equipo?</h2><p class="sub">Estas son las fallas por las que más nos escriben. Cada una explica qué revisar antes de llamar.</p>{fchips}<p style="margin-top:22px"><a class="enlace" href="{url(s,'fallas-comunes')}">Ver todas las fallas →</a></p></div></section>
