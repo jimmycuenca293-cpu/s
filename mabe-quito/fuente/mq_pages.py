@@ -51,26 +51,41 @@ for (s_,t_,eq_,d_,sec_) in mq_eq.BLOG_SRC:
 GUIDES=[(s,t,{'neveras':'refrigeradoras'}.get(eq,eq),d,sec) for (s,t,eq,d,sec) in mq_eq.BLOG_SRC if s not in MERGE]+[(s,t,eq,d,sec) for (s,t,eq,d,sec) in mq_guias.G]
 GEQ={}
 for g in GUIDES: GEQ.setdefault(g[2],[]).append(g[0])
+SECT_OUT=['servicio-tecnico-mabe-quito-norte','servicio-tecnico-mabe-quito-centro','servicio-tecnico-mabe-quito-sur']
+T[:]=[t for t in T if t['slug'] not in SECT_OUT]
+GEN=['tecnico-mabe-a-domicilio-quito','servicio-tecnico-mabe-cerca-de-mi-quito','reparacion-de-electrodomesticos-mabe-a-domicilio-quito','servicio-tecnico-de-electrodomesticos-quito','tecnico-de-electrodomesticos-a-domicilio-quito','mantenimiento-preventivo-de-electrodomesticos-mabe-quito','instalacion-de-electrodomesticos-mabe-quito','diagnostico-de-electrodomesticos-mabe-quito','reparacion-de-tarjetas-electronicas-de-electrodomesticos-mabe-quito','repuestos-para-electrodomesticos-mabe-quito','servicio-tecnico-mabe-edificios-y-conjuntos-quito','centro-de-servicio-mabe-quito','servicio-tecnico-mabe-telefono-y-whatsapp-quito','revision-de-electrodomesticos-mabe-usados-antes-de-comprar-quito','emergencias-de-electrodomesticos-mabe-fugas-de-agua-y-gas-quito','reparar-electrodomesticos-mabe-quito','donde-reparar-electrodomesticos-mabe-quito','mabe-quito-servicio-tecnico-y-reparacion','electrodomestico-mabe-no-funciona-que-hacer-en-quito']
+VALLE_TERMS=['servicio-tecnico-mabe-valle-de-los-chillos','servicio-tecnico-mabe-cumbaya-y-tumbaco']
+SECTOR_HUBS={'Norte':('servicio-tecnico-mabe-quito-norte','norte de Quito'),'Centro':('servicio-tecnico-mabe-quito-centro','centro de Quito'),'Sur':('servicio-tecnico-mabe-quito-sur','sur de Quito'),'Valles':('servicio-tecnico-mabe-valles-de-quito','valles de Quito')}
 TERMS={t['slug']:t for t in T}
 TEQ={}
 for t in T:
     for k in t['eq']: TEQ.setdefault(k,[]).append(t['slug'])
 # ---------- electrodomésticos ----------
+def _ord(s):
+    for n,pre in enumerate(('reparar-','donde-reparar-','cuanto-cuesta-','arreglo','tecnico','reparacion','mantenimiento','instalacion')):
+        if s.startswith(pre): return n
+    return 9
+TPRIM={k:sorted([t['slug'] for t in T if t['slug'] not in GEN and t['slug'] not in VALLE_TERMS and t['eq'][0]==k],key=lambda s:(_ord(s),s)) for k in EQK}
 for k in EQK:
-    e=EQ[k]; faultlinks=[]
+    e=EQ[k]; nm=e["art"].split(" ",1)[1]
     fl='<ul class="fallas">'+''.join(f'<li><a href="@{e["slugs"][i]}@">{E(f[0])}</a> <span class="tag {URG[f[2]]}">{f[2]}</span><br><span class="cz">{E(f[1])}</span></li>' for i,f in enumerate(e['fallas']))+'</ul>'
-    sec=[('Modelos y tipos que atendemos',ul([E(m) for m in e['modelos']])),
-     (f'Fallas más comunes en {e["art"].split(" ",1)[1]} Mabe',fl),
-     ('Qué hacemos en la visita',f'<p>Vamos a tu casa, probamos {e["art"]} en su lugar de uso, identificamos la causa y te explicamos qué tiene antes de tocar nada.</p>'+ul(['Diagnóstico de la falla','Costo confirmado antes de reparar','Reparación y prueba de funcionamiento','Recomendaciones para que no se repita'])),
+    sv='<ul class="sublist">'+''.join(f'<li><a href="@{x}@">{E(TERMS[x]["h1"])}</a></li>' for x in TPRIM[k])+'</ul>' if TPRIM[k] else ''
+    sec=[('Qué reparamos',f'<p>Modelos y tipos de {nm} Mabe que atendemos a domicilio en Quito:</p>'+ul([E(m) for m in e['modelos']])),
+     (f'Fallas comunes de {nm} Mabe',f'<p>Cada falla tiene su propia página con causas, qué revisar y cuándo llamar.</p>{fl}')]
+    if sv: sec.append((f'Servicios para {nm} Mabe en Quito',f'<p>Reparar, dónde reparar, cuánto cuesta y más:</p>{sv}'))
+    sec+=[('Qué hacemos en la visita',f'<p>Vamos a tu casa, probamos {e["art"]} en su lugar de uso, identificamos la causa y te explicamos qué tiene antes de tocar nada.</p>'+ul(['Diagnóstico de la falla','Costo confirmado antes de reparar','Reparación y prueba de funcionamiento','Recomendaciones para que no se repita'])),
      (f'Mantenimiento para que {e["art"]} dure más',ul([E(m) for m in e['mant']])),
-     ('Seguridad primero',f'<p>{E(e["seguridad"])}</p>'),
-     ('Qué enviarnos por WhatsApp',f'<p>Para orientarte más rápido, envíanos {E(e["datos"])}. Una foto de la etiqueta y un video corto de la falla ayudan mucho.</p>'),
+     ('Antes de llamar: seguridad y datos',f'<h3>Seguridad primero</h3><p>{E(e["seguridad"])}</p><h3>Qué enviarnos por WhatsApp</h3><p>Para orientarte más rápido, envíanos {E(e["datos"])}. Una foto de la etiqueta y un video corto de la falla ayudan mucho.</p>'),
      ('Particularidades de Quito',f'<p>{E(e["quito"])}</p>')]
     if k in AXZ:
-        chips=''.join(f'<a href="@{"reparacion-de-"+k+"-mabe-en-"+z}@">{E(ZD[z]["nombre"])}</a>' for z in ZXA)
-        sec.append((f'{cap(e["corto"])} Mabe en tu zona de Quito',f'<p>Elige tu sector para ver la información de servicio a domicilio:</p><div class="chips">{chips}</div>'))
-    tl=TEQ.get(k,[])
-    if tl: sec.append(('Búsquedas relacionadas',f'<div class="chips">'+''.join(f'<a href="@{x}@">{E(TERMS[x]["h1"])}</a>' for x in tl)+'</div>'))
+        body='<p>Elige tu barrio para ver el servicio a domicilio de '+nm+' Mabe en tu zona:</p>'
+        for sc,lab in (('Norte','Norte de Quito'),('Centro','Centro de Quito'),('Sur','Sur de Quito'),('Valles','Valles de Quito')):
+            zs_=[z for z in ZXA if ZD[z]['sector']==sc]
+            if zs_: body+=f'<h3>{lab}</h3><div class="chips">'+''.join(f'<a href="@reparacion-de-{k}-mabe-en-{z}@">{E(ZD[z]["nombre"])}</a>' for z in zs_)+'</div>'
+        sec.append((f'Dónde atendemos: {nm} Mabe por zona',body))
+    gl=GEQ.get(k,[])
+    if k=='refrigeradoras': gl=gl+GEQ.get('neveras',[])
+    if gl: sec.append(('Guías relacionadas','<ul class="sublist">'+''.join(f'<li><a href="@{x}@">{E(next(g[1] for g in GUIDES if g[0]==x))}</a></li>' for x in gl[:8])+'</ul>'))
     rel=[EQ[x]['slug'] for x in EQK if x!=k][:6]
     addp(e['slug'],kind='service',h1=e['h1'],title=mktitle(e['h1']),desc=clip(f"{e['h1']}: {e['intro']} Visita a domicilio. WhatsApp {PHONE_TXT}.",160),lead=e['intro'],sections=sec,faq=e['faq'],related=rel,
          wamsg=f"Hola, necesito servicio técnico para {e['art']} Mabe en Quito.",icon=e['icon'],th=e['th'],photos=e['foto'],tec=None,eq=k)
@@ -109,7 +124,7 @@ for z in Z:
        ('Cómo es la visita en esta zona',f'<p>{TIPO_TXT[tipo]}</p>'),
        ('Equipos Mabe que revisamos',f'<p>Visitamos {zn} para reparar y dar mantenimiento a estos electrodomésticos:</p><div class="chips">{eqchips}</div>')]
     if zs in ZXA:
-        s.append((f'Reparación por equipo en {zn}','<div class="chips">'+''.join(f'<a href="@reparacion-de-{k}-mabe-en-{zs}@">{E(EQ[k]["corto"])} en {E(zn)}</a>' for k in AXZ)+'</div>'))
+        s.append((f'Reparación por electrodoméstico en {zn}','<ul class="sublist">'+''.join(f'<li><a href="@reparacion-de-{k}-mabe-en-{zs}@">Reparación de {E(low1(EQ[k]["corto"]))} Mabe en {E(zn)}</a></li>' for k in AXZ)+'</ul>'))
     near=[ZD[x] for x in ZSLUGS if ZD[x]['sector']==sec_ and x!=zs][:8]
     s.append(('Zonas cercanas',f'<div class="chips">'+''.join(f'<a href="@servicio-tecnico-mabe-en-{d["slug"]}@">{E(d["nombre"])}</a>' for d in near)+'</div>'))
     faq=[(f'¿Atienden en {zn}?',f'Sí. Escríbenos tu dirección y una referencia por WhatsApp y coordinamos la visita en {zn}.'),
@@ -136,17 +151,29 @@ for zi,zs in enumerate(ZXA):
              ('¿Dan el costo antes de reparar?','Sí. Primero diagnosticamos y te informamos el costo antes de continuar.')]
         others=[f'reparacion-de-{x}-mabe-en-{zs}' for x in AXZ if x!=k][:2]
         nz=ZXA[(zi+1)%len(ZXA)]
-        addp(slug,kind='zxa',h1=h1,title=mktitle(f'{h1}, Quito'),desc=clip(f'{h1}: fallas frecuentes, visita a domicilio y costo antes de reparar. WhatsApp {PHONE_TXT}.',160),
+        addp(slug,kind='zxa',h1=h1,title=mktitle(f'{h1}, Quito') if len(f'{h1}, Quito')<=65 else h1,desc=clip(f'{h1}: fallas frecuentes, visita a domicilio y costo antes de reparar. WhatsApp {PHONE_TXT}.',160),
              lead=f'Servicio técnico a domicilio para {low1(e["corto"])} Mabe en {zn}: diagnóstico claro y costo confirmado antes de reparar.',sections=s,faq=faq,
              related=[e['slug'],'servicio-tecnico-mabe-en-'+zs]+others+[f'reparacion-de-{k}-mabe-en-{nz}'],wamsg=f'Hola, necesito reparar {e["art"]} Mabe en {zn}, Quito.',icon=e['icon'],th=e['th'],photos=[],tec=None,zone=zs,eq=k)
+# ---------- sectores (cobertura) ----------
+for sc,(sslug,label) in SECTOR_HUBS.items():
+    zs_=[z for z in ZSLUGS if ZD[z]['sector']==sc]
+    extra=[x for x in VALLE_TERMS] if sc=='Valles' else []
+    s=[(f'Barrios y sectores del {label}',f'<p>Atendemos estos barrios y sectores. Elige el tuyo para ver cómo coordinamos la visita:</p><ul class="cols3">'+''.join(f'<li><a href="@servicio-tecnico-mabe-en-{z}@">{E(ZD[z]["nombre"])}</a></li>' for z in zs_)+'</ul>'+('<h3>Más información para los valles</h3><ul class="sublist">'+''.join(f'<li><a href="@{x}@">{E(TERMS[x]["h1"])}</a></li>' for x in extra)+'</ul>' if extra else '')),
+       (f'Electrodomésticos Mabe que reparamos en el {label}','<ul class="sublist">'+''.join(f'<li><a href="@{EQ[k]["slug"]}@">{E(EQ[k]["h1"])}</a></li>' for k in EQK)+'</ul>'),
+       ('Cómo coordinamos la visita',ul(['Escríbenos por WhatsApp con tu barrio y una referencia','Cuéntanos qué equipo es, la marca, el modelo y la falla','Confirmamos el día y la hora de la visita','Te damos el costo antes de reparar'])),]
+    cap_label=label[0].upper()+label[1:]
+    addp(sslug,kind='sector',h1=f'Servicio técnico Mabe Quito: {label}',title=mktitle(f'Servicio técnico Mabe Quito: {label}'),desc=clip(f'Servicio técnico Mabe a domicilio en el {label}: '+', '.join(ZD[z]["nombre"] for z in zs_[:6])+' y más barrios. WhatsApp '+PHONE_TXT+'.',160),
+         lead=f'Técnico a domicilio para electrodomésticos Mabe en los barrios del {label}. Diagnóstico claro y costo antes de reparar.',sections=s,
+         faq=[(f'¿Qué barrios del {label} atienden?','Los que ves en la lista de esta página; si el tuyo no aparece, escríbenos y confirmamos.'),('¿Cuánto cuesta la visita?','Escríbenos con el equipo, el modelo y la falla; te confirmamos el costo antes de ir.')],
+         related=[EQ[k]['slug'] for k in ('refrigeradoras','lavadoras','secadoras','cocinas')],wamsg=f'Hola, necesito servicio técnico Mabe en el {label}.',icon='pin',th='',photos=[],tec=None,sector=sc)
+SECTOR_TERMS=[v[0] for v in SECTOR_HUBS.values()]+VALLE_TERMS
 # ---------- términos ----------
-SECTOR_TERMS=['servicio-tecnico-mabe-quito-norte','servicio-tecnico-mabe-quito-centro','servicio-tecnico-mabe-quito-sur','servicio-tecnico-mabe-valle-de-los-chillos','servicio-tecnico-mabe-cumbaya-y-tumbaco']
 for t in T:
     eqs=''.join(f'<a class="card" href="@{EQ[k]["slug"]}@"><div><b>{E(EQ[k]["h1"])}</b><span>{E(EQ[k]["intro"][:100])}…</span></div></a>' for k in t['eq'][:4])
     s=[('Qué incluye',ul([E(x) for x in t['inc']])),('Cuándo conviene',f'<p>{E(t["cuando"])}</p>'),
        ('Equipos relacionados',f'<div class="cards g2">{eqs}</div>'),
        ('Cómo pedir la visita',ul(['Escríbenos por WhatsApp o llámanos al '+PHONE_TXT,'Cuéntanos qué equipo es, la marca, el modelo y la falla','Envía tu barrio y, si puedes, una foto de la etiqueta y un video corto','Coordinamos el día y la hora de la visita'])),
-       ('Dónde atendemos en Quito','<div class="chips">'+''.join(f'<a href="@{x}@">{E(TERMS[x]["h1"].replace("Servicio técnico Mabe en ","").replace("Servicio técnico Mabe ",""))}</a>' for x in SECTOR_TERMS if x!=t['slug'])+'<a href="@zonas-de-servicio-quito@">Ver todas las zonas</a></div>')]
+       ('Dónde atendemos en Quito','<div class="chips">'+''.join(f'<a href="@{x}@">{E((PAGES[x]["h1"] if x in PAGES else TERMS[x]["h1"]).replace("Servicio técnico Mabe Quito: ","").replace("Servicio técnico Mabe en ","").replace("Servicio técnico Mabe ","").capitalize())}</a>' for x in SECTOR_TERMS if x!=t['slug'])+'<a href="@zonas-de-servicio-quito@">Ver todas las zonas</a></div>')]
     others=[x for x in TEQ.get(t['eq'][0],[]) if x!=t['slug']][:3]
     addp(t['slug'],kind='term',h1=t['h1'],title=mktitle(t['tit']),desc=clip(t['desc'],160),lead=t['intro'],sections=s,faq=t['faq']+[('¿Cómo contacto al servicio técnico?',f'Por WhatsApp o llamada al {PHONE_TXT} (+593 99 350 8191).')],
          related=[EQ[k]['slug'] for k in t['eq'][:3]]+others,wamsg=f'Hola, vi la página "{t["h1"]}". Necesito ayuda con un equipo Mabe en Quito.',icon=EQ[t['eq'][0]]['icon'],th=EQ[t['eq'][0]]['th'],photos=[],tec=None,eq=t['eq'][0])

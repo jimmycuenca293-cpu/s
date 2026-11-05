@@ -3,7 +3,7 @@ import os,re,json,shutil,html,datetime,sys,urllib.parse
 from mq_base import *
 from mq_ui import ICON,WA_SVG,LOGO_MARK
 import mq_pages as mp
-from mq_pages import PAGES,ORDER,EQ,EQK,TERMS,GUIDES,GUIDE_SLUGS,SECTOR_TERMS
+from mq_pages import PAGES,ORDER,EQ,EQK,TERMS,GUIDES,GUIDE_SLUGS,SECTOR_TERMS,SECTOR_HUBS,GEN,TPRIM,GEQ,VALLE_TERMS
 from mq_zonas import Z,ZD,ZSLUGS,ZXA,AXZ,SECTOR_TXT
 OUT=sys.argv[1] if len(sys.argv)>1 else 'site'
 PREVIEW=len(sys.argv)>2 and sys.argv[2]=='preview'
@@ -42,23 +42,42 @@ def head(slug,title,desc,ld=None,og='website',noindex=False):
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="{asset(slug,'estilo.css')}">{PRE if slug=='' else ''}{lds}</head><body>'''
-NAV=[('electrodomesticos','Electrodomésticos'),('fallas-comunes','Fallas'),('servicios','Servicios'),('zonas-de-servicio-quito','Zonas'),('guias','Guías'),('como-trabajamos','Cómo trabajamos')]
+CORE=['reparacion-de-electrodomesticos-mabe-a-domicilio-quito','mantenimiento-preventivo-de-electrodomesticos-mabe-quito','instalacion-de-electrodomesticos-mabe-quito','diagnostico-de-electrodomesticos-mabe-quito','reparacion-de-tarjetas-electronicas-de-electrodomesticos-mabe-quito','repuestos-para-electrodomesticos-mabe-quito']
+CORE_LAB={CORE[0]:'Reparación a domicilio',CORE[1]:'Mantenimiento preventivo',CORE[2]:'Instalación',CORE[3]:'Diagnóstico',CORE[4]:'Tarjetas electrónicas',CORE[5]:'Repuestos'}
 WAHI='Hola, necesito servicio técnico para un electrodoméstico Mabe en Quito.'
+SEC_LAB=[('Norte','Norte de Quito'),('Centro','Centro de Quito'),('Sur','Sur de Quito'),('Valles','Valles de Quito')]
+def menu_groups(slug):
+    u=lambda s:url(slug,s)
+    return [
+     ('Electrodomésticos','electrodomesticos',[(EQ[k]['corto'],EQ[k]['slug']) for k in EQK]+[('Ver todos','electrodomesticos')]),
+     ('Servicios','servicios',[(CORE_LAB[c],c) for c in CORE]+[('Cómo trabajamos','como-trabajamos'),('Ver todos los servicios','servicios')]),
+     ('Cobertura','zonas-de-servicio-quito',[(lab,SECTOR_HUBS[sc][0]) for sc,lab in SEC_LAB]+[('Todos los barrios','zonas-de-servicio-quito')]),
+     ('Fallas','fallas-comunes',None),('Guías','guias',None),('Contacto','contacto',None)]
 def header(slug):
-    links=''.join(f'<a href="{url(slug,s)}"{" aria-current=page" if s==slug else ""}>{n}</a>' for s,n in NAV)
+    u=lambda s:url(slug,s)
+    top='';mov=''
+    for lab,s,sub in menu_groups(slug):
+        cur=' aria-current=page' if s==slug else ''
+        if sub:
+            top+=f'<div class="dd"><a href="{u(s)}"{cur}>{lab}</a><div class="pn">'+''.join(f'<a href="{u(t)}">{E(n)}</a>' for n,t in sub)+'</div></div>'
+            mov+=f'<b class="mh">{lab}</b>'+''.join(f'<a href="{u(t)}">{E(n)}</a>' for n,t in sub)
+        else:
+            top+=f'<a href="{u(s)}"{cur}>{lab}</a>'; mov+=f'<b class="mh">{lab}</b>'+f'<a href="{u(s)}">Ver {lab.lower()}</a>' if False else f'<a class="mh1" href="{u(s)}">{lab}</a>'
     return f'''<a class="saltar" href="#contenido">Saltar al contenido</a>
-<header class="top"><div class="wrap fila"><a class="logo" href="{url(slug,'')}" aria-label="{NAME}, inicio"><span class="mkimg"><img src="{asset(slug,'img/mabe-marca.png')}" alt="Mabe" width="360" height="107"></span><span class="wm"><small>Servicio técnico</small><b>MABE QUITO</b></span></a>
-<nav class="menu" aria-label="Principal">{links}</nav>
+<header class="top"><div class="wrap fila"><a class="logo" href="{u('')}" aria-label="{NAME}, inicio"><span class="mkimg"><img src="{asset(slug,'img/mabe-marca.png')}" alt="Mabe" width="360" height="107"></span><span class="wm"><small>Servicio técnico</small><b>MABE QUITO</b></span></a>
+<nav class="menu" aria-label="Principal">{top}</nav>
 <a class="btn wa" href="{wa(WAHI)}" rel="noopener" target="_blank">{WA_SVG}<span>WhatsApp</span></a>
-<details class="mov"><summary aria-label="Abrir menú"><span></span></summary><nav aria-label="Menú móvil">{links}</nav></details></div></header>
+<details class="mov"><summary aria-label="Abrir menú"><span></span></summary><nav aria-label="Menú móvil">{mov}</nav></details></div></header>
 <main id="contenido">'''
 def footer(slug):
-    eq=''.join(f'<li><a href="{url(slug,EQ[k]["slug"])}">{E(EQ[k]["corto"])}</a></li>' for k in EQK)
-    zn=''.join(f'<li><a href="{url(slug,"servicio-tecnico-mabe-en-"+z)}">{E(ZD[z]["nombre"])}</a></li>' for z in ('la-carolina','cumbaya','la-villaflora','calderon','sangolqui','centro-historico'))
-    return f'''</main><footer class="pie"><div class="wrap cols"><div><a class="logo" href="{url(slug,'')}"><span class="mkimg"><img src="{asset(slug,'img/mabe-marca.png')}" alt="Mabe" width="360" height="107"></span><span class="wm"><small>Servicio técnico</small><b>MABE QUITO</b></span></a><p>Reparación y mantenimiento a domicilio de refrigeradoras, lavadoras, secadoras, cocinas, hornos y más electrodomésticos Mabe en Quito.</p><p><a class="tel" href="tel:{PHONE_TEL}">{PHONE_TXT}</a><br>WhatsApp y llamadas · +593 99 350 8191</p></div>
+    u=lambda s:url(slug,s)
+    eq=''.join(f'<li><a href="{u(EQ[k]["slug"])}">{E(EQ[k]["corto"])}</a></li>' for k in EQK)
+    sv=''.join(f'<li><a href="{u(c)}">{CORE_LAB[c]}</a></li>' for c in CORE)
+    cv=''.join(f'<li><a href="{u(SECTOR_HUBS[sc][0])}">{lab}</a></li>' for sc,lab in SEC_LAB)
+    return f'''</main><footer class="pie"><div class="wrap cols"><div><a class="logo" href="{u('')}"><span class="mkimg"><img src="{asset(slug,'img/mabe-marca.png')}" alt="Mabe" width="360" height="107"></span><span class="wm"><small>Servicio técnico</small><b>MABE QUITO</b></span></a><p>Servicio técnico Mabe Quito: reparación y mantenimiento a domicilio de electrodomésticos Mabe en Quito.</p><p><a class="tel" href="tel:{PHONE_TEL}">{PHONE_TXT}</a><br>WhatsApp y llamadas · +593 99 350 8191</p></div>
 <div><h2>Electrodomésticos</h2><ul>{eq}</ul></div>
-<div><h2>Zonas</h2><ul>{zn}<li><a href="{url(slug,'zonas-de-servicio-quito')}">Todas las zonas</a></li></ul></div>
-<div><h2>Más</h2><ul><li><a href="{url(slug,'servicios')}">Servicios</a></li><li><a href="{url(slug,'fallas-comunes')}">Fallas comunes</a></li><li><a href="{url(slug,'guias')}">Guías</a></li><li><a href="{url(slug,'como-trabajamos')}">Cómo trabajamos</a></li><li><a href="{url(slug,'preguntas-frecuentes')}">Preguntas frecuentes</a></li><li><a href="{url(slug,'contacto')}">Contacto</a></li><li><a href="{url(slug,'aviso-legal')}">Aviso legal</a></li><li><a href="{url(slug,'privacidad')}">Tratamiento de datos</a></li></ul></div></div>
+<div><h2>Servicios</h2><ul>{sv}<li><a href="{u('servicios')}">Todos los servicios</a></li></ul><h2 class="h2b">Cobertura</h2><ul>{cv}<li><a href="{u('zonas-de-servicio-quito')}">Todos los barrios</a></li></ul></div>
+<div><h2>Información</h2><ul><li><a href="{u('fallas-comunes')}">Fallas comunes</a></li><li><a href="{u('guias')}">Guías</a></li><li><a href="{u('como-trabajamos')}">Cómo trabajamos</a></li><li><a href="{u('preguntas-frecuentes')}">Preguntas frecuentes</a></li><li><a href="{u('contacto')}">Contacto</a></li><li><a href="{u('aviso-legal')}">Aviso legal</a></li><li><a href="{u('privacidad')}">Tratamiento de datos</a></li></ul></div></div>
 <div class="wrap base">© {datetime.date.today().year} Servicio Técnico Mabe Quito · Quito, Ecuador</div></footer>
 <a class="flota" href="{wa(WAHI)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">{WA_SVG}</a></body></html>'''
 def write(slug,content):
@@ -98,6 +117,7 @@ def tec_for(slug,p):
     if not AUTH:
         if k=='service': return 'tecnico-cocina-gas' if p['eq'] in ('cocinas','hornos','parrillas','campanas-extractoras') else 'tecnico-saludo'
         if k=='zona': return CLEAN[ZSLUGS.index(p['zone'])%2]
+        if k=='sector': return CLEAN[list(SECTOR_HUBS).index(p['sector'])%2]
         if k=='term': return CLEAN[sum(map(ord,slug))%2]
         return None
     if k=='service': return {'refrigeradoras':'tecnico-cliente','lavadoras':'tecnico-cocina','secadoras':'tecnico-puerta','cocinas':'tecnico-manos','hornos':'tecnico-manos'}.get(p['eq'])
@@ -113,20 +133,22 @@ def galeria(slug,p):
             pool=EQ[p['eq']]['foto']; o=sum(map(ord,slug))%len(pool); ph=(pool[o:]+pool[:o])[:2]
         elif k=='zona':
             allp=list(PH.keys()); o=ZSLUGS.index(p['zone'])%len(allp); ph=(allp[o:]+allp[:o])[:3]
+    ph=ph[:3]
     g=('<div class="gal">'+''.join(fig(slug,n,i==0) for i,n in enumerate(ph))+'</div><p class="refimg">Imágenes de referencia de equipos Mabe.</p>') if ph else ''
     return t+g
 def crumbs(slug,p):
     it=[('Inicio','')]; k=p['kind']
     if k=='service': it.append(('Electrodomésticos','electrodomesticos'))
     elif k=='falla': it.append(('Fallas comunes','fallas-comunes')); it.append((EQ[p['eq']]['h1'].replace(' en Quito',''),EQ[p['eq']]['slug']))
-    elif k=='zona': it.append(('Zonas','zonas-de-servicio-quito'))
-    elif k=='zxa': it.append(('Zonas','zonas-de-servicio-quito')); it.append((ZD[p['zone']]['nombre'],'servicio-tecnico-mabe-en-'+p['zone']))
+    elif k=='zona': it.append(('Cobertura','zonas-de-servicio-quito'))
+    elif k=='sector': it.append(('Cobertura','zonas-de-servicio-quito'))
+    elif k=='zxa': it.append(('Cobertura','zonas-de-servicio-quito')); it.append((ZD[p['zone']]['nombre'],'servicio-tecnico-mabe-en-'+p['zone']))
     elif k=='term': it.append(('Servicios','servicios'))
     elif k=='guia': it.append(('Guías','guias'))
     it.append((p['h1'],slug)); return it
 def page(slug):
     p=PAGES[slug]; items=crumbs(slug,p); ld=[BIZ,bc_ld(items)]
-    if p['kind'] in ('service','zona','zxa','term'):
+    if p['kind'] in ('service','zona','zxa','term','sector'):
         ld.append({'@context':'https://schema.org','@type':'Service','name':p['h1'],'serviceType':p['h1'],'provider':{'@id':SITE+'/#negocio'},'areaServed':{'@type':'City','name':'Quito'},'url':SITE+'/'+slug+'/','description':p['desc']})
     if p['kind'] in ('guia','falla'):
         ld.append({'@context':'https://schema.org','@type':'Article','headline':p['h1'],'description':p['desc'],'inLanguage':'es-EC','datePublished':TODAY,'dateModified':TODAY,'author':{'@type':'Organization','name':NAME},'publisher':{'@id':SITE+'/#negocio'},'mainEntityOfPage':SITE+'/'+slug+'/'})
@@ -154,24 +176,41 @@ HOMEFAQ=[('¿Hacen servicio técnico Mabe a domicilio en Quito?','Sí. Vamos a t
 ('¿Dan el costo antes de reparar?','Sí. Primero diagnosticamos, te explicamos la falla y te informamos el costo antes de continuar.'),
 ('¿Cómo pido el servicio?','Por WhatsApp o llamada al 099 350 8191 (+593 99 350 8191). Envía marca, modelo, falla, tu barrio y, si puedes, una foto de la etiqueta y un video corto.')]
 # --- hubs
-info_page('electrodomesticos','Electrodomésticos Mabe que reparamos en Quito','Electrodomésticos Mabe que reparamos en Quito | Mabe Quito','Reparamos refrigeradoras, congeladores, lavadoras, secadoras, centros de lavado, cocinas, hornos, parrillas y campanas extractoras Mabe en Quito.','Elige tu electrodoméstico para ver fallas comunes, mantenimiento y cómo pedir la visita a domicilio.',
- '<section>'+cardlist('electrodomesticos',[EQ[k]['slug'] for k in EQK])+'</section><section><h2>¿No ves tu equipo?</h2><p>Escríbenos por WhatsApp con la marca y el modelo y te confirmamos si podemos atenderlo.</p></section>',icon='wrench')
+def tree_eq(sl):
+    h=''
+    for k in EQK:
+        e=EQ[k]; nm=e["art"].split(" ",1)[1]
+        fl='<ul class="sublist">'+''.join(f'<li><a href="@{s}@">{E(PAGES[s]["h1"])}</a></li>' for s in e['slugs'])+'</ul>'
+        sv='<ul class="sublist">'+''.join(f'<li><a href="@{s}@">{E(TERMS[s]["h1"])}</a></li>' for s in TPRIM[k])+'</ul>' if TPRIM[k] else ''
+        h+=f'<section class="eqhub"><h2><a href="@{e["slug"]}@">{E(e["h1"])}</a></h2><div class="tri"><div><h3>Fallas comunes</h3>{fl}</div>'+(f'<div><h3>Servicios</h3>{sv}</div>' if sv else '')+f'<div><h3>Más</h3><ul class="sublist"><li><a href="@{e["slug"]}@">Todo sobre {nm} Mabe</a></li><li><a href="@zonas-de-servicio-quito@">Dónde atendemos</a></li></ul></div></div></section>'
+    return h
+info_page('electrodomesticos','Electrodomésticos Mabe que reparamos en Quito','Electrodomésticos Mabe que reparamos en Quito | Mabe Quito','Reparamos refrigeradoras, congeladores, lavadoras, secadoras, centros de lavado, cocinas, hornos, parrillas y campanas Mabe en Quito. Fallas y servicios por equipo.','Elige tu electrodoméstico y entra a sus fallas, servicios y zonas, todo en orden.',tree_eq('electrodomesticos')+'<section><h2>¿No ves tu equipo?</h2><p>Escríbenos por WhatsApp con la marca y el modelo y te confirmamos si podemos atenderlo.</p></section>',icon='wrench')
 fh=''
 for k in EQK:
     e=EQ[k]; fh+=f'<section><h2><a href="@{e["slug"]}@">{E(e["corto"])}</a></h2><ul class="fallas">'+''.join(f'<li><a href="@{s}@">{E(PAGES[s]["h1"])}</a> <span class="tag {mp.URG[e["fallas"][i][2]]}">{e["fallas"][i][2]}</span></li>' for i,s in enumerate(e['slugs']))+'</ul></section>'
-info_page('fallas-comunes','Fallas comunes de electrodomésticos Mabe en Quito','Fallas comunes de electrodomésticos Mabe en Quito','Todas las fallas comunes de refrigeradoras, lavadoras, secadoras, cocinas, hornos y más equipos Mabe: causas, qué revisar y cuándo llamar a un técnico en Quito.','Encuentra tu falla, mira qué puedes revisar tú con seguridad y cuándo conviene pedir un técnico.',fh,icon='help')
-GEN=['tecnico-mabe-a-domicilio-quito','servicio-tecnico-mabe-cerca-de-mi-quito','reparacion-de-electrodomesticos-mabe-a-domicilio-quito','servicio-tecnico-de-electrodomesticos-quito','tecnico-de-electrodomesticos-a-domicilio-quito','mantenimiento-preventivo-de-electrodomesticos-mabe-quito','instalacion-de-electrodomesticos-mabe-quito','diagnostico-de-electrodomesticos-mabe-quito','reparacion-de-tarjetas-electronicas-de-electrodomesticos-mabe-quito','repuestos-para-electrodomesticos-mabe-quito','servicio-tecnico-mabe-edificios-y-conjuntos-quito','centro-de-servicio-mabe-quito','servicio-tecnico-mabe-telefono-y-whatsapp-quito','revision-de-electrodomesticos-mabe-usados-antes-de-comprar-quito','emergencias-de-electrodomesticos-mabe-fugas-de-agua-y-gas-quito','reparar-electrodomesticos-mabe-quito','donde-reparar-electrodomesticos-mabe-quito','mabe-quito-servicio-tecnico-y-reparacion','electrodomestico-mabe-no-funciona-que-hacer-en-quito']
-EQT=[s for s in TERMS if s not in GEN and s not in SECTOR_TERMS]
-sv=f'<section><h2>Servicios</h2>{cardlist("servicios",GEN)}</section><section><h2>Por tipo de equipo</h2>{cardlist("servicios",EQT)}</section><section><h2>Por zona de Quito</h2>{cardlist("servicios",SECTOR_TERMS)}</section>'
-info_page('servicios','Servicios de reparación y mantenimiento Mabe en Quito','Servicios de reparación y mantenimiento Mabe en Quito','Servicio técnico a domicilio, mantenimiento, instalación, diagnóstico y reparación de electrodomésticos Mabe en Quito, por equipo y por zona.','Todo lo que hacemos por tus electrodomésticos Mabe en Quito, organizado por servicio, equipo y zona.',sv,icon='wrench')
-gh=f'<section>{cardlist("guias",GUIDE_SLUGS)}</section>'
-info_page('guias','Guías de electrodomésticos Mabe para Quito','Guías de electrodomésticos Mabe para Quito | Mabe Quito','Guías prácticas sobre refrigeradoras, lavadoras, secadoras, cocinas y hornos Mabe: gas, voltaje, mantenimiento y cuándo reparar, pensadas para Quito.','Explicaciones claras para cuidar tus electrodomésticos y entender qué les pasa.',gh,icon='doc')
+info_page('fallas-comunes','Fallas comunes de electrodomésticos Mabe en Quito','Fallas comunes de electrodomésticos Mabe en Quito','Todas las fallas comunes de refrigeradoras, lavadoras, secadoras, cocinas, hornos y más equipos Mabe: causas, qué revisar y cuándo llamar a un técnico en Quito.','Encuentra tu falla por electrodoméstico, mira qué puedes revisar tú con seguridad y cuándo pedir un técnico.',fh,icon='help')
+def cards_text(sl,slugs):
+    return '<div class="svcs">'+''.join(f'<a class="svc" href="{url(sl,s)}"><b>{E(CORE_LAB.get(s,PAGES[s]["h1"]))}</b><span>{E(PAGES[s]["lead"][:110])}…</span><i>Ver servicio →</i></a>' for s in slugs)+'</div>'
+OTRAS=[s for s in GEN if s not in CORE]
+sv='<section><h2>Nuestros servicios</h2>'+'@@CARDS@@'+'</section>'
+for k in EQK:
+    if TPRIM[k]:
+        nm=EQ[k]["art"].split(" ",1)[1]
+        sv+=f'<section><h2>Servicios para {nm} Mabe</h2><ul class="sublist">'+''.join(f'<li><a href="@{s}@">{E(TERMS[s]["h1"])}</a></li>' for s in TPRIM[k])+'</ul></section>'
+sv+='<section><h2>Más búsquedas frecuentes</h2><ul class="sublist">'+''.join(f'<li><a href="@{s}@">{E(TERMS[s]["h1"])}</a></li>' for s in OTRAS)+'</ul></section><section><h2>Cobertura</h2><ul class="sublist">'+''.join(f'<li><a href="@{SECTOR_HUBS[sc][0]}@">{E(PAGES[SECTOR_HUBS[sc][0]]["h1"])}</a></li>' for sc,_ in SEC_LAB)+''.join(f'<li><a href="@{s}@">{E(TERMS[s]["h1"])}</a></li>' for s in VALLE_TERMS)+'</ul></section>'
+sv=sv.replace('@@CARDS@@',cards_text('servicios',CORE))
+info_page('servicios','Servicios de reparación y mantenimiento Mabe en Quito','Servicios de reparación y mantenimiento Mabe en Quito','Servicio técnico a domicilio, mantenimiento, instalación, diagnóstico y reparación de electrodomésticos Mabe en Quito, organizados por servicio, equipo y zona.','Todo lo que hacemos por tus electrodomésticos Mabe en Quito, ordenado por servicio, por equipo y por zona.',sv,icon='wrench')
+gh=''
+for k in EQK:
+    gl=list(GEQ.get(k,[]))+(GEQ.get('neveras',[]) if k=='refrigeradoras' else [])
+    if gl: gh+=f'<section><h2>{E(EQ[k]["corto"])}</h2><ul class="sublist">'+''.join(f'<li><a href="@{s}@">{E(PAGES[s]["h1"])}</a></li>' for s in gl)+'</ul></section>'
+info_page('guias','Guías de electrodomésticos Mabe para Quito','Guías de electrodomésticos Mabe para Quito | Mabe Quito','Guías prácticas sobre refrigeradoras, lavadoras, secadoras, cocinas y hornos Mabe: gas, voltaje, mantenimiento y cuándo reparar, pensadas para Quito.','Explicaciones claras para cuidar tus electrodomésticos y entender qué les pasa, ordenadas por equipo.',gh,icon='doc')
 zh=''
-for sec,lab in (('Norte','Norte de Quito'),('Centro','Centro de Quito'),('Sur','Sur de Quito'),('Valles','Valles')):
-    zs=[z for z in ZSLUGS if ZD[z]['sector']==sec]
-    zh+=f'<section><h2>{lab}</h2>'+chips('zonas-de-servicio-quito',['servicio-tecnico-mabe-en-'+z for z in zs],lambda s:ZD[s.replace("servicio-tecnico-mabe-en-","")]['nombre'])+'</section>'
-zh+='<section><h2>Por sector</h2>'+chips('zonas-de-servicio-quito',SECTOR_TERMS)+'</section><section><h2>Reparación por equipo en tu zona</h2><p>Estos sectores tienen páginas por electrodoméstico:</p>'+chips('zonas-de-servicio-quito',['servicio-tecnico-mabe-en-'+z for z in ZXA],lambda s:ZD[s.replace("servicio-tecnico-mabe-en-","")]['nombre'])+'</section><section><h2>¿Tu barrio no aparece?</h2><p>Escríbenos tu dirección por WhatsApp. Muchas veces podemos atender sectores cercanos.</p></section>'
-info_page('zonas-de-servicio-quito','Zonas de servicio Mabe en Quito','Zonas de servicio técnico Mabe en Quito | Mabe Quito','Servicio técnico Mabe a domicilio en el norte, centro, sur y valles de Quito: La Carolina, Cumbayá, Villaflora, Calderón, Sangolquí y más.','Elige tu barrio para ver cómo coordinamos la visita en tu zona.',zh,icon='pin')
+for sc,lab in SEC_LAB:
+    zs=[z for z in ZSLUGS if ZD[z]['sector']==sc]
+    zh+=f'<section><h2><a href="@{SECTOR_HUBS[sc][0]}@">{lab}</a></h2><ul class="cols3">'+''.join(f'<li><a href="@servicio-tecnico-mabe-en-{z}@">{E(ZD[z]["nombre"])}</a></li>' for z in zs)+'</ul></section>'
+zh+='<section><h2>¿Tu barrio no aparece?</h2><p>Escríbenos tu dirección por WhatsApp. Muchas veces podemos atender sectores cercanos.</p></section>'
+info_page('zonas-de-servicio-quito','Cobertura: barrios de Quito donde atendemos','Cobertura servicio técnico Mabe en Quito: barrios y valles','Servicio técnico Mabe a domicilio en el norte, centro, sur y valles de Quito: La Carolina, Cumbayá, Villaflora, Calderón, Sangolquí y más de 60 barrios.','Elige tu sector y tu barrio para ver cómo coordinamos la visita en tu zona.',zh,icon='pin')
 pasos=[('Escríbenos','Por WhatsApp o llamada al 099 350 8191. Cuéntanos qué equipo es, la marca, el modelo y la falla.'),('Envía datos y fotos','Una foto de la etiqueta del equipo y un video corto de la falla ayudan a orientarte mejor.'),('Coordinamos la visita','Acordamos día y hora en tu casa, apartamento u oficina de Quito.'),('Diagnóstico en tu casa','Probamos el equipo, identificamos la causa y te explicamos qué tiene.'),('Costo antes de reparar','Te informamos el costo y tú decides si continuamos.'),('Reparación y prueba','Reparamos y probamos que el equipo quede funcionando.'),('Recomendaciones','Te decimos cómo usarlo y cuidarlo para que la falla no se repita.')]
 ch=f'<section><h2>Paso a paso</h2><ol class="pasos l">'+''.join(f'<li><b>{i+1}</b><div><h3>{E(a)}</h3><p>{E(b)}</p></div></li>' for i,(a,b) in enumerate(pasos))+'</ol></section><section><h2>Nuestro compromiso con la claridad</h2><p>No cambiamos piezas al azar: primero probamos y diagnosticamos. Si no conviene reparar, te lo decimos.</p></section>'
 info_page('como-trabajamos','Cómo trabajamos: servicio técnico Mabe paso a paso','Cómo trabajamos el servicio técnico Mabe en Quito','Así es el servicio técnico Mabe a domicilio en Quito: contacto por WhatsApp, diagnóstico, costo antes de reparar, reparación y recomendaciones.','Del primer mensaje a la reparación: así trabajamos, sin sorpresas.',ch,icon='shield')
@@ -187,30 +226,28 @@ info_page('privacidad','Tratamiento de datos personales','Tratamiento de datos p
 HERO_ALT='Técnico explicando una falla a una clienta frente a la refrigeradora (imagen ilustrativa)' if AUTH else 'Técnico de Mabe saludando al cliente en la puerta de su casa (imagen ilustrativa)'
 def home():
     s=''
-    eqcards=''.join(f'<a class="svc" href="{url(s,EQ[k]["slug"])}">{thumb(s,k)}<b>{E(EQ[k]["h1"])}</b><span>{E(EQ[k]["intro"][:115])}…</span><i>Ver servicio →</i></a>' for k in EQK)
-    termchips=chips(s,list(TERMS.keys()),lambda x:TERMS[x]['h1'].replace(' en Quito',''))
-    topf=[sl for k in EQK for sl in EQ[k]['slugs'][:3]]
-    fchips=chips(s,topf,lambda x:PAGES[x]['h1'])
-    zchips=''
-    for sec,lab in (('Norte','Norte'),('Centro','Centro'),('Sur','Sur'),('Valles','Valles')):
-        zchips+=f'<h3 class="zt">{lab}</h3>'+chips(s,['servicio-tecnico-mabe-en-'+z for z in ZSLUGS if ZD[z]['sector']==sec],lambda x:ZD[x.replace("servicio-tecnico-mabe-en-","")]['nombre'])
+    sv=''.join(f'<a class="svc" href="{url(s,c)}"><b>{CORE_LAB[c]}</b><span>{E(PAGES[c]["lead"][:105])}…</span><i>Ver servicio →</i></a>' for c in CORE)
+    def eqcard(k):
+        e=EQ[k]; nm=e["art"].split(" ",1)[1]
+        fl=''.join(f'<li><a href="{url(s,x)}">{E(PAGES[x]["h1"])}</a></li>' for x in e['slugs'][:3])
+        return f'<div class="eqc">{thumb(s,k,"big")}<h3><a href="{url(s,e["slug"])}">{E(e["h1"])}</a></h3><p>{E(e["intro"][:105])}…</p><b class="sb">Fallas más consultadas</b><ul>{fl}</ul><a class="enlace" href="{url(s,e["slug"])}">Todo sobre {nm} Mabe →</a></div>'
+    eqs=''.join(eqcard(k) for k in EQK)
+    cov=''
+    for sc,lab in SEC_LAB:
+        zs=[z for z in ZSLUGS if ZD[z]['sector']==sc]
+        cov+=f'<div class="covc"><h3><a href="{url(s,SECTOR_HUBS[sc][0])}">{lab}</a></h3><ul>'+''.join(f'<li><a href="{url(s,"servicio-tecnico-mabe-en-"+z)}">{E(ZD[z]["nombre"])}</a></li>' for z in zs)+'</ul></div>'
     gcards=cardlist(s,GUIDE_SLUGS[:6])
     ps=''.join(f'<li><b>{i+1}</b><div><h3>{E(a)}</h3><p>{E(b)}</p></div></li>' for i,(a,b) in enumerate([pasos[0],pasos[3],pasos[4],pasos[5]]))
     tecs=''.join(f'<div>{tec_fig(s,n)}</div>' for n in ('tecnico-cocina','tecnico-puerta','tecnico-manos'))
-    if AUTH: ASI=f'<section class="sec osc"><div class="wrap"><h2>Así te atendemos</h2><p class="sub">Vamos hasta donde está tu equipo, lo revisamos y te explicamos antes de reparar.</p><div class="tecs">{tecs}</div><p class="refimg">Imágenes ilustrativas.</p></div></section>'
-    else: ASI='<section class="sec osc"><div class="wrap"><h2>Así te atendemos</h2><p class="sub">Vamos hasta donde está tu equipo, lo revisamos y te explicamos antes de reparar.</p><div class="tecs dos">'+''.join(f'<div>{tec_fig(s,n)}</div>' for n in CLEAN)+'</div><p class="refimg">Imágenes ilustrativas.</p></div></section>\n<section class="sec"><div class="wrap"><h2>Equipos Mabe que atendemos</h2><p class="sub">Algunos de los modelos de la marca que revisamos a domicilio en Quito.</p><div class="gal g3">'+''.join(fig(s,n) for n in ('nevera-side-by-side','lavadora-superior','secadora','torre-lavado','cocina-gas','horno-empotrable'))+'</div><p class="refimg">Imágenes de referencia de equipos Mabe.</p></div></section>'
-    qs=[('Para tu casa','Refrigeradoras, lavadoras, secadoras, cocinas y hornos Mabe en tu hogar.'),('Para apartamentos y conjuntos','Coordinamos acceso y horario con la administración.'),('Para pequeños negocios','Equipos Mabe en oficinas, locales y cafeterías pequeñas.')]
-    qh=''.join(f'<div class="q"><h3>{a}</h3><p>{b}</p></div>' for a,b in qs)
+    if AUTH: ASI=f'<div class="tecs">{tecs}</div>'
+    else: ASI='<div class="tecs dos">'+''.join(f'<div>{tec_fig(s,n)}</div>' for n in CLEAN)+'</div>'
     hero=f'''<section class="hero"><div class="hero-bg"><img src="img/{HERO}.webp" srcset="img/{HERO}-m.webp 640w, img/{HERO}.webp 900w" sizes="100vw" width="900" height="{672 if AUTH else 503}" alt="{HERO_ALT}" fetchpriority="high" decoding="async"></div><div class="wrap hgrid"><div><p class="kick">Reparación de electrodomésticos a domicilio</p><h1>Servicio técnico Mabe Quito</h1><p class="lead">Reparación de electrodomésticos Mabe en Quito: refrigeradoras, lavadoras, secadoras, cocinas, hornos y más, en tu casa. Diagnóstico claro y costo antes de reparar.</p><div class="acc"><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a><a class="btn linea cl" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></div><ul class="pts"><li>A domicilio en Quito</li><li>Norte, centro, sur y valles</li><li>Te explicamos la falla antes de reparar</li></ul></div></div></section>'''
-    body=f'''<section class="sec" id="electrodomesticos"><div class="wrap"><h2>Electrodomésticos Mabe que reparamos en Quito</h2><p class="sub">Elige tu equipo para ver fallas comunes, mantenimiento y cómo pedir la visita.</p><div class="svcs">{eqcards}</div></div></section>
-<section class="sec osc" id="servicios"><div class="wrap"><h2>Lo que más se busca en Quito</h2><p class="sub">Servicios, equipos y zonas: cada búsqueda tiene su página con respuestas claras.</p>{termchips}</div></section>
-<section class="sec"><div class="wrap"><h2>¿Qué le pasa a tu equipo?</h2><p class="sub">Estas son las fallas por las que más nos escriben. Cada una explica qué revisar antes de llamar.</p>{fchips}<p style="margin-top:22px"><a class="enlace" href="{url(s,'fallas-comunes')}">Ver todas las fallas →</a></p></div></section>
-{ASI}
-<section class="sec"><div class="wrap"><h2>Cómo trabajamos</h2><ol class="pasos">{ps}</ol><p style="margin-top:22px"><a class="enlace" href="{url(s,'como-trabajamos')}">Ver el proceso completo paso a paso →</a></p></div></section>
-<section class="sec osc" id="zonas"><div class="wrap"><h2>Zonas de Quito donde atendemos</h2><p class="sub">Norte, centro, sur y valles. Si tu barrio no aparece, escríbenos.</p>{zchips}<p style="margin-top:22px"><a class="enlace" href="{url(s,'zonas-de-servicio-quito')}">Ver todas las zonas →</a></p></div></section>
-<section class="sec"><div class="wrap"><h2>Guías para entender y cuidar tus electrodomésticos</h2><p class="sub">Gas, voltaje, limpieza y fallas explicadas para Quito.</p>{gcards}<p style="margin-top:22px"><a class="enlace" href="{url(s,'guias')}">Ver todas las guías →</a></p></div></section>
-<section class="sec osc"><div class="wrap"><h2>Para quién es el servicio</h2><div class="qs">{qh}</div></div></section>
-<section class="sec"><div class="wrap lay1">{faq_html(HOMEFAQ)}</div></section>
+    body=f'''<section class="sec" id="servicios"><div class="wrap"><h2>Nuestros servicios</h2><p class="sub">Todo lo que hacemos por tus electrodomésticos Mabe en Quito.</p><div class="svcs">{sv}</div><p style="margin-top:22px"><a class="enlace" href="{url(s,'servicios')}">Ver todos los servicios, por equipo y por zona →</a></p></div></section>
+<section class="sec osc" id="electrodomesticos"><div class="wrap"><h2>Electrodomésticos que reparamos</h2><p class="sub">Elige tu equipo: cada uno tiene sus fallas, servicios y zonas.</p><div class="eqgrid">{eqs}</div></div></section>
+<section class="sec" id="cobertura"><div class="wrap"><h2>Cobertura: barrios de Quito</h2><p class="sub">Atendemos el norte, el centro, el sur y los valles. Elige tu barrio.</p><div class="covg">{cov}</div><p style="margin-top:22px"><a class="enlace" href="{url(s,'zonas-de-servicio-quito')}">Ver toda la cobertura →</a></p></div></section>
+<section class="sec osc"><div class="wrap"><h2>Cómo trabajamos</h2><p class="sub">Vamos hasta donde está tu equipo, lo revisamos y te explicamos antes de reparar.</p>{ASI}<p class="refimg">Imágenes ilustrativas.</p><ol class="pasos">{ps}</ol><p style="margin-top:22px"><a class="enlace" href="{url(s,'como-trabajamos')}">Ver el proceso completo paso a paso →</a></p></div></section>
+<section class="sec"><div class="wrap"><h2>Guías</h2><p class="sub">Gas, voltaje, limpieza y fallas explicadas para Quito.</p>{gcards}<p style="margin-top:22px"><a class="enlace" href="{url(s,'guias')}">Ver todas las guías →</a></p></div></section>
+<section class="sec osc"><div class="wrap lay1">{faq_html(HOMEFAQ)}</div></section>
 <section class="final"><div class="wrap"><h2>¿Tu electrodoméstico está fallando?</h2><p>Escríbenos por WhatsApp con la marca, el modelo y la falla. Te orientamos y coordinamos la visita.</p><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a> <a class="btn linea cl" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></div></section>'''
     ld=[BIZ,{'@context':'https://schema.org','@type':'WebSite','url':SITE+'/','name':NAME,'inLanguage':'es-EC'},faq_ld(HOMEFAQ)]
     write('',head('','Servicio Técnico Mabe Quito: Reparación de Electrodomésticos','Servicio técnico Mabe Quito: reparación de electrodomésticos Mabe a domicilio, refrigeradoras, lavadoras, secadoras, cocinas y hornos. WhatsApp 099 350 8191.',ld)+header('')+hero+body+footer(''))

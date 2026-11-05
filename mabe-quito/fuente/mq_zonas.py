@@ -43,11 +43,40 @@ Z=[
 ('amaguana','Amaguaña','Valles','valle',['Amaguaña','Av. General Rumiñahui','Valle de los Chillos']),
 ('pomasqui','Pomasqui','Valles','valle',['Pomasqui','Av. Manuel Córdova Galarza','Mitad del Mundo (cercana)']),
 ]
+Z+=[
+('rumipamba','Rumipamba','Norte','mixto',['Rumipamba','Parque Arqueológico Rumipamba','Av. Rumipamba']),
+('la-concepcion','La Concepción','Norte','mixto',['La Concepción','norte de Quito']),
+('monteserrin','Monteserrín','Norte','mixto',['Monteserrín','norte de Quito']),
+('granda-centeno','Granda Centeno','Norte','edificios',['Granda Centeno','Av. Granda Centeno']),
+('el-batan','El Batán','Norte','edificios',['El Batán','norte de Quito']),
+('mariana-de-jesus','Mariana de Jesús','Norte','mixto',['Mariana de Jesús','Av. Mariana de Jesús']),
+('el-inca','El Inca','Norte','mixto',['El Inca','Av. El Inca']),
+('san-isidro-del-inca','San Isidro del Inca','Norte','casas',['San Isidro del Inca','El Inca (cercano)']),
+('comite-del-pueblo','Comité del Pueblo','Norte','casas',['Comité del Pueblo','norte de Quito']),
+('la-gasca','La Gasca','Centro','mixto',['La Gasca','centro-norte de Quito']),
+('la-libertad','La Libertad','Centro','casas',['La Libertad','centro de Quito']),
+('el-panecillo','El Panecillo','Centro','casas',['El Panecillo','Centro Histórico (cercano)']),
+('san-roque','San Roque','Centro','casas',['San Roque','Centro Histórico']),
+('la-mena','La Mena','Sur','casas',['La Mena','sur de Quito']),
+('la-argelia','La Argelia','Sur','casas',['La Argelia','sur de Quito']),
+('el-recreo','El Recreo','Sur','mixto',['El Recreo','Av. Pedro Vicente Maldonado']),
+('chilibulo','Chilibulo','Sur','casas',['Chilibulo','sur de Quito']),
+('lucha-de-los-pobres','La Lucha de los Pobres','Sur','casas',['La Lucha de los Pobres','sur de Quito']),
+('la-ferroviaria','La Ferroviaria','Sur','casas',['La Ferroviaria','sur de Quito']),
+('guajalo','Guajaló','Sur','casas',['Guajaló','sur de Quito']),
+('zambiza','Zámbiza','Valles','valle',['Zámbiza','Nayón (cercana)']),
+('alangasi','Alangasí','Valles','valle',['Alangasí','Valle de los Chillos']),
+('la-armenia','La Armenia','Valles','valle',['La Armenia','Conocoto (cercana)']),
+('san-antonio-de-pichincha','San Antonio de Pichincha','Valles','valle',['San Antonio de Pichincha','Mitad del Mundo (cercana)']),
+('yaruqui','Yaruquí','Valles','valle',['Yaruquí','Puembo (cercana)']),
+('llano-grande','Llano Grande','Valles','valle',['Llano Grande','Calderón (cercana)']),
+]
 ZD={z[0]:dict(slug=z[0],nombre=z[1],sector=z[2],tipo=z[3],refs=z[4]) for z in Z}
 ZSLUGS=[z[0] for z in Z]
 # zonas con página por electrodoméstico
-ZXA=['la-carolina','iniaquito','gonzalez-suarez','la-floresta','la-mariscal','quito-tenis','jipijapa','cotocollao','carcelen','el-condado','la-villaflora','solanda','chillogallo','quitumbe','guamani','cumbaya','tumbaco','calderon','carapungo','conocoto','san-rafael','sangolqui','pomasqui','centro-historico']
-AXZ=['refrigeradoras','lavadoras','secadoras','cocinas','hornos','centros-de-lavado']
+import os
+ZXA=list(ZSLUGS) if os.environ.get('MQ_LITE')!='1' else ['la-carolina','la-floresta','la-villaflora','centro-historico','cumbaya','calderon']
+AXZ=['refrigeradoras','lavadoras','secadoras','cocinas','hornos','centros-de-lavado','congeladores','parrillas','campanas-extractoras']
 TIPO_TXT={
  'edificios':'En esta zona hay muchos edificios de apartamentos y oficinas. Coordinamos el acceso y el horario con la administración para que la visita no se complique.',
  'casas':'Predominan casas y conjuntos pequeños. Confirmamos la dirección exacta y la referencia por WhatsApp antes de ir.',
