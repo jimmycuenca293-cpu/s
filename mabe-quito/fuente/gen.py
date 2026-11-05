@@ -101,7 +101,13 @@ def tec_for(slug,p):
     return None
 def galeria(slug,p):
     t=tec_for(slug,p); t=tec_fig(slug,t) if t else ''
-    ph=p.get('photos') or []
+    ph=list(p.get('photos') or [])
+    if not ph:
+        k=p['kind']
+        if k in ('falla','zxa','term','guia') and p.get('eq') and EQ[p['eq']]['foto']:
+            pool=EQ[p['eq']]['foto']; o=sum(map(ord,slug))%len(pool); ph=(pool[o:]+pool[:o])[:2]
+        elif k=='zona':
+            allp=list(PH.keys()); o=ZSLUGS.index(p['zone'])%len(allp); ph=(allp[o:]+allp[:o])[:3]
     g=('<div class="gal">'+''.join(fig(slug,n,i==0) for i,n in enumerate(ph))+'</div><p class="refimg">Imágenes de referencia de equipos Mabe.</p>') if ph else ''
     return t+g
 def crumbs(slug,p):

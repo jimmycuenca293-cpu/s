@@ -33,7 +33,7 @@ EQ={}
 def add(k,**d): EQ[k]=d
 # ---------- reutilizados (neveras, lavadoras, secadoras) ----------
 s=SRC['neveras']
-add('refrigeradoras',nombre='Refrigeradoras',corto='Refrigeradoras',sing='refrigeradora',art='la refrigeradora',h1='Reparación de refrigeradoras Mabe en Quito',slug='reparacion-de-refrigeradoras-mabe-quito',icon='fridge',foto=['nevera-superior-inox','nevera-side-by-side','nevera-superior-negra'],th='nevera-superior-inox',
+add('refrigeradoras',nombre='Refrigeradoras',corto='Refrigeradoras',sing='refrigeradora',art='la refrigeradora',h1='Reparación de refrigeradoras Mabe en Quito',slug='reparacion-de-refrigeradoras-mabe-quito',icon='fridge',foto=['nevera-superior-inox','nevera-side-by-side','nevera-superior-negra','nevera-side-by-side-inox'],th='nevera-superior-inox',
  intro='Reparamos refrigeradoras (neveras) Mabe a domicilio en Quito: de congelador superior, Side by Side, French Door y modelos con dispensador de agua y hielo. No enfrían, hacen ruido, gotean, acumulan escarcha o se apagan solas.',
  modelos=s['modelos'],fallas=s['fallas'],mant=s['mant'],faq=fixfaq(s['faq']),
  slugs=['refrigeradora-mabe-no-enfria-quito','refrigeradora-mabe-escarcha-en-el-congelador-quito','refrigeradora-mabe-gotea-agua-por-dentro-quito','refrigeradora-mabe-hace-ruido-quito','dispensador-de-agua-de-refrigeradora-mabe-no-funciona-quito','refrigeradora-mabe-no-hace-hielo-quito','refrigeradora-mabe-alarma-o-luz-de-filtro-quito','refrigeradora-mabe-se-apaga-sola-quito','refrigeradora-mabe-huele-mal-quito'],
