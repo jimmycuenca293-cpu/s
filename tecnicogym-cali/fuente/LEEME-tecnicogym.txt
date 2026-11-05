@@ -1,0 +1,35 @@
+TÉCNICO GYM · sitio web para tecnicogym.click
+=============================================
+
+⚠ MUY IMPORTANTE ANTES DE SUBIR: EL SITIO YA ESTÁ POSICIONADO
+   El dominio tecnicogym.click ya tiene posicionamiento en Google. Si el sitio nuevo cambia las direcciones (URL) de las
+   páginas que hoy posicionan, se puede perder ese posicionamiento. Para evitarlo:
+   1. Pásame la lista de URL que tiene hoy el sitio (o su mapa del sitio) y los datos de Search Console
+      (Rendimiento > Páginas y Consultas).
+   2. Yo conecto cada URL vieja con su página nueva (redirección 301) o conservo la misma dirección.
+   3. Recién ahí se sube el sitio nuevo. NO lo subas antes de eso encima del actual.
+
+1) SUBIR EL SITIO (cuando estén listas las redirecciones)
+   - Sube TODO el contenido del zip a la carpeta pública del dominio (public_html).
+   - El .htaccess (hosting Apache) fuerza https y activa la compresión.
+
+2) GOOGLE SEARCH CONSOLE
+   - Si el sitio ya está en Search Console, no hay que verificar de nuevo: envía el sitemap https://tecnicogym.click/sitemap.xml
+   - Si necesitas verificar con etiqueta o archivo, pásamelos y quedan incluidos en el sitio.
+
+3) GOOGLE BUSINESS PROFILE (lo que más pesa para búsquedas locales en Cali)
+   - Nombre: Técnico Gym. Teléfono: 321 799 6144. Sitio: https://tecnicogym.click
+   - Área de servicio: Cali. Fotos reales y reseñas de clientes.
+   - Usa el mismo nombre y teléfono en Google, Facebook, Instagram y WhatsApp Business.
+
+4) CONTENIDO DEL SITIO (122 páginas)
+   - Portada, índices (servicios, equipos, marcas, guías, zonas), 19 equipos, 22 servicios por término de búsqueda,
+     4 marcas (Ultimate Fitness, Centurfit, Evolution Fitness, Sportfitness), 39 guías, 26 zonas de Cali, cómo trabajamos,
+     preguntas frecuentes, contacto y tratamiento de datos.
+
+5) NOTAS HONESTAS
+   - No se inventan datos: no hay años de experiencia, garantía, precios ni reseñas.
+   - Las páginas de marca dicen que somos un servicio técnico INDEPENDIENTE, no distribuidor ni centro autorizado.
+   - Las fotos actuales son de referencia (parecen de catálogo). Lo mejor es cambiarlas por fotos reales de trabajos.
+   - Las palabras clave no traen volumen: valídalas en el Planificador de palabras clave de Google Ads.
+   - Posicionar toma tiempo: normalmente entre 2 y 4 meses según la competencia.
