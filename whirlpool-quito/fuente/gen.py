@@ -97,26 +97,37 @@ def thumb(frm,k,cls=''):
 def pth(frm,p,cls=''):
     if p.get('eq') and p['kind'] in ('service','falla','zxa','term','guia'): return thumb(frm,p['eq'],cls)
     return ''
+def ell(s,n):
+    if len(s)<=n: return s
+    c=s[:n]
+    k=max(c.rfind(','),c.rfind(';'),c.rfind(':'),c.rfind('.'))
+    c=c[:k] if k>=int(n*0.55) else c.rsplit(' ',1)[0]
+    c=c.rstrip(' ,;:.')
+    while True:
+        w=c.rsplit(' ',1)
+        if len(w)==2 and w[1].lower() in ('a','la','el','los','las','del','de','y','o','con','en','un','una','que','por','para','se','al','e','u'): c=w[0].rstrip(' ,;:.')
+        else: break
+    return c+'…'
 def related_html(slug,p):
     if not p.get('related'): return ''
     cs=''
     for s in p['related']:
-        q=PAGES[s]; cs+=f'<a class="card has-th" href="{url(slug,s)}">{pth(slug,q,"sm")}<div><b>{E(q["h1"])}</b><span>{E(q["lead"][:105])}…</span></div></a>'
+        q=PAGES[s]; cs+=f'<a class="card has-th" href="{url(slug,s)}">{pth(slug,q,"sm")}<div><b>{E(q["h1"])}</b><span>{E(ell(q["lead"],105))}</span></div></a>'
     return f'<section class="rel"><div class="wrap"><h2>También te puede servir</h2><div class="cards">{cs}</div></div></section>'
 def cta_box(slug,p):
-    return f'<aside class="caja"><h2>Servicio técnico Whirlpool Quito</h2><p>Escríbenos la marca, el modelo y qué falla presenta. Te orientamos por WhatsApp.</p><a class="btn wa grande" href="{wa(p["wamsg"])}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a><a class="btn linea" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></aside>'
+    return f'<aside class="caja"><h2>Servicio técnico Whirlpool Quito</h2><p>Escríbenos la marca, el modelo y qué falla presenta. Te orientamos por WhatsApp.</p><a class="btn wa grande" href="{wa(p["wamsg"])}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a><a class="btn linea grande" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></aside>'
 PH={'nevera-french-door':'Refrigeradora Whirlpool French Door en una cocina','nevera-top':'Refrigeradora Whirlpool de congelador superior','nevera-sbs':'Refrigeradora Whirlpool Side by Side con dispensador','lavadora-superior':'Lavadora Whirlpool de carga superior','secadora':'Secadora Whirlpool','parrilla-gas':'Encimera a gas Whirlpool de cuatro quemadores','horno-empotrable':'Horno empotrable Whirlpool de acero inoxidable','rep-bomba':'Bomba de desagüe para lavadora (imagen de referencia)','rep-bomba-2':'Bomba de desagüe (imagen de referencia)','rep-filtro-pelusa':'Filtro de pelusas para lavadora (imagen de referencia)','rep-filtro-pelusa-2':'Filtro de pelusas (imagen de referencia)','rep-filtro-agua':'Filtro de agua externo para refrigeradora Whirlpool','rep-filtro-agua-2':'Filtro de agua EveryDrop para refrigeradora Whirlpool','rep-filtro-secadora':'Filtro de pelusas para secadora (imagen de referencia)'}
 REPF={'refrigeradoras':['rep-filtro-agua','rep-filtro-agua-2'],'neveras':['rep-filtro-agua-2','rep-filtro-agua'],'lavadoras':['rep-bomba','rep-bomba-2','rep-filtro-pelusa'],'secadoras':['rep-filtro-secadora','rep-filtro-pelusa-2']}
-TECP={'tecnico-neveras':('Técnico de Whirlpool reparando el sistema de enfriamiento de una refrigeradora en una cocina de Quito (imagen ilustrativa)',900,503),'tecnico-lavadora':('Técnico de Whirlpool conversando con una clienta junto a su lavadora en una casa de Quito (imagen ilustrativa)',900,298)}
+TECP={'tecnico-neveras':('Técnico de Whirlpool reparando el sistema de enfriamiento de una refrigeradora en una cocina de Quito (imagen ilustrativa)',900,503),'tecnico-lavadora':('Técnico de Whirlpool conversando con una clienta junto a su lavadora en una casa de Quito (imagen ilustrativa)',900,503)}
 def fig(slug,n,eager=False):
-    return f'<figure><img src="{asset(slug,"img/"+n+".webp")}" srcset="{asset(slug,"img/"+n+"-m.webp")} 460w, {asset(slug,"img/"+n+".webp")} 900w" sizes="(max-width:700px) 44vw, 330px" width="900" height="900" alt="{E(PH[n])}" loading="eager" decoding="async"><figcaption>{E(PH[n])}</figcaption></figure>'
+    return f'<figure><img src="{asset(slug,"img/"+n+".webp")}" srcset="{asset(slug,"img/"+n+"-m.webp")} 460w, {asset(slug,"img/"+n+".webp")} 900w" sizes="(max-width:700px) 44vw, 330px" width="900" height="900" alt="{E(PH[n])}" loading="eager" decoding="async"></figure>'
 def cimg(frm,n,alt,cls=''):
-    return f'<img class="{cls}" src="{asset(frm,"img/"+n+".webp")}" alt="{E(alt)}" width="640" height="426" loading="eager" decoding="async">'
-PIMG=[('c-clienta','Clienta explicando la falla de su electrodoméstico'),('c-caja','Caja de herramientas del técnico'),('c-lavadora','Técnico revisando una lavadora'),('c-revision','Técnico revisando una refrigeradora'),('c-revision','Técnico diagnosticando la falla'),('c-compresor','Técnico reparando el compresor'),('c-caja','Herramientas del técnico')]
-SIMG={'reparacion-de-electrodomesticos-whirlpool-a-domicilio-quito':('c-revision','Técnico revisando una refrigeradora'),'mantenimiento-preventivo-de-electrodomesticos-whirlpool-quito':('c-caja','Herramientas del técnico'),'instalacion-de-electrodomesticos-whirlpool-quito':('c-lavadora','Técnico revisando una lavadora'),'diagnostico-de-electrodomesticos-whirlpool-quito':('c-compresor','Técnico revisando el compresor'),'reparacion-de-tarjetas-electronicas-de-electrodomesticos-whirlpool-quito':('c-lavadora','Técnico probando una lavadora'),'repuestos-para-electrodomesticos-whirlpool-quito':('rep-bomba','Repuestos para lavadoras y refrigeradoras')}
+    return f'<img class="{cls}" src="{asset(frm,"img/"+n+".webp")}" alt="{E(alt)}" width="900" height="600" loading="eager" decoding="async">'
+PIMG=[('stp1','Cliente conversando con el técnico junto a su lavadora'),('stp2','Técnico con una tableta revisando los datos del equipo'),('stp3','Técnico Whirlpool llegando a la casa del cliente con su caja de herramientas'),('stp4','Técnico diagnosticando una refrigeradora en la cocina'),('stp5','Técnico explicando el costo de la reparación al cliente'),('stp6','Técnico reparando el sistema de frío de una refrigeradora'),('stp7','Técnico despidiéndose del cliente en la puerta de su casa')]
+SIMG={'reparacion-de-electrodomesticos-whirlpool-a-domicilio-quito':('stp4','Técnico diagnosticando una refrigeradora en la cocina'),'mantenimiento-preventivo-de-electrodomesticos-whirlpool-quito':('stp6','Técnico revisando el sistema de frío de una refrigeradora'),'instalacion-de-electrodomesticos-whirlpool-quito':('stp1','Técnico y cliente junto a una lavadora'),'diagnostico-de-electrodomesticos-whirlpool-quito':('stp5','Técnico explicando el diagnóstico al cliente'),'reparacion-de-tarjetas-electronicas-de-electrodomesticos-whirlpool-quito':('stp2','Técnico con una tableta revisando datos del equipo'),'repuestos-para-electrodomesticos-whirlpool-quito':('rep-bomba','Repuestos para lavadoras y refrigeradoras')}
 def tec_fig(slug,n):
     alt,w,h=TECP[n]
-    return f'<figure class="tec"><img src="{asset(slug,"img/"+n+".webp")}" srcset="{asset(slug,"img/"+n+"-m.webp")} 560w, {asset(slug,"img/"+n+".webp")} 900w" sizes="(max-width:700px) 92vw, 700px" width="{w}" height="{h}" alt="{E(alt)}" loading="eager" decoding="async"><figcaption>{E(alt.replace(" (imagen ilustrativa)",""))} · imagen ilustrativa</figcaption></figure>'
+    return f'<figure class="tec"><img src="{asset(slug,"img/"+n+".webp")}" srcset="{asset(slug,"img/"+n+"-m.webp")} 560w, {asset(slug,"img/"+n+".webp")} 900w" sizes="(max-width:700px) 92vw, 700px" width="{w}" height="{h}" alt="{E(alt)}" loading="eager" decoding="async"></figure>'
 TECS=['tecnico-neveras','tecnico-lavadora']
 CLEAN=['tecnico-neveras','tecnico-lavadora']
 def tec_for(slug,p):
@@ -141,7 +152,7 @@ def galeria(slug,p):
         elif k=='zona':
             allp=list(PH.keys()); o=ZSLUGS.index(p['zone'])%len(allp); ph=(allp[o:]+allp[:o])[:3]
     ph=ph[:3]
-    g=('<div class="gal">'+''.join(fig(slug,n,i==0) for i,n in enumerate(ph))+'</div><p class="refimg">Imágenes de referencia de equipos Whirlpool.</p>') if ph else ''
+    g=('<div class="gal">'+''.join(fig(slug,n,i==0) for i,n in enumerate(ph))+'</div>') if ph else ''
     return t+g
 def crumbs(slug,p):
     it=[('Inicio','')]; k=p['kind']
@@ -165,13 +176,13 @@ def page(slug):
     body=f'<div class="wrap lay"><article class="art">{galeria(slug,p)}{secs}{faq_html(p["faq"])}</article>{cta_box(slug,p)}</div>{related_html(slug,p)}'
     write(slug,head(slug,p['title'],p['desc'],ld,'article' if p['kind'] in ('guia','falla') else 'website')+header(slug)+hero+body+footer(slug))
 INFO={'electrodomesticos','fallas-comunes','servicios','zonas-de-servicio-quito','guias','como-trabajamos','preguntas-frecuentes','contacto','aviso-legal','privacidad','mapa-del-sitio'}
-def info_page(slug,h1,title,desc,lead,body_html,faq=None,icon='home',wamsg=WAHI,wide=False):
+def info_page(slug,h1,title,desc,lead,body_html,faq=None,icon='home',wamsg=WAHI,wide=False,raw=False):
     items=[('Inicio',''),(h1,slug)]; ld=[BIZ,bc_ld(items)]+([faq_ld(faq)] if faq else [])
     hero=f'<section class="phero"><div class="wrap">{bc_html(slug,items)}<p class="kick">Servicio técnico Whirlpool Quito</p><div class="ph-fila"><div><h1>{E(h1)}</h1><p class="lead">{E(lead)}</p></div></div></div></section>'
-    body=f'<div class="wrap lay1"><article class="art wide">{fix(body_html,slug)}{faq_html(faq)}</article></div>'
+    body=(fix(body_html,slug) if raw else f'<div class="wrap lay1"><article class="art wide">{fix(body_html,slug)}{faq_html(faq)}</article></div>')
     write(slug,head(slug,title,desc,ld)+header(slug)+hero+body+footer(slug))
 def cardlist(slug,slugs,cls='cards g2'):
-    return f'<div class="{cls}">'+''.join(f'<a class="card has-th" href="{url(slug,s)}">{pth(slug,PAGES[s],"sm")}<div><b>{E(PAGES[s]["h1"])}</b><span>{E(PAGES[s]["lead"][:105])}…</span></div></a>' for s in slugs)+'</div>'
+    return f'<div class="{cls}">'+''.join(f'<a class="card has-th" href="{url(slug,s)}">{pth(slug,PAGES[s],"sm")}<div><b>{E(PAGES[s]["h1"])}</b><span>{E(ell(PAGES[s]["lead"],105))}</span></div></a>' for s in slugs)+'</div>'
 def chips(slug,slugs,label=None):
     return '<div class="chips">'+''.join(f'<a href="{url(slug,s)}">{E(label(s) if label else PAGES[s]["h1"])}</a>' for s in slugs)+'</div>'
 # ---------------- páginas ----------------
@@ -198,7 +209,7 @@ for k in EQK:
     e=EQ[k]; fh+=f'<section><h2><a href="@{e["slug"]}@">{E(e["corto"])}</a></h2><ul class="fallas">'+''.join(f'<li><a href="@{s}@">{E(PAGES[s]["h1"])}</a> <span class="tag {mp.URG[e["fallas"][i][2]]}">{e["fallas"][i][2]}</span></li>' for i,s in enumerate(e['slugs']))+'</ul></section>'
 info_page('fallas-comunes','Fallas comunes de electrodomésticos Whirlpool en Quito','Fallas comunes de electrodomésticos Whirlpool en Quito','Todas las fallas comunes de refrigeradoras, lavadoras, secadoras y más equipos Whirlpool: causas, qué revisar y cuándo llamar a un técnico en Quito.','Encuentra tu falla por electrodoméstico, mira qué puedes revisar tú con seguridad y cuándo pedir un técnico.',fh,icon='help')
 def cards_text(sl,slugs):
-    return '<div class="svcs">'+''.join(f'<a class="svc" href="{url(sl,s)}"><b>{E(CORE_LAB.get(s,PAGES[s]["h1"]))}</b><span>{E(PAGES[s]["lead"][:110])}…</span><i>Ver servicio →</i></a>' for s in slugs)+'</div>'
+    return '<div class="svcs">'+''.join(f'<a class="svc" href="{url(sl,s)}"><b>{E(CORE_LAB.get(s,PAGES[s]["h1"]))}</b><span>{E(ell(PAGES[s]["lead"],110))}</span><i>Ver servicio →</i></a>' for s in slugs)+'</div>'
 OTRAS=[s for s in GEN if s not in CORE and s in TERMS]
 sv='<section><h2>Nuestros servicios</h2>'+'@@CARDS@@'+'</section>'
 for k in EQK:
@@ -222,13 +233,17 @@ info_page('zonas-de-servicio-quito','Cobertura: barrios de Quito donde atendemos
 def pli(frm,i,a,b):
     n,alt=PIMG[i]
     return f'<li>{cimg(frm,n,alt,"pimg")}<div class="pt"><b>{i+1}</b><div><h3>{E(a)}</h3><p>{E(b)}</p></div></div></li>'
+def step_sec(frm,i,a,b):
+    n,alt=PIMG[i]
+    return f'<section class="stepsec{" inv" if i%2 else ""}"><div class="wrap"><div class="sfoto">{cimg(frm,n,alt,"sim")}</div><div class="stxt"><span class="snum">{i+1}</span><h2>{E(a)}</h2><p>{E(b)}</p></div></div></section>'
 pasos=[('Escríbenos','Por WhatsApp o llamada al 099 350 8191. Cuéntanos qué equipo es, la marca, el modelo y la falla.'),('Envía datos y fotos','Una foto de la etiqueta del equipo y un video corto de la falla ayudan a orientarte mejor.'),('Coordinamos la visita','Acordamos día y hora en tu casa, apartamento u oficina de Quito.'),('Diagnóstico en tu casa','Probamos el equipo, identificamos la causa y te explicamos qué tiene.'),('Costo antes de reparar','Te informamos el costo y tú decides si continuamos.'),('Reparación y prueba','Reparamos y probamos que el equipo quede funcionando.'),('Recomendaciones','Te decimos cómo usarlo y cuidarlo para que la falla no se repita.')]
-ch=f'<section><h2>Paso a paso</h2><ol class="pasos l">'+''.join(f'{pli("como-trabajamos",i,a,b)}' for i,(a,b) in enumerate(pasos))+'</ol></section><section><h2>Nuestro compromiso con la claridad</h2><p>No cambiamos piezas al azar: primero probamos y diagnosticamos. Si no conviene reparar, te lo decimos.</p></section>'
-info_page('como-trabajamos','Cómo trabajamos: servicio técnico Whirlpool paso a paso','Cómo trabajamos el servicio técnico Whirlpool en Quito','Así es el servicio técnico Whirlpool a domicilio en Quito: contacto por WhatsApp, diagnóstico, costo antes de reparar, reparación y recomendaciones.','Del primer mensaje a la reparación: así trabajamos, sin sorpresas.',ch,icon='shield')
+ch='@@STEPS@@<section class="cierre"><div class="wrap"><h2>Nuestro compromiso con la claridad</h2><p>No cambiamos piezas al azar: primero probamos y diagnosticamos. Si no conviene reparar, te lo decimos.</p></div></section>'
+ch=ch.replace('@@STEPS@@',''.join(step_sec('como-trabajamos',i,a,b) for i,(a,b) in enumerate(pasos)))
+info_page('como-trabajamos','Cómo trabajamos: servicio técnico Whirlpool paso a paso','Cómo trabajamos el servicio técnico Whirlpool en Quito','Así es el servicio técnico Whirlpool a domicilio en Quito: contacto por WhatsApp, diagnóstico, costo antes de reparar, reparación y recomendaciones.','Del primer mensaje a la reparación: así trabajamos, sin sorpresas.',ch,icon='shield',raw=True)
 FAQ_ALL=HOMEFAQ+[('¿Reparan solo Whirlpool?','Nos enfocamos en electrodomésticos Whirlpool. Si tienes otra marca, escríbenos y te decimos si podemos ayudarte.'),('¿Qué hago si huele a gas?','Cierra la llave, ventila, no uses llama ni interruptores y llama a un técnico. Si hay riesgo, llama a emergencias (911).'),('¿Atienden apartamentos y conjuntos?','Sí. Coordinamos acceso y horario con la administración.'),('¿Qué datos debo enviar por WhatsApp?','Tipo de equipo, marca y modelo, la falla, tu barrio y una foto de la etiqueta si puedes.'),('¿Instalan electrodomésticos?','Consulta por WhatsApp con el modelo y el tipo de conexión (agua, gas o electricidad) para confirmarte el servicio.'),('¿Qué zonas de Quito atienden?','Norte, centro, sur y valles: La Carolina, Iñaquito, Cotocollao, Villaflora, Quitumbe, Cumbayá, Tumbaco, Calderón, Sangolquí y más. Consulta la lista completa en Zonas.')]
 info_page('preguntas-frecuentes','Preguntas frecuentes sobre el servicio técnico Whirlpool en Quito','Preguntas frecuentes: servicio técnico Whirlpool en Quito','Respuestas sobre el servicio técnico Whirlpool a domicilio en Quito: equipos, zonas, costo de la visita, garantía de fábrica y cómo pedir el servicio.','Lo que más nos preguntan antes de pedir una visita.','',faq=FAQ_ALL,icon='help')
 info_page('contacto','Contacto: servicio técnico Whirlpool en Quito','Contacto servicio técnico Whirlpool Quito | WhatsApp 099 350 8191','Contacta al servicio técnico Whirlpool en Quito por WhatsApp o llamada al 099 350 8191 (+593 99 350 8191). Cuéntanos tu equipo y la falla.','Escríbenos por WhatsApp o llámanos. Te respondemos con el siguiente paso.',
- f'<section><h2>Pide tu visita</h2><p><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a> <a class="btn linea" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></p><p>Número: <b>{PHONE_TXT}</b> ({PHONE_FULL}).</p></section><section><h2>Qué contarnos</h2><ul><li>Qué equipo es y su marca y modelo</li><li>Qué falla presenta y desde cuándo</li><li>Tu barrio o sector de Quito</li><li>Si puedes, una foto de la etiqueta y un video corto del problema</li></ul></section><section><h2>Dónde atendemos</h2><p>Quito: norte, centro, sur y valles. Mira la lista en <a href="@zonas-de-servicio-quito@">Zonas</a>.</p></section>',icon='chat')
+ f'<section><h2>Pide tu visita</h2><p><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a> <a class="btn linea grande" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></p><p>Número: <b>{PHONE_TXT}</b> ({PHONE_FULL}).</p></section><section><h2>Qué contarnos</h2><ul><li>Qué equipo es y su marca y modelo</li><li>Qué falla presenta y desde cuándo</li><li>Tu barrio o sector de Quito</li><li>Si puedes, una foto de la etiqueta y un video corto del problema</li></ul></section><section><h2>Dónde atendemos</h2><p>Quito: norte, centro, sur y valles. Mira la lista en <a href="@zonas-de-servicio-quito@">Zonas</a>.</p></section>',icon='chat')
 info_page('aviso-legal','Aviso legal','Aviso legal | Servicio Técnico Whirlpool Quito','Aviso legal de Servicio Técnico Whirlpool Quito: uso de marcas y alcance de la información del sitio.','Uso de marcas y alcance de la información de este sitio.',
  '<section><h2>Marcas</h2><p>Whirlpool es una marca de su respectivo titular. Este sitio no es operado por Whirlpool.</p></section><section><h2>Información orientativa</h2><p>El contenido de este sitio es orientativo. El diagnóstico definitivo y el costo se confirman en la visita. Las imágenes marcadas como ilustrativas o de referencia no corresponden necesariamente a equipos o personas concretas.</p></section><section><h2>Garantía de fábrica</h2><p>Si tu equipo está en garantía de fábrica, consulta las condiciones con el fabricante antes de solicitar una reparación independiente.</p></section>',icon='shield')
 info_page('privacidad','Tratamiento de datos personales','Tratamiento de datos personales | Whirlpool Quito','Cómo trata Servicio Técnico Whirlpool Quito tus datos personales cuando nos escribes por WhatsApp o nos llamas para pedir una visita en Quito.','Qué datos recibimos y para qué los usamos.',
@@ -237,11 +252,11 @@ info_page('privacidad','Tratamiento de datos personales','Tratamiento de datos p
 HERO_ALT='Técnico de Whirlpool explicando la falla de una refrigeradora a un cliente en su cocina en Quito (imagen ilustrativa)'
 def home():
     s=''
-    sv=''.join(f'<a class="svc" href="{url(s,c)}">{cimg(s,SIMG[c][0],SIMG[c][1],"simg")}<b>{CORE_LAB[c]}</b><span>{E(PAGES[c]["lead"][:105])}…</span><i>Ver servicio →</i></a>' for c in CORE)
+    sv=''.join(f'<a class="svc" href="{url(s,c)}">{cimg(s,SIMG[c][0],SIMG[c][1],"simg")}<b>{CORE_LAB[c]}</b><span>{E(ell(PAGES[c]["lead"],105))}</span><i>Ver servicio →</i></a>' for c in CORE)
     def eqcard(k):
         e=EQ[k]; nm=e["art"].split(" ",1)[1]
         fl=''.join(f'<li><a href="{url(s,x)}">{E(PAGES[x]["h1"])}</a></li>' for x in e['slugs'][:3])
-        return f'<div class="eqc">{thumb(s,k,"big")}<h3><a href="{url(s,e["slug"])}">{E(e["h1"])}</a></h3><p>{E(e["intro"][:105])}…</p><b class="sb">Fallas más consultadas</b><ul>{fl}</ul><a class="enlace" href="{url(s,e["slug"])}">Todo sobre {nm} Whirlpool →</a></div>'
+        return f'<div class="eqc">{thumb(s,k,"big")}<h3><a href="{url(s,e["slug"])}">{E(e["h1"])}</a></h3><p>{E(ell(e["intro"],105))}</p><b class="sb">Fallas más consultadas</b><ul>{fl}</ul><a class="enlace" href="{url(s,e["slug"])}">Todo sobre {nm} Whirlpool →</a></div>'
     eqs=''.join(eqcard(k) for k in EQK)
     cs=''.join(f'<li><a href="{url(s,x)}">{E(TERMS[x]["h1"])}</a></li>' for x in ['centro-de-servicio-de-lavadoras-whirlpool-quito','centro-de-servicio-de-secadoras-whirlpool-quito','centro-de-servicio-de-refrigeradoras-whirlpool-quito','centro-de-servicio-de-neveras-whirlpool-quito','soporte-tecnico-whirlpool-quito','nevera-o-refrigeradora-whirlpool-es-lo-mismo'] if x in TERMS)
     cov=''
@@ -249,7 +264,7 @@ def home():
         zs=[z for z in ZSLUGS if ZD[z]['sector']==sc]
         cov+=f'<div class="covc"><h3><a href="{url(s,SECTOR_HUBS[sc][0])}">{lab}</a></h3><ul>'+''.join(f'<li><a href="{url(s,"servicio-tecnico-whirlpool-en-"+z)}">{E(ZD[z]["nombre"])}</a></li>' for z in zs)+'</ul></div>'
     gcards=cardlist(s,GUIDE_SLUGS[:6])
-    ps=''.join(pli(s,j,pasos[j][0],pasos[j][1]).replace(f'<b>{j+1}</b>',f'<b>{k+1}</b>') for k,j in enumerate([0,3,4,5]))
+    ps=''.join(pli(s,j,pasos[j][0],pasos[j][1]).replace(f'<b>{j+1}</b>',f'<b>{k+1}</b>') for k,j in enumerate([0,2,3,5]))
     tecs=''.join(f'<div>{tec_fig(s,n)}</div>' for n in CLEAN)
     if AUTH: ASI=f'<div class="tecs">{tecs}</div>'
     else: ASI='<div class="tecs dos">'+''.join(f'<div>{tec_fig(s,n)}</div>' for n in CLEAN)+'</div>'
@@ -259,8 +274,8 @@ def home():
     body=f'''<section class="sec" id="servicios"><div class="wrap"><h2>Nuestros servicios</h2><p class="sub">Todo lo que hacemos por tus electrodomésticos Whirlpool en Quito.</p><div class="svcs">{sv}</div><p style="margin-top:22px"><a class="enlace" href="{url(s,'servicios')}">Ver todos los servicios, por equipo y por zona →</a></p></div></section>
 <section class="sec osc" id="electrodomesticos"><div class="wrap"><h2>Electrodomésticos que reparamos</h2><p class="sub">Elige tu equipo: cada uno tiene sus fallas, servicios y zonas.</p><div class="eqgrid">{eqs}</div></div></section>
 <section class="sec"><div class="wrap"><h2>¿Buscas un centro de servicio Whirlpool en Quito?</h2><p class="sub">Con nosotros no llevas el equipo: el técnico va a tu casa.</p><ul class="sublist cs">{cs}</ul></div></section>
-<section class="sec" id="cobertura"><div class="wrap"><h2>Cobertura: barrios de Quito</h2><p class="sub">Atendemos el norte, el centro, el sur y los valles. Elige tu barrio.</p><figure class="banner"><img src="img/tecnico-lavadora.webp" alt="Técnico de Whirlpool revisando una lavadora en una casa de Quito" width="900" height="298" loading="eager" decoding="async"><figcaption>Vamos a tu casa en toda Quito</figcaption></figure><div class="covg">{cov}</div><p style="margin-top:22px"><a class="enlace" href="{url(s,'zonas-de-servicio-quito')}">Ver toda la cobertura →</a></p></div></section>
-<section class="sec osc"><div class="wrap"><h2>Cómo trabajamos</h2><p class="sub">Vamos hasta donde está tu equipo, lo revisamos y te explicamos antes de reparar.</p>{ASI}<p class="refimg">Imágenes ilustrativas.</p><ol class="pasos">{ps}</ol><p style="margin-top:22px"><a class="enlace" href="{url(s,'como-trabajamos')}">Ver el proceso completo paso a paso →</a></p></div></section>
+<section class="sec" id="cobertura"><div class="wrap"><h2>Cobertura: barrios de Quito</h2><p class="sub">Atendemos el norte, el centro, el sur y los valles. Elige tu barrio.</p><div class="covg">{cov}</div><p style="margin-top:22px"><a class="enlace" href="{url(s,'zonas-de-servicio-quito')}">Ver toda la cobertura →</a></p></div></section>
+<section class="sec osc"><div class="wrap"><h2>Cómo trabajamos</h2><p class="sub">Vamos hasta donde está tu equipo, lo revisamos y te explicamos antes de reparar.</p><ol class="pasos">{ps}</ol><p style="margin-top:22px"><a class="enlace" href="{url(s,'como-trabajamos')}">Ver el proceso completo paso a paso →</a></p></div></section>
 <section class="sec"><div class="wrap"><h2>Guías</h2><p class="sub">Voltaje, limpieza y fallas explicadas para Quito.</p>{gcards}<p style="margin-top:22px"><a class="enlace" href="{url(s,'guias')}">Ver todas las guías →</a></p></div></section>
 <section class="sec"><div class="wrap lay1 seo"><h2>Servicio técnico Whirlpool en Quito: reparación a domicilio</h2><p>Servicio Técnico Whirlpool Quito reúne la reparación, el mantenimiento y la instalación de electrodomésticos Whirlpool en Quito: <a href="{url(s,EQ['refrigeradoras']['slug'])}">refrigeradoras</a>, <a href="{url(s,EQ['neveras']['slug'])}">neveras</a>, <a href="{url(s,EQ['lavadoras']['slug'])}">lavadoras</a> y <a href="{url(s,EQ['secadoras']['slug'])}">secadoras</a>, <a href="{url(s,EQ['cocinas']['slug'])}">cocinas</a> y <a href="{url(s,EQ['hornos']['slug'])}">hornos</a>. Si buscas un <a href="{url(s,'centro-de-servicio-whirlpool-quito')}">centro de servicio Whirlpool en Quito</a>, aquí es distinto: el técnico va a tu casa, revisa el equipo en su lugar, te explica la falla y te da el costo antes de reparar.</p><p>Las consultas más frecuentes son la <a href="{url(s,'refrigeradora-whirlpool-no-enfria-quito')}">refrigeradora que no enfría</a>, el <a href="{url(s,'refrigeradora-whirlpool-escarcha-en-el-congelador-quito')}">congelador con escarcha</a>, la <a href="{url(s,'lavadora-whirlpool-no-desagua-quito')}">lavadora que no desagua</a>, la <a href="{url(s,'lavadora-whirlpool-no-centrifuga-quito')}">lavadora que no centrifuga</a> y la <a href="{url(s,'secadora-whirlpool-no-seca-la-ropa-quito')}">secadora que no seca</a>. Cada falla tiene su propia página con causas probables, qué revisar antes de llamar y cuándo conviene pedir al técnico.</p><p>Atendemos {nz} barrios y sectores del norte, el centro, el sur y los valles de Quito, como <a href="{url(s,'servicio-tecnico-whirlpool-en-la-carolina')}">La Carolina</a>, <a href="{url(s,'servicio-tecnico-whirlpool-en-cumbaya')}">Cumbayá</a>, <a href="{url(s,'servicio-tecnico-whirlpool-en-quitumbe')}">Quitumbe</a>, <a href="{url(s,'servicio-tecnico-whirlpool-en-solanda')}">Solanda</a> o el <a href="{url(s,'servicio-tecnico-whirlpool-valle-de-los-chillos')}">Valle de los Chillos</a>. Para pedir el servicio, escribe por WhatsApp o llama al {PHONE_TXT} con el modelo del equipo, la falla y tu barrio; también puedes ver <a href="{url(s,'agendar-visita-de-servicio-tecnico-whirlpool-quito')}">cómo agendar la visita</a> o <a href="{url(s,'cotizacion-de-reparacion-de-electrodomesticos-whirlpool-quito')}">cómo cotizar una reparación</a>.</p></div></section>
 <section class="sec osc"><div class="wrap lay1">{faq_html(HOMEFAQ+HOMEFAQ_X)}</div></section>
