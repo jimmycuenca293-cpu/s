@@ -8,6 +8,7 @@ import mq_terms2
 import mq_terms3
 import mq_terms4
 import mq_terms5
+import mq_terms6
 from mq_terms import T
 import mq_guias
 E=html.escape

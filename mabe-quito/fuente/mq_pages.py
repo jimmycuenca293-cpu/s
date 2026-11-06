@@ -7,6 +7,7 @@ from mq_zonas import Z,ZD,ZSLUGS,ZXA,AXZ,TIPO_TXT,SECTOR_TXT
 import mq_terms2
 import mq_terms3
 import mq_terms4
+import mq_terms6
 from mq_terms import T
 import mq_guias
 E=html.escape

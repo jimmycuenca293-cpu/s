@@ -56,3 +56,26 @@ add('secadoras',nombre='Secadoras',corto='Secadoras',sing='secadora',art='la sec
  seguridad='La pelusa acumulada es combustible: limpia el filtro en cada ciclo. Si hay olor a quemado o la secadora se sobrecalienta, desconéctala y no la uses.',
  datos='marca y modelo (etiqueta dentro de la puerta o atrás), y si gira pero no calienta o no gira',
  quito='Muchas secadoras eléctricas usan 220 V y breaker propio; en edificios de Quito confirma que la toma y el breaker sean los indicados antes de culpar al equipo.')
+
+# ---------- fallas adicionales (más búsquedas de síntoma) ----------
+def _more(k,items):
+    if k not in EQ: return
+    for (n,c,u,tip,slug) in items:
+        EQ[k]['fallas'].append((n,c,u,tip)); EQ[k]['slugs'].append(slug)
+b_="samsung"
+_more('refrigeradoras',[
+ ('El congelador no congela','Ventilador o evaporador con escarcha, sensor de temperatura, tarjeta de control o compresor.','Urgente','Revisa que la temperatura esté bien configurada y que las puertas cierren; si los alimentos se descongelan, escríbenos de inmediato.',f'refrigeradora-{b_}-congelador-no-congela-quito'),
+ ('La puerta no cierra bien o el empaque no sella','Empaque (goma) deformado o sucio, bisagras flojas, refrigeradora mal nivelada o cajones mal puestos.','Vigilar','Limpia el empaque con agua tibia y prueba con una hoja de papel: si sale sin resistencia, no está sellando.',f'refrigeradora-{b_}-puerta-no-cierra-quito'),
+ ('La luz interior no enciende','Foco o LED quemado, interruptor de la puerta o conexión suelta.','Vigilar','Si el resto funciona con normalidad, no es urgente; pide que lo revisen en la próxima visita.',f'refrigeradora-{b_}-luz-interior-no-enciende-quito'),
+ ('El agua o el hielo salen con mal sabor u olor','Filtro de agua vencido, agua estancada en la manguera o depósito de hielo sucio.','Vigilar','Cambia el filtro cada 6 meses y desecha los primeros litros y el hielo después del cambio.',f'refrigeradora-{b_}-agua-con-mal-sabor-quito'),
+ ('El compresor no arranca o se calienta mucho','Relé de arranque, protector térmico, tarjeta de control, voltaje bajo o compresor con falla.','Urgente','Desconéctala unos 10 minutos y no la prendas repetidamente: puedes dañar el compresor.',f'refrigeradora-{b_}-compresor-no-arranca-quito')])
+_more('lavadoras',[
+ ('El tambor no gira','Correa suelta o rota (carga superior), motor, acople, tarjeta de control o carga excesiva.','Revisar pronto','Reduce la carga y prueba otro ciclo; si el motor zumba pero el tambor no gira, no insistas.',f'lavadora-{b_}-tambor-no-gira-quito'),
+ ('No agita la ropa','Acople del agitador, transmisión, motor o seguro de la tapa.','Revisar pronto','Verifica que la tapa cierre bien y que el agitador no esté suelto antes de llamar.',f'lavadora-{b_}-no-agita-quito'),
+ ('Se detiene a mitad del ciclo','Carga desbalanceada, nivel de agua que no se detecta, seguro de puerta, tarjeta de control o variaciones de voltaje.','Revisar pronto','Redistribuye la ropa, revisa que las llaves de agua estén abiertas y anota el código de error si aparece.',f'lavadora-{b_}-se-detiene-a-mitad-del-ciclo-quito'),
+ ('Hace ruido fuerte al centrifugar','Amortiguadores o rodamientos desgastados, objetos atrapados, patas sin nivelar o carga desbalanceada.','Revisar pronto','Un golpeteo o chillido constante merece revisión antes de que dañe la tina.',f'lavadora-{b_}-ruido-al-centrifugar-quito'),
+ ('No dispensa el suavizante o el detergente','Dispensador tapado por residuos, válvula de entrada de agua o baja presión de agua.','Vigilar','Retira y lava el cajón del dispensador con agua tibia; revisa la presión de agua de la llave.',f'lavadora-{b_}-no-dispensa-suavizante-quito')])
+_more('secadoras',[
+ ('El tambor no gira','Correa rota, polea tensora, motor o rodillos desgastados.','Revisar pronto','Si escuchas el motor pero el tambor no gira, desconéctala y no la fuerces.',f'secadora-{b_}-tambor-no-gira-quito'),
+ ('Se sobrecalienta o huele a quemado','Ducto o filtro obstruido, termostato o resistencia con falla, exceso de pelusa acumulada.','Urgente','Desconéctala, no la uses y revisa filtro y ducto; si el olor continúa, escríbenos.',f'secadora-{b_}-se-sobrecalienta-quito'),
+ ('Salta el breaker al encender','Resistencia a tierra, breaker inadecuado para 220 V, cable o tomacorriente dañado, o motor con falla.','Urgente','No subas el breaker por tu cuenta: puede ser un riesgo eléctrico. Desconéctala y pide revisión.',f'secadora-{b_}-salta-el-breaker-quito')])
