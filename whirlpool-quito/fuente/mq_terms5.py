@@ -97,3 +97,45 @@ add('nevera-o-refrigeradora-whirlpool-es-lo-mismo','¿Nevera o refrigeradora Whi
  'Si tu equipo tiene congelador, dispensador o pantalla, también lo atendemos.',
  [('¿Qué diferencia hay entre nevera y refrigeradora?','Ninguna: son nombres regionales del mismo electrodoméstico.'),('¿Reparan ambas?','Sí, el mismo servicio aplica.')])
 print(len(T))
+
+# ---- Equipo x sector de Quito
+from mq_zonas import ZD,ZSLUGS
+SECT={'Norte':('el norte de Quito','norte'),'Centro':('el centro de Quito','centro'),'Sur':('el sur de Quito','sur'),'Valles':('los valles de Quito','valles')}
+def _noms(sc,n=8): return [ZD[z]['nombre'] for z in ZSLUGS if ZD[z]['sector']==sc][:n]
+for sc,(lab,short) in SECT.items():
+    nm=', '.join(_noms(sc))
+    for k,pl,art in (('lavadoras','lavadoras','la lavadora'),('secadoras','secadoras','la secadora'),('refrigeradoras','refrigeradoras','la refrigeradora'),('neveras','neveras','la nevera')):
+        add(f'reparacion-de-{pl}-whirlpool-en-{lab.replace("el ","").replace("los ","").replace(" de Quito","").lower()}-de-quito',
+            f'Reparación de {pl} Whirlpool en {lab}',f'Reparación de {pl} Whirlpool en {lab}',
+            f'Reparación de {pl} Whirlpool en {lab}: técnico a domicilio en {nm} y alrededores. '+W+'.',[k],
+            f'Si vives en {lab} y {art} Whirlpool falla, el técnico va hasta tu casa o apartamento. Atendemos barrios como {nm}, entre otros.',
+            [f'Visita a domicilio en {lab}',f'Revisión de {art} en su lugar de uso','Explicación de la falla y costo antes de reparar','Coordinación del día y la hora por WhatsApp'],
+            f'Escríbenos tu barrio en {lab}, el modelo y la falla para confirmar la visita.',
+            [(f'¿Atienden {lab}?',f'Sí, cubrimos {lab}. Escríbenos tu barrio por WhatsApp y confirmamos.'),(f'¿Reparan {pl} Whirlpool en {lab}?','Sí, a domicilio, con diagnóstico claro y costo antes de reparar.')])
+# ---- Intenciones de contacto y urgencia
+add('agendar-visita-de-servicio-tecnico-whirlpool-quito','Agendar visita de servicio técnico Whirlpool en Quito','Agendar visita de servicio técnico Whirlpool en Quito','Cómo agendar una visita de servicio técnico Whirlpool en Quito: qué enviar por WhatsApp y cómo se coordina. '+W+'.',['lavadoras','secadoras','refrigeradoras','neveras'],
+ 'Agendar la visita es simple: nos escribes por WhatsApp con el equipo, el modelo, la falla y tu barrio, y coordinamos el día y la hora.',
+ ['Mensaje por WhatsApp con modelo, falla y barrio','Confirmación de cobertura en tu sector','Coordinación del día y la hora','Diagnóstico a domicilio con costo antes de reparar'],
+ 'Si puedes, envía una foto de la etiqueta del equipo y un video corto de la falla.',
+ [('¿Cómo agendo la visita?','Escríbenos por WhatsApp o llámanos al 099 350 8191 con el modelo, la falla y tu barrio.'),('¿Puedo elegir la hora?','Coordinamos contigo la mejor hora según la disponibilidad que te confirmemos.')])
+add('cotizacion-de-reparacion-de-electrodomesticos-whirlpool-quito','Cotización de reparación de electrodomésticos Whirlpool en Quito','Cotización de reparación de electrodomésticos Whirlpool','Pide la cotización de la reparación de tu electrodoméstico Whirlpool en Quito: te damos el costo antes de reparar. '+W+'.',['lavadoras','secadoras','refrigeradoras','neveras'],
+ 'Para cotizar la reparación primero hay que saber qué falla. Nos envías el modelo y los síntomas, y después del diagnóstico te damos el costo antes de empezar.',
+ ['Orientación inicial por WhatsApp','Diagnóstico del equipo a domicilio','Costo de la reparación antes de empezar','Tú decides si continuamos'],
+ 'El costo exacto depende de la falla y de la pieza; por eso se confirma después del diagnóstico.',
+ [('¿Cuánto cuesta reparar mi electrodoméstico?','Depende de la falla y de la pieza. Te lo confirmamos antes de reparar, después del diagnóstico.'),('¿La cotización compromete a reparar?','No: primero te explicamos y tú decides.')])
+add('tecnico-whirlpool-urgente-quito','Técnico Whirlpool urgente en Quito','Técnico Whirlpool urgente en Quito','Técnico Whirlpool para urgencias en Quito: refrigeradora que no enfría, fuga de agua o falla eléctrica. Escribe por WhatsApp y confirmamos disponibilidad.',['refrigeradoras','neveras','lavadoras','secadoras'],
+ 'Algunas fallas no pueden esperar: una refrigeradora que deja de enfriar, una lavadora que inunda o una secadora que huele a quemado. Escríbenos y te decimos qué hacer y qué disponibilidad hay.',
+ ['Orientación inmediata por WhatsApp sobre qué hacer','Confirmación de disponibilidad de visita','Revisión a domicilio','Costo confirmado antes de reparar'],
+ 'Si hay fuga de agua, cierra la llave y desconecta el equipo. Si huele a quemado, desconéctalo y no lo uses.',
+ [('¿Atienden urgencias?','Escríbenos por WhatsApp y te confirmamos la disponibilidad para tu sector.'),('¿Qué hago mientras llega el técnico?','Desconecta el equipo si hay olor a quemado o fuga de agua y cierra la llave de agua.')])
+for k,pl,art in (('lavadoras','lavadoras','la lavadora'),('secadoras','secadoras','la secadora'),('refrigeradoras','refrigeradoras','la refrigeradora'),('neveras','neveras','la nevera')):
+    add(f'tecnico-de-{pl}-whirlpool-urgente-quito',f'Técnico de {pl} Whirlpool urgente en Quito',f'Técnico de {pl} Whirlpool urgente en Quito',f'Técnico para urgencias de {pl} Whirlpool en Quito: escribe por WhatsApp, te orientamos y confirmamos disponibilidad. {W}.',[k],
+     f'Si {art} Whirlpool dejó de funcionar de golpe, escríbenos: te indicamos qué hacer mientras tanto y confirmamos cuándo podemos ir.',
+     ['Orientación inicial por WhatsApp','Confirmación de disponibilidad de visita','Diagnóstico a domicilio','Costo confirmado antes de reparar'],
+     'Ante olor a quemado o fuga de agua, desconecta el equipo y cierra la llave.',
+     [(f'¿Atienden urgencias de {pl}?','Escríbenos y te confirmamos la disponibilidad para tu sector.'),('¿Qué necesito enviar?','Modelo, falla y barrio; una foto o video ayuda.')])
+    add(f'cotizar-reparacion-de-{pl}-whirlpool-quito',f'Cotizar la reparación de {pl} Whirlpool en Quito',f'Cotizar reparación de {pl} Whirlpool en Quito',f'Cotiza la reparación de {art} Whirlpool en Quito: diagnóstico a domicilio y costo antes de reparar. {W}.',[k],
+     f'Para cotizar la reparación de {art} Whirlpool necesitamos saber qué falla. Envíanos el modelo y los síntomas y te orientamos; el costo final se confirma tras el diagnóstico.',
+     ['Orientación por WhatsApp','Diagnóstico a domicilio','Costo antes de reparar','Reparación solo si tú aceptas'],
+     'Cuanta más información envíes, más precisa será la orientación inicial.',
+     [(f'¿Cuánto cuesta reparar {art}?','Depende de la falla y de la pieza; te lo confirmamos antes de reparar.'),('¿Cobran la visita?','Te confirmamos el costo de la visita por WhatsApp antes de ir.')])
