@@ -45,15 +45,6 @@ Son búsquedas por las que NO quieres pagar. Ya vienen en `05-archivos-para-impo
 - rodamiento
 - empaque
 - amortiguador
-- mabe
-- whirlpool
-- haceb
-- electrolux
-- challenger
-- kalley
-- midea
-- frigidaire
-- general electric
 - nevera
 - refrigerador
 - aire acondicionado
@@ -113,3 +104,5 @@ Son búsquedas por las que NO quieres pagar. Ya vienen en `05-archivos-para-impo
 - bomba de desague lavadora
 - bomba de agua lavadora
 - motobomba
+- filtro de pelusas
+- filtro de lavadora

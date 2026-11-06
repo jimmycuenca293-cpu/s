@@ -1,5 +1,5 @@
-"""Genera la campaña de Google Ads para la tienda de mangueras para lavadoras Samsung y LG.
-Está dentro del mismo dominio de la tienda de filtros (filtrosparalavadoras.click/mangueras-para-lavadora/), con la misma etiqueta de Tag Manager y el mismo evento «whatsapp».
+"""Genera la campaña de Google Ads para la tienda de mangueras para lavadora (SIN marcas: sirve para todas las lavadoras).
+Está dentro del mismo dominio de las otras tiendas (filtrosparalavadoras.click/mangueras-para-lavadora/), con la misma etiqueta de Tag Manager y el mismo evento «whatsapp».
 Sin las palabras «original», «genuino» ni «compatible». Sin precios ni promesas: el precio lo da el asesor por WhatsApp."""
 import csv, json, re, sys
 from pathlib import Path
@@ -18,9 +18,9 @@ def url(ruta):
     return f"{DOM}/{r}/" if r else f"{DOM}/"
 
 
-GEN_H = ["Pago contra Entrega", "Pedido por WhatsApp", "Asesor Te Confirma la Correcta", "Envío a Toda Colombia", "Mangueras para Samsung y LG", "Escríbenos por WhatsApp",
+GEN_H = ["Pago contra Entrega", "Pedido por WhatsApp", "Asesor Te Confirma la Correcta", "Envío a Toda Colombia", "Mangueras para Lavadora", "Escríbenos por WhatsApp",
          "Cambio Paso a Paso", "Precio por WhatsApp", "Atención por WhatsApp", "Envía la Foto de tu Manguera", "Te Decimos Cuál Necesitas"]
-GEN_D = ["Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la manguera que necesita.",
+GEN_D = ["Dinos qué manguera necesitas por WhatsApp y te confirmamos el largo y el precio.",
          "Envía una foto de la manguera vieja y el asesor te dice cuál es.",
          "Cada manguera trae su paso a paso para cambiarla. Revisa la guía antes de pedir.",
          "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."]
@@ -31,69 +31,70 @@ def grupo(nombre, destino, path1, path2, titulos, descripciones, claves, nota=""
     G.append(dict(nombre=nombre, url=destino, path1=path1, path2=path2, titulos=titulos, descripciones=descripciones, claves=claves, nota=nota))
 
 
-def kw(marca, *frases):
-    return [f.replace("{m}", marca.lower()) for f in frases]
+def con_generales(esp):
+    return esp + [h for h in GEN_H if h not in esp]
 
 
-# (clave de grupo, ruta de destino por marca, títulos específicos, descripción propia, frases)
-TIPOS = [
-    ("Desagüe", "{c}/manguera-de-desague-lavadora-{c}", "Desague",
-     ["Manguera de Desagüe {M}", "Manguera Desagüe {M}", "Manguera de Drenaje {M}", "Manguera de Desagüe Corrugada", "Alargue Manguera Desagüe", "Manguera Desagüe Lavadora", "Mangueras de Desagüe {M}"],
-     "Manguera de desagüe para lavadora {M}. Las largas son para carga frontal.",
-     ["manguera de desague lavadora {m}", "manguera desague lavadora {m}", "manguera de desagüe lavadora {m}", "manguera de drenaje lavadora {m}", "manguera para desague lavadora {m}",
-      "manguera de desague para lavadora {m}", "comprar manguera desague lavadora {m}", "manguera desague lavadora {m} carga frontal", "manguera desague lavadora {m} carga superior",
-      "extension manguera desague lavadora {m}", "manguera de salida de agua lavadora {m}", "manguera de evacuacion lavadora {m}", "manguera de desague lavadora {m} colombia"]),
-    ("Entrada", "{c}/manguera-de-entrada-lavadora-{c}", "Entrada",
-     ["Manguera de Entrada {M}", "Manguera Agua Lavadora {M}", "Manguera Alimentación {M}", "Manguera con Tuercas", "Manguera Entrada Blanca", "Manguera de Llenado {M}", "Mangueras de Entrada {M}"],
-     "Manguera de entrada para lavadora {M}: sirve para todas las lavadoras. Elige el largo.",
-     ["manguera de entrada lavadora {m}", "manguera de entrada para lavadora", "manguera de entrada para todas las lavadoras", "manguera de agua para cualquier lavadora", "manguera entrada agua lavadora {m}", "manguera de agua lavadora {m}", "manguera de alimentacion lavadora {m}", "manguera de llenado lavadora {m}",
-      "manguera de entrada de agua lavadora {m}", "manguera para lavadora {m}", "comprar manguera lavadora {m}", "manguera de conexion lavadora {m}", "manguera anti inundacion lavadora {m}",
-      "manguera de abastecimiento lavadora {m}", "manguera lavadora {m} colombia", "manguera de agua para lavadora {m}"]),
-    ("Tina-Bomba", "{c}/manguera-tina-bomba-lavadora-{c}", "TinaBomba",
-     ["Manguera Tina Bomba {M}", "Manguera Tina-Bomba Lavadora", "Manguera de la Tina {M}", "Manguera Interna {M}", "Manguera Tina a Bomba", "Manguera Bomba {M}", "Mangueras Internas {M}"],
-     "Manguera tina-bomba para lavadora {M}: la que une la tina con la bomba de desagüe.",
-     ["manguera tina bomba lavadora {m}", "manguera tina-bomba lavadora {m}", "manguera de la tina lavadora {m}", "manguera tina a bomba lavadora {m}", "manguera interna lavadora {m}",
-      "manguera de la bomba lavadora {m}", "manguera bomba de desague lavadora {m}", "manguera entre tina y bomba lavadora {m}", "manguera de tina lavadora {m}"]),
-    ("Presostato y Dispensador", "{c}/manguera-lavadora-{c}-modelo-{f}", "Presostato",
-     ["Manguera Presostato {M}", "Manguera Nivel Agua {M}", "Manguera del Dispensador", "Manguera Caja Detergente", "Manguera Nivel de Agua", "Manguera Interna Lavadora", "Mangueras Lavadora {M}"],
-     "Manguera del presostato o dispensador para lavadora {M}. Consulta por WhatsApp.",
-     ["manguera presostato lavadora {m}", "manguera del presostato lavadora {m}", "manguera sensor de nivel lavadora {m}", "manguera nivel de agua lavadora {m}", "manguera dispensador lavadora {m}",
-      "manguera del dispensador lavadora {m}", "manguera caja detergente lavadora {m}", "manguera de la caja de jabon lavadora {m}", "manguera presostato {m}"]),
-    ("Mangueras", "{c}", "Mangueras",
-     ["Mangueras Lavadora {M}", "Manguera Lavadora {M}", "Repuesto Manguera {M}", "Mangueras Lavadora {M}", "Manguera Superior {M}", "Manguera Carga Frontal {M}", "Manguera {M} Lavadora"],
-     "Mangueras para lavadora {M}: desagüe, entrada y más. Pídela por WhatsApp.",
-     ["mangueras lavadora {m}", "mangueras para lavadora {m}", "manguera lavadora {m}", "repuesto manguera lavadora {m}", "repuestos mangueras lavadora {m}", "donde comprar manguera lavadora {m}",
-      "precio manguera lavadora {m}", "manguera lavadora {m} carga frontal", "manguera lavadora {m} carga superior", "mangueras para lavadoras {m} colombia", "manguera lavadora {m} envio a toda colombia"]),
-]
-for M, c, fam in [("Samsung", "samsung", "wa"), ("LG", "lg", "wt")]:
-    for nom, ruta, p2, tits, desc, frases in TIPOS:
-        dest = url(ruta.format(c=c, f=fam))
-        claves = [f.replace("{m}", c) for f in frases]
-        grupo(f"{M} - {nom}", dest, "Mangueras", M if p2 in ("Mangueras",) else p2,
-              [t.replace("{M}", M) for t in tits] + GEN_H[:8], [desc.replace("{M}", M), GEN_D[0], GEN_D[1], GEN_D[3]], claves)
+grupo("Entrada de agua", url("mangueras-de-entrada-de-agua-para-lavadora"), "Mangueras", "Entrada",
+      con_generales(["Manguera de Entrada Lavadora", "Manguera de Agua Lavadora", "Manguera Entrada de Agua", "Mangueras de Entrada", "Manguera de Alimentación", "Manguera de Llenado", "Sirve para Todas las Lavadoras"]),
+      ["Manguera de entrada de agua para lavadora: azul, naranja o negra. Sirve para todas.", GEN_D[0], GEN_D[1], GEN_D[3]],
+      ["manguera de entrada lavadora", "manguera entrada de agua lavadora", "manguera de agua lavadora", "manguera de alimentacion lavadora", "manguera de llenado lavadora", "manguera de entrada de agua para lavadora",
+       "manguera para lavadora", "comprar manguera lavadora", "manguera de conexion lavadora", "manguera de abastecimiento lavadora", "manguera de entrada para todas las lavadoras", "manguera de agua para cualquier lavadora",
+       "manguera de entrada para lavadora", "precio manguera de entrada lavadora", "donde comprar manguera de agua para lavadora"])
+grupo("Agua fría y caliente", url("manguera-agua-fria-y-caliente-lavadora-azul-y-naranja"), "Mangueras", "AzulNaranja",
+      con_generales(["Manguera Azul Lavadora", "Manguera Naranja Lavadora", "Manguera Agua Fría", "Manguera Agua Caliente", "Manguera Azul y Naranja", "Azul Fría, Naranja Caliente", "Mangueras de Colores"]),
+      ["Manguera azul para agua fría y naranja para agua caliente. Pídelas por WhatsApp.", GEN_D[0], GEN_D[1], GEN_D[3]],
+      ["manguera azul lavadora", "manguera naranja lavadora", "manguera agua fria lavadora", "manguera agua caliente lavadora", "manguera azul y naranja lavadora", "manguera de agua caliente para lavadora",
+       "manguera de agua fria para lavadora", "mangueras azul y naranja para lavadora", "manguera lavadora azul", "manguera lavadora naranja"])
+grupo("Negra con rosca", url("manguera-negra-con-rosca-lavadora-carga-frontal"), "Mangueras", "NegraRosca",
+      con_generales(["Manguera Negra con Rosca", "Manguera Negra Lavadora", "Manguera Carga Frontal", "Manguera con Rosca Lavadora", "Manguera de Caucho Lavadora", "Entrada Carga Frontal", "Manguera Negra Entrada"]),
+      ["Manguera negra con rosca para lavadora de carga frontal. Más fina. Pídela por WhatsApp.", GEN_D[0], GEN_D[1], GEN_D[3]],
+      ["manguera negra lavadora", "manguera negra con rosca lavadora", "manguera de entrada negra lavadora", "manguera lavadora carga frontal", "manguera de agua lavadora carga frontal", "manguera con rosca lavadora",
+       "manguera de caucho lavadora", "manguera negra para lavadora", "manguera de entrada lavadora carga frontal", "manguera negra entrada de agua lavadora"])
+grupo("Desagüe", url("mangueras-de-desague-para-lavadora"), "Mangueras", "Desague",
+      con_generales(["Manguera de Desagüe Lavadora", "Manguera Desagüe", "Manguera de Drenaje", "Manguera Corrugada Lavadora", "Alargue Manguera Desagüe", "Manguera Desagüe con Codo", "Mangueras de Desagüe"]),
+      ["Manguera de desagüe para lavadora: corrugada, larga o con funda. Pídela por WhatsApp.", GEN_D[0], GEN_D[1], GEN_D[3]],
+      ["manguera de desague lavadora", "manguera desague lavadora", "manguera de desagüe lavadora", "manguera de drenaje lavadora", "manguera para desague lavadora", "manguera de desague para lavadora",
+       "comprar manguera desague lavadora", "extension manguera desague lavadora", "manguera de salida de agua lavadora", "manguera de evacuacion lavadora", "manguera corrugada lavadora", "manguera de desague con codo lavadora",
+       "manguera de desague lavadora colombia"])
+grupo("Desagüe largo carga frontal", url("desague-largo-para-lavadora-de-carga-frontal"), "Mangueras", "DesagueLargo",
+      con_generales(["Desagüe Largo Lavadora", "Manguera Desagüe Larga", "Desagüe Carga Frontal", "Manguera Larga Lavadora", "Manguera de Desagüe 2 m", "Extensión de Desagüe", "Desagüe con Extensión"]),
+      ["Manguera de desagüe larga para lavadora de carga frontal. Te confirmamos el largo.", GEN_D[0], GEN_D[1], GEN_D[3]],
+      ["manguera de desague larga lavadora", "manguera desague larga lavadora", "manguera de desague lavadora carga frontal", "manguera de desague para lavadora de carga frontal", "extension de desague lavadora",
+       "manguera larga para desague de lavadora", "manguera desague lavadora 2 metros", "alargue de desague lavadora"])
+grupo("Tina-bomba", url("manguera-tina-bomba-para-lavadora"), "Mangueras", "TinaBomba",
+      con_generales(["Manguera Tina Bomba", "Manguera Tina-Bomba Lavadora", "Manguera de la Tina", "Manguera Interna Lavadora", "Manguera Tina a Bomba", "Manguera Bomba Lavadora", "Mangueras Internas"]),
+      ["Manguera tina-bomba para lavadora: la que une la tina con la bomba de desagüe.", GEN_D[0], GEN_D[1], GEN_D[3]],
+      ["manguera tina bomba lavadora", "manguera tina-bomba lavadora", "manguera de la tina lavadora", "manguera tina a bomba lavadora", "manguera interna lavadora", "manguera de la bomba lavadora",
+       "manguera bomba de desague lavadora", "manguera entre tina y bomba lavadora", "manguera de tina lavadora", "manguera fuelle lavadora"])
+grupo("Mangueras en general", url(""), "Mangueras", "Lavadora",
+      con_generales(["Mangueras para Lavadora", "Manguera Lavadora", "Repuesto Manguera Lavadora", "Mangueras de Lavadora", "Todas las Mangueras", "Entrada, Desagüe y Más", "Sirven para Todas"]),
+      ["Mangueras para lavadora: entrada, desagüe y tina-bomba. Pídela por WhatsApp.", GEN_D[0], GEN_D[1], GEN_D[3]],
+      ["mangueras lavadora", "mangueras para lavadora", "manguera lavadora", "repuesto manguera lavadora", "repuestos mangueras lavadora", "donde comprar manguera lavadora", "precio manguera lavadora",
+       "manguera lavadora carga superior", "mangueras para lavadoras colombia", "manguera lavadora envio a toda colombia", "mangueras de lavadora", "manguera para lavadora colombia"])
 
 NEGATIVAS = ["usado", "usada", "segunda mano", "casero", "casera", "reciclar", "manual", "pdf", "descargar", "video", "youtube", "curso", "empleo", "trabajo", "vacante", "gratis",
              "comprar lavadora", "lavadora nueva", "precio de lavadora", "lavadoras en oferta", "oferta lavadora", "falabella", "exito", "alkosto", "homecenter", "ktronix", "olx", "mercadolibre",
              "amazon", "alibaba", "aliexpress", "temu", "reparacion", "reparar", "servicio tecnico", "tecnico", "tecnico a domicilio", "tarjeta electronica", "compresor", "correa", "rodamiento",
-             "empaque", "amortiguador", "mabe", "whirlpool", "haceb", "electrolux", "challenger", "kalley", "midea", "frigidaire", "general electric", "nevera", "refrigerador", "aire acondicionado",
-             "patente", "dibujo", "juguete",
+             "empaque", "amortiguador", "nevera", "refrigerador", "aire acondicionado", "patente", "dibujo", "juguete",
              # mangueras que no son de lavadora
              "jardin", "riego", "piscina", "incendio", "bombero", "gas", "gas natural", "cocina", "estufa", "radiador", "refrigerante", "hidraulica", "hidraulico", "combustible", "gasolina",
              "aire comprimido", "compresor de aire", "ducha", "lavamanos", "lavaplatos", "lavavajillas", "sanitario", "inodoro", "calentador", "cafetera", "aspiradora", "hidrolavadora",
              "carro", "automovil", "moto", "bicicleta", "acuario", "pecera", "pozo", "tanque", "cisterna", "industrial", "alta presion", "por metro", "por metros", "rollo", "carrete",
              "sumergible", "presurizadora", "bomba de agua carro", "bomba de piscina", "bomba de presion", "bomba periferica", "bomba centrifuga", "bomba de achique", "bomba de desague lavadora",
-             "bomba de agua lavadora", "motobomba"]
-SITELINKS = [("Mangueras Samsung", "Desagüe, entrada y más", "Pide la tuya por WhatsApp", url("samsung")), ("Mangueras LG", "Desagüe, entrada y más", "Pide la tuya por WhatsApp", url("lg")),
-             ("Desagüe Samsung", "Corrugada y extensión", "El asesor te confirma", url("samsung/manguera-de-desague-lavadora-samsung")),
-             ("Desagüe LG", "Corrugada y extensión", "El asesor te confirma", url("lg/manguera-de-desague-lavadora-lg")),
-             ("Entrada de agua Samsung", "Negra o blanca, con tuercas", "El asesor te confirma", url("samsung/manguera-de-entrada-lavadora-samsung")),
-             ("Entrada de agua LG", "Negra o blanca, con tuercas", "El asesor te confirma", url("lg/manguera-de-entrada-lavadora-lg")),
-             ("Manguera tina-bomba", "La que va por dentro", "El asesor te confirma", url("samsung/manguera-tina-bomba-lavadora-samsung")),
-             ("¿Cuál es mi manguera?", "Elige por tipo y modelo", "El asesor te confirma", url("samsung/cual-es-mi-manguera")),
-             ("Lavadora gotea", "Qué manguera revisar", "Guía paso a paso", url("samsung/lavadora-samsung-gotea-agua-por-la-manguera")),
-             ("Cómo cambiar la manguera", "Paso a paso", "Revisa la guía antes de pedir", url("samsung/cambio-e-instalacion"))]
-CALLOUTS = ["Pedido por WhatsApp", "Asesor por WhatsApp", "Envío a Toda Colombia", "Confirmamos la Correcta", "Pago contra Entrega", "Número de Guía", "Samsung y LG", "Guía de Cambio"]
-SNIPPET = ("Tipos", ["Manguera de desagüe", "Manguera de entrada", "Manguera tina-bomba", "Manguera del presostato", "Manguera del dispensador"])
+             "bomba de agua lavadora", "motobomba", "filtro de pelusas", "filtro de lavadora"]
+SITELINKS = [("Entrada de agua", "Azul, naranja y negra", "Sirven para todas", url("mangueras-de-entrada-de-agua-para-lavadora")),
+             ("Mangueras de desagüe", "Corrugada, larga y con funda", "El asesor te confirma", url("mangueras-de-desague-para-lavadora")),
+             ("Manguera tina-bomba", "La que va por dentro", "El asesor te confirma", url("manguera-tina-bomba-para-lavadora")),
+             ("Azul y naranja", "Agua fría y agua caliente", "Cómo conectarlas", url("manguera-agua-fria-y-caliente-lavadora-azul-y-naranja")),
+             ("Negra con rosca", "Para carga frontal", "Más fina, de caucho", url("manguera-negra-con-rosca-lavadora-carga-frontal")),
+             ("Desagüe largo", "Para carga frontal", "Cómo elegir el largo", url("desague-largo-para-lavadora-de-carga-frontal")),
+             ("¿Cuál es mi manguera?", "Elige por tipo", "El asesor te confirma", url("cual-es-mi-manguera")),
+             ("Lavadora gotea", "Qué manguera revisar", "Guía paso a paso", url("lavadora-gotea-agua-por-la-manguera")),
+             ("Lavadora no desagua", "Qué revisar", "Guía paso a paso", url("lavadora-no-desagua")),
+             ("Cómo cambiar la manguera", "Paso a paso", "Revisa la guía antes de pedir", url("cambio-e-instalacion"))]
+CALLOUTS = ["Pedido por WhatsApp", "Asesor por WhatsApp", "Envío a Toda Colombia", "Confirmamos la Correcta", "Pago contra Entrega", "Número de Guía", "Sirven para Todas", "Guía de Cambio"]
+SNIPPET = ("Tipos", ["Manguera de entrada", "Manguera de desagüe", "Manguera tina-bomba", "Agua fría (azul)", "Agua caliente (naranja)"])
 
 err = []
 for g in G:
@@ -151,7 +152,7 @@ for i, g in enumerate(G, 1):
     "Incluyen las de quien busca comprar una lavadora (no una manguera), otras marcas y otras clases de manguera (jardín, gas, piscina, carro, industrial…). Revisa el informe de **Términos de búsqueda** cada semana y agrega las que no te sirvan.\n\n" + "\n".join(f"- {k}" for k in NEGATIVAS) + "\n", encoding="utf-8")
 (RAIZ / "04-recursos-extensiones.md").write_text("# Recursos (extensiones) a nivel de campaña\n\n## Enlaces de sitio (título ≤25, descripciones ≤35)\n"
     + "\n".join(f"- **{s[0]}** — {s[1]} / {s[2]} → {s[3]}" for s in SITELINKS) + "\n\n## Textos destacados (≤25)\n" + "\n".join(f"- {c}" for c in CALLOUTS)
-    + f"\n\n## Fragmento estructurado\n**{SNIPPET[0]}:** {', '.join(SNIPPET[1])}\n\n## Llamadas\n- Samsung: 305 479 6329 · LG: 320 510 2995. Agrega los dos como recurso de llamada y limítalos al horario de atención.\n\n## Imágenes\n- Usa las fotos de las mangueras de la tienda (cuadradas 1:1 y 1,91:1).\n", encoding="utf-8")
+    + f"\n\n## Fragmento estructurado\n**{SNIPPET[0]}:** {', '.join(SNIPPET[1])}\n\n## Llamadas\n- 305 479 6329. Agrégalo como recurso de llamada y limítalos al horario de atención.\n\n## Imágenes\n- Usa las fotos de las mangueras de la tienda (cuadradas 1:1 y 1,91:1).\n", encoding="utf-8")
 ng = sum(len(g["claves"]) for g in G)
 (QUI / "datos.json").write_text(json.dumps(dict(grupos=G, negativas=NEGATIVAS, sitelinks=SITELINKS, destacados=CALLOUTS, fragmento=SNIPPET, dominio=DOM, campana=CAMP, total_claves=ng), ensure_ascii=False, indent=1), encoding="utf-8")
 print(f"OK: {len(G)} grupos, {ng} palabras clave, {len(NEGATIVAS)} negativas, {len(SITELINKS)} enlaces")

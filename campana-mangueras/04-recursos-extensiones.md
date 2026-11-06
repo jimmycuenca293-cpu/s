@@ -1,16 +1,16 @@
 # Recursos (extensiones) a nivel de campaña
 
 ## Enlaces de sitio (título ≤25, descripciones ≤35)
-- **Mangueras Samsung** — Desagüe, entrada y más / Pide la tuya por WhatsApp → https://filtrosparalavadoras.click/mangueras-para-lavadora/samsung/
-- **Mangueras LG** — Desagüe, entrada y más / Pide la tuya por WhatsApp → https://filtrosparalavadoras.click/mangueras-para-lavadora/lg/
-- **Desagüe Samsung** — Corrugada y extensión / El asesor te confirma → https://filtrosparalavadoras.click/mangueras-para-lavadora/samsung/manguera-de-desague-lavadora-samsung/
-- **Desagüe LG** — Corrugada y extensión / El asesor te confirma → https://filtrosparalavadoras.click/mangueras-para-lavadora/lg/manguera-de-desague-lavadora-lg/
-- **Entrada de agua Samsung** — Negra o blanca, con tuercas / El asesor te confirma → https://filtrosparalavadoras.click/mangueras-para-lavadora/samsung/manguera-de-entrada-lavadora-samsung/
-- **Entrada de agua LG** — Negra o blanca, con tuercas / El asesor te confirma → https://filtrosparalavadoras.click/mangueras-para-lavadora/lg/manguera-de-entrada-lavadora-lg/
-- **Manguera tina-bomba** — La que va por dentro / El asesor te confirma → https://filtrosparalavadoras.click/mangueras-para-lavadora/samsung/manguera-tina-bomba-lavadora-samsung/
-- **¿Cuál es mi manguera?** — Elige por tipo y modelo / El asesor te confirma → https://filtrosparalavadoras.click/mangueras-para-lavadora/samsung/cual-es-mi-manguera/
-- **Lavadora gotea** — Qué manguera revisar / Guía paso a paso → https://filtrosparalavadoras.click/mangueras-para-lavadora/samsung/lavadora-samsung-gotea-agua-por-la-manguera/
-- **Cómo cambiar la manguera** — Paso a paso / Revisa la guía antes de pedir → https://filtrosparalavadoras.click/mangueras-para-lavadora/samsung/cambio-e-instalacion/
+- **Entrada de agua** — Azul, naranja y negra / Sirven para todas → https://filtrosparalavadoras.click/mangueras-para-lavadora/mangueras-de-entrada-de-agua-para-lavadora/
+- **Mangueras de desagüe** — Corrugada, larga y con funda / El asesor te confirma → https://filtrosparalavadoras.click/mangueras-para-lavadora/mangueras-de-desague-para-lavadora/
+- **Manguera tina-bomba** — La que va por dentro / El asesor te confirma → https://filtrosparalavadoras.click/mangueras-para-lavadora/manguera-tina-bomba-para-lavadora/
+- **Azul y naranja** — Agua fría y agua caliente / Cómo conectarlas → https://filtrosparalavadoras.click/mangueras-para-lavadora/manguera-agua-fria-y-caliente-lavadora-azul-y-naranja/
+- **Negra con rosca** — Para carga frontal / Más fina, de caucho → https://filtrosparalavadoras.click/mangueras-para-lavadora/manguera-negra-con-rosca-lavadora-carga-frontal/
+- **Desagüe largo** — Para carga frontal / Cómo elegir el largo → https://filtrosparalavadoras.click/mangueras-para-lavadora/desague-largo-para-lavadora-de-carga-frontal/
+- **¿Cuál es mi manguera?** — Elige por tipo / El asesor te confirma → https://filtrosparalavadoras.click/mangueras-para-lavadora/cual-es-mi-manguera/
+- **Lavadora gotea** — Qué manguera revisar / Guía paso a paso → https://filtrosparalavadoras.click/mangueras-para-lavadora/lavadora-gotea-agua-por-la-manguera/
+- **Lavadora no desagua** — Qué revisar / Guía paso a paso → https://filtrosparalavadoras.click/mangueras-para-lavadora/lavadora-no-desagua/
+- **Cómo cambiar la manguera** — Paso a paso / Revisa la guía antes de pedir → https://filtrosparalavadoras.click/mangueras-para-lavadora/cambio-e-instalacion/
 
 ## Textos destacados (≤25)
 - Pedido por WhatsApp
@@ -19,14 +19,14 @@
 - Confirmamos la Correcta
 - Pago contra Entrega
 - Número de Guía
-- Samsung y LG
+- Sirven para Todas
 - Guía de Cambio
 
 ## Fragmento estructurado
-**Tipos:** Manguera de desagüe, Manguera de entrada, Manguera tina-bomba, Manguera del presostato, Manguera del dispensador
+**Tipos:** Manguera de entrada, Manguera de desagüe, Manguera tina-bomba, Agua fría (azul), Agua caliente (naranja)
 
 ## Llamadas
-- Samsung: 305 479 6329 · LG: 320 510 2995. Agrega los dos como recurso de llamada y limítalos al horario de atención.
+- 305 479 6329. Agrégalo como recurso de llamada y limítalos al horario de atención.
 
 ## Imágenes
 - Usa las fotos de las mangueras de la tienda (cuadradas 1:1 y 1,91:1).

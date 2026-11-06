@@ -4,7 +4,7 @@ La tienda de mangueras está en el mismo dominio y usa el mismo contenedor que l
 - `ubicacion`: `boton_flotante` o `enlace`
 - `boton`: texto del botón
 - `pagina`: ruta donde estaba (las mangueras empiezan por `/mangueras-para-lavadora/`)
-- `marca`: Samsung o LG
+- `marca`: en esta tienda va vacío o «todas» (no hay marcas)
 
 ## Si ya tienes la conversión de la campaña de filtros
 No hay que crear nada nuevo: el activador `whatsapp` y la etiqueta de conversión de Google Ads ya funcionan para las mangueras. Solo verifica en la vista previa de GTM que, al tocar un botón en una página de `/mangueras-para-lavadora/`, aparece el evento `whatsapp` y la etiqueta se dispara.

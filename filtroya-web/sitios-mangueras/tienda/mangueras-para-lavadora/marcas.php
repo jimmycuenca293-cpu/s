@@ -12,14 +12,14 @@ function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, stri
     $b = $M['base'];
     echo '<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
         . '<title>' . h($titulo) . '</title><meta name="description" content="' . h($desc) . '">' . ($indexar ? '<link rel="canonical" href="' . h($canon) . '">' : '<meta name="robots" content="noindex">')
-        . '<meta property="og:type" content="website"><meta property="og:title" content="' . h($titulo) . '"><meta property="og:description" content="' . h($desc) . '"><meta property="og:url" content="' . h($canon) . '"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="Mangueras para lavadora ' . h($M['nombre']) . '">'
+        . '<meta property="og:type" content="website"><meta property="og:title" content="' . h($titulo) . '"><meta property="og:description" content="' . h($desc) . '"><meta property="og:url" content="' . h($canon) . '"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="' . h($M['nombre']) . '">'
         . '<meta name="theme-color" content="' . h($M['tema']) . '"><link rel="icon" href="' . h($M['icono'] ?? '/mangueras-para-lavadora/img/icono.svg') . '">'
         . '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="' . h($M['fuentes']) . '">'
         . ($legado ? '<link rel="stylesheet" href="/mangueras-para-lavadora/estilo.css">' : '') . '<link rel="stylesheet" href="/mangueras-para-lavadora/marcas.css">'
         . verificacion_html() . analytics_html() . $extra . '</head><body class="m-' . h($M['clase']) . ($legado ? ' m-legado' : '') . '">' . gtm_body_html()
-        . '<div class="m-anuncio"><span>✔ Mangueras para lavadora ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío a toda Colombia</span><span>💵 Pago contra entrega</span></div>'
+        . '<div class="m-anuncio"><span>✔ ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío a toda Colombia</span><span>💵 Pago contra entrega</span></div>'
         . '<header class="m-top"><div class="m-wrap">'
-        . '<a class="m-logo" href="' . h($b) . '" aria-label="Mangueras para lavadora ' . h($M['nombre']) . '"><span class="m-sello">' . logo_marca_html($M) . '</span></a>'
+        . '<a class="m-logo" href="' . h($b) . '" aria-label="' . h($M['nombre']) . '"><span class="m-sello">' . logo_marca_html($M) . '</span></a>'
         . menu_marca($M)
         . '</div></header><main' . ($legado ? ' class="wrap m-legado-main"' : '') . '>';
 }
@@ -63,10 +63,10 @@ function pie_marca(array $M): void
     $tel = preg_replace('/\D/', '', (string) ($M['whatsapp'] ?? (cfg()['whatsapp'] ?? '')));
     $h = '<footer class="m-pie"><div class="m-wrap m-pie-top">'
         . '<div><a class="m-logo" href="' . h($b) . '"><span class="m-sello">' . logo_marca_html($M) . '</span></a>'
-        . '<p>Mangueras para lavadora ' . h($M['nombre']) . ', con envío a todo el país y atención por WhatsApp.</p>'
+        . '<p>' . h($M['nombre']) . ', con envío a todo el país y atención por WhatsApp.</p>'
         . ($tel ? '<a class="m-pie-wa" href="https://wa.me/57' . substr($tel, -10) . '" target="_blank" rel="noopener">💬 WhatsApp ' . h($M['telefono'] ?? $n['telefono']) . '</a>' : '')
         . '<span class="m-pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
-        . '<nav><b>Mangueras ' . h($M['nombre']) . '</b>';
+        . '<nav><b>' . h($M['nombre']) . '</b>';
     foreach ($M['productos'] as $p) $h .= '<a href="' . h($b . $p[1]) . '/">' . h($p[0]) . '</a>';
     $h .= '</nav><nav><b>Guías</b>';
     foreach ($M['guias'] ?? [] as $g) $h .= '<a href="' . h($g[0]) . '">' . h($g[1]) . '</a>';
@@ -76,7 +76,7 @@ function pie_marca(array $M): void
         foreach ($M['extra'] ?? [] as $c) $h .= '<a href="' . h($c[1]) . '"><b>' . h($c[0]) . '</b></a>';
     }
     $h .= '</nav><nav><b>Envíos</b>';
-    foreach (array_slice($M['ciudades'] ?? [], 0, 8) as $c) $h .= '<a href="' . h($c[1]) . '">Mangueras para lavadora ' . h($M['nombre']) . ' en ' . h($c[0]) . '</a>';
+    foreach (array_slice($M['ciudades'] ?? [], 0, 8) as $c) $h .= '<a href="' . h($c[1]) . '">' . h($M['nombre']) . ' en ' . h($c[0]) . '</a>';
     if (!empty($M['hub'])) $h .= '<a href="' . h($M['hub']) . '"><b>Todas las ciudades →</b></a>';
     $h .= '</nav><nav><b>Ayuda</b><a href="' . h($b) . 'cual-es-mi-manguera/">¿Cuál manguera es la mía?</a><a href="' . h($b) . 'cambio-e-instalacion/">Cómo cambiar la manguera</a><a href="' . h($b) . '#preguntas">Preguntas frecuentes</a>';
     foreach ($M['externos'] ?? [] as $e) $h .= '<a href="' . h($e[1]) . '" target="_blank" rel="noopener">' . h($e[0]) . ' ↗</a>';

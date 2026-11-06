@@ -2,50 +2,29 @@
 require __DIR__ . '/api/sitio.php';
 header('Content-Type: text/plain; charset=utf-8');
 echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
-# Mangueras para lavadoras Samsung y LG
+# Mangueras para lavadora
 
-> Manguera de desagüe, de entrada de agua, tina-bomba, del presostato y del dispensador para lavadoras Samsung y LG de carga superior y carga frontal, con envío a toda Colombia y pago contra entrega. La manguera correcta y el precio se confirman con un asesor por WhatsApp.
+> Mangueras de entrada de agua fría (azul) y caliente (naranja), negra con rosca para carga frontal, de desagüe y tina-bomba para lavadoras de todas las marcas, con envío a toda Colombia y pago contra entrega. El largo y el precio se confirman con un asesor por WhatsApp.
 
-## Samsung (WhatsApp 305 479 6329)
-- [Mangueras para lavadora Samsung](__BASE__/mangueras-para-lavadora/samsung/)
-- [Manguera de desagüe para lavadora Samsung: corrugada con codo en la punta](__BASE__/mangueras-para-lavadora/samsung/manguera-de-desague-lavadora-samsung-desague-corrugada/): Corrugada con codo en la punta.
-- [Manguera de desagüe para lavadora Samsung: extensión para alargar el desagüe](__BASE__/mangueras-para-lavadora/samsung/manguera-de-desague-lavadora-samsung-desague-extension/): Extensión para alargar el desagüe.
-- [Manguera de entrada de agua para lavadora Samsung: con tuercas en ambos extremos](__BASE__/mangueras-para-lavadora/samsung/manguera-de-entrada-de-agua-lavadora-samsung-entrada-tuercas/): Con tuercas en ambos extremos.
-- [Manguera de entrada de agua para lavadora Samsung: blanca con tuercas plásticas naranja](__BASE__/mangueras-para-lavadora/samsung/manguera-de-entrada-de-agua-lavadora-samsung-entrada-blanca-naranja/): Blanca con tuercas plásticas naranja.
-- [Manguera tina-bomba para lavadora Samsung: de la tina a la bomba de desagüe](__BASE__/mangueras-para-lavadora/samsung/manguera-tina-bomba-lavadora-samsung-tina-bomba/): De la tina a la bomba de desagüe.
-- [Manguera del presostato para lavadora Samsung: sensor de nivel de agua](__BASE__/mangueras-para-lavadora/samsung/manguera-del-presostato-lavadora-samsung-presostato/): Sensor de nivel de agua.
-- [Manguera del dispensador para lavadora Samsung: caja de detergente y suavizante](__BASE__/mangueras-para-lavadora/samsung/manguera-del-dispensador-lavadora-samsung-dispensador/): Caja de detergente y suavizante.
-- [Abrazaderas y codo para manguera para lavadora Samsung: para sujetar mangueras y desagüe](__BASE__/mangueras-para-lavadora/samsung/accesorios-manguera-lavadora-samsung-abrazaderas/): Para sujetar mangueras y desagüe.
-- [Manguera de entrada de agua para lavadora Samsung: blanca con tuerca plástica azul](__BASE__/mangueras-para-lavadora/samsung/manguera-de-entrada-de-agua-lavadora-samsung-entrada-blanca-azul/): Blanca con tuerca plástica azul.
-- [Manguera de desagüe para lavadora Samsung: corrugada gris con codo y funda protectora](__BASE__/mangueras-para-lavadora/samsung/manguera-de-desague-lavadora-samsung-desague-con-funda/): Corrugada gris con codo y funda protectora.
-- [Cuál manguera necesita mi lavadora](__BASE__/mangueras-para-lavadora/samsung/cual-es-mi-manguera/)
-- [Cómo cambiar la manguera](__BASE__/mangueras-para-lavadora/samsung/cambio-e-instalacion/)
-- [Lavadora Samsung gotea agua](__BASE__/mangueras-para-lavadora/samsung/lavadora-samsung-gotea-agua-por-la-manguera/)
+## Productos
+- [Manguera de entrada de agua fría (azul) para lavadora](__BASE__/mangueras-para-lavadora/manguera-entrada-agua-fria-azul-lavadora/): Agua fría · tuerca azul.
+- [Manguera de entrada de agua caliente (naranja) para lavadora](__BASE__/mangueras-para-lavadora/manguera-entrada-agua-caliente-naranja-lavadora/): Agua caliente · tuerca naranja.
+- [Manguera de entrada negra con rosca para lavadora](__BASE__/mangueras-para-lavadora/manguera-entrada-negra-con-rosca-lavadora-carga-frontal/): Negra con rosca · carga frontal.
+- [Manguera de desagüe corrugada con codo para lavadora](__BASE__/mangueras-para-lavadora/manguera-desague-corrugada-con-codo-lavadora/): Corrugada con codo.
+- [Manguera de desagüe larga con extensión para lavadora](__BASE__/mangueras-para-lavadora/manguera-desague-larga-con-extension-lavadora/): Larga, con extensión · carga frontal.
+- [Manguera de desagüe con funda protectora para lavadora](__BASE__/mangueras-para-lavadora/manguera-desague-con-funda-protectora-lavadora/): Corrugada con funda de espuma.
+- [Manguera tina-bomba para lavadora](__BASE__/mangueras-para-lavadora/manguera-tina-bomba-lavadora/): De la tina a la bomba de desagüe.
 
-## LG (WhatsApp 320 510 2995)
-- [Mangueras para lavadora LG](__BASE__/mangueras-para-lavadora/lg/)
-- [Manguera de desagüe para lavadora LG: corrugada con codo en la punta](__BASE__/mangueras-para-lavadora/lg/manguera-de-desague-lavadora-lg-desague-corrugada/): Corrugada con codo en la punta.
-- [Manguera de desagüe para lavadora LG: extensión para alargar el desagüe](__BASE__/mangueras-para-lavadora/lg/manguera-de-desague-lavadora-lg-desague-extension/): Extensión para alargar el desagüe.
-- [Manguera de entrada de agua para lavadora LG: con tuercas en ambos extremos](__BASE__/mangueras-para-lavadora/lg/manguera-de-entrada-de-agua-lavadora-lg-entrada-tuercas/): Con tuercas en ambos extremos.
-- [Manguera de entrada de agua para lavadora LG: blanca con tuercas plásticas naranja](__BASE__/mangueras-para-lavadora/lg/manguera-de-entrada-de-agua-lavadora-lg-entrada-blanca-naranja/): Blanca con tuercas plásticas naranja.
-- [Manguera tina-bomba para lavadora LG: de la tina a la bomba de desagüe](__BASE__/mangueras-para-lavadora/lg/manguera-tina-bomba-lavadora-lg-tina-bomba/): De la tina a la bomba de desagüe.
-- [Manguera del presostato para lavadora LG: sensor de nivel de agua](__BASE__/mangueras-para-lavadora/lg/manguera-del-presostato-lavadora-lg-presostato/): Sensor de nivel de agua.
-- [Manguera del dispensador para lavadora LG: caja de detergente y suavizante](__BASE__/mangueras-para-lavadora/lg/manguera-del-dispensador-lavadora-lg-dispensador/): Caja de detergente y suavizante.
-- [Abrazaderas y codo para manguera para lavadora LG: para sujetar mangueras y desagüe](__BASE__/mangueras-para-lavadora/lg/accesorios-manguera-lavadora-lg-abrazaderas/): Para sujetar mangueras y desagüe.
-- [Manguera de entrada de agua para lavadora LG: blanca con tuerca plástica azul](__BASE__/mangueras-para-lavadora/lg/manguera-de-entrada-de-agua-lavadora-lg-entrada-blanca-azul/): Blanca con tuerca plástica azul.
-- [Manguera de desagüe para lavadora LG: corrugada gris con codo y funda protectora](__BASE__/mangueras-para-lavadora/lg/manguera-de-desague-lavadora-lg-desague-con-funda/): Corrugada gris con codo y funda protectora.
-- [Cuál manguera necesita mi lavadora](__BASE__/mangueras-para-lavadora/lg/cual-es-mi-manguera/)
-- [Cómo cambiar la manguera](__BASE__/mangueras-para-lavadora/lg/cambio-e-instalacion/)
-- [Lavadora LG gotea agua](__BASE__/mangueras-para-lavadora/lg/lavadora-lg-gotea-agua-por-la-manguera/)
+## Guías
+- [Cuál manguera necesita mi lavadora](__BASE__/mangueras-para-lavadora/cual-es-mi-manguera/)
+- [Cómo cambiar la manguera](__BASE__/mangueras-para-lavadora/cambio-e-instalacion/)
+- [Manguera azul y naranja: agua fría y caliente](__BASE__/mangueras-para-lavadora/manguera-agua-fria-y-caliente-lavadora-azul-y-naranja/)
 
 ## Preguntas y respuestas
-- **¿Venden mangueras para lavadoras Samsung y LG?** Sí. Tenemos mangueras de desagüe, de entrada de agua, tina-bomba, del presostato y del dispensador para lavadoras Samsung y LG, de carga superior y de carga frontal. Cada marca tiene su tienda y su asesor por WhatsApp.
-- **¿Cuál es la diferencia entre la manguera de desagüe y la de entrada?** La de entrada trae el agua a presión de la llave a la lavadora y lleva tuerca en cada punta; la de desagüe saca el agua sucia por gravedad, es corrugada y termina en un codo. No se pueden cambiar entre sí.
-- **¿La manguera de entrada sirve para todas las lavadoras?** Sí. La conexión de entrada de agua es la misma en todas las lavadoras, sin importar la marca ni si es de carga superior o frontal. Solo cambia el largo.
-- **¿La manguera de desagüe sirve para todas?** No siempre: la medida del desagüe cambia según la lavadora, y las más largas son para las de carga frontal. El asesor te confirma la medida.
+- **¿Estas mangueras sirven para todas las lavadoras?** Las de entrada de agua (azul, naranja y negra con rosca) usan una conexión estándar y sirven para todas las lavadoras y todas las marcas; solo eliges el largo y si la tuya es de carga frontal. La de desagüe cambia de medida según la lavadora, así que el asesor te confirma la tuya.
+- **¿Cuál es la diferencia entre la manguera azul y la naranja?** Es solo el color para no confundirlas: la azul es para el agua fría y la naranja para el agua caliente. Son del mismo tamaño y la misma conexión. Si tu lavadora tiene una sola entrada, usa la azul (agua fría).
+- **¿Qué es la manguera negra con rosca?** Es una manguera de entrada de agua de caucho negro, más fina, con tuercas metálicas con rosca. Es la que usan las lavadoras de carga frontal.
+- **¿La manguera de desagüe es igual para todas las lavadoras?** No. La medida del desagüe cambia según la lavadora y las más largas se usan en las de carga frontal. Dile al asesor el modelo de tu lavadora y te confirma cuál necesitas.
 - **¿Qué es la manguera tina-bomba?** Es una manguera interna que une la tina con la bomba de desagüe. Si se agrieta o se suelta, la lavadora pierde agua por debajo o no desagua.
-- **¿Cómo sé cuál manguera necesita mi lavadora?** Escríbele al asesor de tu marca por WhatsApp con el modelo de la lavadora (etiqueta) o una foto de la manguera vieja. Te confirma cuál es antes de que compres.
-- **¿Cuánto cuesta?** El precio depende de la clase de manguera y del largo. El asesor te responde por WhatsApp con el valor y el tiempo de entrega a tu ciudad.
-- **¿Hacen envíos a toda Colombia?** Sí, enviamos por transportadora a todo el país y te mandamos el número de guía.
-- **¿Cómo pago?** Con pago contra entrega: pagas cuando recibes el paquete. El asesor te confirma si está disponible en tu ciudad.
+- **¿Cómo sé si la manguera de mi lavadora está dañada?** Los signos más comunes son goteos en la llave o detrás de la lavadora, manguera inflada, partida o con la tuerca oxidada, desagüe lento y olor a humedad. Antes de cambiarla revisa que no esté doblada ni tapada; el asesor te guía por WhatsApp.
 TXT);
