@@ -131,4 +131,16 @@ add('campanas-extractoras',nombre='Campanas extractoras',corto='Campanas',sing='
  datos='marca y modelo (la etiqueta suele estar dentro, tras retirar el filtro), tipo de montaje y qué falla presenta',
  quito='En cocinas cerradas de apartamentos de Quito, una campana sin salida al exterior depende del filtro de carbón; si no extrae, revisa primero el filtro.')
 
-for _k in ('cocinas','hornos','congeladores','parrillas','campanas-extractoras'): EQ.pop(_k,None)
+for _k in ('cocinas','hornos','congeladores','parrillas','campanas-extractoras','centros-de-lavado'): EQ.pop(_k,None)
+
+import copy
+EQ['refrigeradoras']['foto']=['nevera-family-hub','nevera-superior-inox']; EQ['refrigeradoras']['th']='nevera-family-hub'
+EQ['lavadoras']['foto']=['lavadora-superior']
+EQ['secadoras']['foto']=['secadora']
+_n=copy.deepcopy(EQ['refrigeradoras'])
+_n.update(nombre='Neveras',corto='Neveras',sing='nevera',art='la nevera',h1='Reparación de neveras Samsung en Quito',slug='reparacion-de-neveras-samsung-quito',alias=True,
+ foto=['nevera-superior-inox','nevera-family-hub'],th='nevera-superior-inox',
+ intro='Reparamos neveras Samsung a domicilio en Quito: de congelador superior, Side by Side, French Door, con dispensador de agua y hielo y modelos Family Hub. No enfrían, hacen ruido, gotean, acumulan escarcha o se apagan solas.')
+_n['faq']=[(q.replace('nevera','nevera').replace('refrigeradora','nevera'),a) for q,a in _n['faq']]
+EQ['neveras']=_n
+EQ=dict(sorted(EQ.items(),key=lambda kv:['refrigeradoras','neveras','lavadoras','secadoras'].index(kv[0])))

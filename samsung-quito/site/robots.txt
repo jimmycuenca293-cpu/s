@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://serviciotecnicosamsungquito.click/sitemap.xml

@@ -4,7 +4,7 @@ from mq_eq2 import EQ
 from mq_base import PHONE_TXT
 def cap(s): return s[:1].upper()+s[1:]
 def low1(s): return s[:1].lower()+s[1:]
-SL={'refrigeradoras':'refrigeradora','congeladores':'congelador','lavadoras':'lavadora','secadoras':'secadora','centros-de-lavado':'centro-de-lavado','cocinas':'cocina','hornos':'horno','parrillas':'parrilla','campanas-extractoras':'campana-extractora'}
+SL={'refrigeradoras':'refrigeradora','neveras':'nevera','congeladores':'congelador','lavadoras':'lavadora','secadoras':'secadora','centros-de-lavado':'centro-de-lavado','cocinas':'cocina','hornos':'horno','parrillas':'parrilla','campanas-extractoras':'campana-extractora'}
 for k,e in EQ.items():
     sing=e['sing']; art=e['art']; sl=SL[k]; fn=[low1(f[0]) for f in e['fallas'][:4]]
     causes=[f[1] for f in e['fallas'][:3]]
@@ -29,9 +29,9 @@ for k,e in EQ.items():
       ['La falla y la pieza que se cambie','La disponibilidad del repuesto según el modelo','El tiempo de trabajo y el acceso al equipo','El costo de la visita, que te confirmamos antes de ir'],
       'Causas frecuentes que influyen en el costo: '+' '.join(causes[:2]),
       [(f'¿Cuánto cuesta la visita de diagnóstico de {art}?','Escríbenos con el modelo y la falla; te confirmamos el costo de la visita antes de ir.'),('¿Cuándo conviene reemplazarlo en vez de repararlo?','Si la reparación se acerca al costo de un equipo nuevo y el equipo es muy antiguo, conviene evaluarlo. Te lo decimos con honestidad en el diagnóstico.')])
-t('reparar-electrodomesticos-samsung-quito','Reparar electrodomésticos Samsung en Quito','Reparar electrodomésticos Samsung en Quito','Reparar electrodomésticos Samsung en Quito: refrigeradoras, lavadoras, secadoras y centros de lavado a domicilio. Diagnóstico, costo antes de reparar. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','secadoras','cocinas'],
+t('reparar-electrodomesticos-samsung-quito','Reparar electrodomésticos Samsung en Quito','Reparar electrodomésticos Samsung en Quito','Reparar electrodomésticos Samsung en Quito: refrigeradoras, neveras, lavadoras y secadoras a domicilio. Diagnóstico, costo antes de reparar. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','secadoras','cocinas'],
  'Si tu electrodoméstico Samsung falla, puedes repararlo sin moverlo: vamos a tu casa en Quito, diagnosticamos, te explicamos la falla y te damos el costo antes de reparar.',
- ['Refrigeradoras, lavadoras, secadoras y centros de lavado','Casas, apartamentos y conjuntos de Quito','Visita a domicilio en norte, centro, sur y valles','Costo confirmado antes de reparar'],
+ ['Refrigeradoras, neveras, lavadoras y secadoras','Casas, apartamentos y conjuntos de Quito','Visita a domicilio en norte, centro, sur y valles','Costo confirmado antes de reparar'],
  'Úsalo como punto de partida: elige tu equipo y revisa fallas comunes y cómo pedir la visita.',
  [('¿Puedo reparar mi electrodoméstico Samsung sin llevarlo a un taller?','Sí. Vamos a tu casa u oficina en Quito.'),('¿Qué necesito para pedir la visita?','Marca, modelo, falla y tu barrio. Una foto de la etiqueta ayuda.')])
 t('donde-reparar-electrodomesticos-samsung-quito','Dónde reparar electrodomésticos Samsung en Quito','Dónde reparar electrodomésticos Samsung en Quito','Dónde reparar electrodomésticos Samsung en Quito: opciones, garantía de fábrica, técnicos a domicilio y qué preguntar antes de contratar. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras'],
@@ -39,7 +39,7 @@ t('donde-reparar-electrodomesticos-samsung-quito','Dónde reparar electrodomést
  ['Mientras haya garantía de fábrica, consulta primero sus condiciones','Técnico a domicilio: sin mover el equipo','Taller: útil para equipos pequeños y fáciles de transportar','Compara diagnóstico, costo, garantía de la reparación y tiempos'],
  'Si ya venció la garantía, un técnico a domicilio suele ser lo más ágil. Escríbenos y te orientamos.',
  [('¿Quién repara electrodomésticos Samsung en Quito?','Hay talleres y técnicos a domicilio. Nosotros vamos a tu casa en Quito.'),('¿Debo llevar el equipo?','No necesariamente: la mayoría se revisa en casa.')])
-t('samsung-quito-servicio-tecnico-y-reparacion','Samsung Quito: servicio técnico y reparación de electrodomésticos','Samsung Quito: servicio técnico y reparación','Servicio técnico Samsung Quito: reparación de refrigeradoras, lavadoras, secadoras y centros de lavado Samsung a domicilio. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','secadoras','cocinas'],
+t('samsung-quito-servicio-tecnico-y-reparacion','Samsung Quito: servicio técnico y reparación de electrodomésticos','Samsung Quito: servicio técnico y reparación','Servicio técnico Samsung Quito: reparación de refrigeradoras, neveras, lavadoras y secadoras Samsung a domicilio. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','secadoras','cocinas'],
  'Si buscas Samsung en Quito para reparar un electrodoméstico, aquí encuentras servicio técnico Samsung Quito a domicilio para equipos Samsung, con diagnóstico claro y costo antes de reparar.',
  ['Equipos Samsung del hogar','Cobertura en norte, centro, sur y valles de Quito','Coordinación por WhatsApp','Costo confirmado antes de reparar'],
  'Esta página resume qué hacemos; cada equipo y cada zona tiene su propia información.',

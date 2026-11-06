@@ -2,7 +2,7 @@
 # Páginas de términos de búsqueda: slug, h1, título corto, descripción, equipo(s) relacionado(s), intro, incluye[4], cuando, faq[(q,a)x2]
 T=[]
 def t(slug,h1,tit,desc,eq,intro,inc,cuando,faq): T.append(dict(slug=slug,h1=h1,tit=tit,desc=desc,eq=eq,intro=intro,inc=inc,cuando=cuando,faq=faq))
-t('tecnico-samsung-a-domicilio-quito','Técnico Samsung a domicilio en Quito','Técnico Samsung a domicilio en Quito','Técnico a domicilio para electrodomésticos Samsung en Quito: refrigeradoras, lavadoras, secadoras y centros de lavado. Escríbenos por WhatsApp al 099 350 8191.',['refrigeradoras','lavadoras','secadoras','cocinas'],
+t('tecnico-samsung-a-domicilio-quito','Técnico Samsung a domicilio en Quito','Técnico Samsung a domicilio en Quito','Técnico a domicilio para electrodomésticos Samsung en Quito: refrigeradoras, neveras, lavadoras y secadoras. Escríbenos por WhatsApp al 099 350 8191.',['refrigeradoras','lavadoras','secadoras','cocinas'],
  'Si buscas un técnico Samsung a domicilio en Quito, vamos hasta tu casa o apartamento, revisamos el equipo donde está instalado y te explicamos qué tiene antes de repararlo.',
  ['Visita a tu casa, oficina o apartamento','Revisión del equipo en su lugar de uso','Explicación de la falla y del costo antes de reparar','Reparación en la visita cuando se consigue el repuesto'],
  'Conviene pedir el técnico a domicilio cuando el equipo es pesado o está empotrado (refrigeradora, torre de lavado) y no es práctico moverlo.',
@@ -13,10 +13,10 @@ t('servicio-tecnico-samsung-cerca-de-mi-quito','Servicio técnico Samsung cerca 
  'Si no ves tu barrio en la lista de zonas, escríbenos igual: muchas veces podemos atender sectores cercanos.',
  [('¿Atienden mi barrio?','Mira la lista de zonas del sitio y, si no aparece, escríbenos tu dirección por WhatsApp para confirmar.'),('¿Cuánto demoran en llegar?','Depende del sector y de la agenda; te confirmamos la disponibilidad al coordinar.')])
 t('reparacion-de-electrodomesticos-samsung-a-domicilio-quito','Reparación de electrodomésticos Samsung a domicilio en Quito','Reparación de electrodomésticos Samsung a domicilio','Reparación a domicilio de refrigeradoras, lavadoras, secadoras y más equipos Samsung en Quito. Diagnóstico y costo antes de reparar.',['refrigeradoras','lavadoras','secadoras','cocinas','hornos','centros-de-lavado'],
- 'Reparamos a domicilio los electrodomésticos Samsung más comunes del hogar en Quito: refrigeradoras, lavadoras, secadoras y centros de lavado.',
+ 'Reparamos a domicilio los electrodomésticos Samsung más comunes del hogar en Quito: refrigeradoras, neveras, lavadoras y secadoras.',
  ['Diagnóstico de la falla en tu casa','Costo confirmado antes de reparar','Reparación y prueba del equipo','Recomendaciones para evitar que la falla se repita'],
  'Pídelo cuando el equipo no funciona, hace ruido, gotea, huele raro o muestra códigos de error.',
- [('¿Qué electrodomésticos reparan?','Refrigeradoras, lavadoras, secadoras y centros de lavado Samsung.'),('¿Cómo pido el servicio?','Por WhatsApp al 099 350 8191, con el modelo y la falla.')])
+ [('¿Qué electrodomésticos reparan?','Refrigeradoras, neveras, lavadoras y secadoras Samsung.'),('¿Cómo pido el servicio?','Por WhatsApp al 099 350 8191, con el modelo y la falla.')])
 t('mantenimiento-preventivo-de-electrodomesticos-samsung-quito','Mantenimiento preventivo de electrodomésticos Samsung en Quito','Mantenimiento preventivo de electrodomésticos Samsung','Mantenimiento preventivo de refrigeradoras, lavadoras y secadoras Samsung en Quito para evitar daños mayores. Pide tu revisión por WhatsApp.',['refrigeradoras','lavadoras','secadoras','cocinas'],
  'Un mantenimiento a tiempo cuesta menos que una reparación grande. Revisamos limpieza, conexiones, filtros, desagües, sellos y desgaste de piezas para que el equipo dure más.',
  ['Limpieza y revisión de partes accesibles','Revisión de empaques, filtros y desagües','Prueba de funcionamiento','Recomendaciones de uso y cuidado'],
@@ -37,7 +37,7 @@ t('reparacion-de-tarjetas-electronicas-de-electrodomesticos-samsung-quito','Repa
  ['Revisión de alimentación y conexiones','Prueba de sensores y cargas','Diagnóstico de la tarjeta','Reparación o reemplazo según el caso'],
  'Sospecha de la tarjeta cuando hay fallas intermitentes, botones que no responden o daños tras un bajón de voltaje.',
  [('¿Siempre hay que cambiar la tarjeta?','No. A veces el problema es un sensor, un cable o una conexión. Se confirma en el diagnóstico.'),('¿Los bajones de voltaje dañan la tarjeta?','Pueden hacerlo. Un protector de voltaje ayuda a evitarlo.')])
-t('repuestos-para-electrodomesticos-samsung-quito','Repuestos para electrodomésticos Samsung en Quito','Repuestos para electrodomésticos Samsung en Quito','Repuestos y piezas para refrigeradoras, lavadoras, secadoras y centros de lavado Samsung en Quito: te decimos qué pieza necesita tu equipo y su disponibilidad.',['refrigeradoras','lavadoras','secadoras','cocinas'],
+t('repuestos-para-electrodomesticos-samsung-quito','Repuestos para electrodomésticos Samsung en Quito','Repuestos para electrodomésticos Samsung en Quito','Repuestos y piezas para refrigeradoras, neveras, lavadoras y secadoras Samsung en Quito: te decimos qué pieza necesita tu equipo y su disponibilidad.',['refrigeradoras','lavadoras','secadoras','cocinas'],
  'Si tu equipo necesita una pieza, primero hay que confirmar cuál es. Te ayudamos a identificar el repuesto correcto según el modelo y te confirmamos si se consigue.',
  ['Identificación de la pieza que falla','Búsqueda del repuesto según el modelo','Confirmación de plazo y costo antes de reparar','Instalación y prueba'],
  'Ten a mano el modelo (etiqueta del equipo): sin él es difícil confirmar el repuesto.',
@@ -77,8 +77,8 @@ t('servicio-tecnico-samsung-valle-de-los-chillos','Servicio técnico Samsung en 
  ['Cobertura en el valle','Visita a urbanizaciones y conjuntos','Coordinación por WhatsApp','Diagnóstico y costo antes de reparar'],
  'Envía tu ubicación por WhatsApp para confirmar el día y la hora.',
  [('¿Atienden Sangolquí y San Rafael?','Sí. Escríbenos tu dirección y confirmamos la visita.'),('¿Cobran distinto por el traslado?','Escríbenos tu ubicación y te confirmamos el costo de la visita antes de ir.')])
-t('servicio-tecnico-samsung-cumbaya-y-tumbaco','Servicio técnico Samsung en Cumbayá y Tumbaco','Servicio técnico Samsung en Cumbayá y Tumbaco','Servicio técnico Samsung a domicilio en Cumbayá, Tumbaco, Puembo y Pifo. Reparación de refrigeradoras, lavadoras, secadoras y centros de lavado.',['refrigeradoras','lavadoras','cocinas','hornos'],
+t('servicio-tecnico-samsung-cumbaya-y-tumbaco','Servicio técnico Samsung en Cumbayá y Tumbaco','Servicio técnico Samsung en Cumbayá y Tumbaco','Servicio técnico Samsung a domicilio en Cumbayá, Tumbaco, Puembo y Pifo. Reparación de refrigeradoras, neveras, lavadoras y secadoras.',['refrigeradoras','lavadoras','cocinas','hornos'],
  'Atendemos los valles del oriente: Cumbayá, Tumbaco, Puembo y Pifo. Son zonas de urbanizaciones y conjuntos donde coordinamos la visita para que sea eficiente.',
- ['Cobertura en Cumbayá, Tumbaco, Puembo y Pifo','Visita a conjuntos y urbanizaciones','Diagnóstico y costo antes de reparar','Reparación de refrigeradoras, lavadoras, secadoras y centros de lavado'],
+ ['Cobertura en Cumbayá, Tumbaco, Puembo y Pifo','Visita a conjuntos y urbanizaciones','Diagnóstico y costo antes de reparar','Reparación de refrigeradoras, neveras, lavadoras y secadoras'],
  'Si tu conjunto tiene control de acceso, avísanos el nombre del conjunto y el contacto de portería.',
  [('¿Atienden Cumbayá y Tumbaco?','Sí, escríbenos tu conjunto o dirección para coordinar.'),('¿Y Puembo y Pifo?','También; confirmamos disponibilidad por WhatsApp.')])

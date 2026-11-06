@@ -7,6 +7,7 @@ from mq_zonas import Z,ZD,ZSLUGS,ZXA,AXZ,TIPO_TXT,SECTOR_TXT
 import mq_terms2
 import mq_terms3
 import mq_terms4
+import mq_terms5
 from mq_terms import T
 import mq_guias
 E=html.escape
@@ -33,6 +34,7 @@ def addp(slug,**d):
 def ul(items): return '<ul>'+''.join(f'<li>{x}</li>' for x in items)+'</ul>'
 def wam(txt): return txt
 EQK=list(EQ.keys())
+EQK_UI=[k for k in EQK if not EQ[k].get('alias')]
 SUBJ={'refrigeradoras':('nevera','refrigeradora'),'hornos':('horno',),'centros-de-lavado':('torre',),'congeladores':('congelador',),'lavadoras':('lavadora',),'secadoras':('secadora',),'microondas':('microondas',),'lavavajillas':('lavavajillas',),'campanas-extractoras':('campana',)}
 def fault_h1(k,name):
     e=EQ[k]; n=low1(name.strip())
@@ -46,6 +48,7 @@ def fault_h1(k,name):
     return h
 FAULTS={}   # slug -> (k,i)
 for k in EQK:
+    if EQ[k].get('alias'): continue
     for i,s in enumerate(EQ[k]['slugs']): FAULTS[s]=(k,i)
 MERGE={'nevera-samsung-no-enfria-quito':'refrigeradora-samsung-no-enfria-quito','nevera-samsung-escarcha-congelador-quito':'refrigeradora-samsung-escarcha-en-el-congelador-quito','nevera-samsung-hace-ruido-quito':'refrigeradora-samsung-hace-ruido-quito','nevera-samsung-gotea-agua-quito':'refrigeradora-samsung-gotea-agua-por-dentro-quito','nevera-samsung-no-hace-hielo-quito':'refrigeradora-samsung-no-hace-hielo-quito','nevera-samsung-family-hub-pantalla-no-funciona-quito':'refrigeradora-samsung-family-hub-pantalla-no-funciona-quito','nevera-samsung-digital-inverter-ruido-quito':'refrigeradora-samsung-digital-inverter-ruido-quito','nevera-samsung-dispensador-agua-hielo-no-funciona-quito':'dispensador-de-agua-de-refrigeradora-samsung-no-funciona-quito','lavadora-samsung-no-centrifuga-quito':'lavadora-samsung-no-centrifuga-quito','lavadora-samsung-no-desagua-quito':'lavadora-samsung-no-desagua-quito','lavadora-samsung-gotea-agua-quito':'lavadora-samsung-gotea-o-bota-agua-quito','lavadora-samsung-codigo-5e-no-desagua-quito':'lavadora-samsung-codigo-5e-o-se-no-desagua-quito','lavadora-samsung-codigo-4e-no-entra-agua-quito':'lavadora-samsung-codigo-4e-no-entra-agua-quito','lavadora-samsung-addwash-ecobubble-fallas-quito':'lavadora-samsung-addwash-gotea-quito','lavadora-samsung-smartthings-no-conecta-quito':'lavadora-samsung-no-conecta-a-smartthings-quito','lavadora-samsung-codigo-ue-vibra-quito':'lavadora-samsung-codigo-ue-vibra-mucho-quito','lavadora-samsung-codigo-dc-de-puerta-quito':'lavadora-samsung-puerta-no-abre-o-no-cierra-quito','secadora-samsung-no-seca-quito':'secadora-samsung-no-seca-la-ropa-quito','secadora-samsung-no-calienta-quito':'secadora-samsung-no-calienta-quito','secadora-samsung-tarda-en-secar-quito':'secadora-samsung-tarda-demasiado-en-secar-quito','secadora-samsung-no-seca-ciclo-largo-quito':'secadora-samsung-ciclo-largo-ducto-o-filtro-saturado-quito'}
 MERGED={}
@@ -62,7 +65,9 @@ VALLE_TERMS=['servicio-tecnico-samsung-valle-de-los-chillos','servicio-tecnico-s
 SECTOR_HUBS={'Norte':('servicio-tecnico-samsung-quito-norte','norte de Quito'),'Centro':('servicio-tecnico-samsung-quito-centro','centro de Quito'),'Sur':('servicio-tecnico-samsung-quito-sur','sur de Quito'),'Valles':('servicio-tecnico-samsung-valles-de-quito','valles de Quito')}
 REM=('cocina','horno','parrilla','campana','congelador','microondas','lavavajillas','gas-quito','a-gas')
 T[:]=[t for t in T if not any(r in t['slug'] for r in REM)]
-for _t in T: _t['eq']=[k for k in _t['eq'] if k in EQ]
+for _t in T:
+    _t['eq']=[k for k in _t['eq'] if k in EQ]
+    if 'nevera' in _t['slug'] and 'neveras' in EQ: _t['eq']=['neveras']
 T[:]=[t for t in T if t['eq']]
 TERMS={t['slug']:t for t in T}
 TEQ={}
@@ -91,7 +96,7 @@ for k in EQK:
             zs_=[z for z in ZXA if ZD[z]['sector']==sc]
             if zs_: body+=f'<h3>{lab}</h3><div class="chips">'+''.join(f'<a href="@reparacion-de-{k}-samsung-en-{z}@">{E(ZD[z]["nombre"])}</a>' for z in zs_)+'</div>'
         sec.append((f'Dónde atendemos: {nm} Samsung por zona',body))
-    gl=GEQ.get(k,[])
+    gl=GEQ.get('refrigeradoras' if e.get('alias') else k,[])
     if k=='refrigeradoras': gl=gl+GEQ.get('neveras',[])
     if gl: sec.append(('Guías relacionadas','<ul class="sublist">'+''.join(f'<li><a href="@{x}@">{E(next(g[1] for g in GUIDES if g[0]==x))}</a></li>' for x in gl[:8])+'</ul>'))
     rel=[EQ[x]['slug'] for x in EQK if x!=k][:6]
@@ -100,10 +105,12 @@ for k in EQK:
 # ---------- fallas ----------
 GUIDEFOR={k:GEQ.get(k,[]) for k in EQK}
 for k in EQK:
+    if EQ[k].get('alias'): continue
     e=EQ[k]
     for i,f in enumerate(e['fallas']):
         name,causas,urg,tip=f[0],f[1],f[2],f[3]; slug=e['slugs'][i]
         h1=fault_h1(k,name); core=h1+' en Quito'
+        if k=='refrigeradoras': core=core.replace('Refrigeradora Samsung:','Nevera o refrigeradora Samsung:',1)
         if urg=='Urgente': cuando='No lo dejes pasar: este tipo de falla puede dañar el equipo, causar una fuga o representar un riesgo. Deja de usarlo, sigue las indicaciones de seguridad y escríbenos para coordinar la revisión.'
         elif urg=='Revisar pronto': cuando='Conviene que lo revise un técnico en los próximos días. Si sigues usándolo con la falla, el problema puede crecer y la reparación salir más cara.'
         else: cuando='Puedes observarlo unos días mientras haces las revisiones de arriba. Si empeora, reaparece o se suma otro síntoma, pide una revisión.'
@@ -136,11 +143,11 @@ for z in Z:
     near=[ZD[x] for x in ZSLUGS if ZD[x]['sector']==sec_ and x!=zs][:8]
     s.append(('Zonas cercanas',f'<div class="chips">'+''.join(f'<a href="@servicio-tecnico-samsung-en-{d["slug"]}@">{E(d["nombre"])}</a>' for d in near)+'</div>'))
     faq=[(f'¿Atienden en {zn}?',f'Sí. Escríbenos tu dirección y una referencia por WhatsApp y coordinamos la visita en {zn}.'),
-         (f'¿Qué equipos Samsung reparan en {zn}?','Refrigeradoras, lavadoras, secadoras y centros de lavado.'),
+         (f'¿Qué equipos Samsung reparan en {zn}?','Refrigeradoras, neveras, lavadoras y secadoras.'),
          ('¿Cuánto cuesta la visita?',f'Escríbenos con el equipo, el modelo y la falla; te confirmamos el costo de la visita antes de ir.')]
-    addp(zs and 'servicio-tecnico-samsung-en-'+zs,kind='zona',h1=h1,title=mktitle(f'Servicio técnico Samsung Quito: {zn}'),desc=clip(f'Servicio técnico Samsung a domicilio en {zn}, {sector}: refrigeradoras, lavadoras, secadoras y centros de lavado. Escríbenos por WhatsApp {PHONE_TXT}.',160),
+    addp(zs and 'servicio-tecnico-samsung-en-'+zs,kind='zona',h1=h1,title=mktitle(f'Servicio técnico Samsung Quito: {zn}'),desc=clip(f'Servicio técnico Samsung a domicilio en {zn}, {sector}: refrigeradoras, neveras, lavadoras y secadoras. Escríbenos por WhatsApp {PHONE_TXT}.',160),
          lead=f'Técnico a domicilio para electrodomésticos Samsung en {zn}, {sector}. Diagnóstico claro y costo antes de reparar.',sections=s,faq=faq,
-         related=[EQ[k]['slug'] for k in ('refrigeradoras','lavadoras','secadoras','centros-de-lavado')],wamsg=f'Hola, necesito servicio técnico Samsung en {zn}, Quito.',icon='pin',th='',photos=[],tec=None,zone=zs)
+         related=[EQ[k]['slug'] for k in ('refrigeradoras','neveras','lavadoras','secadoras')],wamsg=f'Hola, necesito servicio técnico Samsung en {zn}, Quito.',icon='pin',th='',photos=[],tec=None,zone=zs)
 # ---------- zona x equipo ----------
 for zi,zs in enumerate(ZXA):
     d=ZD[zs]; zn=d['nombre']
@@ -173,7 +180,7 @@ for sc,(sslug,label) in SECTOR_HUBS.items():
     addp(sslug,kind='sector',h1=f'Servicio técnico Samsung Quito: {label}',title=mktitle(f'Servicio técnico Samsung Quito: {label}'),desc=clip(f'Servicio técnico Samsung a domicilio en el {label}: '+', '.join(ZD[z]["nombre"] for z in zs_[:6])+' y más barrios. WhatsApp '+PHONE_TXT+'.',160),
          lead=f'Técnico a domicilio para electrodomésticos Samsung en los barrios del {label}. Diagnóstico claro y costo antes de reparar.',sections=s,
          faq=[(f'¿Qué barrios del {label} atienden?','Los que ves en la lista de esta página; si el tuyo no aparece, escríbenos y confirmamos.'),('¿Cuánto cuesta la visita?','Escríbenos con el equipo, el modelo y la falla; te confirmamos el costo antes de ir.')],
-         related=[EQ[k]['slug'] for k in ('refrigeradoras','lavadoras','secadoras','centros-de-lavado')],wamsg=f'Hola, necesito servicio técnico Samsung en el {label}.',icon='pin',th='',photos=[],tec=None,sector=sc)
+         related=[EQ[k]['slug'] for k in ('refrigeradoras','neveras','lavadoras','secadoras')],wamsg=f'Hola, necesito servicio técnico Samsung en el {label}.',icon='pin',th='',photos=[],tec=None,sector=sc)
 SECTOR_TERMS=[v[0] for v in SECTOR_HUBS.values()]+VALLE_TERMS
 # ---------- términos ----------
 for t in T:

@@ -131,11 +131,11 @@ t('revision-de-electrodomesticos-samsung-usados-antes-de-comprar-quito','Revisi�
  ['Revisión de funcionamiento','Revisión de desgaste y piezas críticas','Detección de fugas, ruidos y golpes','Opinión honesta sobre si conviene'],
  'Pide la revisión antes de cerrar la compra.',
  [('¿Revisan el equipo donde está?','Sí, a domicilio.'),('¿Qué se revisa en una refrigeradora usada?','Frío, ruidos, empaques, desagüe y compresor.')])
-t('servicio-tecnico-de-electrodomesticos-quito','Servicio técnico de electrodomésticos en Quito','Servicio técnico de electrodomésticos en Quito','Servicio técnico de electrodomésticos en Quito, especializado en Samsung: refrigeradoras, lavadoras, secadoras y centros de lavado. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','cocinas'],
+t('servicio-tecnico-de-electrodomesticos-quito','Servicio técnico de electrodomésticos en Quito','Servicio técnico de electrodomésticos en Quito','Servicio técnico de electrodomésticos en Quito, especializado en Samsung: refrigeradoras, neveras, lavadoras y secadoras. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','cocinas'],
  'Si buscas servicio técnico de electrodomésticos en Quito, estamos enfocados en la marca Samsung: refrigeradoras, lavadoras, secadoras, centros de lavado, y más.',
  ['Equipos grandes del hogar','Visita a domicilio','Diagnóstico y costo antes de reparar','Atención en norte, centro, sur y valles'],
  'Escribe el modelo y la falla para recibir orientación inicial.',
- [('¿Reparan otras marcas?','Nos enfocamos en Samsung. Si es otra marca, consúltalo por WhatsApp.'),('¿Qué equipos atienden?','Refrigeradoras, lavadoras, secadoras y centros de lavado.')])
+ [('¿Reparan otras marcas?','Nos enfocamos en Samsung. Si es otra marca, consúltalo por WhatsApp.'),('¿Qué equipos atienden?','Refrigeradoras, neveras, lavadoras y secadoras.')])
 t('tecnico-de-electrodomesticos-a-domicilio-quito','Técnico de electrodomésticos a domicilio en Quito','Técnico de electrodomésticos a domicilio en Quito','Técnico de electrodomésticos a domicilio en Quito para equipos Samsung: visita a tu casa, diagnóstico claro y costo antes de reparar.',['refrigeradoras','lavadoras','secadoras'],
  'Un técnico de electrodomésticos a domicilio te ahorra el traslado y el riesgo de dañar el equipo al moverlo. En Quito atendemos casas, apartamentos y oficinas.',
  ['Visita a domicilio','Revisión en el lugar de uso','Reparación cuando se consigue el repuesto','Prueba final'],

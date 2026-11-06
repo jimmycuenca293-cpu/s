@@ -2,7 +2,7 @@
 from mq_terms import T,t
 from mq_eq2 import EQ
 from mq_base import PHONE_TXT
-SL={'refrigeradoras':'refrigeradoras','congeladores':'congeladores','lavadoras':'lavadoras','secadoras':'secadoras','centros-de-lavado':'centros-de-lavado','cocinas':'cocinas','hornos':'hornos','parrillas':'parrillas','campanas-extractoras':'campanas-extractoras'}
+SL={'refrigeradoras':'refrigeradoras','neveras':'neveras','congeladores':'congeladores','lavadoras':'lavadoras','secadoras':'secadoras','centros-de-lavado':'centros-de-lavado','cocinas':'cocinas','hornos':'hornos','parrillas':'parrillas','campanas-extractoras':'campanas-extractoras'}
 have={x['slug'] for x in T}
 def low1(s): return s[:1].lower()+s[1:]
 def add(slug,*a):
