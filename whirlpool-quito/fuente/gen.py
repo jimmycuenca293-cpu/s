@@ -35,7 +35,7 @@ def head(slug,title,desc,ld=None,og='website',noindex=False):
 <title>{E(title)}</title><meta name="description" content="{E(desc)}">
 {'<meta name="robots" content="noindex">' if noindex else '<meta name="robots" content="index,follow,max-image-preview:large">'}
 <link rel="canonical" href="{canon}"><link rel="alternate" hreflang="es-EC" href="{canon}">
-{GSC}<meta name="theme-color" content="#1b1a17"><meta name="geo.region" content="EC-P"><meta name="geo.placename" content="Quito">
+{GSC}<meta name="theme-color" content="#231f20"><meta name="geo.region" content="EC-P"><meta name="geo.placename" content="Quito">
 <meta property="og:type" content="{og}"><meta property="og:title" content="{E(title)}"><meta property="og:description" content="{E(desc)}"><meta property="og:url" content="{canon}"><meta property="og:locale" content="es_EC"><meta property="og:site_name" content="{NAME}"><meta property="og:image" content="{SITE}/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Servicio técnico Whirlpool Quito: reparación de electrodomésticos a domicilio"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{E(title)}"><meta name="twitter:description" content="{E(desc)}"><meta name="twitter:image" content="{SITE}/og.png">
 <link rel="icon" href="{asset(slug,'favicon.png')}" type="image/png"><link rel="apple-touch-icon" href="{asset(slug,'apple-touch-icon.png')}">
