@@ -11,8 +11,8 @@
 - **Lavadora gotea** — Qué manguera revisar / Guía paso a paso → https://filtrosparalavadoras.click/mangueras-para-lavadora/lavadora-gotea-agua-por-la-manguera/
 - **Lavadora no desagua** — Qué revisar / Guía paso a paso → https://filtrosparalavadoras.click/mangueras-para-lavadora/lavadora-no-desagua/
 - **Cómo cambiar la manguera** — Paso a paso / Revisa la guía antes de pedir → https://filtrosparalavadoras.click/mangueras-para-lavadora/cambio-e-instalacion/
-- **Presostato Samsung** — Sensor de nivel inverter / Pregunta por WhatsApp → https://filtrosparalavadoras.click/mangueras-para-lavadora/presostato-lavadora-samsung-inverter/
-- **Presostato LG** — Sensor de nivel inverter / Pregunta por WhatsApp → https://filtrosparalavadoras.click/mangueras-para-lavadora/presostato-lavadora-lg-inverter/
+- **Presostato Samsung** — Sensor de nivel inverter / Pregunta por WhatsApp → https://filtrosparalavadoras.click/mangueras-para-lavadora/presostato-lavadora-samsung-inverter-dc32-00025a/
+- **Presostato LG** — Sensor de nivel inverter / Pregunta por WhatsApp → https://filtrosparalavadoras.click/mangueras-para-lavadora/presostato-lavadora-lg-inverter-con-manguerita/
 
 ## Textos destacados (≤25)
 - Pedido por WhatsApp

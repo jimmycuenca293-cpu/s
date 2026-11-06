@@ -1,6 +1,6 @@
 # Grupo 8: Presostato Samsung
 
-**Página de destino:** https://filtrosparalavadoras.click/mangueras-para-lavadora/presostato-lavadora-samsung-inverter/  
+**Página de destino:** https://filtrosparalavadoras.click/mangueras-para-lavadora/presostato-lavadora-samsung-inverter-dc32-00025a/  
 **Rutas visibles:** filtrosparalavadoras.click/Presostato/Samsung
 
 > No es genérico: va por marca. Cada marca tiene su asesor de WhatsApp (Samsung 305 479 6329, LG 320 510 2995).
@@ -28,7 +28,7 @@
 3. Envía una foto de la manguera vieja y el asesor te dice cuál es. (64)
 4. Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía. (79)
 
-## Palabras clave (14)
+## Palabras clave (17)
 - presostato lavadora samsung
 - presostato para lavadora samsung
 - presostato samsung inverter
@@ -43,3 +43,6 @@
 - donde comprar presostato lavadora samsung
 - presostato lavadora inverter samsung
 - presostato nivel de agua samsung
+- presostato lavadora samsung carga frontal
+- presostato lavadora samsung carga superior
+- presostato samsung lavadora

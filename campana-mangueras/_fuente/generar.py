@@ -75,12 +75,12 @@ grupo("Mangueras en general", url(""), "Mangueras", "Lavadora",
 
 for M, c in (("Samsung", "samsung"), ("LG", "lg")):
     m = c
-    grupo(f"Presostato {M}", url(f"presostato-lavadora-{c}-inverter"), "Presostato", M,
+    grupo(f"Presostato {M}", url(f"presostato-lavadora-{c}-inverter-dc32-00025a" if c == "samsung" else "presostato-lavadora-lg-inverter-con-manguerita"), "Presostato", M,
           con_generales([f"Presostato Lavadora {M}", f"Presostato {M} Inverter", f"Sensor de Nivel {M}", f"Presostato para {M}", f"Presostato de Lavadora", f"Sensor Nivel de Agua {M}", f"Presostatos {M}"]),
           [f"Presostato para lavadora {M} inverter. Pídelo por WhatsApp.", GEN_D[0], GEN_D[1], GEN_D[3]],
           [f"presostato lavadora {m}", f"presostato para lavadora {m}", f"presostato {m} inverter", f"presostato lavadora {m} inverter", f"sensor de nivel lavadora {m}", f"sensor de nivel de agua lavadora {m}",
            f"presostato {m}", f"comprar presostato lavadora {m}", f"precio presostato lavadora {m}", f"repuesto presostato lavadora {m}", f"presostato de lavadora {m} colombia", f"donde comprar presostato lavadora {m}",
-           f"presostato lavadora inverter {m}", f"presostato nivel de agua {m}"],
+           f"presostato lavadora inverter {m}", f"presostato nivel de agua {m}", f"presostato lavadora {m} carga frontal", f"presostato lavadora {m} carga superior", f"presostato {m} lavadora"],
           "No es genérico: va por marca. Cada marca tiene su asesor de WhatsApp (Samsung 305 479 6329, LG 320 510 2995).")
 
 NEGATIVAS = ["usado", "usada", "segunda mano", "casero", "casera", "reciclar", "manual", "pdf", "descargar", "video", "youtube", "curso", "empleo", "trabajo", "vacante", "gratis",
@@ -103,8 +103,8 @@ SITELINKS = [("Entrada de agua", "Azul, naranja y negra", "Sirven para todas", u
              ("Lavadora gotea", "Qué manguera revisar", "Guía paso a paso", url("lavadora-gotea-agua-por-la-manguera")),
              ("Lavadora no desagua", "Qué revisar", "Guía paso a paso", url("lavadora-no-desagua")),
              ("Cómo cambiar la manguera", "Paso a paso", "Revisa la guía antes de pedir", url("cambio-e-instalacion")),
-             ("Presostato Samsung", "Sensor de nivel inverter", "Pregunta por WhatsApp", url("presostato-lavadora-samsung-inverter")),
-             ("Presostato LG", "Sensor de nivel inverter", "Pregunta por WhatsApp", url("presostato-lavadora-lg-inverter"))]
+             ("Presostato Samsung", "Sensor de nivel inverter", "Pregunta por WhatsApp", url("presostato-lavadora-samsung-inverter-dc32-00025a")),
+             ("Presostato LG", "Sensor de nivel inverter", "Pregunta por WhatsApp", url("presostato-lavadora-lg-inverter-con-manguerita"))]
 CALLOUTS = ["Pedido por WhatsApp", "Asesor por WhatsApp", "Envío a Toda Colombia", "Confirmamos la Correcta", "Pago contra Entrega", "Número de Guía", "Sirven para Todas", "Guía de Cambio"]
 SNIPPET = ("Tipos", ["Manguera de entrada", "Manguera de desagüe", "Manguera tina-bomba", "Agua fría (azul)", "Agua caliente (naranja)", "Presostato"])
 

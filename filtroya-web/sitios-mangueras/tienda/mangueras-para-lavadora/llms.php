@@ -14,8 +14,10 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 - [Manguera de desagüe larga con extensión para lavadora](__BASE__/mangueras-para-lavadora/manguera-desague-larga-con-extension-lavadora/): Larga, con extensión · carga frontal.
 - [Manguera de desagüe con funda protectora para lavadora](__BASE__/mangueras-para-lavadora/manguera-desague-con-funda-protectora-lavadora/): Corrugada con funda de espuma.
 - [Manguera tina-bomba para lavadora](__BASE__/mangueras-para-lavadora/manguera-tina-bomba-lavadora/): De la tina a la bomba de desagüe.
-- [Presostato para lavadora Samsung inverter](__BASE__/mangueras-para-lavadora/presostato-lavadora-samsung-inverter/): Samsung · inverter.
-- [Presostato para lavadora LG inverter](__BASE__/mangueras-para-lavadora/presostato-lavadora-lg-inverter/): LG · inverter.
+- [Presostato para lavadora Samsung inverter (con manguerita)](__BASE__/mangueras-para-lavadora/presostato-lavadora-samsung-inverter-dc32-00025a/): Samsung · inverter · con manguerita de aire.
+- [Presostato para lavadora Samsung inverter (cuerpo azul)](__BASE__/mangueras-para-lavadora/presostato-lavadora-samsung-inverter-cuerpo-azul/): Samsung · inverter · cuerpo azul.
+- [Presostato para lavadora LG inverter (con manguerita)](__BASE__/mangueras-para-lavadora/presostato-lavadora-lg-inverter-con-manguerita/): LG · inverter · con manguerita de aire.
+- [Presostato para lavadora LG inverter (con soporte)](__BASE__/mangueras-para-lavadora/presostato-lavadora-lg-inverter-con-soporte-metalico/): LG · inverter · con soporte metálico.
 
 ## Presostato (por marca)
 - Samsung inverter: WhatsApp 305 479 6329

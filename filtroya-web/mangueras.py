@@ -48,12 +48,18 @@ MARCAS = {"todas": {
          "tipo": "Corrugada con funda de espuma", "carga": None, "forma": "manguera de desagüe corrugada gris con codo y una funda de espuma que protege la zona del doblez para que no se aplaste ni se rompa"},
         {"id": "man-7", "foto": "manguera-7.png", "slug": "manguera-tina-bomba-lavadora", "corto": "Manguera tina-bomba", "ref": None, "precio": None, "cat": "tina",
          "tipo": "De la tina a la bomba de desagüe", "carga": None, "forma": "manguera negra corta y gruesa, tipo fuelle, que une la tina con la bomba de desagüe por dentro de la lavadora"},
-        {"id": "man-8", "foto": "manguera-8.png", "slug": "presostato-lavadora-samsung-inverter", "corto": "Presostato para lavadora Samsung inverter", "ref": None, "precio": None, "cat": "presostato",
+        {"id": "man-8", "foto": "manguera-8.png", "slug": "presostato-lavadora-samsung-inverter-dc32-00025a", "corto": "Presostato para lavadora Samsung inverter (con manguerita)", "ref": 'DC32-00025A', "precio": None, "cat": "presostato",
          "marca": "Samsung", "wa": "3054796329", "tel": "305 479 6329",
-         "tipo": "Samsung · inverter", "carga": None, "forma": "presostato (sensor de nivel de agua) para lavadoras Samsung con tecnología inverter: el cuerpo redondo que lee la presión del tubo de aire para saber cuánta agua hay en la tina"},
-        {"id": "man-9", "foto": "manguera-9.png", "slug": "presostato-lavadora-lg-inverter", "corto": "Presostato para lavadora LG inverter", "ref": None, "precio": None, "cat": "presostato",
+         "tipo": "Samsung · inverter · con manguerita de aire", "carga": None, "forma": "presostato (sensor de nivel de agua) para lavadoras Samsung con tecnología inverter, con conector eléctrico de tres terminales y manguerita de aire transparente incluida; en la etiqueta de la foto se lee DC32-00025A"},
+        {"id": "man-9", "foto": "manguera-9.png", "slug": "presostato-lavadora-samsung-inverter-cuerpo-azul", "corto": "Presostato para lavadora Samsung inverter (cuerpo azul)", "ref": None, "precio": None, "cat": "presostato",
+         "marca": "Samsung", "wa": "3054796329", "tel": "305 479 6329",
+         "tipo": "Samsung · inverter · cuerpo azul", "carga": None, "forma": "presostato (sensor de nivel de agua) para lavadoras Samsung con tecnología inverter, de cuerpo azul y negro con boquilla negra para la manguerita de aire y clip de sujeción"},
+        {"id": "man-10", "foto": "manguera-10.png", "slug": "presostato-lavadora-lg-inverter-con-manguerita", "corto": "Presostato para lavadora LG inverter (con manguerita)", "ref": None, "precio": None, "cat": "presostato",
          "marca": "LG", "wa": "3205102995", "tel": "320 510 2995",
-         "tipo": "LG · inverter", "carga": None, "forma": "presostato (sensor de nivel de agua) para lavadoras LG con tecnología inverter: el cuerpo redondo que lee la presión del tubo de aire para saber cuánta agua hay en la tina"},
+         "tipo": "LG · inverter · con manguerita de aire", "carga": None, "forma": "presostato (sensor de nivel de agua) para lavadoras LG con tecnología inverter, de cuerpo redondo con conector de tres terminales y manguerita de aire transparente incluida"},
+        {"id": "man-11", "foto": "manguera-11.png", "slug": "presostato-lavadora-lg-inverter-con-soporte-metalico", "corto": "Presostato para lavadora LG inverter (con soporte)", "ref": None, "precio": None, "cat": "presostato",
+         "marca": "LG", "wa": "3205102995", "tel": "320 510 2995",
+         "tipo": "LG · inverter · con soporte metálico", "carga": None, "forma": "presostato (sensor de nivel de agua) para lavadoras LG con tecnología inverter, de cuerpo redondo color hueso con soporte metálico para fijarlo y boquilla para la manguerita de aire"},
     ],
 }}
 L.MARCAS = MARCAS
@@ -372,7 +378,7 @@ def pagina_producto(S, p):
 <section class="m-sec alt"><div class="m-wrap"><div class="m-texto"><div class="m-cab"><span class="eyebrow">Descripción</span><h2>{esc(p["nombre"])}</h2></div>
 <p>Es una {esc(p["forma"])}.</p>{extra_col}
 <p>Si tu lavadora gotea, no llena, no desagua o muestra un código de error de agua o de desagüe ({MARCAS["todas"]["codigos"]}), una manguera en mal estado es de las primeras cosas que se revisan.</p></div></div></section>
-<section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Clase de pieza</dt><dd>{esc(p["corto"])}</dd><dt>Tipo</dt><dd>{esc(p["tipo"])}</dd><dt>Sirve para</dt><dd>{("Todas las lavadoras y todas las marcas (conexión estándar)" if p["cat"] == "entrada" else (f"Lavadoras {p['marca']} inverter: el asesor confirma el modelo" if p["cat"] == "presostato" else "Lavadoras según la medida: el asesor te la confirma"))}</dd><dt>Largo y medida</dt><dd>Te los confirma el asesor</dd><dt>Envío</dt><dd>Toda Colombia, por transportadora</dd></dl></div></section>
+<section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Clase de pieza</dt><dd>{esc(p["corto"])}</dd><dt>Tipo</dt><dd>{esc(p["tipo"])}</dd><dt>Sirve para</dt><dd>{("Todas las lavadoras y todas las marcas (conexión estándar)" if p["cat"] == "entrada" else (f"Lavadoras {p['marca']} inverter: el asesor confirma el modelo" if p["cat"] == "presostato" else "Lavadoras según la medida: el asesor te la confirma"))}</dd><dt>{"Referencia" if p.get("ref") else "Largo y medida"}</dt><dd>{esc(p["ref"]) if p.get("ref") else "Te los confirma el asesor"}</dd><dt>Envío</dt><dd>Toda Colombia, por transportadora</dd></dl></div></section>
 {bloque_importancia()}
 {bloque_entrega()}
 <section class="m-sec alt"><div class="m-wrap"><section class="caja tutorial" id="instalacion"><h2>Cómo cambiar esta manguera: paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in pasos)}</ol><p class="m-mut">{esc(NOTA_INSTALACION)}</p></section></div></section>
@@ -380,7 +386,7 @@ def pagina_producto(S, p):
 <section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Más mangueras</span><h2>Otras mangueras para lavadora</h2></div>{chips(otros)}</div></section>
 {S.barra_p(f"Hola, quiero consultar por la {p['nombre']}", p)}'''
     prod = {"@type": "Product", "name": p["nombre"], "image": f"{S.raiz}/img/{p['id']}.jpg", "category": "Repuestos para lavadoras",
-            "description": f"{p['corto']}{'' if p.get('marca') else ' para lavadora'}: {p['tipo'].lower()}. Envío a toda Colombia.", "areaServed": "CO", **({"brand": {"@type": "Brand", "name": p["marca"]}} if p.get("marca") else {})}
+            "description": f"{p['corto']}{'' if p.get('marca') else ' para lavadora'}: {p['tipo'].lower()}. Envío a toda Colombia.", "areaServed": "CO", **({"mpn": p["ref"]} if p.get("ref") else {}), **({"brand": {"@type": "Brand", "name": p["marca"]}} if p.get("marca") else {})}
     if p["precio"]:
         prod["offers"] = {"@type": "Offer", "priceCurrency": "COP", "price": p["precio"], "availability": "https://schema.org/InStock", "url": f"{S.dominio}/{p['slug']}/"}
     how = {"@type": "HowTo", "name": f"Cómo cambiar la {p['corto'].lower()} de una lavadora", "step": [{"@type": "HowToStep", "position": i, "text": t} for i, t in enumerate(pasos, 1)]}
@@ -390,7 +396,7 @@ def pagina_producto(S, p):
 
 def pagina_guia(S, ruta, titulo, desc, h1, cuerpo_html, faq=None):
     cuerpo = f'<div class="m-wrap">{S.miga((h1, None))}<div class="m-texto"><h1>{esc(h1)}</h1>{cuerpo_html}</div>' \
-             f'<div class="m-cta" style="margin:24px 0"><div><h2>¿Quieres la manguera correcta?</h2><p>Escríbele al asesor por WhatsApp y te confirma cuál necesitas.</p></div>{S.boton_asesor("Hola, tengo una pregunta sobre las mangueras de mi lavadora")}</div>' \
+             f'<div class="m-cta" style="margin:24px 0"><div><h2>¿Quieres {"el presostato" if "presostato" in ruta else "la manguera"} correcto{"" if "presostato" in ruta else "a"}?</h2><p>Escríbele al asesor por WhatsApp y te confirma cuál necesitas.</p></div>{S.boton_asesor("Hola, tengo una pregunta sobre las mangueras de mi lavadora")}</div>' \
              + (f'<h2>Preguntas frecuentes</h2>{faq_html(faq)}' if faq else "") + "</div>"
     ld = [S.breadcrumb((h1, None))] + ([faq_ld(faq)] if faq else [])
     S.pagina(ruta, corta(titulo, 68), corta(desc, 165), cuerpo, ld, "0.8")

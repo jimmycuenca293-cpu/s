@@ -1,6 +1,6 @@
 # Grupo 9: Presostato LG
 
-**Página de destino:** https://filtrosparalavadoras.click/mangueras-para-lavadora/presostato-lavadora-lg-inverter/  
+**Página de destino:** https://filtrosparalavadoras.click/mangueras-para-lavadora/presostato-lavadora-lg-inverter-con-manguerita/  
 **Rutas visibles:** filtrosparalavadoras.click/Presostato/LG
 
 > No es genérico: va por marca. Cada marca tiene su asesor de WhatsApp (Samsung 305 479 6329, LG 320 510 2995).
@@ -28,7 +28,7 @@
 3. Envía una foto de la manguera vieja y el asesor te dice cuál es. (64)
 4. Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía. (79)
 
-## Palabras clave (14)
+## Palabras clave (17)
 - presostato lavadora lg
 - presostato para lavadora lg
 - presostato lg inverter
@@ -43,3 +43,6 @@
 - donde comprar presostato lavadora lg
 - presostato lavadora inverter lg
 - presostato nivel de agua lg
+- presostato lavadora lg carga frontal
+- presostato lavadora lg carga superior
+- presostato lg lavadora
