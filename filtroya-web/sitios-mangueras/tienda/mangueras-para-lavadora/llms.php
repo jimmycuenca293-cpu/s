@@ -41,6 +41,8 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 ## Preguntas y respuestas
 - **¿Venden mangueras para lavadoras Samsung y LG?** Sí. Tenemos mangueras de desagüe, de entrada de agua, tina-bomba, del presostato y del dispensador para lavadoras Samsung y LG, de carga superior y de carga frontal. Cada marca tiene su tienda y su asesor por WhatsApp.
 - **¿Cuál es la diferencia entre la manguera de desagüe y la de entrada?** La de entrada trae el agua a presión de la llave a la lavadora y lleva tuerca en cada punta; la de desagüe saca el agua sucia por gravedad, es corrugada y termina en un codo. No se pueden cambiar entre sí.
+- **¿La manguera de entrada sirve para todas las lavadoras?** Sí. La conexión de entrada de agua es la misma en todas las lavadoras, sin importar la marca ni si es de carga superior o frontal. Solo cambia el largo.
+- **¿La manguera de desagüe sirve para todas?** No siempre: la medida del desagüe cambia según la lavadora, y las más largas son para las de carga frontal. El asesor te confirma la medida.
 - **¿Qué es la manguera tina-bomba?** Es una manguera interna que une la tina con la bomba de desagüe. Si se agrieta o se suelta, la lavadora pierde agua por debajo o no desagua.
 - **¿Cómo sé cuál manguera necesita mi lavadora?** Escríbele al asesor de tu marca por WhatsApp con el modelo de la lavadora (etiqueta) o una foto de la manguera vieja. Te confirma cuál es antes de que compres.
 - **¿Cuánto cuesta?** El precio depende de la clase de manguera y del largo. El asesor te responde por WhatsApp con el valor y el tiempo de entrega a tu ciudad.

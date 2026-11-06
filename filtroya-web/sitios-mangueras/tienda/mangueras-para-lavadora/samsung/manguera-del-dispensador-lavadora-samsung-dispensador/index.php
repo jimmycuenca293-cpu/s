@@ -21,8 +21,8 @@ JSON);
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Marca de la lavadora</dt><dd>Samsung</dd><dt>Clase de manguera</dt><dd>Manguera del dispensador</dd><dt>Tipo</dt><dd>Caja de detergente y suavizante</dd><dt>Referencia y medida</dt><dd>Te las confirma el asesor según el modelo</dd><dt>Envío</dt><dd>Toda Colombia, por transportadora</dd></dl></div></section>
 <section class="m-sec lav-importancia"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Lo importante</span><h2>Las mangueras de tu lavadora Samsung: cuáles son y para qué sirven</h2>
 <p>Una lavadora usa varias mangueras, cada una con su trabajo. Cuando una falla, aparecen goteos, la máquina no llena, no desagua o muestra un error.</p></div>
-<ul class="lav-puntos"><li><b>Manguera de entrada de agua.</b> Lleva el agua de la llave a la lavadora. Si se infla, se parte o se oxida, gotea o la máquina no llena.</li>
-<li><b>Manguera de desagüe.</b> Saca el agua sucia hacia el desagüe de la pared. Si se dobla, se rompe o se tapa, la lavadora no desagua.</li>
+<ul class="lav-puntos"><li><b>Manguera de entrada de agua.</b> Lleva el agua de la llave a la lavadora. Si se infla, se parte o se oxida, gotea o la máquina no llena. Es igual en todas las lavadoras.</li>
+<li><b>Manguera de desagüe.</b> Saca el agua sucia hacia el desagüe de la pared. Si se dobla, se rompe o se tapa, la lavadora no desagua. Su medida cambia según el modelo.</li>
 <li><b>Manguera tina-bomba.</b> Va por dentro: une la tina con la bomba de desagüe. Si se agrieta, aparecen fugas debajo de la máquina.</li>
 <li><b>Manguera del presostato.</b> Lleva la presión de la tina al sensor de nivel. Si se suelta o se tapa, la lavadora llena de más o de menos.</li>
 <li><b>Manguera del dispensador.</b> Lleva el agua a la caja del detergente y el suavizante. Si falla, la caja se desborda o no enjuaga.</li></ul>

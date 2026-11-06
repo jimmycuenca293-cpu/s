@@ -200,8 +200,8 @@ class SitioB(Sitio):
 def bloque_importancia(n=""):
     return f'''<section class="m-sec lav-importancia"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Lo importante</span><h2>Las mangueras de tu lavadora {n}: cuáles son y para qué sirven</h2>
 <p>Una lavadora usa varias mangueras, cada una con su trabajo. Cuando una falla, aparecen goteos, la máquina no llena, no desagua o muestra un error.</p></div>
-<ul class="lav-puntos"><li><b>Manguera de entrada de agua.</b> Lleva el agua de la llave a la lavadora. Si se infla, se parte o se oxida, gotea o la máquina no llena.</li>
-<li><b>Manguera de desagüe.</b> Saca el agua sucia hacia el desagüe de la pared. Si se dobla, se rompe o se tapa, la lavadora no desagua.</li>
+<ul class="lav-puntos"><li><b>Manguera de entrada de agua.</b> Lleva el agua de la llave a la lavadora. Si se infla, se parte o se oxida, gotea o la máquina no llena. Es igual en todas las lavadoras.</li>
+<li><b>Manguera de desagüe.</b> Saca el agua sucia hacia el desagüe de la pared. Si se dobla, se rompe o se tapa, la lavadora no desagua. Su medida cambia según el modelo.</li>
 <li><b>Manguera tina-bomba.</b> Va por dentro: une la tina con la bomba de desagüe. Si se agrieta, aparecen fugas debajo de la máquina.</li>
 <li><b>Manguera del presostato.</b> Lleva la presión de la tina al sensor de nivel. Si se suelta o se tapa, la lavadora llena de más o de menos.</li>
 <li><b>Manguera del dispensador.</b> Lleva el agua a la caja del detergente y el suavizante. Si falla, la caja se desborda o no enjuaga.</li></ul>
@@ -231,7 +231,9 @@ def faq_general(S):
     return [
         (f"¿Qué mangueras tiene una lavadora {n}?", f"Tiene la manguera de entrada de agua (de la llave a la máquina), la de desagüe (de la máquina al desagüe) y varias internas: tina-bomba, presostato y dispensador. En esta tienda las encuentras todas."),
         (f"¿Cómo sé si la manguera de mi lavadora {n} está dañada?", "Los signos más comunes son goteos en la llave o detrás de la lavadora, manguera inflada, partida o con la tuerca oxidada, desagüe lento y olor a humedad. Antes de cambiarla conviene revisar que no esté doblada ni tapada; el asesor te guía por WhatsApp."),
-        (f"¿Cuál manguera necesita mi lavadora {n}?", "Depende de cuál falla y del modelo. Escríbele al asesor por WhatsApp con el modelo (está en una etiqueta atrás, en un costado o bajo la tapa) o con una foto de la manguera vieja, y te confirma la correcta antes de que compres."),
+        (f"¿Cuál manguera necesita mi lavadora {n}?", "La de entrada de agua sirve para todas las lavadoras: solo eliges el largo. La de desagüe cambia de medida según la lavadora (las más largas son para carga frontal) y las internas dependen del modelo. Escríbele al asesor por WhatsApp con el modelo (está en una etiqueta atrás, en un costado o bajo la tapa) o con una foto de la manguera vieja y te confirma la correcta."),
+        ("¿La manguera de entrada sirve para cualquier lavadora?", "Sí. La conexión de entrada de agua es la misma en todas las lavadoras, de cualquier marca y de carga superior o frontal. Lo que cambia es el largo que necesitas según dónde esté la llave."),
+        ("¿La manguera de desagüe es igual para todas?", "No. La medida del desagüe cambia según la lavadora y las más largas se usan en las de carga frontal. El asesor te confirma cuál necesitas con el modelo."),
         (f"¿Qué código de error puede avisar un problema de manguera en {n}?", f"Depende del modelo; en {n} los de desagüe más comunes son {c}. Un código de desagüe o de nivel de agua puede venir de una manguera doblada, tapada o suelta. Mándale al asesor una foto del código y el modelo."),
         ("¿Cuánto cuesta?", "El precio depende de la clase de manguera y del modelo. Pregúntale al asesor por WhatsApp y te responde en el momento con el valor y el tiempo de entrega a tu ciudad."),
         ("¿Hacen envíos a toda Colombia?", "Sí. Enviamos por transportadora a todo el país y te mandamos el número de guía."),
@@ -259,7 +261,7 @@ def pagina_inicio(S):
     cuerpo = f'''<section class="m-hero"><div class="m-wrap">
   <div>
     <h1>Mangueras para lavadora {n}</h1>
-    <p class="lead">Manguera de desagüe, de entrada de agua, tina-bomba, del presostato y del dispensador para lavadoras {n} de carga superior y de carga frontal. Dile al asesor por WhatsApp cuál necesitas y tu modelo, y te confirmamos la correcta. Enviamos a toda Colombia con pago contra entrega.</p>
+    <p class="lead">Manguera de desagüe, de entrada de agua, tina-bomba, del presostato y del dispensador para lavadoras {n} de carga superior y de carga frontal. La de entrada sirve para todas las lavadoras; para la de desagüe dile tu modelo al asesor por WhatsApp y te confirmamos el largo. Enviamos a toda Colombia con pago contra entrega.</p>
     <div class="acc">{S.boton_asesor(f"Hola, necesito una manguera para mi lavadora {n}")}<a class="m-btn sec" href="#mangueras">Ver las mangueras</a></div>
     <ul><li>Pago contra entrega</li><li>Envío a toda Colombia</li><li>Asesor que te confirma la manguera</li></ul>
   </div>
@@ -305,6 +307,14 @@ def pagina_producto(S, p):
            ("¿Cuánto cuesta?", "Pregunta al asesor por WhatsApp: te da el precio y el tiempo de entrega a tu ciudad."),
            ("¿Cómo la cambio?", "Desconectas la lavadora, cierras el agua, sueltas la tuerca o la abrazadera de la manguera vieja y pones la nueva igual. Abajo está el paso a paso."),
            (f"¿Cómo sé que la manguera de mi lavadora {n} es la que falla?", "Si hay goteo en la unión, la manguera está inflada o partida, o la lavadora no desagua ni llena y ya revisaste que no esté doblada ni tapada, lo más probable es la manguera. El asesor te ayuda a confirmarlo.")]
+    entrada = "entrada" in p["slug"]; desague = "desague" in p["slug"]
+    if entrada:
+        aviso_t, aviso_x = "Sirve para todas las lavadoras", f"La conexión de entrada de agua es la misma en todas las lavadoras {n} y de otras marcas. Solo te confirmamos el largo que necesitas por WhatsApp."
+        faq[0] = (f"¿Esta manguera sirve para mi lavadora {n}?", "Sí. La entrada de agua es del mismo tamaño en todas las lavadoras, de carga superior o frontal, así que esta manguera sirve para la tuya. Lo único que se elige es el largo: escríbele al asesor y te lo confirma.")
+    elif desague:
+        aviso_t, aviso_x = "La medida del desagüe cambia", f"Las mangueras de desagüe no son iguales en todas las lavadoras: las más largas son para las de carga frontal. Dile al asesor el modelo de tu lavadora y te confirma el largo."
+    else:
+        aviso_t, aviso_x = "¿Sirve para tu lavadora?", "Antes de comprar, el asesor confirma contigo el largo y el tipo. Mándale la etiqueta con el modelo o una foto de la manguera vieja."
     precio = (f'<span class="precio">{cop(p["precio"])}<small>Confirma disponibilidad y envío con el asesor</small></span>' if p["precio"]
               else '<span class="precio consulta">Precio: pregúntale al asesor<small>Respuesta en el momento por WhatsApp</small></span>')
     cuerpo = f'''<div class="m-wrap">{S.miga((p["nombre"], None))}
@@ -314,7 +324,7 @@ def pagina_producto(S, p):
     <h1>{esc(p["nombre"])}</h1>
     <span class="sub">Lavadora {n} · {esc(p["tipo"])}</span>
     {precio}
-    <div class="m-aviso"><span style="font-size:22px">💬</span><span><b>¿Sirve para tu lavadora?</b>Antes de comprar, el asesor confirma contigo el largo y el tipo. Mándale la etiqueta con el modelo o una foto de la manguera vieja.</span></div>
+    <div class="m-aviso"><span style="font-size:22px">💬</span><span><b>{aviso_t}</b>{aviso_x}</span></div>
     {S.boton_asesor(f"Hola, quiero consultar por la {p['nombre']}", "m-btn block wa", "💬 Pedir o preguntar al asesor por WhatsApp")}
     <ul class="m-ok"><li><b>Envío a toda Colombia</b> por transportadora, con número de guía.</li><li><b>Guía de cambio</b> paso a paso incluida en esta página.</li><li><b>Pago contra entrega</b>: pagas cuando recibes el paquete (el asesor confirma si aplica en tu ciudad).</li></ul>
   </div>
@@ -358,7 +368,7 @@ def guias(S):
     G = lambda *a, **k: pagina_guia(S, *a, **k)
     G("/cual-es-mi-manguera/", f"¿Cuál manguera necesita mi lavadora {n}? Guía", f"Cómo saber qué manguera necesita tu lavadora {n}: entrada, desagüe, tina-bomba, presostato o dispensador, y cómo medirla.",
       f"¿Cuál manguera necesita mi lavadora {n}?",
-      f'<p>Para escoger bien mira tres cosas: cuál manguera falla, el modelo exacto de la lavadora y cómo es la manguera vieja.</p><h2>1. Cuál manguera es</h2><ul><li><b>Entrada de agua:</b> la que va de la llave a la parte de atrás de la lavadora.</li><li><b>Desagüe:</b> la que sale por atrás hacia el desagüe de la pared.</li><li><b>Tina-bomba, presostato y dispensador:</b> mangueras internas que se ven al abrir la lavadora.</li></ul>{cat}'
+      f'<p>Para escoger bien mira tres cosas: cuál manguera falla, el modelo exacto de la lavadora y cómo es la manguera vieja.</p><h2>1. Cuál manguera es</h2><ul><li><b>Entrada de agua:</b> la que va de la llave a la parte de atrás de la lavadora. Sirve para todas las lavadoras: solo eliges el largo.</li><li><b>Desagüe:</b> la que sale por atrás hacia el desagüe de la pared. Su medida cambia según la lavadora; las más largas son para carga frontal.</li><li><b>Tina-bomba, presostato y dispensador:</b> mangueras internas que se ven al abrir la lavadora.</li></ul>{cat}'
       f'<h2>2. El modelo de la lavadora</h2><p>Está en una etiqueta en la parte de atrás, en un costado o bajo la tapa. En {n} los modelos empiezan por {", ".join(f[0] for f in M["familias"])}. Con el modelo, el asesor te confirma la manguera por WhatsApp.</p>'
       f'<h2>3. La manguera vieja</h2><p>Compárala por el largo, el diámetro y la forma de las puntas (tuerca, codo o abrazadera). Una foto al asesor ayuda a confirmarla.</p>', faq_general(S)[2:4])
     G("/como-saber-si-la-manguera-esta-danada/", f"Cómo saber si una manguera de la lavadora {n} está dañada", f"Señales de que una manguera de tu lavadora {n} falla y qué revisar antes de comprar una nueva.",
@@ -459,6 +469,8 @@ L.LEGALES = {
 HOME_FAQ = [
     ("¿Venden mangueras para lavadoras Samsung y LG?", "Sí. Tenemos mangueras de desagüe, de entrada de agua, tina-bomba, del presostato y del dispensador para lavadoras Samsung y LG, de carga superior y de carga frontal. Cada marca tiene su tienda y su asesor por WhatsApp."),
     ("¿Cuál es la diferencia entre la manguera de desagüe y la de entrada?", "La de entrada trae el agua a presión de la llave a la lavadora y lleva tuerca en cada punta; la de desagüe saca el agua sucia por gravedad, es corrugada y termina en un codo. No se pueden cambiar entre sí."),
+    ("¿La manguera de entrada sirve para todas las lavadoras?", "Sí. La conexión de entrada de agua es la misma en todas las lavadoras, sin importar la marca ni si es de carga superior o frontal. Solo cambia el largo."),
+    ("¿La manguera de desagüe sirve para todas?", "No siempre: la medida del desagüe cambia según la lavadora, y las más largas son para las de carga frontal. El asesor te confirma la medida."),
     ("¿Qué es la manguera tina-bomba?", "Es una manguera interna que une la tina con la bomba de desagüe. Si se agrieta o se suelta, la lavadora pierde agua por debajo o no desagua."),
     ("¿Cómo sé cuál manguera necesita mi lavadora?", "Escríbele al asesor de tu marca por WhatsApp con el modelo de la lavadora (etiqueta) o una foto de la manguera vieja. Te confirma cuál es antes de que compres."),
     ("¿Cuánto cuesta?", "El precio depende de la clase de manguera y del largo. El asesor te responde por WhatsApp con el valor y el tiempo de entrega a tu ciudad."),
@@ -486,7 +498,7 @@ def pagina_home(out, dominio, Ss):
     cuerpo = f'''<section class="m-hero"><div class="m-wrap">
   <div>
     <h1>Mangueras para lavadoras Samsung y LG</h1>
-    <p class="lead">Manguera de desagüe, de entrada de agua, tina-bomba, del presostato y del dispensador para lavadoras Samsung y LG de carga superior y carga frontal. Elige tu marca, cuéntale al asesor por WhatsApp qué necesitas y tu modelo, y te confirmamos la correcta. Enviamos a toda Colombia.</p>
+    <p class="lead">Manguera de desagüe, de entrada de agua, tina-bomba, del presostato y del dispensador para lavadoras Samsung y LG de carga superior y carga frontal. La de entrada sirve para todas las lavadoras; para las demás, cuéntale tu modelo al asesor por WhatsApp y te confirmamos la correcta. Enviamos a toda Colombia.</p>
     <div class="acc"><a class="m-btn" href="#marcas">Elegir mi marca</a></div>
     <ul><li>Pago contra entrega</li><li>Envío a toda Colombia</li><li>Asesor que te confirma la manguera</li></ul>
   </div>

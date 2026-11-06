@@ -21,7 +21,7 @@
 15. Precio por WhatsApp (19)
 
 ## Descripciones (máximo 90 caracteres)
-1. Manguera de desagüe para lavadora Samsung: corrugada, con codo o extensión. (75)
+1. Manguera de desagüe para lavadora Samsung. Las largas son para carga frontal. (77)
 2. Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la manguera que necesita. (86)
 3. Envía una foto de la manguera vieja y el asesor te dice cuál es. (64)
 4. Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía. (79)

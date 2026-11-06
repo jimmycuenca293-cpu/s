@@ -21,13 +21,16 @@
 15. Precio por WhatsApp (19)
 
 ## Descripciones (máximo 90 caracteres)
-1. Manguera de entrada para lavadora LG: con tuercas de colores o metálicas. (73)
+1. Manguera de entrada para lavadora LG: sirve para todas las lavadoras. Elige el largo. (85)
 2. Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la manguera que necesita. (86)
 3. Envía una foto de la manguera vieja y el asesor te dice cuál es. (64)
 4. Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía. (79)
 
-## Palabras clave (13)
+## Palabras clave (16)
 - manguera de entrada lavadora lg
+- manguera de entrada para lavadora
+- manguera de entrada para todas las lavadoras
+- manguera de agua para cualquier lavadora
 - manguera entrada agua lavadora lg
 - manguera de agua lavadora lg
 - manguera de alimentacion lavadora lg

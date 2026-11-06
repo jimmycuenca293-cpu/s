@@ -10,7 +10,7 @@ JSON);
     <h1>Manguera de desagüe para lavadora LG: corrugada con codo en la punta</h1>
     <span class="sub">Lavadora LG · Corrugada con codo en la punta</span>
     <span class="precio consulta">Precio: pregúntale al asesor<small>Respuesta en el momento por WhatsApp</small></span>
-    <div class="m-aviso"><span style="font-size:22px">💬</span><span><b>¿Sirve para tu lavadora?</b>Antes de comprar, el asesor confirma contigo el largo y el tipo. Mándale la etiqueta con el modelo o una foto de la manguera vieja.</span></div>
+    <div class="m-aviso"><span style="font-size:22px">💬</span><span><b>La medida del desagüe cambia</b>Las mangueras de desagüe no son iguales en todas las lavadoras: las más largas son para las de carga frontal. Dile al asesor el modelo de tu lavadora y te confirma el largo.</span></div>
     <a class="m-btn block wa" href="https://wa.me/573205102995?text=Hola%2C%20quiero%20consultar%20por%20la%20Manguera%20de%20desag%C3%BCe%20para%20lavadora%20LG%3A%20corrugada%20con%20codo%20en%20la%20punta" target="_blank" rel="noopener">💬 Pedir o preguntar al asesor por WhatsApp</a>
     <ul class="m-ok"><li><b>Envío a toda Colombia</b> por transportadora, con número de guía.</li><li><b>Guía de cambio</b> paso a paso incluida en esta página.</li><li><b>Pago contra entrega</b>: pagas cuando recibes el paquete (el asesor confirma si aplica en tu ciudad).</li></ul>
   </div>
@@ -21,8 +21,8 @@ JSON);
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Marca de la lavadora</dt><dd>LG</dd><dt>Clase de manguera</dt><dd>Manguera de desagüe</dd><dt>Tipo</dt><dd>Corrugada con codo en la punta</dd><dt>Referencia y medida</dt><dd>Te las confirma el asesor según el modelo</dd><dt>Envío</dt><dd>Toda Colombia, por transportadora</dd></dl></div></section>
 <section class="m-sec lav-importancia"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Lo importante</span><h2>Las mangueras de tu lavadora LG: cuáles son y para qué sirven</h2>
 <p>Una lavadora usa varias mangueras, cada una con su trabajo. Cuando una falla, aparecen goteos, la máquina no llena, no desagua o muestra un error.</p></div>
-<ul class="lav-puntos"><li><b>Manguera de entrada de agua.</b> Lleva el agua de la llave a la lavadora. Si se infla, se parte o se oxida, gotea o la máquina no llena.</li>
-<li><b>Manguera de desagüe.</b> Saca el agua sucia hacia el desagüe de la pared. Si se dobla, se rompe o se tapa, la lavadora no desagua.</li>
+<ul class="lav-puntos"><li><b>Manguera de entrada de agua.</b> Lleva el agua de la llave a la lavadora. Si se infla, se parte o se oxida, gotea o la máquina no llena. Es igual en todas las lavadoras.</li>
+<li><b>Manguera de desagüe.</b> Saca el agua sucia hacia el desagüe de la pared. Si se dobla, se rompe o se tapa, la lavadora no desagua. Su medida cambia según el modelo.</li>
 <li><b>Manguera tina-bomba.</b> Va por dentro: une la tina con la bomba de desagüe. Si se agrieta, aparecen fugas debajo de la máquina.</li>
 <li><b>Manguera del presostato.</b> Lleva la presión de la tina al sensor de nivel. Si se suelta o se tapa, la lavadora llena de más o de menos.</li>
 <li><b>Manguera del dispensador.</b> Lleva el agua a la caja del detergente y el suavizante. Si falla, la caja se desborda o no enjuaga.</li></ul>
