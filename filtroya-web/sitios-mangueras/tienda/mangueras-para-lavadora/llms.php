@@ -11,11 +11,13 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 - [Manguera de desagüe para lavadora Samsung: corrugada con codo en la punta](__BASE__/mangueras-para-lavadora/samsung/manguera-de-desague-lavadora-samsung-desague-corrugada/): Corrugada con codo en la punta.
 - [Manguera de desagüe para lavadora Samsung: extensión para alargar el desagüe](__BASE__/mangueras-para-lavadora/samsung/manguera-de-desague-lavadora-samsung-desague-extension/): Extensión para alargar el desagüe.
 - [Manguera de entrada de agua para lavadora Samsung: con tuercas en ambos extremos](__BASE__/mangueras-para-lavadora/samsung/manguera-de-entrada-de-agua-lavadora-samsung-entrada-tuercas/): Con tuercas en ambos extremos.
-- [Manguera de entrada de agua para lavadora Samsung: con válvula anti inundación](__BASE__/mangueras-para-lavadora/samsung/manguera-de-entrada-de-agua-lavadora-samsung-entrada-aquastop/): Con válvula anti inundación.
+- [Manguera de entrada de agua para lavadora Samsung: blanca con tuercas plásticas naranja](__BASE__/mangueras-para-lavadora/samsung/manguera-de-entrada-de-agua-lavadora-samsung-entrada-blanca-naranja/): Blanca con tuercas plásticas naranja.
 - [Manguera tina-bomba para lavadora Samsung: de la tina a la bomba de desagüe](__BASE__/mangueras-para-lavadora/samsung/manguera-tina-bomba-lavadora-samsung-tina-bomba/): De la tina a la bomba de desagüe.
 - [Manguera del presostato para lavadora Samsung: sensor de nivel de agua](__BASE__/mangueras-para-lavadora/samsung/manguera-del-presostato-lavadora-samsung-presostato/): Sensor de nivel de agua.
 - [Manguera del dispensador para lavadora Samsung: caja de detergente y suavizante](__BASE__/mangueras-para-lavadora/samsung/manguera-del-dispensador-lavadora-samsung-dispensador/): Caja de detergente y suavizante.
 - [Abrazaderas y codo para manguera para lavadora Samsung: para sujetar mangueras y desagüe](__BASE__/mangueras-para-lavadora/samsung/accesorios-manguera-lavadora-samsung-abrazaderas/): Para sujetar mangueras y desagüe.
+- [Manguera de entrada de agua para lavadora Samsung: blanca con tuerca plástica azul](__BASE__/mangueras-para-lavadora/samsung/manguera-de-entrada-de-agua-lavadora-samsung-entrada-blanca-azul/): Blanca con tuerca plástica azul.
+- [Manguera de desagüe para lavadora Samsung: corrugada gris con codo y funda protectora](__BASE__/mangueras-para-lavadora/samsung/manguera-de-desague-lavadora-samsung-desague-con-funda/): Corrugada gris con codo y funda protectora.
 - [Cuál manguera necesita mi lavadora](__BASE__/mangueras-para-lavadora/samsung/cual-es-mi-manguera/)
 - [Cómo cambiar la manguera](__BASE__/mangueras-para-lavadora/samsung/cambio-e-instalacion/)
 - [Lavadora Samsung gotea agua](__BASE__/mangueras-para-lavadora/samsung/lavadora-samsung-gotea-agua-por-la-manguera/)
@@ -25,11 +27,13 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 - [Manguera de desagüe para lavadora LG: corrugada con codo en la punta](__BASE__/mangueras-para-lavadora/lg/manguera-de-desague-lavadora-lg-desague-corrugada/): Corrugada con codo en la punta.
 - [Manguera de desagüe para lavadora LG: extensión para alargar el desagüe](__BASE__/mangueras-para-lavadora/lg/manguera-de-desague-lavadora-lg-desague-extension/): Extensión para alargar el desagüe.
 - [Manguera de entrada de agua para lavadora LG: con tuercas en ambos extremos](__BASE__/mangueras-para-lavadora/lg/manguera-de-entrada-de-agua-lavadora-lg-entrada-tuercas/): Con tuercas en ambos extremos.
-- [Manguera de entrada de agua para lavadora LG: con válvula anti inundación](__BASE__/mangueras-para-lavadora/lg/manguera-de-entrada-de-agua-lavadora-lg-entrada-aquastop/): Con válvula anti inundación.
+- [Manguera de entrada de agua para lavadora LG: blanca con tuercas plásticas naranja](__BASE__/mangueras-para-lavadora/lg/manguera-de-entrada-de-agua-lavadora-lg-entrada-blanca-naranja/): Blanca con tuercas plásticas naranja.
 - [Manguera tina-bomba para lavadora LG: de la tina a la bomba de desagüe](__BASE__/mangueras-para-lavadora/lg/manguera-tina-bomba-lavadora-lg-tina-bomba/): De la tina a la bomba de desagüe.
 - [Manguera del presostato para lavadora LG: sensor de nivel de agua](__BASE__/mangueras-para-lavadora/lg/manguera-del-presostato-lavadora-lg-presostato/): Sensor de nivel de agua.
 - [Manguera del dispensador para lavadora LG: caja de detergente y suavizante](__BASE__/mangueras-para-lavadora/lg/manguera-del-dispensador-lavadora-lg-dispensador/): Caja de detergente y suavizante.
 - [Abrazaderas y codo para manguera para lavadora LG: para sujetar mangueras y desagüe](__BASE__/mangueras-para-lavadora/lg/accesorios-manguera-lavadora-lg-abrazaderas/): Para sujetar mangueras y desagüe.
+- [Manguera de entrada de agua para lavadora LG: blanca con tuerca plástica azul](__BASE__/mangueras-para-lavadora/lg/manguera-de-entrada-de-agua-lavadora-lg-entrada-blanca-azul/): Blanca con tuerca plástica azul.
+- [Manguera de desagüe para lavadora LG: corrugada gris con codo y funda protectora](__BASE__/mangueras-para-lavadora/lg/manguera-de-desague-lavadora-lg-desague-con-funda/): Corrugada gris con codo y funda protectora.
 - [Cuál manguera necesita mi lavadora](__BASE__/mangueras-para-lavadora/lg/cual-es-mi-manguera/)
 - [Cómo cambiar la manguera](__BASE__/mangueras-para-lavadora/lg/cambio-e-instalacion/)
 - [Lavadora LG gotea agua](__BASE__/mangueras-para-lavadora/lg/lavadora-lg-gotea-agua-por-la-manguera/)

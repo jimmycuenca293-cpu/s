@@ -8,7 +8,7 @@
 2. Manguera Agua Lavadora LG (25)
 3. Manguera Alimentación LG (24)
 4. Manguera con Tuercas (20)
-5. Manguera Anti Inundación (24)
+5. Manguera Entrada Blanca (23)
 6. Manguera de Llenado LG (22)
 7. Mangueras de Entrada LG (23)
 8. Pago contra Entrega (19)
@@ -21,12 +21,12 @@
 15. Precio por WhatsApp (19)
 
 ## Descripciones (máximo 90 caracteres)
-1. Manguera de entrada para lavadora LG: con tuercas o anti inundación. (68)
+1. Manguera de entrada para lavadora LG: con tuercas de colores o metálicas. (73)
 2. Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la manguera que necesita. (86)
 3. Envía una foto de la manguera vieja y el asesor te dice cuál es. (64)
 4. Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía. (79)
 
-## Palabras clave (14)
+## Palabras clave (13)
 - manguera de entrada lavadora lg
 - manguera entrada agua lavadora lg
 - manguera de agua lavadora lg
@@ -37,7 +37,6 @@
 - comprar manguera lavadora lg
 - manguera de conexion lavadora lg
 - manguera anti inundacion lavadora lg
-- manguera con valvula lavadora lg
 - manguera de abastecimiento lavadora lg
 - manguera lavadora lg colombia
 - manguera de agua para lavadora lg

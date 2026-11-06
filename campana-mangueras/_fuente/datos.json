@@ -55,7 +55,7 @@
     "Manguera Agua Lavadora Samsung",
     "Manguera Alimentación Samsung",
     "Manguera con Tuercas",
-    "Manguera Anti Inundación",
+    "Manguera Entrada Blanca",
     "Manguera de Llenado Samsung",
     "Mangueras de Entrada Samsung",
     "Pago contra Entrega",
@@ -68,7 +68,7 @@
     "Precio por WhatsApp"
    ],
    "descripciones": [
-    "Manguera de entrada para lavadora Samsung: con tuercas o anti inundación.",
+    "Manguera de entrada para lavadora Samsung: con tuercas de colores o metálicas.",
     "Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la manguera que necesita.",
     "Envía una foto de la manguera vieja y el asesor te dice cuál es.",
     "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
@@ -84,7 +84,6 @@
     "comprar manguera lavadora samsung",
     "manguera de conexion lavadora samsung",
     "manguera anti inundacion lavadora samsung",
-    "manguera con valvula lavadora samsung",
     "manguera de abastecimiento lavadora samsung",
     "manguera lavadora samsung colombia",
     "manguera de agua para lavadora samsung"
@@ -270,7 +269,7 @@
     "Manguera Agua Lavadora LG",
     "Manguera Alimentación LG",
     "Manguera con Tuercas",
-    "Manguera Anti Inundación",
+    "Manguera Entrada Blanca",
     "Manguera de Llenado LG",
     "Mangueras de Entrada LG",
     "Pago contra Entrega",
@@ -283,7 +282,7 @@
     "Precio por WhatsApp"
    ],
    "descripciones": [
-    "Manguera de entrada para lavadora LG: con tuercas o anti inundación.",
+    "Manguera de entrada para lavadora LG: con tuercas de colores o metálicas.",
     "Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la manguera que necesita.",
     "Envía una foto de la manguera vieja y el asesor te dice cuál es.",
     "Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía."
@@ -299,7 +298,6 @@
     "comprar manguera lavadora lg",
     "manguera de conexion lavadora lg",
     "manguera anti inundacion lavadora lg",
-    "manguera con valvula lavadora lg",
     "manguera de abastecimiento lavadora lg",
     "manguera lavadora lg colombia",
     "manguera de agua para lavadora lg"
@@ -571,13 +569,13 @@
   ],
   [
    "Entrada de agua Samsung",
-   "Con tuercas o anti inundación",
+   "Negra o blanca, con tuercas",
    "El asesor te confirma",
    "https://filtrosparalavadoras.click/mangueras-para-lavadora/samsung/manguera-de-entrada-lavadora-samsung/"
   ],
   [
    "Entrada de agua LG",
-   "Con tuercas o anti inundación",
+   "Negra o blanca, con tuercas",
    "El asesor te confirma",
    "https://filtrosparalavadoras.click/mangueras-para-lavadora/lg/manguera-de-entrada-lavadora-lg/"
   ],
@@ -628,5 +626,5 @@
  ],
  "dominio": "https://filtrosparalavadoras.click/mangueras-para-lavadora",
  "campana": "Mangueras Lavadoras - Búsqueda - Colombia",
- "total_claves": 112
+ "total_claves": 110
 }

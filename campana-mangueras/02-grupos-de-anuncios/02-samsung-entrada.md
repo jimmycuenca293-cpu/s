@@ -8,7 +8,7 @@
 2. Manguera Agua Lavadora Samsung (30)
 3. Manguera Alimentación Samsung (29)
 4. Manguera con Tuercas (20)
-5. Manguera Anti Inundación (24)
+5. Manguera Entrada Blanca (23)
 6. Manguera de Llenado Samsung (27)
 7. Mangueras de Entrada Samsung (28)
 8. Pago contra Entrega (19)
@@ -21,12 +21,12 @@
 15. Precio por WhatsApp (19)
 
 ## Descripciones (máximo 90 caracteres)
-1. Manguera de entrada para lavadora Samsung: con tuercas o anti inundación. (73)
+1. Manguera de entrada para lavadora Samsung: con tuercas de colores o metálicas. (78)
 2. Dinos el modelo de tu lavadora por WhatsApp y te confirmamos la manguera que necesita. (86)
 3. Envía una foto de la manguera vieja y el asesor te dice cuál es. (64)
 4. Pago contra entrega: pagas cuando recibes el paquete. Envío con número de guía. (79)
 
-## Palabras clave (14)
+## Palabras clave (13)
 - manguera de entrada lavadora samsung
 - manguera entrada agua lavadora samsung
 - manguera de agua lavadora samsung
@@ -37,7 +37,6 @@
 - comprar manguera lavadora samsung
 - manguera de conexion lavadora samsung
 - manguera anti inundacion lavadora samsung
-- manguera con valvula lavadora samsung
 - manguera de abastecimiento lavadora samsung
 - manguera lavadora samsung colombia
 - manguera de agua para lavadora samsung
