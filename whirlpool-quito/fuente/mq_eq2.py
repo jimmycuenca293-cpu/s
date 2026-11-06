@@ -131,7 +131,7 @@ add('campanas-extractoras',nombre='Campanas extractoras',corto='Campanas',sing='
  datos='marca y modelo (la etiqueta suele estar dentro, tras retirar el filtro), tipo de montaje y qué falla presenta',
  quito='En cocinas cerradas de apartamentos de Quito, una campana sin salida al exterior depende del filtro de carbón; si no extrae, revisa primero el filtro.')
 
-for _k in ('congeladores','campanas-extractoras','centros-de-lavado'): EQ.pop(_k,None)
+for _k in ('congeladores','parrillas','campanas-extractoras','centros-de-lavado'): EQ.pop(_k,None)
 
 import copy
 EQ['refrigeradoras']['foto']=['nevera-french-door','nevera-top']; EQ['refrigeradoras']['th']='nevera-top'
@@ -143,4 +143,4 @@ _n.update(nombre='Neveras',corto='Neveras',sing='nevera',art='la nevera',h1='Rep
  intro='Reparamos neveras Whirlpool a domicilio en Quito: de congelador superior, Side by Side, French Door, con dispensador de agua y hielo y de congelador inferior. No enfrían, hacen ruido, gotean, acumulan escarcha o se apagan solas.')
 _n['faq']=[(q.replace('nevera','nevera').replace('refrigeradora','nevera'),a) for q,a in _n['faq']]
 EQ['neveras']=_n
-EQ=dict(sorted(EQ.items(),key=lambda kv:['refrigeradoras','neveras','lavadoras','secadoras','cocinas','hornos','parrillas'].index(kv[0])))
+EQ=dict(sorted(EQ.items(),key=lambda kv:['refrigeradoras','neveras','lavadoras','secadoras','cocinas','hornos'].index(kv[0])))
