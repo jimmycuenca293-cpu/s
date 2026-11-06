@@ -233,7 +233,7 @@ info_page('aviso-legal','Aviso legal','Aviso legal | Servicio Técnico Samsung Q
 info_page('privacidad','Tratamiento de datos personales','Tratamiento de datos personales | Servicio Técnico Samsung Quito','Cómo trata Servicio Técnico Samsung Quito tus datos personales cuando nos escribes por WhatsApp o nos llamas para pedir una visita en Quito.','Qué datos recibimos y para qué los usamos.',
  f'<section><h2>Qué datos recibimos</h2><p>Cuando nos escribes por WhatsApp o nos llamas recibimos los datos que compartes: nombre, teléfono, barrio o dirección y datos del equipo.</p></section><section><h2>Para qué los usamos</h2><p>Solo para atender tu solicitud, coordinar la visita y dar seguimiento al servicio. No vendemos tus datos.</p></section><section><h2>Tus derechos</h2><p>Puedes pedirnos que corrijamos o eliminemos tus datos escribiendo al {PHONE_TXT}.</p></section>',icon='doc')
 # --- portada
-HERO_ALT='Técnico de Samsung revisando el compresor de una refrigeradora en casa de una clienta (imagen ilustrativa)'
+HERO_ALT='Técnico de Samsung uniformado saluda con su maletín de herramientas a un cliente en la puerta de su casa en Quito (imagen ilustrativa)'
 def home():
     s=''
     sv=''.join(f'<a class="svc" href="{url(s,c)}">{cimg(s,SIMG[c][0],SIMG[c][1],"simg")}<b>{CORE_LAB[c]}</b><span>{E(PAGES[c]["lead"][:105])}…</span><i>Ver servicio →</i></a>' for c in CORE)
