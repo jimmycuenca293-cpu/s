@@ -1,0 +1,115 @@
+# 3. Palabras negativas (a nivel de campaña)
+
+Son búsquedas por las que NO quieres pagar. Ya vienen en `05-archivos-para-importar/palabras-negativas.csv`. Incluyen las de quien busca comprar una lavadora (no una manguera), otras marcas y otras clases de manguera (jardín, gas, piscina, carro, industrial…). Revisa el informe de **Términos de búsqueda** cada semana y agrega las que no te sirvan.
+
+- usado
+- usada
+- segunda mano
+- casero
+- casera
+- reciclar
+- manual
+- pdf
+- descargar
+- video
+- youtube
+- curso
+- empleo
+- trabajo
+- vacante
+- gratis
+- comprar lavadora
+- lavadora nueva
+- precio de lavadora
+- lavadoras en oferta
+- oferta lavadora
+- falabella
+- exito
+- alkosto
+- homecenter
+- ktronix
+- olx
+- mercadolibre
+- amazon
+- alibaba
+- aliexpress
+- temu
+- reparacion
+- reparar
+- servicio tecnico
+- tecnico
+- tecnico a domicilio
+- tarjeta electronica
+- compresor
+- correa
+- rodamiento
+- empaque
+- amortiguador
+- mabe
+- whirlpool
+- haceb
+- electrolux
+- challenger
+- kalley
+- midea
+- frigidaire
+- general electric
+- nevera
+- refrigerador
+- aire acondicionado
+- patente
+- dibujo
+- juguete
+- jardin
+- riego
+- piscina
+- incendio
+- bombero
+- gas
+- gas natural
+- cocina
+- estufa
+- radiador
+- refrigerante
+- hidraulica
+- hidraulico
+- combustible
+- gasolina
+- aire comprimido
+- compresor de aire
+- ducha
+- lavamanos
+- lavaplatos
+- lavavajillas
+- sanitario
+- inodoro
+- calentador
+- cafetera
+- aspiradora
+- hidrolavadora
+- carro
+- automovil
+- moto
+- bicicleta
+- acuario
+- pecera
+- pozo
+- tanque
+- cisterna
+- industrial
+- alta presion
+- por metro
+- por metros
+- rollo
+- carrete
+- sumergible
+- presurizadora
+- bomba de agua carro
+- bomba de piscina
+- bomba de presion
+- bomba periferica
+- bomba centrifuga
+- bomba de achique
+- bomba de desague lavadora
+- bomba de agua lavadora
+- motobomba

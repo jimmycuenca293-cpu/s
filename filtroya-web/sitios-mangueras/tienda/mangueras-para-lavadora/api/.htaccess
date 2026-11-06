@@ -1,0 +1,8 @@
+# Solo se pueden llamar estos archivos. config.php, lib.php y el catálogo quedan cerrados.
+<FilesMatch ".*">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^(pedido|wompi|estado|recordatorios|reconciliar)\.php$">
+  Require all granted
+</FilesMatch>
+Options -Indexes

@@ -1,0 +1,16 @@
+# Configuración de la campaña
+
+- **Tipo:** Búsqueda (solo Red de Búsqueda; desactiva Display y «socios de búsqueda» al empezar).
+- **Objetivo:** Clientes potenciales (leads). Conversión principal: **WhatsApp** (la misma de la campaña de filtros).
+- **Nombre:** Mangueras Lavadoras - Búsqueda - Colombia
+- **Ubicación:** Colombia (opción «Presencia»: personas que están en Colombia).
+- **Idioma:** Español.
+- **Presupuesto para empezar:** 30.000 a 40.000 COP al día. Una manguera suele costar menos que una bomba, así que busca volumen de conversaciones; sube el presupuesto cuando veas ventas.
+- **Puja:** las primeras 2 semanas «Maximizar clics» con tope de 1.200 COP (punto de partida: ajústalo con los clics reales); con 15 a 30 conversiones cambia a «Maximizar conversiones».
+- **Concordancia:** frase y exacta (ya vienen cargadas así). No uses amplia al empezar.
+- **Programación:** todos los días en el horario en que atiendes WhatsApp (lunes a sábado de 8:00 a. m. a 6:00 p. m. según la tienda). Fuera de ese horario, pausa o baja la puja.
+- **Dispositivos:** todos; casi todo el tráfico será móvil.
+- **Seguimiento:** parámetros automáticos (auto-tagging) activados.
+- **Muy importante:** responde rápido los WhatsApp. Si tardas, se pierde la venta aunque el anuncio funcione.
+- **Pago contra entrega:** los anuncios lo prometen. Confirma que puedes cumplirlo en las ciudades donde envías; si no, limita la ubicación de la campaña a esas ciudades.
+- **Ojo con el cruce:** esta campaña es aparte de la de filtros. No repitas palabras clave entre las dos (aquí van «manguera», allá «filtro» y «bomba»).
