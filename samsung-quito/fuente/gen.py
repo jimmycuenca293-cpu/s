@@ -97,26 +97,37 @@ def thumb(frm,k,cls=''):
 def pth(frm,p,cls=''):
     if p.get('eq') and p['kind'] in ('service','falla','zxa','term','guia'): return thumb(frm,p['eq'],cls)
     return ''
+def ell(s,n):
+    if len(s)<=n: return s
+    c=s[:n]
+    k=max(c.rfind(','),c.rfind(';'),c.rfind(':'),c.rfind('.'))
+    c=c[:k] if k>=int(n*0.55) else c.rsplit(' ',1)[0]
+    c=c.rstrip(' ,;:.')
+    while True:
+        w=c.rsplit(' ',1)
+        if len(w)==2 and w[1].lower() in ('a','la','el','los','las','del','de','y','o','con','en','un','una','que','por','para','se','al','e','u'): c=w[0].rstrip(' ,;:.')
+        else: break
+    return c+'…'
 def related_html(slug,p):
     if not p.get('related'): return ''
     cs=''
     for s in p['related']:
-        q=PAGES[s]; cs+=f'<a class="card has-th" href="{url(slug,s)}">{pth(slug,q,"sm")}<div><b>{E(q["h1"])}</b><span>{E(q["lead"][:105])}…</span></div></a>'
+        q=PAGES[s]; cs+=f'<a class="card has-th" href="{url(slug,s)}">{pth(slug,q,"sm")}<div><b>{E(q["h1"])}</b><span>{E(ell(q["lead"],105))}</span></div></a>'
     return f'<section class="rel"><div class="wrap"><h2>También te puede servir</h2><div class="cards">{cs}</div></div></section>'
 def cta_box(slug,p):
-    return f'<aside class="caja"><h2>Servicio técnico Samsung Quito</h2><p>Escríbenos la marca, el modelo y qué falla presenta. Te orientamos por WhatsApp.</p><a class="btn wa grande" href="{wa(p["wamsg"])}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a><a class="btn linea" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></aside>'
+    return f'<aside class="caja"><h2>Servicio técnico Samsung Quito</h2><p>Escríbenos la marca, el modelo y qué falla presenta. Te orientamos por WhatsApp.</p><a class="btn wa grande" href="{wa(p["wamsg"])}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a><a class="btn linea grande" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></aside>'
 PH={'nevera-family-hub':'Refrigeradora Samsung Side by Side con pantalla Family Hub','nevera-superior-inox':'Refrigeradora Samsung de congelador superior con dispensador','lavadora-superior':'Lavadora Samsung de carga superior','torre-lavado':'Torre de lavado y secado Samsung','secadora':'Secadora Samsung','secadora-torre':'Centro de lavado Samsung (lavadora y secadora)','rep-bomba':'Bomba de desagüe para lavadora (imagen de referencia)','rep-bomba-2':'Bomba de desagüe (imagen de referencia)','rep-filtro-pelusa':'Filtro de pelusas para lavadora (imagen de referencia)','rep-filtro-pelusa-2':'Filtro de pelusas (imagen de referencia)','rep-filtro-agua':'Filtro de agua para refrigeradora Samsung','rep-filtro-agua-2':'Filtro de agua para refrigeradora (imagen de referencia)','rep-filtro-secadora':'Filtro de pelusas para secadora (imagen de referencia)'}
 REPF={'refrigeradoras':['rep-filtro-agua','rep-filtro-agua-2'],'lavadoras':['rep-bomba','rep-bomba-2','rep-filtro-pelusa'],'secadoras':['rep-filtro-secadora','rep-filtro-pelusa-2'],'centros-de-lavado':['rep-bomba-2','rep-filtro-pelusa']}
 TECP={'tecnico-neveras':('Técnico de Samsung revisando el compresor de una refrigeradora en la cocina de una clienta (imagen ilustrativa)',900,503),'tecnico-lavadora':('Técnico revisando una lavadora en casa de una clienta (imagen ilustrativa)',900,298)}
 def fig(slug,n,eager=False):
-    return f'<figure><img src="{asset(slug,"img/"+n+".webp")}" srcset="{asset(slug,"img/"+n+"-m.webp")} 460w, {asset(slug,"img/"+n+".webp")} 900w" sizes="(max-width:700px) 44vw, 330px" width="900" height="900" alt="{E(PH[n])}" loading="eager" decoding="async"><figcaption>{E(PH[n])}</figcaption></figure>'
+    return f'<figure><img src="{asset(slug,"img/"+n+".webp")}" srcset="{asset(slug,"img/"+n+"-m.webp")} 460w, {asset(slug,"img/"+n+".webp")} 900w" sizes="(max-width:700px) 44vw, 330px" width="900" height="900" alt="{E(PH[n])}" loading="eager" decoding="async"></figure>'
 def cimg(frm,n,alt,cls=''):
-    return f'<img class="{cls}" src="{asset(frm,"img/"+n+".webp")}" alt="{E(alt)}" width="640" height="426" loading="eager" decoding="async">'
-PIMG=[('c-clienta','Clienta explicando la falla de su electrodoméstico'),('c-caja','Caja de herramientas del técnico'),('c-lavadora','Técnico revisando una lavadora'),('c-revision','Técnico revisando una refrigeradora'),('c-revision','Técnico diagnosticando la falla'),('c-compresor','Técnico reparando el compresor'),('c-caja','Herramientas del técnico')]
-SIMG={'reparacion-de-electrodomesticos-samsung-a-domicilio-quito':('c-revision','Técnico revisando una refrigeradora'),'mantenimiento-preventivo-de-electrodomesticos-samsung-quito':('c-caja','Herramientas del técnico'),'instalacion-de-electrodomesticos-samsung-quito':('c-lavadora','Técnico revisando una lavadora'),'diagnostico-de-electrodomesticos-samsung-quito':('c-compresor','Técnico revisando el compresor'),'reparacion-de-tarjetas-electronicas-de-electrodomesticos-samsung-quito':('c-lavadora','Técnico probando una lavadora'),'repuestos-para-electrodomesticos-samsung-quito':('rep-bomba','Repuestos para lavadoras y refrigeradoras')}
+    return f'<img class="{cls}" src="{asset(frm,"img/"+n+".webp")}" alt="{E(alt)}" width="900" height="600" loading="eager" decoding="async">'
+PIMG=[('stp1','Cliente conversando con el técnico en su cocina'),('stp2','Técnico revisando los controles de un electrodoméstico'),('stp3','Técnico llegando a la casa del cliente con su caja de herramientas'),('stp4','Técnico diagnosticando un electrodoméstico en la cocina'),('stp5','Técnico atendiendo a la clienta en su cocina'),('stp6','Técnico reparando un electrodoméstico en casa del cliente'),('stp7','Técnico despidiéndose del cliente en la puerta de su casa')]
+SIMG={'reparacion-de-electrodomesticos-samsung-a-domicilio-quito': ('stp4', 'Técnico revisando una refrigeradora'), 'mantenimiento-preventivo-de-electrodomesticos-samsung-quito': ('stp6', 'Herramientas del técnico'), 'instalacion-de-electrodomesticos-samsung-quito': ('stp1', 'Técnico revisando una lavadora'), 'diagnostico-de-electrodomesticos-samsung-quito': ('stp5', 'Técnico revisando el compresor'), 'reparacion-de-tarjetas-electronicas-de-electrodomesticos-samsung-quito': ('stp2', 'Técnico probando una lavadora'), 'repuestos-para-electrodomesticos-samsung-quito': ('rep-bomba', 'Repuestos para lavadoras y refrigeradoras')}
 def tec_fig(slug,n):
     alt,w,h=TECP[n]
-    return f'<figure class="tec"><img src="{asset(slug,"img/"+n+".webp")}" srcset="{asset(slug,"img/"+n+"-m.webp")} 560w, {asset(slug,"img/"+n+".webp")} 900w" sizes="(max-width:700px) 92vw, 700px" width="{w}" height="{h}" alt="{E(alt)}" loading="eager" decoding="async"><figcaption>{E(alt.replace(" (imagen ilustrativa)",""))} · imagen ilustrativa</figcaption></figure>'
+    return f'<figure class="tec"><img src="{asset(slug,"img/"+n+".webp")}" srcset="{asset(slug,"img/"+n+"-m.webp")} 560w, {asset(slug,"img/"+n+".webp")} 900w" sizes="(max-width:700px) 92vw, 700px" width="{w}" height="{h}" alt="{E(alt)}" loading="eager" decoding="async"></figure>'
 TECS=['tecnico-neveras','tecnico-lavadora']
 CLEAN=['tecnico-neveras','tecnico-lavadora']
 def tec_for(slug,p):
@@ -141,7 +152,7 @@ def galeria(slug,p):
         elif k=='zona':
             allp=list(PH.keys()); o=ZSLUGS.index(p['zone'])%len(allp); ph=(allp[o:]+allp[:o])[:3]
     ph=ph[:3]
-    g=('<div class="gal">'+''.join(fig(slug,n,i==0) for i,n in enumerate(ph))+'</div><p class="refimg">Imágenes de referencia de equipos Samsung.</p>') if ph else ''
+    g=('<div class="gal">'+''.join(fig(slug,n,i==0) for i,n in enumerate(ph))+'</div>') if ph else ''
     return t+g
 def crumbs(slug,p):
     it=[('Inicio','')]; k=p['kind']
@@ -153,25 +164,40 @@ def crumbs(slug,p):
     elif k=='term': it.append(('Servicios','servicios'))
     elif k=='guia': it.append(('Guías','guias'))
     it.append((p['h1'],slug)); return it
+
+PASOS_MINI=[('Escríbenos','Por WhatsApp o llamada al '+PHONE_TXT+'. Cuéntanos el equipo, el modelo y la falla.'),('Coordinamos la visita','Acordamos día y hora en tu casa, apartamento u oficina de Quito.'),('Diagnóstico en tu casa','Probamos el equipo, identificamos la causa y te explicamos qué tiene.'),('Reparación y prueba','Te damos el costo antes de reparar; si aceptas, reparamos y probamos.')]
+def why_band(slug):
+    cards=[('stp5','Diagnóstico claro','Probamos el equipo, identificamos la causa y te la explicamos con palabras simples, sin cambiar piezas al azar.'),('stp4','Costo antes de reparar','Te informamos el costo después del diagnóstico y tú decides si continuamos. Sin sorpresas.'),('stp3','A domicilio en Quito','Vamos a tu casa, apartamento u oficina en el norte, centro, sur y valles. Coordinamos por WhatsApp.')]
+    h=''.join(f'<div class="wcard">{cimg(slug,n,t)}<h3>{E(t)}</h3><p>{E(d)}</p></div>' for n,t,d in cards)
+    return f'<section class="sec why"><div class="wrap"><h2>Por qué pedir tu visita con nosotros</h2><p class="sub">Un servicio ordenado: te explicamos, te cotizamos y recién entonces reparamos.</p><div class="wgrid">{h}</div></div></section>'
+def pasos_band(slug):
+    ps=''.join(f'<li>{cimg(slug,PIMG[i][0],PIMG[i][1],"pimg")}<div class="pt"><b>{k+1}</b><div><h3>{E(t)}</h3><p>{E(d)}</p></div></div></li>' for k,(i,(t,d)) in enumerate(zip((0,2,3,5),PASOS_MINI)))
+    return f'<section class="sec osc"><div class="wrap"><h2>Cómo es la visita</h2><p class="sub">Del primer mensaje a la reparación, así trabajamos.</p><ol class="pasos">{ps}</ol></div></section>'
+def cta_band(slug,eq=None):
+    t=f'¿Tu {EQ[eq]["sing"]} está fallando?' if eq in EQ else '¿Tu electrodoméstico está fallando?'
+    return f'<section class="final foto" style="--bg:url({asset(slug,"img/stp4.webp")})"><div class="wrap"><h2>{E(t)}</h2><p>Escríbenos por WhatsApp con la marca, el modelo y la falla. Te orientamos y coordinamos la visita.</p><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a> <a class="btn linea cl" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></div></section>'
+GFAQ=[('¿Cuándo conviene llamar a un técnico?','Cuando la falla se repite, el equipo hace ruidos nuevos, hay fugas o olor a quemado, o ya probaste lo básico sin resultado.'),('¿La visita incluye diagnóstico?','Sí: probamos el equipo, te explicamos la causa y te damos el costo antes de reparar. Tú decides si continuamos.')]
 def page(slug):
     p=PAGES[slug]; items=crumbs(slug,p); ld=[BIZ,bc_ld(items)]
     if p['kind'] in ('service','zona','zxa','term','sector'):
         ld.append({'@context':'https://schema.org','@type':'Service','name':p['h1'],'serviceType':p['h1'],'provider':{'@id':SITE+'/#negocio'},'areaServed':{'@type':'City','name':'Quito'},'url':SITE+'/'+slug+'/','description':p['desc']})
     if p['kind'] in ('guia','falla'):
         ld.append({'@context':'https://schema.org','@type':'Article','headline':p['h1'],'description':p['desc'],'inLanguage':'es-EC','datePublished':TODAY,'dateModified':TODAY,'author':{'@type':'Organization','name':NAME},'publisher':{'@id':SITE+'/#negocio'},'mainEntityOfPage':SITE+'/'+slug+'/'})
+    if p['kind']=='guia': p=dict(p); p['faq']=list(p['faq'])+GFAQ
     if p['faq']: ld.append(faq_ld(p['faq']))
     secs=''.join(f'<section><h2>{E(h)}</h2>{fix(b,slug)}</section>' for h,b in p['sections'])
     hero=f'<section class="phero"><div class="wrap">{bc_html(slug,items)}<p class="kick">Servicio técnico Samsung Quito</p><div class="ph-fila">{pth(slug,p,"big")}<div><h1>{E(p["h1"])}</h1><p class="lead">{E(p["lead"])}</p></div></div><div class="acc"><a class="btn wa grande" href="{wa(p["wamsg"])}" target="_blank" rel="noopener">{WA_SVG}<span>Cotizar por WhatsApp</span></a><a class="btn linea cl" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></div></div></section>'
-    body=f'<div class="wrap lay"><article class="art">{galeria(slug,p)}{secs}{faq_html(p["faq"])}</article>{cta_box(slug,p)}</div>{related_html(slug,p)}'
+    body=f'<div class="wrap lay"><article class="art">{galeria(slug,p)}{secs}{faq_html(p["faq"])}</article>{cta_box(slug,p)}</div>{related_html(slug,p)}{why_band(slug)}{pasos_band(slug)}{cta_band(slug,p.get('eq'))}'
     write(slug,head(slug,p['title'],p['desc'],ld,'article' if p['kind'] in ('guia','falla') else 'website')+header(slug)+hero+body+footer(slug))
 INFO={'electrodomesticos','fallas-comunes','servicios','zonas-de-servicio-quito','guias','como-trabajamos','preguntas-frecuentes','contacto','aviso-legal','privacidad'}
-def info_page(slug,h1,title,desc,lead,body_html,faq=None,icon='home',wamsg=WAHI,wide=False):
+def info_page(slug,h1,title,desc,lead,body_html,faq=None,icon='home',wamsg=WAHI,wide=False,raw=False):
     items=[('Inicio',''),(h1,slug)]; ld=[BIZ,bc_ld(items)]+([faq_ld(faq)] if faq else [])
     hero=f'<section class="phero"><div class="wrap">{bc_html(slug,items)}<p class="kick">Servicio técnico Samsung Quito</p><div class="ph-fila"><div><h1>{E(h1)}</h1><p class="lead">{E(lead)}</p></div></div></div></section>'
-    body=f'<div class="wrap lay1"><article class="art wide">{fix(body_html,slug)}{faq_html(faq)}</article></div>'
-    write(slug,head(slug,title,desc,ld)+header(slug)+hero+body+footer(slug))
+    body=(fix(body_html,slug) if raw else f'<div class="wrap lay1"><article class="art wide">{fix(body_html,slug)}{faq_html(faq)}</article></div>')
+    extra='' if slug in ('privacidad','aviso-legal','mapa-del-sitio','como-trabajamos','contacto') else why_band(slug)+pasos_band(slug)+cta_band(slug)
+    write(slug,head(slug,title,desc,ld)+header(slug)+hero+body+extra+footer(slug))
 def cardlist(slug,slugs,cls='cards g2'):
-    return f'<div class="{cls}">'+''.join(f'<a class="card has-th" href="{url(slug,s)}">{pth(slug,PAGES[s],"sm")}<div><b>{E(PAGES[s]["h1"])}</b><span>{E(PAGES[s]["lead"][:105])}…</span></div></a>' for s in slugs)+'</div>'
+    return f'<div class="{cls}">'+''.join(f'<a class="card has-th" href="{url(slug,s)}">{pth(slug,PAGES[s],"sm")}<div><b>{E(PAGES[s]["h1"])}</b><span>{E(ell(PAGES[s]["lead"],105))}</span></div></a>' for s in slugs)+'</div>'
 def chips(slug,slugs,label=None):
     return '<div class="chips">'+''.join(f'<a href="{url(slug,s)}">{E(label(s) if label else PAGES[s]["h1"])}</a>' for s in slugs)+'</div>'
 # ---------------- páginas ----------------
@@ -197,7 +223,7 @@ for k in EQK:
     e=EQ[k]; fh+=f'<section><h2><a href="@{e["slug"]}@">{E(e["corto"])}</a></h2><ul class="fallas">'+''.join(f'<li><a href="@{s}@">{E(PAGES[s]["h1"])}</a> <span class="tag {mp.URG[e["fallas"][i][2]]}">{e["fallas"][i][2]}</span></li>' for i,s in enumerate(e['slugs']))+'</ul></section>'
 info_page('fallas-comunes','Fallas comunes de electrodomésticos Samsung en Quito','Fallas comunes de electrodomésticos Samsung en Quito','Todas las fallas comunes de refrigeradoras, lavadoras, secadoras y más equipos Samsung: causas, qué revisar y cuándo llamar a un técnico en Quito.','Encuentra tu falla por electrodoméstico, mira qué puedes revisar tú con seguridad y cuándo pedir un técnico.',fh,icon='help')
 def cards_text(sl,slugs):
-    return '<div class="svcs">'+''.join(f'<a class="svc" href="{url(sl,s)}"><b>{E(CORE_LAB.get(s,PAGES[s]["h1"]))}</b><span>{E(PAGES[s]["lead"][:110])}…</span><i>Ver servicio →</i></a>' for s in slugs)+'</div>'
+    return '<div class="svcs">'+''.join(f'<a class="svc" href="{url(sl,s)}"><b>{E(CORE_LAB.get(s,PAGES[s]["h1"]))}</b><span>{E(ell(PAGES[s]["lead"],110))}</span><i>Ver servicio →</i></a>' for s in slugs)+'</div>'
 OTRAS=[s for s in GEN if s not in CORE and s in TERMS]
 sv='<section><h2>Nuestros servicios</h2>'+'@@CARDS@@'+'</section>'
 for k in EQK:
@@ -221,26 +247,32 @@ info_page('zonas-de-servicio-quito','Cobertura: barrios de Quito donde atendemos
 def pli(frm,i,a,b):
     n,alt=PIMG[i]
     return f'<li>{cimg(frm,n,alt,"pimg")}<div class="pt"><b>{i+1}</b><div><h3>{E(a)}</h3><p>{E(b)}</p></div></div></li>'
+def step_sec(frm,i,a,b):
+    n,alt=PIMG[i]
+    return f'<section class="stepsec{" inv" if i%2 else ""}"><div class="wrap"><div class="sfoto">{cimg(frm,n,alt,"sim")}</div><div class="stxt"><span class="snum">{i+1}</span><h2>{E(a)}</h2><p>{E(b)}</p></div></div></section>'
 pasos=[('Escríbenos','Por WhatsApp o llamada al 099 350 8191. Cuéntanos qué equipo es, la marca, el modelo y la falla.'),('Envía datos y fotos','Una foto de la etiqueta del equipo y un video corto de la falla ayudan a orientarte mejor.'),('Coordinamos la visita','Acordamos día y hora en tu casa, apartamento u oficina de Quito.'),('Diagnóstico en tu casa','Probamos el equipo, identificamos la causa y te explicamos qué tiene.'),('Costo antes de reparar','Te informamos el costo y tú decides si continuamos.'),('Reparación y prueba','Reparamos y probamos que el equipo quede funcionando.'),('Recomendaciones','Te decimos cómo usarlo y cuidarlo para que la falla no se repita.')]
-ch=f'<section><h2>Paso a paso</h2><ol class="pasos l">'+''.join(f'{pli("como-trabajamos",i,a,b)}' for i,(a,b) in enumerate(pasos))+'</ol></section><section><h2>Nuestro compromiso con la claridad</h2><p>No cambiamos piezas al azar: primero probamos y diagnosticamos. Si no conviene reparar, te lo decimos.</p></section>'
-info_page('como-trabajamos','Cómo trabajamos: servicio técnico Samsung paso a paso','Cómo trabajamos el servicio técnico Samsung en Quito','Así es el servicio técnico Samsung a domicilio en Quito: contacto por WhatsApp, diagnóstico, costo antes de reparar, reparación y recomendaciones.','Del primer mensaje a la reparación: así trabajamos, sin sorpresas.',ch,icon='shield')
+ch='@@STEPS@@<section class="cierre"><div class="wrap"><h2>Nuestro compromiso con la claridad</h2><p>No cambiamos piezas al azar: primero probamos y diagnosticamos. Si no conviene reparar, te lo decimos.</p></div></section>'
+ch=ch.replace('@@STEPS@@',''.join(step_sec('como-trabajamos',i,a,b) for i,(a,b) in enumerate(pasos)))
+info_page('como-trabajamos','Cómo trabajamos: servicio técnico Samsung paso a paso','Cómo trabajamos el servicio técnico Samsung en Quito','Así es el servicio técnico Samsung a domicilio en Quito: contacto por WhatsApp, diagnóstico, costo antes de reparar, reparación y recomendaciones.','Del primer mensaje a la reparación: así trabajamos, sin sorpresas.',ch,icon='shield',raw=True)
 FAQ_ALL=HOMEFAQ+[('¿Reparan solo Samsung?','Nos enfocamos en electrodomésticos Samsung. Si tienes otra marca, escríbenos y te decimos si podemos ayudarte.'),('¿Qué hago si huele a gas?','Cierra la llave, ventila, no uses llama ni interruptores y llama a un técnico. Si hay riesgo, llama a emergencias (911).'),('¿Atienden apartamentos y conjuntos?','Sí. Coordinamos acceso y horario con la administración.'),('¿Qué datos debo enviar por WhatsApp?','Tipo de equipo, marca y modelo, la falla, tu barrio y una foto de la etiqueta si puedes.'),('¿Instalan electrodomésticos?','Consulta por WhatsApp con el modelo y el tipo de conexión (agua, gas o electricidad) para confirmarte el servicio.'),('¿Qué zonas de Quito atienden?','Norte, centro, sur y valles: La Carolina, Iñaquito, Cotocollao, Villaflora, Quitumbe, Cumbayá, Tumbaco, Calderón, Sangolquí y más. Consulta la lista completa en Zonas.')]
 info_page('preguntas-frecuentes','Preguntas frecuentes sobre el servicio técnico Samsung en Quito','Preguntas frecuentes: servicio técnico Samsung en Quito','Respuestas sobre el servicio técnico Samsung a domicilio en Quito: equipos, zonas, costo de la visita, garantía de fábrica y cómo pedir el servicio.','Lo que más nos preguntan antes de pedir una visita.','',faq=FAQ_ALL,icon='help')
 info_page('contacto','Contacto: servicio técnico Samsung en Quito','Contacto servicio técnico Samsung Quito | WhatsApp 099 350 8191','Contacta al servicio técnico Samsung en Quito por WhatsApp o llamada al 099 350 8191 (+593 99 350 8191). Cuéntanos tu equipo y la falla.','Escríbenos por WhatsApp o llámanos. Te respondemos con el siguiente paso.',
- f'<section><h2>Pide tu visita</h2><p><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a> <a class="btn linea" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></p><p>Número: <b>{PHONE_TXT}</b> ({PHONE_FULL}).</p></section><section><h2>Qué contarnos</h2><ul><li>Qué equipo es y su marca y modelo</li><li>Qué falla presenta y desde cuándo</li><li>Tu barrio o sector de Quito</li><li>Si puedes, una foto de la etiqueta y un video corto del problema</li></ul></section><section><h2>Dónde atendemos</h2><p>Quito: norte, centro, sur y valles. Mira la lista en <a href="@zonas-de-servicio-quito@">Zonas</a>.</p></section>',icon='chat')
+ f'''<section class="sec"><div class="wrap"><div class="ccards"><div class="ccard"><h2>WhatsApp</h2><p>La forma más rápida: envía el equipo, el modelo, la falla y tu barrio, con una foto de la etiqueta si puedes.</p><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a></div><div class="ccard"><h2>Llamada</h2><p>Si prefieres hablar, llámanos y coordinamos la visita.</p><a class="btn linea grande" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a><p class="mini">{PHONE_FULL}</p></div><div class="ccard"><h2>Cobertura</h2><p>Atendemos el norte, el centro, el sur y los valles de Quito.</p><a class="btn linea grande" href="@zonas-de-servicio-quito@">Ver barrios</a></div></div></div></section>
+<section class="stepsec"><div class="wrap"><div class="sfoto">{cimg('contacto','stp1','Cliente conversando con el técnico en su cocina','sim')}</div><div class="stxt"><h2>Qué contarnos</h2><ul class="clist"><li>Qué equipo es, su marca y modelo</li><li>Qué falla presenta y desde cuándo</li><li>Tu barrio o sector de Quito</li><li>Si puedes, una foto de la etiqueta y un video corto del problema</li></ul></div></div></section>
+'''+why_band('contacto')+pasos_band('contacto')+f'<div class="wrap lay1"><article class="art wide">{faq_html(FAQ_ALL[:8])}</article></div>'+cta_band('contacto'),icon='chat',raw=True)
 info_page('aviso-legal','Aviso legal','Aviso legal | Servicio Técnico Samsung Quito','Aviso legal de Servicio Técnico Samsung Quito: uso de marcas y alcance de la información del sitio.','Uso de marcas y alcance de la información de este sitio.',
- '<section><h2>Marcas</h2><p>Samsung es una marca de su respectivo titular. Este sitio no es operado por Samsung.</p></section><section><h2>Información orientativa</h2><p>El contenido de este sitio es orientativo. El diagnóstico definitivo y el costo se confirman en la visita. Las imágenes marcadas como ilustrativas o de referencia no corresponden necesariamente a equipos o personas concretas.</p></section><section><h2>Garantía de fábrica</h2><p>Si tu equipo está en garantía de fábrica, consulta las condiciones con el fabricante antes de solicitar una reparación independiente.</p></section>',icon='shield')
+ '<section><h2>Marcas</h2><p>Samsung es una marca de su respectivo titular. Este sitio no es operado por Samsung.</p></section><section><h2>Información orientativa</h2><p>El contenido de este sitio es orientativo. El diagnóstico definitivo y el costo se confirman en la visita. Las imágenes del sitio son ilustrativas y no corresponden necesariamente a equipos o personas concretas.</p></section><section><h2>Garantía de fábrica</h2><p>Si tu equipo está en garantía de fábrica, consulta las condiciones con el fabricante antes de solicitar una reparación independiente.</p></section>',icon='shield')
 info_page('privacidad','Tratamiento de datos personales','Tratamiento de datos personales | Servicio Técnico Samsung Quito','Cómo trata Servicio Técnico Samsung Quito tus datos personales cuando nos escribes por WhatsApp o nos llamas para pedir una visita en Quito.','Qué datos recibimos y para qué los usamos.',
  f'<section><h2>Qué datos recibimos</h2><p>Cuando nos escribes por WhatsApp o nos llamas recibimos los datos que compartes: nombre, teléfono, barrio o dirección y datos del equipo.</p></section><section><h2>Para qué los usamos</h2><p>Solo para atender tu solicitud, coordinar la visita y dar seguimiento al servicio. No vendemos tus datos.</p></section><section><h2>Tus derechos</h2><p>Puedes pedirnos que corrijamos o eliminemos tus datos escribiendo al {PHONE_TXT}.</p></section>',icon='doc')
 # --- portada
 HERO_ALT='Técnico de Samsung uniformado saluda con su maletín de herramientas a un cliente en la puerta de su casa en Quito (imagen ilustrativa)'
 def home():
     s=''
-    sv=''.join(f'<a class="svc" href="{url(s,c)}">{cimg(s,SIMG[c][0],SIMG[c][1],"simg")}<b>{CORE_LAB[c]}</b><span>{E(PAGES[c]["lead"][:105])}…</span><i>Ver servicio →</i></a>' for c in CORE)
+    sv=''.join(f'<a class="svc" href="{url(s,c)}">{cimg(s,SIMG[c][0],SIMG[c][1],"simg")}<b>{CORE_LAB[c]}</b><span>{E(ell(PAGES[c]["lead"],105))}</span><i>Ver servicio →</i></a>' for c in CORE)
     def eqcard(k):
         e=EQ[k]; nm=e["art"].split(" ",1)[1]
         fl=''.join(f'<li><a href="{url(s,x)}">{E(PAGES[x]["h1"])}</a></li>' for x in e['slugs'][:3])
-        return f'<div class="eqc">{thumb(s,k,"big")}<h3><a href="{url(s,e["slug"])}">{E(e["h1"])}</a></h3><p>{E(e["intro"][:105])}…</p><b class="sb">Fallas más consultadas</b><ul>{fl}</ul><a class="enlace" href="{url(s,e["slug"])}">Todo sobre {nm} Samsung →</a></div>'
+        return f'<div class="eqc">{thumb(s,k,"big")}<h3><a href="{url(s,e["slug"])}">{E(e["h1"])}</a></h3><p>{E(ell(e["intro"],105))}</p><b class="sb">Fallas más consultadas</b><ul>{fl}</ul><a class="enlace" href="{url(s,e["slug"])}">Todo sobre {nm} Samsung →</a></div>'
     eqs=''.join(eqcard(k) for k in EQK)
     cs=''.join(f'<li><a href="{url(s,x)}">{E(TERMS[x]["h1"])}</a></li>' for x in ['centro-de-servicio-de-lavadoras-samsung-quito','centro-de-servicio-de-secadoras-samsung-quito','centro-de-servicio-de-refrigeradoras-samsung-quito','centro-de-servicio-de-neveras-samsung-quito','soporte-tecnico-samsung-quito','nevera-o-refrigeradora-samsung-es-lo-mismo'] if x in TERMS)
     cov=''
@@ -248,7 +280,7 @@ def home():
         zs=[z for z in ZSLUGS if ZD[z]['sector']==sc]
         cov+=f'<div class="covc"><h3><a href="{url(s,SECTOR_HUBS[sc][0])}">{lab}</a></h3><ul>'+''.join(f'<li><a href="{url(s,"servicio-tecnico-samsung-en-"+z)}">{E(ZD[z]["nombre"])}</a></li>' for z in zs)+'</ul></div>'
     gcards=cardlist(s,GUIDE_SLUGS[:6])
-    ps=''.join(pli(s,j,pasos[j][0],pasos[j][1]).replace(f'<b>{j+1}</b>',f'<b>{k+1}</b>') for k,j in enumerate([0,3,4,5]))
+    ps=''.join(pli(s,j,pasos[j][0],pasos[j][1]).replace(f'<b>{j+1}</b>',f'<b>{k+1}</b>') for k,j in enumerate([0,2,3,5]))
     tecs=''.join(f'<div>{tec_fig(s,n)}</div>' for n in CLEAN)
     if AUTH: ASI=f'<div class="tecs">{tecs}</div>'
     else: ASI='<div class="tecs dos">'+''.join(f'<div>{tec_fig(s,n)}</div>' for n in CLEAN)+'</div>'
@@ -258,8 +290,8 @@ def home():
     body=f'''<section class="sec" id="servicios"><div class="wrap"><h2>Nuestros servicios</h2><p class="sub">Todo lo que hacemos por tus electrodomésticos Samsung en Quito.</p><div class="svcs">{sv}</div><p style="margin-top:22px"><a class="enlace" href="{url(s,'servicios')}">Ver todos los servicios, por equipo y por zona →</a></p></div></section>
 <section class="sec osc" id="electrodomesticos"><div class="wrap"><h2>Electrodomésticos que reparamos</h2><p class="sub">Elige tu equipo: cada uno tiene sus fallas, servicios y zonas.</p><div class="eqgrid">{eqs}</div></div></section>
 <section class="sec"><div class="wrap"><h2>¿Buscas un centro de servicio Samsung en Quito?</h2><p class="sub">Con nosotros no llevas el equipo: el técnico va a tu casa.</p><ul class="sublist cs">{cs}</ul></div></section>
-<section class="sec" id="cobertura"><div class="wrap"><h2>Cobertura: barrios de Quito</h2><p class="sub">Atendemos el norte, el centro, el sur y los valles. Elige tu barrio.</p><figure class="banner"><img src="img/tecnico-lavadora.webp" alt="Técnico de Samsung revisando una lavadora en una casa de Quito" width="900" height="298" loading="eager" decoding="async"><figcaption>Vamos a tu casa en toda Quito</figcaption></figure><div class="covg">{cov}</div><p style="margin-top:22px"><a class="enlace" href="{url(s,'zonas-de-servicio-quito')}">Ver toda la cobertura →</a></p></div></section>
-<section class="sec osc"><div class="wrap"><h2>Cómo trabajamos</h2><p class="sub">Vamos hasta donde está tu equipo, lo revisamos y te explicamos antes de reparar.</p>{ASI}<p class="refimg">Imágenes ilustrativas.</p><ol class="pasos">{ps}</ol><p style="margin-top:22px"><a class="enlace" href="{url(s,'como-trabajamos')}">Ver el proceso completo paso a paso →</a></p></div></section>
+<section class="sec" id="cobertura"><div class="wrap"><h2>Cobertura: barrios de Quito</h2><p class="sub">Atendemos el norte, el centro, el sur y los valles. Elige tu barrio.</p><div class="covg">{cov}</div><p style="margin-top:22px"><a class="enlace" href="{url(s,'zonas-de-servicio-quito')}">Ver toda la cobertura →</a></p></div></section>
+<section class="sec osc"><div class="wrap"><h2>Cómo trabajamos</h2><p class="sub">Vamos hasta donde está tu equipo, lo revisamos y te explicamos antes de reparar.</p><ol class="pasos">{ps}</ol><p style="margin-top:22px"><a class="enlace" href="{url(s,'como-trabajamos')}">Ver el proceso completo paso a paso →</a></p></div></section>
 <section class="sec"><div class="wrap"><h2>Guías</h2><p class="sub">Voltaje, limpieza y fallas explicadas para Quito.</p>{gcards}<p style="margin-top:22px"><a class="enlace" href="{url(s,'guias')}">Ver todas las guías →</a></p></div></section>
 <section class="sec osc"><div class="wrap lay1">{faq_html(HOMEFAQ)}</div></section>
 <section class="final foto" style="--bg:url(img/tecnico-neveras.webp)"><div class="wrap"><h2>¿Tu electrodoméstico está fallando?</h2><p>Escríbenos por WhatsApp con la marca, el modelo y la falla. Te orientamos y coordinamos la visita.</p><a class="btn wa grande" href="{wa(WAHI)}" target="_blank" rel="noopener">{WA_SVG}<span>Escribir por WhatsApp</span></a> <a class="btn linea cl" href="tel:{PHONE_TEL}">Llamar {PHONE_TXT}</a></div></section>'''

@@ -10,6 +10,18 @@ import mq_terms4
 from mq_terms import T
 import mq_guias
 E=html.escape
+def ell(s,n):
+    if len(s)<=n: return s
+    c=s[:n]
+    k=max(c.rfind(','),c.rfind(';'),c.rfind(':'),c.rfind('.'))
+    c=c[:k] if k>=int(n*0.55) else c.rsplit(' ',1)[0]
+    c=c.rstrip(' ,;:.')
+    while True:
+        w=c.rsplit(' ',1)
+        if len(w)==2 and w[1].lower() in ('a','la','el','los','las','del','de','y','o','con','en','un','una','que','por','para','se','al','e','u'): c=w[0].rstrip(' ,;:.')
+        else: break
+    return c+'…'
+
 PAGES={}; ORDER=[]
 URG={'Urgente':'u','Revisar pronto':'r','Vigilar':'v'}
 def cap(s): return s[:1].upper()+s[1:]
@@ -170,7 +182,7 @@ for sc,(sslug,label) in SECTOR_HUBS.items():
 SECTOR_TERMS=[v[0] for v in SECTOR_HUBS.values()]+VALLE_TERMS
 # ---------- términos ----------
 for t in T:
-    eqs=''.join(f'<a class="card" href="@{EQ[k]["slug"]}@"><div><b>{E(EQ[k]["h1"])}</b><span>{E(EQ[k]["intro"][:100])}…</span></div></a>' for k in t['eq'][:4])
+    eqs=''.join(f'<a class="card" href="@{EQ[k]["slug"]}@"><div><b>{E(EQ[k]["h1"])}</b><span>{E(ell(EQ[k]["intro"],100))}</span></div></a>' for k in t['eq'][:4])
     s=[('Qué incluye',ul([E(x) for x in t['inc']])),('Cuándo conviene',f'<p>{E(t["cuando"])}</p>'),
        ('Equipos relacionados',f'<div class="cards g2">{eqs}</div>'),
        ('Cómo pedir la visita',ul(['Escríbenos por WhatsApp o llámanos al '+PHONE_TXT,'Cuéntanos qué equipo es, la marca, el modelo y la falla','Envía tu barrio y, si puedes, una foto de la etiqueta y un video corto','Coordinamos el día y la hora de la visita'])),

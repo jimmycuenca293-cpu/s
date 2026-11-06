@@ -1,6 +1,6 @@
 import re,os,json,urllib.request,html
 from urllib.parse import urljoin
-B='http://127.0.0.1:8777'
+B='http://127.0.0.1:8851'
 urls=re.findall(r'<loc>https://serviciotecnicosamsungquito.click(/[^<]*)</loc>',open('site/sitemap.xml').read())
 bad=[];tit={};desc={};words={};seen=set()
 for u in urls:
