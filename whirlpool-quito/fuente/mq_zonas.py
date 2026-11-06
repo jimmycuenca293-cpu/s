@@ -76,7 +76,7 @@ ZSLUGS=[z[0] for z in Z]
 # zonas con página por electrodoméstico
 import os
 ZXA=list(ZSLUGS) if os.environ.get('MQ_LITE')!='1' else ['la-carolina','la-floresta','la-villaflora','centro-historico','cumbaya','calderon']
-AXZ=['refrigeradoras','neveras','lavadoras','secadoras']
+AXZ=['refrigeradoras','neveras','lavadoras','secadoras','cocinas','hornos','parrillas']
 TIPO_TXT={
  'edificios':'En esta zona hay muchos edificios de apartamentos y oficinas. Coordinamos el acceso y el horario con la administración para que la visita no se complique.',
  'casas':'Predominan casas y conjuntos pequeños. Confirmamos la dirección exacta y la referencia por WhatsApp antes de ir.',

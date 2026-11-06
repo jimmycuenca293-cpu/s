@@ -8,7 +8,7 @@ def add(slug,*a):
     have.add(slug); t(slug,*a)
 W=f'WhatsApp {PHONE_TXT}'
 # ---- Centro de servicio por equipo
-for k,pl,art in (('lavadoras','lavadoras','la lavadora'),('secadoras','secadoras','la secadora'),('refrigeradoras','refrigeradoras','la refrigeradora'),('neveras','neveras','la nevera')):
+for k,pl,art in (('lavadoras','lavadoras','la lavadora'),('secadoras','secadoras','la secadora'),('refrigeradoras','refrigeradoras','la refrigeradora'),('neveras','neveras','la nevera'),('cocinas','cocinas','la cocina'),('hornos','hornos','el horno'),('parrillas','parrillas','la parrilla')):
     add(f'centro-de-servicio-de-{pl}-whirlpool-quito',f'Centro de servicio de {pl} Whirlpool en Quito',f'Centro de servicio de {pl} Whirlpool en Quito',
       f'Centro de servicio de {pl} Whirlpool en Quito: técnico a domicilio para reparar y dar mantenimiento sin que muevas el equipo. {W}.',[k],
       f'Si buscas un centro de servicio de {pl} Whirlpool en Quito, hay una forma más cómoda: el técnico va a tu casa, revisa {art} en su lugar y te explica la falla antes de reparar.',
@@ -104,7 +104,7 @@ SECT={'Norte':('el norte de Quito','norte'),'Centro':('el centro de Quito','cent
 def _noms(sc,n=8): return [ZD[z]['nombre'] for z in ZSLUGS if ZD[z]['sector']==sc][:n]
 for sc,(lab,short) in SECT.items():
     nm=', '.join(_noms(sc))
-    for k,pl,art in (('lavadoras','lavadoras','la lavadora'),('secadoras','secadoras','la secadora'),('refrigeradoras','refrigeradoras','la refrigeradora'),('neveras','neveras','la nevera')):
+    for k,pl,art in (('lavadoras','lavadoras','la lavadora'),('secadoras','secadoras','la secadora'),('refrigeradoras','refrigeradoras','la refrigeradora'),('neveras','neveras','la nevera'),('cocinas','cocinas','la cocina'),('hornos','hornos','el horno'),('parrillas','parrillas','la parrilla')):
         add(f'reparacion-de-{pl}-whirlpool-en-{lab.replace("el ","").replace("los ","").replace(" de Quito","").lower()}-de-quito',
             f'Reparación de {pl} Whirlpool en {lab}',f'Reparación de {pl} Whirlpool en {lab}',
             f'Reparación de {pl} Whirlpool en {lab}: técnico a domicilio en {nm} y alrededores. '+W+'.',[k],
@@ -128,11 +128,11 @@ add('tecnico-whirlpool-urgente-quito','Técnico Whirlpool urgente en Quito','Té
  ['Orientación inmediata por WhatsApp sobre qué hacer','Confirmación de disponibilidad de visita','Revisión a domicilio','Costo confirmado antes de reparar'],
  'Si hay fuga de agua, cierra la llave y desconecta el equipo. Si huele a quemado, desconéctalo y no lo uses.',
  [('¿Atienden urgencias?','Escríbenos por WhatsApp y te confirmamos la disponibilidad para tu sector.'),('¿Qué hago mientras llega el técnico?','Desconecta el equipo si hay olor a quemado o fuga de agua y cierra la llave de agua.')])
-for k,pl,art in (('lavadoras','lavadoras','la lavadora'),('secadoras','secadoras','la secadora'),('refrigeradoras','refrigeradoras','la refrigeradora'),('neveras','neveras','la nevera')):
+for k,pl,art in (('lavadoras','lavadoras','la lavadora'),('secadoras','secadoras','la secadora'),('refrigeradoras','refrigeradoras','la refrigeradora'),('neveras','neveras','la nevera'),('cocinas','cocinas','la cocina'),('hornos','hornos','el horno'),('parrillas','parrillas','la parrilla')):
     add(f'tecnico-de-{pl}-whirlpool-urgente-quito',f'Técnico de {pl} Whirlpool urgente en Quito',f'Técnico de {pl} Whirlpool urgente en Quito',f'Técnico para urgencias de {pl} Whirlpool en Quito: escribe por WhatsApp, te orientamos y confirmamos disponibilidad. {W}.',[k],
      f'Si {art} Whirlpool dejó de funcionar de golpe, escríbenos: te indicamos qué hacer mientras tanto y confirmamos cuándo podemos ir.',
      ['Orientación inicial por WhatsApp','Confirmación de disponibilidad de visita','Diagnóstico a domicilio','Costo confirmado antes de reparar'],
-     'Ante olor a quemado o fuga de agua, desconecta el equipo y cierra la llave.',
+     ('Si hueles a gas: cierra la llave, ventila, no uses llama ni interruptores y llama a un técnico.' if k in ('cocinas','hornos','parrillas') else 'Ante olor a quemado o fuga de agua, desconecta el equipo y cierra la llave.'),
      [(f'¿Atienden urgencias de {pl}?','Escríbenos y te confirmamos la disponibilidad para tu sector.'),('¿Qué necesito enviar?','Modelo, falla y barrio; una foto o video ayuda.')])
     add(f'cotizar-reparacion-de-{pl}-whirlpool-quito',f'Cotizar la reparación de {pl} Whirlpool en Quito',f'Cotizar reparación de {pl} Whirlpool en Quito',f'Cotiza la reparación de {art} Whirlpool en Quito: diagnóstico a domicilio y costo antes de reparar. {W}.',[k],
      f'Para cotizar la reparación de {art} Whirlpool necesitamos saber qué falla. Envíanos el modelo y los síntomas y te orientamos; el costo final se confirma tras el diagnóstico.',

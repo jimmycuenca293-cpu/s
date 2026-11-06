@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from mq_eq import EQ,add,fixfaq
 U1,U2,U3='Urgente','Revisar pronto','Vigilar'
-add('cocinas',nombre='Cocinas',corto='Cocinas',sing='cocina',art='la cocina',h1='Reparación de cocinas Whirlpool en Quito',slug='reparacion-de-cocinas-whirlpool-quito',icon='stove',foto=['cocina-gas'],th='cocina-gas',
+add('cocinas',nombre='Cocinas',corto='Cocinas',sing='cocina',art='la cocina',h1='Reparación de cocinas Whirlpool en Quito',slug='reparacion-de-cocinas-whirlpool-quito',icon='stove',foto=['parrilla-gas','horno-empotrable'],th='parrilla-gas',
  intro='Reparamos cocinas Whirlpool a gas en Quito: hornillas que no encienden, llama amarilla o débil, perillas duras, chispero que no deja de hacer clic y hornos que no calientan.',
  modelos=['Cocinas a gas de 4, 5 y 6 hornillas','Cocinas con horno a gas','Cocinas con horno eléctrico','Cocinas con encendido eléctrico (chispero)','Cocinas empotrables y de piso'],
  fallas=[
@@ -131,7 +131,7 @@ add('campanas-extractoras',nombre='Campanas extractoras',corto='Campanas',sing='
  datos='marca y modelo (la etiqueta suele estar dentro, tras retirar el filtro), tipo de montaje y qué falla presenta',
  quito='En cocinas cerradas de apartamentos de Quito, una campana sin salida al exterior depende del filtro de carbón; si no extrae, revisa primero el filtro.')
 
-for _k in ('cocinas','hornos','congeladores','parrillas','campanas-extractoras','centros-de-lavado'): EQ.pop(_k,None)
+for _k in ('congeladores','campanas-extractoras','centros-de-lavado'): EQ.pop(_k,None)
 
 import copy
 EQ['refrigeradoras']['foto']=['nevera-french-door','nevera-top']; EQ['refrigeradoras']['th']='nevera-top'
@@ -143,4 +143,4 @@ _n.update(nombre='Neveras',corto='Neveras',sing='nevera',art='la nevera',h1='Rep
  intro='Reparamos neveras Whirlpool a domicilio en Quito: de congelador superior, Side by Side, French Door, con dispensador de agua y hielo y de congelador inferior. No enfrían, hacen ruido, gotean, acumulan escarcha o se apagan solas.')
 _n['faq']=[(q.replace('nevera','nevera').replace('refrigeradora','nevera'),a) for q,a in _n['faq']]
 EQ['neveras']=_n
-EQ=dict(sorted(EQ.items(),key=lambda kv:['refrigeradoras','neveras','lavadoras','secadoras'].index(kv[0])))
+EQ=dict(sorted(EQ.items(),key=lambda kv:['refrigeradoras','neveras','lavadoras','secadoras','cocinas','hornos','parrillas'].index(kv[0])))

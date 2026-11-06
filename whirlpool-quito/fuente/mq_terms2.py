@@ -131,7 +131,7 @@ t('revision-de-electrodomesticos-whirlpool-usados-antes-de-comprar-quito','Revis
  ['Revisión de funcionamiento','Revisión de desgaste y piezas críticas','Detección de fugas, ruidos y golpes','Opinión honesta sobre si conviene'],
  'Pide la revisión antes de cerrar la compra.',
  [('¿Revisan el equipo donde está?','Sí, a domicilio.'),('¿Qué se revisa en una refrigeradora usada?','Frío, ruidos, empaques, desagüe y compresor.')])
-t('servicio-tecnico-de-electrodomesticos-quito','Servicio técnico de electrodomésticos en Quito','Servicio técnico de electrodomésticos en Quito','Servicio técnico de electrodomésticos en Quito, especializado en Whirlpool: refrigeradoras, neveras, lavadoras y secadoras. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','cocinas'],
+t('servicio-tecnico-de-electrodomesticos-quito','Servicio técnico de electrodomésticos en Quito','Servicio técnico de electrodomésticos en Quito','Servicio técnico de electrodomésticos en Quito, especializado en Whirlpool: refrigeradoras, neveras, lavadoras, secadoras, cocinas, hornos y parrillas. WhatsApp 099 350 8191.',['refrigeradoras','lavadoras','cocinas'],
  'Si buscas servicio técnico de electrodomésticos en Quito, estamos enfocados en la marca Whirlpool: refrigeradoras, lavadoras, secadoras, centros de lavado, y más.',
  ['Equipos grandes del hogar','Visita a domicilio','Diagnóstico y costo antes de reparar','Atención en norte, centro, sur y valles'],
  'Escribe el modelo y la falla para recibir orientación inicial.',

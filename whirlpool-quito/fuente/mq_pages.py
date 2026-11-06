@@ -35,7 +35,7 @@ def ul(items): return '<ul>'+''.join(f'<li>{x}</li>' for x in items)+'</ul>'
 def wam(txt): return txt
 EQK=list(EQ.keys())
 EQK_UI=[k for k in EQK if not EQ[k].get('alias')]
-SUBJ={'refrigeradoras':('nevera','refrigeradora'),'hornos':('horno',),'centros-de-lavado':('torre',),'congeladores':('congelador',),'lavadoras':('lavadora',),'secadoras':('secadora',),'microondas':('microondas',),'lavavajillas':('lavavajillas',),'campanas-extractoras':('campana',)}
+SUBJ={'cocinas':('cocina',),'parrillas':('parrilla','encimera'),'refrigeradoras':('nevera','refrigeradora'),'hornos':('horno',),'centros-de-lavado':('torre',),'congeladores':('congelador',),'lavadoras':('lavadora',),'secadoras':('secadora',),'microondas':('microondas',),'lavavajillas':('lavavajillas',),'campanas-extractoras':('campana',)}
 def fault_h1(k,name):
     e=EQ[k]; n=low1(name.strip())
     for s in SUBJ.get(k,()):
@@ -63,7 +63,7 @@ T[:]=[t for t in T if t['slug'] not in SECT_OUT]
 GEN=['tecnico-whirlpool-a-domicilio-quito','servicio-tecnico-whirlpool-cerca-de-mi-quito','reparacion-de-electrodomesticos-whirlpool-a-domicilio-quito','servicio-tecnico-de-electrodomesticos-quito','tecnico-de-electrodomesticos-a-domicilio-quito','mantenimiento-preventivo-de-electrodomesticos-whirlpool-quito','instalacion-de-electrodomesticos-whirlpool-quito','diagnostico-de-electrodomesticos-whirlpool-quito','reparacion-de-tarjetas-electronicas-de-electrodomesticos-whirlpool-quito','repuestos-para-electrodomesticos-whirlpool-quito','servicio-tecnico-whirlpool-edificios-y-conjuntos-quito','centro-de-servicio-whirlpool-quito','servicio-tecnico-whirlpool-telefono-y-whatsapp-quito','revision-de-electrodomesticos-whirlpool-usados-antes-de-comprar-quito','emergencias-de-electrodomesticos-whirlpool-fugas-de-agua-y-gas-quito','reparar-electrodomesticos-whirlpool-quito','donde-reparar-electrodomesticos-whirlpool-quito','whirlpool-quito-servicio-tecnico-y-reparacion','electrodomestico-whirlpool-no-funciona-que-hacer-en-quito']
 VALLE_TERMS=['servicio-tecnico-whirlpool-valle-de-los-chillos','servicio-tecnico-whirlpool-cumbaya-y-tumbaco']
 SECTOR_HUBS={'Norte':('servicio-tecnico-whirlpool-quito-norte','norte de Quito'),'Centro':('servicio-tecnico-whirlpool-quito-centro','centro de Quito'),'Sur':('servicio-tecnico-whirlpool-quito-sur','sur de Quito'),'Valles':('servicio-tecnico-whirlpool-valles-de-quito','valles de Quito')}
-REM=('cocina','horno','parrilla','campana','congelador','microondas','lavavajillas','gas-quito','a-gas')
+REM=('campana','congelador','microondas','lavavajillas','secadoras-a-gas','secadora-a-gas','torres-de-lavado','centros-de-lavado')
 T[:]=[t for t in T if not any(r in t['slug'] for r in REM)]
 for _t in T:
     _t['eq']=[k for k in _t['eq'] if k in EQ]
@@ -145,7 +145,7 @@ for z in Z:
     faq=[(f'¿Atienden en {zn}?',f'Sí. Escríbenos tu dirección y una referencia por WhatsApp y coordinamos la visita en {zn}.'),
          (f'¿Qué equipos Whirlpool reparan en {zn}?','Refrigeradoras, neveras, lavadoras y secadoras.'),
          ('¿Cuánto cuesta la visita?',f'Escríbenos con el equipo, el modelo y la falla; te confirmamos el costo de la visita antes de ir.')]
-    addp(zs and 'servicio-tecnico-whirlpool-en-'+zs,kind='zona',h1=h1,title=mktitle(f'Servicio técnico Whirlpool Quito: {zn}'),desc=clip(f'Servicio técnico Whirlpool a domicilio en {zn}, {sector}: refrigeradoras, neveras, lavadoras y secadoras. Escríbenos por WhatsApp {PHONE_TXT}.',160),
+    addp(zs and 'servicio-tecnico-whirlpool-en-'+zs,kind='zona',h1=h1,title=mktitle(f'Servicio técnico Whirlpool Quito: {zn}'),desc=clip(f'Servicio técnico Whirlpool a domicilio en {zn}, {sector}: refrigeradoras, neveras, lavadoras, secadoras, cocinas, hornos y parrillas. Escríbenos por WhatsApp {PHONE_TXT}.',160),
          lead=f'Técnico a domicilio para electrodomésticos Whirlpool en {zn}, {sector}. Diagnóstico claro y costo antes de reparar.',sections=s,faq=faq,
          related=[EQ[k]['slug'] for k in ('refrigeradoras','neveras','lavadoras','secadoras')],wamsg=f'Hola, necesito servicio técnico Whirlpool en {zn}, Quito.',icon='pin',th='',photos=[],tec=None,zone=zs)
 # ---------- zona x equipo ----------
