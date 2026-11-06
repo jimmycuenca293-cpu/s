@@ -11,6 +11,8 @@
 - **Lavadora gotea** — Qué manguera revisar / Guía paso a paso → https://filtrosparalavadoras.click/mangueras-para-lavadora/lavadora-gotea-agua-por-la-manguera/
 - **Lavadora no desagua** — Qué revisar / Guía paso a paso → https://filtrosparalavadoras.click/mangueras-para-lavadora/lavadora-no-desagua/
 - **Cómo cambiar la manguera** — Paso a paso / Revisa la guía antes de pedir → https://filtrosparalavadoras.click/mangueras-para-lavadora/cambio-e-instalacion/
+- **Presostato Samsung** — Sensor de nivel inverter / Pregunta por WhatsApp → https://filtrosparalavadoras.click/mangueras-para-lavadora/presostato-lavadora-samsung-inverter/
+- **Presostato LG** — Sensor de nivel inverter / Pregunta por WhatsApp → https://filtrosparalavadoras.click/mangueras-para-lavadora/presostato-lavadora-lg-inverter/
 
 ## Textos destacados (≤25)
 - Pedido por WhatsApp
@@ -23,10 +25,10 @@
 - Guía de Cambio
 
 ## Fragmento estructurado
-**Tipos:** Manguera de entrada, Manguera de desagüe, Manguera tina-bomba, Agua fría (azul), Agua caliente (naranja)
+**Tipos:** Manguera de entrada, Manguera de desagüe, Manguera tina-bomba, Agua fría (azul), Agua caliente (naranja), Presostato
 
 ## Llamadas
-- 305 479 6329. Agrégalo como recurso de llamada y limítalos al horario de atención.
+- Mangueras: 305 479 6329. Presostato Samsung: 305 479 6329. Presostato LG: 320 510 2995. Agrégalos como recursos de llamada y limítalos al horario de atención.
 
 ## Imágenes
 - Usa las fotos de las mangueras de la tienda (cuadradas 1:1 y 1,91:1).

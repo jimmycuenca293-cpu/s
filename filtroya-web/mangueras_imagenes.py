@@ -165,12 +165,33 @@ def i8():   # abrazaderas y codo
     return im
 
 
+def presostato(acento):
+    """Presostato de lavadora: cuerpo redondo de plástico, boquilla para la manguera de aire y conector eléctrico."""
+    im = nuevo(); d = ImageDraw.Draw(im)
+    cx, cy, r = 500, 520, 250
+    for k, col in enumerate([lerp((70, 74, 84), (0, 0, 0), 0.2), (96, 100, 112), (122, 127, 140), (150, 155, 168)]):
+        d.ellipse(((cx - r + k*16)*SS, (cy - r + k*16)*SS, (cx + r - k*16)*SS, (cy + r - k*16)*SS), fill=col)
+    d.ellipse(((cx - 150)*SS, (cy - 150)*SS, (cx + 150)*SS, (cy + 150)*SS), fill=(176, 181, 194), outline=(70, 74, 84))
+    d.ellipse(((cx - 62)*SS, (cy - 62)*SS, (cx + 62)*SS, (cy + 62)*SS), fill=acento, outline=(30, 34, 44))
+    d.ellipse(((cx - 24)*SS, (cy - 24)*SS, (cx + 24)*SS, (cy + 24)*SS), fill=(230, 234, 242))
+    # boquilla de la manguera de aire
+    d.rounded_rectangle(((cx + r - 40)*SS, (cy - 46)*SS, (cx + r + 150)*SS, (cy + 46)*SS), radius=22*SS, fill=(105, 110, 124), outline=(50, 54, 64))
+    for k in range(4): d.line([((cx + r + 40 + k*28)*SS, (cy - 44)*SS), ((cx + r + 40 + k*28)*SS, (cy + 44)*SS)], fill=(70, 74, 84), width=4*SS)
+    # conector eléctrico
+    d.rounded_rectangle(((cx - 120)*SS, (cy + r - 40)*SS, (cx + 120)*SS, (cy + r + 110)*SS), radius=20*SS, fill=(236, 238, 244), outline=(120, 124, 136))
+    for k in range(3): d.rounded_rectangle(((cx - 84 + k*62)*SS, (cy + r + 4)*SS, (cx - 46 + k*62)*SS, (cy + r + 84)*SS), radius=8*SS, fill=(190, 150, 70), outline=(110, 84, 30))
+    # tornillo de ajuste
+    d.ellipse(((cx - 210)*SS, (cy - 200)*SS, (cx - 150)*SS, (cy - 140)*SS), fill=(190, 194, 204), outline=(80, 84, 96))
+    d.line([((cx - 200)*SS, (cy - 170)*SS), ((cx - 160)*SS, (cy - 170)*SS)], fill=(80, 84, 96), width=5*SS)
+    return im
+
+
 def generar():
-    for marca in ("samsung", "lg"):
-        for n, f in enumerate([i1, i2, i3, i4, i5, i6, i7, i8], 1):
-            guardar(f(), AQUI / "imagenes-mangueras" / marca / f"manguera-{n}.png")
+    dest = AQUI / "imagenes-mangueras" / "todas"
+    guardar(presostato((40, 110, 190)), dest / "manguera-8.png")     # Samsung: acento azul
+    guardar(presostato((190, 40, 70)), dest / "manguera-9.png")      # LG: acento rojo
 
 
 if __name__ == "__main__":
     generar()
-    print("Imágenes de referencia generadas en imagenes-mangueras/")
+    print("Imágenes de referencia de presostatos generadas en imagenes-mangueras/todas/")

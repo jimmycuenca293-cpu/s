@@ -14,6 +14,12 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 - [Manguera de desagüe larga con extensión para lavadora](__BASE__/mangueras-para-lavadora/manguera-desague-larga-con-extension-lavadora/): Larga, con extensión · carga frontal.
 - [Manguera de desagüe con funda protectora para lavadora](__BASE__/mangueras-para-lavadora/manguera-desague-con-funda-protectora-lavadora/): Corrugada con funda de espuma.
 - [Manguera tina-bomba para lavadora](__BASE__/mangueras-para-lavadora/manguera-tina-bomba-lavadora/): De la tina a la bomba de desagüe.
+- [Presostato para lavadora Samsung inverter](__BASE__/mangueras-para-lavadora/presostato-lavadora-samsung-inverter/): Samsung · inverter.
+- [Presostato para lavadora LG inverter](__BASE__/mangueras-para-lavadora/presostato-lavadora-lg-inverter/): LG · inverter.
+
+## Presostato (por marca)
+- Samsung inverter: WhatsApp 305 479 6329
+- LG inverter: WhatsApp 320 510 2995
 
 ## Guías
 - [Cuál manguera necesita mi lavadora](__BASE__/mangueras-para-lavadora/cual-es-mi-manguera/)
@@ -25,6 +31,6 @@ echo str_replace('__BASE__', sitio()['base'], <<<'TXT'
 - **¿Cuál es la diferencia entre la manguera azul y la naranja?** Es solo el color para no confundirlas: la azul es para el agua fría y la naranja para el agua caliente. Son del mismo tamaño y la misma conexión. Si tu lavadora tiene una sola entrada, usa la azul (agua fría).
 - **¿Qué es la manguera negra con rosca?** Es una manguera de entrada de agua de caucho negro, más fina, con tuercas metálicas con rosca. Es la que usan las lavadoras de carga frontal.
 - **¿La manguera de desagüe es igual para todas las lavadoras?** No. La medida del desagüe cambia según la lavadora y las más largas se usan en las de carga frontal. Dile al asesor el modelo de tu lavadora y te confirma cuál necesitas.
+- **¿Venden presostato para lavadora Samsung y LG?** Sí: presostato para lavadoras Samsung inverter y para lavadoras LG inverter. A diferencia de las mangueras, no es genérico: va por marca y modelo, así que el asesor de cada marca confirma el tuyo.
 - **¿Qué es la manguera tina-bomba?** Es una manguera interna que une la tina con la bomba de desagüe. Si se agrieta o se suelta, la lavadora pierde agua por debajo o no desagua.
-- **¿Cómo sé si la manguera de mi lavadora está dañada?** Los signos más comunes son goteos en la llave o detrás de la lavadora, manguera inflada, partida o con la tuerca oxidada, desagüe lento y olor a humedad. Antes de cambiarla revisa que no esté doblada ni tapada; el asesor te guía por WhatsApp.
 TXT);

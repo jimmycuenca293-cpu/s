@@ -48,11 +48,17 @@ MARCAS = {"todas": {
          "tipo": "Corrugada con funda de espuma", "carga": None, "forma": "manguera de desagüe corrugada gris con codo y una funda de espuma que protege la zona del doblez para que no se aplaste ni se rompa"},
         {"id": "man-7", "foto": "manguera-7.png", "slug": "manguera-tina-bomba-lavadora", "corto": "Manguera tina-bomba", "ref": None, "precio": None, "cat": "tina",
          "tipo": "De la tina a la bomba de desagüe", "carga": None, "forma": "manguera negra corta y gruesa, tipo fuelle, que une la tina con la bomba de desagüe por dentro de la lavadora"},
+        {"id": "man-8", "foto": "manguera-8.png", "slug": "presostato-lavadora-samsung-inverter", "corto": "Presostato para lavadora Samsung inverter", "ref": None, "precio": None, "cat": "presostato",
+         "marca": "Samsung", "wa": "3054796329", "tel": "305 479 6329",
+         "tipo": "Samsung · inverter", "carga": None, "forma": "presostato (sensor de nivel de agua) para lavadoras Samsung con tecnología inverter: el cuerpo redondo que lee la presión del tubo de aire para saber cuánta agua hay en la tina"},
+        {"id": "man-9", "foto": "manguera-9.png", "slug": "presostato-lavadora-lg-inverter", "corto": "Presostato para lavadora LG inverter", "ref": None, "precio": None, "cat": "presostato",
+         "marca": "LG", "wa": "3205102995", "tel": "320 510 2995",
+         "tipo": "LG · inverter", "carga": None, "forma": "presostato (sensor de nivel de agua) para lavadoras LG con tecnología inverter: el cuerpo redondo que lee la presión del tubo de aire para saber cuánta agua hay en la tina"},
     ],
 }}
 L.MARCAS = MARCAS
 for _p in MARCAS["todas"]["productos"]:
-    _p["nombre"] = _p["corto"] + " para lavadora"
+    _p["nombre"] = _p["corto"] if _p.get("marca") else _p["corto"] + " para lavadora"
 
 INSTALACION_ENTRADA = [
     "Cierra la llave del agua y desconecta la lavadora de la corriente.",
@@ -76,6 +82,14 @@ INSTALACION_TINA = [
     "Toma una foto de cómo está conectada y suelta las abrazaderas. Tendrás que tener cubeta y trapos: cae agua.",
     "Retira la manguera vieja y compárala con la nueva: deben coincidir en largo y diámetro.",
     "Pon la nueva con las abrazaderas bien apretadas, vuelve a cerrar el panel y haz un ciclo corto comprobando que no hay goteos.",
+]
+INSTALACION_PRESOSTATO = [
+    "Desconecta la lavadora de la corriente y cierra la llave del agua. No trabajes con la máquina enchufada.",
+    "Abre el panel superior o trasero (según el modelo) y ubica el presostato: un cuerpo redondo de plástico con un conector eléctrico y una manguerita delgada.",
+    "Toma una foto del conector y de la manguerita antes de soltarlos, para ponerlos igual.",
+    "Desconecta el conector eléctrico y saca con cuidado la manguerita de aire de la boquilla del presostato.",
+    "Retira el presostato viejo (va con tornillos o con un seguro) y compáralo con el nuevo: debe coincidir en el conector y en la boquilla.",
+    "Instala el nuevo, conecta la manguerita (revisa que no esté partida ni tapada) y el conector, cierra el panel y haz un ciclo corto comprobando que llena y desagua bien.",
 ]
 INSTALACION = INSTALACION_ENTRADA
 NOTA_INSTALACION = ("Los pasos cambian según el modelo. Si tienes dudas con las mangueras internas o con la parte eléctrica, pídele ayuda a un técnico. "
@@ -176,7 +190,20 @@ class SitioM(Sitio):
         if len(desc) > 165:
             c = desc[:160].rsplit(" ", 1)[0].rstrip(" ,;:.")
             desc = c + "."
-        super().pagina(ruta, titulo, desc, cuerpo, ld, prioridad, extra_head)
+        antes = self.clave
+        if "presostato-lavadora-lg" in ruta: self.clave = "preslg"
+        elif "presostato-lavadora-samsung" in ruta: self.clave = "pressam"
+        try:
+            super().pagina(ruta, titulo, desc, cuerpo, ld, prioridad, extra_head)
+        finally:
+            self.clave = antes
+
+    def barra_p(self, texto, p, chico="Pago contra entrega", boton="💬 Pedir por WhatsApp"):
+        return f'<div class="m-barra"><span><small>{esc(chico)}</small><b>Asesor por WhatsApp</b></span>{self.boton_p(texto, p, "m-btn wa", boton)}</div>'
+
+    def boton_p(self, texto, p, clase="m-btn wa", etiqueta="💬 Preguntar al asesor por WhatsApp"):
+        num = p.get("wa") or self.M["whatsapp"]
+        return f'<a class="{clase}" href="{esc(wa_link(num, texto))}" target="_blank" rel="noopener">{etiqueta}</a>'
 
     def barra(self, texto, chico="Pago contra entrega", boton="💬 Pedir por WhatsApp"):
         return f'<div class="m-barra"><span><small>{esc(chico)}</small><b>Asesor por WhatsApp</b></span>{self.boton_asesor(texto, "m-btn wa", boton)}</div>'
@@ -193,7 +220,8 @@ def bloque_importancia():
 <li><b>Manguera de entrada de agua caliente (naranja).</b> Lleva el agua caliente. Es del mismo tamaño que la azul; solo cambia el color para no confundirlas.</li>
 <li><b>Manguera de entrada negra con rosca.</b> Es la más fina, de caucho, con tuercas metálicas. Es la que usan las lavadoras de carga frontal.</li>
 <li><b>Manguera de desagüe.</b> Saca el agua sucia hacia el desagüe de la pared. Su medida cambia según la lavadora: las más largas son para carga frontal.</li>
-<li><b>Manguera tina-bomba.</b> Va por dentro: une la tina con la bomba de desagüe. Si se agrieta, aparecen fugas debajo de la máquina.</li></ul>
+<li><b>Manguera tina-bomba.</b> Va por dentro: une la tina con la bomba de desagüe. Si se agrieta, aparecen fugas debajo de la máquina.</li>
+<li><b>Presostato (Samsung y LG inverter).</b> No es una manguera, pero va conectado a una manguerita de aire: es el sensor que le dice a la lavadora cuánta agua hay. Si falla, llena de más, de menos o marca error de nivel.</li></ul>
 <p><a class="m-btn sec" href="/como-saber-si-la-manguera-esta-danada/">Cómo saber si una manguera está dañada</a></p></div></section>'''
 
 
@@ -222,6 +250,7 @@ def faq_general():
         ("¿Cuál es la diferencia entre la manguera azul y la naranja?", "Es solo el color para no confundirlas: la azul es para el agua fría y la naranja para el agua caliente. Son del mismo tamaño y la misma conexión. Si tu lavadora tiene una sola entrada, usa la azul (agua fría)."),
         ("¿Qué es la manguera negra con rosca?", "Es una manguera de entrada de agua de caucho negro, más fina, con tuercas metálicas con rosca. Es la que usan las lavadoras de carga frontal."),
         ("¿La manguera de desagüe es igual para todas las lavadoras?", "No. La medida del desagüe cambia según la lavadora y las más largas se usan en las de carga frontal. Dile al asesor el modelo de tu lavadora y te confirma cuál necesitas."),
+        ("¿Venden presostato para lavadora Samsung y LG?", "Sí: presostato para lavadoras Samsung inverter y para lavadoras LG inverter. A diferencia de las mangueras, no es genérico: va por marca y modelo, así que el asesor de cada marca confirma el tuyo."),
         ("¿Qué es la manguera tina-bomba?", "Es una manguera interna que une la tina con la bomba de desagüe. Si se agrieta o se suelta, la lavadora pierde agua por debajo o no desagua."),
         ("¿Cómo sé si la manguera de mi lavadora está dañada?", "Los signos más comunes son goteos en la llave o detrás de la lavadora, manguera inflada, partida o con la tuerca oxidada, desagüe lento y olor a humedad. Antes de cambiarla revisa que no esté doblada ni tapada; el asesor te guía por WhatsApp."),
         (f"¿Qué código de error puede avisar un problema de manguera?", f"Depende del modelo; los de desagüe más comunes son {c}. Un código de desagüe o de nivel de agua puede venir de una manguera doblada, tapada o suelta. Mándale al asesor una foto del código."),
@@ -240,7 +269,7 @@ def tarjetas(S, cat=None):
         pr = f'<span class="pr">{cop(p["precio"])}<small>Confirma envío con el asesor</small></span>' if p["precio"] else '<span class="pr consulta">Consulta el precio<small>Te responde el asesor</small></span>'
         t += (f'<article class="m-card"><span class="m-tipo">{esc(p["tipo"])}</span><span class="im">{foto_html(p)}</span><div class="tx">'
               f'<h3><a href="/{p["slug"]}/">{esc(p["nombre"])}</a></h3>{pr}'
-              + S.boton_asesor(f"Hola, quiero consultar por la {p['nombre']}", "m-btn block wa", "💬 Preguntar al asesor")
+              + S.boton_p(f"Hola, quiero consultar por la {p['nombre']}", p, "m-btn block wa", "💬 Preguntar al asesor")
               + f'<a class="m-link" href="/{p["slug"]}/">Ver detalles</a></div></article>')
     return t
 
@@ -256,7 +285,7 @@ def pagina_inicio(S):
     cuerpo = f'''<section class="m-hero"><div class="m-wrap">
   <div>
     <h1>Mangueras para lavadora: entrada de agua, desagüe y tina-bomba</h1>
-    <p class="lead">Manguera de entrada de agua fría (azul) y caliente (naranja), manguera negra con rosca para carga frontal, manguera de desagüe y manguera tina-bomba. Las de entrada sirven para todas las lavadoras y todas las marcas. Pídela por WhatsApp y la recibes en toda Colombia con pago contra entrega.</p>
+    <p class="lead">Manguera de entrada de agua fría (azul) y caliente (naranja), manguera negra con rosca para carga frontal, manguera de desagüe, manguera tina-bomba y presostato para Samsung y LG inverter. Las mangueras de entrada sirven para todas las lavadoras y todas las marcas. Pídela por WhatsApp y la recibes en toda Colombia con pago contra entrega.</p>
     <div class="acc">{S.boton_asesor("Hola, necesito una manguera para mi lavadora")}<a class="m-btn sec" href="#mangueras">Ver las mangueras</a></div>
     <ul><li>Pago contra entrega</li><li>Envío a toda Colombia</li><li>Asesor que te confirma la manguera</li></ul>
   </div>
@@ -267,7 +296,8 @@ def pagina_inicio(S):
 <section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Encuentra la tuya</span><h2>¿Qué manguera necesita mi lavadora?</h2></div>
 <div class="m-cols"><div><h3>Entrada de agua</h3><p>Azul para agua fría, naranja para agua caliente y negra con rosca para carga frontal. Son estándar: sirven para todas las lavadoras y todas las marcas.</p><p><a class="m-link" href="/mangueras-de-entrada-de-agua-para-lavadora/">Mangueras de entrada →</a></p></div>
 <div><h3>Desagüe</h3><p>Saca el agua sucia. Su medida cambia según la lavadora y las más largas son para carga frontal. El asesor te confirma la tuya.</p><p><a class="m-link" href="/mangueras-de-desague-para-lavadora/">Mangueras de desagüe →</a></p></div>
-<div><h3>Tina-bomba</h3><p>Va por dentro de la lavadora, entre la tina y la bomba de desagüe. Si falla, hay fugas debajo de la máquina o no desagua.</p><p><a class="m-link" href="/manguera-tina-bomba-para-lavadora/">Manguera tina-bomba →</a></p></div></div>
+<div><h3>Tina-bomba</h3><p>Va por dentro de la lavadora, entre la tina y la bomba de desagüe. Si falla, hay fugas debajo de la máquina o no desagua.</p><p><a class="m-link" href="/manguera-tina-bomba-para-lavadora/">Manguera tina-bomba →</a></p></div>
+<div><h3>Presostato Samsung y LG</h3><p>El sensor de nivel de agua. No es genérico: va por marca. Tenemos el de Samsung inverter y el de LG inverter.</p><p><a class="m-link" href="/presostato-para-lavadora-samsung-y-lg-inverter/">Presostatos →</a></p></div></div>
 <p style="margin-top:14px"><a class="m-btn" href="/cual-es-mi-manguera/">Guía: cuál es mi manguera</a></p></div></section>
 {bloque_importancia()}
 <section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Señales</span><h2>Cuándo hay que cambiar una manguera de la lavadora</h2></div><ul class="lav-puntos">{"".join(f"<li>{esc(s)}</li>" for s in SINTOMAS)}</ul>
@@ -291,10 +321,12 @@ def pagina_inicio(S):
 
 
 def pasos_de(p):
-    return {"entrada": INSTALACION_ENTRADA, "desague": INSTALACION_DESAGUE, "tina": INSTALACION_TINA}[p["cat"]]
+    return {"entrada": INSTALACION_ENTRADA, "desague": INSTALACION_DESAGUE, "tina": INSTALACION_TINA, "presostato": INSTALACION_PRESOSTATO}[p["cat"]]
 
 
 def aviso(p):
+    if p["cat"] == "presostato":
+        return f"Presostato para {p['marca']}", f"Este presostato es para lavadoras {p['marca']} con tecnología inverter. No es genérico: depende de la marca y del modelo, por eso el asesor de {p['marca']} confirma el tuyo antes de que compres."
     if p["id"] == "man-3":
         return "Para lavadoras de carga frontal", "Esta manguera negra con rosca es más fina y es la que usan las lavadoras de carga frontal. La conexión de entrada es estándar: sirve para todas las marcas. Solo te confirmamos el largo."
     if p["cat"] == "entrada":
@@ -308,13 +340,16 @@ def pagina_producto(S, p):
     otros = [(q["nombre"], f"/{q['slug']}/") for q in MARCAS["todas"]["productos"] if q is not p]
     t_av, x_av = aviso(p)
     pasos = pasos_de(p)
-    if p["cat"] == "entrada":
+    if p["cat"] == "presostato":
+        q0 = ("¿Este presostato sirve para mi lavadora?", f"Es para lavadoras {p['marca']} inverter, pero cada modelo puede usar uno distinto. Escríbele al asesor con el modelo (etiqueta) o una foto del presostato viejo y te confirma el correcto antes de que compres.")
+    elif p["cat"] == "entrada":
         q0 = ("¿Esta manguera sirve para mi lavadora?", "Sí. La entrada de agua es estándar en todas las lavadoras y todas las marcas, así que sirve para la tuya. Lo único que se elige es el largo: escríbele al asesor y te lo confirma.")
     elif p["cat"] == "desague":
         q0 = ("¿Esta manguera sirve para mi lavadora?", "La medida del desagüe cambia según la lavadora. Escríbele al asesor con el modelo (o una foto de la manguera vieja) y te confirma el largo y el tipo antes de que compres.")
     else:
         q0 = ("¿Esta manguera sirve para mi lavadora?", "Depende del modelo. Escríbele al asesor con el modelo de tu lavadora (etiqueta) o una foto de la manguera vieja y te confirma antes de que compres.")
     faq = [q0, ("¿Cuánto cuesta?", "Pregunta al asesor por WhatsApp: te da el precio y el tiempo de entrega a tu ciudad."),
+           *([("¿Qué hace el presostato?", "Mide la presión del aire en una manguerita conectada a la tina para saber cuánta agua hay. Si falla, la lavadora llena de más, de menos o muestra un error de nivel de agua.")] if p["cat"] == "presostato" else []),
            ("¿Cómo la cambio?", "Desconectas la lavadora, cierras el agua, sueltas la manguera vieja y pones la nueva igual. Abajo está el paso a paso."),
            ("¿Cómo sé que la manguera es la que falla?", "Si hay goteo en la unión, la manguera está inflada o partida, o la lavadora no desagua ni llena y ya revisaste que no esté doblada ni tapada, lo más probable es la manguera. El asesor te ayuda a confirmarlo.")]
     precio = (f'<span class="precio">{cop(p["precio"])}<small>Confirma disponibilidad y envío con el asesor</small></span>' if p["precio"]
@@ -327,29 +362,29 @@ def pagina_producto(S, p):
   <div class="foto"><span class="m-badge">{esc(p["tipo"])}</span>{foto_html(p, True, False)}</div>
   <div class="info">
     <h1>{esc(p["nombre"])}</h1>
-    <span class="sub">{esc(p["tipo"])} · Todas las marcas de lavadora</span>
+    <span class="sub">{esc(p["tipo"])}{"" if p.get("marca") else " · Todas las marcas de lavadora"}</span>
     {precio}
     <div class="m-aviso"><span style="font-size:22px">💬</span><span><b>{t_av}</b>{x_av}</span></div>
-    {S.boton_asesor(f"Hola, quiero consultar por la {p['nombre']}", "m-btn block wa", "💬 Pedir o preguntar al asesor por WhatsApp")}
+    {S.boton_p(f"Hola, quiero consultar por la {p['nombre']}", p, "m-btn block wa", "💬 Pedir o preguntar al asesor por WhatsApp")}
     <ul class="m-ok"><li><b>Envío a toda Colombia</b> por transportadora, con número de guía.</li><li><b>Guía de cambio</b> paso a paso incluida en esta página.</li><li><b>Pago contra entrega</b>: pagas cuando recibes el paquete (el asesor confirma si aplica en tu ciudad).</li></ul>
   </div>
 </div></div>
 <section class="m-sec alt"><div class="m-wrap"><div class="m-texto"><div class="m-cab"><span class="eyebrow">Descripción</span><h2>{esc(p["nombre"])}</h2></div>
 <p>Es una {esc(p["forma"])}.</p>{extra_col}
 <p>Si tu lavadora gotea, no llena, no desagua o muestra un código de error de agua o de desagüe ({MARCAS["todas"]["codigos"]}), una manguera en mal estado es de las primeras cosas que se revisan.</p></div></div></section>
-<section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Clase de manguera</dt><dd>{esc(p["corto"])}</dd><dt>Tipo</dt><dd>{esc(p["tipo"])}</dd><dt>Sirve para</dt><dd>{"Todas las lavadoras y todas las marcas (conexión estándar)" if p["cat"] == "entrada" else "Lavadoras según la medida: el asesor te la confirma"}</dd><dt>Largo y medida</dt><dd>Te los confirma el asesor</dd><dt>Envío</dt><dd>Toda Colombia, por transportadora</dd></dl></div></section>
+<section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Datos</span><h2>Ficha del producto</h2></div><dl class="m-ficha"><dt>Clase de pieza</dt><dd>{esc(p["corto"])}</dd><dt>Tipo</dt><dd>{esc(p["tipo"])}</dd><dt>Sirve para</dt><dd>{("Todas las lavadoras y todas las marcas (conexión estándar)" if p["cat"] == "entrada" else (f"Lavadoras {p['marca']} inverter: el asesor confirma el modelo" if p["cat"] == "presostato" else "Lavadoras según la medida: el asesor te la confirma"))}</dd><dt>Largo y medida</dt><dd>Te los confirma el asesor</dd><dt>Envío</dt><dd>Toda Colombia, por transportadora</dd></dl></div></section>
 {bloque_importancia()}
 {bloque_entrega()}
 <section class="m-sec alt"><div class="m-wrap"><section class="caja tutorial" id="instalacion"><h2>Cómo cambiar esta manguera: paso a paso</h2><ol class="pasos">{"".join(f"<li>{esc(x)}</li>" for x in pasos)}</ol><p class="m-mut">{esc(NOTA_INSTALACION)}</p></section></div></section>
 <section class="m-sec"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Preguntas</span><h2>Preguntas frecuentes</h2></div>{faq_html(faq)}</div></section>
 <section class="m-sec alt"><div class="m-wrap"><div class="m-cab"><span class="eyebrow">Más mangueras</span><h2>Otras mangueras para lavadora</h2></div>{chips(otros)}</div></section>
-{S.barra(f"Hola, quiero consultar por la {p['nombre']}")}'''
+{S.barra_p(f"Hola, quiero consultar por la {p['nombre']}", p)}'''
     prod = {"@type": "Product", "name": p["nombre"], "image": f"{S.raiz}/img/{p['id']}.jpg", "category": "Repuestos para lavadoras",
-            "description": f"{p['corto']} para lavadora: {p['tipo'].lower()}. Envío a toda Colombia.", "areaServed": "CO"}
+            "description": f"{p['corto']}{'' if p.get('marca') else ' para lavadora'}: {p['tipo'].lower()}. Envío a toda Colombia.", "areaServed": "CO", **({"brand": {"@type": "Brand", "name": p["marca"]}} if p.get("marca") else {})}
     if p["precio"]:
         prod["offers"] = {"@type": "Offer", "priceCurrency": "COP", "price": p["precio"], "availability": "https://schema.org/InStock", "url": f"{S.dominio}/{p['slug']}/"}
     how = {"@type": "HowTo", "name": f"Cómo cambiar la {p['corto'].lower()} de una lavadora", "step": [{"@type": "HowToStep", "position": i, "text": t} for i, t in enumerate(pasos, 1)]}
-    S.pagina(f"/{p['slug']}/", corta(f"{p['corto']} para lavadora | Pago contra entrega"), corta(f"{p['corto']} para lavadora: {p['tipo'].lower()}. Pregunta al asesor por WhatsApp el precio y recibe en toda Colombia con pago contra entrega.", 160), cuerpo,
+    S.pagina(f"/{p['slug']}/", corta(f"{p['corto']} | Pago contra entrega" if p.get("marca") else f"{p['corto']} para lavadora | Pago contra entrega"), corta(f"{p['corto']}{'' if p.get('marca') else ' para lavadora'}: {p['tipo'].lower()}. Pregunta al asesor por WhatsApp el precio y recibe en toda Colombia con pago contra entrega.", 160), cuerpo,
              [prod, faq_ld(faq), how, S.breadcrumb((p["nombre"], None))], "0.9", f'<link rel="preload" as="image" href="/img/{p["id"]}.webp"><meta property="og:image" content="{S.raiz}/img/{p["id"]}.jpg">')
 
 
@@ -385,6 +420,17 @@ def guias(S):
     G("/desague-largo-para-lavadora-de-carga-frontal/", "Desagüe largo para lavadora de carga frontal: cuál elegir", "Por qué las lavadoras de carga frontal usan una manguera de desagüe más larga y cómo elegir el largo correcto.",
       "Desagüe largo para lavadora de carga frontal",
       "<p>Las lavadoras de carga frontal suelen necesitar una manguera de desagüe más larga que las de carga superior. Si la tuya queda corta, tensa el desagüe y se puede soltar; si es muy larga, se dobla y no desagua bien.</p><h2>Cómo elegir el largo</h2><ol class='pasos'><li>Mide la distancia desde la parte de atrás de la lavadora hasta el desagüe de la pared.</li><li>Suma un poco para la curva que debe hacer la manguera (un codo hacia arriba).</li><li>Mándale la medida al asesor por WhatsApp y te dice cuál manguera es.</li></ol>" + chp(["desague"]), [F[3]])
+    PS = lambda: chips([(p["nombre"], f"/{p['slug']}/") for p in MARCAS["todas"]["productos"] if p["cat"] == "presostato"])
+    G("/presostato-para-lavadora-samsung-y-lg-inverter/", "Presostato para lavadora Samsung y LG inverter", "Presostato (sensor de nivel de agua) para lavadoras Samsung inverter y LG inverter. No es genérico: va por marca. Pregunta al asesor por WhatsApp.",
+      "Presostato para lavadora Samsung y LG inverter",
+      "<p>El presostato es el sensor que le dice a la lavadora cuánta agua hay en la tina. Se conecta a una manguerita de aire y a un conector eléctrico. <b>No es genérico:</b> depende de la marca y del modelo, por eso tenemos uno para <b>Samsung inverter</b> y otro para <b>LG inverter</b>, cada uno con su asesor.</p>" + PS() +
+      "<h2>Cuándo hay que cambiarlo</h2><ul><li>La lavadora llena de más y se rebosa.</li><li>Llena muy poco o se detiene sin agua suficiente.</li><li>Marca un error de nivel de agua y ya revisaste la manguerita de aire y el filtro de la llave.</li><li>Enjuaga o centrifuga en momentos que no corresponden.</li></ul><p>Antes de comprar, revisa que la manguerita de aire del presostato no esté partida, suelta ni tapada: a veces el problema es solo eso.</p>", [next(f for f in F if "presostato" in f[0].lower())])
+    G("/como-saber-si-el-presostato-de-la-lavadora-esta-danado/", "Cómo saber si el presostato de la lavadora está dañado", "Síntomas de un presostato dañado en lavadoras Samsung y LG inverter y qué revisar antes de cambiarlo.",
+      "Cómo saber si el presostato de la lavadora está dañado",
+      "<p>El presostato mide la presión del aire en el tubo de la tina para saber el nivel de agua. Cuando falla, aparecen estos síntomas:</p><ul><li>Llena de más o se rebosa.</li><li>Llena muy poco, o no llena.</li><li>Se queda en un ciclo sin avanzar.</li><li>Muestra un código de error de nivel de agua (el código exacto depende del modelo).</li></ul><h2>Antes de cambiarlo, revisa esto</h2><ol class='pasos'><li>Desconecta la lavadora.</li><li>Mira la manguerita de aire que va de la tina al presostato: que no esté partida, suelta ni llena de agua o de pelusa.</li><li>Revisa el filtro de malla de la entrada de agua.</li><li>Confirma que el conector eléctrico del presostato esté bien puesto.</li></ol><p>Si todo esto está bien y sigue igual, el presostato es el sospechoso.</p>" + PS())
+    G("/cuanto-cuesta-un-presostato-para-lavadora/", "Cuánto cuesta un presostato para lavadora Samsung o LG", "De qué depende el precio de un presostato para lavadora Samsung o LG inverter y cómo consultarlo con el asesor.",
+      "Cuánto cuesta un presostato para lavadora",
+      "<p>El precio del presostato depende de la marca, del modelo de la lavadora y de la ciudad de envío. Por eso no mostramos un valor único: el asesor de tu marca te lo da en el momento por WhatsApp.</p><h2>Qué mandarle</h2><ul><li>El modelo de tu lavadora (etiqueta).</li><li>Una foto del presostato viejo, si ya lo sacaste.</li><li>Tu ciudad.</li></ul>" + PS())
     # --- guías
     G("/cual-es-mi-manguera/", "¿Cuál manguera necesita mi lavadora? Guía", "Cómo saber qué manguera necesita tu lavadora: entrada, desagüe o tina-bomba. Cuáles sirven para todas las marcas.",
       "¿Cuál manguera necesita mi lavadora?",
@@ -479,7 +525,7 @@ def marca_json(S):
               [b + "cambio-e-instalacion/", "Cómo cambiar la manguera"], [b + "lavadora-gotea-agua-por-la-manguera/", "La lavadora gotea"],
               [b + "lavadora-no-desagua/", "La lavadora no desagua"], [b + "manguera-agua-fria-y-caliente-lavadora-azul-y-naranja/", "Manguera azul y naranja"],
               [b + "desague-largo-para-lavadora-de-carga-frontal/", "Desagüe largo para carga frontal"]]
-    cats = [[b + "mangueras-de-entrada-de-agua-para-lavadora/", "Mangueras de entrada de agua"], [b + "mangueras-de-desague-para-lavadora/", "Mangueras de desagüe"], [b + "manguera-tina-bomba-para-lavadora/", "Manguera tina-bomba"]]
+    cats = [[b + "mangueras-de-entrada-de-agua-para-lavadora/", "Mangueras de entrada de agua"], [b + "mangueras-de-desague-para-lavadora/", "Mangueras de desagüe"], [b + "manguera-tina-bomba-para-lavadora/", "Manguera tina-bomba"], [b + "presostato-para-lavadora-samsung-y-lg-inverter/", "Presostato Samsung y LG inverter"]]
     return {"nombre": M["nombre"], "clase": M["clase"], "base": b, "tema": M["tema"], "fuentes": FUENTES, "tienda": M["tienda"], "logo": "", "logo_w": 0, "logo_h": 0, "icono": PREF + "/img/icono.svg",
             "whatsapp": M["whatsapp"], "telefono": M["telefono"], "productos": [[p["nombre"], p["slug"]] for p in M["productos"]], "guias": guias_,
             "ciudades": [[c, f"{b}mangueras-para-lavadora-en-{slug(c)}/"] for c in ["Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena", "Bucaramanga", "Pereira", "Manizales", "Armenia", "Ibagué", "Cúcuta", "Santa Marta"]],
@@ -491,7 +537,7 @@ def llms_php(S):
            "El largo y el precio se confirman con un asesor por WhatsApp.\n\n## Productos\n")
     for p in MARCAS["todas"]["productos"]:
         txt += f"- [{p['nombre']}](__BASE__{PREF}/{p['slug']}/): {p['tipo']}.\n"
-    txt += f"\n## Guías\n- [Cuál manguera necesita mi lavadora](__BASE__{PREF}/cual-es-mi-manguera/)\n- [Cómo cambiar la manguera](__BASE__{PREF}/cambio-e-instalacion/)\n- [Manguera azul y naranja: agua fría y caliente](__BASE__{PREF}/manguera-agua-fria-y-caliente-lavadora-azul-y-naranja/)\n"
+    txt += f"\n## Presostato (por marca)\n- Samsung inverter: WhatsApp 305 479 6329\n- LG inverter: WhatsApp 320 510 2995\n\n## Guías\n- [Cuál manguera necesita mi lavadora](__BASE__{PREF}/cual-es-mi-manguera/)\n- [Cómo cambiar la manguera](__BASE__{PREF}/cambio-e-instalacion/)\n- [Manguera azul y naranja: agua fría y caliente](__BASE__{PREF}/manguera-agua-fria-y-caliente-lavadora-azul-y-naranja/)\n"
     txt += "\n## Preguntas y respuestas\n" + "".join(f"- **{q}** {a}\n" for q, a in faq_general()[:6])
     return "<?php\nrequire __DIR__ . '/api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + txt + "TXT);\n"
 
@@ -561,6 +607,9 @@ def construir_todo(dominio):
     mj = json.dumps(marca_json(S), ensure_ascii=False)
     for nombre in ("marca-todas.json", "marca-home.json", "marca.json"):
         (out / nombre).write_text(mj, encoding="utf-8")
+    for clave_, tel_, wa_ in (("pressam", "305 479 6329", "3054796329"), ("preslg", "320 510 2995", "3205102995")):
+        d_ = marca_json(S); d_["whatsapp"] = wa_; d_["telefono"] = tel_
+        (out / f"marca-{clave_}.json").write_text(json.dumps(d_, ensure_ascii=False), encoding="utf-8")
     pagina_inicio(S)
     for p in MARCAS["todas"]["productos"]:
         pagina_producto(S, p)

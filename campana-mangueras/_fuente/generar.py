@@ -73,6 +73,16 @@ grupo("Mangueras en general", url(""), "Mangueras", "Lavadora",
       ["mangueras lavadora", "mangueras para lavadora", "manguera lavadora", "repuesto manguera lavadora", "repuestos mangueras lavadora", "donde comprar manguera lavadora", "precio manguera lavadora",
        "manguera lavadora carga superior", "mangueras para lavadoras colombia", "manguera lavadora envio a toda colombia", "mangueras de lavadora", "manguera para lavadora colombia"])
 
+for M, c in (("Samsung", "samsung"), ("LG", "lg")):
+    m = c
+    grupo(f"Presostato {M}", url(f"presostato-lavadora-{c}-inverter"), "Presostato", M,
+          con_generales([f"Presostato Lavadora {M}", f"Presostato {M} Inverter", f"Sensor de Nivel {M}", f"Presostato para {M}", f"Presostato de Lavadora", f"Sensor Nivel de Agua {M}", f"Presostatos {M}"]),
+          [f"Presostato para lavadora {M} inverter. Pídelo por WhatsApp.", GEN_D[0], GEN_D[1], GEN_D[3]],
+          [f"presostato lavadora {m}", f"presostato para lavadora {m}", f"presostato {m} inverter", f"presostato lavadora {m} inverter", f"sensor de nivel lavadora {m}", f"sensor de nivel de agua lavadora {m}",
+           f"presostato {m}", f"comprar presostato lavadora {m}", f"precio presostato lavadora {m}", f"repuesto presostato lavadora {m}", f"presostato de lavadora {m} colombia", f"donde comprar presostato lavadora {m}",
+           f"presostato lavadora inverter {m}", f"presostato nivel de agua {m}"],
+          "No es genérico: va por marca. Cada marca tiene su asesor de WhatsApp (Samsung 305 479 6329, LG 320 510 2995).")
+
 NEGATIVAS = ["usado", "usada", "segunda mano", "casero", "casera", "reciclar", "manual", "pdf", "descargar", "video", "youtube", "curso", "empleo", "trabajo", "vacante", "gratis",
              "comprar lavadora", "lavadora nueva", "precio de lavadora", "lavadoras en oferta", "oferta lavadora", "falabella", "exito", "alkosto", "homecenter", "ktronix", "olx", "mercadolibre",
              "amazon", "alibaba", "aliexpress", "temu", "reparacion", "reparar", "servicio tecnico", "tecnico", "tecnico a domicilio", "tarjeta electronica", "compresor", "correa", "rodamiento",
@@ -92,9 +102,11 @@ SITELINKS = [("Entrada de agua", "Azul, naranja y negra", "Sirven para todas", u
              ("¿Cuál es mi manguera?", "Elige por tipo", "El asesor te confirma", url("cual-es-mi-manguera")),
              ("Lavadora gotea", "Qué manguera revisar", "Guía paso a paso", url("lavadora-gotea-agua-por-la-manguera")),
              ("Lavadora no desagua", "Qué revisar", "Guía paso a paso", url("lavadora-no-desagua")),
-             ("Cómo cambiar la manguera", "Paso a paso", "Revisa la guía antes de pedir", url("cambio-e-instalacion"))]
+             ("Cómo cambiar la manguera", "Paso a paso", "Revisa la guía antes de pedir", url("cambio-e-instalacion")),
+             ("Presostato Samsung", "Sensor de nivel inverter", "Pregunta por WhatsApp", url("presostato-lavadora-samsung-inverter")),
+             ("Presostato LG", "Sensor de nivel inverter", "Pregunta por WhatsApp", url("presostato-lavadora-lg-inverter"))]
 CALLOUTS = ["Pedido por WhatsApp", "Asesor por WhatsApp", "Envío a Toda Colombia", "Confirmamos la Correcta", "Pago contra Entrega", "Número de Guía", "Sirven para Todas", "Guía de Cambio"]
-SNIPPET = ("Tipos", ["Manguera de entrada", "Manguera de desagüe", "Manguera tina-bomba", "Agua fría (azul)", "Agua caliente (naranja)"])
+SNIPPET = ("Tipos", ["Manguera de entrada", "Manguera de desagüe", "Manguera tina-bomba", "Agua fría (azul)", "Agua caliente (naranja)", "Presostato"])
 
 err = []
 for g in G:
@@ -152,7 +164,7 @@ for i, g in enumerate(G, 1):
     "Incluyen las de quien busca comprar una lavadora (no una manguera), otras marcas y otras clases de manguera (jardín, gas, piscina, carro, industrial…). Revisa el informe de **Términos de búsqueda** cada semana y agrega las que no te sirvan.\n\n" + "\n".join(f"- {k}" for k in NEGATIVAS) + "\n", encoding="utf-8")
 (RAIZ / "04-recursos-extensiones.md").write_text("# Recursos (extensiones) a nivel de campaña\n\n## Enlaces de sitio (título ≤25, descripciones ≤35)\n"
     + "\n".join(f"- **{s[0]}** — {s[1]} / {s[2]} → {s[3]}" for s in SITELINKS) + "\n\n## Textos destacados (≤25)\n" + "\n".join(f"- {c}" for c in CALLOUTS)
-    + f"\n\n## Fragmento estructurado\n**{SNIPPET[0]}:** {', '.join(SNIPPET[1])}\n\n## Llamadas\n- 305 479 6329. Agrégalo como recurso de llamada y limítalos al horario de atención.\n\n## Imágenes\n- Usa las fotos de las mangueras de la tienda (cuadradas 1:1 y 1,91:1).\n", encoding="utf-8")
+    + f"\n\n## Fragmento estructurado\n**{SNIPPET[0]}:** {', '.join(SNIPPET[1])}\n\n## Llamadas\n- Mangueras: 305 479 6329. Presostato Samsung: 305 479 6329. Presostato LG: 320 510 2995. Agrégalos como recursos de llamada y limítalos al horario de atención.\n\n## Imágenes\n- Usa las fotos de las mangueras de la tienda (cuadradas 1:1 y 1,91:1).\n", encoding="utf-8")
 ng = sum(len(g["claves"]) for g in G)
 (QUI / "datos.json").write_text(json.dumps(dict(grupos=G, negativas=NEGATIVAS, sitelinks=SITELINKS, destacados=CALLOUTS, fragmento=SNIPPET, dominio=DOM, campana=CAMP, total_claves=ng), ensure_ascii=False, indent=1), encoding="utf-8")
 print(f"OK: {len(G)} grupos, {ng} palabras clave, {len(NEGATIVAS)} negativas, {len(SITELINKS)} enlaces")

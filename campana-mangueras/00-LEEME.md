@@ -6,9 +6,9 @@ Objetivo: que la gente toque el botón de **WhatsApp** (el evento `whatsapp` de 
 | Archivo | Para qué sirve |
 |---|---|
 | 01-configuracion.md | Ajustes de la campaña (presupuesto, ubicación, pujas) |
-| 02-grupos-de-anuncios/ | 7 grupos (entrada de agua, agua fría y caliente, negra con rosca, desagüe, desagüe largo, tina-bomba y general): 15 títulos, 4 descripciones, palabras clave y página de destino |
+| 02-grupos-de-anuncios/ | 9 grupos (entrada de agua, agua fría y caliente, negra con rosca, desagüe, desagüe largo, tina-bomba, general y presostato Samsung y LG): 15 títulos, 4 descripciones, palabras clave y página de destino |
 | 03-palabras-negativas.md | Palabras negativas (incluye otras clases de manguera: jardín, gas, piscina, carro…) |
-| 04-recursos-extensiones.md | 10 enlaces de sitio, 8 textos destacados, fragmento estructurado y llamadas |
+| 04-recursos-extensiones.md | 12 enlaces de sitio, 8 textos destacados, fragmento estructurado y llamadas |
 | 05-archivos-para-importar/ | CSV para **Google Ads Editor** |
 | 06-conversiones-tag-manager.md | Cómo medir los clics en WhatsApp con GTM-5SCP73SQ |
 | 07-como-subirla.md | Paso a paso para publicar |
@@ -22,4 +22,4 @@ Objetivo: que la gente toque el botón de **WhatsApp** (el evento `whatsapp` de 
 - Cada grupo manda a la página de su tipo de manguera. La tienda no usa marcas: las mangueras de entrada sirven para todas las lavadoras.
 
 ## Nota
-La campaña no usa marcas (Samsung, LG, etc.) en los anuncios, así que no tiene el límite de «marcas registradas». Las búsquedas con marca igual pueden activarla, porque la concordancia de frase incluye palabras adicionales.
+Los grupos de mangueras no usan marcas, así que no tienen el límite de «marcas registradas». Los dos grupos de **presostato** sí usan Samsung y LG porque esa pieza va por marca; algunos de esos anuncios pueden quedar como «aprobado (limitado)». No es un rechazo: se siguen mostrando, con menos alcance en búsquedas de la marca. Cada presostato manda al WhatsApp de su marca (Samsung 305 479 6329, LG 320 510 2995).
