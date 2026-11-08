@@ -5,7 +5,7 @@ img,svg{max-width:100%}a{color:inherit}
 .wrap{width:100%;max-width:1180px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
 .saltar{position:absolute;left:-999px;top:8px;background:#fff;color:#000;padding:10px 14px;z-index:99}.saltar:focus{left:8px}
 :focus-visible{outline:3px solid var(--blue);outline-offset:3px}
-h1,h2,h3{font-family:var(--f);line-height:1.15;margin:0;color:var(--navy);text-wrap:balance;letter-spacing:-.02em}
+h1,h2,h3{font-family:var(--f);line-height:1.15;margin:0;color:var(--navy);text-wrap:balance;letter-spacing:-.02em;overflow-wrap:break-word}
 h1{font-weight:800}h2{font-weight:800}h3{font-weight:700}
 /* franja superior + cabecera */
 .topbar{background:var(--navy);color:#ffe08a;font-size:13.5px}.topbar .wrap{display:flex;justify-content:space-between;gap:16px;padding-block:8px}.topbar a{color:#fff;font-weight:600;text-decoration:none}.topbar span{opacity:.9}
@@ -90,7 +90,7 @@ header.top{background:#fff;position:sticky;top:0;z-index:50;border-bottom:3px so
 .phero{background:linear-gradient(180deg,#fff3cf,#fffaf0);border-bottom:1px solid var(--line);padding-block:26px 40px}
 .phero h1{font-size:clamp(30px,4.4vw,48px)}.phero .lead{max-width:70ch}.phero .kick{margin-top:8px}
 .migas{font-size:13.5px;color:var(--muted);margin-bottom:6px}.migas a{color:var(--muted);text-decoration:none}.migas a:hover{color:var(--blue-d)}.migas span{color:var(--navy);font-weight:600}
-.ph-fila{display:flex;gap:20px;align-items:center}.phero .ico.th.big{width:104px;height:104px;flex:none;padding:6px;background:#fff;border:1px solid var(--line)}
+.ph-fila{display:flex;gap:20px;align-items:center}.ph-fila>div{min-width:0}.phero .ico.th.big{width:104px;height:104px;flex:none;padding:6px;background:#fff;border:1px solid var(--line)}
 @media (max-width:560px){.phero .ico.th.big{width:76px;height:76px}.ph-fila{gap:14px}}
 .lay{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:44px;padding-block:50px;align-items:start}@media (max-width:980px){.lay{grid-template-columns:1fr}}
 .lay1{padding-block:50px}
