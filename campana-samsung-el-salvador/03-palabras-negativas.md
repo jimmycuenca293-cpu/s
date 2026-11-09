@@ -1,0 +1,101 @@
+# 3. Palabras negativas (a nivel de campaña)
+
+Son búsquedas por las que NO quieres pagar: otros productos Samsung (celulares, televisores…), compra de equipos nuevos, empleo, manuales, otros países y otras marcas. Ya vienen en `05-archivos-para-importar/palabras-negativas.csv`. Revisa «Términos de búsqueda» cada semana y agrega las que no te sirvan.
+
+- usado
+- usada
+- segunda mano
+- casero
+- casera
+- manual
+- pdf
+- descargar
+- video
+- youtube
+- curso
+- empleo
+- trabajo
+- vacante
+- gratis
+- tutorial
+- celular
+- telefono
+- teléfono
+- smartphone
+- galaxy
+- tablet
+- televisor
+- television
+- tv
+- pantalla
+- monitor
+- laptop
+- computadora
+- impresora
+- audifonos
+- reloj
+- smartwatch
+- aire acondicionado
+- microondas
+- lavavajillas
+- cocina
+- horno
+- aspiradora
+- plancha
+- comprar
+- tienda
+- precio de lavadora
+- precio de refrigeradora
+- lavadora nueva
+- refrigeradora nueva
+- oferta
+- ofertas
+- catalogo
+- catálogo
+- cuotas
+- credito
+- crédito
+- mercadolibre
+- amazon
+- alibaba
+- aliexpress
+- temu
+- olx
+- facebook
+- tiktok
+- mexico
+- méxico
+- colombia
+- ecuador
+- panama
+- panamá
+- costa rica
+- guatemala
+- honduras
+- nicaragua
+- peru
+- perú
+- chile
+- argentina
+- españa
+- venezuela
+- bolivia
+- republica dominicana
+- estados unidos
+- usa
+- mabe
+- lg
+- whirlpool
+- frigidaire
+- electrolux
+- daewoo
+- indurama
+- midea
+- haceb
+- general electric
+- repuestos
+- pieza
+- piezas
+- tarjeta
+- placa
+- motor suelto
