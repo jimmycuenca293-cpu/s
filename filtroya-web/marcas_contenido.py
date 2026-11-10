@@ -341,7 +341,7 @@ def generar(pagina, ctx, h, R):
         art = {"@type": "Article", "headline": titulo, "description": desc, "inLanguage": "es-CO", "datePublished": "2026-10-18", "dateModified": "2026-10-18",
                "author": {"@type": "Organization", "name": "__NOMBRE__"}, "publisher": {"@id": f"__BASE__{base}#tienda"}, "mainEntityOfPage": f"__BASE__{base}blog/{sl}/"}
         otros = [x for x in arts if x[0] != sl][:4]
-        pagina(f"{base}blog/{sl}/", f"{titulo} | Blog de filtros Whirlpool", desc, titulo, "Blog",
+        pagina(f"{base}blog/{sl}/", f"Blog: {titulo}", desc, titulo, "Blog",
                "", respuesta(esc(resumen)) + cuerpo_a + '<h2 style="font-size:20px;margin:26px 0 10px">Sigue leyendo</h2><div class="m-chips">'
                + "".join(f'<a href="{base}blog/{o[0]}/">{esc(o[1])}</a>' for o in otros) + "</div>", preguntas, miga_nombre=titulo, ld_extra=art)
     pagina(X["blog"], "Blog: guías sobre filtros de agua para nevera Whirlpool, KitchenAid y Maytag",

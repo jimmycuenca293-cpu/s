@@ -15,8 +15,25 @@ function marca_sitio(): ?array
     return $m ?: null;
 }
 
+// Google corta los títulos a ~60 caracteres y las descripciones a ~155: se ajustan en la palabra o frase completa
+function seo_titulo(string $t): string
+{
+    while (mb_strlen($t) > 62 && str_contains($t, ' | ')) $t = mb_substr($t, 0, mb_strrpos($t, ' | '));
+    if (mb_strlen($t) > 66) { $t = mb_substr($t, 0, 64); $t = preg_replace('/[\s,:;·|-]+\S*$/u', '', $t); }
+    return $t;
+}
+function seo_desc(string $d): string
+{
+    if (mb_strlen($d) <= 158) return $d;
+    $c = mb_substr($d, 0, 158);
+    if (preg_match('/^(.{90,}[.!?])\s/us', $c . ' ', $m)) return $m[1];
+    return rtrim(preg_replace('/[\s,;:·-]+\S*$/u', '', $c), ' ,;:.') . '.';
+}
+
 function cabeza(string $titulo, string $desc, string $ruta, string $extra = '', bool $indexar = true): void
 {
+    $titulo = seo_titulo($titulo);
+    $desc = seo_desc($desc);
     if ($M = marca_sitio()) {
         cabeza_marca($M, $titulo, $desc, $ruta, $extra, $indexar, true);
         return;

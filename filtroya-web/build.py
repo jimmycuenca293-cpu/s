@@ -368,8 +368,8 @@ index_php = f"""<?php require __DIR__ . '/partes.php'; $S = sitio(); $n = $S['ne
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Filtros de agua para nevera y nevecón: Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas | Envío gratis</title>
-<meta name="description" content="Compra el filtro de agua de tu nevera o nevecón Samsung, LG, Whirlpool, GE, KitchenAid, Maytag, Jenn-Air, Amana, Kenmore y más marcas. Precios, referencias, cómo instalarlo y cada cuánto cambiarlo. Envío gratis a toda Colombia. Paga con tarjeta, PSE o Nequi.">
+<title>Filtros de agua para nevera: Samsung, LG, Whirlpool, GE | Envío gratis</title>
+<meta name="description" content="Filtros de agua para nevera Samsung, LG, Whirlpool y GE: precios, referencias y cómo instalarlos. Envío gratis a toda Colombia y pago seguro.">
 <meta name="keywords" content="filtro de agua para nevera, filtro de nevecón, filtro nevera Samsung, filtro nevera LG, filtro Whirlpool EveryDrop, filtro GE MWF, precio filtro de nevera, cada cuánto cambiar el filtro de la nevera, luz del filtro, filtro de refrigerador Colombia">
 <link rel="canonical" href="<?= h($S['base']) ?>/">
 <meta property="og:type" content="website"><meta property="og:title" content="Filtros de agua para nevera y nevecón | Envío gratis a toda Colombia"><meta property="og:description" content="Envío gratis a toda Colombia. Pago seguro en línea."><meta property="og:url" content="<?= h($S['base']) ?>/"><meta property="og:image" content="<?= h($S['base']) ?>/img/compartir.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="<?= h($n['nombre']) ?>"><meta name="twitter:card" content="summary_large_image"><link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -458,7 +458,7 @@ for p in CATALOGO:
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "Product", "name": p["nombre_largo"], "image": f"__BASE__/img/{p['id']}.jpg", "sku": p["ref"], "mpn": p["ref"],
          "brand": {"@type": "Brand", "name": p["marca"]}, "description": f'Filtro de agua para nevecón {p["marca"]}, referencia {p["ref"]}. {p.get("desc") or donde}',
-         "offers": {"@type": "Offer", "url": f"__BASE__/filtro/{p['slug']}/", "priceCurrency": "COP", "price": str(p["precio"]),
+         "offers": {"@type": "Offer", "url": f"__BASE__/{slug(p['marca'])}/{p['slug']}/", "priceCurrency": "COP", "price": str(p["precio"]),
                     "availability": "https://schema.org/InStock" if p.get("stock") else "https://schema.org/BackOrder", "itemCondition": "https://schema.org/NewCondition",
                     "shippingDetails": {"@type": "OfferShippingDetails", "shippingRate": {"@type": "MonetaryAmount", "value": "0", "currency": "COP"},
                                         "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "CO"},
@@ -469,9 +469,9 @@ for p in CATALOGO:
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "__BASE__/"},
             {"@type": "ListItem", "position": 2, "name": f'Filtros {p["marca"]}', "item": f"__BASE__/marca/{slug(p['marca'])}/"},
-            {"@type": "ListItem", "position": 3, "name": p["nombre_largo"], "item": f"__BASE__/filtro/{p['slug']}/"}]},
-        instalacion.tutorial_ld(p, f"__BASE__/filtro/{p['slug']}/")]}
-    pagina = cabeza_producto("/../../partes.php", titulo, desc, f'/filtro/{p["slug"]}/', ld, f'/img/{p["id"]}.webp', p["id"]) + f"""
+            {"@type": "ListItem", "position": 3, "name": p["nombre_largo"], "item": f"__BASE__/{slug(p['marca'])}/{p['slug']}/"}]},
+        instalacion.tutorial_ld(p, f"__BASE__/{slug(p['marca'])}/{p['slug']}/")]}
+    pagina = cabeza_producto("/../../partes.php", titulo, desc, f'/{slug(p["marca"])}/{p["slug"]}/', ld, f'/img/{p["id"]}.webp', p["id"]) + f"""
 <nav class="miga"><a href="/">Inicio</a> › <a href="/marca/{slug(p["marca"])}/">Filtros {esc(p["marca"])}</a> › {esc(p["nombre_largo"])}</nav>
 <div class="prod">
   <div class="foto">{foto(p, p["nombre_largo"] + " para nevecón " + p["marca"], lazy=False)}</div>

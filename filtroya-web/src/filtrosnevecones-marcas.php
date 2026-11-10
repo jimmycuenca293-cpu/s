@@ -7,6 +7,8 @@ require_once __DIR__ . '/partes.php';
 // $legado: páginas comunes (carrito, pago, legales) que usan la hoja de estilo de la tienda principal
 function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, string $extra = '', bool $indexar = true, bool $legado = false): void
 {
+    $titulo = seo_titulo($titulo);
+    $desc = seo_desc($desc);
     $S = sitio();
     $canon = $S['base'] . $ruta;
     $b = $M['base'];
