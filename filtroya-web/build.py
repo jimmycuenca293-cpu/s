@@ -79,7 +79,12 @@ CIUDADES_CO = node_eval(js_valor("CIUDADES_CO"))  # [ciudad, departamento, días
 ciudades = node_eval(js_valor("CALI_METRO")) + [c[0] for c in CIUDADES_CO] + ["Otro municipio"]
 MARCAS = [m[0] for m in node_eval(js_valor("MARCAS"))]
 ubic = lambda p: "externo" if "-ex-" in p["id"] else "interno"
+AUMENTO = 15000  # pedido del dueño: cada filtro sube $15.000 (el pack de 2 sube 2 x $15.000 menos el 10 %)
 for p in CATALOGO:
+    p["precio_antes"] = p["precio"]
+    if p.get("pack"):
+        p["pack"] += round(AUMENTO * 2 * 0.9 / 100) * 100
+    p["precio"] += AUMENTO
     p["nombre_largo"] = p["nombre"] if norm(p["ref"]) in norm(p["nombre"]) else f'{p["nombre"]} {p["ref"]}'
     p["slug"] = slug(p["nombre_largo"])
     if not p.get("pack"):
@@ -227,9 +232,28 @@ document.addEventListener("click", async e => {
 k = app.rindex("\n})();\n</script>")
 app = app[:k] + "\n" + WEB_JS + app[k:]
 
-app = cambiar(app, 'whatsapp: "573217996144",', 'whatsapp: window.FY_WA || "573217996144",')
+app = cambiar(app, 'whatsapp: "573217996144",', 'whatsapp: window.FY_WA || "573107147299",')
 # Sección visible con las páginas de la tienda (guías, tutoriales, referencias, envíos)
-EXPLORA = """<section class="explora" aria-label="Explora la tienda"><h2 style="font-size:19px">Explora la tienda</h2><div class="ex-grid">
+# Portada: las marcas son lo primero. Una tarjeta grande por marca, con su logo, precio desde, ciudades y enlace a su página
+_CIU_PORTADA = [("Bogotá", "bogota"), ("Medellín", "medellin"), ("Cali", "cali"), ("Barranquilla", "barranquilla"), ("Cartagena", "cartagena"), ("Bucaramanga", "bucaramanga")]
+_tarj = []
+for _m in marcas_exclusivas.MARCAS_INFO:
+    _s = slug(_m)
+    _ps = [p for p in CATALOGO if p["marca"] == _m]
+    _lw, _lh = Image.open(AQUI / "logos" / f"{_s}-web.png").size
+    _tema = marcas_exclusivas.MARCAS_INFO[_m]["tema"]
+    _tarj.append(
+        f'<article class="mk-card mk-{_s}" style="--mk:{_tema}"><a class="mk-logo" href="/{_s}/" aria-label="Filtros {_m}: ver la página de la marca">'
+        f'<img src="/img/logo-{_s}.png" alt="Logo {_m}" width="{_lw}" height="{_lh}" loading="lazy"></a>'
+        f'<h3><a href="/{_s}/">Filtros de agua {_m}</a></h3>'
+        f'<p>{len(_ps)} referencias desde <b>{cop(min(p["precio"] for p in _ps))}</b>. Envío gratis a toda Colombia.</p>'
+        f'<div class="mk-ciu">' + "".join(f'<a href="/{_s}/filtro-nevera-{_s}-{c}/">{n}</a>' for n, c in _CIU_PORTADA) + '</div>'
+        f'<a class="mk-ver" href="/{_s}/">Ver filtros {_m} →</a></article>')
+MARCAS_PORTADA = ('<section class="marcas-hero" id="marcas" aria-label="Elige la marca de tu nevecón"><span class="ms-eye">Elige la marca de tu nevecón</span>'
+                  '<h2>Filtros de agua por marca, con página y envío para tu ciudad</h2>'
+                  '<p>Cada marca tiene su propia tienda: referencias, precios, cómo cambiar el filtro y envío a las ciudades de Colombia.</p>'
+                  '<div class="mk-grid">' + "".join(_tarj) + '</div></section>\n')
+EXPLORA = MARCAS_PORTADA + """<section class="explora" aria-label="Explora la tienda"><h2 style="font-size:19px">Explora la tienda</h2><div class="ex-grid">
 <a href="/tienda/"><b>🛒 Tienda</b><span>Todos los filtros con precio y envío gratis</span></a>
 <a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/"><b>⏱️ ¿Cuándo cambiar el filtro?</b><span>Las señales de que ya toca cambiarlo</span></a>
 <a href="/instalacion/"><b>🔧 Cómo instalar tu filtro</b><span>Paso a paso para cada referencia</span></a>
@@ -290,6 +314,14 @@ CSS_COMUN = _EST[_EST.index("/* barra de anuncio */"):_EST.index("/* encabezado 
 CSS_WEB = """
 .top .cart-top{position:relative;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);margin-left:auto}
 .top .city{order:3}.top .cart-top{order:2}
+.marcas-hero{display:flex;flex-direction:column;gap:10px}.marcas-hero h2{font-size:clamp(22px,3.4vw,30px);line-height:1.15}.marcas-hero>p{color:var(--muted);max-width:60ch}
+.mk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:4px}
+.mk-card{background:#fff;border:1px solid #e3e9f6;border-top:5px solid var(--mk);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:9px;box-shadow:0 8px 24px rgba(10,30,90,.06);transition:transform .18s,box-shadow .18s}
+.mk-card:hover{transform:translateY(-4px);box-shadow:0 18px 38px rgba(10,30,90,.14)}
+.mk-logo{display:flex;align-items:center;height:64px}.mk-logo img{max-height:56px;width:auto;max-width:100%;object-fit:contain}
+.mk-card h3{font-size:18px}.mk-card h3 a{color:inherit;text-decoration:none}.mk-card p{font-size:14px;color:var(--muted)}.mk-card p b{color:#111}
+.mk-ciu{display:flex;flex-wrap:wrap;gap:6px}.mk-ciu a{font-size:12.5px;padding:4px 10px;border-radius:99px;background:#f0f4fc;color:#233;text-decoration:none;font-weight:600}.mk-ciu a:hover{background:var(--mk);color:#fff}
+.mk-ver{margin-top:auto;display:inline-block;text-align:center;background:var(--mk);color:#fff;border-radius:12px;padding:11px 14px;font-weight:800;text-decoration:none}
 .hero-nav{display:none}@media (min-width:980px){.hero-nav{display:flex;gap:2px;order:1;margin-left:auto}.hero-nav a{color:#dfeeea;text-decoration:none;font-weight:600;font-size:15px;padding:8px 11px;border-radius:10px}.hero-nav a:hover{background:rgba(255,255,255,.1);color:#fff}}
 .cart-top svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cart-top span{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--glow);color:#06221d;font-size:11.5px;font-weight:800;display:grid;place-items:center;padding:0 4px}
@@ -535,6 +567,22 @@ for marca in MARCAS:
 # ---------- referencias, nevecones, guías, envíos y directorios ----------
 extra = paginas_seo.generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDADES_CO)
 
+# ---------- una página (con su tienda y sus ciudades) para cada marca, colgando de /samsung/, /lg/, /whirlpool/, /ge/ ----------
+rutas_marcas = []
+for marca in marcas_exclusivas.MARCAS_INFO:
+    s = slug(marca)
+    logo = None
+    if (AQUI / "logos" / f"{s}-web.png").exists():
+        shutil.copy(AQUI / "logos" / f"{s}-web.png", OUT / "img" / f"logo-{s}.png")
+        lw, lh = Image.open(AQUI / "logos" / f"{s}-web.png").size
+        logo = {"logo": f"/img/logo-{s}.png", "logo_w": lw, "logo_h": lh}
+        if (AQUI / "logos" / f"{s}-icono.png").exists():
+            shutil.copy(AQUI / "logos" / f"{s}-icono.png", OUT / "img" / f"icono-{s}.png")
+            logo["icono"] = f"/img/icono-{s}.png"
+    r_m, M_m = marcas_exclusivas.generar_marca(marca, OUT, f"/{s}/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo)
+    rutas_marcas += r_m
+    print(f"Marca {marca}: /{s}/ con {len(r_m)} páginas")
+
 # ---------- catálogo del servidor ----------
 def php_val(v):
     if isinstance(v, bool):
@@ -554,7 +602,7 @@ cat_php = {
     "dias": {c[0]: c[2] for c in CIUDADES_CO if len(c) > 2},
     "rutas_ciudad": extra["rutas_ciudad"],
     "marcas": [{"nombre": m, "slug": slug(m)} for m in MARCAS],
-    "paginas": extra["paginas"],
+    "paginas": extra["paginas"] + rutas_marcas,
     "guias": [{"ruta": r, "titulo": t} for r, t in extra["guias"]],
     "compat": [{"ruta": r, "titulo": t} for r, t in extra["compat"]],
     "blog": [{"ruta": r, "titulo": t} for r, t in extra["blog"]],
@@ -567,6 +615,46 @@ cat_php = {
 # ---------- carpetas con el nombre del proyecto ----------
 # Todas las carpetas (y la hoja de estilos y el carrito) llevan "filtrosnevecones-" adelante para no chocar
 # con archivos que ya existan en el hosting. Se renombran al final y se corrigen todas las rutas.
+# ---------- las páginas de marca viejas (/marca/<marca>/...) desaparecen: ahora cada marca vive en /<marca>/ ----------
+shutil.rmtree(OUT / "marca", ignore_errors=True)
+# Las páginas de Maytag, KitchenAid, etc. ya viven dentro de /whirlpool/: se borran las copias de /otras-marcas/ y se redirigen (sin contenido repetido)
+_dup = []
+for r in rutas_marcas:
+    if r.startswith("/whirlpool/") and r.count("/") == 3:
+        x = r.split("/")[2]
+        if (OUT / "otras-marcas" / x / "index.php").exists():
+            shutil.rmtree(OUT / "otras-marcas" / x)
+            _dup.append(x)
+if _dup:
+    for f in OUT.rglob("*"):
+        if f.is_file() and f.suffix in (".php", ".js", ".txt", ".xml", ".json", ".html", ""):
+            t = f.read_text(encoding="utf-8")
+            t2 = re.sub(r"/otras-marcas/(" + "|".join(re.escape(x) for x in _dup) + r")/", r"/whirlpool/\1/", t)
+            if t2 != t:
+                f.write_text(t2, encoding="utf-8")
+if _dup and not [x for x in (OUT / "otras-marcas").iterdir() if x.is_dir()]:  # solo queda el índice, igual al de /whirlpool/
+    shutil.rmtree(OUT / "otras-marcas")
+    for f in OUT.rglob("*"):
+        if f.is_file() and f.suffix in (".php", ".js", ".txt", ".xml", ".json", ".html", ""):
+            t = f.read_text(encoding="utf-8")
+            t2 = re.sub(r"/otras-marcas/(?=[\"'\s<>)#?]|$)", "/whirlpool/filtros-para-nevera-por-marca/", t)
+            if t2 != t:
+                f.write_text(t2, encoding="utf-8")
+print(f"{len(_dup)} páginas de otras-marcas pasaron a /whirlpool/")
+
+slugs_marca = "|".join(slug(m) for m in marcas_exclusivas.MARCAS_INFO)
+slugs_ciudad = {slug(c[0]) for c in CIUDADES_CO}
+def _marca_nueva(m):
+    s_, resto = m.group(1), m.group(2).strip("/")
+    return f"/{s_}/filtro-nevera-{s_}-{resto}/" if resto in slugs_ciudad else f"/{s_}/"
+for f in OUT.rglob("*"):
+    if f.is_file() and f.suffix in (".php", ".js", ".txt", ".xml", ".json", ".html", ""):
+        t = f.read_text(encoding="utf-8")
+        t2 = re.sub(r"/marca/(" + slugs_marca + r")/([^\"'\s<>)#?]*)", _marca_nueva, t)
+        t2 = re.sub(r"/marca/(" + slugs_marca + r")(?=[\"'\s<>)#?])", r"/\1/", t2)
+        if t2 != t:
+            f.write_text(t2, encoding="utf-8")
+
 CARPETAS = ["img", "api", "data", "filtro", "referencia", "referencias", "nevecon", "neveras", "marca", "guia", "envios", "tienda", "instalacion", "otras-marcas"]
 for c in CARPETAS:
     viejo, nuevo = OUT / c, OUT / (PREFIJO + c)
@@ -592,6 +680,25 @@ for f in OUT.rglob("*"):
     t2 = re.sub(r"(?<![/\w-])api/config\.php", PREFIJO + "api/config.php", t2)
     if t2 != t:
         f.write_text(t2, encoding="utf-8")
+
+# ---------- redirecciones 301: las direcciones repetidas o viejas llevan a la nueva ----------
+ciudades_alt = "|".join(sorted(slugs_ciudad, key=len, reverse=True))
+redir = rf"""# --- Una sola dirección para cada página (301): las marcas viven en /samsung/, /lg/, /whirlpool/ y /ge/ ---
+RewriteCond %{{THE_REQUEST}} \s/+index\.php[\s?]
+RewriteRule ^index\.php$ / [R=301,L]
+RewriteRule ^(?:purofiltro-|filtrosnevecones-)?marca/({slugs_marca})/({ciudades_alt})/?$ /$1/filtro-nevera-$1-$2/ [R=301,L]
+RewriteRule ^(?:purofiltro-|filtrosnevecones-)?marca/({slugs_marca})(?:/.*)?$ /$1/ [R=301,L]
+RewriteRule ^(?:purofiltro-|filtrosnevecones-)?marca/?$ /#marcas [R=301,NE,L]
+RewriteRule ^(?:purofiltro-|filtrosnevecones-)?otras-marcas/?$ /whirlpool/filtros-para-nevera-por-marca/ [R=301,L]
+RewriteRule ^(?:purofiltro-|filtrosnevecones-)?otras-marcas/({"|".join(re.escape(x) for x in _dup)})/?$ /whirlpool/$1/ [R=301,L]
+# La tienda anterior usaba el prefijo «purofiltro-»: api y data se conservan (pedidos y config.php); todo lo demás pasa al prefijo nuevo
+RewriteRule ^purofiltro-(?!api/|data/)(.*)$ /{PREFIJO}$1 [R=301,L]
+"""
+ht = OUT / ".htaccess"
+_h = ht.read_text(encoding="utf-8")
+_a = "RewriteRule ^sitemap\\.xml$ sitemap.php [L]"
+assert _a in _h
+ht.write_text(_h.replace(_a, redir + _a, 1), encoding="utf-8")
 
 print(f"Listo: {OUT.relative_to(AQUI)}/ con {len(CATALOGO)} filtros, {len(MARCAS)} marcas, {len(extra['refs']) - len(CATALOGO)} referencias equivalentes, "
       f"{len(extra['modelos'])} nevecones, {len(extra['guias'])} guías y {len(imgs)} fotos")

@@ -390,7 +390,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
     for depto, cs in deptos.items():
         mg, mg_ld = miga(("Inicio", "/"), ("Envíos", "/envios/"), (depto, None))
         lista = sorted(cs, key=lambda x: slug(x[0]))
-        escribir(f"/envios/{slug(depto)}/", f"Filtros de agua para nevecón en {depto} | Envío gratis",
+        escribir(f"/envios/{slug(depto)}/", f"Envío de filtros de agua para nevecón a todo {depto}: ciudades y tiempos",
                  f"Enviamos filtros de agua para nevecón Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas a {', '.join(x[0] for x in lista[:6])} y más ciudades de {depto}. Envío gratis.",
                  [mg_ld, {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__{rutas_ciudad[x[0]]}", "name": x[0]} for i, x in enumerate(lista)]}],
                  f"""{mg}

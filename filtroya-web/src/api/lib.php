@@ -7,6 +7,8 @@ function cfg(): array
     static $c = null;
     if ($c === null) {
         $f = __DIR__ . '/config.php';
+        // Si la tienda se actualizó encima de la versión anterior (carpeta purofiltro-api), se sigue usando su config.php
+        if (!is_file($f) && is_file(__DIR__ . '/../purofiltro-api/config.php')) $f = __DIR__ . '/../purofiltro-api/config.php';
         $c = is_file($f) ? require $f : require __DIR__ . '/config.sample.php';
         // En el sitio de una marca el nombre que ve el cliente es el de la tienda de la marca (ej. «Filtros GE»)
         $m = dirname(__DIR__) . '/filtrosnevecones-marca.json';
@@ -91,6 +93,9 @@ function db(): PDO
     static $pdo = null;
     if ($pdo) return $pdo;
     $dir = __DIR__ . '/../data';
+    // Pedidos de la versión anterior (carpeta purofiltro-data): si la nueva carpeta aún no tiene base de datos, se sigue con la vieja
+    $viejo = __DIR__ . '/../purofiltro-data';
+    if (!is_file($dir . '/pedidos.sqlite') && is_file($viejo . '/pedidos.sqlite')) $dir = $viejo;
     if (!is_dir($dir)) mkdir($dir, 0750, true);
     $pdo = new PDO('sqlite:' . $dir . '/pedidos.sqlite', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
     $pdo->exec('PRAGMA journal_mode = WAL');

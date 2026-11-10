@@ -86,11 +86,12 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     M["externos"] = [[n, u] for n, u, _ in info.get("externos", [])]
     ctx = dict(marca=marca, info=info, ps=ps, base=base, M=M, slug=slug, norm=norm, ubic=ubic, foto=foto, php_str=php_str, ciudades=[c[0] for c in CIUDADES_CO[:30]], R=R, datos=instalacion.datos)
     rutas = [base]
-    escribir(dir_ / "index.php", portada(**ctx))
+    raiz = dir_ / base.strip("/")  # en su propio dominio base es "/"; dentro de la tienda principal, "/samsung/"
+    escribir(raiz / "index.php", portada(**ctx))
     for p in ps:
-        escribir(dir_ / p["slug_o"] / "index.php", producto(p, **ctx)); rutas.append(base + p["slug_o"] + "/")
-    escribir(dir_ / "cual-es-mi-filtro" / "index.php", cual(**ctx)); rutas.append(base + "cual-es-mi-filtro/")
-    escribir(dir_ / "cambio-e-instalacion" / "index.php", guia(**ctx)); rutas.append(base + "cambio-e-instalacion/")
+        escribir(raiz / p["slug_o"] / "index.php", producto(p, **ctx)); rutas.append(base + p["slug_o"] + "/")
+    escribir(raiz / "cual-es-mi-filtro" / "index.php", cual(**ctx)); rutas.append(base + "cual-es-mi-filtro/")
+    escribir(raiz / "cambio-e-instalacion" / "index.php", guia(**ctx)); rutas.append(base + "cambio-e-instalacion/")
     rutas += marcas_seo.generar(R, escribir, dir_, ctx, sys.modules[__name__])
     return rutas, M
 
