@@ -330,6 +330,7 @@ CSS_WEB = """
 .mk-card h3{font-size:18px}.mk-card h3 a{color:inherit;text-decoration:none}.mk-card p{font-size:14px;color:var(--muted)}.mk-card p b{color:#111}
 .mk-ciu{display:flex;flex-wrap:wrap;gap:6px}.mk-ciu a{font-size:12.5px;padding:4px 10px;border-radius:99px;background:#f0f4fc;color:#233;text-decoration:none;font-weight:600}.mk-ciu a:hover{background:var(--mk);color:#fff}
 .mk-ver{margin-top:auto;display:inline-block;text-align:center;background:var(--mk);color:#fff;border-radius:12px;padding:11px 14px;font-weight:800;text-decoration:none}
+.logo img{width:36px;height:36px;border-radius:9px;flex:0 0 auto}.logo .lg-t.lg-one{flex-direction:row;align-items:baseline;gap:0;font-size:23px;letter-spacing:-.02em;line-height:1}.logo .lg-t.lg-one small{font-size:13px;letter-spacing:0;text-transform:none;margin-left:1px;opacity:.65;color:inherit}.logo .lg-t.lg-one b{color:var(--glow)}
 .hero-nav{display:none}@media (min-width:980px){.hero-nav{display:flex;gap:2px;order:1;margin-left:auto}.hero-nav a{color:#dfeeea;text-decoration:none;font-weight:600;font-size:15px;padding:8px 11px;border-radius:10px}.hero-nav a:hover{background:rgba(255,255,255,.1);color:#fff}}
 .cart-top svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cart-top span{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--glow);color:#06221d;font-size:11.5px;font-weight:800;display:grid;place-items:center;padding:0 4px}
@@ -376,7 +377,7 @@ index_php = f"""<?php require __DIR__ . '/partes.php'; $S = sitio(); $n = $S['ne
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Filtros de agua para nevera: Samsung, LG, Whirlpool, GE | Envío gratis</title>
+<title>FiltrosNevecones | Filtros de agua para nevera, envío gratis</title>
 <meta name="description" content="Filtros de agua para nevera Samsung, LG, Whirlpool y GE: precios, referencias y cómo instalarlos. Envío gratis a toda Colombia y pago seguro.">
 <meta name="keywords" content="filtro de agua para nevera, filtro de nevecón, filtro nevera Samsung, filtro nevera LG, filtro Whirlpool EveryDrop, filtro GE MWF, precio filtro de nevera, cada cuánto cambiar el filtro de la nevera, luz del filtro, filtro de refrigerador Colombia">
 <link rel="canonical" href="<?= h($S['base']) ?>/">
@@ -662,6 +663,43 @@ for f in OUT.rglob("*"):
         t2 = re.sub(r"/marca/(" + slugs_marca + r")(?=[\"'\s<>)#?])", r"/\1/", t2)
         if t2 != t:
             f.write_text(t2, encoding="utf-8")
+
+# ---------- identidad propia: FiltrosNevecones (verde azulado y ámbar), distinta de las otras tiendas ----------
+PALETA = {  # colores de la tienda anterior -> colores nuevos
+    "#0b1f6b": "#0b3b3c", "#1236a8": "#0f5e57", "#1a5cff": "#0e8f78", "#e3ecff": "#dcf3ee", "#38d6ff": "#5eead4",
+    "#f1f5ff": "#f2f8f6", "#0b1a45": "#0b2a2b", "#566287": "#4f6b69", "#d9e2fa": "#d4e6e1",
+    "#081230": "#061c1c", "#101d4a": "#0c2b2b", "#e6ecff": "#e4f5f1", "#9fb0e6": "#9cc4bc", "#22336b": "#1d4a47",
+    "#5b8cff": "#4fd1b5", "#04103a": "#032221", "#16296b": "#12403c",
+    "#ff8a1f": "#ffc21a", "#ff5a22": "#e89b00", "#ff4d2e": "#e89b00",
+}
+(OUT / "img" / "icono.svg").write_text((AQUI / "imagenes-tienda" / "icono.svg").read_text(encoding="utf-8"), encoding="utf-8")
+_LOGO_VIEJO = '<span class="lg-t">Filtros<b>Nevecones</b><small>Colombia</small></span>'
+_LOGO_NUEVO = '<span class="lg-t lg-one">filtros<b>nevecones</b><small>.com</small></span>'
+_ICONO_APP = re.compile(r'<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#[0-9a-f]{6}"/>.*?</svg>(?=<span class="lg-t)', re.S)
+for f in OUT.rglob("*"):
+    if not f.is_file() or f.suffix not in (".php", ".css", ".js", ".webmanifest", ".json", ".txt", ".xml", "") or "data" in f.relative_to(OUT).parts[:1]:
+        continue
+    if f.relative_to(OUT).parts[0] in {slug(m) for m in marcas_exclusivas.MARCAS_INFO} or f.name in ("filtrosnevecones-marcas.css", "filtrosnevecones-marcas.php"):
+        continue
+    t = f.read_text(encoding="utf-8")
+    t2 = t
+    for a, b_ in PALETA.items():
+        t2 = re.sub(re.escape(a), b_, t2, flags=re.I)
+    t2 = re.sub(r"family=Bricolage\+Grotesque[^&\"']*", "family=Sora:wght@600;700;800", t2)
+    t2 = re.sub(r"family=Manrope[^&\"']*", "family=Figtree:wght@400;500;600;700;800", t2)
+    t2 = t2.replace("Bricolage Grotesque", "Sora").replace("Manrope", "Figtree")
+    t2 = t2.replace(_LOGO_VIEJO, _LOGO_NUEVO)
+    t2 = _ICONO_APP.sub('<img src="/img/icono.svg" alt="" width="34" height="34">', t2)
+    t2 = t2.replace("Filtros Nevecones Colombia", "FiltrosNevecones").replace('"short_name": "Filtros Nevecones"', '"short_name": "FiltrosNevecones"')
+    t2 = t2.replace("border-color:#e89b00;color:#fff", "border-color:#e89b00;color:#2a1d00").replace(".anuncio{background:#e89b00;color:#fff}", ".anuncio{background:#e89b00;color:#2a1d00}")
+    t2 = t2.replace("rgba(255,90,34,.65)", "rgba(245,179,1,.55)")
+    if t2 != t:
+        f.write_text(t2, encoding="utf-8")
+_cs = OUT / "estilo.css"
+_cs.write_text(_cs.read_text(encoding="utf-8") + """
+.logo .lg-t.lg-one{flex-direction:row;align-items:baseline;gap:0;font-size:22px;letter-spacing:-.02em;text-transform:none}.logo .lg-t.lg-one b{color:var(--glow)}.logo .lg-t.lg-one small{font-size:13px;letter-spacing:0;text-transform:none;margin-left:1px;opacity:.65}
+.btn{color:#2a1d00!important}.anuncio{color:#2a1d00!important}.anuncio *{color:inherit}
+""", encoding="utf-8")
 
 CARPETAS = ["img", "api", "data", "filtro", "referencia", "referencias", "nevecon", "neveras", "marca", "guia", "envios", "tienda", "instalacion", "otras-marcas"]
 for c in CARPETAS:
