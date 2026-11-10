@@ -253,7 +253,7 @@ MARCAS_PORTADA = ('<section class="marcas-hero" id="marcas" aria-label="Elige la
                   '<h2>Filtros de agua por marca, con página y envío para tu ciudad</h2>'
                   '<p>Cada marca tiene su propia tienda: referencias, precios, cómo cambiar el filtro y envío a las ciudades de Colombia.</p>'
                   '<div class="mk-grid">' + "".join(_tarj) + '</div></section>\n')
-EXPLORA = MARCAS_PORTADA + """<section class="explora" aria-label="Explora la tienda"><h2 style="font-size:19px">Explora la tienda</h2><div class="ex-grid">
+EXPLORA = """<section class="explora" aria-label="Explora la tienda"><h2 style="font-size:19px">Explora la tienda</h2><div class="ex-grid">
 <a href="/tienda/"><b>🛒 Tienda</b><span>Todos los filtros con precio y envío gratis</span></a>
 <a href="/guia/cada-cuanto-cambiar-el-filtro-del-nevecon/"><b>⏱️ ¿Cuándo cambiar el filtro?</b><span>Las señales de que ya toca cambiarlo</span></a>
 <a href="/instalacion/"><b>🔧 Cómo instalar tu filtro</b><span>Paso a paso para cada referencia</span></a>
@@ -293,8 +293,16 @@ ABAJO = """<section class="explora" aria-label="Información"><h2 style="font-si
 </div></div></section>
 """
 # En la web, las guías rápidas de la app se cambian por enlaces a las páginas completas
-app = cambiar_re(app, r'<div class="guias-rapidas" id="guias-rapidas">.*?</div></div>\n', EXPLORA)
-app = cambiar(app, '<div class="check salud" id="salud">', ABAJO + '<div class="check salud" id="salud">')
+app = cambiar_re(app, r'<div class="guias-rapidas" id="guias-rapidas">.*?</div></div>\n', MARCAS_PORTADA)  # primero las marcas y enseguida los filtros
+app = cambiar(app, '<div class="check salud" id="salud">', EXPLORA + ABAJO + '<div class="check salud" id="salud">')
+# Precios de la tienda web (la app los trae viejos): sube $15.000 por filtro, igual que las páginas
+for _p in CATALOGO:
+    _ln = re.search(r'^[ ]*\{ id: "' + re.escape(_p['id']) + r'".*$', app, re.M)
+    assert _ln, _p['id']
+    _n = re.sub(r'\bprecio: \d+', f"precio: {_p['precio']}", _ln.group(0), 1)
+    _n = re.sub(r'\bpack: \d+', f"pack: {_p['pack']}", _n, 1)
+    app = app.replace(_ln.group(0), _n, 1)
+app = cambiar(app, 'list.length < 8)', 'list.length < 24)')  # la portada muestra todos los filtros, no solo ocho
 
 # Enlaces fijos a todas las páginas de filtros (Google los sigue aunque no ejecute el JavaScript)
 enlaces = ['<nav class="seo-links" aria-label="Todos los filtros"><h2 style="font-size:19px">Todos nuestros filtros</h2>']
