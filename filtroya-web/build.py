@@ -20,6 +20,7 @@ import sys
 import unicodedata
 
 import marcas_exclusivas
+import portada_tienda
 import paginas_seo
 import seo_busquedas
 import instalacion
@@ -663,6 +664,16 @@ for f in OUT.rglob("*"):
         t2 = re.sub(r"/marca/(" + slugs_marca + r")(?=[\"'\s<>)#?])", r"/\1/", t2)
         if t2 != t:
             f.write_text(t2, encoding="utf-8")
+
+# ---------- portada de tienda en línea (estructura propia, distinta de la app de la otra tienda) ----------
+_refs = [(r, ruta_ref[norm(r)]) for p in CATALOGO for r in p["refs"] if norm(r) in ruta_ref]
+_vistos = set()
+_refs = [x for x in _refs if not (x[1] in _vistos or _vistos.add(x[1]))]
+_mods = [(m, ruta_modelo[norm(m)]) for p in CATALOGO for m in p["modelos"] if norm(m) in ruta_modelo]
+_vistos = set()
+_mods = [x for x in _mods if not (x[1] in _vistos or _vistos.add(x[1]))]
+_dim = {m: Image.open(AQUI / "logos" / f"{slug(m)}-web.png").size for m in MARCAS}
+portada_tienda.generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, _refs, _mods, extra["guias"], CIUDADES_TOP, RUTAS_CIUDAD, cabeza_php, marcas_exclusivas.MARCAS_INFO, _dim)
 
 # ---------- identidad propia: FiltrosNevecones (verde azulado y ámbar), distinta de las otras tiendas ----------
 PALETA = {  # colores de la tienda anterior -> colores nuevos
