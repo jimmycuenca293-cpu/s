@@ -15,7 +15,7 @@ RewriteRule ^(filtrosnevecones-)?compatible(/.*)?$ /$1otras-marcas$2 [R=301,L]
 RewriteRule ^feed\.xml$ feed.php [L]
 RewriteRule ^llms\.txt$ llms.php [L]
 RewriteRule ^llms-full\.txt$ llms.php?completo=1 [L]
-<FilesMatch "^(partes\.php|filtrosnevecones-marcas\.php|filtrosnevecones-marca\.json|.*\.md)$">
+<FilesMatch "^(partes\.php|filtrosnevecones-marcas\.php|filtrosnevecones-marca\.json|.*\.md|.*\.gs)$">
   Require all denied
 </FilesMatch>
 # Archivos internos nunca se muestran

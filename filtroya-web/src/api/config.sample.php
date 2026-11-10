@@ -30,6 +30,8 @@ return [
 
     // Datos del pedido a tu correo «como un formulario» (servicio FormSubmit), además del correo normal. Funciona aunque el correo del hosting falle.
     // La primera vez te llega un correo de FormSubmit para activarlo: toca el botón «Activate Form». Pon 'activo' => false para apagarlo.
+    // Hoja de cálculo de Google (opcional): pega aquí la URL de la «aplicación web» de hoja-de-calculo.gs. Cada pedido y cada pago queda como fila.
+    'hoja' => ['url' => '', 'clave' => ''],
     'formulario' => ['activo' => true, 'proveedor' => 'formsubmit'],
     // FormSubmit: la primera vez te llega un correo para activarlo (toca «Activate Form»). Alternativa, Web3Forms con tu clave; cambia la línea de arriba por:
     // 'formulario' => ['activo' => true, 'proveedor' => 'web3forms', 'clave' => '738e4767-832d-4e86-89ca-a94d3979fec0'],
