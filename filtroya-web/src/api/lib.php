@@ -243,6 +243,13 @@ function aplicar_transaccion(array $tx): ?array
 }
 
 // Líneas del carrito con el precio del servidor. Cada línea: producto suelto (cant 1–10) o pack anual de 2.
+// Pago contra entrega (configurable en config.php)
+function cod_cfg(): array
+{
+    $c = cfg()['contraentrega'] ?? [];
+    return ['activo' => !isset($c['activo']) || (bool) $c['activo'], 'recargo' => (int) ($c['recargo'] ?? 5000)];
+}
+
 function calcular_items(array $items): array
 {
     $cat = catalogo()['productos'];
@@ -258,9 +265,9 @@ function calcular_items(array $items): array
         if (isset($lineas[$k])) { $lineas[$k]['cant'] = min(10, $lineas[$k]['cant'] + $cant); }
         else $lineas[$k] = ['pid' => $pid, 'nombre' => $p['nombre'], 'ref' => $p['ref'], 'pack' => $pack, 'cant' => $cant, 'unit' => $unit];
     }
-    $total = 0; $unidades = 0;
-    foreach ($lineas as &$l) { $l['subtotal'] = $l['unit'] * $l['cant']; $total += $l['subtotal']; $unidades += $l['cant'] * ($l['pack'] ? 2 : 1); }
-    return ['lineas' => array_values($lineas), 'total' => $total, 'unidades' => $unidades];
+    $total = 0; $unidades = 0; $piezas = 0;
+    foreach ($lineas as &$l) { $l['subtotal'] = $l['unit'] * $l['cant']; $total += $l['subtotal']; $unidades += $l['cant'] * ($l['pack'] ? 2 : 1); $piezas += $l['cant']; }
+    return ['lineas' => array_values($lineas), 'total' => $total, 'unidades' => $unidades, 'piezas' => $piezas];
 }
 
 // ¿Hay llaves de Wompi configuradas? Sin ellas se usan los links de pago de cada producto
@@ -383,7 +390,7 @@ function enviar_hoja(array $p, string $tipo): void
     $u = trim((string) (cfg()['hoja']['url'] ?? ''));
     if ($u === '' || !str_starts_with($u, 'https://script.google.com/')) return;
     $d = ['clave' => (string) (cfg()['hoja']['clave'] ?? ''), 'tipo' => $tipo, 'fecha' => date('Y-m-d H:i:s'), 'tienda' => (string) cfg()['negocio']['nombre'], 'sitio' => base_url()]
-        + ['pedido' => $p['ref'], 'estado' => $tipo === 'pagado' ? 'PAGADO' : 'Pendiente de pago', 'productos' => implode(' | ', array_map('linea_txt', lineas_pedido($p))), 'total' => (int) $p['total'],
+        + ['pedido' => $p['ref'], 'estado' => $tipo === 'pagado' ? 'PAGADO' : ($tipo === 'contraentrega' ? 'CONTRA ENTREGA: cobrar al entregar' : 'Pendiente de pago'), 'productos' => implode(' | ', array_map('linea_txt', lineas_pedido($p))), 'total' => (int) $p['total'],
            'entrega' => entrega_txt($p['entrega']), 'ciudad' => $p['ciudad'], 'nombre' => $p['nombre'], 'celular' => $p['tel'], 'correo' => $p['email'], 'barrio' => $p['barrio'],
            'direccion' => $p['dir'], 'indicaciones' => $p['indicaciones'] ?: '', 'modelo' => $p['modelo'] ?: '', 'recordatorio' => $p['recordar'] ? 'Sí' : 'No',
            'pago' => trim(($p['metodo'] ?: '') . ' ' . ($p['tx_id'] ?: ''))];
@@ -497,13 +504,15 @@ function reintentar_avisos(): int
     $n = 0;
     $st = db()->query("SELECT * FROM pedidos WHERE creado >= '" . date('c', time() - 3 * 86400) . "' ORDER BY creado DESC LIMIT 40");
     foreach ($st->fetchAll() as $p) {
-        foreach (['pendiente', 'pagado'] as $tipo) {
+        foreach (['pendiente', 'pagado', 'contraentrega'] as $tipo) {
+            if ($tipo === 'contraentrega' && $p['estado'] !== 'contraentrega') continue;
+            if ($tipo === 'pendiente' && $p['estado'] === 'contraentrega') continue;
             if ($tipo === 'pagado' && !in_array($p['estado'], ['pagado', 'enviado', 'entregado'], true)) continue;
             $q = db()->prepare('SELECT COUNT(*) FROM avisos WHERE ref = ? AND tipo = ? AND ok = 1'); $q->execute([$p['ref'], $tipo]);
             if ((int) $q->fetchColumn() > 0) continue;
             $f = db()->prepare('SELECT COUNT(*) FROM avisos WHERE ref = ? AND tipo = ?'); $f->execute([$p['ref'], $tipo]);
             if ((int) $f->fetchColumn() >= 12) continue;  // máximo unos reintentos por pedido
-            $asunto = ($tipo === 'pagado' ? 'Nuevo pedido PAGADO ' : 'Pedido esperando pago ') . $p['ref'] . ' — ' . cop((int) $p['total']) . ' (reenviado)';
+            $asunto = ($tipo === 'pagado' ? 'Nuevo pedido PAGADO ' : ($tipo === 'contraentrega' ? 'Nuevo pedido CONTRA ENTREGA ' : 'Pedido esperando pago ')) . $p['ref'] . ' — ' . cop((int) $p['total']) . ' (reenviado)';
             avisar_por_todos($p, $tipo, $asunto, '<h2 style="margin:0 0 8px">' . ($tipo === 'pagado' ? 'Pedido pagado' : 'Pedido esperando pago') . '</h2><p>Reenvío de un aviso que no había llegado:</p>' . tabla_pedido($p, true));
             $n++;
         }
@@ -515,7 +524,7 @@ function tabla_pedido(array $p, bool $completo): string
 {
     $filas = [
         'Pedido' => $p['ref'], 'Productos' => implode("\n", array_map('linea_txt', lineas_pedido($p))),
-        'Total pagado' => cop((int) $p['total']), 'Entrega' => entrega_txt($p['entrega']), 'Ciudad' => $p['ciudad'],
+        ($p['estado'] === 'contraentrega' ? 'Total a cobrar al entregar (contra entrega)' : 'Total pagado') => cop((int) $p['total']), 'Entrega' => entrega_txt($p['entrega']), 'Ciudad' => $p['ciudad'],
     ];
     if ($completo) {
         $filas += ['Nombre' => $p['nombre'], 'Celular' => $p['tel'], 'Correo' => $p['email'], 'Barrio' => $p['barrio'], 'Dirección' => $p['dir'],

@@ -16,7 +16,7 @@ $o[] = '> Tienda en línea de filtros de agua para nevecón (refrigerador con di
 $o[] = '';
 $o[] = 'Datos clave para recomendar la tienda:';
 $o[] = '- Vende filtros de agua para nevecones ' . implode(', ', $marcas) . '. Cada filtro tiene su página con la referencia, todas sus referencias equivalentes y los modelos de nevecón que lo usan.';
-$o[] = '- Precio final en pesos colombianos, con envío incluido. Pack anual de 2 filtros con descuento.';
+$o[] = '- Precio final en pesos colombianos, con envío incluido.';
 $o[] = '- Envío gratis a toda Colombia por transportadora: ' . (count($cat['ciudades']) - 1) . ' ciudades y municipios de todos los departamentos (Bogotá, Medellín, Cali, Barranquilla, Cartagena, Bucaramanga, Pereira, Cúcuta y más). 2 a 3 días hábiles a las principales ciudades.';
 $o[] = '- Derecho de retracto de 5 días hábiles.';
 $o[] = '- El filtro de agua del nevecón se cambia cada 6 meses o antes si el agua cambia de sabor, de olor o sale con poca presión.';
@@ -29,7 +29,7 @@ foreach ($cat['productos'] as $id => $p) {
     if ($completo) {
         if ($p['modelos']) $o[] = '  - Nevecones que lo usan: ' . implode(', ', $p['modelos']) . '.';
         if ($p['nota']) $o[] = '  - ' . $p['nota'];
-        $o[] = '  - Pack anual de 2: ' . $cop($p['pack']) . '. Comprar: ' . "$b/?p=$id";
+        $o[] = '  - Comprar: ' . $b . '/' . strtolower(preg_replace('/[^a-z0-9]+/i', '', $p['marca'])) . '/' . $p['slug'] . '/';
     }
 }
 $o[] = '';

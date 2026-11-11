@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/partes.php';
 $cat = catalogo();
-$pub = ['ciudades' => $cat['ciudades'], 'dias' => (object) ($cat['dias'] ?? []), 'productos' => array_map(fn($p) => ['nombre' => $p['nombre'], 'ref' => $p['ref'], 'marca' => $p['marca'], 'precio' => $p['precio'], 'pack' => $p['pack'], 'slug' => $p['slug'], 'ubic' => $p['ubic']], $cat['productos']), 'inst_ext' => 0, 'pago_link' => !con_llaves()];
+$pub = ['cod' => cod_cfg(), 'ciudades' => $cat['ciudades'], 'dias' => (object) ($cat['dias'] ?? []), 'productos' => array_map(fn($p) => ['nombre' => $p['nombre'], 'ref' => $p['ref'], 'marca' => $p['marca'], 'precio' => $p['precio'], 'pack' => $p['pack'], 'slug' => $p['slug'], 'ubic' => $p['ubic']], $cat['productos']), 'inst_ext' => 0, 'pago_link' => !con_llaves()];
 cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/carrito.php', '', false);
 ?>
 <link rel="preconnect" href="https://checkout.wompi.co"><link rel="dns-prefetch" href="https://checkout.wompi.co">
@@ -38,6 +38,7 @@ cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/ca
   <aside class="col resumen">
     <section class="caja paso">
       <h2><span class="np">4</span>Resumen y pago</h2>
+      <div id="pagos" class="entrega"></div>
       <div id="totales"></div>
       <div class="lista-req" id="lista-req" aria-live="polite"></div>
       <label class="check2" data-f="acepto"><input type="checkbox" id="c-acepto" aria-required="true"><span><b>Acepto los <a href="/terminos.php" target="_blank" rel="noopener">términos</a>, la <a href="/garantia-y-retracto.php" target="_blank" rel="noopener">garantía y el retracto</a> y la <a href="/privacidad.php" target="_blank" rel="noopener">política de datos</a> <b class="req">*</b></b></span></label>
@@ -59,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cop = n => "$ " + Math.round(n).toLocaleString("es-CO");
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
   const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
-  let entrega = null;
+  let entrega = null, pago = "linea";
   function lineas() { return FYCart.leer().filter(l => P[l.pid]); }
   function total() { return lineas().reduce((a, l) => a + (l.pack ? P[l.pid].pack : P[l.pid].precio) * l.cant, 0); }
   function instalacion() { return entrega === "instalacion" && lineas().some(l => P[l.pid].ubic === "externo") ? C.inst_ext : 0; }
@@ -74,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="lim" href="/filtro/${p.slug}/"><picture><source srcset="/img/${l.pid}-400.webp" type="image/webp"><img src="/img/${l.pid}.jpg" alt="${esc(p.nombre)}"></picture></a>
         <div class="ltx"><a href="/filtro/${p.slug}/"><b>${esc(p.nombre)}</b></a><span class="ref">${esc(p.ref)}</span>${l.pack ? `<span class="badge pagado">Pack anual de 2 · ahorras ${cop(ahorro)}</span>` : ""}
           <div class="lact"><span class="qty"><button type="button" data-q="-1" data-i="${i}" aria-label="Menos">−</button><b>${l.cant}</b><button type="button" data-q="1" data-i="${i}" aria-label="Más">+</button></span>
-          <button type="button" class="link" data-del="${i}">Quitar</button>${!l.pack ? `<button type="button" class="link" data-topack="${i}">Cambiar a pack de 2 y ahorrar ${cop(ahorro)}</button>` : ""}</div></div>
+          <button type="button" class="link" data-del="${i}">Quitar</button></div></div>
         <div class="lder"><button type="button" class="lx" data-del="${i}" aria-label="Quitar ${esc(p.nombre)} del carrito" title="Quitar del carrito">✕</button><b class="lprecio">${cop(unit * l.cant)}</b></div></div>`;
     }).join("");
     const ciudad = $("#c-ciudad").value, cali = false;  // la entrega local se coordina por WhatsApp
@@ -83,11 +84,13 @@ document.addEventListener("DOMContentLoaded", () => {
       : ciudad ? [["transportadora", "Envío por transportadora", `Llega en unos ${(C.dias || {})[ciudad] || 2} días hábiles, hacia el ${habiles((C.dias || {})[ciudad] || 2)}. Te enviamos la guía al correo.`, 0]] : [];
     if (!ops.some(o => o[0] === entrega)) entrega = ops[0]?.[0] || null;
     $("#entrega").innerHTML = ciudad ? `<b>Entrega en ${esc(ciudad)}</b>` + ops.map(([k, t, s, v]) => `<label class="opc"><input type="radio" name="ent" value="${k}" ${k === entrega ? "checked" : ""}><span><b>${t}</b><small>${s}</small></span><span class="${v ? "" : "gratis"}">${v ? cop(v) : "Gratis"}</span></label>`).join("") : `<span class="m">Escoge tu ciudad para ver la entrega.</span>`;
-    const n = L.reduce((a, l) => a + l.cant * (l.pack ? 2 : 1), 0), inst = instalacion(), t = total() + (C.pago_link ? 0 : inst);
+    const n = L.reduce((a, l) => a + l.cant * (l.pack ? 2 : 1), 0), piezas = L.reduce((a, l) => a + l.cant, 0), inst = instalacion(), recargo = pago === "cod" && C.cod.activo ? C.cod.recargo * piezas : 0, t = total() + (C.pago_link ? 0 : inst) + recargo;
+    $("#pagos").innerHTML = C.cod.activo ? `<b>¿Cómo quieres pagar?</b>` + `<label class="opc"><input type="radio" name="pago" value="linea" ${pago === "linea" ? "checked" : ""}><span><b>Pagar en línea</b><small>Tarjeta, PSE, Nequi o botón Bancolombia, en página segura.</small></span><span class="gratis">Sin recargo</span></label>` + `<label class="opc"><input type="radio" name="pago" value="cod" ${pago === "cod" ? "checked" : ""}><span><b>Pago contra entrega</b><small>Pagas en efectivo a la transportadora al recibir. Recargo de ${cop(C.cod.recargo)} por cada producto.</small></span><span>+ ${cop(C.cod.recargo * piezas)}</span></label>` : "";
     $("#totales").innerHTML = `<div class="tl"><span>${n} ${n === 1 ? "filtro" : "filtros"}</span><span>${cop(total())}</span></div><div class="tl"><span>Envío${cali ? " a domicilio" : ""}</span><span class="gratis">Gratis</span></div>`
       + (inst ? `<div class="tl"><span>Instalación del filtro externo${C.pago_link ? " (se paga al instalar)" : ""}</span><span>${cop(inst)}</span></div>` : "")
+      + (recargo ? `<div class="tl"><span>Recargo contra entrega (${piezas} × ${cop(C.cod.recargo)})</span><span>${cop(recargo)}</span></div>` : "")
       + `<div class="tl total"><span>${C.pago_link && inst ? "Total a pagar ahora" : "Total"}</span><span>${cop(t)}</span></div>`;
-    $("#pagar").textContent = `Pagar ${cop(t)}`;
+    $("#pagar").textContent = pago === "cod" ? `Hacer el pedido · pago contra entrega ${cop(t)}` : `Pagar ${cop(t)}`;
   }
   $("#c-ciudad").innerHTML = `<option value="">Escoge tu ciudad</option>` + C.ciudades.map(c => `<option>${esc(c)}</option>`).join("");
   const prev = ls.get("fy_cliente", {}), cityPrev = ls.get("fy_city", "");
@@ -95,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (C.ciudades.includes(cityPrev)) $("#c-ciudad").value = cityPrev;
   $("#c-rec").checked = !!prev.recordar;
   $("#c-ciudad").addEventListener("change", e => { ls.set("fy_city", e.target.value); pintar(); });
-  document.addEventListener("change", e => { if (e.target.name === "ent") { entrega = e.target.value; pintar(); } });
+  document.addEventListener("change", e => { if (e.target.name === "ent") { entrega = e.target.value; pintar(); } if (e.target.name === "pago") { pago = e.target.value; pintar(); } });
   document.addEventListener("click", e => {
     const q = e.target.closest("[data-q]"), d = e.target.closest("[data-del]"), tp = e.target.closest("[data-topack]");
     if (!q && !d && !tp) return;
@@ -150,12 +153,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const el = $("#" + val[falta[0]].id); el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus({ preventScroll: true });
       return;
     }
-    const b = $("#pagar"), old = b.textContent; b.disabled = true; b.textContent = "Abriendo el pago seguro…"; err.textContent = "";
+    const b = $("#pagar"), old = b.textContent; b.disabled = true; b.textContent = pago === "cod" ? "Enviando tu pedido…" : "Abriendo el pago seguro…"; err.textContent = "";
     ls.set("fy_cliente", { nombre: cli.nombre, tel: cli.tel, email: cli.email, barrio: cli.barrio, dir: cli.dir, recordar: cli.recordar });
     try {
-      const L = lineas(), t = total() + (C.pago_link ? 0 : instalacion());
-      const r = await fetch("/api/pedido.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ acepto: true, items: L.map(l => ({ pid: l.pid, pack: !!l.pack, cant: l.cant })), total: t, entrega, cliente: cli }) });
+      const L = lineas(), t = total() + (C.pago_link ? 0 : instalacion()) + (pago === "cod" && C.cod.activo ? C.cod.recargo * L.reduce((a, l) => a + l.cant, 0) : 0);
+      const r = await fetch("/api/pedido.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ acepto: true, pago: pago === "cod" ? "contraentrega" : "linea", items: L.map(l => ({ pid: l.pid, pack: !!l.pack, cant: l.cant })), total: t, entrega, cliente: cli }) });
       const j = await r.json().catch(() => ({}));
+      if (r.ok && j.cod) { window.FYForm && FYForm(j.form); FYCart.guardar([]); location.href = j.url; return; }
       if (!r.ok || !j.url) throw new Error(j.mensaje || "No se pudo crear el pedido. Intenta de nuevo.");
       window.FYForm && FYForm(j.form);  // los datos del cliente llegan a tu correo como formulario (sin esperar)
       const cambio = new Date(); cambio.setMonth(cambio.getMonth() + 6);

@@ -490,8 +490,8 @@ for p in CATALOGO:
     <span class="m">Filtro de agua para nevecón {esc(p["marca"])} · {"Externo" if ubic(p) == "externo" else "Interno"} · Referencia <span class="ref">{esc(p["ref"])}</span></span>
     <?php if ($R['n']) echo '<a href="#opiniones" style="text-decoration:none">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span class="m">(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
     <span class="precio">{cop(p["precio"])}</span>
-    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li><b>Fácil de instalar:</b> paso a paso en esta página.</li><li>Pack anual de 2 filtros: {cop(p["pack"])} (ahorras {cop(ahorro)}).</li><li>Asesoría por WhatsApp para confirmar que es el de tu nevecón.</li></ul>
-    <div class="compra"><button class="btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="link" type="button" data-add="{p["id"]}" data-pack="1">+ Pack anual de 2 por {cop(p["pack"])} (ahorras {cop(ahorro)})</button></div>
+    <ul class="ok"><li><b>Envío gratis</b> a toda Colombia: llega en 2 a 3 días hábiles a las principales ciudades.</li><li><b>Fácil de instalar:</b> paso a paso en esta página.</li><li>Asesoría por WhatsApp para confirmar que es el de tu nevecón.</li></ul>
+    <div class="compra"><button class="btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="btn ghost block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>
     <span class="m">Pago seguro en línea: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span><?= medios_pago_html() ?>
   </div>
 </div>
@@ -501,13 +501,13 @@ for p in CATALOGO:
   <p>Retiene el cloro, el sedimento y las partículas que le dan mal sabor y mal olor al agua y al hielo, y ayuda a proteger la válvula y la máquina de hielo del nevecón. Rinde unos 6 meses de uso normal; después se satura y conviene cambiarlo.</p>
   <p>{f"Si tu filtro viejo dice <b>{esc(p['ref'])}</b> o alguna de estas referencias: {esc(', '.join(alias))}, este es el tuyo." if alias else f"Si tu filtro viejo dice <b>{esc(p['ref'])}</b>, este es el tuyo."}</p>
   <h3 style="margin:6px 0 0;font-size:16px">Qué incluye</h3>
-  <ul class="ok"><li>1 filtro de agua {esc(p["ref"])} nuevo, en su empaque (o 2 si escoges el pack anual).</li><li>Envío gratis a toda Colombia con número de guía.</li><li>Paso a paso de instalación y asesoría por WhatsApp.</li><li>Asesoría por WhatsApp para confirmar que es el de tu nevecón.</li></ul>
+  <ul class="ok"><li>1 filtro de agua {esc(p["ref"])} nuevo, en su empaque.</li><li>Envío gratis a toda Colombia con número de guía.</li><li>Paso a paso de instalación y asesoría por WhatsApp.</li><li>Asesoría por WhatsApp para confirmar que es el de tu nevecón.</li></ul>
 </section>
 <section class="caja datos">
   <h2>Ficha técnica y datos rápidos</h2>
   <p>El <b>{esc(p["nombre_largo"])}</b> es el filtro de agua {"externo (va en la manguera)" if ubic(p) == "externo" else "interno"} para nevecones {esc(p["marca"])}{(", también conocido como " + esc(", ".join(alias[:5]))) if alias else ""}. Cuesta {cop(p["precio"])} en <?= h(cfg()['negocio']['nombre']) ?> con envío gratis a toda Colombia (2 a 3 días hábiles en las principales ciudades). Se cambia cada 6 meses.</p>
   <dl class="dq"><dt>Referencia</dt><dd>{esc(p["ref"])}</dd><dt>Marca del nevecón</dt><dd>{esc(p["marca"])}</dd><dt>Tipo</dt><dd>{"Externo, en la manguera" if ubic(p) == "externo" else "Interno"}</dd>
-  <dt>Precio</dt><dd>{cop(p["precio"])} (pack de 2: {cop(p["pack"])})</dd><dt>Envío</dt><dd>Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades</dd><dt>Instalación</dt><dd>{"En la manguera del agua, 10 a 15 minutos" if ubic(p) == "externo" else "Dentro del nevecón, 2 minutos sin herramientas"}</dd><dt>Duración</dt><dd>6 meses</dd>
+  <dt>Precio</dt><dd>{cop(p["precio"])}</dd><dt>Envío</dt><dd>Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades</dd><dt>Instalación</dt><dd>{"En la manguera del agua, 10 a 15 minutos" if ubic(p) == "externo" else "Dentro del nevecón, 2 minutos sin herramientas"}</dd><dt>Duración</dt><dd>6 meses</dd>
   {f'<dt>Equivalencias</dt><dd>{esc(", ".join(alias))}</dd>' if alias else ""}{f'<dt>Nevecones</dt><dd>{esc(", ".join(p["modelos"]))}</dd>' if p["modelos"] else ""}</dl>
 </section>
 <section class="caja">
@@ -823,11 +823,11 @@ for marca in marcas_exclusivas.MARCAS_INFO:
             f"> Distribuidor autorizado de filtros de agua {marca} para nevera/nevecón. Envío gratis a toda Colombia "
             "(2 a 3 días hábiles en las principales ciudades), pago en línea con tarjeta, PSE o Nequi, asesoría por WhatsApp.\n\n"
             "## Filtros y precios (COP, envío incluido)\n"
-            + "".join(f"- [{p['nombre_largo']}](__BASE__/{p['slug']}/): {cop(p['precio'])}; pack de 2 {cop(p['pack'])}. "
+            + "".join(f"- [{p['nombre_largo']}](__BASE__/{p['slug']}/): {cop(p['precio'])}. "
                       f"Referencias equivalentes: {', '.join(p['refs'])}." + (f" Neveras: {', '.join(p['modelos'])}." if p["modelos"] else "") + "\n" for p in ps_m)
             + "\n## Guías\n" + "".join(f"- [{n}](__BASE__{r})\n" for r, n in M["guias"])
             + "- [¿Cuál filtro es el mío? (por modelo o referencia)](__BASE__/cual-es-mi-filtro/)\n- [Cómo cambiar e instalar cada filtro](__BASE__/cambio-e-instalacion/)\n"
-            + "\n## Compra\n- Envío gratis a toda Colombia con número de guía.\n- Pago en línea seguro; no hay pago contra entrega.\n- 5 días hábiles de retracto con el filtro sin instalar.\n"
+            + "\n## Compra\n- Envío gratis a toda Colombia con número de guía.\n- Pago en línea seguro (tarjeta, PSE, Nequi) o pago contra entrega con la transportadora (recargo de $ 5.000 por producto).\n- 5 días hábiles de retracto con el filtro sin instalar.\n"
               "- Términos: __BASE__/terminos.php\n")
     if marca == "Whirlpool":
         import marcas_contenido

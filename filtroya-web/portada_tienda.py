@@ -120,17 +120,13 @@ def generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, refs, modelos, guias, ciuda
     desde = {m: min(p["precio"] for p in CATALOGO if p["marca"] == m) for m in MARCAS}
     por_id = {p["id"]: p for p in CATALOGO}
 
-    def card(p, pack=False, sello=None):
-        ahorro = p["precio"] * 2 - p["pack"]
+    def card(p, sello=None):
         return (f'<article class="fx-card">{f"<span class=fx-sello>{esc(sello)}</span>" if sello else ""}'
                 f'<a class="fx-ph" href="{url(p)}" tabindex="-1" aria-hidden="true">{foto(p, p["nombre_largo"] + " para nevecón " + p["marca"], mini=True)}</a>'
                 f'<div class="fx-b"><span class="fx-m">{esc(p["marca"])} · {"Externo" if ubic(p) == "externo" else "Interno"}</span>'
                 f'<h3><a href="{url(p)}">{esc(p["nombre_largo"])}</a></h3><span class="fx-ref">Ref. {esc(p["ref"])}</span>'
-                + (f'<div class="fx-pr"><b>{cop(p["pack"])}</b><small>Pack de 2 · ahorras {cop(ahorro)}</small></div>' if pack else
-                   f'<div class="fx-pr"><b>{cop(p["precio"])}</b><small>Envío gratis</small></div><span class="fx-pack">Pack de 2: <b>{cop(p["pack"])}</b></span>')
-                + (f'<button class="fx-add" type="button" data-add="{p["id"]}" data-pack="1">Agregar el pack</button>' if pack else
-                   f'<button class="fx-add" type="button" data-add="{p["id"]}">Agregar al carrito</button>')
-                + '</div></article>')
+                f'<div class="fx-pr"><b>{cop(p["precio"])}</b><small>Envío gratis</small></div>'
+                f'<button class="fx-add" type="button" data-add="{p["id"]}">Agregar al carrito</button></div></article>')
 
     def fila(idf, cards):
         return (f'<div class="fx-fila-w"><button class="fx-fl" type="button" data-fila="{idf}" data-dir="a" aria-label="Anterior">‹</button>'
@@ -149,11 +145,10 @@ def generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, refs, modelos, guias, ciuda
 
     circ = "".join(f'<li><a href="/{slug(m)}/"><span class="fx-c"><img src="/img/logo-{slug(m)}.png" alt="Logo {esc(m)}" width="{info_marca[m][0]}" height="{info_marca[m][1]}" loading="lazy"></span>{esc(m)}</a></li>' for m in MARCAS)
     circ += "".join(f'<li><a href="{r}"><span class="fx-c">{ICONOS[k]}</span>{t}</a></li>' for k, r, t in (
-        ("interno", "/tienda/", "Filtros internos"), ("externo", "/tienda/", "Filtros externos"), ("pack", "#packs", "Packs de 2"),
+        ("interno", "/tienda/", "Filtros internos"), ("externo", "/tienda/", "Filtros externos"), ("pack", "/politica-de-envios.php", "Contra entrega"),
         ("instalacion", "/instalacion/", "Instalación"), ("guias", "/guia/", "Guías"), ("envios", "/envios/", "Envíos")))
 
     populares = [por_id[i] for i in ("sam-cin-o", "lg-1000-o", "wp-1-o", "sam-qin-o", "lg-700-o", "wp-4-o", "ge-mwf-o", "sam-ex-o") if i in por_id]
-    packs = [p for p in CATALOGO if ubic(p) == "interno"][:8]
     tiendas = ""
     for m in MARCAS:
         ps = [p for p in CATALOGO if p["marca"] == m]
@@ -161,7 +156,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, refs, modelos, guias, ciuda
                     f'<span class="fx-lg"><img src="/img/logo-{slug(m)}.png" alt="Logo {esc(m)}" width="{info_marca[m][0]}" height="{info_marca[m][1]}" loading="lazy"></span>'
                     f'<h2 id="e-{slug(m)}">Tienda de filtros {esc(m)}</h2><a href="/{slug(m)}/">Entrar a la tienda {esc(m)}</a></div>'
                     f'<div class="fx-grid">{"".join(card(p) for p in ps)}</div></div></div></section>')
-    mosaico = (f'<a class="fx-mo" style="--c:#0f5e57" href="#packs"><b>Pack anual de 2 filtros</b><span>Cambia el filtro dos veces al año y ahorra en cada pack.</span><i>Ver packs →</i>{ICONOS["pack"]}</a>'
+    mosaico = (f'<a class="fx-mo" style="--c:#0f5e57" href="/politica-de-envios.php"><b>Paga al recibir</b><span>Pago contra entrega con la transportadora, o en línea con tarjeta, PSE y Nequi.</span><i>Ver cómo →</i>{ICONOS["pack"]}</a>'
                f'<a class="fx-mo" style="--c:#0b3b3c" href="/instalacion/"><b>Instálalo tú mismo</b><span>Internos en 2 minutos y externos en 10 a 15, con paso a paso.</span><i>Ver cómo →</i>{ICONOS["instalacion"]}</a>'
                f'<a class="fx-mo" style="--c:#7a5200" href="/envios/"><b>Envío gratis a toda Colombia</b><span>Entrega en 2 a 3 días hábiles a las principales ciudades.</span><i>Ver ciudades →</i>{ICONOS["envios"]}</a>')
     conf = "".join(f'<li>{ICONOS[k]}<div><b>{t}</b><span>{d}</span></div></li>' for k, t, d in (
@@ -187,7 +182,6 @@ def generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, refs, modelos, guias, ciuda
 <section class="fx-bur" aria-label="Categorías"><div class="fx-wrap"><ul>{circ}</ul></div></section>
 <section class="fx-sec" aria-labelledby="t-vend"><div class="fx-wrap"><header class="fx-est-h"><h2 id="t-vend">Los más pedidos</h2><a class="fx-ver" href="/tienda/">Ver todos los filtros →</a></header>{fila("f-vend", "".join(card(p, sello="Más pedido") for p in populares))}</div></section>
 <section class="fx-sec" aria-label="Promociones"><div class="fx-wrap fx-mos">{mosaico}</div></section>
-<section class="fx-sec" id="packs" aria-labelledby="t-packs"><div class="fx-wrap"><header class="fx-est-h"><div><h2 id="t-packs">Packs anuales de 2 filtros</h2><p class="fx-sub">Un filtro cada 6 meses: llévate los dos del año con descuento.</p></div></header>{fila("f-packs", "".join(card(p, pack=True) for p in packs))}</div></section>
 {tiendas}
 <section class="fx-conf" aria-label="Beneficios"><div class="fx-wrap"><ul>{conf}</ul></div></section>
 <section class="fx-sec" aria-labelledby="t-ref"><div class="fx-wrap"><h2 id="t-ref">Busca tu filtro por referencia</h2><p class="fx-sub">La referencia está impresa en el filtro viejo. Entra a la tuya:</p><div class="fx-refs">{chips_ref}<a href="/referencias/">Todas las referencias →</a><a href="/neveras/">Por modelo de nevera →</a></div></div></section>

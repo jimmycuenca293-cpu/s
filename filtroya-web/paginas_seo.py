@@ -188,7 +188,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 <h2>¿Qué pasa si no lo cambio?</h2>
 <p>Un filtro vencido deja de filtrar y se tapa poco a poco: el agua sale con mal sabor, baja la presión del dispensador y la máquina de hielo trabaja forzada. En casas con mucho consumo o agua con sedimento, puede tocar cambiarlo antes de los 6 meses.</p>
 <h2>Un truco para no olvidarlo</h2>
-<p>Cuando compras en nuestra tienda puedes pedir que te recordemos por correo cuando se cumplan los 6 meses. También sirve comprar el <b>pack anual de 2 filtros</b>: uno para ahora y otro para dentro de 6 meses, con descuento.</p>
+<p>Cuando compras en nuestra tienda puedes pedir que te recordemos por correo cuando se cumplan los 6 meses.</p>
 <div class="grid">{grid_top}</div>"""),
         ("como-saber-que-filtro-usa-mi-nevecon", "¿Cómo saber qué filtro usa mi nevecón?",
          "Tres formas fáciles de saber qué filtro de agua usa tu nevecón Samsung, LG, Whirlpool o GE: por la referencia, por el modelo o por la forma.",
@@ -377,7 +377,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, norm, ubic, cabeza_php, tarjeta, CIUDAD
 <section class="caja">
   <h2>Cómo pedir tu filtro desde {esc(ciudad)}</h2>
   <ol><li>Busca la referencia impresa en tu filtro viejo o el modelo de tu nevecón: mira el <a href="/referencias/">directorio de referencias</a> o el de <a href="/neveras/">modelos de nevecón</a>.</li>
-  <li>Agrégalo al carrito (puedes llevar varios o el pack anual de 2) y escoge {esc(ciudad)} como ciudad de entrega.</li>
+  <li>Agrégalo al carrito (puedes llevar varios) y escoge {esc(ciudad)} como ciudad de entrega.</li>
   <li>Paga en línea. Te llega el recibo al correo y despachamos tu pedido con número de guía.</li>
   <li>Cámbialo en 5 minutos con la guía <a href="/guia/como-cambiar-el-filtro-de-agua-del-nevecon/">cómo cambiar el filtro de agua del nevecón</a>.</li></ol>
 </section>

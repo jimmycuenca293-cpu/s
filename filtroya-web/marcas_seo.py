@@ -77,8 +77,8 @@ def generar(R, escribir, dir_, ctx, h):
         escribir(dir_ / ruta.strip("/") / "index.php", texto)
         hechas.append(ruta)
 
-    tabla = ('<div class="m-tabla-wrap"><table class="m-tabla"><thead><tr><th>Filtro</th><th>Referencia</th><th>Tipo</th><th>Precio</th><th>Pack de 2</th></tr></thead><tbody>'
-             + "".join(f'<tr><td><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></td><td>{esc(p["ref"])}</td><td>{"Externo" if ubic(p) == "externo" else "Interno"}</td><td><b>{cop(p["precio"])}</b></td><td>{cop(p["pack"])}</td></tr>' for p in ps)
+    tabla = ('<div class="m-tabla-wrap"><table class="m-tabla"><thead><tr><th>Filtro</th><th>Referencia</th><th>Tipo</th><th>Precio</th></tr></thead><tbody>'
+             + "".join(f'<tr><td><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></td><td>{esc(p["ref"])}</td><td>{"Externo" if ubic(p) == "externo" else "Interno"}</td><td><b>{cop(p["precio"])}</b></td></tr>' for p in ps)
              + "</tbody></table></div>")
     minimo, maximo = min(p["precio"] for p in ps), max(p["precio"] for p in ps)
     rango = cop(minimo) if minimo == maximo else f"{cop(minimo)} y {cop(maximo)}"
@@ -104,14 +104,14 @@ def generar(R, escribir, dir_, ctx, h):
 
     # 2. precio
     pagina(f"{base}precio-filtro-{s}/", f"Precio filtro nevera {marca} en Colombia {anio} ",
-           f"Precios {anio} de los filtros de agua {marca} en Colombia: entre {rango} con envío gratis. Pack de 2 con descuento. Paga con tarjeta, PSE o Nequi.",
+           f"Precios {anio} de los filtros de agua {marca} en Colombia: entre {rango} con envío gratis. Paga con tarjeta, PSE o Nequi.",
            f"Precio del filtro de agua {marca} en Colombia ({anio})", "Precios actualizados",
-           f"Estos son los precios de los filtros {esc(marca)}, con el envío a cualquier ciudad de Colombia ya incluido. Con el pack de 2 tienes el año completo (se cambia cada 6 meses) y ahorras.",
+           f"Estos son los precios de los filtros {esc(marca)}, con el envío a cualquier ciudad de Colombia ya incluido. Se cambia cada 6 meses.",
            tabla + '<ul class="m-ok" style="margin-top:22px"><li><b>Envío gratis</b> a toda Colombia, sin costos escondidos.</li><li><b>Pago seguro</b> con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</li><li><b>Empaque sellado</b>: somos distribuidor autorizado ' + esc(marca) + ".</li></ul>"
            + '<p class="m-mut" style="margin-top:14px">¿Viste un filtro mucho más barato? Desconfía: los filtros de imitación usan la misma referencia, pero no filtran igual y pueden gotear.</p>',
            [(f"¿Por qué varía el precio del filtro {marca}?", "Cada referencia tiene un precio distinto según su tamaño y tecnología. Los externos de manguera son más económicos que los internos."),
             ("¿El precio incluye el envío?", "Sí. El envío es gratis a toda Colombia y llega en 2 a 3 días hábiles a las principales ciudades."),
-            ("¿Hay descuento por comprar dos?", "Sí. El pack de 2 filtros cuesta menos que dos sueltos y te alcanza para un año.")])
+            ("¿Cada cuánto debo comprar el filtro?", "Cada 6 meses: dos filtros al año cubren los 12 meses.")])
 
     # 3. luz del filtro
     pasos_reset = "".join(f'<div class="m-bloque"><h3><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></h3><p>{esc(ctx["datos"](p)["reset"])}</p></div>' for p in ps)
@@ -136,7 +136,7 @@ def generar(R, escribir, dir_, ctx, h):
                ("👅", "Sabor u olor raro", "El agua o el hielo saben a cloro, a tierra o a encerrado."),
                ("💧", "Menos presión", "El dispensador bota menos agua o tarda más en llenar el vaso."),
                ("💡", "Se prendió la luz", info["aviso"])]) + "</div>"
-           + f'<p style="margin-top:18px">Cambiarlo es fácil y no necesitas técnico: mira <a href="{base}cambio-e-instalacion/">el paso a paso de cada filtro {esc(marca)}</a>. Con el pack de 2 tienes el año completo.</p>',
+           + f'<p style="margin-top:18px">Cambiarlo es fácil y no necesitas técnico: mira <a href="{base}cambio-e-instalacion/">el paso a paso de cada filtro {esc(marca)}</a>. Dos filtros al año cubren los 12 meses.</p>',
            [("¿Qué pasa si no cambio el filtro a tiempo?", "El filtro se tapa: baja la presión, el agua coge mal sabor y la suciedad puede llegar a la válvula y a la máquina de hielo."),
             ("¿Puedo lavar el filtro y volverlo a usar?", "No. Por dentro tiene carbón activado que se satura; lavarlo no lo recupera."),
             ("¿Puedo usar la nevera sin filtro?", "Algunos modelos traen un tapón para usarla sin filtro, pero el agua sale sin filtrar. Lo mejor es cambiarlo.")])
@@ -152,7 +152,7 @@ def generar(R, escribir, dir_, ctx, h):
            + '<p class="m-mut">Llegamos a <a href="' + R["hub"] + '">todas las ciudades</a>.</p>',
            [(f"¿Venden filtros {marca} en mi ciudad?", "Enviamos a toda Colombia con envío gratis. A las principales ciudades llega en 2 a 3 días hábiles."),
             ("¿Cómo llega el filtro?", "Llega en su caja de fábrica sellada, con la referencia y el código de barras. Si quieres, antes de pagar te mandamos fotos reales por WhatsApp."),
-            ("¿Puedo pagar contra entrega?", "No. El pago es en línea, en una página de pago segura, con tarjeta, PSE o Nequi.")])
+            ("¿Puedo pagar contra entrega?", "Sí, con la transportadora (recargo de $ 5.000 por producto), o en línea con tarjeta, PSE o Nequi en una página segura.")])
 
     # 7. filtro externo
     if externos:
@@ -217,7 +217,7 @@ def generar(R, escribir, dir_, ctx, h):
                f"Si tu filtro viejo dice <b>{esc(r)}</b>, el que necesitas es el <b>{esc(p['nombre_largo'])}</b>. Es la misma pieza con otra referencia de fábrica.",
                h.caja(p, base, ctx["foto"]) + f'<p style="margin-top:16px">También aparece como: {esc(", ".join(otros))}.</p>',
                [(f"¿El {r} y el {p['ref']} son el mismo filtro?", f"Sí. {r} es otra referencia del mismo filtro {marca}; sirve en las mismas neveras."),
-                (f"¿Cuánto cuesta el filtro {r}?", f"{cop(p['precio'])} con envío gratis a toda Colombia, o {cop(p['pack'])} el pack de 2.")],
+                (f"¿Cuánto cuesta el filtro {r}?", f"{cop(p['precio'])} con envío gratis a toda Colombia.")],
                ld_extra=h.producto_ld(p, ruta, f"Filtro {r} ({p['nombre_largo']})", marca))
 
     # 9. modelos de nevera

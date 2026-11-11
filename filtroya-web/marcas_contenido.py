@@ -113,7 +113,7 @@ def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
       "El filtro de agua de la nevera Whirlpool se cambia cada 6 meses. Qué pasa si esperas más y cómo no olvidarlo.",
       "Cada 6 meses. Después de ese tiempo el carbón activado está saturado y deja pasar cloro y sedimento.",
       "<p>El filtro tiene carbón activado que se va llenando. A los 6 meses, aunque se vea bien, ya no filtra igual. Con mucho uso o agua con sedimento, cámbialo antes.</p>"
-      "<ul class=\"m-ok\"><li>Anota la fecha en el filtro con un marcador.</li><li>Pon una alarma en el celular para dentro de 6 meses.</li><li>Compra el pack de 2 y tendrás el siguiente listo.</li></ul>",
+      "<ul class=\"m-ok\"><li>Anota la fecha en el filtro con un marcador.</li><li>Pon una alarma en el celular para dentro de 6 meses.</li><li>Pide el siguiente filtro unas semanas antes, así lo tienes listo.</li></ul>",
       [("¿Puedo estirar el cambio a 8 meses?", "No conviene: el agua sale con peor sabor y el filtro se tapa."), ("¿Se puede lavar el filtro?", "No, el carbón activado no se recupera lavándolo.")])
     a("como-reiniciar-la-luz-del-filtro-whirlpool-order-y-replace", "Cómo reiniciar la luz del filtro Whirlpool: Order y Replace",
       "Qué significan las luces «Order» y «Replace» de tu nevera Whirlpool y cómo reiniciar el aviso después de cambiar el filtro.",
@@ -136,7 +136,7 @@ def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
     a("cuanto-cuesta-mantener-agua-filtrada-en-casa-filtro-vs-botellon", "Cuánto cuesta tener agua filtrada en casa: filtro de nevera vs botellón",
       "Compara el costo anual de un filtro de nevera frente a comprar botellones.",
       f"Un filtro de nevera ({rango}) dura 6 meses y filtra el agua y el hielo de toda la familia.",
-      "<p>El filtro de la nevera filtra el agua del dispensador y el hielo sin que cargues botellones. Dos filtros al año cubren los 12 meses; con el <b>pack de 2</b> pagas menos por unidad.</p>"
+      "<p>El filtro de la nevera filtra el agua del dispensador y el hielo sin que cargues botellones. Dos filtros al año cubren los 12 meses.</p>"
       "<p>El costo depende del consumo de tu casa; haz la cuenta con lo que gastas hoy en agua embotellada.</p>",
       [("¿El filtro de nevera reemplaza el botellón?", "Filtra el agua del grifo que llega a la nevera; el sabor mejora, pero depende del agua de tu ciudad.")])
     a("errores-al-cambiar-el-filtro-de-la-nevera-y-como-evitarlos", "Errores al cambiar el filtro de la nevera y cómo evitarlos",
@@ -177,10 +177,10 @@ def preguntas_ia(ps, slug):
         ("¿Cómo sé qué filtro necesita mi nevera?", "Mira la referencia impresa en el filtro viejo o el modelo en la etiqueta interna. Si dudas, mándanos la foto y te confirmamos antes de comprar."),
         ("¿Cuánto cuesta un filtro para nevera Whirlpool?", f"Entre {rango}, con envío gratis a toda Colombia."),
         ("¿Hacen envíos a toda Colombia?", "Sí, el envío es gratis a toda Colombia y llega en 2 a 3 días hábiles a las principales ciudades."),
-        ("¿Se puede pagar contra entrega?", "No. El pago es solo en línea: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia, en una página segura de Wompi."),
+        ("¿Se puede pagar contra entrega?", "Sí. Puedes pagar en efectivo a la transportadora al recibir (recargo de $ 5.000 por producto) o en línea con tarjeta, PSE, Nequi o botón Bancolombia, en una página segura de Wompi."),
         ("¿Es seguro pagar en la tienda?", "Sí. El pago se hace en la página segura de Wompi; la tienda nunca ve los datos de tu tarjeta."),
         ("¿Qué pasa si me equivoco de filtro?", "Tienes 5 días hábiles para retractarte, con el filtro sin instalar y en su empaque."),
-        ("¿Venden el pack de 2 filtros?", "Sí, el pack anual de 2 filtros sale más barato por unidad y cubre 12 meses."),
+        ("¿Cuántos filtros necesito al año?", "Dos: el filtro se cambia cada 6 meses."),
         ("¿Me dan factura o recibo?", "Te llega el recibo del pago a tu correo apenas Wompi confirma la compra."),
     ]))
     G.append(("Instalación y uso", [
@@ -248,7 +248,7 @@ def generar(pagina, ctx, h, R):
                (f"¿El filtro EveryDrop de Whirlpool sirve en {m}?", f"Sí: {m} es de la familia Whirlpool y usa filtros EveryDrop según el modelo."),
                (f"¿Cada cuánto cambio el filtro de mi nevera {m}?", "Cada 6 meses, o antes si el agua cambia de sabor o el dispensador bota menos agua."),
                (f"¿Cómo ubico el modelo de mi nevera {m}?", f"Busca la etiqueta dentro del refrigerador, en una pared lateral de arriba; el modelo {f['prefijo']}."),
-               ("¿Puedo pagar contra entrega?", "No. El pago es solo en línea, con tarjeta, PSE, Nequi o botón Bancolombia.")]
+               ("¿Puedo pagar contra entrega?", "Sí, con la transportadora (recargo de $ 5.000 por producto), o en línea con tarjeta, PSE, Nequi o botón Bancolombia.")]
         nota = f'<p class="m-mut" style="margin-top:18px">{esc(m)} es una marca registrada de su dueño; se nombra aquí solo para indicar para qué neveras sirven estos filtros.</p>'
         pagina(f"{base}filtro-para-nevera-{s}/", f"Filtro para nevera {m} | Filtros EveryDrop, envío gratis",
                f"Filtros de agua para neveras {m} ({alias}): EveryDrop {refs}. Equivalencias, precios y cómo cambiarlo. Envío gratis a toda Colombia.",
@@ -263,7 +263,7 @@ def generar(pagina, ctx, h, R):
         pagina(f"{base}precio-filtro-nevera-{s}/", f"Precio del filtro de nevera {m} en Colombia 2026 | EveryDrop",
                f"Cuánto cuesta el filtro de agua para nevera {m} en Colombia: {precios}. Envío gratis y pago seguro en línea.",
                f"Precio del filtro de nevera {m} en Colombia", "Precios 2026",
-               f"Precios de los filtros para neveras {esc(m)}, con el envío incluido a toda Colombia. El pack de 2 filtros sale más barato por unidad.",
+               f"Precios de los filtros para neveras {esc(m)}, con el envío incluido a toda Colombia.",
                respuesta(f"El filtro para nevera {esc(m)} cuesta entre {cop(min(p['precio'] for p in lista))} y {cop(max(p['precio'] for p in lista))} con envío gratis.") + tabla(lista, m) + nota,
                [(f"¿Cuánto cuesta el filtro de una nevera {m}?", f"Entre {cop(min(p['precio'] for p in lista))} y {cop(max(p['precio'] for p in lista))}, según la referencia."),
                 ("¿El envío tiene costo?", "No, es gratis a toda Colombia.")], miga_nombre=f"Precio filtro {m}")

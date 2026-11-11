@@ -70,9 +70,9 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
         otros = '<section class="caja"><h2>Más sobre filtros ' + esc(marca) + '</h2><div class="chips">' + "".join(
             f'<a href="{r}">{esc(t)}</a>' for r, t in lista) + '</div></section>'
         refs_txt = ", ".join(p["ref"] for p in ps)
-        tabla = ('<div class="caja" style="overflow-x:auto"><table class="t"><tr><th>Filtro</th><th>Referencia</th><th>Tipo</th><th>Precio</th><th>Pack de 2</th></tr>'
+        tabla = ('<div class="caja" style="overflow-x:auto"><table class="t"><tr><th>Filtro</th><th>Referencia</th><th>Tipo</th><th>Precio</th></tr>'
                  + "".join(f'<tr><td><a href="/filtro/{p["slug"]}/">{esc(p["nombre_largo"])}</a></td><td><span class="ref">{esc(p["ref"])}</span></td>'
-                           f'<td>{"Externo" if ubic(p) == "externo" else "Interno"}</td><td><b>{cop(p["precio"])}</b></td><td>{cop(p["pack"])}</td></tr>' for p in ps) + "</table></div>")
+                           f'<td>{"Externo" if ubic(p) == "externo" else "Interno"}</td><td><b>{cop(p["precio"])}</b></td></tr>' for p in ps) + "</table></div>")
 
         def pagina(ruta, titulo, desc, h1, intro, cuerpo, preguntas, nombre_miga, foto=None):
             mg, mg_ld = mg0(nombre_miga)
@@ -98,15 +98,15 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
 
         # 2. precio
         pagina(f"{b}precio-filtro-nevera-{s}/", f"Precio filtro nevera {marca} en Colombia {ANIO} | {rango}",
-               f"Precios {ANIO} de los filtros de agua para nevera {marca} en Colombia: entre {rango} con envío gratis. Pack de 2 filtros con descuento. Paga con tarjeta, PSE o Nequi.",
+               f"Precios {ANIO} de los filtros de agua para nevera {marca} en Colombia: entre {rango} con envío gratis. Paga con tarjeta, PSE o Nequi.",
                f"Precio del filtro de nevera {marca} en Colombia ({ANIO})",
-               f"Estos son los precios del filtro de agua para nevera {esc(marca)}, con el envío a cualquier ciudad de Colombia ya incluido. Con el pack de 2 tienes el año completo (se cambia cada 6 meses) y ahorras.",
+               f"Estos son los precios del filtro de agua para nevera {esc(marca)}, con el envío a cualquier ciudad de Colombia ya incluido. Se cambia cada 6 meses.",
                "<h2>Lista de precios " + esc(marca) + "</h2>" + tabla
                + '<ul class="ok"><li><b>Envío gratis</b> a toda Colombia, sin costos escondidos.</li><li><b>Pago seguro</b> con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</li>'
-                 '<li><b>Pack anual de 2 filtros</b>: uno para ahora y otro para dentro de 6 meses, a menor precio por unidad.</li></ul>',
+                 '</ul>',
                [(f"¿Cuánto cuesta un filtro de nevera {marca}?", f"Entre {rango}, según la referencia. El envío está incluido."),
                 ("¿Por qué cambia el precio entre referencias?", "Los filtros externos y los internos de mayor capacidad cuestan más. El precio de cada uno aparece en la tabla."),
-                ("¿Hay descuento si compro dos?", "Sí: el pack anual de 2 filtros sale más barato que comprarlos por separado.")],
+                ("¿Cada cuánto compro el filtro?", "Cada 6 meses: son dos filtros al año.")],
                "Precio del filtro")
 
         # 3. cómo cambiar
@@ -159,7 +159,7 @@ def generar(escribir, miga, faq_ld, faq_html, caja_producto, tarjeta, CATALOGO, 
                '<p class="m">Ciudades con envío: ' + ", ".join(f'<a href="{rutas_ciudad[c[0]]}">{esc(c[0])}</a>' for c in top_ciudades[:12]) + ' y <a href="/envios/">toda Colombia</a>.</p>' + ciudades_chips(marca, s, slug, CIUDADES_CO),
                [(f"¿Venden filtros {marca} en mi ciudad?", "Enviamos a toda Colombia con envío gratis. A las principales ciudades llega en 2 a 3 días hábiles."),
                 ("¿Cómo sé que el filtro es el correcto?", "Antes de pagar puedes escribirnos el modelo de tu nevera o la foto del filtro viejo y te confirmamos la referencia."),
-                ("¿Puedo pagar contra entrega?", "El pago es en línea, en una página segura, con tarjeta, PSE o Nequi.")],
+                ("¿Puedo pagar contra entrega?", "Sí, con la transportadora (recargo de $ 5.000 por producto), o en línea con tarjeta, PSE o Nequi en una página segura.")],
                "Dónde comprar")
 
         # 7. por modelo
@@ -261,7 +261,7 @@ def guias(CATALOGO, MARCAS, slug, ubic):
       "<h2>1. Identifica la marca y el modelo</h2><p>Abre el refrigerador y busca la etiqueta con el modelo (pared lateral, techo o detrás del cajón de las verduras). Con la marca y el modelo ya sabes por dónde empezar.</p>"
       "<h2>2. Mira la referencia del filtro viejo</h2><p>El filtro trae impresa su referencia, por ejemplo <span class=\"ref\">DA29-00020B</span>, <span class=\"ref\">LT1000P</span>, <span class=\"ref\">EDR1RXD1</span> o <span class=\"ref\">MWF</span>. Busca esa referencia en el <a href=\"/referencias/\">directorio</a>: muchas tienen equivalencias con otro nombre.</p>"
       "<h2>3. Decide si es interno o externo</h2><p>El interno va dentro del refrigerador; el externo, en la manguera de atrás. Si tu nevera ya trae uno, compra el mismo tipo. Más en <a href=\"/guia/filtro-interno-o-externo/\">interno o externo</a>.</p>"
-      "<h2>4. Compra con envío y empaque sellado</h2><p>Revisa que la caja venga sellada, con la referencia y el código de barras, y que el envío esté incluido. Con el pack de 2 tienes el año completo.</p>")
+      "<h2>4. Compra con envío y empaque sellado</h2><p>Revisa que la caja venga sellada, con la referencia y el código de barras, y que el envío esté incluido. Dos filtros al año cubren los 12 meses.</p>")
     g("diferencia-entre-nevera-nevecon-y-refrigerador", "Nevera, nevecón o refrigerador: ¿cambia el filtro?",
       "Nevera, nevecón, refrigerador y frigorífico son el mismo electrodoméstico. Qué filtro de agua usa según la marca y el modelo.",
       "<p>En Colombia se le dice <b>nevera</b>, <b>nevecón</b> (la nevera grande, de dos puertas o French door), <b>refrigerador</b> o, en otros países, <b>frigorífico</b> o <b>heladera</b>. Para el filtro de agua no cambia nada: lo que decide cuál sirve es la <b>marca</b> y el <b>modelo</b>.</p>"
@@ -277,7 +277,7 @@ def guias(CATALOGO, MARCAS, slug, ubic):
       f"<p>Un filtro de agua para nevera cuesta entre <b>{rango}</b> según la marca y el tipo, con el envío incluido. Los externos de manguera y algunos internos de mayor capacidad están en la parte alta del rango.</p>"
       "<h2>Precios por marca</h2><ul class=\"ok\">"
       + "".join(f'<li><a href="/marca/{slug(m)}/precio-filtro-nevera-{slug(m)}/">Filtro nevera {esc(m)}</a>: de {cop(min(p["precio"] for p in ps))} a {cop(max(p["precio"] for p in ps))}.</li>' for m, ps in por_marca.items())
-      + "</ul><h2>¿Se puede ahorrar?</h2><p>Sí: el pack anual de 2 filtros sale más barato por unidad y te cubre los 12 meses.</p>")
+      + "</ul><h2>¿Cada cuánto se compra?</h2><p>Cada 6 meses: dos filtros al año te cubren los 12 meses.</p>")
     g("donde-comprar-filtros-de-agua-para-nevera-en-colombia", "Dónde comprar filtros de agua para nevera en Colombia",
       "Dónde comprar filtros de agua para nevera Samsung, LG, Whirlpool, GE, KitchenAid, Maytag y más marcas en Colombia con envío gratis y pago seguro.",
       "<p>Puedes comprar el filtro de tu nevera en línea y recibirlo en tu casa en cualquier ciudad de Colombia. Aquí enviamos con <b>envío gratis</b> a las principales ciudades y municipios.</p>"
@@ -360,7 +360,7 @@ def home_bloque(CATALOGO, MARCAS, slug, ubic, CIUDADES_CO):
     ciudades = "".join(f'<a href="/envios/{slug(c[1])}/{slug(c[0])}/">Filtros de nevera en {esc(c[0])}</a>' for c in CIUDADES_CO[:16])
     faq = [("¿Qué filtro de agua usa mi nevera o nevecón?", "Depende de la marca y del modelo. Busca la referencia impresa en el filtro viejo (por ejemplo DA29-00020B, LT1000P, EDR1RXD1 o MWF) o el modelo en la etiqueta interna de la nevera, y búscalo en esta tienda."),
            ("¿Cada cuánto se cambia el filtro de agua de la nevera?", "Cada 6 meses, o antes si el agua o el hielo cambian de sabor, el dispensador bota menos agua o se prende la luz del filtro."),
-           ("¿Cuánto cuesta un filtro de agua para nevera en Colombia?", f"Entre {rango}, con el envío incluido, según la marca y el tipo. El pack de 2 filtros sale más barato por unidad."),
+           ("¿Cuánto cuesta un filtro de agua para nevera en Colombia?", f"Entre {rango}, con el envío incluido, según la marca y el tipo."),
            ("¿Hacen envíos a toda Colombia?", "Sí. El envío es gratis a toda Colombia y llega en 2 a 3 días hábiles a las principales ciudades, con número de guía."),
            ("¿Cómo instalo el filtro? ¿Necesito un técnico?", "No. Los internos se cambian en un par de minutos y los externos en 10 a 15, sin herramientas. Cada filtro trae su paso a paso."),
            ("¿Sirve el mismo filtro para nevera, nevecón y refrigerador?", "Sí: son el mismo electrodoméstico con distinto nombre. Lo que decide cuál filtro sirve es la marca y el modelo."),

@@ -140,7 +140,7 @@ def caja(p, base, foto):
             f'<div class="tx"><h2><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></h2><span class="m-mut">Referencia {esc(p["ref"])}</span>'
             f'<span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>'
             f'<div class="compra"><button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>'
-            f'<button class="m-link" type="button" data-add="{p["id"]}" data-pack="1">+ Pack de 2 por {cop(p["pack"])} (ahorras {cop(ahorro)})</button></div></div>')
+            f'</div></div>')
 
 
 def enlace(mapa, clave, texto):
@@ -168,7 +168,7 @@ def preguntas_marca(marca, ps):
         (f"¿Qué filtro {marca} necesito?", f"Busca la referencia impresa en tu filtro viejo o el modelo de tu nevecón en la etiqueta de adentro y compáralo en la página «¿Cuál es el mío?». Si tienes dudas, mándanos una foto por WhatsApp. Referencias disponibles: {refs}."),
         ("¿Cuánto cuesta el envío?", "Nada. El envío es gratis a toda Colombia y llega en 2 a 3 días hábiles a las principales ciudades; a otros municipios puede tardar un poco más."),
         ("¿Cómo pago?", "En línea, en una página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. El pedido se despacha cuando se confirma el pago."),
-        (f"¿Cada cuánto se cambia el filtro {marca}?", "Cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión. Con el pack de 2 filtros tienes el año completo y ahorras."),
+        (f"¿Cada cuánto se cambia el filtro {marca}?", "Cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión. Dos filtros al año cubren los 12 meses."),
         ("¿Y si me equivoco de filtro?", "Tienes 5 días hábiles para retractarte con el filtro sin instalar y en su empaque. Por eso te recomendamos confirmar por WhatsApp antes de comprar."),
     ]
 
@@ -285,7 +285,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
             + (f" Reemplaza {', '.join(alias[:3])}." if alias else "") + " Paga con tarjeta, PSE o Nequi.")
     ficha = [("Marca", marca), ("Referencia", p["ref"]), ("Condición", "Nuevo, en empaque sellado de fábrica"), ("Tipo", "Externo, va en la manguera" if externo else "Interno, va dentro del nevecón"),
              ("Dónde va", d["donde"]), ("Instalación", d["tiempo"] + " · " + d["herramientas"]), ("Duración", "6 meses de uso normal"),
-             ("Precio", f"{cop(p['precio'])} (pack de 2: {cop(p['pack'])})"), ("Envío", "Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades")]
+             ("Precio", f"{cop(p['precio'])}"), ("Envío", "Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades")]
     if alias:
         ficha.insert(2, ("También aparece como", ", ".join(alias)))
     return inicio(M, php_str, titulo, desc, url, ld, resenas_php, head) + f"""<div class="m-wrap">
@@ -299,7 +299,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
     <?php if ($R['n']) echo '<a href="#opiniones" style="text-decoration:none;color:inherit">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span class="m-mut">(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
     <span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>
     <div class="m-aviso"><span style="font-size:22px">✔</span><span><b>Filtro {esc(marca)} · {esc(p["ref"])}</b>Somos distribuidor autorizado {esc(marca)}. Nuevo, en su caja sellada de fábrica con la referencia {esc(p["ref"])} impresa. ¿Quieres verlo? Te mandamos fotos reales por WhatsApp.</span></div>
-    <div class="compra"><button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="m-link" type="button" data-add="{p["id"]}" data-pack="1">+ Pack anual de 2 por {cop(p["pack"])} (ahorras {cop(ahorro)})</button></div>
+    <div class="compra"><button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>
     <ul class="m-ok"><li><b>Envío gratis</b>: llega en 2 a 3 días hábiles a las principales ciudades.</li><li><b>Fácil de instalar</b>: {"10 a 15 minutos en la manguera del agua" if externo else "2 minutos, sin herramientas"}. Paso a paso abajo.</li><li><b>Pago seguro</b> en línea; el comprobante llega a tu correo.</li></ul>
     <span class="m-mut" style="font-size:14px">Paga con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span><?= medios_pago_html() ?>
   </div>

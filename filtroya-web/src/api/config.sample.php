@@ -30,6 +30,8 @@ return [
 
     // Datos del pedido a tu correo «como un formulario» (servicio FormSubmit), además del correo normal. Funciona aunque el correo del hosting falle.
     // La primera vez te llega un correo de FormSubmit para activarlo: toca el botón «Activate Form». Pon 'activo' => false para apagarlo.
+    // Pago contra entrega con la transportadora: el cliente paga al recibir. 'recargo' se suma por cada producto del carrito (COP).
+    'contraentrega' => ['activo' => true, 'recargo' => 5000],
     // Hoja de cálculo de Google (opcional): pega aquí la URL de la «aplicación web» de hoja-de-calculo.gs. Cada pedido y cada pago queda como fila.
     'hoja' => ['url' => '', 'clave' => ''],
     'formulario' => ['activo' => true, 'proveedor' => 'formsubmit'],

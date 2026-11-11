@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && hash_equals($_SESSION['csrf'] ?? ''
     $msg = 'Opinión actualizada.';
 }
 $filtro = (string) ($_GET['ver'] ?? 'activos');
-$where = ['activos' => "estado IN ('pagado','enviado')", 'pendientes' => "estado = 'pendiente'", 'todos' => '1=1'][$filtro] ?? "estado IN ('pagado','enviado')";
+$where = ['activos' => "estado IN ('pagado','enviado','contraentrega')", 'pendientes' => "estado = 'pendiente'", 'todos' => '1=1'][$filtro] ?? "estado IN ('pagado','enviado','contraentrega')";
 $rows = db()->query("SELECT * FROM pedidos WHERE $where ORDER BY creado DESC LIMIT 300")->fetchAll();
 $tot = db()->query("SELECT COUNT(*) n, COALESCE(SUM(total),0) s FROM pedidos WHERE estado IN ('pagado','enviado','entregado')")->fetch();
 $csrf = h($_SESSION['csrf']);
@@ -83,10 +83,10 @@ $csrf = h($_SESSION['csrf']);
   <span class="m"><?= h(entrega_txt($p['entrega'])) ?> · <?= h(date('d/m/Y H:i', strtotime($p['creado']))) ?><?= $p['guia'] ? ' · Guía ' . h($p['guia']) : '' ?></span>
   <span><?= h($p['nombre']) ?> · <a href="tel:+57<?= h($p['tel']) ?>"><?= h($p['tel']) ?></a> · <a href="mailto:<?= h($p['email']) ?>"><?= h($p['email']) ?></a></span>
   <span><?= h($p['dir']) ?>, <?= h($p['barrio']) ?>, <?= h($p['ciudad']) ?><?= $p['indicaciones'] ? ' · ' . h($p['indicaciones']) : '' ?><?= $p['modelo'] ? ' · Nevecón ' . h($p['modelo']) : '' ?></span>
-  <?php if (in_array($p['estado'], ['pagado', 'enviado'], true)): ?>
+  <?php if (in_array($p['estado'], ['pagado', 'enviado', 'contraentrega'], true)): ?>
   <form method="post" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
     <input type="hidden" name="csrf" value="<?= $csrf ?>"><input type="hidden" name="ref" value="<?= h($p['ref']) ?>">
-    <?php if ($p['estado'] === 'pagado'): ?><input name="guia" placeholder="Número de guía (opcional)" style="flex:1;min-width:160px"><button class="btn sm" name="accion" value="enviado">Marcar enviado</button><?php endif; ?>
+    <?php if (in_array($p['estado'], ['pagado', 'contraentrega'], true)): ?><input name="guia" placeholder="Número de guía (opcional)" style="flex:1;min-width:160px"><button class="btn sm" name="accion" value="enviado">Marcar enviado</button><?php endif; ?>
     <button class="btn ghost sm" name="accion" value="entregado">Entregado</button>
   </form>
   <?php endif; ?>

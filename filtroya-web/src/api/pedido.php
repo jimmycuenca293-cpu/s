@@ -20,12 +20,15 @@ $items = is_array($b['items'] ?? null) ? $b['items']
     : [['pid' => $b['pid'] ?? '', 'pack' => !empty($b['pack']), 'cant' => !empty($b['pack']) ? 1 : (int) ($b['cantidad'] ?? 1)]];
 $C = calcular_items($items);
 if (!$C['lineas']) fail('Tu carrito está vacío o los productos ya no están disponibles. Recarga la página.');
-$total = $C['total'];
+$cod = cod_cfg();
+$pago = (($b['pago'] ?? '') === 'contraentrega' && $cod['activo']) ? 'cod' : 'linea';
+$recargo = $pago === 'cod' ? $cod['recargo'] * $C['piezas'] : 0;
+$total = $C['total'] + $recargo;
 
 // Sin llaves de Wompi en config.php se usa el link de pago fijo del producto (vale 1 unidad)
 $con_llaves = con_llaves();
 $link = '';
-if (!$con_llaves) {
+if (!$con_llaves && $pago !== 'cod') {
     $l0 = $C['lineas'][0];
     $link = (count($C['lineas']) === 1 && $C['unidades'] === 1) ? (string) ($cat['productos'][$l0['pid']]['link_pago'] ?? '') : '';
     if ($link === '') fail(count($C['lineas']) === 1 && $C['unidades'] === 1 && empty($cat['productos'][$l0['pid']]['link_pago'])
@@ -53,7 +56,7 @@ if ((int) ($b['total'] ?? -1) !== $total) fail('El precio se actualizó. Recarga
 
 $ip = $_SERVER['REMOTE_ADDR'] ?? '';
 // Freno simple contra abusos: máximo 15 pedidos sin pagar por hora desde la misma conexión
-$st = db()->prepare("SELECT COUNT(*) FROM pedidos WHERE ip = ? AND estado = 'pendiente' AND creado > ?");
+$st = db()->prepare("SELECT COUNT(*) FROM pedidos WHERE ip = ? AND estado IN ('pendiente','contraentrega') AND creado > ?");
 $st->execute([$ip, date('c', time() - 3600)]);
 if ((int) $st->fetchColumn() >= 15) fail('Demasiados intentos. Espera un rato e intenta de nuevo.', 429);
 
@@ -67,6 +70,21 @@ db()->prepare('INSERT INTO pedidos (ref, creado, pid, producto, refprod, unidade
     implode(', ', array_unique(array_column($C['lineas'], 'ref'))), $C['unidades'], (int) in_array(true, array_column($C['lineas'], 'pack'), true), $total, $entrega,
     $cli['ciudad'], $cli['nombre'], $cli['email'], $cli['tel'], $cli['barrio'], $cli['dir'], $cli['indicaciones'], $cli['modelo'], !empty($c['recordar']) ? 1 : 0, $ip]);
 db()->prepare('UPDATE pedidos SET items = ?, acepto_en = ? WHERE ref = ?')->execute([json_encode($C['lineas'], JSON_UNESCAPED_UNICODE), date('c'), $ref]);
+
+if ($pago === 'cod') {
+    // Pago contra entrega: no hay cobro en línea; el pedido queda listo para despachar y el cliente paga a la transportadora al recibir
+    db()->prepare("UPDATE pedidos SET estado = 'contraentrega', metodo = 'Contra entrega' WHERE ref = ?")->execute([$ref]);
+    $st = db()->prepare('SELECT * FROM pedidos WHERE ref = ?'); $st->execute([$ref]);
+    $pedc = $st->fetch();
+    $asuntoc = "Nuevo pedido CONTRA ENTREGA {$ref} — " . cop($total) . ' — ' . $cli['nombre'] . ' — ' . $cli['ciudad'];
+    out_y_seguir(['ref' => $ref, 'total' => $total, 'cod' => true, 'url' => '/gracias.php?cod=' . rawurlencode($ref), 'form' => form_navegador($pedc, $asuntoc)], function () use ($pedc, $asuntoc, $total, $recargo, $cli, $ref) {
+        avisar_por_todos($pedc, 'contraentrega', $asuntoc, '<h2 style="margin:0 0 8px">Nuevo pedido CONTRA ENTREGA</h2><p>El cliente pagará <b>' . cop($total) . '</b> a la transportadora al recibir (incluye ' . cop($recargo) . ' de recargo por contra entrega). Confirma los datos y despáchalo con la opción de recaudo.</p>'
+            . tabla_pedido($pedc, true) . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>');
+        $n = cfg()['negocio'];
+        enviar_correo($cli['email'], "Recibimos tu pedido {$ref}", '<h2 style="margin:0 0 8px">¡Gracias por tu pedido, ' . h($cli['nombre']) . '!</h2><p>Pagas <b>' . cop($total) . '</b> en efectivo a la transportadora cuando recibas tu pedido (incluye ' . cop($recargo) . ' de recargo por pago contra entrega). Te escribiremos al ' . h($cli['tel']) . ' para confirmar los datos antes de despachar.</p>'
+            . tabla_pedido($pedc, false) . '<p style="color:#5a6873;font-size:13px">¿Dudas? Escríbenos a ' . h($n['correo']) . ' (' . h($n['horario']) . ').</p>', $m);
+    });
+}
 
 if ($link !== '') {
     // Con link de pago el pedido no se marca solo como pagado: te avisamos para que revises el pago en tu panel de Wompi
