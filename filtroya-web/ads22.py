@@ -211,6 +211,41 @@ PASARELA = ('<section class="pg-sec" id="pasarela" aria-labelledby="pg-t"><div c
             '<li>' + IC["candado"] + 'Confirmación de tu pedido por correo</li></ul></div></div></section>')
 
 STRIP = ('<div class="pg-strip"><span>🔒 Pago seguro con Wompi</span><b>Tarjeta</b><b>PSE</b><b>Nequi</b><b>Bancolombia</b><b>Contra entrega</b></div>')
+# galería de imágenes de cada filtro: la foto principal + imágenes informativas propias + las fotos reales que se agreguen en fotos/<clave>-*.jpg
+import galeria
+galeria.generar()
+GAL_FICHAS = {"filtro-haf-cin.html": "cin", "filtro-haf-qin.html": "qin", "filtro-externo.html": "ext"}
+GALERIA = {}
+for k_, p_ in PRODUCTOS.items():
+    lista = [("principal", p_["img"], "Foto del filtro " + p_["corto"])]
+    for extra in sorted((AQUI / "fotos").glob(f"{k_}-*.jpg")) if (AQUI / "fotos").is_dir() else []:
+        shutil.copy(extra, OUT / "img" / ("real-" + extra.name))
+        lista.append(("real", "img/real-" + extra.name, "Foto real del filtro " + p_["corto"]))
+    for nom, tit in (("identificar", "Cómo identificar tu filtro"), ("instalacion", "Cómo se instala"), ("ficha", "Ficha técnica")):
+        shutil.copy(AQUI / "galeria" / f"{k_}-{nom}.jpg", OUT / "img" / f"gal-{k_}-{nom}.jpg")
+        lista.append((nom, f"img/gal-{k_}-{nom}.jpg", f"{tit} del filtro {p_['corto']}"))
+    GALERIA[k_] = lista
+GAL_CSS = """
+.gal{display:grid;gap:12px;max-width:520px;margin:0 auto}
+.gal-main{background:#fff;border:1px solid #DCE3F2;border-radius:16px;overflow:hidden;aspect-ratio:1/1;display:grid;place-items:center;cursor:zoom-in}
+.gal-main img{width:100%;height:100%;object-fit:contain;transition:transform .25s;transform-origin:center}
+.gal-main.zoom{cursor:zoom-out}.gal-main.zoom img{transform:scale(2)}
+.gal-th{display:flex;gap:8px;overflow-x:auto;padding:2px}
+.gal-th button{flex:0 0 72px;height:72px;border:2px solid #DCE3F2;border-radius:10px;background:#fff;padding:2px;cursor:pointer}
+.gal-th button[aria-selected=true]{border-color:#1428A0}.gal-th img{width:100%;height:100%;object-fit:contain;border-radius:6px;display:block}
+"""
+GAL_JS = """<script>document.querySelectorAll('[data-gal]').forEach(function(g){var m=g.querySelector('.gal-main'),i=m.querySelector('img');g.querySelectorAll('.gal-th button').forEach(function(b){b.addEventListener('click',function(){g.querySelectorAll('.gal-th button').forEach(function(x){x.setAttribute('aria-selected','false')});b.setAttribute('aria-selected','true');i.src=b.dataset.src;i.alt=b.dataset.alt;m.classList.remove('zoom')})});m.addEventListener('click',function(e){var r=m.getBoundingClientRect();i.style.transformOrigin=((e.clientX-r.left)/r.width*100)+'% '+((e.clientY-r.top)/r.height*100)+'%';m.classList.toggle('zoom')})});</script>"""
+
+with open(OUT / "pasarela.css", "a", encoding="utf-8") as _f:
+    _f.write(GAL_CSS)
+
+
+def galeria_html(k):
+    L = GALERIA[k]
+    return ('<div class="gal" data-gal><div class="gal-main"><img decoding="async" src="' + L[0][1] + '" alt="' + L[0][2] + '" width="520" height="520"></div><div class="gal-th" role="tablist" aria-label="Imágenes del producto">'
+            + "".join(f'<button type="button" role="tab" aria-selected="{"true" if i == 0 else "false"}" data-src="{src}" data-alt="{alt}" aria-label="{alt}"><img src="{src}" alt="" loading="lazy"></button>' for i, (_, src, alt) in enumerate(L)) + "</div></div>")
+
+
 DIMS = {}
 for f in (OUT / "img").iterdir():
     try:
@@ -308,6 +343,10 @@ def pagina(f):
     t = re.sub(r'\s*<button type="button" class="btn btn-line" data-add="\w+" data-ir="1">⚡ Comprar ahora</button>', "", t)
     t = re.sub(r'\s*<a href="[^"]*" class="btn-detalle">Ver detalles[^<]*</a>', "", t)
     t = re.sub(r"\s*document\.getElementById\('lightboxWompi'\)\.setAttribute\([^\n]*?\|\| 'cin'\);", "", t)
+    if f.name in GAL_FICHAS:
+        t, nsub = re.subn(r'<img[^>]*class="hero-img"[^>]*>', lambda m: galeria_html(GAL_FICHAS[f.name]), t, count=1)
+        assert nsub == 1, f.name
+        t = t.replace("</body>", GAL_JS + "</body>", 1)
     # d) SEO: medidas y carga diferida de las imágenes (evita saltos de diseño), preconnect, ofertas completas en los datos estructurados
     primera = [True]
 
