@@ -799,7 +799,7 @@ foreach ($cat['productos'] as $id => $p) $fotos['/' . $p['slug'] . '/'] = "/%sim
 $urls = array_fill_keys($cat['paginas'], '0.9') + ['/quienes-somos.php' => '0.4', '/terminos.php' => '0.2', '/privacidad.php' => '0.2', '/garantia-y-retracto.php' => '0.3'];
 $urls['/'] = '1.0';
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
-foreach ($urls as $u => $pr) echo '  <url><loc>' . htmlspecialchars($b . $u) . '</loc><lastmod>' . $cat['fecha'] . '</lastmod><priority>' . $pr . '</priority>'
+foreach ($urls as $u => $pr) echo '  <url><loc>' . htmlspecialchars($b . $u) . '</loc><lastmod>' . $cat['fecha'] . '</lastmod><changefreq>' . ($pr >= '0.9' ? 'weekly' : 'monthly') . '</changefreq><priority>' . $pr . '</priority>'
     . (isset($fotos[$u]) ? '<image:image><image:loc>' . htmlspecialchars($b . $fotos[$u]) . '</image:loc></image:image>' : '') . "</url>\n";
 echo '</urlset>';
 """ % (PREFIJO, PREFIJO)
@@ -810,6 +810,8 @@ CAMBIOS_MARCA = {  # rutas de la tienda principal que en el sitio de la marca so
     "feed.php": [("$x($b . url_producto($p))", "$x(\"$b/{$p['slug']}/\")")],
     PREFIJO + "api/recordatorios.php": [("ltrim(url_producto($cat[$p['pid']]), '/')", "$cat[$p['pid']]['slug'] . '/'")],
 }
+import asistente
+(OUT / (PREFIJO + "asistente.js")).write_text(asistente.generar(CATALOGO, lambda p: f"/{slug(p['marca'])}/{p['slug']}/"), encoding="utf-8")
 for marca in marcas_exclusivas.MARCAS_INFO:
     s = slug(marca)
     d = SITIOS / s
@@ -837,7 +839,19 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         if (AQUI / "logos" / f"{s}-icono.png").exists():
             shutil.copy(AQUI / "logos" / f"{s}-icono.png", d / (PREFIJO + "img") / f"icono-{s}.png")
             logo["icono"] = f"/{PREFIJO}img/icono-{s}.png"
+    marcas_exclusivas.AUTORIZADO = {"Whirlpool"}
+    (d / (PREFIJO + "asistente.js")).write_text(asistente.generar([p for p in CATALOGO if p["marca"] == marca], lambda p: f"/{p['slug']}/"), encoding="utf-8")
     rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo)
+    if marca == "Whirlpool":  # etiqueta de Search Console del dominio filtrodeaguaneverawhirlpool.com (en vez de la de FiltrosNevecones)
+        for nom in ("api/lib.php", PREFIJO + "api/lib.php"):
+            fl = d / nom
+            if fl.exists():
+                fl.write_text(fl.read_text(encoding="utf-8").replace("w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4", "wwiA4fecoUuPXlpDmt9s_vePEsKFCSJUpleQGzf_5Jw"), encoding="utf-8")
+    if marca == "Whirlpool":  # dominio y correos propios de la tienda de Whirlpool
+        for nom in ("api/config.sample.php", PREFIJO + "api/config.sample.php"):
+            fc = d / nom
+            if fc.exists():
+                fc.write_text(fc.read_text(encoding="utf-8").replace("filtrosnevecones.com", "filtrodeaguaneverawhirlpool.com"), encoding="utf-8")
     (d / "filtrosnevecones-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
     # resumen en texto para asistentes de IA (ChatGPT, Gemini, Claude, Perplexity): tudominio.com/llms.txt

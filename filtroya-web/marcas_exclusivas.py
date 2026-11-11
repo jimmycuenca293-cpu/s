@@ -62,6 +62,9 @@ MARCAS_INFO = {
 }
 
 
+AUTORIZADO = set()  # marcas cuyo sitio propio dice «distribuidores autorizados» (lo confirmó el dueño)
+
+
 def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo=None):
     """Escribe la tienda de una marca en dir_, con sus páginas colgando de base ("/" en su propio dominio).
     Devuelve las rutas para el mapa del sitio y los datos de la marca para el encabezado."""
@@ -70,7 +73,7 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     s = slug(marca)
     for p in ps:
         p["slug_o"] = p["slug"]
-    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}),
+    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": True} if marca in AUTORIZADO else {}),
          "productos": [[p["nombre_largo"] + "", p["slug_o"]] for p in ps]}
     R = marcas_seo.rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO)
     _rutas = [p["slug_o"] + "/" for p in ps] + [r for r, _ in R["temas"]] + [v[2] for v in R["refs"].values()] + [v[2] for v in R["modelos"].values()]
@@ -206,6 +209,33 @@ def cab(eyebrow, titulo, texto="", h="h2"):
     return f'<div class="m-cab"><span class="eyebrow">{esc(eyebrow)}</span><{h}>{esc(titulo)}</{h}>{f"<p>{texto}</p>" if texto else ""}</div>'
 
 
+def carrusel(marca, ps, base, foto, ubic):
+    """Encabezado de imágenes que corren solas (solo en el sitio propio de la marca): una diapositiva de presentación y una por filtro."""
+    sl = ('<section class="wc-sl" aria-roledescription="diapositiva" aria-label="Bienvenida"><div class="m-wrap wc-in"><div>'
+          '<span class="wc-logo"><?= logo_marca_html($M) ?></span>'
+          f'<p class="wc-t">Filtros de agua {esc(marca)} para tu nevera</p>'
+          f'<p class="wc-d">Distribuidores autorizados · Envío gratis a toda Colombia · Pago seguro en línea</p>'
+          f'<a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a></div>'
+          f'<div class="wc-img"><span>{foto(ps[0], ps[0]["nombre_largo"] + " para nevecón " + marca, lazy=False)}</span></div></div></section>')
+    for p in ps:
+        sl += (f'<section class="wc-sl" aria-roledescription="diapositiva" aria-label="{esc(p["nombre_largo"])}"><div class="m-wrap wc-in"><div>'
+               f'<span class="wc-eye">{esc(p["ref"])}</span><p class="wc-t">{esc(p["nombre_largo"])}</p>'
+               f'<p class="wc-d">Referencias equivalentes: {esc(", ".join(p["refs"][:3]))}. Nuevo, en su empaque sellado.</p>'
+               f'<span class="wc-pr">{cop(p["precio"])}<small> envío gratis</small></span>'
+               f'<a class="m-btn" href="{base}{p["slug_o"]}/">Ver este filtro</a></div>'
+               f'<div class="wc-img"><span>{foto(p, p["nombre_largo"] + " para nevecón " + marca)}</span></div></div></section>')
+    pts = "".join(f'<button type="button" aria-label="Ir a la diapositiva {i + 1}"></button>' for i in range(len(ps) + 1))
+    js = ("(function(){var c=document.getElementById('wc-car');if(!c)return;var b=document.querySelectorAll('.wc-pts button'),n=b.length,i=0,t;"
+          "function m(){b.forEach(function(x,j){x.setAttribute('aria-current',j===i?'true':'false')})}"
+          "function ir(k){i=(k+n)%n;c.scrollTo({left:c.clientWidth*i,behavior:'smooth'});m()}"
+          "b.forEach(function(x,j){x.addEventListener('click',function(){ir(j);a()})});"
+          "c.addEventListener('scroll',function(){var k=Math.round(c.scrollLeft/c.clientWidth);if(k!==i){i=k;m()}});"
+          "function a(){clearInterval(t);if(!matchMedia('(prefers-reduced-motion: reduce)').matches)t=setInterval(function(){ir(i+1)},5000)}"
+          "c.addEventListener('pointerdown',function(){clearInterval(t)});a();m()})();")
+    return (f'<div class="wc" role="region" aria-roledescription="carrusel" aria-label="Filtros {esc(marca)} destacados"><div id="wc-car" class="wc-car">{sl}</div>'
+            f'<div class="wc-pts">{pts}</div></div><script>{js}</script>')
+
+
 # ---------- portada de la marca ----------
 def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades, R=None, datos=None):
     destacados = sorted(ps, key=lambda p: ubic(p) == "externo")[:3]
@@ -226,10 +256,12 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
     fotos = "".join(f'<span class="f f{i + 1}">{foto(p, p["nombre_largo"] + "", lazy=False)}</span>' for i, p in enumerate(destacados))
     pasos = [("Encuentra tu filtro", f"Por la referencia del filtro viejo o el modelo de tu nevecón {marca}."), ("Paga en línea", "Con tarjeta, PSE o Nequi en página segura."), ("Recíbelo en casa", "Envío gratis a toda Colombia con número de guía.")]
     senales = ["El agua o el hielo saben o huelen raro (a cloro, a tierra o a encerrado).", "El dispensador bota menos agua o sale con poca presión.", "El hielo sale turbio, pequeño o la máquina de hielo produce menos.", "Ya pasaron 6 meses desde el último cambio."]
-    return inicio(M, php_str, titulo, desc, base, ld) + f"""
+    car = carrusel(marca, ps, base, foto, ubic) if marca in AUTORIZADO else ""
+    return inicio(M, php_str, titulo, desc, base, ld) + car + f"""
 <section class="m-hero"><div class="m-wrap">
   <div>
     <span class="m-hero-logo"><?= logo_marca_html($M) ?><span><b>Filtros {esc(marca)}</b>Envío gratis a toda Colombia</span></span>
+    <?php if (!empty($M['autorizado'])) echo '<p class="m-aut">✔ Somos distribuidores autorizados de {esc(marca)}</p>'; ?>
     <h1>Filtros de agua {esc(marca)} para tu nevecón</h1>
     <p class="lead">{esc(info["intro"])}</p>
     <div class="acc"><a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a><a class="m-btn sec" href="{base}cual-es-mi-filtro/">¿Cuál es el mío?</a></div>

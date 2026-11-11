@@ -308,3 +308,22 @@ details>summary{cursor:pointer;padding:13px 0;font-weight:700}details>p{padding-
 .m-dd>a,.m-nav .m-ancho{white-space:nowrap}
 
 .m-cod{display:block;font-size:13px;line-height:1.4;color:var(--m-mut,#52606d);margin:4px 0 6px}.m-cod b{color:var(--m-ink,#111)}.m-cod small{display:block;font-size:12px;opacity:.85;margin-top:2px}
+
+/* distribuidor autorizado (solo el sitio propio de Whirlpool) */
+.m-aut{margin:10px 0 0;display:inline-block;padding:6px 12px;border-radius:4px;background:#eeb111;color:#231f20;font-weight:700;font-size:14px}
+
+/* encabezado de imágenes que corren solas (sitio propio de Whirlpool) */
+.wc{background:#231f20}.wc-car{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.wc-car::-webkit-scrollbar{display:none}
+.wc-sl{flex:0 0 100%;scroll-snap-align:start;color:#fff;background:linear-gradient(135deg,#231f20 0%,#38322a 100%)}
+.wc-in{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;min-height:360px;padding-block:28px}
+.wc-logo img{height:54px;width:auto;display:block;margin-bottom:14px;background:#fff;padding:8px 12px;border-radius:6px}
+.wc-eye{display:inline-block;color:#eeb111;font-weight:800;letter-spacing:.14em;font-size:13px;text-transform:uppercase}
+.wc-t{font-family:var(--f-titulo);font-weight:600;font-size:clamp(28px,4.4vw,50px);line-height:1.08;margin:8px 0 10px;color:#fff}
+.wc-d{color:rgba(255,255,255,.86);font-size:17px;line-height:1.5;max-width:52ch;margin:0 0 14px}
+.wc-pr{display:block;font-size:34px;font-weight:800;color:#eeb111;margin:0 0 16px}.wc-pr small{font-size:14px;color:#fff;font-weight:500}
+.wc-img{display:grid;place-items:center}.wc-img span{display:block;background:#fff;border-radius:10px;width:min(100%,300px);aspect-ratio:1;padding:14px}
+.wc-img picture,.wc-img img{display:block;width:100%;height:100%;object-fit:contain}
+.wc-pts{display:flex;justify-content:center;gap:8px;padding:10px;background:#231f20}.wc-pts button{width:10px;height:10px;border-radius:50%;border:0;background:#6b655d;cursor:pointer;padding:0}.wc-pts button[aria-current=true]{background:#eeb111;width:28px;border-radius:6px}
+@media (max-width:760px){.wc-in{grid-template-columns:1fr;min-height:0;padding-block:20px;gap:14px}.wc-img{order:-1}.wc-img span{width:190px}.wc-logo img{height:40px}.wc-d{font-size:15px}.wc-pr{font-size:28px}}
+.wc ~ .m-hero .m-hero-logo{display:none}
+@media (max-width:520px){.m-top .m-sello small{display:none}}
