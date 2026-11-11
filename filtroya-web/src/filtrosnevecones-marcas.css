@@ -327,3 +327,14 @@ details>summary{cursor:pointer;padding:13px 0;font-weight:700}details>p{padding-
 @media (max-width:760px){.wc-in{grid-template-columns:1fr;min-height:0;padding-block:20px;gap:14px}.wc-img{order:-1}.wc-img span{width:190px}.wc-logo img{height:40px}.wc-d{font-size:15px}.wc-pr{font-size:28px}}
 .wc ~ .m-hero .m-hero-logo{display:none}
 @media (max-width:520px){.m-top .m-sello small{display:none}}
+
+/* Samsung (sitio propio): colores del carrusel y de la etiqueta de distribuidor */
+body.m-samsung .m-aut{background:#fff;color:#1428a0}
+body.m-samsung .wc,body.m-samsung .wc-pts{background:#0a1460}
+body.m-samsung .wc-sl{background:radial-gradient(900px 400px at 85% -10%,#2f4fd0 0%,transparent 60%),linear-gradient(160deg,#0a1460 0%,#1428a0 100%)}
+body.m-samsung .wc-eye,body.m-samsung .wc-pr{color:#a9b8ff}
+body.m-samsung .wc .m-btn{background:#fff;color:#1428a0}
+body.m-samsung .wc-pts button{background:#5a6bc0}body.m-samsung .wc-pts button[aria-current=true]{background:#fff}
+body.m-samsung .wc-logo img{background:#fff}
+.m-pie .m-sello,.m-pie .m-logo,.m-pie-top>*{max-width:100%;box-sizing:border-box}.m-pie .m-logo-marca{max-width:100%;width:auto;object-fit:contain}
+@media (max-width:520px){.m-pie .m-sello:has(.m-logo-marca){padding:10px 12px}.m-pie .m-logo-marca{max-height:48px}}

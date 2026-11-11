@@ -62,7 +62,7 @@ MARCAS_INFO = {
 }
 
 
-AUTORIZADO = set()  # marcas cuyo sitio propio dice «distribuidores autorizados» (lo confirmó el dueño)
+AUTORIZADO = {}  # marca -> frase corta («Distribuidores autorizados de X») que dice su sitio propio (lo confirmó el dueño)
 
 
 def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo=None):
@@ -73,7 +73,7 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     s = slug(marca)
     for p in ps:
         p["slug_o"] = p["slug"]
-    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": True} if marca in AUTORIZADO else {}),
+    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": AUTORIZADO[marca]} if marca in AUTORIZADO else {}),
          "productos": [[p["nombre_largo"] + "", p["slug_o"]] for p in ps]}
     R = marcas_seo.rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO)
     _rutas = [p["slug_o"] + "/" for p in ps] + [r for r, _ in R["temas"]] + [v[2] for v in R["refs"].values()] + [v[2] for v in R["modelos"].values()]
@@ -84,7 +84,8 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     M["hub"] = R["hub"]
     if R.get("extra"):
         X = R["extra"]
-        M["compat"] = [[n, X["familia"][n][0][0]] for n in X["familia"]] + [["Kenmore", X["kenmore"][0][0]], ["Todas las marcas", X["hub"]]]
+        if X.get("familia"):
+            M["compat"] = [[n, X["familia"][n][0][0]] for n in X["familia"]] + [["Kenmore", X["kenmore"][0][0]], ["Todas las marcas", X["hub"]]]
         M["extra"] = [["Preguntas frecuentes", X["faq"]], ["Blog", X["blog"]]]
     M["externos"] = [[n, u] for n, u, _ in info.get("externos", [])]
     ctx = dict(marca=marca, info=info, ps=ps, base=base, M=M, slug=slug, norm=norm, ubic=ubic, foto=foto, php_str=php_str, ciudades=[c[0] for c in CIUDADES_CO[:30]], R=R, datos=instalacion.datos)
@@ -214,7 +215,7 @@ def carrusel(marca, ps, base, foto, ubic):
     sl = ('<section class="wc-sl" aria-roledescription="diapositiva" aria-label="Bienvenida"><div class="m-wrap wc-in"><div>'
           '<span class="wc-logo"><?= logo_marca_html($M) ?></span>'
           f'<p class="wc-t">Filtros de agua {esc(marca)} para tu nevera</p>'
-          f'<p class="wc-d">Distribuidores autorizados · Envío gratis a toda Colombia · Pago seguro en línea</p>'
+          f'<p class="wc-d">{esc(AUTORIZADO[marca])} · Envío gratis a toda Colombia · Pago seguro en línea</p>'
           f'<a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a></div>'
           f'<div class="wc-img"><span>{foto(ps[0], ps[0]["nombre_largo"] + " para nevecón " + marca, lazy=False)}</span></div></div></section>')
     for p in ps:
@@ -261,7 +262,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
 <section class="m-hero"><div class="m-wrap">
   <div>
     <span class="m-hero-logo"><?= logo_marca_html($M) ?><span><b>Filtros {esc(marca)}</b>Envío gratis a toda Colombia</span></span>
-    <?php if (!empty($M['autorizado'])) echo '<p class="m-aut">✔ Somos distribuidores autorizados de {esc(marca)}</p>'; ?>
+    <?php if (!empty($M['autorizado'])) echo '<p class="m-aut">✔ ' . h($M['autorizado']) . '</p>'; ?>
     <h1>Filtros de agua {esc(marca)} para tu nevecón</h1>
     <p class="lead">{esc(info["intro"])}</p>
     <div class="acc"><a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a><a class="m-btn sec" href="{base}cual-es-mi-filtro/">¿Cuál es el mío?</a></div>

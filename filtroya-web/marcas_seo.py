@@ -16,6 +16,7 @@ import datetime
 import html
 
 import marcas_contenido
+import marcas_contenido_samsung
 
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
@@ -47,7 +48,7 @@ def rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO):
             modelos.setdefault(norm(m), (m, p, f"{base}filtro-nevera-{slug(m)}/"))
     ciudades = {c[0]: (c, f"{base}filtro-nevera-{s}-{slug(c[0])}/") for c in CIUDADES_CO[:CIUDADES_SEO]}
     hub = f"{base}filtros-{s}-por-ciudad/"
-    extra = marcas_contenido.rutas(base, slug) if marca == "Whirlpool" else None
+    extra = marcas_contenido.rutas(base, slug) if marca == "Whirlpool" else (marcas_contenido_samsung.rutas(base, slug) if marca == "Samsung" and base == "/" else None)
     return {"temas": temas, "refs": refs, "modelos": modelos, "ciudades": ciudades, "hub": hub, "extra": extra}
 
 
@@ -271,7 +272,7 @@ def generar(R, escribir, dir_, ctx, h):
            miga_nombre="Envíos por ciudad")
 
     if R.get("extra"):
-        marcas_contenido.generar(pagina, ctx, h, R)
+        (marcas_contenido_samsung if marca == "Samsung" else marcas_contenido).generar(pagina, ctx, h, R)
     return hechas
 
 

@@ -19,7 +19,7 @@ function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, stri
         . '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="' . h($M['fuentes']) . '">'
         . ($legado ? '<link rel="stylesheet" href="/estilo.css">' : '') . '<link rel="stylesheet" href="/filtrosnevecones-marcas.css"><script src="/carrito.js" defer></script><script src="/filtrosnevecones-asistente.js" defer></script>'
         . verificacion_html() . analytics_html() . $extra . '</head><body class="m-' . h($M['clase']) . ($legado ? ' m-legado' : '') . '">' . gtm_body_html()
-        . '<div class="m-anuncio"><span>' . (!empty($M['autorizado']) ? '✔ Distribuidores autorizados ' . h($M['nombre']) : '✔ Filtros nuevos para neveras ' . h($M['nombre'])) . '</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
+        . '<div class="m-anuncio"><span>' . (!empty($M['autorizado']) ? '✔ ' . h($M['autorizado']) : '✔ Filtros nuevos para neveras ' . h($M['nombre'])) . '</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
         . '<header class="m-top"><div class="m-wrap">'
         . '<a class="m-logo" href="' . h($b) . '" aria-label="Filtros ' . h($M['nombre']) . '"><span class="m-sello">' . logo_marca_html($M) . '<small>Filtros para nevecón</small></span></a>'
         . menu_marca($M)
@@ -67,7 +67,7 @@ function pie_marca(array $M): void
         . '<div><a class="m-logo" href="' . h($b) . '"><span class="m-sello">' . logo_marca_html($M) . '<small>Filtros para nevecón</small></span></a>'
         . '<p>Filtros de agua para nevecón ' . h($M['nombre']) . ' en Colombia, con envío gratis a todo el país y pago seguro en línea.</p>'
         . ($tel ? '<a class="m-pie-wa" href="https://wa.me/57' . substr($tel, -10) . '" target="_blank" rel="noopener">💬 WhatsApp ' . h($n['telefono']) . '</a>' : '')
-        . (!empty($M['autorizado']) ? '<span class="m-pie-hora">Distribuidores autorizados de ' . h($M['nombre']) . '</span>' : '') . '<span class="m-pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
+        . (!empty($M['autorizado']) ? '<span class="m-pie-hora">' . h($M['autorizado']) . '</span>' : '') . '<span class="m-pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
         . '<nav><b>Filtros ' . h($M['nombre']) . '</b>';
     foreach ($M['productos'] as $p) $h .= '<a href="' . h($b . $p[1]) . '/">' . h($p[0]) . '</a>';
     $h .= '</nav><nav><b>Guías</b>';

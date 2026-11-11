@@ -812,6 +812,12 @@ CAMBIOS_MARCA = {  # rutas de la tienda principal que en el sitio de la marca so
 }
 import asistente
 (OUT / (PREFIJO + "asistente.js")).write_text(asistente.generar(CATALOGO, lambda p: f"/{slug(p['marca'])}/{p['slug']}/"), encoding="utf-8")
+SITIOS_PROPIOS = {  # marcas con tienda en su propio dominio, y lo que cambia en cada una
+    "Whirlpool": dict(frase="Distribuidores autorizados de Whirlpool", dist=("distribuidores autorizados de Whirlpool", "distribuidor autorizado de Whirlpool"),
+                      dominio="https://filtrodeaguaneverawhirlpool.com", token="wwiA4fecoUuPXlpDmt9s_vePEsKFCSJUpleQGzf_5Jw", nombre="Filtros Whirlpool", wa="3107147299", tel="310 714 7299"),
+    "Samsung": dict(frase="Distribuidores de Samsung a nivel nacional", dist=("distribuidores de Samsung a nivel nacional", "distribuidor de Samsung a nivel nacional"),
+                    dominio="https://filtrodeguaneveconsamsung.com", token="FCeajvtvmd9uwzYiiGz4rKJKOs0nHb66j3SLXJsV7lI", nombre="Filtros Samsung", wa="3054796329", tel="305 479 6329"),
+}
 for marca in marcas_exclusivas.MARCAS_INFO:
     s = slug(marca)
     d = SITIOS / s
@@ -839,19 +845,26 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         if (AQUI / "logos" / f"{s}-icono.png").exists():
             shutil.copy(AQUI / "logos" / f"{s}-icono.png", d / (PREFIJO + "img") / f"icono-{s}.png")
             logo["icono"] = f"/{PREFIJO}img/icono-{s}.png"
-    marcas_exclusivas.AUTORIZADO = {"Whirlpool"}
+    SP = SITIOS_PROPIOS.get(marca)
+    marcas_exclusivas.AUTORIZADO = {marca: SP["frase"]} if SP else {}
     (d / (PREFIJO + "asistente.js")).write_text(asistente.generar([p for p in CATALOGO if p["marca"] == marca], lambda p: f"/{p['slug']}/"), encoding="utf-8")
     rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo)
-    if marca == "Whirlpool":  # etiqueta de Search Console del dominio filtrodeaguaneverawhirlpool.com (en vez de la de FiltrosNevecones)
+    if SP:  # etiqueta de Search Console, dominio, nombre, WhatsApp y correo propios del dominio de esta marca
         for nom in ("api/lib.php", PREFIJO + "api/lib.php"):
             fl = d / nom
             if fl.exists():
-                fl.write_text(fl.read_text(encoding="utf-8").replace("w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4", "wwiA4fecoUuPXlpDmt9s_vePEsKFCSJUpleQGzf_5Jw"), encoding="utf-8")
-    if marca == "Whirlpool":  # dominio y correos propios de la tienda de Whirlpool
+                fl.write_text(fl.read_text(encoding="utf-8").replace("w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4", SP["token"]), encoding="utf-8")
         for nom in ("api/config.sample.php", PREFIJO + "api/config.sample.php"):
             fc = d / nom
             if fc.exists():
-                fc.write_text(fc.read_text(encoding="utf-8").replace("'dominio' => 'https://filtrosnevecones.com'", "'dominio' => 'https://filtrodeaguaneverawhirlpool.com'").replace("w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4", "wwiA4fecoUuPXlpDmt9s_vePEsKFCSJUpleQGzf_5Jw").replace("'nombre'    => 'FiltrosNevecones'", "'nombre'    => 'Filtros Whirlpool'").replace("'gtm' => 'GTM-5WSNHV66'", "'gtm' => ''"), encoding="utf-8")
+                t_ = fc.read_text(encoding="utf-8")
+                t_ = (t_.replace("'dominio' => 'https://filtrosnevecones.com'", f"'dominio' => '{SP['dominio']}'")
+                      .replace("w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4", SP["token"])
+                      .replace("'nombre'    => 'FiltrosNevecones'", f"'nombre'    => '{SP['nombre']}'")
+                      .replace("'gtm' => 'GTM-5WSNHV66'", "'gtm' => ''")
+                      .replace("'whatsapp' => '3107147299'", f"'whatsapp' => '{SP['wa']}'")
+                      .replace("'telefono'  => '310 714 7299'", f"'telefono'  => '{SP['tel']}'"))
+                fc.write_text(t_, encoding="utf-8")
     (d / "filtrosnevecones-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
     # resumen en texto para asistentes de IA (ChatGPT, Gemini, Claude, Perplexity): tudominio.com/llms.txt
@@ -876,6 +889,11 @@ for marca in marcas_exclusivas.MARCAS_INFO:
                  "\n## Preguntas y respuestas\n" + "".join(f"- **{q}** {a_}\n" for _, l in marcas_contenido.preguntas_ia(ps_m, slug) for q, a_ in l)
                  + f"\n## Blog\n- [Blog de filtros Whirlpool](__BASE__{X['blog']})\n" + "".join(f"- [{t}](__BASE__/blog/{sl}/): {d_}\n" for sl, t, d_, _, _, _ in marcas_contenido.articulos(ps_m))
                  + f"- [Preguntas frecuentes](__BASE__{X['faq']})\n")
+    if marca == "Samsung":
+        import marcas_contenido_samsung
+        llms += ("\n## Preguntas y respuestas\n" + "".join(f"- **{q}** {a_}\n" for _, l in marcas_contenido_samsung.preguntas_ia(ps_m, slug) for q, a_ in l[:6])
+                 + "\n## Blog\n- [Blog de filtros Samsung](__BASE__/blog/)\n" + "".join(f"- [{t}](__BASE__/blog/{sl}/): {d_}\n" for sl, t, d_, _, _, _ in marcas_contenido_samsung.articulos(ps_m))
+                 + "- [Preguntas frecuentes](__BASE__/preguntas-frecuentes/)\n")
     (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + llms + "TXT);\n", encoding="utf-8")
     cat_m = dict(cat_php, paginas=rutas, guias=[], compat=[], blog=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
                  productos={k: v for k, v in cat_php["productos"].items() if k in ids})
@@ -917,15 +935,16 @@ for marca in marcas_exclusivas.MARCAS_INFO:
             txt = f.read_text(encoding="utf-8")
             if PREFIJO in txt or "Filtros Nevecones Colombia" in txt:
                 f.write_text(txt.replace(PREFIJO, "").replace("Filtros Nevecones Colombia", M["tienda"]), encoding="utf-8")
-    if marca in marcas_exclusivas.AUTORIZADO:  # en el sitio del distribuidor autorizado no se dice «comercio independiente»
+    if SP:  # en el sitio del distribuidor no se dice «comercio independiente»
+        dp, ds = SP["dist"]
         for f in d.rglob("*"):
             if f.is_file() and f.suffix in (".php", ".txt", ".html") and "data" not in f.relative_to(d).parts[:1]:
                 t0 = f.read_text(encoding="utf-8")
-                t1 = (t0.replace("Somos un comercio independiente y enviamos", f"Somos distribuidores autorizados de {marca} y enviamos")
-                        .replace("nosotros, un comercio independiente de filtros para nevera", f"nosotros, distribuidores autorizados de {marca}: filtros para nevera")
-                        .replace("nosotros, un comercio independiente: es el filtro", f"nosotros, distribuidores autorizados de {marca}: es el filtro")
-                        .replace("es un comercio independiente que vende filtros", f"es distribuidor autorizado de {marca} y vende filtros")
-                        .replace("Somos un comercio independiente.", f"Somos distribuidores autorizados de {marca}."))
+                t1 = (t0.replace("Somos un comercio independiente y enviamos", f"Somos {dp} y enviamos")
+                        .replace("nosotros, un comercio independiente de filtros para nevera", f"nosotros, {dp}: filtros para nevera")
+                        .replace("nosotros, un comercio independiente: es el filtro", f"nosotros, {dp}: es el filtro")
+                        .replace("es un comercio independiente que vende filtros", f"es {ds} y vende filtros")
+                        .replace("Somos un comercio independiente.", f"Somos {dp}."))
                 if t1 != t0:
                     f.write_text(t1, encoding="utf-8")
     print(f"Sitio {marca}: sitios/{s}/ con {len(rutas)} páginas")
