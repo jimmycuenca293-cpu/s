@@ -111,6 +111,7 @@ CSS = """
 .fx-pie-pago{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-block:16px;border-top:1px solid rgba(255,255,255,.14);font-size:13px}.fx-pie-base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:16px;border-top:1px solid rgba(255,255,255,.14);font-size:12px}
 @media (max-width:820px){.fx-pie-top{grid-template-columns:1fr 1fr}.fx-pie-m{grid-column:1/-1}}
 main.wrap:empty{display:none}
+.fx-cod{display:block;font-size:12px;line-height:1.35;color:var(--fx-mut);margin-top:4px}.fx-cod b{color:var(--fx-ink)}
 @media (max-width:900px){.fx-head{position:static}.fx-menu,.fx-todas{display:none}.fx-head-in{padding-block:8px}.fx-logo{margin-right:auto}}
 .fx-todas{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important;border-radius:0!important}.fx-todas summary::after{content:none!important}.fx-menu a{padding:10px 10px}
 """
@@ -126,7 +127,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, refs, modelos, guias, ciuda
                 f'<a class="fx-ph" href="{url(p)}" tabindex="-1" aria-hidden="true">{foto(p, p["nombre_largo"] + " para nevecón " + p["marca"], mini=True)}</a>'
                 f'<div class="fx-b"><span class="fx-m">{esc(p["marca"])} · {"Externo" if ubic(p) == "externo" else "Interno"}</span>'
                 f'<h3><a href="{url(p)}">{esc(p["nombre_largo"])}</a></h3><span class="fx-ref">Ref. {esc(p["ref"])}</span>'
-                f'<div class="fx-pr"><b>{cop(p["precio"])}</b><small>Envío gratis</small></div>'
+                f'<div class="fx-pr"><b>{cop(p["precio"])}</b><small>Envío gratis</small></div><span class="fx-cod">Contra entrega en efectivo a la transportadora: <b>{cop(p["precio"] + 5000)}</b></span>'
                 f'<button class="fx-add" type="button" data-add="{p["id"]}">Agregar al carrito</button></div></article>')
 
     def fila(idf, cards):

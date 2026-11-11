@@ -306,3 +306,5 @@ body.m-ge .m-pie .m-logo-marca{height:76px}
 details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:0 16px}details+details{margin-top:8px}
 details>summary{cursor:pointer;padding:13px 0;font-weight:700}details>p{padding-bottom:12px;color:var(--muted)}
 .m-dd>a,.m-nav .m-ancho{white-space:nowrap}
+
+.m-cod{display:block;font-size:13px;line-height:1.4;color:var(--m-mut,#52606d);margin:4px 0 6px}.m-cod b{color:var(--m-ink,#111)}.m-cod small{display:block;font-size:12px;opacity:.85;margin-top:2px}

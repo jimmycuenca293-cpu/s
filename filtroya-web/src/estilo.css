@@ -213,3 +213,5 @@ header.top{background:linear-gradient(120deg,#0b1f6b,#1236a8 60%,#1a5cff)}
 .ok-req{color:var(--ok);font-weight:700}
 .err:not(:empty){background:#fff4f2;border:1px solid #d62d20;border-radius:10px;padding:10px 12px;color:#a8261b}
 
+
+.card .cod{display:block;font-size:12px;color:var(--muted);margin-top:2px}

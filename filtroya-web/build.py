@@ -80,12 +80,23 @@ CIUDADES_CO = node_eval(js_valor("CIUDADES_CO"))  # [ciudad, departamento, días
 ciudades = node_eval(js_valor("CALI_METRO")) + [c[0] for c in CIUDADES_CO] + ["Otro municipio"]
 MARCAS = [m[0] for m in node_eval(js_valor("MARCAS"))]
 ubic = lambda p: "externo" if "-ex-" in p["id"] else "interno"
+# Links de pago de Wompi (los mismos de la otra tienda): cada uno cobra exactamente el precio nuevo de su filtro
+LINKS_PAGO = {
+    "sam-cin-o": "https://checkout.wompi.co/l/YP5Q7U", "sam-qin-o": "https://checkout.wompi.co/l/0VGp7g", "sam-cu1-o": "https://checkout.wompi.co/l/hoWZ80", "sam-ex-o": "https://checkout.wompi.co/l/Zo5OR6",
+    "lg-1000-o": "https://checkout.wompi.co/l/GPUtHU", "lg-700-o": "https://checkout.wompi.co/l/Msed4E", "lg-800-o": "https://checkout.wompi.co/l/S725LO", "lg-500-o": "https://checkout.wompi.co/l/ZQnZMW",
+    "lg-600-o": "https://checkout.wompi.co/l/EyUH4c", "lg-ex-o": "https://checkout.wompi.co/l/LxWpzs",
+    "wp-1-o": "https://checkout.wompi.co/l/vKatS1", "wp-2-o": "https://checkout.wompi.co/l/PYRwaw", "wp-3-o": "https://checkout.wompi.co/l/MnGDzG", "wp-4-o": "https://checkout.wompi.co/l/20zbUO",
+    "wp-5-o": "https://checkout.wompi.co/l/aUg7Ty", "wp-ex-o": "https://checkout.wompi.co/l/qT7mmV",
+    "ge-mwf-o": "https://checkout.wompi.co/l/KQpMiF", "ge-xwf-o": "https://checkout.wompi.co/l/25FRwq",
+}
 AUMENTO = 15000  # pedido del dueño: cada filtro sube $15.000 (el pack de 2 sube 2 x $15.000 menos el 10 %)
 for p in CATALOGO:
     p["precio_antes"] = p["precio"]
     if p.get("pack"):
         p["pack"] += round(AUMENTO * 2 * 0.9 / 100) * 100
     p["precio"] += AUMENTO
+    if p["id"] in LINKS_PAGO:
+        p["linkPago"], p["linkMonto"] = LINKS_PAGO[p["id"]], p["precio"]
     p["nombre_largo"] = p["nombre"] if norm(p["ref"]) in norm(p["nombre"]) else f'{p["nombre"]} {p["ref"]}'
     p["slug"] = slug(p["nombre_largo"])
     if not p.get("pack"):
@@ -418,7 +429,7 @@ if "<?" in app:
 # ---------- páginas de cada filtro ----------
 def tarjeta(p):
     return (f'<a class="card" href="/filtro/{p["slug"]}/"><span class="im">{foto(p, p["nombre_largo"], mini=True)}</span>'
-            f'<b>{esc(p["nombre_largo"])}</b><span class="p">{cop(p["precio"])}</span><span class="m">Envío gratis</span></a>')
+            f'<b>{esc(p["nombre_largo"])}</b><span class="p">{cop(p["precio"])}</span><span class="m">Envío gratis</span><span class="cod">Contra entrega en efectivo: {cop(p["precio"] + 5000)}</span></a>')
 
 
 def php_str(s):

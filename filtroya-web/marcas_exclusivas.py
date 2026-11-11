@@ -125,11 +125,20 @@ def faq(preguntas):
     return h, ld
 
 
+COD_RECARGO = 5000  # el mismo recargo por producto de config.php ('contraentrega' => recargo)
+
+
+def cod_linea(p, largo=False):
+    """Opción de pago contra entrega: en efectivo a la transportadora, con su precio."""
+    t = f'Pago contra entrega en efectivo a la transportadora: <b>{cop(p["precio"] + COD_RECARGO)}</b>'
+    return f'<span class="m-cod">{t}' + (f'<small>Pagas al recibir tu pedido. Incluye {cop(COD_RECARGO)} de recargo por contra entrega.</small>' if largo else '') + '</span>'
+
+
 def tarjeta(p, base, foto, ubic):
     return (f'<article class="m-card"><span class="m-badge">✔ Nuevo</span><span class="m-tipo">{"Externo" if ubic(p) == "externo" else "Interno"}</span>'
             f'<span class="im">{foto(p, p["nombre_largo"] + "", mini=True)}</span>'
             f'<div class="tx"><h3><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></h3><span class="ref">Referencia {esc(p["ref"])}</span>'
-            f'<span class="pr">{cop(p["precio"])}<small>Envío gratis</small></span>'
+            f'<span class="pr">{cop(p["precio"])}<small>Envío gratis</small></span>{cod_linea(p)}'
             f'<button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button></div></article>')
 
 
@@ -138,7 +147,7 @@ def caja(p, base, foto):
     ahorro = p["precio"] * 2 - p["pack"]
     return (f'<div class="m-caja-prod"><a class="foto" href="{base}{p["slug_o"]}/"><span class="m-badge">✔ Nuevo</span>{foto(p, p["nombre_largo"] + "", mini=True)}</a>'
             f'<div class="tx"><h2><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></h2><span class="m-mut">Referencia {esc(p["ref"])}</span>'
-            f'<span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>'
+            f'<span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>{cod_linea(p)}'
             f'<div class="compra"><button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>'
             f'</div></div>')
 
@@ -298,6 +307,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
     <span class="sub">Filtro de agua {esc(marca)} · {"Externo" if externo else "Interno"} · Referencia <b>{esc(p["ref"])}</b></span>
     <?php if ($R['n']) echo '<a href="#opiniones" style="text-decoration:none;color:inherit">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span class="m-mut">(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
     <span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>
+    {cod_linea(p, True)}
     <div class="m-aviso"><span style="font-size:22px">✔</span><span><b>Filtro {esc(marca)} · {esc(p["ref"])}</b>Filtro nuevo, en su caja sellada con la referencia {esc(p["ref"])} impresa. ¿Quieres verlo? Te mandamos fotos reales por WhatsApp.</span></div>
     <div class="compra"><button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>
     <ul class="m-ok"><li><b>Envío gratis</b>: llega en 2 a 3 días hábiles a las principales ciudades.</li><li><b>Fácil de instalar</b>: {"10 a 15 minutos en la manguera del agua" if externo else "2 minutos, sin herramientas"}. Paso a paso abajo.</li><li><b>Pago seguro</b> en línea; el comprobante llega a tu correo.</li></ul>
