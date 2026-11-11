@@ -154,6 +154,74 @@ def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
       "Casi siempre es un filtro mal encajado, de otra referencia o con el empaque pellizcado.",
       "<ol><li>Cierra el agua y saca el filtro.</li><li>Revisa que sea la referencia correcta.</li><li>Mira que el aro de caucho esté bien.</li><li>Vuelve a ponerlo hasta el fondo y gíralo hasta que quede firme.</li><li>En el externo, revisa los racores y la flecha.</li></ol>",
       [("¿Un filtro que gotea daña el piso?", "Puede hacerlo; cierra el agua mientras lo revisas.")])
+    L = lambda p: f'<a href="{base}{p["slug"]}/">{p["nombre_largo"]}</a>'
+    a("nevera-whirlpool-no-saca-agua-del-dispensador-causas-y-soluciones", "Nevera Whirlpool que no saca agua del dispensador: causas y soluciones",
+      "Qué revisar cuando el dispensador de tu nevera Whirlpool, Maytag o KitchenAid no saca agua o la saca muy despacio, desde lo más fácil hasta lo que necesita técnico.",
+      "Casi siempre es el filtro (tapado o mal puesto), la llave de paso cerrada o aire en la línea. Se revisa en este orden y sin herramientas.",
+      "<p>Si el dispensador no sale agua o sale con poca presión, no siempre es una falla grande. Revisa en este orden:</p>"
+      "<ol><li><b>El filtro.</b> Un filtro con más de 6 meses se tapa con sedimentos y deja pasar poca agua. Si es nuevo, mira que esté girado hasta el fondo y que hayas quitado la tapa protectora.</li>"
+      "<li><b>La referencia.</b> Un filtro de otro número no encaja bien y puede cortar el paso del agua. Confirma que sea el mismo número del filtro viejo.</li>"
+      "<li><b>El aire en la línea.</b> Después de cambiar el filtro saca unos 6 litros por el dispensador, por tandas, hasta que salga el agua pareja.</li>"
+      "<li><b>La llave de paso.</b> La manguera de la nevera tiene una llave detrás o debajo: debe estar abierta y la manguera sin dobleces.</li>"
+      "<li><b>El congelamiento.</b> Si la línea de agua se congeló, el agua no sale. Un técnico puede revisar la temperatura del congelador.</li></ol>"
+      f"<p>Si ya hiciste todo y sigue igual, llama a un técnico. Si el problema empezó justo después del cambio, revisa de nuevo cómo quedó instalado: <a href=\"/cambio-e-instalacion/\">guía de instalación</a>. Para reemplazar un filtro viejo, mira el {L(e1)} o el {L(e2)}, según el que use tu nevera.</p>",
+      [("¿Por qué no sale agua después de cambiar el filtro?", "Casi siempre por la tapa protectora sin quitar, el filtro a medio girar o aire en la línea."),
+       ("¿Cuánta agua debo sacar para purgar?", "Unos 6 litros, por tandas, hasta que el agua salga pareja y sin burbujas.")])
+    a("nevera-whirlpool-hielo-pequeno-o-sin-hielo-que-revisar", "Nevera Whirlpool con hielo pequeño, turbio o sin hielo: qué revisar",
+      "Por qué la máquina de hielo de tu nevera Whirlpool, Maytag o KitchenAid saca poco hielo, hielo chico o turbio, y cómo corregirlo.",
+      "El hielo chico o poco casi siempre es falta de agua por un filtro tapado; el turbio, un filtro vencido o aire.",
+      "<p>La máquina de hielo recibe el mismo agua que el dispensador, y pasa por el filtro. Por eso muchos problemas de hielo empiezan ahí.</p>"
+      "<ul class=\"m-ok\"><li><b>Hielo pequeño o en poca cantidad:</b> llega poca agua. Cambia el filtro si ya pasaron 6 meses.</li><li><b>Hielo turbio o con sabor:</b> filtro vencido o recién puesto sin purgar.</li><li><b>Hielo pegado en bloques:</b> revisa la temperatura del congelador y que la puerta cierre bien.</li><li><b>No hace hielo:</b> mira que la máquina esté encendida (el brazo o el interruptor abajo) y que la llave de paso del agua esté abierta.</li></ul>"
+      "<p>Después de cambiar el filtro, las primeras tandas de hielo pueden salir con aire; descártalas. Mira también <a href=\"/blog/como-cuidar-la-maquina-de-hielo-de-tu-nevera/\">cómo cuidar la máquina de hielo</a>.</p>",
+      [("¿Por qué el hielo sale más pequeño que antes?", "Por falta de agua: un filtro tapado deja pasar menos caudal."),
+       ("¿Cuándo tiro el primer hielo con filtro nuevo?", "Las primeras tandas, hasta que el agua salga limpia y pareja.")])
+    a("filtro-nevera-jenn-air-cual-es-y-como-cambiarlo", "Filtro para nevera Jenn-Air: cuál es y cómo cambiarlo",
+      "Qué filtro EveryDrop usan las neveras Jenn-Air (1, 3, 4 y 5), cómo saber el tuyo y cada cuánto cambiarlo.",
+      "Las neveras Jenn-Air usan filtros EveryDrop 1, 3, 4 o 5 según el modelo. Mira la referencia del filtro viejo o la etiqueta del modelo.",
+      f"<p>Jenn-Air hace parte de la familia Whirlpool y usa los mismos filtros <b>EveryDrop</b>. Según el modelo, el tuyo es el {L(e1)}, el {L(e3)}, el {L(e4)} o el {L(e5)}.</p>"
+      "<h2>Cómo saber cuál es</h2><p>Saca el filtro viejo y busca la referencia (EDR1RXD1, EDR3RXD1, EDR4RXD1 o EDR5RXD1) o el número grande de la caja. Si no la tienes, la etiqueta del modelo está dentro del refrigerador, en una pared lateral.</p>"
+      "<h2>Cada cuánto cambiarlo</h2><p>Cada 6 meses, o antes si el agua sabe distinto o sale menos. Mira la <a href=\"/cambio-e-instalacion/\">guía de instalación</a> y apaga la luz del filtro después del cambio.</p>",
+      [("¿El EveryDrop 2 sirve en una Jenn-Air?", "No: para Jenn-Air sirven los EveryDrop 1, 3, 4 y 5."),
+       ("¿Se instala sin técnico?", "Sí, en un par de minutos y sin herramientas.")])
+    a("filtro-nevera-amana-cual-es-y-como-cambiarlo", "Filtro para nevera Amana: cuál es y cómo cambiarlo",
+      "Qué filtro EveryDrop usan las neveras Amana (del 1 al 5), cómo reconocer el tuyo y cuándo cambiarlo.",
+      "Las neveras Amana usan EveryDrop del 1 al 5 según el modelo. La referencia del filtro viejo te dice cuál.",
+      f"<p>Amana también usa la línea <b>EveryDrop</b>. Puede ser el {L(e1)}, {L(e2)}, {L(e3)}, {L(e4)} o {L(e5)}, según el modelo de la nevera.</p>"
+      "<p>El camino más seguro es mirar la referencia impresa en el filtro viejo. Si no la tienes, abre el refrigerador y busca la etiqueta con el modelo; con eso y la forma del filtro se confirma. Cámbialo cada 6 meses y reinicia la luz del filtro.</p>"
+      "<p>Si dudas entre dos, mándanos la foto del filtro viejo por WhatsApp y te confirmamos antes de comprar.</p>",
+      [("¿Cuál EveryDrop usa mi nevera Amana?", "Depende del modelo: puede ser del 1 al 5. Mira la referencia del filtro viejo."),
+       ("¿Los filtros EveryDrop se pueden mezclar?", "No. Cada número tiene forma y conexión propias.")])
+    a("cuantos-litros-filtra-un-filtro-everydrop-y-cuando-vence", "Cuántos litros filtra un filtro EveryDrop y cuándo vence",
+      "Cuánta agua filtra un EveryDrop antes de cambiarlo, por qué se cambia cada 6 meses y qué pasa si lo dejas más tiempo.",
+      "El fabricante lo calcula para unos 6 meses de uso normal (alrededor de 750 litros). Si lo dejas más tiempo, el carbón se satura.",
+      "<p>Los filtros <b>EveryDrop</b> están pensados para cambiarse <b>cada 6 meses</b>, o antes si baja el caudal. El fabricante da una capacidad de alrededor de 200 galones, unos 750 litros, en uso normal.</p>"
+      "<h2>¿Y si lo dejo más tiempo?</h2><p>El carbón activado se satura: el agua puede volver a saber a cloro o a plástico, y el filtro se tapa y deja pasar menos agua. El filtro no se vence de un día para otro, pero rinde menos con el tiempo.</p>"
+      "<h2>¿Y si casi no uso la nevera?</h2><p>Aunque gastes poca agua, cámbialo cada 6 meses: el filtro también envejece por el tiempo.</p>",
+      [("¿Cuántos litros filtra un EveryDrop?", "Unos 750 litros (200 galones) o 6 meses, lo que ocurra primero."),
+       ("¿Se puede alargar el cambio a un año?", "No se recomienda: el filtro pierde efecto y puede tapar el flujo.")])
+    a("como-comprar-un-filtro-de-nevera-por-internet-sin-equivocarte", "Cómo comprar un filtro de nevera por internet sin equivocarte",
+      "Lista de 5 pasos para comprar el filtro correcto de tu nevera Whirlpool por internet: referencia, modelo, empaque, pago y envío.",
+      "Confirma la referencia del filtro viejo o el modelo de la nevera, compra el mismo número y revisa que el vendedor te dé envío, pago seguro y retracto.",
+      "<ol><li><b>Anota la referencia del filtro viejo</b> (EDR1RXD1, EDR2RXD1…) o el modelo de la nevera.</li><li><b>Compra el mismo número.</b> Un EveryDrop de otro número no encaja.</li><li><b>Verifica que el filtro sea nuevo</b> y venga en su empaque sellado.</li><li><b>Paga en un sitio seguro</b> (tarjeta, PSE o Nequi) o contra entrega.</li><li><b>Guarda la guía de envío</b> y el recibo; tienes 5 días hábiles para retractarte si te equivocaste, sin instalar.</li></ol>"
+      f"<p>Puedes ver todos los filtros de la tienda con sus precios: {L(e1)}, {L(e2)}, {L(e3)}, {L(e4)}, {L(e5)} y el {L(ex)}. Si dudas, usa el asistente de la página: escribes el modelo y te dice cuál es.</p>",
+      [("¿Cómo sé si el filtro es el correcto?", "Compara la referencia con la del filtro viejo o con el modelo de la nevera."),
+       ("¿Puedo devolverlo si me equivoco?", "Sí, dentro de 5 días hábiles, sin instalar y en su empaque.")])
+    a("como-instalar-el-filtro-externo-4378411rb-en-la-manguera", "Cómo instalar el filtro externo 4378411RB en la manguera de agua",
+      "Paso a paso para instalar el filtro externo 4378411RB en la manguera de tu nevera con dispensador, sin herramientas y en 10 a 15 minutos.",
+      "Cierra la llave de agua, corta la manguera, conecta el filtro con las flechas hacia el sentido del agua y purga antes de usarlo.",
+      "<p>El filtro externo <span class=\"ref\">4378411RB</span> se conecta a la manguera que lleva el agua a la nevera. Sirve en neveras con dispensador de varias marcas.</p>"
+      "<ol><li>Cierra la llave de paso del agua y desconecta la nevera de la corriente.</li><li>Ubica la manguera de agua entre la llave y la nevera.</li><li>Conecta el filtro respetando la <b>flecha</b>: debe apuntar en el sentido en que viaja el agua.</li><li>Ajusta los racores sin forzarlos y revisa que no haya dobleces.</li><li>Abre la llave y mira que no gotee. Conecta la nevera.</li><li>Saca unos 6 litros por el dispensador para purgar el aire.</li></ol>"
+      f"<p>Detalles del producto y precio: {L(ex)}. Si no quieres cortar la manguera, un técnico lo instala en pocos minutos.</p>",
+      [("¿Hay que cortar la manguera?", "Según el montaje sí, para intercalar el filtro; hazlo con la llave cerrada."),
+       ("¿Se puede usar junto con el filtro interno?", "Sí, el externo filtra antes y no reemplaza al interno.")])
+    a("filtro-original-o-generico-para-nevera-whirlpool-que-tener-en-cuenta", "Filtro de nevera Whirlpool: qué tener en cuenta al comprar",
+      "Cómo comprar un filtro de nevera Whirlpool con confianza: referencia exacta, empaque sellado, vendedor claro y garantía de retracto.",
+      "Más que el nombre, importa que la referencia sea exacta, el filtro nuevo y sellado, y que el vendedor te dé datos claros y retracto.",
+      "<p>Al buscar un filtro para tu nevera Whirlpool verás muchas opciones. Estas son las señales que debes mirar:</p>"
+      "<ul class=\"m-ok\"><li><b>Referencia exacta:</b> EDR1RXD1 a EDR5RXD1 para EveryDrop, o la que diga tu filtro viejo.</li><li><b>Empaque sellado</b> y producto nuevo.</li><li><b>Vendedor con datos claros:</b> nombre, correo, WhatsApp y términos visibles.</li><li><b>Pago seguro</b> y recibo de compra.</li><li><b>Retracto y garantía</b> explicados por escrito.</li></ul>"
+      "<p>Nosotros vendemos filtros nuevos en su empaque sellado, con envío gratis a toda Colombia y 5 días hábiles de retracto. Si no estás seguro de tu referencia, escríbenos y la confirmamos contigo.</p>",
+      [("¿Qué debo mirar antes de comprar?", "La referencia, que sea nuevo y sellado, y que el vendedor dé recibo y retracto."),
+       ("¿Cómo confirmo mi referencia?", "Con el filtro viejo o el modelo de la nevera; si dudas, mándanos la foto.")])
     return A
 
 
@@ -202,6 +270,19 @@ def preguntas_ia(ps, slug):
         ("¿Quién vende estos filtros?", "Los vendemos nosotros, un comercio independiente de filtros para nevera, con envío a toda Colombia."),
         ("¿Cómo los contacto?", "Por WhatsApp y por el correo de la tienda; atendemos en el horario que aparece al final de cada página."),
         ("¿Entregan en mi ciudad?", "Enviamos a 126 ciudades y municipios y a otros lugares de Colombia; en cada página de ciudad ves el tiempo de entrega."),
+    ]))
+    G.append(("Qué filtro usa cada modelo de nevera", [
+        (f"¿Qué filtro de agua usa la nevera {m}?", f"La {m} usa el {p['nombre_largo']} (referencia {p['ref']}), con envío gratis a toda Colombia y {cop(p['precio'])}.")
+        for p in ps for m in p["modelos"]]))
+    G.append(("Más preguntas de compradores", [
+        ("¿Cuál es el mejor filtro para una nevera Whirlpool?", "No hay uno mejor en general: el correcto es el que usa tu modelo. Mira la referencia del filtro viejo (EDR1RXD1 a EDR5RXD1) o escribe el modelo en el asistente de la página."),
+        ("¿Cuántos litros filtra un EveryDrop?", "Alrededor de 750 litros (200 galones) o 6 meses de uso, lo que ocurra primero."),
+        ("¿Cuánto tarda en llegar a Bogotá, Medellín, Cali o Barranquilla?", "De 2 a 3 días hábiles a las principales ciudades, con número de guía."),
+        ("¿Dónde compro un filtro de nevera Whirlpool en Colombia?", "En esta tienda: filtros nuevos en su empaque sellado, con envío gratis a todo el país y pago en línea o contra entrega."),
+        ("¿Puedo pagar cuando me llegue?", "Sí, contra entrega, en efectivo a la transportadora, con un recargo de $ 5.000 por producto."),
+        ("¿El filtro viene con instrucciones?", "Sí. Además tienes la guía de instalación paso a paso en la tienda."),
+        ("¿Puedo cambiar el filtro yo mismo?", "Sí. Los internos se cambian en un par de minutos y los externos en 10 a 15, sin herramientas."),
+        ("¿Qué hago si no encuentro el modelo de mi nevera?", "Está en una etiqueta dentro del refrigerador, en una pared lateral de arriba. Si no se lee, manda la foto del filtro viejo."),
     ]))
     return G
 

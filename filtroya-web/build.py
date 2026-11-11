@@ -917,4 +917,15 @@ for marca in marcas_exclusivas.MARCAS_INFO:
             txt = f.read_text(encoding="utf-8")
             if PREFIJO in txt or "Filtros Nevecones Colombia" in txt:
                 f.write_text(txt.replace(PREFIJO, "").replace("Filtros Nevecones Colombia", M["tienda"]), encoding="utf-8")
+    if marca in marcas_exclusivas.AUTORIZADO:  # en el sitio del distribuidor autorizado no se dice «comercio independiente»
+        for f in d.rglob("*"):
+            if f.is_file() and f.suffix in (".php", ".txt", ".html") and "data" not in f.relative_to(d).parts[:1]:
+                t0 = f.read_text(encoding="utf-8")
+                t1 = (t0.replace("Somos un comercio independiente y enviamos", f"Somos distribuidores autorizados de {marca} y enviamos")
+                        .replace("nosotros, un comercio independiente de filtros para nevera", f"nosotros, distribuidores autorizados de {marca}: filtros para nevera")
+                        .replace("nosotros, un comercio independiente: es el filtro", f"nosotros, distribuidores autorizados de {marca}: es el filtro")
+                        .replace("es un comercio independiente que vende filtros", f"es distribuidor autorizado de {marca} y vende filtros")
+                        .replace("Somos un comercio independiente.", f"Somos distribuidores autorizados de {marca}."))
+                if t1 != t0:
+                    f.write_text(t1, encoding="utf-8")
     print(f"Sitio {marca}: sitios/{s}/ con {len(rutas)} páginas")
