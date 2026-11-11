@@ -210,6 +210,7 @@ PASARELA = ('<section class="pg-sec" id="pasarela" aria-labelledby="pg-t"><div c
             '<ul class="pg-s"><li>' + IC["candado"] + 'Pago en la pasarela segura de Wompi (Bancolombia)</li><li>' + IC["candado"] + 'Conexión cifrada: no vemos ni guardamos los datos de tu tarjeta</li>'
             '<li>' + IC["candado"] + 'Confirmación de tu pedido por correo</li></ul></div></div></section>')
 
+STRIP = ('<div class="pg-strip"><span>🔒 Pago seguro con Wompi</span><b>Tarjeta</b><b>PSE</b><b>Nequi</b><b>Bancolombia</b><b>Contra entrega</b></div>')
 DIMS = {}
 for f in (OUT / "img").iterdir():
     try:
@@ -246,23 +247,33 @@ def ld_producto(p, url):
 def pagina(f):
     t = f.read_text(encoding="utf-8")
     o = t
-    # a) «Agregar al carrito» al lado de cada «Pagar en línea» (mismo link de Wompi que ya tenía)
+    # a) el «Pagar en línea» de siempre ahora pasa por el carrito (un solo botón): agrega el filtro y abre el pago con sus datos, correo y confirmación
     def boton(m):
-        a = m.group(0)
-        k = LINK_A_ID.get(m.group(1))
-        if not k or "data-add" in t[m.end():m.end() + 140]:
-            return a
-        return a + f'<button type="button" class="btn-cart" data-add="{k}">🛒 Agregar al carrito</button>'
-    t = re.sub(r'<a [^>]*href="https://checkout\.wompi\.co/l/(\w+)"[^>]*>.*?</a>', boton, t, flags=re.S)
+        k = LINK_A_ID.get(m.group(2))
+        if not k:
+            return m.group(0)
+        attrs = m.group(1) + m.group(3)
+        cls = re.search(r'class="([^"]*)"', attrs)
+        clic = re.search(r'onclick="([^"]*)"', attrs)
+        return (f'<button type="button" class="{cls.group(1) if cls else "btn-online"}"' + (f' onclick="{clic.group(1)}"' if clic else "") + f' data-add="{k}" data-ir="1">{m.group(4)}</button>')
+    t = re.sub(r'<a ([^>]*?)href="https://checkout\.wompi\.co/l/(\w+)"([^>]*)>(.*?)</a>', boton, t, flags=re.S)
+    # medios de pago visibles junto a los botones de compra
+    t = re.sub(r'(<div class="(?:spec-footer|hero-cta)">.*?</div>)', lambda mm: mm.group(1) + STRIP if "data-add" in mm.group(1) else mm.group(1), t, flags=re.S)
+    if "data-add" in t and 'class="pg-strip"' not in t and "<footer>" in t:
+        t = t.replace("<footer>", STRIP + "<footer>", 1)
     # b) carrito en el menú y botón flotante
     t = t.replace('<a class="hl" href="https://wa.me/573054796329">WhatsApp</a>', '<a class="carro" href="carrito.php">🛒 Carrito <span data-cart-n hidden></span></a><a class="hl" href="https://wa.me/573054796329">WhatsApp</a>', 1)
     if "</head>" in t and "pasarela.css" not in t:
-        t = t.replace("</head>", '<link rel="stylesheet" href="pasarela.css"><link rel="preconnect" href="https://checkout.wompi.co"></head>', 1)
+        t = t.replace("</head>", '<link rel="stylesheet" href="pasarela.css"><link rel="preconnect" href="https://checkout.wompi.co"><style>.cart-fab{position:fixed;left:14px;bottom:14px;z-index:60;background:#0A1628;color:#fff;border-radius:999px;padding:12px 16px;font:700 14px system-ui,sans-serif;text-decoration:none;display:flex;gap:8px;align-items:center}.cart-fab span{background:#2F5FE0;border-radius:999px;min-width:20px;height:20px;display:inline-grid;place-items:center;font-size:12px;padding:0 5px}.pg-strip{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:12px 0 0;font:600 12.5px system-ui,sans-serif;color:#4A5A72}.pg-strip span{margin-right:4px}.pg-strip b{border:1px solid #DCE3F2;background:#fff;color:#0A1628;border-radius:6px;padding:3px 8px}button.btn-online,button.btn-wompi,button.btn-order{cursor:pointer;font-family:inherit}[data-cart-n]{background:#2F5FE0;color:#fff;border-radius:999px;padding:0 6px;font-size:12px}</style></head>', 1)
     if "carrito.js" not in t and "</body>" in t:
         t = t.replace("</body>", '<a class="cart-fab" href="carrito.php" aria-label="Ver carrito">🛒 <span data-cart-n hidden></span></a><script src="carrito.js" defer></script></body>', 1)
     # c) panel de la pasarela en la portada y en las 3 fichas principales
     if f.name in ("index.html", "filtro-haf-cin.html", "filtro-haf-qin.html", "filtro-externo.html") and 'id="pasarela"' not in t:
-        if '<section class="section" id="faq">' in t:
+        ic = t.find('id="catalogo"')
+        sig = t.find("<section", ic + 20) if ic > 0 else -1
+        if sig > 0:
+            t = t[:sig] + PASARELA + "\n    " + t[sig:]
+        elif '<section class="section" id="faq">' in t:
             t = t.replace('<section class="section" id="faq">', PASARELA + '\n    <section class="section" id="faq">', 1)
         elif "</main>" in t:
             t = t.replace("</main>", PASARELA + "</main>", 1)
@@ -276,9 +287,6 @@ def pagina(f):
         src = re.search(r'\bsrc="([^"]+)"', tag)
         if not src:
             return tag
-        if "width=" not in tag and src.group(1) in DIMS:
-            w, h = DIMS[src.group(1)]
-            tag = tag.replace("<img", f'<img width="{w}" height="{h}"', 1)
         if "loading=" not in tag and "fetchpriority" not in tag:
             tag = tag.replace("<img", '<img loading="lazy"', 1)
         if "decoding=" not in tag:
