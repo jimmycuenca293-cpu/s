@@ -293,6 +293,9 @@ header .mnav{border-top:1px solid var(--line);background:#fff}
 @media (max-width:860px){.pdp{grid-template-columns:1fr!important}.pdp .foto{max-width:560px!important}.intro .w{padding-top:18px;padding-bottom:18px}}
 
 @media (max-width:760px){header{position:static!important}}
+.saltos{font-size:14px;color:var(--muted);padding-top:0;margin:0 auto}.saltos a{color:var(--pri2);font-weight:700}
+.intro .saltos{color:rgba(255,255,255,.85);padding-bottom:16px}.intro .saltos a{color:#fff}
+.antsig{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:26px 0 6px}.antsig a{padding:11px 18px;border:2px solid var(--line);border-radius:999px;text-decoration:none;font-weight:700;color:var(--ink);background:#fff}.antsig a:hover{border-color:var(--pri)}.antsig .todos{border-color:var(--pri2);color:var(--pri2)}
 .ayuda-grid{color:var(--muted);margin:0 0 16px;font-size:15px}
 .miguitas{font-size:14px;color:var(--muted);padding:14px 0 0}.miguitas a{color:var(--muted)}.miguitas b{color:var(--ink);font-weight:700}
 .buscaciudad{display:flex;gap:10px;align-items:center;margin:0 auto 18px;max-width:520px}.buscaciudad input{flex:1;font:inherit;font-size:16px;padding:12px 16px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}.buscaciudad input:focus{outline:none;border-color:var(--pri)}
@@ -634,6 +637,7 @@ def pagina_marca(marca, cfg, ps, ciud):
   <p>Escoge tu filtro, mira su foto y su referencia, y pídelo por WhatsApp. <b>Pagas al recibir</b>, {envio.lower()} a toda Colombia. Para {esc(cfg["lineas"])}.</p></div>
   <a class="btn wa" data-wa="portada" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}Pedir por WhatsApp</a>
 </div></section>
+<p class="saltos w">Ir a: <a href="#cual">¿Cuál es el mío?</a> · <a href="#instalar">Cómo instalar</a> · <a href="#faq">Preguntas</a> · <a href="#ciudades">Ciudades</a> · <a href="#marcas">Otras marcas</a></p>
 """
     c += sec(f'<p class="ayuda-grid">Toca la foto o «Ver producto» para ver la referencia, las especificaciones y cómo se instala.</p><div class="grid">{tarjetas}</div>', id_="filtros", estilo="padding-top:22px;padding-bottom:30px")
     c += f"""
@@ -784,6 +788,10 @@ def pagina_producto(p, marca, cfg, ps):
     c += sec(cab("Preguntas frecuentes", f"Preguntas sobre el {p['ref']}", centrado=True) + faq_html(preguntas))
     if otros:
         c += sec(cab(f"Más filtros {marca}", "Otras referencias para tu nevecón") + '<div class="chips">' + "".join(f'<a href="/purofiltro-filtro/{x["slug"]}/">{esc(x["ref"])}</a>' for x in otros) + f'<a href="/purofiltro-marca/{slug(marca)}/#filtros">Ver todos los filtros {esc(marca)}</a></div>')
+    idx = next((i for i, x in enumerate(ps) if x["id"] == p["id"]), 0)
+    ant, sig = ps[idx - 1] if idx > 0 else None, ps[idx + 1] if idx < len(ps) - 1 else None
+    if ant or sig:
+        c += f'<div class="w"><nav class="antsig" aria-label="Otros filtros {esc(marca)}">' + (f'<a class="ant" href="/purofiltro-filtro/{ant["slug"]}/">← {esc(ant["ref"])}</a>' if ant else "<span></span>") + f'<a class="todos" href="/purofiltro-marca/{slug(marca)}/#filtros">Todos los filtros {esc(marca)}</a>' + (f'<a class="sig" href="/purofiltro-filtro/{sig["slug"]}/">{esc(sig["ref"])} →</a>' if sig else "<span></span>") + '</nav></div>'
     c += sec(cab("Pide en tu ciudad", f"Filtro {p['ref']} contra entrega en tu ciudad", "Toca tu ciudad y mira cómo recibirlo y pagar al llegar.") + '<div class="chips">' + "".join(f'<a href="/purofiltro-marca/{slug(marca)}/{slug(x)}/">{esc(x)}</a>' for x, _ in CIUDADES_TODAS[:TOP]) + f'<a href="/purofiltro-marca/{slug(marca)}/#ciudades">Las {len(CIUDADES_TODAS)} ciudades →</a></div>', alt=True)
     c += sec(bloque_otras_marcas(marca))
     c += sec(f'''<div class="final"><h2>Pide tu {esc(p["ref"])} y paga cuando te llegue</h2><p>Escríbenos, confirmamos que es el de tu nevecón y te decimos el precio de hoy.</p>
