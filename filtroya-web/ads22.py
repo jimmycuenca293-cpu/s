@@ -303,6 +303,11 @@ def pagina(f):
             t = t.replace("</main>", PASARELA + "</main>", 1)
         elif "<footer" in t:
             t = t.replace("<footer", PASARELA + "<footer", 1)
+    # a4) como en cualquier tienda en línea: UN solo botón por producto («Agregar al carrito»); el pago se hace dentro del carrito
+    t = re.sub(r'\s*<button type="button"[^>]*class="btn-wompi"[^>]*>.*?</button>', "", t, flags=re.S)
+    t = re.sub(r'\s*<button type="button" class="btn btn-line" data-add="\w+" data-ir="1">⚡ Comprar ahora</button>', "", t)
+    t = re.sub(r'\s*<a href="[^"]*" class="btn-detalle">Ver detalles[^<]*</a>', "", t)
+    t = re.sub(r"\s*document\.getElementById\('lightboxWompi'\)\.setAttribute\([^\n]*?\|\| 'cin'\);", "", t)
     # d) SEO: medidas y carga diferida de las imágenes (evita saltos de diseño), preconnect, ofertas completas en los datos estructurados
     primera = [True]
 
