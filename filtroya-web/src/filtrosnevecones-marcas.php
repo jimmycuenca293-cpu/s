@@ -77,7 +77,7 @@ function pie_marca(array $M): void
         . '<div><a class="m-logo" href="' . h($b) . '"><span class="m-sello">' . logo_marca_html($M) . '<small>Filtros para nevecón</small></span></a>'
         . '<p>Filtros de agua para nevecón ' . h($M['nombre']) . ' en Colombia, con envío gratis a todo el país y pago seguro en línea.</p>'
         . ($tel ? '<a class="m-pie-wa" href="https://wa.me/57' . substr($tel, -10) . '" target="_blank" rel="noopener">💬 WhatsApp ' . h($n['telefono']) . '</a>' : '')
-        . (!empty($M['autorizado']) ? '<span class="m-pie-hora">' . h($M['autorizado']) . '</span>' : '') . '<span class="m-pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
+        . (!empty($M['autorizado']) ? '<span class="m-pie-hora">' . h($M['autorizado']) . '</span>' : '') . (!empty($M['bodega']) ? '<span class="m-pie-hora">📍 ' . h($M['bodega']) . '</span>' : '') . '<span class="m-pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
         . '<nav><b>Filtros ' . h($M['nombre']) . '</b>';
     foreach ($M['productos'] as $p) $h .= '<a href="' . h($b . $p[1]) . '/">' . h($p[0]) . '</a>';
     $h .= '</nav><nav><b>Guías</b>';

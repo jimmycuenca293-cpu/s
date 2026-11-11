@@ -858,6 +858,94 @@ def sin_whatsapp_ni_cod(d):
             f.write_text(t1, encoding="utf-8")
 
 
+def quitar_envio(d):
+    """Tienda de Bogotá: el dueño explica la entrega en el correo de confirmación, así que la página no habla de envío gratis, guía ni transportadora
+    (solo queda el tiempo de entrega de 1 a 2 días hábiles). Se hace antes de pasar los textos de «toda Colombia» a Bogotá."""
+    import re as _re
+    rx = [
+        (r'<span>🚚 Envío gratis a (?:toda Colombia|todo Bogotá)</span>', '<span>📍 Bodega en Cedritos, Bogotá</span>'),
+        (r'<small>Envío gratis(?: a toda Colombia)?</small>', ''),
+        (r'<li><b>Envío gratis</b>[^<]*</li>', ''),
+        (r'<tr><th>Env[ií]o</th><td>Gratis(?: a toda Colombia[^<]*)?</td></tr>', ''),
+        (r'<details(?: class="m-faq")?><summary>¿(?:El envío tiene costo|Cuánto cuesta el envío|Hay recargo por zona|Hacen envíos a toda Colombia)\?</summary>.*?</details>', ''),
+        (r'\{"@type": "Question", "name": "¿(?:El envío tiene costo|Cuánto cuesta el envío|Hay recargo por zona|Hacen envíos a toda Colombia)\?", "acceptedAnswer": \{"@type": "Answer", "text": "(?:[^"\\]|\\.)*"\}\},? ?', ''),
+        (r'- \*\*¿(?:Hacen envíos a toda Colombia|El envío tiene costo)\?\*\*[^\n]*\n', ''),
+        (r',? con envío gratis y número de guía', ''),
+        (r',? con envío gratis a (?:toda Colombia|todo el país)', ''),
+        (r' y con envío gratis', ''),
+        (r',? con envío gratis y pago seguro', ', con pago seguro'),
+        (r',? con envío gratis', ''),
+        (r',? con envío a toda Colombia', ''),
+        (r',? con el envío incluido', ''),
+        (r' con envío incluido', ''),
+        (r' y número de guía', ''),
+        (r',? con número de guía', ''),
+        (r',? con guía de rastreo', ''),
+        (r'Envío gratis a (?:toda Colombia|todo Bogotá)', 'Entrega en 1 a 2 días hábiles'),
+        (r'envío gratis a (?:toda Colombia|todo Bogotá)', 'entrega en 1 a 2 días hábiles'),
+        (r'<b>Envíos</b>', '<b>Bogotá</b>'),
+        (r'Envíos por ciudad', 'Cobertura'),
+        (r'Envío gratis con guía', 'Entrega en 1 a 2 días hábiles'),
+        (r'Envío con número de guía', 'Bodega propia'),
+        (r'Seguimiento de tu pedido y entrega en 1 a 2 días hábiles en Bogotá\.', 'Tenemos nuestra bodega en el barrio Cedritos, en Bogotá.'),
+        (r'Seguimiento de tu pedido y entrega en [^<"]*', 'Tenemos nuestra bodega en el barrio Cedritos, en Bogotá.'),
+        (r'El pedido se despacha cuando se confirma el pago\.?', ''),
+        (r'<small> envío gratis</small>', ''),
+        (r'envío gratis en Bogotá, pago seguro', 'pago seguro'),
+        (r'<span class="eyebrow">Envíos</span>', '<span class="eyebrow">Cobertura</span>'),
+        (r'Enviamos filtros Samsung a todo Bogotá', 'Entregamos filtros Samsung en todo Bogotá'),
+        (r'Envíos a Bogotá', 'Entrega en Bogotá'),
+        (r'<b>Envío</b>gratis<br>a todo Bogotá', '<b>Entrega</b>1 a 2 días<br>hábiles'),
+        (r'<dt>Envío</dt><dd>Gratis en Bogotá, ', '<dt>Entrega</dt><dd>'),
+        (r'Envíos: ', 'Zonas: '),
+        (r'Guarda la guía de envío y el recibo;', 'Guarda el recibo;'),
+        (r'recibo y envío con guía', 'recibo'),
+        (r'\{"@type": "Question", "name": "¿Cuánto cuesta el envío[^"]*", "acceptedAnswer": \{"@type": "Answer", "text": "(?:[^"\\\\]|\\\\.)*"\}\},? ?', ''),
+        (r',? envío gratis a todo el país', ''),
+        (r'pago seguro, envío y retracto', 'pago seguro y retracto'),
+        (r'<tr><th>Costo del envío</th><td>Gratis</td></tr>', ''),
+        (r', con el envío a cualquier ciudad de Colombia ya incluido', ''),
+        (r'con el envío a cualquier ciudad de Colombia ya incluido', ''),
+        (r'por transportadora', ''),
+        (r' · envío gratis</small>', '</small>'),
+        (r'El envío es gratis(?: a todo Bogotá)? y llega en', 'Llega en'),
+        (r'Envío gratis\. Llega en', 'Llega en'),
+        (r'<details(?: class="m-faq")?><summary>¿El precio incluye el envío\?</summary>.*?</details>', ''),
+        (r'\{"@type": "Question", "name": "¿El precio incluye el envío\?", "acceptedAnswer": \{"@type": "Answer", "text": "(?:[^"\\\\]|\\\\.)*"\}\},? ?', ''),
+        (r', y te enviamos la guía del envío', ''),
+        (r' y te enviamos la guía del envío', ''),
+        (r'pago y envío\.', 'y pago.'),
+        (r'Precios y envío gratis', 'Precios'),
+        (r' \| Envío gratis', ' | Compra segura'),
+        (r'\(COP, envío incluido\)', '(COP)'),
+        (r'con envíos? a ', 'con entrega en '),
+        (r', con envíos a todo Bogotá', ''),
+        (r'tarda el envío', 'tarda la entrega'),
+        (r'<details(?: class="m-faq")?><summary>¿Cuánto cuesta el envío a Bogotá\?</summary>.*?</details>', ''),
+    ]
+    car = d / "carrito.php"
+    if car.exists():  # carrito de Bogotá: sin «envío gratis», sin opciones de transportadora y con los barrios de Bogotá para escribir más rápido
+        import bogota_seo
+        c_ = car.read_text(encoding="utf-8")
+        c_ = c_.replace("<span>🚚 Envío gratis a toda Colombia</span>", "<span>📍 Bodega en Cedritos, Bogotá</span>").replace("¿A dónde lo enviamos?", "Tus datos de entrega")
+        c_ = c_.replace('<div id="entrega" class="entrega"></div>', '<div id="entrega" class="entrega" hidden></div><p class="m">Entrega en 1 a 2 días hábiles. Te enviamos la confirmación de tu pedido por correo.</p>')
+        c_ = _re.sub(r'<div class="tl"><span>Env[^`]*?class="gratis">Gratis</span></div>', "", c_)
+        c_ = c_.replace('<input id="c-barrio" maxlength="80"', '<input id="c-barrio" list="barrios-bogota" maxlength="80"')
+        c_ = c_.replace("</main>", '<datalist id="barrios-bogota">' + "".join(f'<option value="{bogota_seo.esc(x["nombre"])}">' for x in bogota_seo.datos()) + "</datalist></main>", 1) if "</main>" in c_ else c_ + '<datalist id="barrios-bogota">' + "".join(f'<option value="{bogota_seo.esc(x["nombre"])}">' for x in bogota_seo.datos()) + "</datalist>"
+        car.write_text(c_, encoding="utf-8")
+    for f in d.rglob("*"):
+        if not f.is_file() or f.suffix not in (".php", ".txt", ".js") or f.relative_to(d).parts[0] in ("data", "api"):
+            continue
+        if f.name in ("terminos.php", "privacidad.php", "garantia-y-retracto.php", "admin.php", "diagnostico.php", "gracias.php", "carrito.php", "opinion.php"):
+            continue
+        t0 = f.read_text(encoding="utf-8")
+        t1 = t0
+        for a_, b_ in rx:
+            t1 = _re.sub(a_, b_, t1, flags=_re.S)
+        if t1 != t0:
+            f.write_text(t1, encoding="utf-8")
+
+
 def localizar_bogota(d):
     """Tienda de Bogotá: los textos de «toda Colombia» pasan a hablar de Bogotá (los municipios cercanos conservan su tiempo)."""
     subs = [
@@ -876,6 +964,8 @@ def localizar_bogota(d):
         ("Enviamos filtros Samsung a toda Colombia", "Enviamos filtros Samsung a todo Bogotá"),
         ("con envío gratis a todo el país", "con envío gratis en Bogotá"),
         ("para nevecón en Colombia", "para nevecón en Bogotá"),
+        ("nevecón Samsung en Colombia", "nevecón Samsung en Bogotá"),
+        ("Todas las ciudades", "Todas las localidades"),
         ("con envío a toda Colombia", "con envío a Bogotá"),
         ("a toda Colombia", "a todo Bogotá"),
         ("toda Colombia", "Bogotá"),
@@ -1003,6 +1093,8 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
                       .replace("'gtm' => 'GTM-5WSNHV66'", "'gtm' => ''")
                       .replace("'whatsapp' => '3107147299'", f"'whatsapp' => '{SP['wa']}'")
                       .replace("'telefono'  => '310 714 7299'", f"'telefono'  => '{SP['tel']}'"))
+                if SP.get("bogota"):
+                    t_ = t_.replace("'direccion' => 'Dirección del negocio'", "'direccion' => 'Bodega en el barrio Cedritos, Bogotá D.C.'").replace("'horario'   => 'lunes a sábado, de 8:00 a. m. a 6:00 p. m.'", "'horario'   => 'atención por correo, de lunes a sábado'")
                 if SP.get("solo_linea"):  # solo pago en línea: sin contra entrega ni WhatsApp
                     t_ = t_.replace("'contraentrega' => ['activo' => true, 'recargo' => 5000]", "'contraentrega' => ['activo' => false, 'recargo' => 5000]").replace(f"'whatsapp' => '{SP['wa']}'", "'whatsapp' => ''")
                 fc.write_text(t_, encoding="utf-8")
@@ -1036,7 +1128,7 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
                  + "\n## Blog\n- [Blog de filtros Samsung](__BASE__/blog/)\n" + "".join(f"- [{t}](__BASE__/blog/{sl}/): {d_}\n" for sl, t, d_, _, _, _ in marcas_contenido_samsung.articulos(ps_m))
                  + "- [Preguntas frecuentes](__BASE__/preguntas-frecuentes/)\n")
     (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + llms + "TXT);\n", encoding="utf-8")
-    cat_m = dict(cat_php, paginas=rutas, guias=[], compat=[], blog=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
+    cat_m = dict(cat_php, **({"ciudades": ["Bogotá"]} if SP and SP.get("bogota") else {}), paginas=rutas, guias=[], compat=[], blog=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
                  productos={k: v for k, v in cat_php["productos"].items() if k in ids})
     (d / (PREFIJO + "api") / "catalogo.php").write_text("<?php\n// Generado por build.py para el sitio de " + marca + ": no lo edites a mano.\nreturn " + php_val(cat_m) + ";\n", encoding="utf-8")
     for nombre, cambios in CAMBIOS_MARCA.items():
@@ -1091,6 +1183,7 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
     if SP and SP.get("solo_linea"):
         sin_whatsapp_ni_cod(d)
         if SP.get("bogota"):
+            quitar_envio(d)
             localizar_bogota(d)
         mejorar_fotos(d / "img", [p["id"] for p in CATALOGO if p["marca"] == marca])
     print(f"Sitio {clave}: {d.relative_to(AQUI)}/ con {len(rutas)} páginas")

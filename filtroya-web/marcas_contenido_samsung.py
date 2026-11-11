@@ -156,14 +156,14 @@ def generar(pagina, ctx, h, R):
     inst = f"{base}cambio-e-instalacion/"
     grupos = preguntas_ia(ps, slug)
     if M.get("bogota"):
-        grupos = [("Entregas en Bogotá", [("¿Entregan filtros Samsung en todo Bogotá?", "Sí, en las 19 localidades urbanas y en sus barrios, en 1 a 2 días hábiles y con envío gratis."),
-                                            ("¿Entregan en municipios cercanos a Bogotá?", "Sí, a Soacha, Chía, Cajicá, Zipaquirá, Mosquera, Funza, Madrid y más, en 2 a 3 días hábiles."),
+        grupos = [("Entregas en Bogotá", [("¿Entregan filtros Samsung en todo Bogotá?", "Sí, en las 19 localidades urbanas y en sus barrios, en 1 a 2 días hábiles."),
+                                            ("¿Dónde están ubicados?", "Tenemos nuestra bodega en el barrio Cedritos, en Bogotá."),
                                             ("¿Hay pack de 2 filtros?", "Sí: el pack de 2 trae dos filtros de la misma referencia con ahorro; uno para ahora y otro para dentro de 6 meses."),
                                             ("¿Cómo pago?", "Solo en línea, en la pasarela segura de Wompi: tarjeta, PSE, Nequi o Bancolombia.")])] + grupos
     todas = [qa for _, l in grupos for qa in l]
     cuerpo = "".join(f'<h2 id="{slug(g)}" style="font-size:22px;margin:26px 0 12px">{esc(g)}</h2>' + "".join(f'<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>' for q, a in l) for g, l in grupos)
     pagina(X["faq"], f"Preguntas frecuentes sobre filtros de nevera Samsung ({len(todas)} respuestas)",
-           f"{len(todas)} respuestas sobre filtros de agua para nevera Samsung: HAF-CIN, HAF-QIN, Aqua-Pure Plus, equivalencias, precios, envíos y cómo cambiarlos.",
+           f"{len(todas)} respuestas sobre filtros de agua para nevera Samsung: HAF-CIN, HAF-QIN, externo, equivalencias, precios y cómo cambiarlos.",
            "Preguntas frecuentes sobre filtros de nevera Samsung", "Respuestas rápidas",
            "Respuestas directas sobre qué filtro usa cada nevera Samsung, cuánto cuesta, cómo pagar y cómo cambiarlo.", cuerpo, todas, miga_nombre="Preguntas frecuentes")
     def respuesta(txt):

@@ -14,6 +14,7 @@ Páginas de cada marca:
   /cambio-e-instalacion/   cuándo cambiarlo y cómo instalar cada filtro
 """
 import html
+import re
 import json
 import sys
 
@@ -76,7 +77,7 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     s = slug(marca)
     for p in ps:
         p["slug_o"] = p["slug"]
-    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": AUTORIZADO[marca]} if marca in AUTORIZADO else {}), **({"solo_linea": True} if marca in SOLO_LINEA else {}), **({"bogota": True, "ciudades_titulo": "Localidades"} if marca in BOGOTA else {}), **({"packs": True} if marca in PACKS else {}),
+    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": AUTORIZADO[marca]} if marca in AUTORIZADO else {}), **({"solo_linea": True} if marca in SOLO_LINEA else {}), **({"bogota": True, "ciudades_titulo": "Localidades", "bodega": "Bodega en el barrio Cedritos, Bogotá D.C."} if marca in BOGOTA else {}), **({"packs": True} if marca in PACKS else {}),
          "productos": [[p["nombre_largo"] + "", p["slug_o"], cop(p["precio"])] for p in ps]}
     R = marcas_seo.rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO)
     _rutas = [p["slug_o"] + "/" for p in ps] + [r for r, _ in R["temas"]] + [v[2] for v in R["refs"].values()] + [v[2] for v in R["modelos"].values()]
@@ -209,21 +210,41 @@ def norm_ok(p):
 
 
 def confianza(marca):
+    if marca in BOGOTA:
+        items = [("📍", "Bodega en Cedritos", "Estamos en Bogotá"), ("🔒", "Pago seguro", "Wompi · Bancolombia"), ("🧾", "Recibo por correo", "Confirmación de tu pedido"), ("↩", "5 días de retracto", "Compra protegida")]
+        return '<section class="m-confianza"><div class="m-wrap">' + "".join(f'<div><span class="ic">{i}</span><span><b>{esc(t)}</b><small>{esc(d)}</small></span></div>' for i, t, d in items) + "</div></section>"
     items = [("✔", "Filtros nuevos", "En su empaque sellado"), ("🚚", "Envío gratis", "A toda Colombia"), ("🔒", "Pago seguro", "Tarjeta, PSE o Nequi"), ("🧾", "Recibo y garantía", "5 días de retracto")] if marca in SOLO_LINEA else [("✔", "Filtros nuevos", "En su empaque sellado"), ("🚚", "Envío gratis", "A toda Colombia"), ("🔒", "Pago seguro", "Tarjeta, PSE o Nequi"), ("💬", "Asesoría", "Te ayudamos por WhatsApp")]
     return '<section class="m-confianza"><div class="m-wrap">' + "".join(f'<div><span class="ic">{i}</span><span><b>{esc(t)}</b><small>{esc(d)}</small></span></div>' for i, t, d in items) + "</div></section>"
 
 
 def confianza_pro(marca):
     """Bloque de confianza: por qué comprar aquí (sin opiniones inventadas: las reales salen de las compras)."""
-    it = [("🏷", f"Distribuidores de {marca}", f"Vendemos filtros {marca} a nivel nacional, nuevos y en su empaque sellado."),
-          ("🔒", "Pago seguro con Wompi", "Pasarela de Bancolombia. No vemos ni guardamos los datos de tu tarjeta."),
-          ("↩", "5 días de retracto", "Si te equivocas de filtro y no lo has instalado, lo cambiamos o te devolvemos tu dinero."),
-          ("🚚", "Envío con número de guía", "Seguimiento de tu pedido y entrega en 2 a 3 días hábiles a las principales ciudades."),
-          ("🧾", "Recibo y confirmación", "Te llega el recibo del pago y la confirmación de tu pedido por correo."),
-          ("🛡", "Tus datos protegidos", "Conexión cifrada y tratamiento de datos según la ley colombiana.")]
+    if marca in BOGOTA:
+        it = [("📍", "Bodega en Cedritos, Bogotá", "Tenemos nuestra bodega en el barrio Cedritos: compras a un negocio con sede en Bogotá."),
+              ("🏷", f"Distribuidores de {marca}", f"Vendemos filtros {marca} nuevos, en su empaque sellado."),
+              ("🔒", "Pago seguro con Wompi", "Pasarela de Bancolombia. No vemos ni guardamos los datos de tu tarjeta."),
+              ("↩", "5 días de retracto", "Si te equivocas de filtro y no lo has instalado, lo cambiamos o te devolvemos tu dinero."),
+              ("🧾", "Recibo y confirmación", "Te llega el recibo del pago y la confirmación de tu pedido por correo."),
+              ("🛡", "Tus datos protegidos", "Conexión cifrada y tratamiento de datos según la ley colombiana.")]
+    else:
+        it = [("🏷", f"Distribuidores de {marca}", f"Vendemos filtros {marca} a nivel nacional, nuevos y en su empaque sellado."),
+              ("🔒", "Pago seguro con Wompi", "Pasarela de Bancolombia. No vemos ni guardamos los datos de tu tarjeta."),
+              ("↩", "5 días de retracto", "Si te equivocas de filtro y no lo has instalado, lo cambiamos o te devolvemos tu dinero."),
+              ("🚚", "Envío con número de guía", "Seguimiento de tu pedido y entrega en 2 a 3 días hábiles a las principales ciudades."),
+              ("🧾", "Recibo y confirmación", "Te llega el recibo del pago y la confirmación de tu pedido por correo."),
+              ("🛡", "Tus datos protegidos", "Conexión cifrada y tratamiento de datos según la ley colombiana.")]
     return (cab("Compra con confianza", f"Por qué comprar tu filtro {marca} con nosotros") + '<div class="sx-conf">'
             + "".join(f'<div><span>{i}</span><b>{esc(t)}</b><p>{esc(d)}</p></div>' for i, t, d in it) + '</div>'
             '<p class="sx-legal"><?= h(identificacion()) ?> · <a href="/terminos.php">Términos</a> · <a href="/garantia-y-retracto.php">Garantía y retracto</a> · <a href="/privacidad.php">Tratamiento de datos</a> · <a href="/quienes-somos.php">Quiénes somos</a></p>')
+
+
+def bodega_sec(marca):
+    """Sección de la sede: estamos en el barrio Cedritos, en Bogotá (con mapa)."""
+    return sec('<div class="m-bodega"><div><span class="eyebrow">Nuestra sede</span><h2>Estamos en Cedritos, Bogotá</h2>'
+               '<p>Tenemos nuestra bodega en el barrio <b>Cedritos</b>, en la localidad de Usaquén, al norte de Bogotá. Compras a un negocio con sede en la ciudad, con pago seguro en línea y la confirmación de tu pedido por correo.</p>'
+               '<ul class="m-bod-p"><li>Bodega propia en Cedritos</li><li>Filtros nuevos, en su empaque sellado</li><li>Pago seguro con Wompi (Bancolombia)</li><li>5 días de retracto</li></ul>'
+               '<a class="m-btn sec" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Cedritos%2C+Bogot%C3%A1">Ver Cedritos en Google Maps</a></div>'
+               '<div class="m-mapa"><iframe loading="lazy" title="Cedritos, Bogotá" src="https://maps.google.com/maps?q=Cedritos%2C%20Bogot%C3%A1&amp;z=14&amp;output=embed" referrerpolicy="no-referrer-when-downgrade"></iframe></div></div>', alt=True)
 
 
 def cta_wa(marca):
@@ -249,10 +270,10 @@ def carrusel(marca, ps, base, foto, ubic):
     """Encabezado de imágenes que corren solas (solo en el sitio propio de la marca): una diapositiva de presentación y una por filtro."""
     sl = ('<section class="wc-sl" aria-roledescription="diapositiva" aria-label="Bienvenida"><div class="m-wrap wc-in"><div>'
           '<span class="wc-logo"><?= logo_marca_html($M) ?></span>'
-          f'<p class="wc-t">Filtros de agua {esc(marca)} para tu nevera{" en Bogotá" if marca in BOGOTA else ""}</p>'
-          f'<p class="wc-d">{esc(AUTORIZADO[marca])} · Envío gratis a toda Colombia · Pago seguro en línea</p>'
-          f'<a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a></div>'
-          f'<div class="wc-img"><span>{foto(ps[0], ps[0]["nombre_largo"] + " para nevecón " + marca, lazy=False)}</span></div></div></section>')
+          + (f'<h1 class="wc-t">Filtros de agua {esc(marca)} para tu nevera en Bogotá</h1>' if marca in BOGOTA else f'<p class="wc-t">Filtros de agua {esc(marca)} para tu nevera</p>')
+          + (f'<p class="wc-d">📍 Bodega en Cedritos, Bogotá · Pago seguro con Wompi · Entrega en 1 a 2 días hábiles · También en pack de 2</p>' if marca in BOGOTA else f'<p class="wc-d">{esc(AUTORIZADO[marca])} · Envío gratis a toda Colombia · Pago seguro en línea</p>')
+          + f'<a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a></div>'
+          + f'<div class="wc-img"><span>{foto(ps[0], ps[0]["nombre_largo"] + " para nevecón " + marca, lazy=False)}</span></div></div></section>')
     for p in ps:
         sl += (f'<section class="wc-sl" aria-roledescription="diapositiva" aria-label="{esc(p["nombre_largo"])}"><div class="m-wrap wc-in"><div>'
                f'<span class="wc-eye">{esc(p["ref"])}</span><p class="wc-t">{esc(p["nombre_largo"])}</p>'
@@ -280,6 +301,13 @@ def buscador_home(marca, ps, base):
                '<div class="m-chips">' + chips + '</div></div>')
 
 
+def _sin_hero(marca, html_):
+    """Tienda de Bogotá: la portada abre con el carrusel (el título principal va en la primera diapositiva) y sin el bloque de presentación repetido."""
+    if marca not in BOGOTA:
+        return html_
+    return re.sub(r'<section class="m-hero">.*?</section>', "", html_, count=1, flags=re.S)
+
+
 # ---------- portada de la marca ----------
 def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades, R=None, datos=None):
     destacados = sorted(ps, key=lambda p: ubic(p) == "externo")[:3]
@@ -291,7 +319,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
          "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__{base}{p['slug_o']}/", "name": p["nombre_largo"] + ""} for i, p in enumerate(ps)]}},
         faq_ld,
         {"@type": "OnlineStore", "@id": f"__BASE__{base}#tienda", "name": "__NOMBRE__", "alternateName": f"Filtros {marca} Colombia", "url": f"__BASE__{base}",
-         "logo": f"__BASE__{M.get('logo', '')}", "description": f"Filtros de agua {marca} para nevera con envío gratis a toda Colombia.",
+         "logo": f"__BASE__{M.get('logo', '')}", **({"address": {"@type": "PostalAddress", "addressLocality": "Cedritos, Bogotá", "addressRegion": "Bogotá D.C.", "addressCountry": "CO"}, "location": {"@type": "Place", "name": "Bodega en el barrio Cedritos, Bogotá"}} if marca in BOGOTA else {}), "description": f"Filtros de agua {marca} para nevera con envío gratis a toda Colombia.",
          "areaServed": ({"@type": "City", "name": "Bogotá"} if marca in BOGOTA else {"@type": "Country", "name": "Colombia"}), "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi",
          "contactPoint": {"@type": "ContactPoint", "telephone": "__TEL__", "contactType": "customer service", "areaServed": "CO", "availableLanguage": "es"}, "sameAs": "__REDES__"},
         {"@type": "WebSite", "name": f"Filtros {marca}", "url": f"__BASE__{base}", "inLanguage": "es-CO", "publisher": {"@id": f"__BASE__{base}#tienda"}}]}
@@ -304,7 +332,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
     pasos = [("Encuentra tu filtro", f"Por la referencia del filtro viejo o el modelo de tu nevecón {marca}."), ("Paga en línea", "Con tarjeta, PSE o Nequi en página segura."), ("Recíbelo en casa", "Envío gratis a toda Colombia con número de guía.")]
     senales = ["El agua o el hielo saben o huelen raro (a cloro, a tierra o a encerrado).", "El dispensador bota menos agua o sale con poca presión.", "El hielo sale turbio, pequeño o la máquina de hielo produce menos.", "Ya pasaron 6 meses desde el último cambio."]
     car = carrusel(marca, ps, base, foto, ubic) if marca in AUTORIZADO else ""
-    return inicio(M, php_str, titulo, desc, base, ld) + car + f"""
+    return _sin_hero(marca, inicio(M, php_str, titulo, desc, base, ld) + car + f"""
 <section class="m-hero"><div class="m-wrap">
   <div>
     <span class="m-hero-logo"><?= logo_marca_html($M) ?><span><b>Filtros {esc(marca)}</b>Envío gratis a toda Colombia</span></span>
@@ -316,11 +344,15 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
   </div>
   <div class="m-fotos">{fotos}<span class="sello-o"><span><b>Envío</b>gratis<br>a toda Colombia</span></span></div>
 </div></section>
-{buscador_home(marca, ps, base) if marca in AUTORIZADO else ''}
-{__import__('bogota_seo').bloque_portada(base, sec, cab) if marca in BOGOTA else ''}
+{buscador_home(marca, ps, base) if marca in AUTORIZADO and marca not in BOGOTA else ''}
 {confianza(marca)}
+{'' if marca in BOGOTA else bodega_sec(marca) if False else ''}
+{__import__('bogota_seo').bloque_portada(base, sec, cab) if marca in BOGOTA and False else ''}
 {sec(cab("Catálogo " + marca, f"Filtros {marca}", f"{len(ps)} referencias {esc(marca)}, nuevas y en su empaque. Todas con envío gratis a toda Colombia.") + '<div class="m-grid">' + "".join(tarjeta(p, base, foto, ubic) for p in ps) + "</div>", id_="filtros")}
 {(sec("<?= pagos_pro_html('home') ?>") if marca in AUTORIZADO else "")}
+{bodega_sec(marca) if marca in BOGOTA else ''}
+{buscador_home(marca, ps, base) if marca in BOGOTA else ''}
+{__import__('bogota_seo').bloque_portada(base, sec, cab) if marca in BOGOTA else ''}
 {(sec(confianza_pro(marca), alt=True) if marca in SOLO_LINEA else "")}
 {sec(cab("Compra con confianza", f"¿Qué recibo con mi filtro {marca}?", "Esto es lo que recibes y lo que puedes revisar tú mismo.") + '<div class="m-cols">' + "".join(f'<div class="m-bloque"><div class="ic">{i}</div><h3>{esc(t)}</h3><p>{esc(d)}</p></div>' for i, t, d in verificar(marca)) + "</div>", alt=True)}
 {sec(cab("Encuentra el tuyo", f"¿Cuál filtro {marca} le sirve a mi nevecón?", esc(info["etiqueta"])) + '<div class="m-chips">' + "".join(f'<a href="{base}{p["slug_o"]}/">{esc(p["ref"])} <small>· {esc(p["nombre_largo"])}</small></a>' for p in ps) + f'</div><p style="margin-top:18px"><a class="m-btn sec" href="{base}cual-es-mi-filtro/">Buscar por modelo de nevecón {esc(marca)}</a></p>')}
@@ -333,7 +365,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
 {sec(cta_wa(marca))}
 </main>
 <?php pie_marca($M); ?>
-"""
+""")
 
 
 # ---------- página de cada filtro ----------
