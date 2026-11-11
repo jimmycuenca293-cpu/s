@@ -11,20 +11,20 @@ return [
         'documento' => 'C.C. o NIT 000.000.000-0',
         'direccion' => 'Dirección del negocio',     // opcional: si la dejas así no sale en la tienda
         'telefono'  => '310 714 7299',                   // sale en la tienda, en los términos y en los correos
-        'correo'    => 'pedidos@filtrosnevecones.com',          // correo de atención al cliente
+        'correo'    => 'pedidos@filtrosaguanevecones.com',          // correo de atención al cliente
         'horario'   => 'lunes a sábado, de 8:00 a. m. a 6:00 p. m.',
     ],
 
     // A este correo te llega cada pedido PAGADO, con todos los datos para despacharlo
     'correo_avisos'    => 'serviciotecnicoyrepuestoscali@gmail.com',
     // Correo desde el que salen los mensajes. Créalo en Hostinger (Correos) con tu dominio.
-    'correo_remitente' => 'pedidos@filtrosnevecones.com',
+    'correo_remitente' => 'pedidos@filtrosaguanevecones.com',
     // Envío de correos por SMTP con el buzón que creaste en Hostinger (Correos). Es lo que hace que SÍ te lleguen los datos del cliente.
-    // Usuario = el correo completo del buzón (pedidos@filtrosnevecones.com) y clave = la del buzón. Host de Hostinger: smtp.hostinger.com, puerto 465.
+    // Usuario = el correo completo del buzón (pedidos@filtrosaguanevecones.com) y clave = la del buzón. Host de Hostinger: smtp.hostinger.com, puerto 465.
     'smtp' => [
         'host'    => 'smtp.hostinger.com',
         'puerto'  => 465,
-        'usuario' => 'pedidos@filtrosnevecones.com',
+        'usuario' => 'pedidos@filtrosaguanevecones.com',
         'clave'   => '',
     ],
 
