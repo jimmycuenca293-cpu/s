@@ -257,6 +257,30 @@ def pagina(f):
         clic = re.search(r'onclick="([^"]*)"', attrs)
         return (f'<button type="button" class="{cls.group(1) if cls else "btn-online"}"' + (f' onclick="{clic.group(1)}"' if clic else "") + f' data-add="{k}" data-ir="1">{m.group(4)}</button>')
     t = re.sub(r'<a ([^>]*?)href="https://checkout\.wompi\.co/l/(\w+)"([^>]*)>(.*?)</a>', boton, t, flags=re.S)
+    # a2) la ventana emergente de la foto también pasa por el carrito (antes mandaba directo al link de Wompi, sin pedido ni correo)
+    t = t.replace('<a href="#" id="lightboxWompi" target="_blank" rel="noopener noreferrer" class="btn-wompi">💳 Pagar en línea con Wompi</a>',
+                  '<button type="button" id="lightboxWompi" class="btn-wompi" data-add="" data-ir="1">💳 Pagar en línea con Wompi</button>')
+    t = t.replace("document.getElementById('lightboxWompi').href = WOMPI_LINKS[name] || '#';",
+                  "document.getElementById('lightboxWompi').setAttribute('data-add', ({'HAF-CIN/EXP':'cin','HAF-QIN/EXP':'qin','Externo DA29-10105J':'ext'})[name] || 'cin');")
+    # a3) tienda normal: «Agregar al carrito» + «Comprar ahora» (se quitan «Pedir por WhatsApp» y «Confirmar mi modelo» como botones de compra)
+    def clave(txt):
+        import urllib.parse
+        u = urllib.parse.unquote(txt).upper()
+        return "cin" if "HAF-CIN" in u else "qin" if "HAF-QIN" in u else "ext" if ("DA29-10105J" in u or "EXTERNO" in u) else None
+    def agregar_wa(m):
+        k = clave(m.group(2))
+        cls, suf = m.group(3), m.group(4)
+        if k:
+            return f'<button type="button" class="{cls}" data-add="{k}">🛒 Agregar al carrito{suf}</button><button type="button" class="btn btn-line" data-add="{k}" data-ir="1">⚡ Comprar ahora</button>'
+        return f'<a href="index.html#catalogo" class="{cls}">Ver filtros y comprar{suf}</a>'
+    t = re.sub(r'<a (href="https://wa\.me/\d+\?text=([^"]*)") class="(btn btn-solid)">Pedir por WhatsApp([^<]*)</a>', agregar_wa, t)
+    t = re.sub(r'<a href="https://wa\.me/\d+\?text=([^"]*)" class="(btn-order)">()Pedir</a>', lambda m: (f'<button type="button" class="btn-order" data-add="{clave(m.group(1))}">🛒 Agregar</button>' if clave(m.group(1)) else m.group(0)), t)
+    t = re.sub(r'<a href="https://wa\.me/[^"]*" class="btn btn-line">Confirmar mi modelo antes de pagar</a>', "", t)
+    t = t.replace('<a href="#" id="lightboxOrder" class="btn-order" style="text-align:center; padding:14px;">Pedir por WhatsApp</a>',
+                  '<button type="button" id="lightboxOrder" class="btn-order" data-add="cin" style="text-align:center; padding:14px;">🛒 Agregar al carrito</button>')
+    t = t.replace("document.getElementById('lightboxOrder').href = 'https://wa.me/573054796329?text=' + encodeURIComponent('Hola, quiero el filtro Samsung ' + name);",
+                  "document.getElementById('lightboxOrder').setAttribute('data-add', ({'HAF-CIN/EXP':'cin','HAF-QIN/EXP':'qin','Externo DA29-10105J':'ext'})[name] || 'cin');")
+    t = t.replace("💳 Pagar en línea con Wompi</button>", "⚡ Comprar ahora</button>")
     # medios de pago visibles junto a los botones de compra
     t = re.sub(r'(<div class="(?:spec-footer|hero-cta)">.*?</div>)', lambda mm: mm.group(1) + STRIP if "data-add" in mm.group(1) else mm.group(1), t, flags=re.S)
     if "data-add" in t and 'class="pg-strip"' not in t and "<footer>" in t:

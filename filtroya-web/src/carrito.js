@@ -41,7 +41,7 @@
     agregar(b.dataset.add, b.dataset.pack === "1", 1);
     if (b.dataset.ir) { location.href = "/carrito.php"; return; }
     aviso(b.dataset.pack === "1" ? "Pack anual agregado al carrito" : "Agregado al carrito");
-  });
+  }, true);  // en captura: funciona también dentro de ventanas emergentes que detienen la propagación del clic
   window.FYCart = { leer, guardar, agregar, contar, pintar, aviso };
   pintar();
   document.addEventListener("DOMContentLoaded", pintar);
