@@ -851,7 +851,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         for nom in ("api/config.sample.php", PREFIJO + "api/config.sample.php"):
             fc = d / nom
             if fc.exists():
-                fc.write_text(fc.read_text(encoding="utf-8").replace("filtrosnevecones.com", "filtrodeaguaneverawhirlpool.com"), encoding="utf-8")
+                fc.write_text(fc.read_text(encoding="utf-8").replace("filtrosnevecones.com", "filtrodeaguaneverawhirlpool.com").replace("w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4", "wwiA4fecoUuPXlpDmt9s_vePEsKFCSJUpleQGzf_5Jw").replace("'nombre'    => 'FiltrosNevecones'", "'nombre'    => 'Filtros Whirlpool'"), encoding="utf-8")
     (d / "filtrosnevecones-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
     # resumen en texto para asistentes de IA (ChatGPT, Gemini, Claude, Perplexity): tudominio.com/llms.txt
