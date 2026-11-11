@@ -63,7 +63,7 @@ return [
     ],
 
     // Google: código de verificación de Search Console (solo lo que va en content="...") y Google Analytics 4 (G-XXXXXXX)
-    'google_verificacion' => '83CeRlNdLlIQY2bOYhTwdcPxK-nVHtYoSOJNtNVKr84',
+    'google_verificacion' => 'w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4',
     'ga4' => '',
     // Google Tag Manager: carga Analytics y Google Ads. Eventos que manda la tienda: "whatsapp" (clic en WhatsApp) y "pago_wompi" (va a pagar)
     'gtm' => 'GTM-5WSNHV66',

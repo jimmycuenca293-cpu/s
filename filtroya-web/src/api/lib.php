@@ -186,8 +186,13 @@ function analytics_ga4(): string
 
 function verificacion_html(): string
 {
-    $v = preg_replace('/[^A-Za-z0-9_\-]/', '', (string) (cfg()['google_verificacion'] ?? ''));
-    return $v === '' ? '' : '<meta name="google-site-verification" content="' . $v . '">';
+    // Etiqueta de Google Search Console de la tienda; si el config.php del hosting trae otra, también se escribe (Google acepta varias)
+    $lista = [];
+    foreach ([cfg()['google_verificacion'] ?? '', 'w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4'] as $v) {
+        $v = preg_replace('/[^A-Za-z0-9_\-]/', '', (string) $v);
+        if ($v !== '' && !in_array($v, $lista, true)) $lista[] = $v;
+    }
+    return implode('', array_map(fn($v) => '<meta name="google-site-verification" content="' . $v . '">', $lista));
 }
 
 function wompi_api(): string
