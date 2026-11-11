@@ -389,25 +389,32 @@ function anotar_aviso(string $ref, string $tipo, string $canal, bool $ok, string
     try { db()->prepare('INSERT INTO avisos (creado, ref, tipo, canal, ok, mensaje) VALUES (?,?,?,?,?,?)')->execute([date('c'), $ref, $tipo, $canal, (int) $ok, mb_substr($mensaje, 0, 300)]); } catch (Throwable $e) {}
 }
 
-// Hoja de cálculo de Google: cada pedido (y cada pago) se anota como fila. Se activa con 'hoja' => ['url' => '...'] en config.php
-// (la URL sale de pegar hoja-de-calculo.gs en Extensiones > Apps Script de tu hoja; ver LEEME-HOJA.txt).
+// Hoja de pedidos en Google (la MISMA de la otra tienda: mismo script, misma clave y los mismos correos).
+// Cada pedido queda como fila y Google te manda el correo con todos los datos del cliente. La columna «Tipo» dice «pendiente | dominio» o «pagado | dominio».
+function hoja_cfg(): array
+{
+    $h = cfg()['hoja'] ?? [];
+    return ['url' => (string) (($h['url'] ?? '') ?: ''), 'clave' => (string) (($h['clave'] ?? '') ?: '')];
+}
+
 function enviar_hoja(array $p, string $tipo): void
 {
-    $u = trim((string) (cfg()['hoja']['url'] ?? ''));
-    if ($u === '' || !str_starts_with($u, 'https://script.google.com/')) return;
-    $d = ['clave' => (string) (cfg()['hoja']['clave'] ?? ''), 'tipo' => $tipo, 'fecha' => date('Y-m-d H:i:s'), 'tienda' => (string) cfg()['negocio']['nombre'], 'sitio' => base_url()]
-        + ['pedido' => $p['ref'], 'estado' => $tipo === 'pagado' ? 'PAGADO' : ($tipo === 'contraentrega' ? 'CONTRA ENTREGA: cobrar al entregar' : 'Pendiente de pago'), 'productos' => implode(' | ', array_map('linea_txt', lineas_pedido($p))), 'total' => (int) $p['total'],
-           'entrega' => entrega_txt($p['entrega']), 'ciudad' => $p['ciudad'], 'nombre' => $p['nombre'], 'celular' => $p['tel'], 'correo' => $p['email'], 'barrio' => $p['barrio'],
-           'direccion' => $p['dir'], 'indicaciones' => $p['indicaciones'] ?: '', 'modelo' => $p['modelo'] ?: '', 'recordatorio' => $p['recordar'] ? 'Sí' : 'No',
-           'pago' => trim(($p['metodo'] ?: '') . ' ' . ($p['tx_id'] ?: ''))];
-    $ok = false; $m = '';
+    $h = hoja_cfg();
+    if (!str_starts_with($h['url'], 'https://script.google.com/') || $h['clave'] === '') return;
+    $dominio = (string) parse_url(base_url(), PHP_URL_HOST);
+    $asunto = ($tipo === 'pagado' ? 'Nuevo pedido PAGADO ' : ($tipo === 'contraentrega' ? 'Nuevo pedido CONTRA ENTREGA ' : 'Nuevo pedido esperando pago ')) . $p['ref'] . ' — ' . cop((int) $p['total']) . ' — ' . $dominio;
+    $cuerpo = json_encode(['clave' => $h['clave'], 'tipo' => $tipo . ' | ' . $dominio, 'asunto' => $asunto, 'campos' => campos_pedido($p)], JSON_UNESCAPED_UNICODE);
     try {
-        $ch = curl_init($u);
-        curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($d, JSON_UNESCAPED_UNICODE), CURLOPT_HTTPHEADER => ['Content-Type: text/plain;charset=utf-8'],
-            CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => true, CURLOPT_TIMEOUT => 12]);
-        $r = curl_exec($ch); $ok = $r !== false && curl_getinfo($ch, CURLINFO_HTTP_CODE) < 400; $m = $ok ? 'ok' : (string) curl_error($ch);
-    } catch (Throwable $e) { $m = $e->getMessage(); }
-    anotar_aviso($p['ref'], $tipo, 'hoja', $ok, $m);
+        $ch = curl_init($h['url']);
+        curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $cuerpo, CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => true, CURLOPT_MAXREDIRS => 5,
+            CURLOPT_TIMEOUT => 20, CURLOPT_HTTPHEADER => ['Content-Type: application/json']]);
+        $res = curl_exec($ch);
+        $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $j = json_decode((string) $res, true);
+        $ok = $code >= 200 && $code < 300 && is_array($j) && !empty($j['ok']);
+        if (!$ok) @file_put_contents(__DIR__ . '/../data/correos.log', date('c') . " HOJA FALLÓ ({$p['ref']}): " . (is_array($j) ? ($j['mensaje'] ?? '') : (curl_error($ch) ?: "Respuesta $code")) . "\n----\n", FILE_APPEND);
+        if (function_exists('anotar_aviso')) anotar_aviso($p['ref'], $tipo, 'hoja', $ok, $ok ? '' : "Respuesta $code");
+    } catch (Throwable $e) {}
 }
 
 // Avisa de un pedido por los dos caminos (correo y formulario). tipo: 'pendiente' o 'pagado'.
