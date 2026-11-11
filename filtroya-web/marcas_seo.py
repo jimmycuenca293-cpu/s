@@ -56,6 +56,12 @@ def generar(R, escribir, dir_, ctx, h):
     """Escribe las subpáginas. h trae las piezas comunes de marcas_exclusivas. Devuelve las rutas."""
     marca, info, ps, base, M, ubic, php_str = (ctx[k] for k in ("marca", "info", "ps", "base", "M", "ubic", "php_str"))
     hechas = []
+    if M.get("bogota"):  # guías de Bogotá: entran al menú lateral, a «relacionadas» y a los enlaces internos de todas las páginas
+        R["temas"] = list(R["temas"]) + [(base + r, t) for r, t in (
+            ("filtro-de-agua-nevecon-samsung-bogota/", "Filtro Samsung en Bogotá: guía completa"), ("precio-filtro-nevera-samsung-bogota/", "Precio del filtro Samsung en Bogotá"),
+            ("comprar-filtro-nevera-samsung-bogota/", "Comprar filtro Samsung en Bogotá"), ("cambio-de-filtro-nevera-samsung-bogota/", "Cambio de filtro en Bogotá"),
+            ("repuesto-filtro-nevera-samsung-bogota/", "Repuestos y equivalencias"), ("mejor-filtro-nevera-samsung-bogota-haf-cin-o-haf-qin/", "HAF-CIN o HAF-QIN"),
+            ("pack-2-filtros-samsung-bogota/", "Pack de 2 filtros"), ("bodega-cedritos-bogota/", "Nuestra bodega en Cedritos"), ("glosario-filtro-nevera-samsung/", "Glosario"))]
 
     def pagina(ruta, titulo, desc, h1, eyebrow, intro, cuerpo, preguntas=(), miga_nombre=None, ld_extra=None):
         miga_h, miga_ld = h.miga([(f"Filtros {marca}", base), (miga_nombre or h1, None)])
@@ -274,6 +280,8 @@ def generar(R, escribir, dir_, ctx, h):
     if M.get("bogota"):
         import bogota_seo
         bogota_seo.generar(pagina, ctx, h, R, hechas)
+        import bogota_contenido
+        bogota_contenido.generar(pagina, ctx, h, R, f"{base}filtros-samsung-bogota-por-localidad/")
 
 
     if R.get("extra"):

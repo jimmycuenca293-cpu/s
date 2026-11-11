@@ -255,6 +255,13 @@ POPULARES = ["Usaquén Centro", "Cedritos", "Santa Bárbara", "El Chicó", "Chap
              "Engativá Centro", "Minuto de Dios", "Boyacá Real", "Teusaquillo Centro", "Galerías", "Ciudad Montes", "Bosa Centro", "Timiza", "Patio Bonito", "Hayuelos", "Restrepo", "20 de Julio", "Ciudad Bolívar", "Lucero", "Usme Centro", "Quiroga"]
 
 
+GUIAS = [("filtro-de-agua-nevecon-samsung-bogota/", "Guía del filtro Samsung en Bogotá"), ("precio-filtro-nevera-samsung-bogota/", "Precios 2026"), ("comprar-filtro-nevera-samsung-bogota/", "Cómo comprar"),
+         ("cambio-de-filtro-nevera-samsung-bogota/", "Cómo cambiarlo"), ("repuesto-filtro-nevera-samsung-bogota/", "Códigos y equivalencias"), ("mejor-filtro-nevera-samsung-bogota-haf-cin-o-haf-qin/", "HAF-CIN o HAF-QIN"),
+         ("pack-2-filtros-samsung-bogota/", "Pack de 2 filtros"), ("bodega-cedritos-bogota/", "Nuestra bodega en Cedritos"), ("nevera-samsung-no-saca-agua-bogota/", "Nevera que no saca agua"), ("preguntas-frecuentes/", "Preguntas frecuentes")]
+TEXTO_PORTADA = ("Filtros de agua para nevera Samsung en Bogotá: el filtro HAF-CIN (DA29-00020B) y el HAF-QIN (DA97-17376B) cuestan $ 130.900 y el filtro externo DA29-10105J $ 96.900, con pack de 2 para ahorrar. "
+                 "Somos una tienda de Cedritos, Usaquén, con pago seguro en línea (tarjeta, PSE, Nequi y Bancolombia) y entrega en 1 a 2 días hábiles en Bogotá, de Usaquén a Ciudad Bolívar y de Suba a Kennedy.")
+
+
 def bloque_portada(base, sec, cab):
     """Sección de la portada: las 4 zonas con sus localidades y los barrios más buscados (enlaces internos hacia todas las páginas locales)."""
     barrios = {b["nombre"]: b for b in datos()}
@@ -268,4 +275,7 @@ def bloque_portada(base, sec, cab):
     return sec(cab("Entregas en Bogotá", "Entregamos en todas las localidades y barrios de Bogotá",
                    f"Escoge tu zona: llegamos en {ENTREGA} a las 19 localidades urbanas y a los municipios cercanos, con pago seguro en línea.")
                + '<div class="m-cols">' + zonas + "</div>"
-               + '<h3 style="margin:22px 0 10px">Barrios más buscados</h3><div class="m-chips">' + pop + f'<a href="{base}filtros-samsung-barrios-exclusivos-de-bogota/">Barrios exclusivos</a><a href="{base}filtros-samsung-barrios-populares-de-bogota/">Barrios populares</a><a href="{base}filtros-samsung-bogota-por-localidad/"><b>Ver todas las localidades y barrios →</b></a></div>', alt=True)
+               + '<h3 style="margin:22px 0 10px">Barrios más buscados</h3><div class="m-chips">' + pop + f'<a href="{base}filtros-samsung-barrios-exclusivos-de-bogota/">Barrios exclusivos</a><a href="{base}filtros-samsung-barrios-populares-de-bogota/">Barrios populares</a><a href="{base}filtros-samsung-bogota-por-localidad/"><b>Ver todas las localidades y barrios →</b></a></div>'
+               + '<h3 style="margin:22px 0 10px">Guías para comprar y cambiar tu filtro en Bogotá</h3><div class="m-chips">'
+               + "".join(f'<a href="{base}{r}">{esc(t)}</a>' for r, t in GUIAS) + "</div>"
+               + '<p class="m-mut" style="margin-top:18px">' + TEXTO_PORTADA + "</p>", alt=True)

@@ -159,7 +159,7 @@ def generar(pagina, ctx, h, R):
         grupos = [("Entregas en Bogotá", [("¿Entregan filtros Samsung en todo Bogotá?", "Sí, en las 19 localidades urbanas y en sus barrios, en 1 a 2 días hábiles."),
                                             ("¿Dónde están ubicados?", "Tenemos nuestra bodega en el barrio Cedritos, en Bogotá."),
                                             ("¿Hay pack de 2 filtros?", "Sí: el pack de 2 trae dos filtros de la misma referencia con ahorro; uno para ahora y otro para dentro de 6 meses."),
-                                            ("¿Cómo pago?", "Solo en línea, en la pasarela segura de Wompi: tarjeta, PSE, Nequi o Bancolombia.")])] + grupos
+                                            ("¿Cómo pago?", "Solo en línea, en la pasarela segura de Wompi: tarjeta, PSE, Nequi o Bancolombia.")])] + __import__("bogota_contenido").faq_bogota() + grupos
     todas = [qa for _, l in grupos for qa in l]
     cuerpo = "".join(f'<h2 id="{slug(g)}" style="font-size:22px;margin:26px 0 12px">{esc(g)}</h2>' + "".join(f'<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>' for q, a in l) for g, l in grupos)
     pagina(X["faq"], f"Preguntas frecuentes sobre filtros de nevera Samsung ({len(todas)} respuestas)",

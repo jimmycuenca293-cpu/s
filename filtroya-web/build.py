@@ -1127,7 +1127,14 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
         llms += ("\n## Preguntas y respuestas\n" + "".join(f"- **{q}** {a_}\n" for _, l in marcas_contenido_samsung.preguntas_ia(ps_m, slug) for q, a_ in l[:6])
                  + "\n## Blog\n- [Blog de filtros Samsung](__BASE__/blog/)\n" + "".join(f"- [{t}](__BASE__/blog/{sl}/): {d_}\n" for sl, t, d_, _, _, _ in marcas_contenido_samsung.articulos(ps_m))
                  + "- [Preguntas frecuentes](__BASE__/preguntas-frecuentes/)\n")
-    (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + llms + "TXT);\n", encoding="utf-8")
+    if SP and SP.get("bogota"):
+        import bogota_contenido as bc
+        blog_ = "".join(f"- [{t}](__BASE__/blog/{sl}/): {d_}\n" for sl, t, d_, _, _, _ in marcas_contenido_samsung.articulos(ps_m))
+        llms = bc.llms(ps_m, "__BASE__", bc.RUTAS, bc.HUB).rstrip("\n") + "\n\n## Blog\n" + blog_
+        llms_full = bc.llms_full(ps_m, "__BASE__", bc.RUTAS, bc.HUB).rstrip("\n") + "\n\n## Blog\n" + blog_
+        (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\n$t = isset($_GET['completo']) ? <<<'FULL'\n" + llms_full + "\nFULL\n : <<<'TXT'\n" + llms + "\nTXT;\necho str_replace('__BASE__', sitio()['base'], $t);\n", encoding="utf-8")
+    else:
+        (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + llms + "TXT);\n", encoding="utf-8")
     cat_m = dict(cat_php, **({"ciudades": ["Bogotá"]} if SP and SP.get("bogota") else {}), paginas=rutas, guias=[], compat=[], blog=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
                  productos={k: v for k, v in cat_php["productos"].items() if k in ids})
     (d / (PREFIJO + "api") / "catalogo.php").write_text("<?php\n// Generado por build.py para el sitio de " + marca + ": no lo edites a mano.\nreturn " + php_val(cat_m) + ";\n", encoding="utf-8")
