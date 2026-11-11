@@ -292,6 +292,7 @@ header .mnav{border-top:1px solid var(--line);background:#fff}
 .pdp{grid-template-columns:1.15fr .85fr!important}.pdp .foto{border-radius:24px}
 @media (max-width:860px){.pdp{grid-template-columns:1fr!important}.pdp .foto{max-width:560px!important}.intro .w{padding-top:18px;padding-bottom:18px}}
 
+@media (max-width:760px){header{position:static!important}}
 .ayuda-grid{color:var(--muted);margin:0 0 16px;font-size:15px}
 .miguitas{font-size:14px;color:var(--muted);padding:14px 0 0}.miguitas a{color:var(--muted)}.miguitas b{color:var(--ink);font-weight:700}
 .buscaciudad{display:flex;gap:10px;align-items:center;margin:0 auto 18px;max-width:520px}.buscaciudad input{flex:1;font:inherit;font-size:16px;padding:12px 16px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}.buscaciudad input:focus{outline:none;border-color:var(--pri)}
@@ -807,10 +808,11 @@ def legal(tipo):
 <p><b>Retracto y garantía:</b> tienes 5 días hábiles para retractarte con el filtro sin instalar y en su empaque, y la garantía legal de la Ley 1480 de 2011 si llega con un defecto de fábrica. Escríbenos por WhatsApp.</p>
 <p><b>Marcas:</b> Samsung, LG, Whirlpool y GE son marcas registradas de sus dueños; las mencionamos solo para indicar en qué nevecones sirve cada filtro.</p>"""
     return f"""<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{titulo} | {esc(NEGOCIO)}</title><meta name="robots" content="noindex"><meta name="google-site-verification" content="{VERIFICACION}">
+<title>{titulo} | {esc(NEGOCIO)}</title><meta name="robots" content="noindex"><meta name="description" content="{titulo} de {esc(NEGOCIO)}."><meta name="google-site-verification" content="{VERIFICACION}">
+<script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.start':new Date().getTime(),event:'gtm.js'}});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);}})(window,document,'script','dataLayer','{GTM}');</script>
 <style>body{{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#121726;background:#f5f7fb;line-height:1.65}}main{{max-width:760px;margin:0 auto;padding:40px 16px 60px}}
 h1{{font-size:30px;line-height:1.15;margin:0 0 18px}}p{{margin:0 0 14px}}a{{color:#1428a0;font-weight:700}}.c{{background:#fff;border:1px solid #e3e6ee;border-radius:18px;padding:24px}}</style></head>
-<body><main><p><a href="/">← Volver a la tienda</a></p><div class="c"><h1>{titulo}</h1>{cuerpo}</div></main></body></html>"""
+<body><noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><main><p><a href="/">← Volver a la tienda</a></p><div class="c"><h1>{titulo}</h1>{cuerpo}</div></main></body></html>"""
 
 
 def escribir(carpeta, contenido):
