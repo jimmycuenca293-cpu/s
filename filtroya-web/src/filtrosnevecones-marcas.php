@@ -15,13 +15,14 @@ function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, stri
     echo '<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
         . '<title>' . h($titulo) . '</title><meta name="description" content="' . h($desc) . '">' . ($indexar ? '<link rel="canonical" href="' . h($canon) . '"><meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"><link rel="alternate" hreflang="es-CO" href="' . h($canon) . '"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="' . h($titulo) . '"><meta name="twitter:description" content="' . h($desc) . '"><meta name="geo.region" content="CO"><meta name="geo.placename" content="Colombia">' : '<meta name="robots" content="noindex">')
         . '<meta property="og:type" content="website"><meta property="og:title" content="' . h($titulo) . '"><meta property="og:description" content="' . h($desc) . '"><meta property="og:url" content="' . h($canon) . '"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="Filtros ' . h($M['nombre']) . '">' . (str_contains($extra, 'og:image') ? '' : '<meta property="og:image" content="' . h($S['base']) . '/img/compartir.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">')
-        . '<meta name="theme-color" content="' . h($M['tema']) . '"><link rel="icon" href="' . h($M['icono'] ?? '/img/icono.svg') . '">'
+        . '<meta name="theme-color" content="' . h($M['tema']) . '"><link rel="icon" href="' . h($M['icono'] ?? '/img/icono.svg') . '">' . (!empty($M['apple']) ? '<link rel="apple-touch-icon" href="' . h($M['apple']) . '">' : '')
         . '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="' . h($M['fuentes']) . '">'
         . ($legado ? '<link rel="stylesheet" href="/estilo.css">' : '') . '<link rel="stylesheet" href="/filtrosnevecones-marcas.css"><script src="/carrito.js" defer></script><script src="/filtrosnevecones-asistente.js" defer></script>'
         . verificacion_html() . analytics_html() . $extra . '</head><body class="m-' . h($M['clase']) . ($legado ? ' m-legado' : '') . '">' . gtm_body_html()
         . '<div class="m-anuncio"><span>' . (!empty($M['autorizado']) ? '✔ ' . h($M['autorizado']) : '✔ Filtros nuevos para neveras ' . h($M['nombre'])) . '</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
         . '<header class="m-top"><div class="m-wrap">'
         . '<a class="m-logo" href="' . h($b) . '" aria-label="Filtros ' . h($M['nombre']) . '"><span class="m-sello">' . logo_marca_html($M) . '<small>Filtros para nevecón</small></span></a>'
+        . buscador_marca($M, 'm-q')
         . menu_marca($M)
         . '</div></header><main' . ($legado ? ' class="wrap m-legado-main"' : '') . '>';
 }
@@ -31,7 +32,7 @@ function menu_marca(array $M): string
 {
     $b = $M['base'];
     $filtros = '';
-    foreach ($M['productos'] as $p) $filtros .= '<a href="' . h($b . $p[1]) . '/">' . h($p[0]) . '</a>';
+    foreach ($M['productos'] as $p) $filtros .= '<a href="' . h($b . $p[1]) . '/">' . h($p[0]) . (isset($p[2]) ? '<small>' . h($p[2]) . ' · envío gratis</small>' : '') . '</a>';
     $guias = '';
     foreach ($M['guias'] ?? [] as $g) $guias .= '<a href="' . h($g[0]) . '">' . h($g[1]) . '</a>';
     $ciudades = '';
@@ -42,12 +43,21 @@ function menu_marca(array $M): string
     $mas = '';
     foreach ($M['extra'] ?? [] as $c) $mas .= '<a href="' . h($c[1]) . '">' . h($c[0]) . '</a>';
     $cart = '<a class="m-cart" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a>';
+    $acc = fn(string $t, string $links, bool $abierto = false) => $links === '' ? '' : '<details' . ($abierto ? ' open' : '') . '><summary>' . $t . '</summary><div>' . $links . '</div></details>';
     $dd = fn(string $t, string $links) => $links === '' ? '' : '<div class="m-dd"><a href="#" onclick="return false" aria-haspopup="true">' . $t . ' <i aria-hidden="true">▾</i></a><div class="m-panel">' . $links . '</div></div>';
     return '<nav class="m-nav" aria-label="Principal">' . $dd('Filtros', $filtros) . $dd('Guías', $guias) . $dd('Ciudades', $ciudades) . $dd('Marcas', $compat) . $dd('Más', $mas)
         . '<a class="m-ancho" href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a class="m-ancho" href="' . h($b) . 'cambio-e-instalacion/">Instalación</a>' . $cart
         . '<details class="m-burger"><summary aria-label="Abrir el menú"><span></span></summary><div class="m-bmenu">'
-        . '<b>Filtros</b>' . $filtros . '<b>Guías</b>' . $guias . '<b>Ciudades</b>' . $ciudades . ($compat ? '<b>Más marcas</b>' . $compat : '') . ($mas ? '<b>Más</b>' . $mas : '')
-        . '<b>Ayuda</b><a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Instalación</a></div></details></nav>';
+        . buscador_marca($M, 'm-q2')
+        . $acc('Filtros', $filtros, true) . $acc('Guías', $guias) . $acc('Ciudades', $ciudades) . ($compat ? $acc('Más marcas', $compat) : '') . ($mas ? $acc('Más', $mas) : '')
+        . $acc('Ayuda', '<a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Instalación</a><a href="/carrito.php">Mi carrito</a>')
+        . '</div></details></nav>';
+}
+
+// Buscador por modelo de nevera o referencia del filtro (lo activa asistente.js)
+function buscador_marca(array $M, string $id): string
+{
+    return '<form class="m-search" role="search" action="' . h($M['base']) . 'cual-es-mi-filtro/" data-buscador autocomplete="off"><input type="search" id="' . h($id) . '" name="q" placeholder="Busca tu modelo" aria-label="Buscar el filtro por modelo de nevera o referencia"><div class="m-sug" role="listbox"></div></form>';
 }
 
 // Logo de la marca (sin logos de marcas); si no hay logo, el nombre en texto

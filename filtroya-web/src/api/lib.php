@@ -54,6 +54,34 @@ function medios_pago_html(): string
     return '<div class="medios" aria-label="Medios de pago">' . implode('', array_map(fn($x) => '<span>' . $x . '</span>', $m)) . '</div>';
 }
 
+// Pasarela de pagos: panel profesional con los medios de pago, la seguridad y los pasos. $v = 'home' | 'producto' | 'carrito'
+function pagos_pro_html(string $v = 'home'): string
+{
+    $ico = [
+        'tarjeta' => '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 15h4"/></svg>',
+        'pse' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10 12 4l9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg>',
+        'nequi' => '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>',
+        'banco' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M6 8v10M10 8v10M14 8v10M18 8v10M3 20h18M12 3 3 8h18z"/></svg>',
+        'efectivo' => '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v.01M18 14.5v.01"/></svg>',
+        'candado' => '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5M12 14.5v2.5"/></svg>',
+    ];
+    $medios = [
+        ['tarjeta', 'Tarjeta crédito o débito', 'Visa y Mastercard'],
+        ['pse', 'PSE', 'Débito desde tu banco'],
+        ['nequi', 'Nequi', 'Pagas desde la app'],
+        ['banco', 'Botón Bancolombia', 'Con tu cuenta'],
+        ['efectivo', 'Contra entrega', 'Efectivo a la transportadora'],
+    ];
+    $lis = '';
+    foreach ($medios as $m) $lis .= '<li><span class="m-pay-i">' . $ico[$m[0]] . '</span><span><b>' . h($m[1]) . '</b><small>' . h($m[2]) . '</small></span></li>';
+    $seg = '<ul class="m-pay-s"><li>' . $ico['candado'] . 'Pago en la pasarela segura de Wompi (Bancolombia)</li><li>' . $ico['candado'] . 'Conexión cifrada: no vemos ni guardamos los datos de tu tarjeta</li><li>' . $ico['candado'] . 'Confirmación de tu pedido por correo y por WhatsApp</li></ul>';
+    if ($v === 'producto' || $v === 'carrito') {
+        return '<div class="m-pay m-pay-c"><div class="m-pay-h"><span class="m-pay-lock">' . $ico['candado'] . '</span><span><b>Paga como prefieras, 100 % seguro</b><small>Pasarela de pagos Wompi · Bancolombia</small></span></div><ul class="m-pay-m">' . $lis . '</ul>' . ($v === 'carrito' ? $seg : '') . '</div>';
+    }
+    $pasos = '<ol class="m-pay-p"><li><b>Escoge tu filtro</b><span>Por la referencia o el modelo de tu nevera.</span></li><li><b>Paga como prefieras</b><span>En línea con tarjeta, PSE, Nequi o Bancolombia, o contra entrega.</span></li><li><b>Recíbelo en casa</b><span>Con número de guía y confirmación por correo.</span></li></ol>';
+    return '<div class="m-pay m-pay-g"><div class="m-pay-h"><span class="m-pay-lock">' . $ico['candado'] . '</span><span><b>Pasarela de pagos segura</b><small>Pagos procesados por Wompi, de Bancolombia</small></span></div><ul class="m-pay-m">' . $lis . '</ul>' . $pasos . $seg . '</div>';
+}
+
 // Datos de ejemplo de config.sample.php que no se pueden quedar en la tienda publicada
 function datos_sin_llenar(): array
 {

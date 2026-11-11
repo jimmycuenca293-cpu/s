@@ -68,6 +68,41 @@ JS = r"""(function () {
     abierto = !abierto; w.classList.toggle('on', abierto); b.setAttribute('aria-expanded', abierto);
     if (abierto) { ev('abrir'); if (!saludo) { saludo = true; msg('¡Hola! 👋 Soy el asistente de la tienda. Escríbeme el <b>modelo de tu nevecón</b> o la <b>referencia del filtro viejo</b> y te digo cuál filtro es. Funciono las 24 horas; si prefieres, te paso con una persona por WhatsApp.', 'bot'); menuBase(); } setTimeout(function () { I.focus(); }, 50); }
   }
+  // Buscador del encabezado y de la portada: sugerencias por modelo o referencia; si no hay coincidencia, lo contesta el asistente
+  function sugerir(q) {
+    var t = n(q), r = [];
+    if (t.length < 3) return r;
+    D.forEach(function (p) {
+      var hit = p.m.filter(function (m) { return n(m).indexOf(t) === 0 || (t.length >= 4 && n(m).indexOf(t) > -1); })[0];
+      if (!hit && (n(p.r).indexOf(t) > -1 || p.a.some(function (a) { return n(a).indexOf(t) > -1; }))) hit = p.r;
+      if (!hit && t.length >= 3 && n(p.n).indexOf(t) > -1) hit = p.r;
+      if (hit) r.push({p: p, t: hit});
+    });
+    return r.slice(0, 6);
+  }
+  document.querySelectorAll('form[data-buscador]').forEach(function (f) {
+    var i = f.querySelector('input'), s = f.querySelector('.m-sug');
+    function pintar() {
+      var r = sugerir(i.value);
+      if (i.value.trim().length < 3) { s.classList.remove('on'); s.innerHTML = ''; return; }
+      s.innerHTML = r.length ? r.map(function (x) { return '<a href="' + x.p.u + '"><span>' + esc(x.t) + ' → ' + esc(x.p.r) + '</span><small>' + cop(x.p.p) + '</small></a>'; }).join('')
+        : '<div class="m-nada">No lo encuentro en la lista. Toca Enter y te ayuda el asistente.</div>';
+      s.classList.add('on');
+    }
+    i.addEventListener('input', pintar);
+    i.addEventListener('focus', pintar);
+    document.addEventListener('click', function (e) { if (!f.contains(e.target)) s.classList.remove('on'); });
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var q = i.value.trim(); if (!q) return;
+      var r = sugerir(q);
+      ev('buscador', q.slice(0, 40));
+      if (r.length === 1) { location.href = r[0].p.u; return; }
+      if (!abierto) abrir();
+      i.value = ''; s.classList.remove('on');
+      msg(esc(q), 'yo'); setTimeout(function () { responder(q); }, 300);
+    });
+  });
   b.onclick = abrir; w.querySelector('header button').onclick = abrir;
   w.querySelector('#fn-f').onsubmit = function (x) { x.preventDefault(); var q = I.value.trim(); if (!q) return; I.value = ''; msg(esc(q), 'yo'); ev('busca', q.slice(0, 40)); setTimeout(function () { responder(q); }, 350); };
 })();

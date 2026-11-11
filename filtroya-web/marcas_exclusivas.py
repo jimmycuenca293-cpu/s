@@ -74,7 +74,7 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     for p in ps:
         p["slug_o"] = p["slug"]
     M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": AUTORIZADO[marca]} if marca in AUTORIZADO else {}),
-         "productos": [[p["nombre_largo"] + "", p["slug_o"]] for p in ps]}
+         "productos": [[p["nombre_largo"] + "", p["slug_o"], cop(p["precio"])] for p in ps]}
     R = marcas_seo.rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO)
     _rutas = [p["slug_o"] + "/" for p in ps] + [r for r, _ in R["temas"]] + [v[2] for v in R["refs"].values()] + [v[2] for v in R["modelos"].values()]
     _dup = {x for x in _rutas if _rutas.count(x) > 1}
@@ -237,6 +237,14 @@ def carrusel(marca, ps, base, foto, ubic):
             f'<div class="wc-pts">{pts}</div></div><script>{js}</script>')
 
 
+def buscador_home(marca, ps, base):
+    """Buscador grande por modelo de nevera (portada de la tienda propia de la marca), con los modelos más buscados como enlaces."""
+    chips = "".join(f'<a href="{base}{p["slug_o"]}/">{esc(mo)} <small>· {esc(p["ref"])}</small></a>' for p in ps for mo in p["modelos"][:3])
+    return sec('<div class="m-finder"><h2>¿Qué filtro necesita tu nevera ' + esc(marca) + '?</h2><p>Escribe el modelo de tu nevecón o la referencia del filtro viejo y te llevamos a tu filtro.</p>'
+               '<form class="m-search" role="search" action="' + base + 'cual-es-mi-filtro/" data-buscador autocomplete="off"><input type="search" id="m-q3" name="q" placeholder="Ej. ' + esc(ps[0]["modelos"][0] if ps[0]["modelos"] else ps[0]["ref"]) + '" aria-label="Modelo de tu nevera o referencia del filtro"><div class="m-sug" role="listbox"></div></form>'
+               '<div class="m-chips">' + chips + '</div></div>')
+
+
 # ---------- portada de la marca ----------
 def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades, R=None, datos=None):
     destacados = sorted(ps, key=lambda p: ubic(p) == "externo")[:3]
@@ -270,8 +278,10 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
   </div>
   <div class="m-fotos">{fotos}<span class="sello-o"><span><b>Envío</b>gratis<br>a toda Colombia</span></span></div>
 </div></section>
+{buscador_home(marca, ps, base) if marca in AUTORIZADO else ''}
 {confianza(marca)}
 {sec(cab("Catálogo " + marca, f"Filtros {marca}", f"{len(ps)} referencias {esc(marca)}, nuevas y en su empaque. Todas con envío gratis a toda Colombia.") + '<div class="m-grid">' + "".join(tarjeta(p, base, foto, ubic) for p in ps) + "</div>", id_="filtros")}
+{(sec("<?= pagos_pro_html('home') ?>") if marca in AUTORIZADO else "")}
 {sec(cab("Compra con confianza", f"¿Qué recibo con mi filtro {marca}?", "Esto es lo que recibes y lo que puedes revisar tú mismo.") + '<div class="m-cols">' + "".join(f'<div class="m-bloque"><div class="ic">{i}</div><h3>{esc(t)}</h3><p>{esc(d)}</p></div>' for i, t, d in verificar(marca)) + "</div>", alt=True)}
 {sec(cab("Encuentra el tuyo", f"¿Cuál filtro {marca} le sirve a mi nevecón?", esc(info["etiqueta"])) + '<div class="m-chips">' + "".join(f'<a href="{base}{p["slug_o"]}/">{esc(p["ref"])} <small>· {esc(p["nombre_largo"])}</small></a>' for p in ps) + f'</div><p style="margin-top:18px"><a class="m-btn sec" href="{base}cual-es-mi-filtro/">Buscar por modelo de nevecón {esc(marca)}</a></p>')}
 {sec(cab("Mantenimiento", f"¿Cuándo cambiar el filtro de tu nevecón {marca}?", esc(info["aviso"])) + '<ul class="m-ok">' + "".join(f"<li>{esc(x)}</li>" for x in senales) + f'</ul><p style="margin-top:18px"><a href="{base}cambio-e-instalacion/">Cómo instalar cada filtro {esc(marca)}, paso a paso →</a></p>', alt=True)}
@@ -344,7 +354,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
     <div class="m-aviso"><span style="font-size:22px">✔</span><span><b>Filtro {esc(marca)} · {esc(p["ref"])}</b>Filtro nuevo, en su caja sellada con la referencia {esc(p["ref"])} impresa. ¿Quieres verlo? Te mandamos fotos reales por WhatsApp.</span></div>
     <div class="compra"><button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>
     <ul class="m-ok"><li><b>Envío gratis</b>: llega en 2 a 3 días hábiles a las principales ciudades.</li><li><b>Fácil de instalar</b>: {"10 a 15 minutos en la manguera del agua" if externo else "2 minutos, sin herramientas"}. Paso a paso abajo.</li><li><b>Pago seguro</b> en línea; el comprobante llega a tu correo.</li></ul>
-    <span class="m-mut" style="font-size:14px">Paga con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span><?= medios_pago_html() ?>
+    <?= pagos_pro_html('producto') ?>
   </div>
 </div>
 </div>

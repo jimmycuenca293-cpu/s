@@ -838,13 +838,41 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         if f.name != "icono.svg" and f.name.split(".")[0].removesuffix("-400") not in ids:
             f.unlink()
     logo = None
-    if (AQUI / "logos" / f"{s}-web.png").exists():  # logos de las marcas que mandó el dueño
-        shutil.copy(AQUI / "logos" / f"{s}-web.png", d / (PREFIJO + "img") / f"logo-{s}.png")
-        lw, lh = Image.open(AQUI / "logos" / f"{s}-web.png").size
+    ls_ = f"{s}-oval" if (marca == "Samsung" and (AQUI / "logos" / "samsung-oval-web.png").exists()) else s  # Samsung: el logo ovalado que mandó el dueño
+    if (AQUI / "logos" / f"{ls_}-web.png").exists():  # logos de las marcas que mandó el dueño
+        shutil.copy(AQUI / "logos" / f"{ls_}-web.png", d / (PREFIJO + "img") / f"logo-{s}.png")
+        lw, lh = Image.open(AQUI / "logos" / f"{ls_}-web.png").size
         logo = {"logo": f"/{PREFIJO}img/logo-{s}.png", "logo_w": lw, "logo_h": lh}
-        if (AQUI / "logos" / f"{s}-icono.png").exists():
-            shutil.copy(AQUI / "logos" / f"{s}-icono.png", d / (PREFIJO + "img") / f"icono-{s}.png")
+        if (AQUI / "logos" / f"{ls_}-icono.png").exists():
+            shutil.copy(AQUI / "logos" / f"{ls_}-icono.png", d / (PREFIJO + "img") / f"icono-{s}.png")
             logo["icono"] = f"/{PREFIJO}img/icono-{s}.png"
+        if (AQUI / "logos" / f"{ls_}-icono-512.png").exists():
+            shutil.copy(AQUI / "logos" / f"{ls_}-icono-512.png", d / (PREFIJO + "img") / "apple-touch-icon.png")
+            shutil.copy(AQUI / "logos" / f"{ls_}-icono-512.png", d / (PREFIJO + "img") / "icono-512.png")
+            logo["apple"] = f"/{PREFIJO}img/apple-touch-icon.png"
+    if marca == "Samsung" and ls_ != s:  # imagen para compartir (Google, WhatsApp, redes): 1200x630 con el logo y el nombre
+        from PIL import ImageDraw, ImageFont
+        W_, H_ = 1200, 630
+        bgim = Image.new("RGB", (W_, H_), (10, 20, 96))
+        px = bgim.load()
+        for yy in range(H_):
+            for xx in range(0, W_, 4):
+                t_ = (xx / W_ * .5 + yy / H_ * .5)
+                c_ = (int(10 + (20 - 10) * t_), int(20 + (40 - 20) * t_), int(96 + (160 - 96) * t_))
+                for k_ in range(4):
+                    px[min(xx + k_, W_ - 1), yy] = c_
+        dr_ = ImageDraw.Draw(bgim)
+        lgo = Image.open(AQUI / "logos" / "samsung-oval-web.png").convert("RGBA")
+        card = Image.new("RGBA", (lgo.width // 2 + 80, lgo.height // 2 + 70), (255, 255, 255, 255))
+        lgo2 = lgo.resize((lgo.width // 2, lgo.height // 2), Image.LANCZOS)
+        card.alpha_composite(lgo2, (40, 35))
+        bgim.paste(card.convert("RGB"), (80, 80))
+        fb = ImageFont.truetype("/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf", 76)
+        fm = ImageFont.truetype("/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf", 36)
+        dr_.text((80, 300), "Filtros de agua para", font=fb, fill=(255, 255, 255))
+        dr_.text((80, 390), "nevera Samsung", font=fb, fill=(169, 184, 255))
+        dr_.text((80, 520), "Distribuidores de Samsung a nivel nacional  ·  Envíos a toda Colombia", font=fm, fill=(255, 255, 255))
+        bgim.save(d / (PREFIJO + "img") / "compartir.jpg", quality=88)
     SP = SITIOS_PROPIOS.get(marca)
     marcas_exclusivas.AUTORIZADO = {marca: SP["frase"]} if SP else {}
     (d / (PREFIJO + "asistente.js")).write_text(asistente.generar([p for p in CATALOGO if p["marca"] == marca], lambda p: f"/{p['slug']}/"), encoding="utf-8")

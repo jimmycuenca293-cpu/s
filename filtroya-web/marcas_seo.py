@@ -287,7 +287,7 @@ def logo_pagina(M, marca):
 
 def aside(R, M, base, marca, info, actual):
     """Columna lateral de las subpáginas: marca, filtros, guías, ciudades y fuentes oficiales."""
-    filtros = "".join(f'<a href="{esc(base + sl)}/">{esc(n)}</a>' for n, sl in M["productos"])
+    filtros = "".join(f'<a href="{esc(base + sl)}/">{esc(n)}</a>' for n, sl, *_ in M["productos"])
     temas = "".join(f'<a href="{r}"{" aria-current=\"page\"" if r == actual else ""}>{esc(t)}</a>' for r, t in R["temas"])
     ciudades = "".join(f'<a href="{r}">{esc(n)}</a>' for n, (_, r) in list(R["ciudades"].items())[:12])
     externos = "".join(f'<a href="{esc(u)}" target="_blank" rel="noopener">{esc(n)} ↗</a>' for n, u, _ in info.get("externos", []))
@@ -308,7 +308,7 @@ def seguir(R, actual, marca, M, base):
     prods = M["productos"][:3]
     ciu = [(n, r) for n, (_, r) in R["ciudades"].items() if r != actual][:3]
     c = "".join(f'<a class="m-bloque m-guia" href="{r}"><h3>{esc(t)}</h3><p>Leer →</p></a>' for r, t in tres)
-    f = " · ".join(f'<a href="{esc(base + sl)}/">{esc(n)}</a>' for n, sl in prods)
+    f = " · ".join(f'<a href="{esc(base + sl)}/">{esc(n)}</a>' for n, sl, *_ in prods)
     ci = " · ".join(f'<a href="{r}">Filtro {esc(marca)} en {esc(n)}</a>' for n, r in ciu)
     return (f'<div class="m-seguir"><h2>Sigue leyendo</h2><div class="m-cols">{c}</div>'
             f'<p class="m-mut" style="margin-top:14px">Filtros: {f}. Envíos: {ci}.</p></div>')
@@ -318,7 +318,7 @@ def relacionadas(R, actual, marca, M, base):
     """Enlaces a las demás subpáginas: ayudan a Google a encontrarlas todas y al cliente a seguir buscando."""
     temas = "".join(f'<a href="{r}">{esc(t)}</a>' for r, t in R["temas"] if r != actual)
     ciudades = "".join(f'<a href="{r}">{esc(n)}</a>' for n, (_, r) in list(R["ciudades"].items())[:36] if r != actual)
-    prods = "".join(f'<a href="{esc(base + sl)}/">{esc(n)}</a>' for n, sl in M["productos"])
+    prods = "".join(f'<a href="{esc(base + sl)}/">{esc(n)}</a>' for n, sl, *_ in M["productos"])
     return (f'<div class="m-cab"><span class="eyebrow">Te puede servir</span><h2>Más sobre filtros {esc(marca)}</h2></div>'
             f'<div class="m-chips">{temas}</div><h3 style="margin:22px 0 10px">Los filtros {esc(marca)}</h3><div class="m-chips">{prods}</div>'
             f'<h3 style="margin:22px 0 10px">Envíos por ciudad</h3><div class="m-chips">{ciudades}<a href="{R["hub"]}"><b>Ver las {len(R["ciudades"])} ciudades →</b></a></div>')

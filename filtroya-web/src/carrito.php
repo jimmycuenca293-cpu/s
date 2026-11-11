@@ -46,7 +46,7 @@ cabeza('Tu carrito | ' . cfg()['negocio']['nombre'], 'Carrito de compras.', '/ca
       <label class="check2"><input type="checkbox" id="c-rec"><span>Recuérdame por correo cuando toque cambiar el filtro (cada 6 meses). <i>Opcional.</i></span></label>
       <button class="btn block" type="button" id="pagar">Pagar</button>
       <div class="err" id="err" role="alert" aria-live="assertive"></div>
-      <div class="sellos"><span>🔒 Pago seguro</span><span>🚚 Envío gratis a toda Colombia</span><span>💬 Asesoría por WhatsApp</span></div><?= medios_pago_html() ?>
+      <div class="sellos"><span>🔒 Pago seguro</span><span>🚚 Envío gratis a toda Colombia</span><span>💬 Asesoría por WhatsApp</span></div><?= marca_sitio() ? pagos_pro_html('carrito') : medios_pago_html() ?>
       <p class="m" style="font-size:12.5px;margin:0">Pagas con tarjeta, PSE, Nequi o botón Bancolombia.</p>
     </section>
   </aside>
