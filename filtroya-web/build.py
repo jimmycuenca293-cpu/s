@@ -593,7 +593,7 @@ rutas_marcas = []
 for marca in marcas_exclusivas.MARCAS_INFO:
     s = slug(marca)
     logo = None
-    if False:  # sin logos de marcas (políticas de Google Ads)
+    if (AQUI / "logos" / f"{s}-web.png").exists():
         shutil.copy(AQUI / "logos" / f"{s}-web.png", OUT / "img" / f"logo-{s}.png")
         lw, lh = Image.open(AQUI / "logos" / f"{s}-web.png").size
         logo = {"logo": f"/img/logo-{s}.png", "logo_w": lw, "logo_h": lh}
@@ -830,7 +830,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         if f.name != "icono.svg" and f.name.split(".")[0].removesuffix("-400") not in ids:
             f.unlink()
     logo = None
-    if False:  # sin logos de marcas (políticas de Google Ads)
+    if (AQUI / "logos" / f"{s}-web.png").exists():  # logos de las marcas que mandó el dueño
         shutil.copy(AQUI / "logos" / f"{s}-web.png", d / (PREFIJO + "img") / f"logo-{s}.png")
         lw, lh = Image.open(AQUI / "logos" / f"{s}-web.png").size
         logo = {"logo": f"/{PREFIJO}img/logo-{s}.png", "logo_w": lw, "logo_h": lh}

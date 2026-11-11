@@ -145,7 +145,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, refs, modelos, guias, ciuda
                    f'<div class="fx-sl-img"><span>{foto(p, p["nombre_largo"] + " para nevecón " + p["marca"], lazy=(i > 0))}</span></div></div></section>')
     puntos = "".join(f'<button type="button" aria-label="Ir al banner de {esc(m)}"></button>' for m in MARCAS)
 
-    circ = "".join(f'<li><a href="/{slug(m)}/"><span class="fx-c fx-ini" style="--c:{MARCAS_INFO[m]["tema"]}">{esc(m)[:2].upper()}</span>{esc(m)}</a></li>' for m in MARCAS)
+    circ = "".join(f'<li><a href="/{slug(m)}/"><span class="fx-c"><img src="/img/logo-{slug(m)}.png" alt="Logo {esc(m)}" width="{info_marca[m][0]}" height="{info_marca[m][1]}" loading="lazy"></span>{esc(m)}</a></li>' for m in MARCAS)
     circ += "".join(f'<li><a href="{r}"><span class="fx-c">{ICONOS[k]}</span>{t}</a></li>' for k, r, t in (
         ("interno", "/tienda/", "Filtros internos"), ("externo", "/tienda/", "Filtros externos"), ("pack", "/politica-de-envios.php", "Contra entrega"),
         ("instalacion", "/instalacion/", "Instalación"), ("guias", "/guia/", "Guías"), ("envios", "/envios/", "Envíos")))
@@ -155,7 +155,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, refs, modelos, guias, ciuda
     for m in MARCAS:
         ps = [p for p in CATALOGO if p["marca"] == m]
         tiendas += (f'<section class="fx-sec" aria-labelledby="e-{slug(m)}"><div class="fx-wrap"><div class="fx-tienda" style="--c:{MARCAS_INFO[m]["tema"]}"><div class="fx-tienda-h">'
-                    f''
+                    f'<span class="fx-lg"><img src="/img/logo-{slug(m)}.png" alt="Logo {esc(m)}" width="{info_marca[m][0]}" height="{info_marca[m][1]}" loading="lazy"></span>'
                     f'<h2 id="e-{slug(m)}">Tienda de filtros {esc(m)}</h2><a href="/{slug(m)}/">Entrar a la tienda {esc(m)}</a></div>'
                     f'<div class="fx-grid">{"".join(card(p) for p in ps)}</div></div></div></section>')
     mosaico = (f'<a class="fx-mo" style="--c:#0f5e57" href="/politica-de-envios.php"><b>Paga al recibir</b><span>Pago contra entrega con la transportadora, o en línea con tarjeta, PSE y Nequi.</span><i>Ver cómo →</i>{ICONOS["pack"]}</a>'

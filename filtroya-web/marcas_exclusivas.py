@@ -229,7 +229,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
     return inicio(M, php_str, titulo, desc, base, ld) + f"""
 <section class="m-hero"><div class="m-wrap">
   <div>
-    <span class="m-hero-logo"><span><b>Filtros {esc(marca)}</b>Envío gratis a toda Colombia</span></span>
+    <span class="m-hero-logo"><?= logo_marca_html($M) ?><span><b>Filtros {esc(marca)}</b>Envío gratis a toda Colombia</span></span>
     <h1>Filtros de agua {esc(marca)} para tu nevecón</h1>
     <p class="lead">{esc(info["intro"])}</p>
     <div class="acc"><a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a><a class="m-btn sec" href="{base}cual-es-mi-filtro/">¿Cuál es el mío?</a></div>
@@ -302,7 +302,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
 <div class="m-prod">
   <div class="foto"><span class="m-badge">✔ {esc(marca)}</span>{foto(p, nombre, lazy=False)}</div>
   <div class="info">
-    <span class="m-prod-logo"><small>Filtro para nevecón {esc(marca)}</small></span>
+    <span class="m-prod-logo"><?= logo_marca_html($M) ?><small>Filtro para nevecón</small></span>
     <h1>{esc(nombre)}</h1>
     <span class="sub">Filtro de agua {esc(marca)} · {"Externo" if externo else "Interno"} · Referencia <b>{esc(p["ref"])}</b></span>
     <?php if ($R['n']) echo '<a href="#opiniones" style="text-decoration:none;color:inherit">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span class="m-mut">(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
