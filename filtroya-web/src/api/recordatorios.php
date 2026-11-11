@@ -15,7 +15,7 @@ $st->execute([$limite]);
 $n = 0;
 $cat = catalogo()['productos'];
 foreach ($st->fetchAll() as $p) {
-    $url = base_url() . '/' . (isset($cat[$p['pid']]) ? 'filtro/' . $cat[$p['pid']]['slug'] . '/' : '');
+    $url = base_url() . '/' . (isset($cat[$p['pid']]) ? ltrim(url_producto($cat[$p['pid']]), '/') : '');
     enviar_correo($p['email'], 'Ya casi toca cambiar el filtro de tu nevecón',
         '<h2 style="margin:0 0 8px">Hola, ' . h(explode(' ', $p['nombre'])[0]) . '</h2><p>Hace casi 6 meses compraste el <b>' . h($p['producto']) . '</b> (ref. ' . h($p['refprod']) . '). '
         . 'Ya casi toca cambiarlo para que el agua siga saliendo limpia y sin mal sabor.</p><p><a href="' . h($url) . '" style="display:inline-block;background:#0f7f70;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold">Pedir mi filtro</a></p>'

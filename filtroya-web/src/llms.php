@@ -4,7 +4,7 @@
 require __DIR__ . '/api/sitio.php';
 header('Content-Type: text/plain; charset=utf-8');
 header('X-Robots-Tag: noindex');
-$S = sitio(); $b = $S['base']; $n = $S['negocio']; $cat = catalogo();
+$S = sitio(); $b = $S['base']; $n = $S['negocio']; $cat = catalogo(); $up = fn($p) => $b . url_producto($p);
 $completo = !empty($_GET['completo']);
 $cop = fn($v) => '$' . number_format((int) $v, 0, ',', '.') . ' COP';
 $marcas = array_column($cat['marcas'], 'nombre');
@@ -24,7 +24,7 @@ $o[] = '- Atendida por técnicos de neveras. WhatsApp: ' . $n['telefono'] . ' ·
 $o[] = '';
 $o[] = '## Filtros';
 foreach ($cat['productos'] as $id => $p) {
-    $o[] = "- [{$p['nombre']}]($b/filtro/{$p['slug']}/): {$p['marca']}, " . ($p['ubic'] === 'externo' ? 'externo (va en la manguera)' : 'interno') . ', ' . $cop($p['precio'])
+    $o[] = "- [{$p['nombre']}]({$up($p)}): {$p['marca']}, " . ($p['ubic'] === 'externo' ? 'externo (va en la manguera)' : 'interno') . ', ' . $cop($p['precio'])
         . ($p['alias'] ? '. Equivale a: ' . implode(', ', $completo ? $p['alias'] : array_slice($p['alias'], 0, 4)) : '') . '.';
     if ($completo) {
         if ($p['modelos']) $o[] = '  - Nevecones que lo usan: ' . implode(', ', $p['modelos']) . '.';
@@ -60,6 +60,6 @@ if (!$completo) { $o[] = ''; $o[] = '## Opcional'; $o[] = "- [Catálogo completo
 if ($completo) {
     $o[] = '';
     $o[] = '## Equivalencias de referencias';
-    foreach ($cat['productos'] as $p) foreach ($p['alias'] as $r) $o[] = "- $r = {$p['nombre']} ($b/filtro/{$p['slug']}/)";
+    foreach ($cat['productos'] as $p) foreach ($p['alias'] as $r) $o[] = "- $r = {$p['nombre']} ({$up($p)})";
 }
 echo implode("\n", $o) . "\n";

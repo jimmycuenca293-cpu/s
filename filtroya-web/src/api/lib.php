@@ -243,6 +243,12 @@ function aplicar_transaccion(array $tx): ?array
 }
 
 // Líneas del carrito con el precio del servidor. Cada línea: producto suelto (cant 1–10) o pack anual de 2.
+// Dirección oficial de la ficha de un producto: dentro de la página de su marca (/samsung/..., /lg/...)
+function url_producto(array $p): string
+{
+    return '/' . strtolower(preg_replace('/[^a-z0-9]+/i', '', (string) $p['marca'])) . '/' . $p['slug'] . '/';
+}
+
 // Pago contra entrega (configurable en config.php)
 function cod_cfg(): array
 {

@@ -164,12 +164,13 @@ def generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, refs, modelos, guias, ciuda
         ("instalacion", "Fácil de instalar", "paso a paso en cada filtro"), ("guias", "Te asesoramos", "por WhatsApp, de lunes a sábado")))
     chips_ref = "".join(f'<a href="{r}">{esc(t)}</a>' for t, r in refs[:20])
     ciudades = "".join(f'<a href="{rutas_ciudad[c]}">{esc(c)}</a>' for c in ciudades_top if c in rutas_ciudad)
+    ciudades += "".join(f'<a class="fx-mas" href="/{slug(m)}/filtros-{slug(m)}-por-ciudad/">Filtros {esc(m)} por ciudad →</a>' for m in MARCAS)
     guias_html = "".join(f'<a class="fx-guia" href="{r}"><b>{esc(t)}</b><span>Leer la guía →</span></a>' for r, t in guias[:6])
     faq_html = "".join(f'<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>' for q, a in FAQ)
 
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "Store", "@id": "__BASE__/#tienda", "name": "__NOMBRE__", "url": "__BASE__/", "image": "__BASE__/img/compartir.jpg", "logo": "__BASE__/img/icono-512.png",
-         "telephone": "__TEL__", "areaServed": {"@type": "Country", "name": "Colombia"}, "priceRange": "$$"},
+         "telephone": "__TEL__", "areaServed": {"@type": "Country", "name": "Colombia"}, "priceRange": "$$", "contactPoint": {"@type": "ContactPoint", "telephone": "__TEL__", "contactType": "customer service", "areaServed": "CO", "availableLanguage": "es"}},
         {"@type": "WebSite", "@id": "__BASE__/#web", "url": "__BASE__/", "name": "__NOMBRE__", "inLanguage": "es-CO", "publisher": {"@id": "__BASE__/#tienda"}},
         {"@type": "ItemList", "name": "Filtros de agua para nevera", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__{url(p)}", "name": p["nombre_largo"]} for i, p in enumerate(CATALOGO)]},
         {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in FAQ]}]}

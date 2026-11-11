@@ -72,8 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#lineas").innerHTML = L.map((l, i) => {
       const p = P[l.pid], unit = l.pack ? p.pack : p.precio, ahorro = p.precio * 2 - p.pack;
       return `<div class="linea">
-        <a class="lim" href="/filtro/${p.slug}/"><picture><source srcset="/img/${l.pid}-400.webp" type="image/webp"><img src="/img/${l.pid}.jpg" alt="${esc(p.nombre)}"></picture></a>
-        <div class="ltx"><a href="/filtro/${p.slug}/"><b>${esc(p.nombre)}</b></a><span class="ref">${esc(p.ref)}</span>${l.pack ? `<span class="badge pagado">Pack anual de 2 · ahorras ${cop(ahorro)}</span>` : ""}
+        <a class="lim" href="/${p.marca.toLowerCase().replace(/[^a-z0-9]+/g, "")}/${p.slug}/"><picture><source srcset="/img/${l.pid}-400.webp" type="image/webp"><img src="/img/${l.pid}.jpg" alt="${esc(p.nombre)}"></picture></a>
+        <div class="ltx"><a href="/${p.marca.toLowerCase().replace(/[^a-z0-9]+/g, "")}/${p.slug}/"><b>${esc(p.nombre)}</b></a><span class="ref">${esc(p.ref)}</span>${l.pack ? `<span class="badge pagado">Pack anual de 2 · ahorras ${cop(ahorro)}</span>` : ""}
           <div class="lact"><span class="qty"><button type="button" data-q="-1" data-i="${i}" aria-label="Menos">−</button><b>${l.cant}</b><button type="button" data-q="1" data-i="${i}" aria-label="Más">+</button></span>
           <button type="button" class="link" data-del="${i}">Quitar</button></div></div>
         <div class="lder"><button type="button" class="lx" data-del="${i}" aria-label="Quitar ${esc(p.nombre)} del carrito" title="Quitar del carrito">✕</button><b class="lprecio">${cop(unit * l.cant)}</b></div></div>`;

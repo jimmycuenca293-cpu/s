@@ -665,6 +665,18 @@ for f in OUT.rglob("*"):
         if t2 != t:
             f.write_text(t2, encoding="utf-8")
 
+# Las fichas de /filtro/<producto>/ repetían las de cada marca: se borran y todos los enlaces van a /<marca>/<producto>/
+_marca_de = {p["slug"]: slug(p["marca"]) for p in CATALOGO}
+_slugs_p = "|".join(re.escape(s_) for s_ in _marca_de)
+shutil.rmtree(OUT / "filtro", ignore_errors=True)
+for f in OUT.rglob("*"):
+    if f.is_file() and f.suffix in (".php", ".js", ".txt", ".xml", ".json", ".html", ""):
+        t = f.read_text(encoding="utf-8")
+        t2 = re.sub(r"/filtro/(" + _slugs_p + r")/", lambda m: f"/{_marca_de[m.group(1)]}/{m.group(1)}/", t)
+        if t2 != t:
+            f.write_text(t2, encoding="utf-8")
+_red_filtro = "".join(f"RewriteRule ^(?:purofiltro-|filtrosnevecones-)?filtro/{re.escape(s_).replace(chr(92) + '-', '-')}/?$ /{m_}/{s_}/ [R=301,L]\n" for s_, m_ in _marca_de.items())
+
 # ---------- portada de tienda en línea (estructura propia, distinta de la app de la otra tienda) ----------
 _refs = [(r, ruta_ref[norm(r)]) for p in CATALOGO for r in p["refs"] if norm(r) in ruta_ref]
 _vistos = set()
@@ -749,7 +761,7 @@ RewriteRule ^(?:purofiltro-|filtrosnevecones-)?marca/?$ /#marcas [R=301,NE,L]
 RewriteRule ^(?:purofiltro-|filtrosnevecones-)?otras-marcas/?$ /whirlpool/filtros-para-nevera-por-marca/ [R=301,L]
 RewriteRule ^(?:purofiltro-|filtrosnevecones-)?otras-marcas/({"|".join(re.escape(x) for x in _dup)})/?$ /whirlpool/$1/ [R=301,L]
 # La tienda anterior usaba el prefijo «purofiltro-»: api y data se conservan (pedidos y config.php); todo lo demás pasa al prefijo nuevo
-RewriteRule ^purofiltro-(?!api/|data/)(.*)$ /{PREFIJO}$1 [R=301,L]
+{_red_filtro}RewriteRule ^purofiltro-(?!api/|data/)(.*)$ /{PREFIJO}$1 [R=301,L]
 """
 ht = OUT / ".htaccess"
 _h = ht.read_text(encoding="utf-8")
@@ -781,11 +793,11 @@ foreach ($urls as $u => $pr) echo '  <url><loc>' . htmlspecialchars($b . $u) . '
 echo '</urlset>';
 """ % (PREFIJO, PREFIJO)
 CAMBIOS_MARCA = {  # rutas de la tienda principal que en el sitio de la marca son otras
-    "carrito.php": [("/filtrosnevecones-filtro/${p.slug}/", "/${p.slug}/"), ('href="/filtrosnevecones-tienda/"', 'href="/#filtros"')],
+    "carrito.php": [("/${p.marca.toLowerCase().replace(/[^a-z0-9]+/g, \"\")}/${p.slug}/", "/${p.slug}/"), ('href="/filtrosnevecones-tienda/"', 'href="/#filtros"')],
     "404.php": [('href="/#catalogo"', 'href="/#filtros"'), ('href="/filtrosnevecones-referencias/"', 'href="/cual-es-mi-filtro/"'), ('href="/filtrosnevecones-neveras/">Buscar por modelo', 'href="/cambio-e-instalacion/">Cómo instalarlo')],
     "quienes-somos.php": [('href="/filtrosnevecones-guia/">Lee nuestras guías', 'href="/cambio-e-instalacion/">Cómo cambiar tu filtro'), ('href="/#catalogo"', 'href="/#filtros"')],
-    "feed.php": [("$b/filtrosnevecones-filtro/{$p['slug']}/", "$b/{$p['slug']}/")],
-    PREFIJO + "api/recordatorios.php": [("'" + PREFIJO + "filtro/' . $cat[$p['pid']]['slug'] . '/'", "$cat[$p['pid']]['slug'] . '/'")],
+    "feed.php": [("$x($b . url_producto($p))", "$x(\"$b/{$p['slug']}/\")")],
+    PREFIJO + "api/recordatorios.php": [("ltrim(url_producto($cat[$p['pid']]), '/')", "$cat[$p['pid']]['slug'] . '/'")],
 }
 for marca in marcas_exclusivas.MARCAS_INFO:
     s = slug(marca)
