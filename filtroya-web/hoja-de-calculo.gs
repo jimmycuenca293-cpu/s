@@ -3,6 +3,7 @@
 // 3) Cambia CLAVE por una palabra secreta (la misma que pones en config.php: 'hoja' => ['clave' => ...]).
 // 4) Implementar > Nueva implementación > Aplicación web > Ejecutar como: yo · Quién tiene acceso: cualquiera. Copia la URL en config.php ('hoja' => ['url' => ...]).
 const CLAVE = 'cambia-esta-clave';
+const CORREO = 'tucorreo@gmail.com';   // aquí te llega cada pedido con todos los datos del cliente (además del correo de la tienda)
 const COLS = ['fecha', 'tienda', 'sitio', 'pedido', 'estado', 'productos', 'total', 'entrega', 'ciudad', 'nombre', 'celular', 'correo', 'barrio', 'direccion', 'indicaciones', 'modelo', 'recordatorio', 'pago'];
 
 function doPost(e) {
@@ -15,5 +16,9 @@ function doPost(e) {
   const hallado = h.getLastRow() > 1 ? h.getRange(2, col, h.getLastRow() - 1, 1).createTextFinder(ref).matchEntireCell(true).findNext() : null;
   if (hallado) h.getRange(hallado.getRow(), 1, 1, COLS.length).setValues([fila]);   // el pago actualiza la fila del pedido
   else h.appendRow(fila);
+  try {
+    const cuerpo = COLS.map(c => c.toUpperCase() + ': ' + (d[c] === undefined ? '' : d[c])).join('\n');
+    MailApp.sendEmail(CORREO, (d.tipo === 'pagado' ? 'Nuevo pedido PAGADO ' : 'Nuevo pedido (esperando pago) ') + d.pedido + ' — $' + d.total, cuerpo);
+  } catch (e) {}
   return ContentService.createTextOutput('ok');
 }

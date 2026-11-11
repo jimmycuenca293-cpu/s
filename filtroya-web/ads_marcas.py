@@ -281,8 +281,41 @@ def css(cfg):
             f"--eye:{cfg.get('eye', cfg['pri'])};--chip:{cfg.get('chip', cfg['pri'])};--chip-ink:{cfg.get('chip_ink', '#fff')};--linea:{cfg.get('subrayado', cfg['pri'])};"
             f"--ink:#121726;--muted:#596074;--line:#e3e6ee;--fondo:#ffffff;--panel:#f5f7fb;--wa:#148c48;--wa2:#0f7a3d;"
             f"--sombra:0 1px 2px rgba(18,23,38,.05),0 12px 28px -14px rgba(18,23,38,.22);--f:\"{cfg['fuente']}\",system-ui,-apple-system,\"Segoe UI\",sans-serif}}")
-    return raiz + CSS
+    return raiz + CSS + NAV_CSS
 
+
+NAV_CSS = """
+header .mnav{border-top:1px solid var(--line);background:#fff}
+.mnav2 .w{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px;position:relative}
+.mnav2 a.l,.mnav2 summary{list-style:none;cursor:pointer;text-decoration:none;color:var(--ink);font-size:14px;font-weight:700;padding:9px 13px;border-radius:10px;white-space:nowrap;display:inline-block}
+.mnav2 summary::-webkit-details-marker{display:none}.mnav2 summary::after{content:"▾";margin-left:6px;font-size:11px;color:var(--muted)}
+.mnav2 a.l:hover,.mnav2 summary:hover,.mnav2 details[open]>summary{background:var(--suave);color:var(--pri2)}
+.mnav2 a[aria-current]{background:var(--pri);color:#fff}
+.mnav2 details{position:relative;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important;border-radius:0!important}.mnav2 summary{background:none;border:0;box-shadow:none;margin:0;font-family:inherit}.mnav2 summary::before{content:none!important}
+.mnav2 .pan{position:absolute;left:0;top:100%;z-index:60;min-width:260px;max-width:min(92vw,560px);background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 44px -16px rgba(18,23,38,.3);padding:10px;display:grid;gap:2px}
+.mnav2 .pan.cols2{grid-template-columns:1fr 1fr;min-width:360px}
+.mnav2 .pan a{display:block;text-decoration:none;color:var(--ink);font-size:14px;font-weight:600;padding:8px 10px;border-radius:8px}
+.mnav2 .pan a:hover{background:var(--panel);color:var(--pri2)}
+.mnav2 .pan a.todas{grid-column:1/-1;color:var(--pri);font-weight:800;border-top:1px solid var(--line);margin-top:4px;border-radius:0 0 8px 8px}
+.mnav2 .pan a small{display:block;color:var(--muted);font-weight:500;font-size:12px}
+.mnav2 .fin{margin-left:auto}
+@media (max-width:760px){.mnav2 .w{overflow-x:visible}.mnav2 details{position:static}.mnav2 .pan{position:static;box-shadow:none;border-radius:10px;margin:4px 0 6px;max-width:none;min-width:0;width:100%}.mnav2 .pan.cols2{min-width:0}.mnav2 .fin{margin-left:0}.mnav2 .w>*{flex:0 0 auto}.mnav2 details[open]{flex:1 0 100%}}
+.indice{background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+.indice .w{display:flex;gap:6px;overflow-x:auto;padding-top:8px;padding-bottom:8px;scrollbar-width:thin}
+.indice a{flex:none;text-decoration:none;font-size:13.5px;font-weight:700;color:var(--ink);padding:7px 13px;border-radius:999px;background:#fff;border:1px solid var(--line)}
+.indice a:hover{border-color:var(--pri);color:var(--pri2)}
+.miguitas{font-size:14px;color:var(--muted);padding:14px 0 0}.miguitas a{color:var(--muted)}.miguitas b{color:var(--ink);font-weight:700}
+.buscaciudad{display:flex;gap:10px;align-items:center;margin:0 auto 18px;max-width:520px}.buscaciudad input{flex:1;font:inherit;font-size:16px;padding:12px 16px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}.buscaciudad input:focus{outline:none;border-color:var(--pri)}
+.depto{margin:0 0 14px}.depto h3{font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.vacio{text-align:center;color:var(--muted);padding:12px}
+.otrasmarcas{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.otrasmarcas a{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:#fff;border-radius:16px;padding:18px 20px;min-height:110px;justify-content:flex-end;background:var(--c)}
+.otrasmarcas a b{font-size:19px}.otrasmarcas a span{font-size:13.5px;opacity:.9}.otrasmarcas a i{font-style:normal;font-weight:800;margin-top:6px}
+.otrasmarcas a:hover{filter:brightness(1.1)}
+.cols4{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px}
+.cols4 h4{margin:0 0 10px;font-size:14px}.cols4 a,.cols4 span{display:block;font-size:14px;margin:0 0 6px}
+@media (max-width:820px){.cols4{grid-template-columns:1fr 1fr}.cols4>div:first-child{grid-column:1/-1}}
+"""
 
 # ---------- piezas comunes ----------
 def gota(cfg):
@@ -290,15 +323,66 @@ def gota(cfg):
 
 
 MENU = {}  # marca -> [(referencia, slug)]; se llena en main()
+CIUDADES_TODAS = []  # [(ciudad, departamento)]; se llena en main()
+TOP = 12
+
 
 
 def menu(marca, ruta):
-    def a(href, txt, extra=""):
+    """Navegación de las páginas de marca: filtros, ciudades, otras marcas, instalación, preguntas y la tienda."""
+    base = f"/purofiltro-marca/{slug(marca)}/"
+    def a(href, txt, extra="", cls="l"):
         act = ' aria-current="page"' if ruta.rstrip("/") == href.rstrip("/") else ""
-        return f'<a href="{href}"{act}{extra}>{esc(txt)}</a>'
-    propios = "".join(a(f"/purofiltro-filtro/{sl}/", f"Filtro {ref}") for ref, sl in MENU.get(marca, []))
-    return (f'<nav class="mnav" aria-label="Filtros {esc(marca)}"><div class="w">'
-            f'{a(f"/purofiltro-marca/{slug(marca)}/", f"Filtros {marca}")}<span class="sep"></span>{propios}</div></nav>')
+        return f'<a class="{cls}" href="{href}"{act}{extra}>{esc(txt)}</a>'
+    filtros = "".join(f'<a href="/purofiltro-filtro/{sl}/">Filtro {esc(ref)}<small>Ficha, instalación y alerta</small></a>' for ref, sl in MENU.get(marca, []))
+    ciudades = "".join(f'<a href="{base}{slug(c)}/">{esc(c)}</a>' for c, _ in CIUDADES_TODAS[:TOP]) + f'<a class="todas" href="{base}#ciudades">Ver las {len(CIUDADES_TODAS)} ciudades →</a>'
+    otras = "".join(f'<a href="/purofiltro-marca/{slug(m)}/">Nevecones {esc(m)}</a>' for m in MARCAS if m != marca)
+    return (f'<nav class="mnav2" aria-label="Menú principal"><div class="w">'
+            f'<a class="l" href="/purofiltro-marca/{slug(marca)}/"{" aria-current=page" if ruta.rstrip("/") == base.rstrip("/") else ""}>Inicio {esc(marca)}</a>'
+            f'<details><summary>Filtros {esc(marca)}</summary><div class="pan">{filtros}</div></details>'
+            f'<details><summary>Ciudades</summary><div class="pan cols2">{ciudades}</div></details>'
+            f'<details><summary>Otras marcas</summary><div class="pan">{otras}</div></details>'
+            f'<a class="l" href="{base}#instalar">Cómo instalar</a><a class="l" href="{base}#faq">Preguntas</a>'
+            f'<a class="l fin" href="/">Tienda completa →</a></div></nav>')
+
+
+def migas(marca, items):
+    """Migas de pan visibles: [(texto, enlace o None)]."""
+    partes = [f'<a href="{h}">{esc(x)}</a>' if h else f'<b>{esc(x)}</b>' for x, h in items]
+    return f'<div class="w"><nav class="miguitas" aria-label="Migas de pan">{" › ".join(partes)}</nav></div>\n'
+
+
+def indice():
+    """Barra de la portada de la marca para saltar a cada parte."""
+    return ('<nav class="indice" aria-label="En esta página"><div class="w">'
+            '<a href="#cual">¿Cuál es mi filtro?</a><a href="#filtros">Catálogo</a><a href="#cuando">Cuándo cambiarlo</a><a href="#instalar">Cómo instalar</a><a href="#faq">Preguntas</a><a href="#ciudades">Ciudades</a><a href="#marcas">Otras marcas</a></div></nav>\n')
+
+
+def bloque_ciudades(marca, ciudad_actual=None, titulo="Llegamos a tu ciudad", texto=None, depto_actual=None):
+    """Buscador de ciudad y lista agrupada por departamento (todas las ciudades enlazadas)."""
+    base = f"/purofiltro-marca/{slug(marca)}/"
+    grupos = {}
+    for c, d in CIUDADES_TODAS:
+        grupos.setdefault(d, []).append(c)
+    orden = sorted(grupos, key=lambda d: (d != depto_actual, d))
+    html_g = "".join(f'<div class="depto" data-d><h3>{esc(d)}</h3><div class="chips">' + "".join(f'<a href="{base}{slug(c)}/"{" aria-current=page" if c == ciudad_actual else ""} data-c="{esc(c.lower())}">{esc(c)}</a>' for c in sorted(grupos[d])) + '</div></div>' for d in orden)
+    texto = texto or f"Escribe tu ciudad o búscala por departamento. En todas pagas al recibir tu filtro {esc(marca)}."
+    return (cab("Envíos contra entrega", titulo, texto, True)
+            + '<div class="buscaciudad"><input type="search" id="q-ciudad" placeholder="Busca tu ciudad: Cali, Medellín, Tunja…" aria-label="Buscar ciudad" autocomplete="off"></div>'
+            + f'<div id="lista-ciudades">{html_g}</div><p class="vacio" id="sin-ciudad" hidden>No encontramos esa ciudad. Escríbenos por WhatsApp: llegamos a más municipios de Colombia.</p>'
+            + """<script>(function(){var q=document.getElementById('q-ciudad');if(!q)return;q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(),n=0;document.querySelectorAll('#lista-ciudades [data-d]').forEach(function(g){var s=0;g.querySelectorAll('a').forEach(function(a){var ok=!v||a.dataset.c.indexOf(v)>-1;a.style.display=ok?'':'none';if(ok)s++;});g.style.display=s?'':'none';n+=s;});document.getElementById('sin-ciudad').hidden=n>0;});})();</script>""")
+
+
+def bloque_otras_marcas(marca, ciudad=None):
+    """Tarjetas hacia las otras marcas (misma ciudad si se está en una página de ciudad)."""
+    tarj = ""
+    for m, c in MARCAS.items():
+        if m == marca:
+            continue
+        href = f"/purofiltro-marca/{slug(m)}/" + (f"{slug(ciudad)}/" if ciudad else "")
+        tarj += (f'<a href="{href}" style="--c:{c["pri"]}"><b>Filtros {esc(m)}{" en " + esc(ciudad) if ciudad else ""}</b>'
+                 f'<span>{esc(c["lineas"])}</span><i>Ver los filtros →</i></a>')
+    return cab("¿Tu nevecón es de otra marca?", "Filtros para otras marcas" + (f" en {ciudad}" if ciudad else ""), "Cada marca tiene su propia página con sus referencias y su paso a paso.") + f'<div class="otrasmarcas">{tarj}</div>'
 
 
 def cabeza(marca, cfg, titulo, desc, ruta, ld, imagen):
@@ -341,9 +425,10 @@ def pie(marca, cfg, fija_texto="Te decimos cuál es tu filtro"):
     hola = f"Hola, quiero un filtro de agua para mi nevecón {marca} con pago contra entrega."
     return f"""
 <footer><div class="w">
-  <div class="cols3">
+  <div class="cols4">
     <div><b>{esc(NEGOCIO)}</b><span>Distribuidor autorizado de filtros de agua para nevecones {esc(marca)}. Pagas al recibir, en toda Colombia.</span></div>
-    <div><h4>Filtros {esc(marca)}</h4>{"".join(f'<a href="/purofiltro-filtro/{sl}/">Filtro {esc(r)}</a>' for r, sl in MENU.get(marca, []))}</div>
+    <div><h4>Filtros {esc(marca)}</h4>{"".join(f'<a href="/purofiltro-filtro/{sl}/">Filtro {esc(r)}</a>' for r, sl in MENU.get(marca, []))}<a href="/purofiltro-marca/{slug(marca)}/#instalar">Cómo instalar</a></div>
+    <div><h4>Ciudades y marcas</h4>{"".join(f'<a href="/purofiltro-marca/{slug(marca)}/{slug(c)}/">{esc(marca)} en {esc(c)}</a>' for c, _ in CIUDADES_TODAS[:8])}<a href="/purofiltro-marca/{slug(marca)}/#ciudades">Todas las ciudades →</a>{"".join(f'<a href="/purofiltro-marca/{slug(m)}/">Nevecones {esc(m)}</a>' for m in MARCAS if m != marca)}<a href="/">Tienda completa</a></div>
     <div><h4>Contacto</h4><span>WhatsApp: <a data-wa="pie" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{tel}</a></span><span>{esc(HORARIO)}</span><a href="/purofiltro-contraentrega/datos.html">Tratamiento de datos</a><a href="/purofiltro-contraentrega/terminos.html">Términos del pago contra entrega</a></div>
   </div>
   <span class="leg">© <span id="anio">2026</span> {esc(NEGOCIO)}. {esc(marca)} es una marca registrada de su dueño; la usamos solo para indicar en qué nevecones sirven los filtros.</span>
@@ -557,6 +642,7 @@ def pagina_marca(marca, cfg, ps, ciud):
          "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{BASE}/purofiltro-filtro/{p['slug']}/", "name": p["largo"]} for i, p in enumerate(ps)]}},
         miga_ld([("Inicio", "/"), (f"Filtros {marca}", None)]), faq_ld(preguntas)]}
     c = cabeza(marca, cfg, titulo, desc, ruta, ld, f"/purofiltro-img/{ps[0]['id']}.jpg")
+    c += migas(marca, [("Inicio", "/"), (f"Filtros {marca}", None)]) + indice()
     c += f"""
 <section class="hero"><div class="w">
   <div>
@@ -598,8 +684,9 @@ def pagina_marca(marca, cfg, ps, ciud):
     c += sec(f'''<div class="promo"><span class="sello"><span><b>2x</b>Pack anual</span></span>
     <div><h3>Pregunta por el pack de 2 filtros</h3><p>Un filtro dura 6 meses: con el pack tienes agua limpia todo el año y pagas menos por cada uno. El precio especial te lo damos por WhatsApp.</p></div>
     <a class="btn wa" data-wa="pack" href="{esc(wa(n, f'Hola, quiero el precio del pack de 2 filtros para mi nevecón {marca} con pago contra entrega.'))}" target="_blank" rel="noopener">{ICONO_WA}Precio del pack</a></div>''')
-    c += sec(cab("Preguntas frecuentes", "Resolvemos tus dudas", centrado=True) + faq_html(preguntas), alt=True)
-    c += sec(cab("Envíos contra entrega", "Llegamos a tu ciudad", f"Toca tu ciudad para ver cómo recibir tu filtro {esc(marca)} y pagar al recibir. Y llegamos a más municipios de Colombia.", True) + '<div class="chips" style="justify-content:center">' + "".join(f'<a href="/purofiltro-marca/{slug(marca)}/{slug(x)}/">{esc(x)}</a>' for x, _ in ciud[:24]) + '</div><details class="todas"><summary>Ver las ' + str(len(ciud)) + ' ciudades</summary><div class="chips" style="justify-content:center">' + "".join(f'<a href="/purofiltro-marca/{slug(marca)}/{slug(x)}/">{esc(x)}</a>' for x, _ in ciud[24:]) + "<span>y más municipios</span></div></details>")
+    c += sec(cab("Preguntas frecuentes", "Resolvemos tus dudas", centrado=True) + faq_html(preguntas), alt=True, id_="faq")
+    c += sec(bloque_ciudades(marca), id_="ciudades")
+    c += sec(bloque_otras_marcas(marca), alt=True, id_="marcas")
     c += sec(f'''<div class="final"><h2>¿Listo para tener agua limpia otra vez?</h2><p>Escríbenos y te decimos cuál es tu filtro y el precio de hoy. Pagas cuando te llega.</p>
     <a class="btn wa" data-wa="final" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}Escribir por WhatsApp</a></div>''', estilo="padding-top:0")
     return c + pie(marca, cfg) + script(marca, cfg, con_picks=True, con_sintomas=True, total_sintomas=len(SINTOMAS))
@@ -637,6 +724,7 @@ def pagina_ciudad(marca, cfg, ps, ciudad, depto, ciud):
         {"@type": "WebPage", "name": titulo, "url": BASE + ruta, "inLanguage": "es-CO", "description": desc},
         miga_ld([("Inicio", "/"), (f"Filtros {marca}", base), (ciudad, None)]), faq_ld(preguntas)]}
     c = cabeza(marca, cfg, titulo, desc, ruta, ld, f"/purofiltro-img/{ps[0]['id']}.jpg")
+    c += migas(marca, [("Inicio", "/"), (f"Filtros {marca}", base), (ciudad, None)])
     c += f"""
 <section class="hero"><div class="w">
   <div>
@@ -655,8 +743,12 @@ def pagina_ciudad(marca, cfg, ps, ciudad, depto, ciud):
     c += sec(cab(f"Catálogo {marca} en {ciudad}", "Escoge tu filtro y pide el precio de hoy", f"Internos y externos para {esc(cfg['lineas'])}. Toca la lupa de cada foto para ver sus especificaciones y cómo se instala. Pagas al recibir en {esc(ciudad)}.") + f'<div class="grid">{tarjetas}</div>')
     c += bloque_entrega()
     c += sec(cab("Preguntas frecuentes", f"Filtros {marca} en {ciudad}", centrado=True) + faq_html(preguntas), alt=True)
-    otras = "".join(f'<a href="{base}{slug(x)}/">{esc(x)}</a>' for x, _ in ciud if x != ciudad)
-    c += sec(cab("Más ciudades", f"Filtros {marca} en otras ciudades de Colombia", "Pagas al recibir en todas.") + f'<div class="chips">{otras}</div><p style="margin-top:16px"><a href="{base}">← Volver a todos los filtros {esc(marca)}</a></p>')
+    cerca = [x for x, d in ciud if d == depto and x != ciudad]
+    bloque_cerca = (cab("Cerca de ti", f"Filtros {marca} en ciudades de {depto}", "También llegamos a estas ciudades cercanas, pagando al recibir.") + '<div class="chips">' + "".join(f'<a href="{base}{slug(x)}/">{esc(x)}</a>' for x in cerca) + '</div>') if cerca else ""
+    c += sec(bloque_otras_marcas(marca, ciudad), id_="marcas")
+    if bloque_cerca:
+        c += sec(bloque_cerca, alt=True)
+    c += sec(bloque_ciudades(marca, ciudad, f"Filtros {marca} en otras ciudades de Colombia", "Pagas al recibir en todas. Busca tu ciudad o entra por departamento.", depto) + f'<p style="margin-top:16px;text-align:center"><a href="{base}">← Volver a todos los filtros {esc(marca)}</a></p>', alt=not bloque_cerca, id_="ciudades")
     c += sec(f'''<div class="final"><h2>¿Listo para tener agua limpia otra vez?</h2><p>Escríbenos y te decimos cuál es tu filtro y el precio de hoy. Pagas cuando te llega a {esc(ciudad)}.</p>
     <a class="btn wa" data-wa="final" href="{esc(wa(n, hola))}" target="_blank" rel="noopener">{ICONO_WA}Escribir por WhatsApp</a></div>''', estilo="padding-top:0")
     return c + pie(marca, cfg) + script(marca, cfg)
@@ -727,6 +819,8 @@ def pagina_producto(p, marca, cfg, ps):
     c += sec(cab("Preguntas frecuentes", f"Preguntas sobre el {p['ref']}", centrado=True) + faq_html(preguntas))
     if otros:
         c += sec(cab(f"Más filtros {marca}", "Otras referencias para tu nevecón") + '<div class="chips">' + "".join(f'<a href="/purofiltro-filtro/{x["slug"]}/">{esc(x["ref"])}</a>' for x in otros) + f'<a href="/purofiltro-marca/{slug(marca)}/#filtros">Ver todos los filtros {esc(marca)}</a></div>')
+    c += sec(cab("Pide en tu ciudad", f"Filtro {p['ref']} contra entrega en tu ciudad", "Toca tu ciudad y mira cómo recibirlo y pagar al llegar.") + '<div class="chips">' + "".join(f'<a href="/purofiltro-marca/{slug(marca)}/{slug(x)}/">{esc(x)}</a>' for x, _ in CIUDADES_TODAS[:TOP]) + f'<a href="/purofiltro-marca/{slug(marca)}/#ciudades">Las {len(CIUDADES_TODAS)} ciudades →</a></div>', alt=True)
+    c += sec(bloque_otras_marcas(marca))
     c += sec(f'''<div class="final"><h2>Pide tu {esc(p["ref"])} y paga cuando te llegue</h2><p>Escríbenos, confirmamos que es el de tu nevecón y te decimos el precio de hoy.</p>
     <a class="btn wa" data-wa="final" href="{esc(wa(n, msg))}" target="_blank" rel="noopener">{ICONO_WA}Escribir por WhatsApp</a></div>''', estilo="padding-top:0")
     return c + pie(marca, cfg, f"Pide tu {p['ref']}") + script(marca, cfg)
@@ -767,6 +861,7 @@ def main():
     if not FOTOS.exists():
         sys.exit("Primero corre build.py: faltan las fotos en public_html/purofiltro-img")
     cat, ciud = catalogo(), ciudades()
+    CIUDADES_TODAS[:] = ciud
     if SALIDA.exists():
         shutil.rmtree(SALIDA)
     (SALIDA / "purofiltro-img").mkdir(parents=True)
