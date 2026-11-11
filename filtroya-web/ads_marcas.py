@@ -38,7 +38,7 @@ NEGOCIO = "Filtros de Agua Nevecón"       # nombre que ve el cliente (sin marca
 HORARIO = "Lunes a sábado, 8:00 a. m. a 6:00 p. m."
 GTM = "GTM-N39G66VJ"                      # el mismo contenedor de la tienda; evento «whatsapp» al tocar cualquier botón de WhatsApp
 VERIFICACION = "HN_wbFxOz4Yeyfr0Oao1VfSO6mPB_I4k_uMqoVR5jZo"   # Search Console (etiqueta HTML)
-ENVIO_GRATIS = True                       # False si el envío contra entrega lo paga el cliente
+ENVIO_GRATIS = False                       # False si el envío contra entrega lo paga el cliente
 MARCAS = {  # número de WhatsApp de cada marca (10 dígitos, sin +57)
     "Samsung": {"whatsapp": "3054796329", "fuente": "Plus Jakarta Sans", "pri": "#1428a0", "pri2": "#0a1460", "acento": "#a9b8ff", "suave": "#e8ecfb", "gris": "#545c78",
                 "display": ("Replace Filter", "Cambiar filtro"),
