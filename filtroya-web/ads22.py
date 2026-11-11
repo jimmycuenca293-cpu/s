@@ -180,6 +180,17 @@ header.top .nv{display:flex;gap:14px;align-items:center}header.top .nv a{color:#
 @media (max-width:420px){.pg-m{grid-template-columns:1fr}}
 """, encoding="utf-8")
 
+# ---------- 2b. SEO ampliado: más ciudades, páginas por referencia, por modelo y por departamento ----------
+import ads22_seo as seo
+ciudades = seo.leer_ciudades(OUT)
+n_antes = len(ciudades)
+nuevas_ciudad = seo.expandir_ciudades(OUT, ciudades)
+nuevas_extra, refs_slug, depts = seo.paginas_nuevas(OUT, PRODUCTOS, ciudades)
+seo.actualizar_hub(OUT, ciudades)
+n_enl = seo.enlaces_internos(OUT, PRODUCTOS, refs_slug, depts)
+PAGINAS_NUEVAS = nuevas_ciudad + nuevas_extra
+print(f"ciudades: {n_antes} -> {len(ciudades)}; páginas nuevas: {len(PAGINAS_NUEVAS)} ({len(nuevas_ciudad)} de ciudad, {len(nuevas_extra)} de referencia/modelo/departamento); enlaces internos en {n_enl} páginas")
+
 # ---------- 3. páginas estáticas: carrito, pasarela y SEO ----------
 IC = {
     "tarjeta": '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 15h4"/></svg>',
@@ -313,6 +324,10 @@ if "Disallow: /carrito.php" not in r:
     (OUT / "robots.txt").write_text(r, encoding="utf-8")
 s = (OUT / "sitemap.xml").read_text(encoding="utf-8")
 s = re.sub(r"<lastmod>[^<]*</lastmod>", f"<lastmod>{HOY}</lastmod>", s)
+for nombre in PAGINAS_NUEVAS:
+    if nombre not in s:
+        prio = "0.7" if nombre.startswith(("filtro-agua-samsung-", "referencia-", "filtro-nevecon-", "filtros-samsung-")) else "0.6"
+        s = s.replace("</urlset>", f"  <url><loc>{DOMINIO}/{nombre}</loc><lastmod>{HOY}</lastmod><changefreq>weekly</changefreq><priority>{prio}</priority></url>\n</urlset>")
 for legal in ("terminos.php", "privacidad.php", "garantia-y-retracto.php"):
     if legal not in s:
         s = s.replace("</urlset>", f"  <url><loc>{DOMINIO}/{legal}</loc><lastmod>{HOY}</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>\n</urlset>")
@@ -322,5 +337,8 @@ if "Compra en línea" not in ll:
     ll += ("\n## Compra en línea\n- Tienda con carrito y pasarela de pagos segura (Wompi, de Bancolombia): tarjeta crédito o débito, PSE, Nequi, Bancolombia o contra entrega.\n"
            f"- Carrito: {DOMINIO}/carrito.php\n- Recibo y confirmación del pedido por correo. Retracto de 5 días hábiles: {DOMINIO}/garantia-y-retracto.php\n"
            f"- Precios: HAF-CIN/EXP DA29-00020B y HAF-QIN/EXP DA97-17376B $139.900; externo DA29-10105J $79.900 (envío gratis).\n")
+    ll += (f"\n## Cobertura y referencias\n- Envíos a {len(ciudades)} ciudades y municipios de {len(depts)} departamentos: {DOMINIO}/filtro-agua-samsung-por-ciudad-colombia.html\n"
+           f"- Una página por código/referencia (DA29-00020B, DA29-00020A, HAF-CIN, DA97-17376B, HAF-QIN, DA29-10105J, HAFEX, WSF-100…) y por modelo de nevecón (RF28HMEDBSR, RF28R7351SR…): {DOMINIO}/equivalencias-codigos-filtro-samsung.html\n"
+           f"- Páginas por departamento: {DOMINIO}/filtros-samsung-antioquia.html, {DOMINIO}/filtros-samsung-valle-del-cauca.html y las demás.\n")
     (OUT / "llms.txt").write_text(ll, encoding="utf-8")
 print("listo:", OUT)
