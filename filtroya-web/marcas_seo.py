@@ -92,7 +92,7 @@ def generar(R, escribir, dir_, ctx, h):
     pagina(f"{base}filtro-nevera-{s}/", f"Filtro para nevera {marca} | Precios y envío gratis",
            f"Filtro de agua para nevera {marca}: {len(ps)} referencias entre {rango}, envío gratis a toda Colombia. Te ayudamos a encontrar el de tu nevera.",
            f"Filtro para nevera {marca}", "Nevera, nevecón o refrigerador",
-           f"En Colombia le decimos nevera, nevecón o refrigerador, pero el filtro es el mismo: va en las neveras {esc(marca)} con dispensador de agua o máquina de hielo. Somos distribuidor autorizado {esc(marca)} y tenemos {len(ps)} referencias.",
+           f"En Colombia le decimos nevera, nevecón o refrigerador, pero el filtro es el mismo: va en las neveras {esc(marca)} con dispensador de agua o máquina de hielo. Tenemos {len(ps)} referencias de filtros {esc(marca)}.",
            f'<div class="m-cols">'
            + f'<div class="m-bloque"><div class="ic">🧊</div><h3>Filtro interno</h3><p>Va dentro de la nevera, arriba o en la rejilla de abajo. {"Referencias: " + esc(", ".join(p["ref"] for p in internos)) + "." if internos else ""}</p></div>'
            + (f'<div class="m-bloque"><div class="ic">🚰</div><h3>Filtro externo</h3><p>Va en la manguera del agua, por detrás de la nevera. Sirve para las neveras que no traen filtro adentro. Referencia: {esc(", ".join(p["ref"] for p in externos))}.</p></div>' if externos else "")
@@ -107,7 +107,7 @@ def generar(R, escribir, dir_, ctx, h):
            f"Precios {anio} de los filtros de agua {marca} en Colombia: entre {rango} con envío gratis. Paga con tarjeta, PSE o Nequi.",
            f"Precio del filtro de agua {marca} en Colombia ({anio})", "Precios actualizados",
            f"Estos son los precios de los filtros {esc(marca)}, con el envío a cualquier ciudad de Colombia ya incluido. Se cambia cada 6 meses.",
-           tabla + '<ul class="m-ok" style="margin-top:22px"><li><b>Envío gratis</b> a toda Colombia, sin costos escondidos.</li><li><b>Pago seguro</b> con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</li><li><b>Empaque sellado</b>: somos distribuidor autorizado ' + esc(marca) + ".</li></ul>"
+           tabla + '<ul class="m-ok" style="margin-top:22px"><li><b>Envío gratis</b> a toda Colombia, sin costos escondidos.</li><li><b>Pago seguro</b> con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</li><li><b>Empaque sellado</b>: filtros nuevos para neveras ' + esc(marca) + ".</li></ul>"
            + '<p class="m-mut" style="margin-top:14px">¿Viste un filtro mucho más barato? Desconfía: los filtros de imitación usan la misma referencia, pero no filtran igual y pueden gotear.</p>',
            [(f"¿Por qué varía el precio del filtro {marca}?", "Cada referencia tiene un precio distinto según su tamaño y tecnología. Los externos de manguera son más económicos que los internos."),
             ("¿El precio incluye el envío?", "Sí. El envío es gratis a toda Colombia y llega en 2 a 3 días hábiles a las principales ciudades."),
@@ -143,9 +143,9 @@ def generar(R, escribir, dir_, ctx, h):
 
     # 5. dónde comprar
     pagina(f"{base}donde-comprar-filtro-{s}/", f"Dónde comprar filtros {marca} en Colombia",
-           f"Compra filtros de agua {marca} a un distribuidor autorizado en Colombia: envío gratis a todo el país, pago seguro y asesoría por WhatsApp.",
-           f"Dónde comprar filtros de agua {marca} en Colombia", "Distribuidor autorizado",
-           f"Aquí mismo. Somos <b>distribuidor autorizado {esc(marca)}</b> y enviamos filtros a cualquier ciudad o municipio de Colombia, con envío gratis.",
+           f"Compra filtros de agua {marca} en Colombia: envío gratis a todo el país, pago seguro y asesoría por WhatsApp.",
+           f"Dónde comprar filtros de agua {marca} en Colombia", "Compra segura",
+           f"Aquí mismo. Somos un comercio independiente y enviamos filtros a cualquier ciudad o municipio de Colombia, con envío gratis.",
            '<div class="m-cols">' + "".join(f'<div class="m-bloque"><div class="ic">{i}</div><h3>{esc(t)}</h3><p>{esc(d)}</p></div>' for i, t, d in h.verificar(marca)) + "</div>"
            + f'<h2 style="font-size:22px;margin:28px 0 12px">Cómo reconocer un filtro {esc(marca)} de imitación</h2><ul class="m-ok"><li>El precio es mucho más bajo que el normal.</li><li>La caja viene sin sellar, con letras borrosas o errores de ortografía.</li><li>El filtro no encaja firme o gotea al ponerlo.</li><li>El vendedor no da factura ni datos de contacto.</li></ul>' +
            '<p class="m-mut" style="margin-top:20px">Fuentes oficiales: ' + ", ".join(f'<a href="{esc(u)}" target="_blank" rel="noopener">{esc(n)}</a> ({esc(d)})' for n, u, d in info.get("externos", [])) + ".</p>"
@@ -243,7 +243,7 @@ def generar(R, escribir, dir_, ctx, h):
         servicio = {"@type": "Service", "name": f"Filtros de agua {marca} con envío a {nombre}", "serviceType": "Venta de filtros de agua para nevera",
                     "provider": {"@id": f"__BASE__{base}#tienda"}, "areaServed": {"@type": "City", "name": nombre, "containedInPlace": {"@type": "AdministrativeArea", "name": depto}}}
         pagina(ruta, f"Filtro nevera {marca} en {nombre} | Envío gratis",
-               f"Filtros de agua {marca} en {nombre}, {depto}: llegan en {dias} con envío gratis. Distribuidor autorizado. Paga con tarjeta, PSE o Nequi.",
+               f"Filtros de agua {marca} en {nombre}, {depto}: llegan en {dias} con envío gratis. Paga con tarjeta, PSE o Nequi.",
                f"Filtro para nevera {marca} en {nombre}", f"{nombre}, {depto}",
                f"Te enviamos el filtro {esc(marca)} a tu casa u oficina en <b>{esc(nombre)}</b> ({esc(depto)}). Llega en <b>{esc(dias)}</b> con envío gratis y número de guía para que sigas el paquete.",
                '<div class="m-tabla-wrap"><table class="m-tabla"><tbody>'
@@ -276,12 +276,12 @@ def generar(R, escribir, dir_, ctx, h):
 
 
 def logo_pagina(M, marca):
-    """Logo de la marca arriba de cada subpágina, con el sello de distribuidor autorizado."""
+    """Nombre de la marca arriba de cada subpágina."""
     if M.get("logo"):
         img = f'<img src="{esc(M["logo"])}" alt="{esc(marca)}" width="{int(M.get("logo_w", 200))}" height="{int(M.get("logo_h", 60))}">'
     else:
         img = f"<b>{esc(marca)}</b>"
-    return f'<div class="m-pagelogo"><a href="{esc(M["base"])}" aria-label="Filtros {esc(marca)}">{img}</a><span>Distribuidor autorizado en Colombia</span></div>'
+    return f'<div class="m-pagelogo"><a href="{esc(M["base"])}" aria-label="Filtros {esc(marca)}">{img}</a><span>Filtros para nevecón en Colombia</span></div>'
 
 
 def aside(R, M, base, marca, info, actual):

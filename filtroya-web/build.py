@@ -582,7 +582,7 @@ rutas_marcas = []
 for marca in marcas_exclusivas.MARCAS_INFO:
     s = slug(marca)
     logo = None
-    if (AQUI / "logos" / f"{s}-web.png").exists():
+    if False:  # sin logos de marcas (políticas de Google Ads)
         shutil.copy(AQUI / "logos" / f"{s}-web.png", OUT / "img" / f"logo-{s}.png")
         lw, lh = Image.open(AQUI / "logos" / f"{s}-web.png").size
         logo = {"logo": f"/img/logo-{s}.png", "logo_w": lw, "logo_h": lh}
@@ -819,7 +819,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         if f.name != "icono.svg" and f.name.split(".")[0].removesuffix("-400") not in ids:
             f.unlink()
     logo = None
-    if (AQUI / "logos" / f"{s}-web.png").exists():  # somos distribuidor autorizado: cada sitio lleva el logo de su marca
+    if False:  # sin logos de marcas (políticas de Google Ads)
         shutil.copy(AQUI / "logos" / f"{s}-web.png", d / (PREFIJO + "img") / f"logo-{s}.png")
         lw, lh = Image.open(AQUI / "logos" / f"{s}-web.png").size
         logo = {"logo": f"/{PREFIJO}img/logo-{s}.png", "logo_w": lw, "logo_h": lh}
@@ -832,7 +832,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     # resumen en texto para asistentes de IA (ChatGPT, Gemini, Claude, Perplexity): tudominio.com/llms.txt
     ps_m = [p for p in CATALOGO if p["marca"] == marca]
     llms = (f"# Filtros {marca} en Colombia\n\n"
-            f"> Distribuidor autorizado de filtros de agua {marca} para nevera/nevecón. Envío gratis a toda Colombia "
+            f"> Filtros de agua {marca} para nevera/nevecón. Envío gratis a toda Colombia "
             "(2 a 3 días hábiles en las principales ciudades), pago en línea con tarjeta, PSE o Nequi, asesoría por WhatsApp.\n\n"
             "## Filtros y precios (COP, envío incluido)\n"
             + "".join(f"- [{p['nombre_largo']}](__BASE__/{p['slug']}/): {cop(p['precio'])}. "

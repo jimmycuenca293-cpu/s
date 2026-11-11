@@ -19,9 +19,9 @@ function cabeza_marca(array $M, string $titulo, string $desc, string $ruta, stri
         . '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="' . h($M['fuentes']) . '">'
         . ($legado ? '<link rel="stylesheet" href="/estilo.css">' : '') . '<link rel="stylesheet" href="/filtrosnevecones-marcas.css"><script src="/carrito.js" defer></script>'
         . verificacion_html() . analytics_html() . $extra . '</head><body class="m-' . h($M['clase']) . ($legado ? ' m-legado' : '') . '">' . gtm_body_html()
-        . '<div class="m-anuncio"><span>✔ Distribuidor autorizado ' . h($M['nombre']) . ' en Colombia</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
+        . '<div class="m-anuncio"><span>✔ Filtros nuevos para neveras ' . h($M['nombre']) . '</span><span>🚚 Envío gratis a toda Colombia</span><span>🔒 Pago seguro en línea</span></div>'
         . '<header class="m-top"><div class="m-wrap">'
-        . '<a class="m-logo" href="' . h($b) . '" aria-label="Filtros ' . h($M['nombre']) . ', distribuidor autorizado"><span class="m-sello">' . logo_marca_html($M) . '<small>Distribuidor autorizado</small></span></a>'
+        . '<a class="m-logo" href="' . h($b) . '" aria-label="Filtros ' . h($M['nombre']) . '"><span class="m-sello">' . logo_marca_html($M) . '<small>Filtros para nevecón</small></span></a>'
         . menu_marca($M)
         . '</div></header><main' . ($legado ? ' class="wrap m-legado-main"' : '') . '>';
 }
@@ -50,7 +50,7 @@ function menu_marca(array $M): string
         . '<b>Ayuda</b><a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Instalación</a></div></details></nav>';
 }
 
-// Logo de la marca (somos distribuidor autorizado); si no hay logo, el nombre en texto
+// Logo de la marca (sin logos de marcas); si no hay logo, el nombre en texto
 function logo_marca_html(array $M, string $clase = 'm-logo-marca'): string
 {
     if (empty($M['logo'])) return '<b>' . h($M['nombre']) . '</b>';
@@ -64,8 +64,8 @@ function pie_marca(array $M): void
     $b = $M['base'];
     $tel = preg_replace('/\D/', '', (string) (cfg()['whatsapp'] ?? ''));
     $h = '<footer class="m-pie"><div class="m-wrap m-pie-top">'
-        . '<div><a class="m-logo" href="' . h($b) . '"><span class="m-sello">' . logo_marca_html($M) . '<small>Distribuidor autorizado</small></span></a>'
-        . '<p>Distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia, con envío gratis a todo el país y pago seguro en línea.</p>'
+        . '<div><a class="m-logo" href="' . h($b) . '"><span class="m-sello">' . logo_marca_html($M) . '<small>Filtros para nevecón</small></span></a>'
+        . '<p>Filtros de agua para nevecón ' . h($M['nombre']) . ' en Colombia, con envío gratis a todo el país y pago seguro en línea.</p>'
         . ($tel ? '<a class="m-pie-wa" href="https://wa.me/57' . substr($tel, -10) . '" target="_blank" rel="noopener">💬 WhatsApp ' . h($n['telefono']) . '</a>' : '')
         . '<span class="m-pie-hora">' . h(ucfirst($n['horario'])) . '</span></div>'
         . '<nav><b>Filtros ' . h($M['nombre']) . '</b>';
@@ -86,6 +86,6 @@ function pie_marca(array $M): void
         . '<nav><b>Compra segura</b><a href="/terminos.php">Términos y condiciones</a><a href="/privacidad.php">Tratamiento de datos</a><a href="/garantia-y-retracto.php">Garantía y retracto</a><a href="/quienes-somos.php">Quiénes somos</a></nav>'
         . '</div><div class="m-wrap m-pie-medios"><span>🔒 Pagos procesados en página segura</span>' . medios_pago_html() . '</div>'
         . '<div class="m-wrap m-pie-base"><span>© ' . date('Y') . ' ' . h($n['nombre']) . '. Precios en pesos colombianos con envío incluido.</span>'
-        . '<span>Distribuidor autorizado de filtros de agua ' . h($M['nombre']) . ' en Colombia. ' . h($M['nombre']) . ' y su logo son marcas registradas de su dueño y se usan con autorización.</span></div></footer>';
+        . '<span>Filtros de agua para nevecón ' . h($M['nombre']) . ' en Colombia. ' . h($M['nombre']) . ' es una marca registrada de su dueño; la mencionamos solo para indicar en qué neveras sirve cada filtro.</span></div></footer>';
     echo $h . whatsapp_html() . '</body></html>';
 }

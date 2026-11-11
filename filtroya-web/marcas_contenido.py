@@ -199,7 +199,7 @@ def preguntas_ia(ps, slug):
         ("¿Por qué el hielo sale pequeño o turbio?", "Suele ser un filtro tapado que deja pasar poca agua; cámbialo."),
     ]))
     G.append(("Sobre la tienda", [
-        ("¿Son distribuidores autorizados de Whirlpool?", "Sí. Somos distribuidor autorizado de Whirlpool en Colombia."),
+        ("¿Quién vende estos filtros?", "Los vendemos nosotros, un comercio independiente de filtros para nevera, con envío a toda Colombia."),
         ("¿Cómo los contacto?", "Por WhatsApp y por el correo de la tienda; atendemos en el horario que aparece al final de cada página."),
         ("¿Entregan en mi ciudad?", "Enviamos a 126 ciudades y municipios y a otros lugares de Colombia; en cada página de ciudad ves el tiempo de entrega."),
     ]))
@@ -213,7 +213,7 @@ def generar(pagina, ctx, h, R):
     X = R["extra"]
     datos = ctx["datos"]
     rp = ctx.get("rp") or (lambda p: f'{base}{p["slug_o"]}/')
-    inst = ctx.get("inst", "/cambio-e-instalacion/")
+    inst = ctx.get("inst") or f"{base}cambio-e-instalacion/"
     internos = [p for p in ps if ubic(p) == "interno"]
     externo = next(p for p in ps if ubic(p) == "externo")
     n_pag = []

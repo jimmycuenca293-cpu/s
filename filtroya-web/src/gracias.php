@@ -13,6 +13,16 @@
     out.className = "estado ok";
     out.innerHTML = `<b>Pedido ${esc(cod)} · pago contra entrega</b><span>Pagas en efectivo a la transportadora cuando recibas tu pedido. Te escribimos para confirmar tus datos antes de despacharlo y te enviamos la guía de seguimiento. También te llegó un correo con el resumen.</span>`;
     try { localStorage.removeItem("fy_carrito"); } catch {}
+    // Conversión de compra (pago contra entrega) para Google Tag Manager: evento «purchase» (formato GA4), una sola vez por pedido
+    try {
+      const d = JSON.parse(sessionStorage.getItem("fy_cod_" + cod) || "null");
+      if (d && !localStorage.getItem("dl-" + cod)) {
+        window.dataLayer = window.dataLayer || [];
+        dataLayer.push({ ecommerce: null });
+        dataLayer.push({ event: "purchase", ecommerce: { transaction_id: cod, value: d.total, currency: "COP", shipping: 0, payment_type: "contra_entrega", items: d.items } });
+        localStorage.setItem("dl-" + cod, "1");
+      }
+    } catch {}
     return;
   }
   if (!id) { t.textContent = "No encontramos el pago"; out.className = "estado bad"; out.textContent = "Si pagaste, te llega la confirmación a tu correo."; return; }

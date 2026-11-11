@@ -4,7 +4,7 @@ propio dominio (build.py las deja en sitios/<marca>/).
 Cada tienda tiene su propio diseño (colores, letra y formas), solo muestra filtros de su marca y solo
 enlaza a sus propias páginas. Usa el mismo carrito, los mismos precios y el mismo pago que la tienda.
 Sin términos de marca prohibidos en Google Ads.
-El negocio es distribuidor autorizado de cada marca: cada sitio lleva solo el logo de su marca (carpeta logos/);
+Cada sitio muestra solo los filtros de su marca, sin logos ni sellos de las marcas;
 el nombre del negocio sale de config.php y solo aparece donde la ley lo pide (pie, términos, recibos).
 
 Páginas de cada marca:
@@ -126,7 +126,7 @@ def faq(preguntas):
 
 
 def tarjeta(p, base, foto, ubic):
-    return (f'<article class="m-card"><span class="m-badge">✔ Autorizado</span><span class="m-tipo">{"Externo" if ubic(p) == "externo" else "Interno"}</span>'
+    return (f'<article class="m-card"><span class="m-badge">✔ Nuevo</span><span class="m-tipo">{"Externo" if ubic(p) == "externo" else "Interno"}</span>'
             f'<span class="im">{foto(p, p["nombre_largo"] + "", mini=True)}</span>'
             f'<div class="tx"><h3><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></h3><span class="ref">Referencia {esc(p["ref"])}</span>'
             f'<span class="pr">{cop(p["precio"])}<small>Envío gratis</small></span>'
@@ -136,7 +136,7 @@ def tarjeta(p, base, foto, ubic):
 def caja(p, base, foto):
     """Bloque de compra de un filtro dentro de una subpágina."""
     ahorro = p["precio"] * 2 - p["pack"]
-    return (f'<div class="m-caja-prod"><a class="foto" href="{base}{p["slug_o"]}/"><span class="m-badge">✔ Autorizado</span>{foto(p, p["nombre_largo"] + "", mini=True)}</a>'
+    return (f'<div class="m-caja-prod"><a class="foto" href="{base}{p["slug_o"]}/"><span class="m-badge">✔ Nuevo</span>{foto(p, p["nombre_largo"] + "", mini=True)}</a>'
             f'<div class="tx"><h2><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></h2><span class="m-mut">Referencia {esc(p["ref"])}</span>'
             f'<span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>'
             f'<div class="compra"><button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>'
@@ -164,7 +164,7 @@ def verificar(marca):
 def preguntas_marca(marca, ps):
     refs = ", ".join(p["ref"] if norm_ok(p) else p["nombre_largo"] for p in ps)
     return [
-        (f"¿Quién vende estos filtros {marca}?", f"Somos distribuidor autorizado {marca} en Colombia: todos los filtros son de fábrica, nuevos y en su empaque sellado. Si quieres, antes de pagar te mandamos fotos reales por WhatsApp."),
+        (f"¿Quién vende estos filtros {marca}?", f"Los vendemos nosotros, un comercio independiente de filtros para nevera: todos son nuevos y vienen en su empaque sellado. Si quieres, antes de pagar te mandamos fotos reales por WhatsApp."),
         (f"¿Qué filtro {marca} necesito?", f"Busca la referencia impresa en tu filtro viejo o el modelo de tu nevecón en la etiqueta de adentro y compáralo en la página «¿Cuál es el mío?». Si tienes dudas, mándanos una foto por WhatsApp. Referencias disponibles: {refs}."),
         ("¿Cuánto cuesta el envío?", "Nada. El envío es gratis a toda Colombia y llega en 2 a 3 días hábiles a las principales ciudades; a otros municipios puede tardar un poco más."),
         ("¿Cómo pago?", "En línea, en una página de pago segura: tarjeta débito o crédito, PSE, Nequi o botón Bancolombia. El pedido se despacha cuando se confirma el pago."),
@@ -178,7 +178,7 @@ def norm_ok(p):
 
 
 def confianza(marca):
-    items = [("✔", "Distribuidor autorizado", f"Filtros {marca}"), ("🚚", "Envío gratis", "A toda Colombia"), ("🔒", "Pago seguro", "Tarjeta, PSE o Nequi"), ("💬", "Asesoría", "Te ayudamos por WhatsApp")]
+    items = [("✔", "Filtros nuevos", "En su empaque sellado"), ("🚚", "Envío gratis", "A toda Colombia"), ("🔒", "Pago seguro", "Tarjeta, PSE o Nequi"), ("💬", "Asesoría", "Te ayudamos por WhatsApp")]
     return '<section class="m-confianza"><div class="m-wrap">' + "".join(f'<div><span class="ic">{i}</span><span><b>{esc(t)}</b><small>{esc(d)}</small></span></div>' for i, t, d in items) + "</div></section>"
 
 
@@ -208,7 +208,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
          "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"__BASE__{base}{p['slug_o']}/", "name": p["nombre_largo"] + ""} for i, p in enumerate(ps)]}},
         faq_ld,
         {"@type": "OnlineStore", "@id": f"__BASE__{base}#tienda", "name": "__NOMBRE__", "alternateName": f"Filtros {marca} Colombia", "url": f"__BASE__{base}",
-         "logo": f"__BASE__{M.get('logo', '')}", "description": f"Distribuidor autorizado de filtros de agua {marca} en Colombia.",
+         "logo": f"__BASE__{M.get('logo', '')}", "description": f"Filtros de agua {marca} para nevera con envío gratis a toda Colombia.",
          "areaServed": {"@type": "Country", "name": "Colombia"}, "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi",
          "contactPoint": {"@type": "ContactPoint", "telephone": "__TEL__", "contactType": "customer service", "areaServed": "CO", "availableLanguage": "es"}, "sameAs": "__REDES__"},
         {"@type": "WebSite", "name": f"Filtros {marca}", "url": f"__BASE__{base}", "inLanguage": "es-CO", "publisher": {"@id": f"__BASE__{base}#tienda"}}]}
@@ -220,13 +220,13 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
     return inicio(M, php_str, titulo, desc, base, ld) + f"""
 <section class="m-hero"><div class="m-wrap">
   <div>
-    <span class="m-hero-logo"><?= logo_marca_html($M) ?><span><b>Distribuidor autorizado</b>Filtros en Colombia</span></span>
+    <span class="m-hero-logo"><span><b>Filtros {esc(marca)}</b>Envío gratis a toda Colombia</span></span>
     <h1>Filtros de agua {esc(marca)} para tu nevecón</h1>
     <p class="lead">{esc(info["intro"])}</p>
     <div class="acc"><a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a><a class="m-btn sec" href="{base}cual-es-mi-filtro/">¿Cuál es el mío?</a></div>
     <ul><li>100 %</li><li>Empaque sellado</li><li>Envío gratis</li><li>Pago seguro</li></ul>
   </div>
-  <div class="m-fotos">{fotos}<span class="sello-o"><span><b>Distribuidor</b>autorizado<br>{esc(marca)}</span></span></div>
+  <div class="m-fotos">{fotos}<span class="sello-o"><span><b>Envío</b>gratis<br>a toda Colombia</span></span></div>
 </div></section>
 {confianza(marca)}
 {sec(cab("Catálogo " + marca, f"Filtros {marca}", f"{len(ps)} referencias {esc(marca)}, nuevas y en su empaque. Todas con envío gratis a toda Colombia.") + '<div class="m-grid">' + "".join(tarjeta(p, base, foto, ubic) for p in ps) + "</div>", id_="filtros")}
@@ -255,7 +255,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
     d = instalacion.datos(p)
     miga_h, miga_ld = miga([(f"Filtros {marca}", base), (p["nombre_largo"], None)])
     preg = [
-        (f"¿Quién vende el {p['nombre_largo']}?", f"Sí. Somos distribuidor autorizado {marca} y es el filtro de fábrica, referencia {p['ref']}, nuevo y en su empaque sellado."),
+        (f"¿Quién vende el {p['nombre_largo']}?", f"Lo vendemos nosotros, un comercio independiente: es el filtro referencia {p['ref']}, nuevo y en su empaque sellado."),
         (f"¿Qué otras referencias reemplaza el {p['ref']}?", ("También aparece como " + ", ".join(alias) + ".") if alias else f"Búscalo por la referencia {p['ref']} impresa en tu filtro viejo."),
         ("¿Cada cuánto se cambia?", "Cada 6 meses, o antes si el agua cambia de sabor, de olor o sale con poca presión."),
         ("¿Cuánto tarda en llegar?", "El envío es gratis y llega en 2 a 3 días hábiles a las principales ciudades de Colombia."),
@@ -293,12 +293,12 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
 <div class="m-prod">
   <div class="foto"><span class="m-badge">✔ {esc(marca)}</span>{foto(p, nombre, lazy=False)}</div>
   <div class="info">
-    <span class="m-prod-logo"><?= logo_marca_html($M) ?><small>Distribuidor autorizado</small></span>
+    <span class="m-prod-logo"><small>Filtro para nevecón {esc(marca)}</small></span>
     <h1>{esc(nombre)}</h1>
     <span class="sub">Filtro de agua {esc(marca)} · {"Externo" if externo else "Interno"} · Referencia <b>{esc(p["ref"])}</b></span>
     <?php if ($R['n']) echo '<a href="#opiniones" style="text-decoration:none;color:inherit">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span class="m-mut">(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
     <span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>
-    <div class="m-aviso"><span style="font-size:22px">✔</span><span><b>Filtro {esc(marca)} · {esc(p["ref"])}</b>Somos distribuidor autorizado {esc(marca)}. Nuevo, en su caja sellada de fábrica con la referencia {esc(p["ref"])} impresa. ¿Quieres verlo? Te mandamos fotos reales por WhatsApp.</span></div>
+    <div class="m-aviso"><span style="font-size:22px">✔</span><span><b>Filtro {esc(marca)} · {esc(p["ref"])}</b>Filtro nuevo, en su caja sellada con la referencia {esc(p["ref"])} impresa. ¿Quieres verlo? Te mandamos fotos reales por WhatsApp.</span></div>
     <div class="compra"><button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>
     <ul class="m-ok"><li><b>Envío gratis</b>: llega en 2 a 3 días hábiles a las principales ciudades.</li><li><b>Fácil de instalar</b>: {"10 a 15 minutos en la manguera del agua" if externo else "2 minutos, sin herramientas"}. Paso a paso abajo.</li><li><b>Pago seguro</b> en línea; el comprobante llega a tu correo.</li></ul>
     <span class="m-mut" style="font-size:14px">Paga con tarjeta débito o crédito, PSE, Nequi o botón Bancolombia.</span><?= medios_pago_html() ?>

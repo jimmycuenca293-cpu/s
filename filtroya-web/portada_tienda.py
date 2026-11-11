@@ -81,7 +81,7 @@ CSS = """
 @media (max-width:820px){.fx-sl-in{grid-template-columns:1fr;min-height:0;padding-block:28px}.fx-sl-img span{width:200px}.fx-sl-img{order:-1}}
 .fx-bur{background:#fff;border-bottom:1px solid var(--fx-line)}.fx-bur ul{list-style:none;margin:0;padding:18px 0;display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;justify-content:space-between}.fx-bur li{flex:0 0 auto}
 .fx-bur a{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;color:var(--fx-ink);font:700 12.5px var(--fx-f);width:88px;text-align:center}.fx-bur .fx-c{width:72px;height:72px;border-radius:50%;background:var(--fx-bg);display:grid;place-items:center;border:2px solid var(--fx-line);overflow:hidden;transition:border-color .15s}.fx-bur a:hover .fx-c{border-color:var(--fx-teal)}
-.fx-c img{width:78%;height:78%;object-fit:contain}.fx-c svg{width:32px;height:32px;fill:none;stroke:var(--fx-deep2);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.fx-c img{width:78%;height:78%;object-fit:contain}.fx-ini{background:var(--c)!important;color:#fff;font:800 20px var(--fx-f);border-color:var(--c)!important}.fx-c svg{width:32px;height:32px;fill:none;stroke:var(--fx-deep2);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .fx-sec{padding-block:30px}.fx-sec h2{font-size:clamp(21px,2.6vw,28px);margin:0}.fx-sub{color:var(--fx-mut);margin:6px 0 0}
 .fx-est-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.fx-est-h a.fx-ver{color:var(--fx-teal);font-weight:700;text-decoration:none;font-size:14px}
 .fx-tienda{background:#fff;border:1px solid var(--fx-line);border-radius:20px;overflow:hidden}.fx-tienda-h{display:flex;align-items:center;gap:14px;background:var(--c);color:#fff;padding:14px 20px;flex-wrap:wrap}.fx-tienda-h .fx-lg{background:#fff;border-radius:10px;padding:6px 12px;display:flex;align-items:center;height:44px}.fx-tienda-h .fx-lg img{max-height:30px;width:auto;display:block}
@@ -111,6 +111,7 @@ CSS = """
 .fx-pie-pago{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-block:16px;border-top:1px solid rgba(255,255,255,.14);font-size:13px}.fx-pie-base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:16px;border-top:1px solid rgba(255,255,255,.14);font-size:12px}
 @media (max-width:820px){.fx-pie-top{grid-template-columns:1fr 1fr}.fx-pie-m{grid-column:1/-1}}
 main.wrap:empty{display:none}
+@media (max-width:900px){.fx-head{position:static}.fx-menu,.fx-todas{display:none}.fx-head-in{padding-block:8px}.fx-logo{margin-right:auto}}
 .fx-todas{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important;border-radius:0!important}.fx-todas summary::after{content:none!important}.fx-menu a{padding:10px 10px}
 """
 
@@ -143,7 +144,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, refs, modelos, guias, ciuda
                    f'<div class="fx-sl-img"><span>{foto(p, p["nombre_largo"] + " para nevecón " + p["marca"], lazy=(i > 0))}</span></div></div></section>')
     puntos = "".join(f'<button type="button" aria-label="Ir al banner de {esc(m)}"></button>' for m in MARCAS)
 
-    circ = "".join(f'<li><a href="/{slug(m)}/"><span class="fx-c"><img src="/img/logo-{slug(m)}.png" alt="Logo {esc(m)}" width="{info_marca[m][0]}" height="{info_marca[m][1]}" loading="lazy"></span>{esc(m)}</a></li>' for m in MARCAS)
+    circ = "".join(f'<li><a href="/{slug(m)}/"><span class="fx-c fx-ini" style="--c:{MARCAS_INFO[m]["tema"]}">{esc(m)[:2].upper()}</span>{esc(m)}</a></li>' for m in MARCAS)
     circ += "".join(f'<li><a href="{r}"><span class="fx-c">{ICONOS[k]}</span>{t}</a></li>' for k, r, t in (
         ("interno", "/tienda/", "Filtros internos"), ("externo", "/tienda/", "Filtros externos"), ("pack", "/politica-de-envios.php", "Contra entrega"),
         ("instalacion", "/instalacion/", "Instalación"), ("guias", "/guia/", "Guías"), ("envios", "/envios/", "Envíos")))
@@ -153,7 +154,7 @@ def generar(OUT, CATALOGO, MARCAS, slug, foto, ubic, refs, modelos, guias, ciuda
     for m in MARCAS:
         ps = [p for p in CATALOGO if p["marca"] == m]
         tiendas += (f'<section class="fx-sec" aria-labelledby="e-{slug(m)}"><div class="fx-wrap"><div class="fx-tienda" style="--c:{MARCAS_INFO[m]["tema"]}"><div class="fx-tienda-h">'
-                    f'<span class="fx-lg"><img src="/img/logo-{slug(m)}.png" alt="Logo {esc(m)}" width="{info_marca[m][0]}" height="{info_marca[m][1]}" loading="lazy"></span>'
+                    f''
                     f'<h2 id="e-{slug(m)}">Tienda de filtros {esc(m)}</h2><a href="/{slug(m)}/">Entrar a la tienda {esc(m)}</a></div>'
                     f'<div class="fx-grid">{"".join(card(p) for p in ps)}</div></div></div></section>')
     mosaico = (f'<a class="fx-mo" style="--c:#0f5e57" href="/politica-de-envios.php"><b>Paga al recibir</b><span>Pago contra entrega con la transportadora, o en línea con tarjeta, PSE y Nequi.</span><i>Ver cómo →</i>{ICONOS["pack"]}</a>'

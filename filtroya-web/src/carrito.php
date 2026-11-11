@@ -159,7 +159,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const L = lineas(), t = total() + (C.pago_link ? 0 : instalacion()) + (pago === "cod" && C.cod.activo ? C.cod.recargo * L.reduce((a, l) => a + l.cant, 0) : 0);
       const r = await fetch("/api/pedido.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ acepto: true, pago: pago === "cod" ? "contraentrega" : "linea", items: L.map(l => ({ pid: l.pid, pack: !!l.pack, cant: l.cant })), total: t, entrega, cliente: cli }) });
       const j = await r.json().catch(() => ({}));
-      if (r.ok && j.cod) { window.FYForm && FYForm(j.form); FYCart.guardar([]); location.href = j.url; return; }
+      if (r.ok && j.cod) {
+        // Para medir la conversión en gracias.php (evento «purchase» de Tag Manager)
+        try { sessionStorage.setItem("fy_cod_" + j.ref, JSON.stringify({ total: j.total, items: L.map(l => ({ item_id: l.pid, item_name: P[l.pid].nombre, item_variant: P[l.pid].ref, price: l.pack ? P[l.pid].pack : P[l.pid].precio, quantity: l.cant })) })); } catch {}
+        window.FYForm && FYForm(j.form); FYCart.guardar([]); location.href = j.url; return;
+      }
       if (!r.ok || !j.url) throw new Error(j.mensaje || "No se pudo crear el pedido. Intenta de nuevo.");
       window.FYForm && FYForm(j.form);  // los datos del cliente llegan a tu correo como formulario (sin esperar)
       const cambio = new Date(); cambio.setMonth(cambio.getMonth() + 6);
