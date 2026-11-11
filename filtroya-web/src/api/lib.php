@@ -13,6 +13,8 @@ function cfg(): array
         // En el sitio de una marca el nombre que ve el cliente es el de la tienda de la marca (ej. «Filtros GE»)
         $m = dirname(__DIR__) . '/filtrosnevecones-marca.json';
         if (is_file($m) && ($j = json_decode((string) file_get_contents($m), true)) && !empty($j['tienda'])) $c['negocio']['nombre'] = $j['tienda'];
+        // Tienda que vende solo con pago en línea: sin contra entrega y sin botón de WhatsApp
+        if (!empty($j['solo_linea'])) { $c['contraentrega'] = ['activo' => false, 'recargo' => 0]; $c['whatsapp'] = ''; }
     }
     return $c;
 }
@@ -69,16 +71,16 @@ function pagos_pro_html(string $v = 'home'): string
         ['tarjeta', 'Tarjeta crédito o débito', 'Visa y Mastercard'],
         ['pse', 'PSE', 'Débito desde tu banco'],
         ['nequi', 'Nequi', 'Pagas desde la app'],
-        ['banco', 'Botón Bancolombia', 'Con tu cuenta'],
-        ['efectivo', 'Contra entrega', 'Efectivo a la transportadora'],
+        ['banco', 'Bancolombia', 'Botón con tu cuenta'],
     ];
+    if (cod_cfg()['activo']) $medios[] = ['efectivo', 'Contra entrega', 'Efectivo a la transportadora'];
     $lis = '';
     foreach ($medios as $m) $lis .= '<li><span class="m-pay-i">' . $ico[$m[0]] . '</span><span><b>' . h($m[1]) . '</b><small>' . h($m[2]) . '</small></span></li>';
-    $seg = '<ul class="m-pay-s"><li>' . $ico['candado'] . 'Pago en la pasarela segura de Wompi (Bancolombia)</li><li>' . $ico['candado'] . 'Conexión cifrada: no vemos ni guardamos los datos de tu tarjeta</li><li>' . $ico['candado'] . 'Confirmación de tu pedido por correo y por WhatsApp</li></ul>';
+    $seg = '<ul class="m-pay-s"><li>' . $ico['candado'] . 'Pago en la pasarela segura de Wompi (Bancolombia)</li><li>' . $ico['candado'] . 'Conexión cifrada: no vemos ni guardamos los datos de tu tarjeta</li><li>' . $ico['candado'] . 'Confirmación de tu pedido por correo' . (trim((string) (cfg()['whatsapp'] ?? '')) !== '' ? ' y por WhatsApp' : '') . '</li></ul>';
     if ($v === 'producto' || $v === 'carrito') {
         return '<div class="m-pay m-pay-c"><div class="m-pay-h"><span class="m-pay-lock">' . $ico['candado'] . '</span><span><b>Paga como prefieras, 100 % seguro</b><small>Pasarela de pagos Wompi · Bancolombia</small></span></div><ul class="m-pay-m">' . $lis . '</ul>' . ($v === 'carrito' ? $seg : '') . '</div>';
     }
-    $pasos = '<ol class="m-pay-p"><li><b>Escoge tu filtro</b><span>Por la referencia o el modelo de tu nevera.</span></li><li><b>Paga como prefieras</b><span>En línea con tarjeta, PSE, Nequi o Bancolombia, o contra entrega.</span></li><li><b>Recíbelo en casa</b><span>Con número de guía y confirmación por correo.</span></li></ol>';
+    $pasos = '<ol class="m-pay-p"><li><b>Escoge tu filtro</b><span>Por la referencia o el modelo de tu nevera.</span></li><li><b>Paga como prefieras</b><span>' . (cod_cfg()['activo'] ? 'En línea con tarjeta, PSE, Nequi o Bancolombia, o contra entrega.' : 'Con tarjeta, PSE, Nequi o Botón Bancolombia.') . '</span></li><li><b>Recíbelo en casa</b><span>Con número de guía y confirmación por correo.</span></li></ol>';
     return '<div class="m-pay m-pay-g"><div class="m-pay-h"><span class="m-pay-lock">' . $ico['candado'] . '</span><span><b>Pasarela de pagos segura</b><small>Pagos procesados por Wompi, de Bancolombia</small></span></div><ul class="m-pay-m">' . $lis . '</ul>' . $pasos . $seg . '</div>';
 }
 

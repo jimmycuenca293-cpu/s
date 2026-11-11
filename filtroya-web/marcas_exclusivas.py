@@ -62,6 +62,7 @@ MARCAS_INFO = {
 }
 
 
+SOLO_LINEA = set()  # marcas cuyo sitio propio vende solo con pago en línea (sin WhatsApp ni contra entrega)
 AUTORIZADO = {}  # marca -> frase corta («Distribuidores autorizados de X») que dice su sitio propio (lo confirmó el dueño)
 
 
@@ -73,7 +74,7 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     s = slug(marca)
     for p in ps:
         p["slug_o"] = p["slug"]
-    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": AUTORIZADO[marca]} if marca in AUTORIZADO else {}),
+    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": AUTORIZADO[marca]} if marca in AUTORIZADO else {}), **({"solo_linea": True} if marca in SOLO_LINEA else {}),
          "productos": [[p["nombre_largo"] + "", p["slug_o"], cop(p["precio"])] for p in ps]}
     R = marcas_seo.rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO)
     _rutas = [p["slug_o"] + "/" for p in ps] + [r for r, _ in R["temas"]] + [v[2] for v in R["refs"].values()] + [v[2] for v in R["modelos"].values()]
@@ -134,6 +135,8 @@ COD_RECARGO = 5000  # el mismo recargo por producto de config.php ('contraentreg
 
 def cod_linea(p, largo=False):
     """Opción de pago contra entrega: en efectivo a la transportadora, con su precio."""
+    if p["marca"] in SOLO_LINEA:
+        return ""
     t = f'Pago contra entrega en efectivo a la transportadora: <b>{cop(p["precio"] + COD_RECARGO)}</b>'
     return f'<span class="m-cod">{t}' + (f'<small>Pagas al recibir tu pedido. Incluye {cop(COD_RECARGO)} de recargo por contra entrega.</small>' if largo else '') + '</span>'
 
@@ -191,11 +194,26 @@ def norm_ok(p):
 
 
 def confianza(marca):
-    items = [("✔", "Filtros nuevos", "En su empaque sellado"), ("🚚", "Envío gratis", "A toda Colombia"), ("🔒", "Pago seguro", "Tarjeta, PSE o Nequi"), ("💬", "Asesoría", "Te ayudamos por WhatsApp")]
+    items = [("✔", "Filtros nuevos", "En su empaque sellado"), ("🚚", "Envío gratis", "A toda Colombia"), ("🔒", "Pago seguro", "Tarjeta, PSE o Nequi"), ("🧾", "Recibo y garantía", "5 días de retracto")] if marca in SOLO_LINEA else [("✔", "Filtros nuevos", "En su empaque sellado"), ("🚚", "Envío gratis", "A toda Colombia"), ("🔒", "Pago seguro", "Tarjeta, PSE o Nequi"), ("💬", "Asesoría", "Te ayudamos por WhatsApp")]
     return '<section class="m-confianza"><div class="m-wrap">' + "".join(f'<div><span class="ic">{i}</span><span><b>{esc(t)}</b><small>{esc(d)}</small></span></div>' for i, t, d in items) + "</div></section>"
 
 
+def confianza_pro(marca):
+    """Bloque de confianza: por qué comprar aquí (sin opiniones inventadas: las reales salen de las compras)."""
+    it = [("🏷", f"Distribuidores de {marca}", f"Vendemos filtros {marca} a nivel nacional, nuevos y en su empaque sellado."),
+          ("🔒", "Pago seguro con Wompi", "Pasarela de Bancolombia. No vemos ni guardamos los datos de tu tarjeta."),
+          ("↩", "5 días de retracto", "Si te equivocas de filtro y no lo has instalado, lo cambiamos o te devolvemos tu dinero."),
+          ("🚚", "Envío con número de guía", "Seguimiento de tu pedido y entrega en 2 a 3 días hábiles a las principales ciudades."),
+          ("🧾", "Recibo y confirmación", "Te llega el recibo del pago y la confirmación de tu pedido por correo."),
+          ("🛡", "Tus datos protegidos", "Conexión cifrada y tratamiento de datos según la ley colombiana.")]
+    return (cab("Compra con confianza", f"Por qué comprar tu filtro {marca} con nosotros") + '<div class="sx-conf">'
+            + "".join(f'<div><span>{i}</span><b>{esc(t)}</b><p>{esc(d)}</p></div>' for i, t, d in it) + '</div>'
+            '<p class="sx-legal"><?= h(identificacion()) ?> · <a href="/terminos.php">Términos</a> · <a href="/garantia-y-retracto.php">Garantía y retracto</a> · <a href="/privacidad.php">Tratamiento de datos</a> · <a href="/quienes-somos.php">Quiénes somos</a></p>')
+
+
 def cta_wa(marca):
+    if marca in SOLO_LINEA:
+        return ""
     return (f'<div class="m-cta"><div><h2>¿No sabes cuál es tu filtro {esc(marca)}?</h2><p>Mándanos una foto del filtro viejo o de la etiqueta del nevecón y te decimos cuál es.</p></div>'
             f'<a class="m-btn" data-wa-marca href="#" target="_blank" rel="noopener">💬 Escríbenos por WhatsApp</a></div>'
             "<?php $w = preg_replace('/\\D/', '', (string) (cfg()['whatsapp'] ?? '')); if ($w !== ''): ?><script>document.querySelectorAll('[data-wa-marca]').forEach(a => a.href = 'https://wa.me/57<?= substr($w, -10) ?>?text=' + encodeURIComponent("
@@ -203,6 +221,8 @@ def cta_wa(marca):
 
 
 def sec(cuerpo, alt=False, id_=""):
+    if not cuerpo:
+        return ""
     return f'<section class="m-sec{" alt" if alt else ""}"{f" id={chr(34)}{id_}{chr(34)}" if id_ else ""}><div class="m-wrap">{cuerpo}</div></section>'
 
 
@@ -282,6 +302,7 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
 {confianza(marca)}
 {sec(cab("Catálogo " + marca, f"Filtros {marca}", f"{len(ps)} referencias {esc(marca)}, nuevas y en su empaque. Todas con envío gratis a toda Colombia.") + '<div class="m-grid">' + "".join(tarjeta(p, base, foto, ubic) for p in ps) + "</div>", id_="filtros")}
 {(sec("<?= pagos_pro_html('home') ?>") if marca in AUTORIZADO else "")}
+{(sec(confianza_pro(marca), alt=True) if marca in SOLO_LINEA else "")}
 {sec(cab("Compra con confianza", f"¿Qué recibo con mi filtro {marca}?", "Esto es lo que recibes y lo que puedes revisar tú mismo.") + '<div class="m-cols">' + "".join(f'<div class="m-bloque"><div class="ic">{i}</div><h3>{esc(t)}</h3><p>{esc(d)}</p></div>' for i, t, d in verificar(marca)) + "</div>", alt=True)}
 {sec(cab("Encuentra el tuyo", f"¿Cuál filtro {marca} le sirve a mi nevecón?", esc(info["etiqueta"])) + '<div class="m-chips">' + "".join(f'<a href="{base}{p["slug_o"]}/">{esc(p["ref"])} <small>· {esc(p["nombre_largo"])}</small></a>' for p in ps) + f'</div><p style="margin-top:18px"><a class="m-btn sec" href="{base}cual-es-mi-filtro/">Buscar por modelo de nevecón {esc(marca)}</a></p>')}
 {sec(cab("Mantenimiento", f"¿Cuándo cambiar el filtro de tu nevecón {marca}?", esc(info["aviso"])) + '<ul class="m-ok">' + "".join(f"<li>{esc(x)}</li>" for x in senales) + f'</ul><p style="margin-top:18px"><a href="{base}cambio-e-instalacion/">Cómo instalar cada filtro {esc(marca)}, paso a paso →</a></p>', alt=True)}
@@ -340,6 +361,51 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
              ("Precio", f"{cop(p['precio'])}"), ("Envío", "Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades")]
     if alias:
         ficha.insert(2, ("También aparece como", ", ".join(alias)))
+    if marca in SOLO_LINEA:  # ficha al estilo de samsung.com: galería grande, caja de compra, pestañas y secciones
+        tipo = "Externo, va en la manguera" if externo else "Interno, va dentro del nevecón"
+        espec = "".join(f"<dt>{esc(x)}</dt><dd>{esc(y)}</dd>" for x, y in ficha)
+        chips_m = "".join(f'<a href="{R["modelos"][norm(mo)][2]}">{esc(mo)}</a>' for mo in p["modelos"])
+        feats = [("💧", "Agua y hielo más limpios", "Retiene el cloro, el sedimento y las partículas que le dan mal sabor y olor al agua y al hielo."),
+                 ("⏱", "Se cambia en minutos", d["tiempo"].rstrip(".") + ". Herramientas: " + d["herramientas"].rstrip(".").lower() + "."),
+                 ("🛡", "Cuida tu nevecón", "Protege la válvula y la máquina de hielo de tu nevera de los residuos del agua."),
+                 ("🔁", "Cada 6 meses", "Cámbialo cada 6 meses, o antes si el agua cambia de sabor o sale con poca presión.")]
+        feats_h = '<div class="sx-feats">' + "".join(f'<div><span>{i}</span><b>{esc(t)}</b><p>{esc(x)}</p></div>' for i, t, x in feats) + "</div>"
+        return inicio(M, php_str, titulo, desc, url, ld, resenas_php, head) + f"""<div class="m-wrap sx">
+{miga_h}
+<div class="sx-top">
+  <div class="sx-gal"><div class="sx-img"><span class="sx-tag">✔ Distribuidor Samsung</span>{foto(p, nombre, lazy=False)}</div>
+    <ul class="sx-bad"><li>Producto nuevo</li><li>Empaque sellado</li><li>Referencia {esc(p["ref"])} impresa</li></ul></div>
+  <div class="sx-buy">
+    <span class="sx-eye">Accesorios · Filtros de agua para refrigerador</span>
+    <h1>{esc(nombre)}</h1>
+    <span class="sx-model">Código de modelo <b>{esc(p["ref"])}</b> · {esc(tipo)}</span>
+    <?php if ($R['n']) echo '<a href="#opiniones" class="sx-rate">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span>(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
+    <div class="sx-price"><b>{cop(p["precio"])}</b><small>Precio final en pesos colombianos · Envío gratis a toda Colombia</small></div>
+    {'<div class="sx-comp"><b>Compatible con</b><div class="m-chips">' + chips_m + '</div></div>' if p["modelos"] else ''}
+    <div class="sx-cta"><button class="m-btn" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="m-btn sec" type="button" data-add="{p["id"]}">Agregar al carrito</button></div>
+    <ul class="sx-seg"><li><span>🔒</span><b>Pago 100 % seguro</b><small>Pasarela Wompi, de Bancolombia</small></li><li><span>🚚</span><b>Envío gratis con guía</b><small>2 a 3 días hábiles a las principales ciudades</small></li><li><span>↩</span><b>5 días de retracto</b><small>Si te equivocas de filtro, sin instalar</small></li><li><span>🧾</span><b>Recibo por correo</b><small>Llega apenas se confirma el pago</small></li></ul>
+    <?= pagos_pro_html('producto') ?>
+  </div>
+</div>
+</div>
+<nav class="sx-tabs" aria-label="Secciones de la página"><div class="m-wrap"><a href="#descripcion">Descripción</a><a href="#compatibilidad">Compatibilidad</a><a href="#especificaciones">Especificaciones</a><a href="#instalacion">Instalación</a><a href="#opiniones">Opiniones</a><a href="#preguntas">Preguntas</a></div></nav>
+<span id="descripcion"></span>{sec('<div class="m-texto">' + cab("Descripción general", f"Filtro de agua {marca} {p['ref']}") + f'<p>{esc(p.get("desc") or ("Filtro de agua para nevecones " + marca + "."))}</p></div>' + feats_h)}
+<span id="compatibilidad"></span>{sec(cab("Compatibilidad", f"Nevecones {marca} que usan este filtro", esc(info["etiqueta"])) + ('<div class="m-chips">' + chips_m + "</div><p class=\"m-mut\" style=\"margin-top:12px\">Y otros modelos. Si el tuyo no aparece, compara la referencia del filtro viejo con " + esc(p["ref"]) + (" o con " + esc(", ".join(alias[:3])) if alias else "") + ".</p>" if p["modelos"] else "<p>Va en la manguera del agua de cualquier nevecón con dispensador.</p>"), alt=True)}
+<span id="especificaciones"></span>{sec(cab("Especificaciones", f"Datos del {p['nombre_largo']}") + '<dl class="m-ficha sx-ficha">' + espec + "</dl>")}
+{sec(instalacion.tutorial_html(p, p["nombre_largo"]), alt=True)}
+{sec(confianza_pro(marca))}
+<section class="m-sec" id="opiniones"><div class="m-wrap">{cab("Opiniones", "Lo que dicen los compradores")}
+<?php if ($R['n']): ?><p><?= estrellas_html($R['prom']) ?> <b><?= $R['prom'] ?> de 5</b> · <?= $R['n'] ?> <?= $R['n'] === 1 ? 'opinión' : 'opiniones' ?> de compradores reales</p>
+<?php foreach ($R['lista'] as $r): ?><div class="resena"><?= estrellas_html((float) $r['estrellas']) ?> <b><?= h($r['nombre']) ?></b> <span class="m-mut">· <?= h($r['ciudad']) ?> · <?= h(date('d/m/Y', strtotime($r['creado']))) ?></span><?= $r['texto'] !== '' ? '<p style="margin:4px 0 0">' . h($r['texto']) . '</p>' : '' ?></div>
+<?php endforeach; ?><?php else: ?><p class="m-mut">Todavía no hay opiniones de este filtro. Después de tu compra te pediremos la tuya por correo: solo publicamos opiniones de compradores reales.</p><?php endif; ?>
+</div></section>
+<span id="preguntas"></span>{sec(cab("Preguntas", f"Preguntas sobre el {p['nombre_largo']}") + faq_h, alt=True)}
+{sec(cab("Más de " + marca, f"Otros filtros {marca}") + '<div class="m-grid">' + "".join(tarjeta(x, base, foto, ubic) for x in otros) + "</div>") if otros else ""}
+{sec(marcas_seo.relacionadas(R, url, marca, M, base), alt=True)}
+<div class="m-barra"><span><small>{esc(nombre)}</small><b>{cop(p["precio"])}</b></span><button class="m-btn" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>
+</main>
+<?php pie_marca($M); ?>
+"""
     return inicio(M, php_str, titulo, desc, url, ld, resenas_php, head) + f"""<div class="m-wrap">
 {miga_h}
 <div class="m-prod">

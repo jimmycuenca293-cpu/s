@@ -8,6 +8,7 @@ JS = r"""(function () {
   if (!D.length || document.getElementById('fn-chat')) return;
   var n = function (s) { return String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); };
   var cop = function (v) { return '$ ' + String(v).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
+  var correo = '__CORREO__';
   var wa = (document.querySelector('a[href*="wa.me/"]') || {}).href || '';
   wa = (wa.match(/wa\.me\/(\d+)/) || [])[1] || '';
   var css = '#fn-chat-b{position:fixed;left:14px;bottom:14px;z-index:60;display:flex;align-items:center;gap:8px;border:0;border-radius:99px;padding:12px 16px;background:#17181b;color:#fff;font:700 14px system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.28);cursor:pointer}'
@@ -31,12 +32,12 @@ JS = r"""(function () {
   function msg(h, quien) { var d = document.createElement('div'); d.className = 'fn-b ' + quien; d.innerHTML = h; M.appendChild(d); M.scrollTop = M.scrollHeight; return d; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); }
   function chips(l) { Q.innerHTML = ''; setTimeout(function () { M.scrollTop = M.scrollHeight; }, 0); l.forEach(function (x) { var c = document.createElement('button'); c.type = 'button'; c.textContent = x[0]; c.onclick = function () { x[1](); }; Q.appendChild(c); }); }
-  function menuBase() { chips([['¿Dónde está el modelo?', donde], ['Tengo la referencia del filtro viejo', function () { msg('Tengo la referencia del filtro viejo', 'yo'); msg('Escríbela aquí abajo. Está impresa en el filtro, por ejemplo <b>W10295370</b>, <b>EDR3RXD1</b> o <b>LT1000P</b>.', 'bot'); I.focus(); }], ['Hablar con una persona', persona]]); }
+  function menuBase() { chips([['¿Dónde está el modelo?', donde], ['Tengo la referencia del filtro viejo', function () { msg('Tengo la referencia del filtro viejo', 'yo'); msg('Escríbela aquí abajo. Está impresa en el filtro, por ejemplo <b>W10295370</b>, <b>EDR3RXD1</b> o <b>LT1000P</b>.', 'bot'); I.focus(); }], [wa || !correo ? 'Hablar con una persona' : 'Escribir por correo', persona]]); }
   function donde() { msg('¿Dónde está el modelo?', 'yo'); msg('El modelo está en una <b>etiqueta dentro del refrigerador</b>, en la pared lateral (arriba) o detrás del cajón de las verduras. Suele empezar por letras y números, por ejemplo <b>WRF555SDFZ</b>, <b>RF28HMEDBSR</b> o <b>LFXS26973S</b>. Escríbelo aquí y te digo cuál filtro es.', 'bot'); I.focus(); }
   function persona(txt) {
     ev('whatsapp', txt || '');
     var t = 'Hola, necesito saber qué filtro le sirve a mi nevecón.' + (txt ? ' Modelo o referencia: ' + txt : '');
-    if (!wa) { msg('Escríbenos por el botón de WhatsApp de la página y una persona te contesta.', 'bot'); return; }
+    if (!wa) { msg(correo ? 'Con gusto. Escríbenos y una persona te responde por correo' + (txt ? ' (ya va escrito tu modelo)' : '') + ':<br><a class="fn-bt" href="mailto:' + correo + '?subject=' + encodeURIComponent('¿Qué filtro necesita mi nevecón?') + '&body=' + encodeURIComponent(t) + '">✉ Escribir por correo</a>' : 'Escríbenos al correo de la tienda y una persona te responde.', 'bot'); return; }
     msg('Con gusto. Toca el botón y te contesta una persona por WhatsApp' + (txt ? ' (ya va escrito tu modelo)' : '') + ':<br><a class="fn-bt wa" target="_blank" rel="noopener" href="https://wa.me/' + wa + '?text=' + encodeURIComponent(t) + '">💬 Escribir por WhatsApp</a>', 'bot');
   }
   function tarjeta(p, motivo) {
@@ -57,16 +58,16 @@ JS = r"""(function () {
     var t = n(q);
     var e = t.match(/EDR([1-5])/) || (/EVERYDROP/i.test(q) && String(q).match(/([1-5])/));
     var r = buscar(q);
-    if (r && r.exacto.length) { var p = r.exacto[0][0]; msg(tarjeta(p, 'Tu nevecón <b>' + esc(String(q).trim().toUpperCase()) + '</b> usa este filtro:'), 'bot'); chips([['Buscar otro modelo', function () { I.focus(); }], ['Hablar con una persona', persona]]); return; }
+    if (r && r.exacto.length) { var p = r.exacto[0][0]; msg(tarjeta(p, 'Tu nevecón <b>' + esc(String(q).trim().toUpperCase()) + '</b> usa este filtro:'), 'bot'); chips([['Buscar otro modelo', function () { I.focus(); }], [wa || !correo ? 'Hablar con una persona' : 'Escribir por correo', persona]]); return; }
     if (r && r.ref.length) { var p2 = r.ref[0]; msg(tarjeta(p2, 'Esa referencia equivale a este filtro:'), 'bot'); chips([['Buscar otro modelo', function () { I.focus(); }]]); return; }
-    if (r && r.parecido.length) { var p3 = r.parecido[0]; msg(tarjeta(p3, 'No tengo ese modelo exacto, pero uno muy parecido usa este filtro. <b>Confírmalo con la etiqueta de tu nevecón</b> o con una persona:'), 'bot'); chips([['Hablar con una persona', function () { persona(q); }], ['Buscar otro modelo', function () { I.focus(); }]]); return; }
+    if (r && r.parecido.length) { var p3 = r.parecido[0]; msg(tarjeta(p3, 'No tengo ese modelo exacto, pero uno muy parecido usa este filtro. <b>Confírmalo con la etiqueta de tu nevecón</b> o con una persona:'), 'bot'); chips([[wa || !correo ? 'Hablar con una persona' : 'Escribir por correo', function () { persona(q); }], ['Buscar otro modelo', function () { I.focus(); }]]); return; }
     if (e) { var h = D.filter(function (p) { return n(p.r).indexOf('EDR' + e[1]) === 0; })[0]; if (h) { msg(tarjeta(h, 'Ese es el <b>EveryDrop ' + e[1] + '</b>:'), 'bot'); return; } }
-    msg('No encontré <b>' + esc(String(q).trim()) + '</b> en mi lista. Revisa que esté bien escrito (sin espacios) o mira la etiqueta del refrigerador. Si quieres, una persona lo revisa contigo por WhatsApp.', 'bot');
-    chips([['Hablar con una persona', function () { persona(q); }], ['¿Dónde está el modelo?', donde]]);
+    msg('No encontré <b>' + esc(String(q).trim()) + '</b> en mi lista. Revisa que esté bien escrito (sin espacios) o mira la etiqueta del refrigerador. Si quieres, una persona lo revisa contigo' + (wa ? ' por WhatsApp.' : ' por correo.') + '', 'bot');
+    chips([[wa || !correo ? 'Hablar con una persona' : 'Escribir por correo', function () { persona(q); }], ['¿Dónde está el modelo?', donde]]);
   }
   function abrir() {
     abierto = !abierto; w.classList.toggle('on', abierto); b.setAttribute('aria-expanded', abierto);
-    if (abierto) { ev('abrir'); if (!saludo) { saludo = true; msg('¡Hola! 👋 Soy el asistente de la tienda. Escríbeme el <b>modelo de tu nevecón</b> o la <b>referencia del filtro viejo</b> y te digo cuál filtro es. Funciono las 24 horas; si prefieres, te paso con una persona por WhatsApp.', 'bot'); menuBase(); } setTimeout(function () { I.focus(); }, 50); }
+    if (abierto) { ev('abrir'); if (!saludo) { saludo = true; msg('¡Hola! 👋 Soy el asistente de la tienda. Escríbeme el <b>modelo de tu nevecón</b> o la <b>referencia del filtro viejo</b> y te digo cuál filtro es. Funciono las 24 horas; si prefieres, te paso con una persona' + (wa ? ' por WhatsApp.' : ' por correo.') + '', 'bot'); menuBase(); } setTimeout(function () { I.focus(); }, 50); }
   }
   // Buscador del encabezado y de la portada: sugerencias por modelo o referencia; si no hay coincidencia, lo contesta el asistente
   function sugerir(q) {
@@ -109,7 +110,7 @@ JS = r"""(function () {
 """
 
 
-def generar(productos, url):
+def generar(productos, url, correo=''):
     """productos: lista del catálogo; url(p) -> enlace de la página del producto."""
     datos = [{"n": p["nombre_largo"] + "", "r": p["ref"], "p": p["precio"], "u": url(p), "a": [x for x in p["refs"] if x != p["ref"]], "m": p["modelos"]} for p in productos]
-    return JS.replace("__DATOS__", json.dumps(datos, ensure_ascii=False, separators=(",", ":")))
+    return JS.replace("__DATOS__", json.dumps(datos, ensure_ascii=False, separators=(",", ":"))).replace("__CORREO__", correo)

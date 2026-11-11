@@ -382,3 +382,50 @@ body.m-legado .m-pay{background:#fff}
 .m-pay-c .m-pay-m{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 @media (max-width:480px){.m-pay-c .m-pay-m{grid-template-columns:1fr}}
 @media (max-width:1300px){.m-top .m-sello small{display:none}}
+
+/* Ficha de producto al estilo samsung.com (tienda propia de Samsung) */
+.sx{padding-bottom:8px}
+.sx-top{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;padding:12px 0 36px;align-items:start}
+.sx-gal{position:sticky;top:96px}
+.sx-img{position:relative;background:#f4f4f4;border-radius:28px;display:grid;place-items:center;padding:36px;min-height:520px}
+.sx-img picture,.sx-img img{display:block;max-width:100%;height:auto;max-height:560px;width:auto;margin:0 auto;object-fit:contain;image-rendering:auto}
+.sx-tag{position:absolute;left:18px;top:18px;background:#000;color:#fff;font-weight:700;font-size:13px;padding:7px 12px;border-radius:999px}
+.sx-bad{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0;padding:0}.sx-bad li{font-size:13.5px;color:#444;background:#f4f4f4;border-radius:999px;padding:7px 13px}
+.sx-buy{display:flex;flex-direction:column;gap:14px}
+.sx-eye{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6b6b6b}
+.sx-buy h1{font-size:clamp(28px,3.4vw,44px);line-height:1.08;margin:0;font-weight:700;letter-spacing:-.02em;color:#000}
+.sx-model{color:#555;font-size:15px}.sx-model b{color:#000}
+.sx-rate{display:inline-flex;gap:6px;align-items:center;text-decoration:none;color:#000;font-size:14px}
+.sx-price{display:flex;flex-direction:column;gap:2px;padding:6px 0}.sx-price b{font-size:40px;line-height:1;font-weight:800;color:#000;letter-spacing:-.02em}.sx-price small{color:#0f7a4f;font-weight:600;font-size:14px}
+.sx-comp b{display:block;font-size:14px;margin-bottom:6px}.sx-comp .m-chips a{font-size:13px;padding:6px 12px}
+.sx-cta{display:grid;grid-template-columns:1fr;gap:10px}
+.sx-cta .m-btn{min-height:54px;font-size:17px;border-radius:999px;font-weight:700}
+.sx-cta .m-btn:not(.sec){background:#000;color:#fff;border-color:#000}.sx-cta .m-btn:not(.sec):hover{background:#1a1a1a}
+.sx-cta .m-btn.sec{background:#fff;color:#000;border:2px solid #000}
+.sx-seg{list-style:none;margin:2px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sx-seg li{display:grid;grid-template-columns:30px 1fr;column-gap:8px;padding:12px;border:1px solid #e3e3e3;border-radius:14px;background:#fff}
+.sx-seg li span{grid-row:span 2;font-size:20px;line-height:1.2}.sx-seg b{font-size:14px;color:#000}.sx-seg small{color:#666;font-size:12.5px;line-height:1.3}
+.sx-tabs{position:sticky;top:66px;z-index:40;background:#fff;border-top:1px solid #e3e3e3;border-bottom:1px solid #e3e3e3}
+.sx-tabs .m-wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.sx-tabs .m-wrap::-webkit-scrollbar{display:none}
+.sx-tabs a{white-space:nowrap;padding:16px 16px;font-weight:700;font-size:15px;color:#000;text-decoration:none;border-bottom:3px solid transparent}.sx-tabs a:hover{border-bottom-color:#000}
+.sx-feats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+.sx-feats>div{background:#f4f4f4;border-radius:20px;padding:22px}.sx-feats span{font-size:28px;display:block;margin-bottom:10px}.sx-feats b{display:block;font-size:17px;margin-bottom:6px;color:#000}.sx-feats p{margin:0;color:#444;font-size:14.5px;line-height:1.5}
+.sx-ficha{border-top:1px solid #d9d9d9}.sx-ficha dt,.sx-ficha dd{border-bottom:1px solid #e6e6e6}
+.sx-conf{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.sx-conf>div{border:1px solid #e3e3e3;border-radius:20px;padding:22px;background:#fff}
+.sx-conf span{font-size:26px;display:block;margin-bottom:8px}.sx-conf b{display:block;font-size:16.5px;margin-bottom:6px}.sx-conf p{margin:0;color:#555;font-size:14.5px;line-height:1.5}
+.sx-legal{margin:16px 0 0;font-size:13.5px;color:#555}.sx-legal a{color:inherit}
+body.m-samsung .sx-seg small{font-size:12.5px}
+@media (max-width:980px){.sx-top{grid-template-columns:1fr;gap:20px}.sx-gal{position:static}.sx-img{min-height:340px;padding:20px}.sx-img img{max-height:380px}.sx-feats{grid-template-columns:1fr 1fr}.sx-conf{grid-template-columns:1fr 1fr}.sx-tabs{top:58px}}
+@media (max-width:560px){.sx-feats,.sx-conf{grid-template-columns:1fr}.sx-seg{grid-template-columns:1fr}.sx-price b{font-size:34px}}
+.sx-img img{mix-blend-mode:multiply}
+/* Menú que no estorba: en el celular la cabecera se va con el scroll y la barra de secciones queda arriba */
+@media (max-width:900px){.m-top{position:static}.sx-tabs{top:0}.m-bmenu{max-height:70vh}}
+@media (min-width:901px){.m-top{backdrop-filter:none}}
+.sx-buy .m-pay-c .m-pay-m{grid-template-columns:1fr 1fr}.m-pay-m li>span:last-child{overflow-wrap:normal;hyphens:none}
+.sx-buy .m-pay-c .m-pay-m b{font-size:13.5px}
+@media (max-width:480px){.sx-buy .m-pay-c .m-pay-m{grid-template-columns:1fr}}
+/* Menú del celular: acordeones sin la caja del botón y siempre por encima de la página */
+@media (max-width:900px){.m-top{position:relative;z-index:90}.m-burger{z-index:95}.sx-img,.sx-gal{z-index:0}}
+.m-burger .m-bmenu details>summary{width:auto;height:auto;border:0;border-radius:0;display:flex;justify-content:space-between;align-items:center;padding:12px 10px;margin:0;background:none}
+.m-bmenu{z-index:99;background:#fff}
+.m-bmenu a small{display:block;color:#666;font-weight:500;font-size:12.5px;margin-top:2px}

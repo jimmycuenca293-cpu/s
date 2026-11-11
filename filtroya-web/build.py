@@ -812,11 +812,69 @@ CAMBIOS_MARCA = {  # rutas de la tienda principal que en el sitio de la marca so
 }
 import asistente
 (OUT / (PREFIJO + "asistente.js")).write_text(asistente.generar(CATALOGO, lambda p: f"/{slug(p['marca'])}/{p['slug']}/"), encoding="utf-8")
+
+def sin_whatsapp_ni_cod(d):
+    """Tienda de solo pago en línea: quita WhatsApp y contra entrega de los textos y reescribe lo que los nombraba."""
+    import re as _re
+    subs = [
+        ("por correo y por WhatsApp", "por correo"),
+        ("<span>💬 Asesoría por WhatsApp</span>", "<span>🧾 Recibo y garantía de retracto</span>"),
+        ("<span><b>Asesoría</b><small>Te ayudamos por WhatsApp</small></span>", "<span><b>Soporte</b><small>Te respondemos por correo</small></span>"),
+        (" Te lo confirmamos por WhatsApp.", ""),
+        ("WhatsApp y teléfono: <?= h($n['telefono']) ?>", "Correo: <?= h($n['correo']) ?>"),
+        ("por teléfono o WhatsApp", "por correo"),
+        ("escríbenos por WhatsApp al <?= h($n['telefono']) ?>", "escríbenos al correo <?= h($n['correo']) ?>"),
+        ("Escríbenos por WhatsApp al <?= h($n['telefono']) ?> o al correo", "Escríbenos al correo"),
+        ("asesoría por WhatsApp", "asesoría por correo"),
+        ("Asesoría por WhatsApp", "Asesoría por correo"),
+        ("por WhatsApp", "por correo"),
+        (" y pago contra entrega con la transportadora (recargo de $ 5.000 por producto)", ""),
+        (" o pago contra entrega con la transportadora (recargo de $ 5.000 por producto)", ""),
+        (" o contra entrega", ""),
+        ("Pagas al recibir, ", ""), ("Pagas al recibir. ", ""),
+    ]
+    rx = [
+        (r'<details(?: class="m-faq")?><summary>¿(?:Puedo pagar|Se puede pagar) contra entrega\?</summary>.*?</details>', ""),
+        (r'\{"@type": "Question", "name": "¿(?:Puedo pagar|Se puede pagar) contra entrega\?", "acceptedAnswer": \{"@type": "Answer", "text": "(?:[^"\\]|\\.)*"\}\},? ?', ""),
+        (r'- \*\*¿Se puede pagar contra entrega\?\*\*[^\n]*\n', ""),
+        (r'[^.<>\n]*[Tt]ambién puedes escoger pago contra entrega[^.<>\n]*\.', ""),
+    ]
+    for f in d.rglob("*"):
+        if not f.is_file() or f.suffix not in (".php", ".txt", ".html", ".js") or f.parts[len(d.parts)] in ("data", "api"):
+            continue
+        t0 = f.read_text(encoding="utf-8")
+        t1 = t0
+        for a_, b_ in subs:
+            t1 = t1.replace(a_, b_)
+        for a_, b_ in rx:
+            t1 = _re.sub(a_, b_, t1, flags=_re.S)
+        t1 = _re.sub(r'(?<=[\[,]) *, *(?=\])', "", t1)
+        if t1 != t0:
+            f.write_text(t1, encoding="utf-8")
+
+
+def mejorar_fotos(dimg, ids):
+    """Fotos nítidas: las originales son chicas; se escalan con LANCZOS 3x y se afinan para que no se vean borrosas al mostrarlas grandes."""
+    from PIL import Image, ImageFilter, ImageEnhance
+    for pid in ids:
+        for ext in ("jpg",):
+            f = dimg / f"{pid}.{ext}"
+            if not f.exists():
+                continue
+            im = Image.open(f).convert("RGB")
+            big = im.resize((im.width * 3, im.height * 3), Image.LANCZOS)
+            big = big.filter(ImageFilter.UnsharpMask(radius=2.2, percent=140, threshold=2))
+            big = ImageEnhance.Contrast(big).enhance(1.04)
+            big.save(dimg / f"{pid}.jpg", quality=92, optimize=True, progressive=True)
+            big.save(dimg / f"{pid}.webp", "WEBP", quality=90, method=6)
+            mid = big.copy(); mid.thumbnail((800, 800), Image.LANCZOS)
+            mid.save(dimg / f"{pid}-400.webp", "WEBP", quality=90, method=6)
+
 SITIOS_PROPIOS = {  # marcas con tienda en su propio dominio, y lo que cambia en cada una
     "Whirlpool": dict(frase="Distribuidores autorizados de Whirlpool", dist=("distribuidores autorizados de Whirlpool", "distribuidor autorizado de Whirlpool"),
                       dominio="https://filtrodeaguaneverawhirlpool.com", token="wwiA4fecoUuPXlpDmt9s_vePEsKFCSJUpleQGzf_5Jw", nombre="Filtros Whirlpool", wa="3107147299", tel="310 714 7299"),
     "Samsung": dict(frase="Distribuidores de Samsung a nivel nacional", dist=("distribuidores de Samsung a nivel nacional", "distribuidor de Samsung a nivel nacional"),
-                    dominio="https://filtrodeguaneveconsamsung.com", token="FCeajvtvmd9uwzYiiGz4rKJKOs0nHb66j3SLXJsV7lI", nombre="Filtros Samsung", wa="3054796329", tel="305 479 6329"),
+                    dominio="https://filtrodeguaneveconsamsung.com", token="FCeajvtvmd9uwzYiiGz4rKJKOs0nHb66j3SLXJsV7lI", nombre="Filtros Samsung", wa="3054796329", tel="305 479 6329", solo_linea=True, correo="pedidos@filtrosaguanevecones.com"),
 }
 for marca in marcas_exclusivas.MARCAS_INFO:
     s = slug(marca)
@@ -828,8 +886,8 @@ for marca in marcas_exclusivas.MARCAS_INFO:
                 shutil.rmtree(hijo) if hijo.is_dir() else hijo.unlink()
     d.mkdir(parents=True, exist_ok=True)
     for f in OUT.iterdir():
-        if f.name in QUITAR or f.name == PREFIJO + "data" and ((d / "data").exists() or (d / f.name).exists()):
-            continue
+        if f.name in QUITAR or f.name in {slug(m_) for m_ in marcas_exclusivas.MARCAS_INFO} or f.name == PREFIJO + "data" and ((d / "data").exists() or (d / f.name).exists()):
+            continue  # (las carpetas /samsung/, /lg/... son de la tienda principal: en un sitio propio serían contenido repetido)
         if f.is_dir():
             shutil.copytree(f, d / f.name, dirs_exist_ok=True, ignore=shutil.ignore_patterns("pedidos.sqlite*", "correos.log", "config.php") if f.name in (PREFIJO + "data", PREFIJO + "api") else None)
         else:
@@ -875,7 +933,8 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         bgim.save(d / (PREFIJO + "img") / "compartir.jpg", quality=88)
     SP = SITIOS_PROPIOS.get(marca)
     marcas_exclusivas.AUTORIZADO = {marca: SP["frase"]} if SP else {}
-    (d / (PREFIJO + "asistente.js")).write_text(asistente.generar([p for p in CATALOGO if p["marca"] == marca], lambda p: f"/{p['slug']}/"), encoding="utf-8")
+    marcas_exclusivas.SOLO_LINEA = {marca} if SP and SP.get("solo_linea") else set()
+    (d / (PREFIJO + "asistente.js")).write_text(asistente.generar([p for p in CATALOGO if p["marca"] == marca], lambda p: f"/{p['slug']}/", correo=(SP or {}).get("correo", "") if SP and SP.get("solo_linea") else ""), encoding="utf-8")
     rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo)
     if SP:  # etiqueta de Search Console, dominio, nombre, WhatsApp y correo propios del dominio de esta marca
         for nom in ("api/lib.php", PREFIJO + "api/lib.php"):
@@ -892,6 +951,8 @@ for marca in marcas_exclusivas.MARCAS_INFO:
                       .replace("'gtm' => 'GTM-5WSNHV66'", "'gtm' => ''")
                       .replace("'whatsapp' => '3107147299'", f"'whatsapp' => '{SP['wa']}'")
                       .replace("'telefono'  => '310 714 7299'", f"'telefono'  => '{SP['tel']}'"))
+                if SP.get("solo_linea"):  # solo pago en línea: sin contra entrega ni WhatsApp
+                    t_ = t_.replace("'contraentrega' => ['activo' => true, 'recargo' => 5000]", "'contraentrega' => ['activo' => false, 'recargo' => 5000]").replace(f"'whatsapp' => '{SP['wa']}'", "'whatsapp' => ''")
                 fc.write_text(t_, encoding="utf-8")
     (d / "filtrosnevecones-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
@@ -975,4 +1036,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
                         .replace("Somos un comercio independiente.", f"Somos {dp}."))
                 if t1 != t0:
                     f.write_text(t1, encoding="utf-8")
+    if SP and SP.get("solo_linea"):
+        sin_whatsapp_ni_cod(d)
+        mejorar_fotos(d / "img", [p["id"] for p in CATALOGO if p["marca"] == marca])
     print(f"Sitio {marca}: sitios/{s}/ con {len(rutas)} páginas")
