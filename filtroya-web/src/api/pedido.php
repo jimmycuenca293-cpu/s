@@ -30,10 +30,15 @@ $con_llaves = con_llaves();
 $link = '';
 if (!$con_llaves && $pago !== 'cod') {
     $l0 = $C['lineas'][0];
-    $link = (count($C['lineas']) === 1 && $C['unidades'] === 1) ? (string) ($cat['productos'][$l0['pid']]['link_pago'] ?? '') : '';
-    if ($link === '') fail(count($C['lineas']) === 1 && $C['unidades'] === 1 && empty($cat['productos'][$l0['pid']]['link_pago'])
-        ? 'Este filtro todavía no tiene pago en línea. Escríbenos a ' . cfg()['negocio']['correo'] . ' y te lo vendemos.'
-        : 'Por ahora el pago en línea es de un filtro a la vez. Deja una sola unidad en el carrito.');
+    $p0 = $cat['productos'][$l0['pid']] ?? [];
+    $unico = count($C['lineas']) === 1;
+    // Un solo filtro: link del filtro. Un solo pack de 2: link del pack.
+    $link = '';
+    if ($unico && !$l0['pack'] && $C['unidades'] === 1) $link = (string) ($p0['link_pago'] ?? '');
+    elseif ($unico && $l0['pack'] && (int) $l0['cant'] === 1) $link = (string) ($p0['link_pack'] ?? '');
+    if ($link === '') fail($unico && ((int) $C['unidades'] === 1 || ($l0['pack'] && (int) $l0['cant'] === 1))
+        ? 'Este ' . ($l0['pack'] ? 'pack' : 'filtro') . ' todavía no tiene pago en línea. Escríbenos a ' . cfg()['negocio']['correo'] . ' y te lo vendemos.'
+        : 'Por ahora el pago en línea es de un filtro o de un pack a la vez. Deja un solo producto en el carrito.');
 }
 
 $c = is_array($b['cliente'] ?? null) ? $b['cliente'] : [];

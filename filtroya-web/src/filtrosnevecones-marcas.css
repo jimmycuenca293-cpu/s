@@ -429,3 +429,11 @@ body.m-samsung .sx-seg small{font-size:12.5px}
 .m-burger .m-bmenu details>summary{width:auto;height:auto;border:0;border-radius:0;display:flex;justify-content:space-between;align-items:center;padding:12px 10px;margin:0;background:none}
 .m-bmenu{z-index:99;background:#fff}
 .m-bmenu a small{display:block;color:#666;font-weight:500;font-size:12.5px;margin-top:2px}
+
+/* pack de 2 */
+.sx-pack{display:flex;gap:12px;align-items:center;justify-content:space-between;border:2px dashed #1428a0;background:#f2f4fb;border-radius:16px;padding:14px 16px}
+.sx-pack b{display:block;font-size:16px;color:#000}.sx-pack span{display:block;color:#0a1460}.sx-pack strong{font-size:20px}.sx-pack s{color:#777;font-size:13.5px}.sx-pack small{color:#555;font-size:12.5px}
+.sx-pack .m-btn{white-space:nowrap;min-height:44px}
+.m-packl{display:block;font-size:13px;color:#0f7a4f;font-weight:700;margin:2px 0 6px}
+@media (max-width:560px){.sx-pack{flex-direction:column;align-items:stretch}}
+.sx-pack .m-ahorro{color:#0f7a4f;font-weight:700;font-size:13.5px;white-space:nowrap}

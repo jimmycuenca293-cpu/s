@@ -62,6 +62,8 @@ MARCAS_INFO = {
 }
 
 
+BOGOTA = set()  # claves de las tiendas locales de Bogotá
+PACKS = set()  # marcas cuyo sitio ofrece también el pack de 2
 SOLO_LINEA = set()  # marcas cuyo sitio propio vende solo con pago en línea (sin WhatsApp ni contra entrega)
 AUTORIZADO = {}  # marca -> frase corta («Distribuidores autorizados de X») que dice su sitio propio (lo confirmó el dueño)
 
@@ -74,7 +76,7 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     s = slug(marca)
     for p in ps:
         p["slug_o"] = p["slug"]
-    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": AUTORIZADO[marca]} if marca in AUTORIZADO else {}), **({"solo_linea": True} if marca in SOLO_LINEA else {}),
+    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": AUTORIZADO[marca]} if marca in AUTORIZADO else {}), **({"solo_linea": True} if marca in SOLO_LINEA else {}), **({"bogota": True, "ciudades_titulo": "Localidades"} if marca in BOGOTA else {}), **({"packs": True} if marca in PACKS else {}),
          "productos": [[p["nombre_largo"] + "", p["slug_o"], cop(p["precio"])] for p in ps]}
     R = marcas_seo.rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO)
     _rutas = [p["slug_o"] + "/" for p in ps] + [r for r, _ in R["temas"]] + [v[2] for v in R["refs"].values()] + [v[2] for v in R["modelos"].values()]
@@ -82,6 +84,10 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     assert not _dup, f"rutas repetidas en {marca}: {_dup}"
     M["guias"] = [[r, n] for r, n in R["temas"]]
     M["ciudades"] = [[n, r] for n, (_, r) in list(R["ciudades"].items())[:14]]
+    if marca in BOGOTA:
+        import bogota_seo
+        R["hub"] = f"{base}filtros-samsung-bogota-por-localidad/"
+        M["ciudades"] = [[l, f"{base}filtro-nevera-samsung-{bogota_seo.slug(l)}-bogota/"] for l in list(bogota_seo.LOCALIDADES)[:14]]
     M["hub"] = R["hub"]
     if R.get("extra"):
         X = R["extra"]
@@ -133,6 +139,13 @@ def faq(preguntas):
 COD_RECARGO = 5000  # el mismo recargo por producto de config.php ('contraentrega' => recargo)
 
 
+def pack_html(p):
+    """Pack de 2 filtros con su ahorro (para las tiendas que lo ofrecen)."""
+    ahorro = p["precio"] * 2 - p["pack"]
+    return (f'<div class="sx-pack"><div><b>Pack de 2 filtros</b><span><strong>{cop(p["pack"])}</strong> <s>{cop(p["precio"] * 2)}</s></span><span class="m-ahorro">Ahorras {cop(ahorro)}</span>'
+            f'<small>Uno para ahora y otro para dentro de 6 meses.</small></div><button class="m-btn sec" type="button" data-add="{p["id"]}" data-pack="1" data-ir="1">Comprar pack</button></div>')
+
+
 def cod_linea(p, largo=False):
     """Opción de pago contra entrega: en efectivo a la transportadora, con su precio."""
     if p["marca"] in SOLO_LINEA:
@@ -146,7 +159,9 @@ def tarjeta(p, base, foto, ubic):
             f'<span class="im">{foto(p, p["nombre_largo"] + "", mini=True)}</span>'
             f'<div class="tx"><h3><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></h3><span class="ref">Referencia {esc(p["ref"])}</span>'
             f'<span class="pr">{cop(p["precio"])}<small>Envío gratis</small></span>{cod_linea(p)}'
-            f'<button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button></div></article>')
+            + (f'<span class="m-packl">Pack de 2: <b>{cop(p["pack"])}</b> · ahorras {cop(p["precio"] * 2 - p["pack"])}</span>' if p["marca"] in PACKS else "")
+            + f'<button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button>'
+            + (f'<button class="m-btn sec block" type="button" data-add="{p["id"]}" data-pack="1">Pack de 2</button>' if p["marca"] in PACKS else "") + '</div></article>')
 
 
 def caja(p, base, foto):
@@ -234,7 +249,7 @@ def carrusel(marca, ps, base, foto, ubic):
     """Encabezado de imágenes que corren solas (solo en el sitio propio de la marca): una diapositiva de presentación y una por filtro."""
     sl = ('<section class="wc-sl" aria-roledescription="diapositiva" aria-label="Bienvenida"><div class="m-wrap wc-in"><div>'
           '<span class="wc-logo"><?= logo_marca_html($M) ?></span>'
-          f'<p class="wc-t">Filtros de agua {esc(marca)} para tu nevera</p>'
+          f'<p class="wc-t">Filtros de agua {esc(marca)} para tu nevera{" en Bogotá" if marca in BOGOTA else ""}</p>'
           f'<p class="wc-d">{esc(AUTORIZADO[marca])} · Envío gratis a toda Colombia · Pago seguro en línea</p>'
           f'<a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a></div>'
           f'<div class="wc-img"><span>{foto(ps[0], ps[0]["nombre_largo"] + " para nevecón " + marca, lazy=False)}</span></div></div></section>')
@@ -277,11 +292,14 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
         faq_ld,
         {"@type": "OnlineStore", "@id": f"__BASE__{base}#tienda", "name": "__NOMBRE__", "alternateName": f"Filtros {marca} Colombia", "url": f"__BASE__{base}",
          "logo": f"__BASE__{M.get('logo', '')}", "description": f"Filtros de agua {marca} para nevera con envío gratis a toda Colombia.",
-         "areaServed": {"@type": "Country", "name": "Colombia"}, "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi",
+         "areaServed": ({"@type": "City", "name": "Bogotá"} if marca in BOGOTA else {"@type": "Country", "name": "Colombia"}), "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi",
          "contactPoint": {"@type": "ContactPoint", "telephone": "__TEL__", "contactType": "customer service", "areaServed": "CO", "availableLanguage": "es"}, "sameAs": "__REDES__"},
         {"@type": "WebSite", "name": f"Filtros {marca}", "url": f"__BASE__{base}", "inLanguage": "es-CO", "publisher": {"@id": f"__BASE__{base}#tienda"}}]}
     titulo = f"Filtros de agua {marca} para nevera | Envío gratis"
     desc = f"{info['intro']} Envío gratis a toda Colombia y pago seguro con tarjeta, PSE o Nequi."
+    if marca in BOGOTA:
+        titulo = f"Filtro de agua para nevera {marca} en Bogotá | Envío gratis"
+        desc = (f"Filtros de agua {marca} HAF-CIN, HAF-QIN y externo con envío gratis en Bogotá: llegan en 1 a 2 días hábiles a tu localidad o barrio. Paga en línea con tarjeta, PSE o Nequi.")
     fotos = "".join(f'<span class="f f{i + 1}">{foto(p, p["nombre_largo"] + "", lazy=False)}</span>' for i, p in enumerate(destacados))
     pasos = [("Encuentra tu filtro", f"Por la referencia del filtro viejo o el modelo de tu nevecón {marca}."), ("Paga en línea", "Con tarjeta, PSE o Nequi en página segura."), ("Recíbelo en casa", "Envío gratis a toda Colombia con número de guía.")]
     senales = ["El agua o el hielo saben o huelen raro (a cloro, a tierra o a encerrado).", "El dispensador bota menos agua o sale con poca presión.", "El hielo sale turbio, pequeño o la máquina de hielo produce menos.", "Ya pasaron 6 meses desde el último cambio."]
@@ -291,14 +309,15 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
   <div>
     <span class="m-hero-logo"><?= logo_marca_html($M) ?><span><b>Filtros {esc(marca)}</b>Envío gratis a toda Colombia</span></span>
     <?php if (!empty($M['autorizado'])) echo '<p class="m-aut">✔ ' . h($M['autorizado']) . '</p>'; ?>
-    <h1>Filtros de agua {esc(marca)} para tu nevecón</h1>
-    <p class="lead">{esc(info["intro"])}</p>
+    <h1>{"Filtros de agua " + esc(marca) + " en Bogotá" if marca in BOGOTA else "Filtros de agua " + esc(marca) + " para tu nevecón"}</h1>
+    <p class="lead">{esc("Entregamos el filtro de agua de tu nevecón Samsung en todas las localidades y barrios de Bogotá en 1 a 2 días hábiles, con envío gratis y pago seguro en línea. HAF-CIN, HAF-QIN y externo, también en pack de 2." if marca in BOGOTA else info["intro"])}</p>
     <div class="acc"><a class="m-btn" href="#filtros">Ver los filtros {esc(marca)}</a><a class="m-btn sec" href="{base}cual-es-mi-filtro/">¿Cuál es el mío?</a></div>
     <ul><li>100 %</li><li>Empaque sellado</li><li>Envío gratis</li><li>Pago seguro</li></ul>
   </div>
   <div class="m-fotos">{fotos}<span class="sello-o"><span><b>Envío</b>gratis<br>a toda Colombia</span></span></div>
 </div></section>
 {buscador_home(marca, ps, base) if marca in AUTORIZADO else ''}
+{__import__('bogota_seo').bloque_portada(base, sec, cab) if marca in BOGOTA else ''}
 {confianza(marca)}
 {sec(cab("Catálogo " + marca, f"Filtros {marca}", f"{len(ps)} referencias {esc(marca)}, nuevas y en su empaque. Todas con envío gratis a toda Colombia.") + '<div class="m-grid">' + "".join(tarjeta(p, base, foto, ubic) for p in ps) + "</div>", id_="filtros")}
 {(sec("<?= pagos_pro_html('home') ?>") if marca in AUTORIZADO else "")}
@@ -383,6 +402,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
     <div class="sx-price"><b>{cop(p["precio"])}</b><small>Precio final en pesos colombianos · Envío gratis a toda Colombia</small></div>
     {'<div class="sx-comp"><b>Compatible con</b><div class="m-chips">' + chips_m + '</div></div>' if p["modelos"] else ''}
     <div class="sx-cta"><button class="m-btn" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="m-btn sec" type="button" data-add="{p["id"]}">Agregar al carrito</button></div>
+    {pack_html(p) if marca in PACKS else ""}
     <ul class="sx-seg"><li><span>🔒</span><b>Pago 100 % seguro</b><small>Pasarela Wompi, de Bancolombia</small></li><li><span>🚚</span><b>Envío gratis con guía</b><small>2 a 3 días hábiles a las principales ciudades</small></li><li><span>↩</span><b>5 días de retracto</b><small>Si te equivocas de filtro, sin instalar</small></li><li><span>🧾</span><b>Recibo por correo</b><small>Llega apenas se confirma el pago</small></li></ul>
     <?= pagos_pro_html('producto') ?>
   </div>

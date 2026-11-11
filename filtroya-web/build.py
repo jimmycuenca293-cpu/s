@@ -89,6 +89,9 @@ LINKS_PAGO = {
     "wp-5-o": "https://checkout.wompi.co/l/aUg7Ty", "wp-ex-o": "https://checkout.wompi.co/l/qT7mmV",
     "ge-mwf-o": "https://checkout.wompi.co/l/KQpMiF", "ge-xwf-o": "https://checkout.wompi.co/l/25FRwq",
 }
+LINKS_PACK = {  # «PROMO Pack 2» de Wompi (los mismos de la otra tienda): cobran el precio del pack
+    "sam-cin-o": "https://checkout.wompi.co/l/wxTMfh", "sam-qin-o": "https://checkout.wompi.co/l/IsrAFX", "sam-ex-o": "https://checkout.wompi.co/l/99evNn",
+}
 AUMENTO = 15000  # pedido del dueño: cada filtro sube $15.000 (el pack de 2 sube 2 x $15.000 menos el 10 %)
 for p in CATALOGO:
     p["precio_antes"] = p["precio"]
@@ -97,6 +100,8 @@ for p in CATALOGO:
     p["precio"] += AUMENTO
     if p["id"] in LINKS_PAGO:
         p["linkPago"], p["linkMonto"] = LINKS_PAGO[p["id"]], p["precio"]
+    if p["id"] in LINKS_PACK:
+        p["linkPack"], p["linkPackMonto"] = LINKS_PACK[p["id"]], p["pack"]
     p["nombre_largo"] = p["nombre"] if norm(p["ref"]) in norm(p["nombre"]) else f'{p["nombre"]} {p["ref"]}'
     p["slug"] = slug(p["nombre_largo"])
     if not p.get("pack"):
@@ -628,7 +633,7 @@ cat_php = {
     "compat": [{"ruta": r, "titulo": t} for r, t in extra["compat"]],
     "blog": [{"ruta": r, "titulo": t} for r, t in extra["blog"]],
     "productos": {p["id"]: {"nombre": p["nombre_largo"], "ref": p["ref"], "marca": p["marca"], "precio": p["precio"], "pack": p["pack"], "slug": p["slug"], "alias": [r for r in p["refs"] if norm(r) != norm(p["ref"])],
-                       "modelos": p["modelos"], "nota": p.get("nota", ""), "link_pago": p.get("linkPago", "") if p.get("linkMonto") == p["precio"] else "", "ubic": ubic(p), "rutas_ref": {r: ruta_ref[norm(r)] for r in p["refs"] if norm(r) in ruta_ref},
+                       "modelos": p["modelos"], "nota": p.get("nota", ""), "link_pago": p.get("linkPago", "") if p.get("linkMonto") == p["precio"] else "", "link_pack": p.get("linkPack", "") if p.get("linkPackMonto") == p["pack"] else "", "ubic": ubic(p), "rutas_ref": {r: ruta_ref[norm(r)] for r in p["refs"] if norm(r) in ruta_ref},
                        "rutas_modelo": {m: ruta_modelo[norm(m)] for m in p["modelos"]}} for p in CATALOGO},
 }
 (OUT / "api" / "catalogo.php").write_text("<?php\n// Generado por build.py: no lo edites a mano. Los precios se cambian en la app y se vuelve a generar.\nreturn " + php_val(cat_php) + ";\n", encoding="utf-8")
@@ -853,6 +858,45 @@ def sin_whatsapp_ni_cod(d):
             f.write_text(t1, encoding="utf-8")
 
 
+def localizar_bogota(d):
+    """Tienda de Bogotá: los textos de «toda Colombia» pasan a hablar de Bogotá (los municipios cercanos conservan su tiempo)."""
+    subs = [
+        ("Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades", "Gratis en Bogotá, 1 a 2 días hábiles"),
+        ("llega en 2 a 3 días hábiles a las principales ciudades de Colombia", "llega en 1 a 2 días hábiles en Bogotá"),
+        ("2 a 3 días hábiles a las principales ciudades de Colombia", "1 a 2 días hábiles en Bogotá"),
+        ("2 a 3 días hábiles a las principales ciudades", "1 a 2 días hábiles en Bogotá"),
+        ("2 a 3 días hábiles en las principales ciudades", "1 a 2 días hábiles en Bogotá"),
+        (" A las principales ciudades llega en 1 a 2 días hábiles.", ""),
+        ("gratis a todo el país", "gratis en Bogotá"),
+        ("Sí, somos distribuidores de Samsung a nivel nacional.", "Sí, somos distribuidores de Samsung en Bogotá."),
+        ("Vendemos filtros Samsung a nivel nacional", "Vendemos filtros Samsung en Bogotá"),
+        ("a nivel nacional", "en Bogotá"),
+        ("¿Hacen envíos a toda Colombia?", "¿Hacen envíos a todo Bogotá?"),
+        ("Sí, enviamos a toda Colombia por transportadora, con número de guía.", "Sí, enviamos a todo Bogotá y a los municipios cercanos, con número de guía."),
+        ("Enviamos filtros Samsung a toda Colombia", "Enviamos filtros Samsung a todo Bogotá"),
+        ("con envío gratis a todo el país", "con envío gratis en Bogotá"),
+        ("para nevecón en Colombia", "para nevecón en Bogotá"),
+        ("con envío a toda Colombia", "con envío a Bogotá"),
+        ("a toda Colombia", "a todo Bogotá"),
+        ("toda Colombia", "Bogotá"),
+        ("Unos 2 a 3 días hábiles", "Unos 1 a 2 días hábiles"),
+        ("2 a 3 días hábiles", "1 a 2 días hábiles"),
+    ]
+    mun = {"soacha", "chia", "cajica", "zipaquira", "mosquera", "funza", "madrid", "cota", "tenjo", "la-calera", "sopo", "tocancipa", "facatativa"}
+    for f in d.rglob("*"):
+        if not f.is_file() or f.suffix not in (".php", ".txt", ".js") or f.relative_to(d).parts[0] in ("data", "api"):
+            continue
+        partes = f.relative_to(d).parts
+        if partes[0].startswith("filtro-nevera-samsung-") and partes[0][len("filtro-nevera-samsung-"):] in mun:
+            continue
+        t0 = f.read_text(encoding="utf-8")
+        t1 = t0
+        for a_, b_ in subs:
+            t1 = t1.replace(a_, b_)
+        if t1 != t0:
+            f.write_text(t1, encoding="utf-8")
+
+
 def mejorar_fotos(dimg, ids):
     """Fotos nítidas: las originales son chicas; se escalan con LANCZOS 3x y se afinan para que no se vean borrosas al mostrarlas grandes."""
     from PIL import Image, ImageFilter, ImageEnhance
@@ -875,11 +919,18 @@ SITIOS_PROPIOS = {  # marcas con tienda en su propio dominio, y lo que cambia en
                       dominio="https://filtrodeaguaneverawhirlpool.com", token="wwiA4fecoUuPXlpDmt9s_vePEsKFCSJUpleQGzf_5Jw", nombre="Filtros Whirlpool", wa="3107147299", tel="310 714 7299"),
     "Samsung": dict(frase="Distribuidores de Samsung a nivel nacional", dist=("distribuidores de Samsung a nivel nacional", "distribuidor de Samsung a nivel nacional"),
                     dominio="https://filtrodeguaneveconsamsung.com", token="FCeajvtvmd9uwzYiiGz4rKJKOs0nHb66j3SLXJsV7lI", nombre="Filtros Samsung", wa="3054796329", tel="305 479 6329", solo_linea=True, correo="pedidos@filtrosaguanevecones.com"),
+    "Samsung Bogotá": dict(frase="Distribuidores de Samsung en Bogotá", dist=("distribuidores de Samsung en Bogotá", "distribuidor de Samsung en Bogotá"),
+                           dominio="https://filtroneverasamsungenbogota.click", token="9Ci1c2c1FvzgyKhoc9KZUBkDw-LATeIIL8GvNX_yetg", nombre="Filtros Samsung Bogotá", wa="3054796329", tel="305 479 6329",
+                           solo_linea=True, correo="pedidos@filtrosaguanevecones.com", bogota=True, packs=True, marca="Samsung", slug="samsung-bogota",
+                           productos={"sam-cin-o", "sam-qin-o", "sam-ex-o"}),
 }
-for marca in marcas_exclusivas.MARCAS_INFO:
+for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
+    SP = SITIOS_PROPIOS.get(clave)
+    marca = SP["marca"] if SP and SP.get("marca") else clave
     s = slug(marca)
-    d = SITIOS / s
-    ids = {p["id"] for p in CATALOGO if p["marca"] == marca}
+    d = SITIOS / (SP["slug"] if SP and SP.get("slug") else s)
+    CAT_SITIO = [p for p in CATALOGO if p["marca"] != marca or not (SP and SP.get("productos")) or p["id"] in SP["productos"]]
+    ids = {p["id"] for p in CAT_SITIO if p["marca"] == marca}
     if d.exists():  # los pedidos de filtrosnevecones-data/ nunca se borran
         for hijo in d.iterdir():
             if hijo.name not in ("data", PREFIJO + "data"):
@@ -928,14 +979,15 @@ for marca in marcas_exclusivas.MARCAS_INFO:
         fb = ImageFont.truetype("/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf", 76)
         fm = ImageFont.truetype("/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf", 36)
         dr_.text((80, 300), "Filtros de agua para", font=fb, fill=(255, 255, 255))
-        dr_.text((80, 390), "nevera Samsung", font=fb, fill=(169, 184, 255))
-        dr_.text((80, 520), "Distribuidores de Samsung a nivel nacional  ·  Envíos a toda Colombia", font=fm, fill=(255, 255, 255))
+        dr_.text((80, 390), "nevera Samsung" + (" en Bogotá" if SP and SP.get("bogota") else ""), font=fb, fill=(169, 184, 255))
+        dr_.text((80, 520), ("Entrega en 1 a 2 días hábiles en Bogotá  ·  Envío gratis" if SP and SP.get("bogota") else "Distribuidores de Samsung a nivel nacional  ·  Envíos a toda Colombia"), font=fm, fill=(255, 255, 255))
         bgim.save(d / (PREFIJO + "img") / "compartir.jpg", quality=88)
-    SP = SITIOS_PROPIOS.get(marca)
     marcas_exclusivas.AUTORIZADO = {marca: SP["frase"]} if SP else {}
+    marcas_exclusivas.BOGOTA = {marca} if SP and SP.get("bogota") else set()
+    marcas_exclusivas.PACKS = {marca} if SP and SP.get("packs") else set()
     marcas_exclusivas.SOLO_LINEA = {marca} if SP and SP.get("solo_linea") else set()
-    (d / (PREFIJO + "asistente.js")).write_text(asistente.generar([p for p in CATALOGO if p["marca"] == marca], lambda p: f"/{p['slug']}/", correo=(SP or {}).get("correo", "") if SP and SP.get("solo_linea") else ""), encoding="utf-8")
-    rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CATALOGO, slug, norm, ubic, foto, php_str, CIUDADES_CO, logo)
+    (d / (PREFIJO + "asistente.js")).write_text(asistente.generar([p for p in CAT_SITIO if p["marca"] == marca], lambda p: f"/{p['slug']}/", correo=(SP or {}).get("correo", "") if SP and SP.get("solo_linea") else ""), encoding="utf-8")
+    rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CAT_SITIO, slug, norm, ubic, foto, php_str, ([c for c in CIUDADES_CO if c[0] == "Bogotá"] if SP and SP.get("bogota") else CIUDADES_CO), logo)
     if SP:  # etiqueta de Search Console, dominio, nombre, WhatsApp y correo propios del dominio de esta marca
         for nom in ("api/lib.php", PREFIJO + "api/lib.php"):
             fl = d / nom
@@ -957,7 +1009,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
     (d / "filtrosnevecones-marca.json").write_text(json.dumps(M, ensure_ascii=False), encoding="utf-8")
     (d / "sitemap.php").write_text(SITEMAP_MARCA, encoding="utf-8")
     # resumen en texto para asistentes de IA (ChatGPT, Gemini, Claude, Perplexity): tudominio.com/llms.txt
-    ps_m = [p for p in CATALOGO if p["marca"] == marca]
+    ps_m = [p for p in CAT_SITIO if p["marca"] == marca]
     llms = (f"# Filtros {marca} en Colombia\n\n"
             f"> Filtros de agua {marca} para nevera/nevecón. Envío gratis a toda Colombia "
             "(2 a 3 días hábiles en las principales ciudades), pago en línea con tarjeta, PSE o Nequi, asesoría por WhatsApp.\n\n"
@@ -1038,5 +1090,7 @@ for marca in marcas_exclusivas.MARCAS_INFO:
                     f.write_text(t1, encoding="utf-8")
     if SP and SP.get("solo_linea"):
         sin_whatsapp_ni_cod(d)
+        if SP.get("bogota"):
+            localizar_bogota(d)
         mejorar_fotos(d / "img", [p["id"] for p in CATALOGO if p["marca"] == marca])
-    print(f"Sitio {marca}: sitios/{s}/ con {len(rutas)} páginas")
+    print(f"Sitio {clave}: {d.relative_to(AQUI)}/ con {len(rutas)} páginas")

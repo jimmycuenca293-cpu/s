@@ -20,7 +20,7 @@ def rutas(base, slug, hub=None):
 
 
 def _p(ps, ref_inicio):
-    return next(p for p in ps if p["ref"].startswith(ref_inicio) or ref_inicio in " ".join(p["refs"]))
+    return next((p for p in ps if p["ref"].startswith(ref_inicio) or ref_inicio in " ".join(p["refs"])), None)
 
 
 def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
@@ -41,7 +41,7 @@ def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
       "<p>Las neveras Samsung usan cuatro filtros distintos según el modelo. No se pueden cambiar entre sí. Estos son los tres caminos para encontrar el tuyo.</p>"
       "<h2>1. Mira el filtro viejo</h2><p>Sácalo y busca la referencia impresa: <span class=\"ref\">HAF-CIN</span> (DA29-00020B), <span class=\"ref\">HAF-QIN</span> (DA97-17376B) o <span class=\"ref\">HAFCU1</span> (DA29-00003G). Todos tienen equivalencias, por ejemplo DA29-00020A, DA97-08006C o DA29-00003B.</p>"
       "<h2>2. Mira el modelo de la nevera</h2><p>La etiqueta está dentro del refrigerador, en una pared lateral o detrás del cajón de las verduras. En Samsung suele empezar por <b>RF</b> (French door y de varias puertas) o <b>RS</b> (side by side).</p>"
-      f"<ul class=\"m-ok\"><li>{L(cin)}: nevecones como {esc(mod(cin))}.</li><li>{L(qin)}: modelos como {esc(mod(qin))}.</li><li>{L(cu1)}: side by side como {esc(mod(cu1))}.</li></ul>"
+      f"<ul class=\"m-ok\"><li>{L(cin)}: nevecones como {esc(mod(cin))}.</li><li>{L(qin)}: modelos como {esc(mod(qin))}.</li>{(f'<li>{L(cu1)}: side by side como {esc(mod(cu1))}.</li>' if cu1 else '')}</ul>"
       "<h2>3. Si tu nevera usa filtro externo</h2><p>Algunas se conectan a la manguera del agua y llevan el filtro por fuera. Ese es el " + L(ex) + ".</p>"
       "<p>Si dudas, mándanos la foto del filtro viejo o de la etiqueta por WhatsApp y te confirmamos antes de comprar.</p>",
       [("¿Un HAF-QIN sirve en una nevera que usa HAF-CIN?", "No. Cada referencia tiene forma y conexión propias; hay que usar la misma del filtro viejo."),
@@ -51,11 +51,11 @@ def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
       "Los cuatro filtran el agua del dispensador y del hielo; lo que cambia es la forma, la conexión y los modelos de nevera que los usan.",
       f"<p>Son cuatro filtros distintos y cada uno va en neveras diferentes:</p><ul class=\"m-ok\"><li><b>{L(cin)}</b> ({cop(cin['precio'])}). Equivale a {esc(', '.join(cin['refs'][:4]))}.</li>"
       f"<li><b>{L(qin)}</b> ({cop(qin['precio'])}). Equivale a {esc(', '.join(qin['refs'][:3]))}.</li>"
-      f"<li><b>{L(cu1)}</b> ({cop(cu1['precio'])}). Equivale a {esc(', '.join(cu1['refs'][:4]))}.</li>"
+      + (f"<li><b>{L(cu1)}</b> ({cop(cu1['precio'])}). Equivale a {esc(', '.join(cu1['refs'][:4]))}.</li>" if cu1 else '') +
       f"<li><b>{L(ex)}</b> ({cop(ex['precio'])}). Equivale a {esc(', '.join(ex['refs'][:3]))}.</li></ul>"
       "<p>El filtro correcto es el que usa tu modelo: comparar solo por precio lleva a comprar uno que no encaja. Todos se cambian cada 6 meses.</p>",
       [("¿El HAF-CIN y el HAF-QIN son lo mismo?", "No. Son referencias distintas con diferente conexión; no son intercambiables."),
-       ("¿Cuál es el más económico?", f"El filtro externo ({cop(ex['precio'])}); los internos cuestan entre {cop(cin['precio'])} y {cop(cu1['precio'])}.")])
+       ("¿Cuál es el más económico?", f"El filtro externo ({cop(ex['precio'])}); los internos cuestan entre {cop(cin['precio'])} y {cop((cu1 or qin)['precio'])}.")])
     a("como-reiniciar-la-luz-del-filtro-de-la-nevera-samsung", "Cómo reiniciar la luz del filtro de la nevera Samsung",
       "Cómo apagar o reiniciar el indicador del filtro de agua en neveras Samsung después de cambiarlo.",
       "Después de cambiar el filtro, mantén presionado el botón del filtro (Filter Reset o Water Filter) unos 3 segundos hasta que el indicador se reinicie.",
@@ -69,7 +69,7 @@ def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
       "Casi siempre es el filtro (tapado o mal puesto), la llave de paso cerrada o aire en la línea.",
       "<ol><li><b>El filtro.</b> Con más de 6 meses se tapa con sedimentos. Si es nuevo, mira que esté girado hasta el fondo y sin la tapa protectora.</li><li><b>La referencia.</b> Otra referencia no encaja y corta el paso del agua.</li>"
       "<li><b>El aire.</b> Después del cambio saca unos 6 litros por tandas.</li><li><b>La llave de paso</b> detrás de la nevera: abierta y la manguera sin dobleces.</li><li><b>Congelamiento</b> de la línea de agua: un técnico revisa la temperatura.</li></ol>"
-        f"<p>Para reemplazar un filtro viejo mira el {L(cin)}, el {L(qin)} o el {L(cu1)}, según el que use tu nevera.</p>",
+        f"<p>Para reemplazar un filtro viejo mira el {L(cin)}{(', el ' + L(qin) + ' o el ' + L(cu1)) if cu1 else ' o el ' + L(qin)}, según el que use tu nevera.</p>",
       [("¿Por qué no sale agua después de cambiar el filtro?", "Casi siempre por mala instalación, aire en la línea o una referencia equivocada."),
        ("¿Cuánta agua debo sacar para purgar?", "Unos 6 litros, por tandas, hasta que salga pareja.")])
     a("nevera-samsung-hielo-pequeno-turbio-o-sin-hielo-que-revisar", "Nevera Samsung con hielo pequeño, turbio o sin hielo: qué revisar",
@@ -83,14 +83,14 @@ def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
       "Cinco pasos para comprar el filtro correcto de tu nevera Samsung por internet: referencia, modelo, empaque, pago y envío.",
       "Confirma la referencia del filtro viejo o el modelo de la nevera, compra la misma referencia y revisa pago seguro, envío y retracto.",
       "<ol><li><b>Anota la referencia del filtro viejo</b> (HAF-CIN, HAF-QIN, HAFCU1…) o el modelo de la nevera.</li><li><b>Compra la misma referencia.</b></li><li><b>Verifica que sea nuevo</b> y venga en su empaque sellado.</li><li><b>Paga en un sitio seguro</b> (tarjeta, PSE o Nequi) o contra entrega.</li><li><b>Guarda la guía de envío y el recibo;</b> tienes 5 días hábiles de retracto, sin instalar.</li></ol>"
-      f"<p>Precios de los cuatro filtros: de {rango}. {L(cin)}, {L(qin)}, {L(cu1)} y {L(ex)}. Si dudas, usa el asistente de la página: escribes el modelo y te dice cuál es.</p>",
+      f"<p>Precios de los filtros: de {rango}. {L(cin)}, {L(qin)}{(', ' + L(cu1)) if cu1 else ''} y {L(ex)}. Si dudas, usa el asistente de la página: escribes el modelo y te dice cuál es.</p>",
       [("¿Cómo sé si es el correcto?", "Compara la referencia con la del filtro viejo o con el modelo de la nevera."),
        ("¿Puedo devolverlo si me equivoco?", "Sí, dentro de 5 días hábiles, sin instalar y en su empaque.")])
     a("como-leer-el-modelo-de-tu-nevera-samsung", "Cómo leer el modelo de tu nevera Samsung",
       "Dónde está la etiqueta del modelo y qué significan sus letras en neveras Samsung (RF, RS).",
       "La etiqueta está dentro del refrigerador, en una pared lateral. En Samsung suele empezar por RF o RS.",
       "<p>Abre el refrigerador y busca una etiqueta con «Model». Las primeras letras indican el tipo: <b>RF</b> suele ser French door o de varias puertas y <b>RS</b> side by side. Con ese modelo y la referencia del filtro viejo se confirma cuál filtro es.</p>"
-      f"<p>Algunos ejemplos de nuestra lista: {esc(mod(cin))} usan el {L(cin)}; {esc(mod(qin))} el {L(qin)}; y {esc(mod(cu1))} el {L(cu1)}.</p>",
+      f"<p>Algunos ejemplos de nuestra lista: {esc(mod(cin))} usan el {L(cin)}; {esc(mod(qin))} el {L(qin)}{(f'; y {esc(mod(cu1))} el {L(cu1)}' if cu1 else '')}.</p>",
       [("¿Qué hago si la etiqueta no se lee?", "Mándanos la foto del filtro viejo y te confirmamos.")])
     a("como-instalar-el-filtro-externo-samsung-da29-10105j", "Cómo instalar el filtro externo Samsung DA29-10105J",
       "Paso a paso para instalar el filtro externo Samsung en la manguera de agua de tu nevera, sin herramientas.",
@@ -116,10 +116,10 @@ def preguntas_ia(ps, slug):
         (f"¿Qué filtro de agua usa la nevera Samsung {m}?", f"La {m} usa el {p['nombre_largo']} (referencia {p['ref']}), por {cop(p['precio'])}, con envío a toda Colombia.")
         for p in ps for m in p["modelos"]])]
     G += [("Qué filtro le sirve a mi nevera Samsung", [
-        ("¿Qué filtro de agua le sirve a una nevera Samsung?", f"Depende del modelo: HAF-CIN ({cin['ref']}), HAF-QIN ({qin['ref']}), Aqua-Pure Plus HAFCU1 ({cu1['ref']}) o el externo ({ex['ref']}). Mira la referencia del filtro viejo o el modelo de la nevera."),
+        ("¿Qué filtro de agua le sirve a una nevera Samsung?", f"Depende del modelo: HAF-CIN ({cin['ref']}), HAF-QIN ({qin['ref']}){(', Aqua-Pure Plus HAFCU1 (' + cu1['ref'] + ')') if cu1 else ''} o el externo ({ex['ref']}). Mira la referencia del filtro viejo o el modelo de la nevera."),
         ("¿Qué equivale al HAF-CIN?", f"{', '.join(cin['refs'])}."),
         ("¿Qué equivale al HAF-QIN?", f"{', '.join(qin['refs'])}."),
-        ("¿Qué equivale al HAFCU1 y al HAFIN2?", f"{', '.join(cu1['refs'])}."),
+    ] + ([("¿Qué equivale al HAFCU1 y al HAFIN2?", f"{', '.join(cu1['refs'])}.")] if cu1 else []) + [
         ("¿Qué es el filtro externo Samsung?", f"El {ex['nombre_largo']}: se conecta a la manguera del agua y equivale a {', '.join(ex['refs'])}."),
         ("¿Cuánto cuesta un filtro para nevera Samsung?", f"Entre {rango}, según la referencia."),
     ]), ("Escoger y comprar", [
@@ -155,6 +155,11 @@ def generar(pagina, ctx, h, R):
     X = R["extra"]
     inst = f"{base}cambio-e-instalacion/"
     grupos = preguntas_ia(ps, slug)
+    if M.get("bogota"):
+        grupos = [("Entregas en Bogotá", [("¿Entregan filtros Samsung en todo Bogotá?", "Sí, en las 19 localidades urbanas y en sus barrios, en 1 a 2 días hábiles y con envío gratis."),
+                                            ("¿Entregan en municipios cercanos a Bogotá?", "Sí, a Soacha, Chía, Cajicá, Zipaquirá, Mosquera, Funza, Madrid y más, en 2 a 3 días hábiles."),
+                                            ("¿Hay pack de 2 filtros?", "Sí: el pack de 2 trae dos filtros de la misma referencia con ahorro; uno para ahora y otro para dentro de 6 meses."),
+                                            ("¿Cómo pago?", "Solo en línea, en la pasarela segura de Wompi: tarjeta, PSE, Nequi o Bancolombia.")])] + grupos
     todas = [qa for _, l in grupos for qa in l]
     cuerpo = "".join(f'<h2 id="{slug(g)}" style="font-size:22px;margin:26px 0 12px">{esc(g)}</h2>' + "".join(f'<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>' for q, a in l) for g, l in grupos)
     pagina(X["faq"], f"Preguntas frecuentes sobre filtros de nevera Samsung ({len(todas)} respuestas)",
@@ -164,6 +169,9 @@ def generar(pagina, ctx, h, R):
     def respuesta(txt):
         return RESPUESTA.replace("__T__", txt)
     arts = articulos(ps, base, inst)
+    if M.get("bogota"):
+        import bogota_seo
+        arts = bogota_seo.articulos(ps, base, inst) + arts
     for sl, titulo, desc, resumen, cuerpo_a, preguntas in arts:
         art = {"@type": "Article", "headline": titulo, "description": desc, "inLanguage": "es-CO", "datePublished": "2026-11-11", "dateModified": "2026-11-11",
                "author": {"@type": "Organization", "name": "__NOMBRE__"}, "publisher": {"@id": f"__BASE__{base}#tienda"}, "mainEntityOfPage": f"__BASE__{base}blog/{sl}/"}

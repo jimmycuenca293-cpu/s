@@ -261,15 +261,20 @@ def generar(R, escribir, dir_, ctx, h):
                 (f"¿Qué filtro {marca} necesito en {nombre}?", f"El que corresponde a tu nevera: las referencias son {refs_txt}. Con el modelo o con el filtro viejo te confirmamos cuál es."),
                 (f"¿Tienen tienda física en {nombre}?", "Vendemos en línea y enviamos a toda Colombia; te asesoramos por WhatsApp.")],
                miga_nombre=f"Envíos a {nombre}", ld_extra=servicio)
-    pagina(R["hub"], f"Filtros para nevera {marca} por ciudad | Envío gratis a toda Colombia",
-           f"Enviamos filtros de agua {marca} con envío gratis a {len(R['ciudades'])} ciudades de Colombia: busca la tuya y mira el tiempo de entrega.",
-           f"Filtros {marca} con envío gratis a toda Colombia", "Cobertura",
-           f"Escoge tu ciudad: enviamos el filtro de tu nevera {esc(marca)} a {len(R['ciudades'])} ciudades y municipios, y también a otros lugares de Colombia.",
-           "".join(f'<h2 style="font-size:20px;margin:22px 0 10px">{esc(d)}</h2><div class="m-chips">' + "".join(f'<a href="{r}">{esc(n)}</a>' for n, r in sorted(v)) + "</div>"
-                   for d, v in sorted(por_depto.items())),
-           [(f"¿Envían filtros {marca} a mi ciudad?", "Sí, a toda Colombia. Si tu municipio no aparece, escríbenos y lo enviamos igual."),
-            ("¿El envío tiene costo?", "No, el envío es gratis y llega con número de guía.")],
-           miga_nombre="Envíos por ciudad")
+    if not M.get("bogota"):
+        pagina(R["hub"], f"Filtros para nevera {marca} por ciudad | Envío gratis a toda Colombia",
+               f"Enviamos filtros de agua {marca} con envío gratis a {len(R['ciudades'])} ciudades de Colombia: busca la tuya y mira el tiempo de entrega.",
+               f"Filtros {marca} con envío gratis a toda Colombia", "Cobertura",
+               f"Escoge tu ciudad: enviamos el filtro de tu nevera {esc(marca)} a {len(R['ciudades'])} ciudades y municipios, y también a otros lugares de Colombia.",
+               "".join(f'<h2 style="font-size:20px;margin:22px 0 10px">{esc(d)}</h2><div class="m-chips">' + "".join(f'<a href="{r}">{esc(n)}</a>' for n, r in sorted(v)) + "</div>"
+                       for d, v in sorted(por_depto.items())),
+               [(f"¿Envían filtros {marca} a mi ciudad?", "Sí, a toda Colombia. Si tu municipio no aparece, escríbenos y lo enviamos igual."),
+                ("¿El envío tiene costo?", "No, el envío es gratis y llega con número de guía.")],
+               miga_nombre="Envíos por ciudad")
+    if M.get("bogota"):
+        import bogota_seo
+        bogota_seo.generar(pagina, ctx, h, R, hechas)
+
 
     if R.get("extra"):
         (marcas_contenido_samsung if marca == "Samsung" else marcas_contenido).generar(pagina, ctx, h, R)

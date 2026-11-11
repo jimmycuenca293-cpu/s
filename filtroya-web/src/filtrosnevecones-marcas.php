@@ -45,11 +45,11 @@ function menu_marca(array $M): string
     $cart = '<a class="m-cart" href="/carrito.php" aria-label="Ver carrito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span data-cart-n hidden></span></a>';
     $acc = fn(string $t, string $links, bool $abierto = false) => $links === '' ? '' : '<details' . ($abierto ? ' open' : '') . '><summary>' . $t . '</summary><div>' . $links . '</div></details>';
     $dd = fn(string $t, string $links) => $links === '' ? '' : '<div class="m-dd"><a href="#" onclick="return false" aria-haspopup="true">' . $t . ' <i aria-hidden="true">▾</i></a><div class="m-panel">' . $links . '</div></div>';
-    return '<nav class="m-nav" aria-label="Principal">' . $dd('Filtros', $filtros) . $dd('Guías', $guias) . $dd('Ciudades', $ciudades) . $dd('Marcas', $compat) . $dd('Más', $mas)
+    return '<nav class="m-nav" aria-label="Principal">' . $dd('Filtros', $filtros) . $dd('Guías', $guias) . $dd(h($M['ciudades_titulo'] ?? 'Ciudades'), $ciudades) . $dd('Marcas', $compat) . $dd('Más', $mas)
         . '<a class="m-ancho" href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a class="m-ancho" href="' . h($b) . 'cambio-e-instalacion/">Instalación</a>' . $cart
         . '<details class="m-burger"><summary aria-label="Abrir el menú"><span></span></summary><div class="m-bmenu">'
         . buscador_marca($M, 'm-q2')
-        . $acc('Filtros', $filtros, true) . $acc('Guías', $guias) . $acc('Ciudades', $ciudades) . ($compat ? $acc('Más marcas', $compat) : '') . ($mas ? $acc('Más', $mas) : '')
+        . $acc('Filtros', $filtros, true) . $acc('Guías', $guias) . $acc(h($M['ciudades_titulo'] ?? 'Ciudades'), $ciudades) . ($compat ? $acc('Más marcas', $compat) : '') . ($mas ? $acc('Más', $mas) : '')
         . $acc('Ayuda', '<a href="' . h($b) . 'cual-es-mi-filtro/">¿Cuál es el mío?</a><a href="' . h($b) . 'cambio-e-instalacion/">Instalación</a><a href="/carrito.php">Mi carrito</a>')
         . '</div></details></nav>';
 }
