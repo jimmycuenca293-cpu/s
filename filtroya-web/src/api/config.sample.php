@@ -2,7 +2,7 @@
 // Copia este archivo como config.php y llena tus datos. config.php nunca se muestra en la web.
 return [
     // Tu dominio, con https (se usa en los correos automáticos)
-    'dominio' => 'https://filtrosaguanevecones.com',
+    'dominio' => 'https://filtrosnevecones.com',
 
     // Datos del negocio (salen en la tienda, en los correos y en los términos)
     'negocio' => [

@@ -10,6 +10,6 @@ $urls['/tienda/'] = '0.9'; $urls['/quienes-somos.php'] = '0.5'; $urls['/contacto
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
 $fotos = [];
 foreach ($cat['productos'] as $id => $p) $fotos['/' . strtolower(preg_replace('/[^a-z0-9]+/i', '', $p['marca'])) . '/' . $p['slug'] . '/'] = "/img/$id.jpg";
-foreach ($urls as $u => $pr) echo '  <url><loc>' . htmlspecialchars($b . $u) . '</loc><lastmod>' . $cat['fecha'] . '</lastmod><priority>' . $pr . '</priority>'
+foreach ($urls as $u => $pr) echo '  <url><loc>' . htmlspecialchars($b . $u) . '</loc><lastmod>' . $cat['fecha'] . '</lastmod><changefreq>' . ($pr >= '0.9' ? 'weekly' : 'monthly') . '</changefreq><priority>' . $pr . '</priority>'
     . (isset($fotos[$u]) ? '<image:image><image:loc>' . htmlspecialchars($b . $fotos[$u]) . '</image:loc></image:image>' : '') . "</url>\n";
 echo '</urlset>';

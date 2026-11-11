@@ -18,5 +18,7 @@ Disallow: /api/
 Disallow: /gracias.php
 Disallow: /opinion.php
 Disallow: /carrito.php
+Disallow: /*?pago=
+Disallow: /*?ref=
 
 Sitemap: <?= sitio()['base'] ?>/sitemap.xml
