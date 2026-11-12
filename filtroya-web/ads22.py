@@ -211,6 +211,29 @@ PASARELA = ('<section class="pg-sec" id="pasarela" aria-labelledby="pg-t"><div c
             '<li>' + IC["candado"] + 'Confirmación de tu pedido por correo</li></ul></div></div></section>')
 
 STRIP = ('<div class="pg-strip"><span>🔒 Pago seguro con Wompi</span><b>Tarjeta</b><b>PSE</b><b>Nequi</b><b>Bancolombia</b><b>Contra entrega</b></div>')
+# fotos nítidas y del mismo tamaño: cada filtro con SU foto (recortada al producto y centrada en un cuadro blanco)
+FOTO_HD = {"cin": "sam-cin-o.jpg", "qin": "sam-qin-o.jpg", "ext": "sam-ex-o.jpg"}
+IMG_VIEJA = {}
+
+
+def foto_cuadrada(origen, destino, lado=900, uso=0.9):
+    im = Image.open(origen).convert("RGB")
+    fondo = Image.new("RGB", im.size, (255, 255, 255))
+    from PIL import ImageChops
+    caja = ImageChops.difference(im, fondo).point(lambda v: 255 if v > 14 else 0).getbbox() or (0, 0) + im.size
+    im = im.crop(caja)
+    esc = lado * uso / max(im.size)
+    im = im.resize((max(1, round(im.width * esc)), max(1, round(im.height * esc))), Image.LANCZOS)
+    lienzo = Image.new("RGB", (lado, lado), (255, 255, 255))
+    lienzo.paste(im, ((lado - im.width) // 2, (lado - im.height) // 2))
+    lienzo.save(destino, quality=88, optimize=True)
+
+
+for k_, f_ in FOTO_HD.items():
+    foto_cuadrada(AQUI / "public_html" / "filtrosnevecones-img" / f_, OUT / "img" / f"p-{k_}.jpg")
+    IMG_VIEJA[PRODUCTOS[k_]["img"]] = f"img/p-{k_}.jpg"
+    PRODUCTOS[k_]["img"] = f"img/p-{k_}.jpg"
+
 # galería de imágenes de cada filtro: la foto principal + imágenes informativas propias + las fotos reales que se agreguen en fotos/<clave>-*.jpg
 import galeria
 galeria.generar()
@@ -219,7 +242,7 @@ GALERIA = {}
 for k_, p_ in PRODUCTOS.items():
     lista = [("principal", p_["img"], "Foto del filtro " + p_["corto"])]
     for extra in sorted((AQUI / "fotos").glob(f"{k_}-*.jpg")) if (AQUI / "fotos").is_dir() else []:
-        shutil.copy(extra, OUT / "img" / ("real-" + extra.name))
+        foto_cuadrada(extra, OUT / "img" / ("real-" + extra.name), uso=0.92)
         lista.append(("real", "img/real-" + extra.name, "Foto real del filtro " + p_["corto"]))
     for nom, tit in (("identificar", "Cómo identificar tu filtro"), ("instalacion", "Cómo se instala"), ("ficha", "Ficha técnica")):
         shutil.copy(AQUI / "galeria" / f"{k_}-{nom}.jpg", OUT / "img" / f"gal-{k_}-{nom}.jpg")
@@ -234,10 +257,41 @@ GAL_CSS = """
 .gal-th button{flex:0 0 72px;height:72px;border:2px solid #DCE3F2;border-radius:10px;background:#fff;padding:2px;cursor:pointer}
 .gal-th button[aria-selected=true]{border-color:#1428A0}.gal-th img{width:100%;height:100%;object-fit:contain;border-radius:6px;display:block}
 """
+TF_CSS = """
+.tf-hero{background:#fff;border-bottom:1px solid #DCE3F2;padding:26px 0 18px}.tf-hero h1{font-size:clamp(26px,4.2vw,40px);line-height:1.15;margin:0 0 8px}
+.tf-hero p{margin:0 0 14px;color:#4A5A72;font-size:16px;max-width:760px}
+.tf-ok{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}.tf-ok li{background:#F2F5FC;border:1px solid #DCE3F2;border-radius:999px;padding:7px 13px;font-size:13.5px;font-weight:600;color:#0A1628}
+.tf{padding:26px 0 8px;background:#F2F5FC;scroll-margin-top:70px}
+.tf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tf-card{background:#fff;border:1px solid #DCE3F2;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.tf-img{display:block;background:#fff;aspect-ratio:4/3;position:relative}.tf-img img{position:absolute;inset:10px;width:calc(100% - 20px);height:calc(100% - 20px);object-fit:contain}
+.tf-b{padding:4px 18px 18px;display:flex;flex-direction:column;gap:6px;flex:1}
+.tf-b h3{margin:0;font-size:19px}.tf-b h3 a{color:#0A1628;text-decoration:none}.tf-code{font-family:var(--mono,monospace);font-size:12.5px;color:#1428A0;font-weight:700}
+.tf-b p{margin:0;color:#4A5A72;font-size:14px}.tf-pr{font-size:28px;font-weight:800;color:#0A1628;margin:6px 0 4px}.tf-pr small{font-size:12px;font-weight:500;color:#4A5A72;margin-left:6px}
+.tf-add{margin-top:auto;border:0;border-radius:12px;background:#1428A0;color:#fff;font:700 16px/1 inherit;font-family:inherit;padding:15px;cursor:pointer}.tf-add:hover{background:#0f1f80}
+.tf-note{text-align:center;margin:16px 0 0;color:#4A5A72;font-size:14.5px}.tf-note a{color:#1428A0;font-weight:700}
+@media(max-width:820px){.tf-hero{padding:18px 0 12px}.tf-ok{gap:6px}.tf-ok li{padding:5px 10px;font-size:12px}.tf-hero p{font-size:15px;margin-bottom:10px}.tf{padding-top:16px}.tf-grid{grid-template-columns:1fr;gap:14px}.tf-card{flex-direction:row}.tf-img{flex:0 0 40%;aspect-ratio:1/1;align-self:center}.tf-b{padding:14px 14px 14px 4px}.tf-pr{font-size:24px}}
+"""
+FORMA = {"cin": "Redondo · se instala girando", "qin": "Cuadrado · se instala empujando", "ext": "Externo · va en la línea de agua"}
+
+
+def portada_tienda():
+    cards = "".join(
+        f'<article class="tf-card"><a class="tf-img" href="{p["url"]}" aria-label="Ver {p["corto"]}"><img src="{p["img"]}" alt="Filtro de agua Samsung {p["corto"]} original, código {p["ref"]}" width="400" height="400" loading="{"eager" if k == "cin" else "lazy"}"></a>'
+        f'<div class="tf-b"><h3><a href="{p["url"]}">{p["corto"]}</a></h3><span class="tf-code">Código {p["ref"]}</span><p>{FORMA[k]}</p>'
+        f'<div class="tf-pr">${p["precio"]:,}'.replace(",", ".") + '<small>COP</small></div>'
+        f'<button type="button" class="tf-add" data-add="{k}">🛒 Agregar al carrito</button></div></article>' for k, p in PRODUCTOS.items())
+    return ('<section class="tf-hero"><div class="wrap"><h1>Filtro de Agua Samsung Original para tu Nevecón</h1>'
+            '<p>Escoge tu referencia, agrégala al carrito y paga en línea o contra entrega.</p>'
+            '<ul class="tf-ok"><li>🔒 Pago seguro con Wompi</li><li>💵 Contra entrega disponible</li><li>✔ Producto nuevo y sellado</li><li>↩ 5 días de retracto</li></ul></div></section>'
+            '<section class="tf" id="filtros"><div class="wrap"><div class="tf-grid">' + cards + '</div>'
+            '<p class="tf-note">¿No sabes cuál es el tuyo? <a href="#identificar-modelo">Identifica tu filtro</a> por el código o el modelo de tu nevecón.</p></div></section>')
+
+
 GAL_JS = """<script>document.querySelectorAll('[data-gal]').forEach(function(g){var m=g.querySelector('.gal-main'),i=m.querySelector('img');g.querySelectorAll('.gal-th button').forEach(function(b){b.addEventListener('click',function(){g.querySelectorAll('.gal-th button').forEach(function(x){x.setAttribute('aria-selected','false')});b.setAttribute('aria-selected','true');i.src=b.dataset.src;i.alt=b.dataset.alt;m.classList.remove('zoom')})});m.addEventListener('click',function(e){var r=m.getBoundingClientRect();i.style.transformOrigin=((e.clientX-r.left)/r.width*100)+'% '+((e.clientY-r.top)/r.height*100)+'%';m.classList.toggle('zoom')})});</script>"""
 
 with open(OUT / "pasarela.css", "a", encoding="utf-8") as _f:
-    _f.write(GAL_CSS)
+    _f.write(GAL_CSS + TF_CSS)
 
 
 def galeria_html(k):
@@ -282,6 +336,8 @@ def ld_producto(p, url):
 def pagina(f):
     t = f.read_text(encoding="utf-8")
     o = t
+    for viejo, nuevo in IMG_VIEJA.items():
+        t = t.replace(viejo, nuevo)
     # a) el «Pagar en línea» de siempre ahora pasa por el carrito (un solo botón): agrega el filtro y abre el pago con sus datos, correo y confirmación
     def boton(m):
         k = LINK_A_ID.get(m.group(2))
@@ -343,6 +399,11 @@ def pagina(f):
     t = re.sub(r'\s*<button type="button" class="btn btn-line" data-add="\w+" data-ir="1">⚡ Comprar ahora</button>', "", t)
     t = re.sub(r'\s*<a href="[^"]*" class="btn-detalle">Ver detalles[^<]*</a>', "", t)
     t = re.sub(r"\s*document\.getElementById\('lightboxWompi'\)\.setAttribute\([^\n]*?\|\| 'cin'\);", "", t)
+    if f.name == "index.html":
+        t, n1 = re.subn(r'<section class="hero">.*?</section>', lambda m: portada_tienda(), t, count=1, flags=re.S)
+        t, n2 = re.subn(r'<section class="pick" id="elige-tu-filtro">.*?</section>', "", t, count=1, flags=re.S)
+        t = t.replace('<a href="#catalogo" class="find-btn">Identificar mi filtro</a>', '<a href="#filtros" class="find-btn">Ver filtros</a>', 1)
+        assert n1 == 1 and n2 == 1, (n1, n2)
     if f.name in GAL_FICHAS:
         t, nsub = re.subn(r'<img[^>]*class="hero-img"[^>]*>', lambda m: galeria_html(GAL_FICHAS[f.name]), t, count=1)
         assert nsub == 1, f.name
