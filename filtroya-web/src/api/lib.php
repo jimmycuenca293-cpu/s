@@ -80,7 +80,7 @@ function pagos_pro_html(string $v = 'home'): string
     if ($v === 'producto' || $v === 'carrito') {
         return '<div class="m-pay m-pay-c"><div class="m-pay-h"><span class="m-pay-lock">' . $ico['candado'] . '</span><span><b>Paga como prefieras, 100 % seguro</b><small>Pasarela de pagos Wompi · Bancolombia</small></span></div><ul class="m-pay-m">' . $lis . '</ul>' . ($v === 'carrito' ? $seg : '') . '</div>';
     }
-    $pasos = '<ol class="m-pay-p"><li><b>Escoge tu filtro</b><span>Por la referencia o el modelo de tu nevera.</span></li><li><b>Paga como prefieras</b><span>' . (cod_cfg()['activo'] ? 'En línea con tarjeta, PSE, Nequi o Bancolombia, o contra entrega.' : 'Con tarjeta, PSE, Nequi o Botón Bancolombia.') . '</span></li><li><b>Recíbelo en casa</b><span>Con número de guía y confirmación por correo.</span></li></ol>';
+    $pasos = '<ol class="m-pay-p"><li><b>Escoge tu filtro</b><span>Por la referencia o el modelo de tu nevera.</span></li><li><b>Paga como prefieras</b><span>' . (cod_cfg()['activo'] ? 'En línea con tarjeta, PSE, Nequi o Bancolombia, o contra entrega.' : 'Con tarjeta, PSE, Nequi o Botón Bancolombia.') . '</span></li><li><b>' . (cod_cfg()['activo'] ? 'Recíbelo en casa' : 'Recibe tu confirmación') . '</b><span>' . (cod_cfg()['activo'] ? 'Con número de guía y confirmación por correo.' : 'El recibo y los datos de tu pedido te llegan al correo.') . '</span></li></ol>';
     return '<div class="m-pay m-pay-g"><div class="m-pay-h"><span class="m-pay-lock">' . $ico['candado'] . '</span><span><b>Pasarela de pagos segura</b><small>Pagos procesados por Wompi, de Bancolombia</small></span></div><ul class="m-pay-m">' . $lis . '</ul>' . $pasos . $seg . '</div>';
 }
 

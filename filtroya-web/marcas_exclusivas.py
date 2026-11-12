@@ -144,7 +144,7 @@ def pack_html(p):
     """Pack de 2 filtros con su ahorro (para las tiendas que lo ofrecen)."""
     ahorro = p["precio"] * 2 - p["pack"]
     return (f'<div class="sx-pack"><div><b>Pack de 2 filtros</b><span><strong>{cop(p["pack"])}</strong> <s>{cop(p["precio"] * 2)}</s></span><span class="m-ahorro">Ahorras {cop(ahorro)}</span>'
-            f'<small>Uno para ahora y otro para dentro de 6 meses.</small></div><button class="m-btn sec" type="button" data-add="{p["id"]}" data-pack="1" data-ir="1">Comprar pack</button></div>')
+            f'<small>Uno para ahora y otro para dentro de 6 meses.</small></div><button class="m-btn sec" type="button" data-add="{p["id"]}" data-pack="1">Agregar pack al carrito</button></div>')
 
 
 def cod_linea(p, largo=False):
@@ -162,7 +162,7 @@ def tarjeta(p, base, foto, ubic):
             f'<span class="pr">{cop(p["precio"])}<small>Envío gratis</small></span>{cod_linea(p)}'
             + (f'<span class="m-packl">Pack de 2: <b>{cop(p["pack"])}</b> · ahorras {cop(p["precio"] * 2 - p["pack"])}</span>' if p["marca"] in PACKS else "")
             + f'<button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button>'
-            + (f'<button class="m-btn sec block" type="button" data-add="{p["id"]}" data-pack="1">Pack de 2</button>' if p["marca"] in PACKS else "") + '</div></article>')
+            + (f'<button class="m-btn sec block" type="button" data-add="{p["id"]}" data-pack="1">Pack de 2</button>' if p["marca"] in PACKS and p["marca"] not in BOGOTA else "") + '</div></article>')
 
 
 def caja(p, base, foto):
@@ -171,7 +171,7 @@ def caja(p, base, foto):
     return (f'<div class="m-caja-prod"><a class="foto" href="{base}{p["slug_o"]}/"><span class="m-badge">✔ Nuevo</span>{foto(p, p["nombre_largo"] + "", mini=True)}</a>'
             f'<div class="tx"><h2><a href="{base}{p["slug_o"]}/">{esc(p["nombre_largo"])}</a></h2><span class="m-mut">Referencia {esc(p["ref"])}</span>'
             f'<span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>{cod_linea(p)}'
-            f'<div class="compra"><button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>'
+            f'<div class="compra"><button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button>' + ("" if p["marca"] in BOGOTA else f'<button class="m-btn sec" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button>') + '</div>'
             f'</div></div>')
 
 
@@ -433,7 +433,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
     <?php if ($R['n']) echo '<a href="#opiniones" class="sx-rate">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span>(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
     <div class="sx-price"><b>{cop(p["precio"])}</b><small>Precio final en pesos colombianos · Envío gratis a toda Colombia</small></div>
     {'<div class="sx-comp"><b>Compatible con</b><div class="m-chips">' + chips_m + '</div></div>' if p["modelos"] else ''}
-    <div class="sx-cta"><button class="m-btn" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="m-btn sec" type="button" data-add="{p["id"]}">Agregar al carrito</button></div>
+    <div class="sx-cta">{f'<button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button>' if marca in BOGOTA else f'<button class="m-btn" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="m-btn sec" type="button" data-add="{p["id"]}">Agregar al carrito</button>'}</div>
     {pack_html(p) if marca in PACKS else ""}
     <ul class="sx-seg"><li><span>🔒</span><b>Pago 100 % seguro</b><small>Pasarela Wompi, de Bancolombia</small></li><li><span>🚚</span><b>Envío gratis con guía</b><small>2 a 3 días hábiles a las principales ciudades</small></li><li><span>↩</span><b>5 días de retracto</b><small>Si te equivocas de filtro, sin instalar</small></li><li><span>🧾</span><b>Recibo por correo</b><small>Llega apenas se confirma el pago</small></li></ul>
     <?= pagos_pro_html('producto') ?>
@@ -454,7 +454,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
 <span id="preguntas"></span>{sec(cab("Preguntas", f"Preguntas sobre el {p['nombre_largo']}") + faq_h, alt=True)}
 {sec(cab("Más de " + marca, f"Otros filtros {marca}") + '<div class="m-grid">' + "".join(tarjeta(x, base, foto, ubic) for x in otros) + "</div>") if otros else ""}
 {sec(marcas_seo.relacionadas(R, url, marca, M, base), alt=True)}
-<div class="m-barra"><span><small>{esc(nombre)}</small><b>{cop(p["precio"])}</b></span><button class="m-btn" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>
+<div class="m-barra"><span><small>{esc(nombre)}</small><b>{cop(p["precio"])}</b></span><button class="m-btn" type="button" data-add="{p["id"]}"{"" if marca in BOGOTA else ' data-ir="1"'}>{"Agregar al carrito" if marca in BOGOTA else "Comprar ahora"}</button></div>
 </main>
 <?php pie_marca($M); ?>
 """
@@ -470,7 +470,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
     <span class="precio">{cop(p["precio"])}<small>Envío gratis a toda Colombia</small></span>
     {cod_linea(p, True)}
     <div class="m-aviso"><span style="font-size:22px">✔</span><span><b>Filtro {esc(marca)} · {esc(p["ref"])}</b>Filtro nuevo, en su caja sellada con la referencia {esc(p["ref"])} impresa. ¿Quieres verlo? Te mandamos fotos reales por WhatsApp.</span></div>
-    <div class="compra"><button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button><button class="m-btn sec block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button></div>
+    <div class="compra"><button class="m-btn block" type="button" data-add="{p["id"]}">Agregar al carrito</button>{"" if marca in BOGOTA else f'<button class="m-btn sec block" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button>'}</div>
     <ul class="m-ok"><li><b>Envío gratis</b>: llega en 2 a 3 días hábiles a las principales ciudades.</li><li><b>Fácil de instalar</b>: {"10 a 15 minutos en la manguera del agua" if externo else "2 minutos, sin herramientas"}. Paso a paso abajo.</li><li><b>Pago seguro</b> en línea; el comprobante llega a tu correo.</li></ul>
     <?= pagos_pro_html('producto') ?>
   </div>
