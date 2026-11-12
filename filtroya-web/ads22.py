@@ -188,7 +188,9 @@ nuevas_ciudad = seo.expandir_ciudades(OUT, ciudades)
 nuevas_extra, refs_slug, depts = seo.paginas_nuevas(OUT, PRODUCTOS, ciudades)
 seo.actualizar_hub(OUT, ciudades)
 n_enl = seo.enlaces_internos(OUT, PRODUCTOS, refs_slug, depts)
-PAGINAS_NUEVAS = nuevas_ciudad + nuevas_extra
+import ads22_hubs
+nuevas_hubs, HUBS = ads22_hubs.crear(OUT, seo, PRODUCTOS, ciudades, depts)
+PAGINAS_NUEVAS = nuevas_ciudad + nuevas_extra + nuevas_hubs
 print(f"ciudades: {n_antes} -> {len(ciudades)}; páginas nuevas: {len(PAGINAS_NUEVAS)} ({len(nuevas_ciudad)} de ciudad, {len(nuevas_extra)} de referencia/modelo/departamento); enlaces internos en {n_enl} páginas")
 
 # ---------- 3. páginas estáticas: carrito, pasarela y SEO ----------
@@ -304,7 +306,11 @@ def portada_tienda():
 GAL_JS = """<script>document.querySelectorAll('[data-gal]').forEach(function(g){var m=g.querySelector('.gal-main'),i=m.querySelector('img');g.querySelectorAll('.gal-th button').forEach(function(b){b.addEventListener('click',function(){g.querySelectorAll('.gal-th button').forEach(function(x){x.setAttribute('aria-selected','false')});b.setAttribute('aria-selected','true');i.src=b.dataset.src;i.alt=b.dataset.alt;m.classList.remove('zoom')})});m.addEventListener('click',function(e){var r=m.getBoundingClientRect();i.style.transformOrigin=((e.clientX-r.left)/r.width*100)+'% '+((e.clientY-r.top)/r.height*100)+'%';m.classList.toggle('zoom')})});</script>"""
 
 with open(OUT / "pasarela.css", "a", encoding="utf-8") as _f:
-    _f.write(GAL_CSS + TF_CSS)
+    _f.write(GAL_CSS + TF_CSS + """
+/* carrito en la paleta del logo de Samsung: botón principal azul, secundarios blancos */
+.btn{background:#1428A0!important;border-color:#1428A0!important;color:#fff!important;box-shadow:0 10px 24px -10px rgba(20,40,160,.7)!important}.btn:hover{background:#0f1f80!important}
+.btn.ghost,.btn.sm.ghost{background:#fff!important;color:#1428A0!important}
+""")
 
 
 def galeria_html(k):
@@ -347,7 +353,7 @@ def ld_producto(p, url):
 
 
 import ads22_tema
-TEMA = ads22_tema.Tema(OUT, PRODUCTOS, ciudades)
+TEMA = ads22_tema.Tema(OUT, PRODUCTOS, ciudades, hubs=HUBS)
 TEMA.escribir_assets()
 # el carrito, «gracias» y las páginas legales llevan el mismo encabezado y pie del sitio
 _pt = (OUT / "partes.php").read_text(encoding="utf-8")

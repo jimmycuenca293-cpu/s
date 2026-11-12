@@ -30,8 +30,9 @@ ICONOS = {
 
 
 class Tema:
-    def __init__(self, OUT, PRODUCTOS, ciudades, galeria_html=None):
+    def __init__(self, OUT, PRODUCTOS, ciudades, galeria_html=None, hubs=None):
         self.OUT, self.P, self.ciudades = OUT, PRODUCTOS, ciudades
+        self.hubs = hubs or {"region_de": {}, "area_de": {}, "regiones": {}, "areas": {}}
         self.galeria_html = galeria_html
         self.deptos = sorted({c["dept"] for c in ciudades.values()})
         self.por_dept = {}
@@ -54,13 +55,16 @@ class Tema:
         m = re.search(r":root\{([^}]*)\}", css)
         c1 = css[css.index("/* ---------- barra superior y encabezado ---------- */"):css.index("/* ---------- portada de página (hero) ---------- */")]
         c2 = css[css.index("/* ---------- pie ---------- */"):css.index("/* lightbox y pasarela heredados */")]
-        (OUT / "aqua-shell.css").write_text(".aq-h,.aq-f,.aq-wa{" + m.group(1) + "}\n" + c1 + c2, encoding="utf-8")
+        c3 = "\n".join(l for l in css[css.index("/* ===== Paleta del logo"):].splitlines() if ".aq-" in l)
+        (OUT / "aqua-shell.css").write_text(".aq-h,.aq-f,.aq-wa{" + m.group(1) + "}\n" + c1 + c2 + c3, encoding="utf-8")
         items = []
         for k, p in self.P.items():
             items.append([p["corto"] + " · " + p["ref"], p["url"], "Filtro", cop(p["precio"])])
         for s, c in self.ciudades.items():
             if (OUT / f"filtro-agua-samsung-{s}.html").exists():
                 items.append([c["city"], f"filtro-agua-samsung-{s}.html", "Ciudad", c["dept"]])
+        for u, n in list(self.hubs["regiones"].items()) + list(self.hubs["areas"].items()):
+            items.append([n, u, "Región o área", "filtros Samsung"])
         for d in self.deptos:
             if (OUT / f"filtros-samsung-{slug(d)}.html").exists():
                 items.append([d, f"filtros-samsung-{slug(d)}.html", "Departamento", f"{len(self.por_dept[d])} ciudades"])
@@ -69,7 +73,7 @@ class Tema:
         for f in sorted(OUT.glob("referencia-filtro-samsung-*.html")):
             items.append([f.stem.replace("referencia-filtro-samsung-", "").upper(), f.name, "Código", "equivalencias"])
         prefijos = ("filtro-agua-samsung-", "filtro-haf-cin-", "filtro-haf-qin-", "filtro-externo-", "cambiar-filtro-nevecon-samsung-", "precio-filtro-nevecon-samsung-", "comprar-filtro-samsung-contra-entrega-",
-                    "filtros-samsung-", "filtro-nevecon-samsung-", "referencia-filtro-samsung-")
+                    "filtros-samsung-", "filtro-nevecon-samsung-", "referencia-filtro-samsung-", "ciudades-con-", "glosario-", "preguntas-frecuentes-", "mapa-del-")
         for f in sorted(OUT.glob("*.html")):
             if f.name in ("index.html", "404.html") or any(f.name.startswith(x) and f.name not in ("filtro-haf-cin.html", "filtro-haf-qin.html", "filtro-externo.html", "filtros-samsung-por-ciudad.html") for x in prefijos):
                 continue
@@ -101,6 +105,8 @@ class Tema:
         prod = "".join(f'<a href="{p["url"]}"><img src="{p["img"]}" alt="" width="62" height="62" loading="lazy"><span><b>{esc(p["corto"])}</b><small>{esc(p["ref"])} · {self.forma(k)}</small><em>{cop(p["precio"])}</em></span></a>' for k, p in P.items())
         deptos = "".join(f'<a href="filtros-samsung-{slug(d)}.html">{esc(d)}</a>' for d in self.deptos if (self.OUT / f"filtros-samsung-{slug(d)}.html").exists())
         grandes = "".join(f'<a href="filtro-agua-samsung-{s}.html">{esc(n)}</a>' for n, s in self.grandes[:14])
+        regs = "".join(f'<a href="{u}">{esc(n)}</a>' for u, n in self.hubs["regiones"].items())
+        areas = "".join(f'<a href="{u}">{esc(n)}</a>' for u, n in self.hubs["areas"].items())
         return ('<div class="aq-h"><div class="aq-bar"><span>🚚 Envío gratis a toda Colombia</span><span>💳 Pago seguro con Wompi · 💵 Contra entrega</span><a href="tel:+' + WA + '">305 479 6329</a></div>'
                 '<div class="aq-row aq-wrap"><a class="aq-brand" href="index.html"><img src="img/samsung-logo-oval.png" alt="Samsung" width="96" height="34"><span><b>Filtro de agua Samsung</b><small>Distribuidor autorizado · Colombia</small></span></a>'
                 '<form class="aq-search" role="search" onsubmit="return false">' + ICONOS["lupa"].replace("<svg", '<svg aria-hidden="true"') + '<input type="search" data-aq-q placeholder="Tu ciudad, modelo de nevecón o código del filtro…" autocomplete="off" aria-label="Buscar ciudad, modelo o código"><div class="aq-res" hidden></div></form>'
@@ -108,8 +114,8 @@ class Tema:
                 '<nav class="aq-nav" aria-label="Principal"><div class="aq-wrap">'
                 '<a href="index.html">Inicio</a>'
                 f'<details class="aq-dd"><summary>Filtros</summary><div class="aq-pop prod"><div class="aq-wrap">{prod}</div></div></details>'
-                f'<details class="aq-dd"><summary>Ciudades</summary><div class="aq-pop ciu"><div class="aq-wrap"><div><h5>Más buscadas</h5><div class="aq-chips">{grandes}</div></div><div><h5>Por departamento</h5><div class="aq-chips">{deptos}</div></div></div></div></details>'
-                '<a href="guias-filtro-agua-nevecon-samsung.html">Guías</a><a href="como-identificar-filtro-samsung.html">¿Cuál es el mío?</a><a href="precio-filtro-agua-nevecon-samsung.html">Precios</a><a href="filtro-agua-samsung-por-ciudad-colombia.html">Todas las ciudades</a><a href="index.html#faq">Preguntas</a>'
+                f'<details class="aq-dd"><summary>Ciudades</summary><div class="aq-pop ciu"><div class="aq-wrap"><div><h5>Más buscadas</h5><div class="aq-chips">{grandes}</div></div><div><h5>Por región</h5><div class="aq-chips">{regs}</div><h5 style="margin-top:14px">Áreas metropolitanas</h5><div class="aq-chips">{areas}</div><h5 style="margin-top:14px">Por departamento</h5><div class="aq-chips">{deptos}</div></div></div></div></details>'
+                '<a href="guias-filtro-agua-nevecon-samsung.html">Guías</a><a href="como-identificar-filtro-samsung.html">¿Cuál es el mío?</a><a href="precio-filtro-agua-nevecon-samsung.html">Precios</a><a href="filtro-agua-samsung-por-ciudad-colombia.html">Todas las ciudades</a><a href="preguntas-frecuentes-filtro-agua-samsung.html">Preguntas</a>'
                 '</div></nav></div>')
 
     def forma(self, k):
@@ -127,7 +133,7 @@ class Tema:
                 f'<div><h5>Ciudades</h5><ul>{ciu}<li><a href="filtro-agua-samsung-por-ciudad-colombia.html"><b>Ver todas →</b></a></li></ul></div>'
                 f'<div><h5>Departamentos</h5><ul>{deptos}</ul></div>'
                 '<div><h5>Ayuda</h5><ul><li><a href="guias-filtro-agua-nevecon-samsung.html">Guías</a></li><li><a href="cambiar-filtro-agua-nevecon-samsung.html">Cómo cambiar el filtro</a></li><li><a href="precio-filtro-agua-nevecon-samsung.html">Precios</a></li>'
-                '<li><a href="envio-filtros-samsung-colombia.html">Envíos</a></li><li><a href="garantia-cambio-y-devolucion-filtro-samsung.html">Garantía y devolución</a></li><li><a href="terminos.php">Términos</a></li><li><a href="privacidad.php">Datos personales</a></li></ul></div></div>'
+                '<li><a href="preguntas-frecuentes-filtro-agua-samsung.html">Preguntas frecuentes</a></li><li><a href="glosario-filtro-agua-nevecon-samsung.html">Glosario</a></li><li><a href="mapa-del-sitio.html">Mapa del sitio</a></li><li><a href="envio-filtros-samsung-colombia.html">Envíos</a></li><li><a href="garantia-cambio-y-devolucion-filtro-samsung.html">Garantía y devolución</a></li><li><a href="terminos.php">Términos</a></li><li><a href="privacidad.php">Datos personales</a></li></ul></div></div>'
                 '<div class="aq-wrap aq-f-pay"><div><span class="m">Tarjeta</span><span class="m">PSE</span><span class="m">Nequi</span><span class="m">Bancolombia</span><span class="m">Contra entrega</span></div>'
                 '<div>© 2026 Filtro de Agua Samsung Colombia — Distribuidor Autorizado</div></div></footer>'
                 f'<a class="aq-wa" href="{wa_href or "https://wa.me/" + WA}" aria-label="WhatsApp"><svg width="22" height="22" fill="#fff" viewBox="0 0 16 16"><path d="M13.6 2.3A7.85 7.85 0 0 0 8 0C3.6 0 .07 3.56.06 7.93c0 1.4.37 2.76 1.06 3.97L0 16l4.2-1.1a7.93 7.93 0 0 0 3.8.97c4.37 0 7.93-3.56 7.93-7.93a7.9 7.9 0 0 0-2.33-5.64zM8 14.5a6.57 6.57 0 0 1-3.36-.92l-.24-.14-2.5.65.67-2.43-.16-.25A6.56 6.56 0 0 1 1.4 7.93C1.4 4.3 4.36 1.34 8 1.34a6.56 6.56 0 0 1 4.65 1.93 6.5 6.5 0 0 1 1.93 4.66c0 3.63-2.96 6.57-6.58 6.57z"/></svg><span>¿Dudas? Escríbenos</span></a>')
@@ -139,8 +145,8 @@ class Tema:
         stage = ('<div class="aq-stage" aria-hidden="false"><i></i><i></i><i></i><i></i>'
                  + "".join(f'<a class="s{i + 1}" href="{p["url"]}" aria-label="{esc(p["corto"])}"><img src="{p["img"]}" alt="Filtro de agua Samsung {esc(p["corto"])}, código {esc(p["ref"])}" width="300" height="300" {"loading=eager" if i == 1 else "loading=lazy"}></a>' for i, (k, p) in enumerate(pr[:3]))
                  + f'<span class="aq-price-tag">Desde {cop(min(p["precio"] for p in P.values()))}</span></div>')
-        chips = "".join(f'<a href="filtro-nevecon-samsung-{m.lower()}.html">{m}</a>' for m in self.modelos["cin"][:2] + self.modelos["qin"][:2]) \
-                + "".join(f'<a href="filtro-agua-samsung-{s}.html">{esc(n)}</a>' for n, s in self.grandes[:4])
+        chips = "".join(f'<a href="filtro-nevecon-samsung-{m.lower()}.html">{m}</a>' for m in self.modelos["cin"][:1] + self.modelos["qin"][:1]) \
+                + "".join(f'<a href="filtro-agua-samsung-{s}.html">{esc(n)}</a>' for n, s in self.grandes[:3])
         hero = ('<section class="aq-hero" id="inicio"><div class="wrap"><div><span class="kicker">Distribuidor autorizado · Toda Colombia</span>'
                 '<h1>Filtro de Agua Samsung Original para tu Nevecón</h1>'
                 '<p class="lead">Escoge tu referencia, agrégala al carrito y paga en línea o contra entrega. Te enviamos a tu ciudad y confirmamos que sea el filtro de tu nevecón antes de despachar.</p>'
@@ -179,7 +185,8 @@ class Tema:
         cobertura = (f'<section class="aq-sec alt" id="cobertura"><div class="wrap"><h2>Llegamos a {len(self.ciudades)} ciudades y municipios de Colombia</h2>'
                      '<p class="sub2">Escribe tu ciudad en el buscador de arriba o entra por tu departamento.</p>'
                      f'<div class="aq-top-ciu">{top}</div><h3 style="margin-top:26px;font-size:1.1rem">Por departamento</h3><div class="aq-depts">{dep_links}</div>'
-                     '<p><a class="btn-solid" href="filtro-agua-samsung-por-ciudad-colombia.html" style="display:inline-flex">Ver todas las ciudades</a></p></div></section>')
+                     '<h3 style="margin-top:20px;font-size:1.1rem">Por región y área metropolitana</h3><div class="aq-depts">' + "".join(f'<a href="{u}">{esc(n)}</a>' for u, n in list(self.hubs["regiones"].items()) + list(self.hubs["areas"].items())) + '</div>'
+                     '<p style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn-solid" href="filtro-agua-samsung-por-ciudad-colombia.html">Ver todas las ciudades</a><a class="btn-solid" href="ciudades-con-filtros-samsung-a-z.html">Ciudades de la A a la Z</a></p></div></section>')
         tabla = ('<section class="aq-sec"><div class="wrap"><h2>Los tres filtros, lado a lado</h2><p class="sub2">Compara referencia, forma, instalación y precio.</p><div class="tbl-wrap aq-cmp"><table class="spec-table"><tr><th></th>'
                  + "".join(f'<th><a href="{p["url"]}" style="color:#fff">{esc(p["corto"])}</a></th>' for p in P.values()) + '</tr>'
                  + "<tr><td><b>Código Samsung</b></td>" + "".join(f'<td>{esc(p["ref"])}</td>' for p in P.values()) + "</tr>"
@@ -193,6 +200,23 @@ class Tema:
         return ('<section class="aq-quick"><div class="wrap"><div class="aq-qgrid">' + "".join(
             f'<div class="aq-q"><a href="{p["url"]}"><img src="{p["img"]}" alt="Filtro Samsung {esc(p["corto"])}" width="84" height="84" loading="lazy"></a><div><b>{esc(p["corto"])}</b><small>{esc(p["ref"])} · {self.forma(k)}</small><span>{cop(p["precio"])}</span></div>'
             f'<button type="button" data-add="{k}">🛒 Agregar</button></div>' for k, p in self.P.items()) + '</div></div></section>')
+
+    def mas_busquedas(self, s):
+        c = self.ciudades[s]
+        d = c["dept"]
+        enl = [(f"Filtros Samsung en {d}", f"filtros-samsung-{slug(d)}.html")]
+        if d in self.hubs["region_de"]:
+            u, n = self.hubs["region_de"][d]
+            enl.append((f"Filtros Samsung en la {n}" if n.startswith("Región") else f"Filtros Samsung en {n}", u))
+        if s in self.hubs["area_de"]:
+            u, n = self.hubs["area_de"][s]
+            enl.append((f"Filtros Samsung en {n}", u))
+        enl += [("Precios de los filtros", "precio-filtro-agua-nevecon-samsung.html"), ("¿Cuál es mi filtro?", "como-identificar-filtro-samsung.html"), ("Glosario", "glosario-filtro-agua-nevecon-samsung.html"),
+                ("Preguntas frecuentes", "preguntas-frecuentes-filtro-agua-samsung.html"), ("Ciudades de la A a la Z", "ciudades-con-filtros-samsung-a-z.html")]
+        cerca = [(n, x) for n, x in self.por_dept.get(d, []) if x != s][:10]
+        return ('<section class="aq-sec alt"><div class="wrap"><h2 style="font-size:1.5rem">Más búsquedas cerca de ' + esc(c["city"]) + '</h2><div class="aq-depts">' + "".join(f'<a href="{u}">{esc(n)}</a>' for n, u in enl) + "</div>"
+                + (f'<h3 style="font-size:1.05rem;margin-top:14px">También enviamos a otras ciudades de {esc(d)}</h3><div class="aq-depts">' + "".join(f'<a href="filtro-agua-samsung-{x}.html">{esc(n)}</a>' for n, x in cerca) + "</div>" if cerca else "")
+                + "</div></section>")
 
     # ---------- aplicar a una página ----------
     def aplicar(self, t, nombre, ld_home=None):
@@ -224,6 +248,9 @@ class Tema:
         t, n = re.subn(r"<footer>.*?</footer>", lambda m: self.pie(wa_href), t, count=1, flags=re.S)
         assert n == 1, nombre
         t = t.replace("</body>", '<script src="buscar.js" defer></script></body>', 1)
+        mciu = re.match(r"filtro-agua-samsung-([a-z0-9-]+)\.html$", nombre)
+        if mciu and mciu.group(1) in self.ciudades:
+            t = t.replace('<section class="navblock">', self.mas_busquedas(mciu.group(1)) + '<section class="navblock">', 1)
         if nombre == "index.html":
             t, n1 = re.subn(r'<section class="hero">.*?</section>', lambda m: self.portada(), t, count=1, flags=re.S)
             t, n2 = re.subn(r'<section class="pick" id="elige-tu-filtro">.*?</section>', "", t, count=1, flags=re.S)
