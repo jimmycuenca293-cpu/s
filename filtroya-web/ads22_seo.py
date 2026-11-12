@@ -111,14 +111,20 @@ def expandir_ciudades(OUT, ciudades):
     """Devuelve la lista de páginas nuevas escritas."""
     nuevas = []
     # nuevas ciudades
-    for dept, nombres in NUEVAS.items():
-        for n in nombres:
+    import ciudades_mas
+    pares = [(dept, n, False) for dept, nombres in NUEVAS.items() for n in nombres] + [(dept, n, True) for dept, nombres in ciudades_mas.MAS.items() for n in nombres]
+    for dept, n, solo in pares:
+        if True:
             s = slug(n)
+            if any(x["city"] == n and x["dept"] == dept for x in ciudades.values()):
+                continue
+            if solo and (s in ciudades or any(x["city"].split(" (")[0] == n for x in ciudades.values())):  # los municipios del listado extra no se repiten con homónimos
+                continue
             if s in ciudades or any(x["city"] == n for x in ciudades.values()):  # mismo nombre en otro departamento
                 s = slug(f"{n} {dept}")
                 n = f"{n} ({dept})"
             assert s not in ciudades, f"ciudad repetida: {s}"
-            ciudades[s] = {"city": n, "dept": dept, "days": "2 a 4 días hábiles", "nueva": True}
+            ciudades[s] = {"city": n, "dept": dept, "days": "2 a 4 días hábiles", "nueva": True, **({"solo": ("agua", "precio")} if solo else {})}
     por_dept = {}
     for s, c in ciudades.items():
         por_dept.setdefault(c["dept"], []).append(s)
@@ -134,6 +140,8 @@ def expandir_ciudades(OUT, ciudades):
 
     for s, c in sorted(ciudades.items()):
         for fam in PREF:
+            if "solo" in c and fam not in c["solo"]:
+                continue
             destino = OUT / f"{PREF[fam]}{s}.html"
             if destino.exists():
                 continue
@@ -141,7 +149,7 @@ def expandir_ciudades(OUT, ciudades):
             if tp is None:
                 tp, tt = plant(fam, "2 a 4 días hábiles")
             assert tp is not None, f"sin plantilla para {fam} / {c['days']}"
-            vecinos = [x for x in por_dept[c["dept"]] if x != s]
+            vecinos = [x for x in por_dept[c["dept"]] if x != s and ("solo" not in ciudades[x] or fam in ciudades[x]["solo"])]
             pref_tag = PREF[fam] if fam in ("agua", "cin", "qin", "ext") else PREF["agua"]
             tags = etiquetas(pref_tag, vecinos, ciudades, s)
             destino.write_text(clonar(tt, tp, {"city": c["city"], "slug": s, "dept": c["dept"], "days": c["days"]}, tags, None), encoding="utf-8")

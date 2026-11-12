@@ -216,23 +216,36 @@ FOTO_HD = {"cin": "sam-cin-o.jpg", "qin": "sam-qin-o.jpg", "ext": "sam-ex-o.jpg"
 IMG_VIEJA = {}
 
 
-def foto_cuadrada(origen, destino, lado=900, uso=0.9):
+def foto_cuadrada(origen, destino, lado=800, uso=0.92):
+    """Recorta el producto, le quita el fondo blanco (solo el que toca el borde: el blanco del propio filtro se conserva) y lo centra en un cuadro transparente."""
+    from PIL import ImageChops, ImageDraw
     im = Image.open(origen).convert("RGB")
-    fondo = Image.new("RGB", im.size, (255, 255, 255))
-    from PIL import ImageChops
-    caja = ImageChops.difference(im, fondo).point(lambda v: 255 if v > 14 else 0).getbbox() or (0, 0) + im.size
-    im = im.crop(caja)
-    esc = lado * uso / max(im.size)
-    im = im.resize((max(1, round(im.width * esc)), max(1, round(im.height * esc))), Image.LANCZOS)
-    lienzo = Image.new("RGB", (lado, lado), (255, 255, 255))
-    lienzo.paste(im, ((lado - im.width) // 2, (lado - im.height) // 2))
-    lienzo.save(destino, quality=88, optimize=True)
+    marco = Image.new("RGB", (im.width + 4, im.height + 4), (255, 255, 255))
+    marco.paste(im, (2, 2))
+    sello = (255, 0, 255)
+    for xy in ((0, 0), (marco.width - 1, 0), (0, marco.height - 1), (marco.width - 1, marco.height - 1), (marco.width // 2, 0), (marco.width // 2, marco.height - 1)):
+        if marco.getpixel(xy) != sello:
+            ImageDraw.floodfill(marco, xy, sello, thresh=22)
+    marco = marco.crop((2, 2, marco.width - 2, marco.height - 2))
+    rgba = marco.convert("RGBA")
+    px = rgba.load()
+    for y in range(rgba.height):
+        for x in range(rgba.width):
+            if px[x, y][:3] == sello:
+                px[x, y] = (255, 255, 255, 0)
+    caja = rgba.getchannel("A").point(lambda v: 255 if v > 0 else 0).getbbox() or (0, 0) + rgba.size
+    rgba = rgba.crop(caja)
+    esc_ = lado * uso / max(rgba.size)
+    rgba = rgba.resize((max(1, round(rgba.width * esc_)), max(1, round(rgba.height * esc_))), Image.LANCZOS)
+    lienzo = Image.new("RGBA", (lado, lado), (255, 255, 255, 0))
+    lienzo.paste(rgba, ((lado - rgba.width) // 2, (lado - rgba.height) // 2), rgba)
+    lienzo.save(destino, "WEBP", quality=90, method=6)
 
 
 for k_, f_ in FOTO_HD.items():
-    foto_cuadrada(AQUI / "public_html" / "filtrosnevecones-img" / f_, OUT / "img" / f"p-{k_}.jpg")
-    IMG_VIEJA[PRODUCTOS[k_]["img"]] = f"img/p-{k_}.jpg"
-    PRODUCTOS[k_]["img"] = f"img/p-{k_}.jpg"
+    foto_cuadrada(AQUI / "public_html" / "filtrosnevecones-img" / f_, OUT / "img" / f"p-{k_}.webp")
+    IMG_VIEJA[PRODUCTOS[k_]["img"]] = f"img/p-{k_}.webp"
+    PRODUCTOS[k_]["img"] = f"img/p-{k_}.webp"
 
 # galería de imágenes de cada filtro: la foto principal + imágenes informativas propias + las fotos reales que se agreguen en fotos/<clave>-*.jpg
 import galeria
@@ -242,8 +255,8 @@ GALERIA = {}
 for k_, p_ in PRODUCTOS.items():
     lista = [("principal", p_["img"], "Foto del filtro " + p_["corto"])]
     for extra in sorted((AQUI / "fotos").glob(f"{k_}-*.jpg")) if (AQUI / "fotos").is_dir() else []:
-        foto_cuadrada(extra, OUT / "img" / ("real-" + extra.name), uso=0.92)
-        lista.append(("real", "img/real-" + extra.name, "Foto real del filtro " + p_["corto"]))
+        foto_cuadrada(extra, OUT / "img" / ("real-" + extra.stem + ".webp"), uso=0.92)
+        lista.append(("real", "img/real-" + extra.stem + ".webp", "Foto real del filtro " + p_["corto"]))
     for nom, tit in (("identificar", "Cómo identificar tu filtro"), ("instalacion", "Cómo se instala"), ("ficha", "Ficha técnica")):
         shutil.copy(AQUI / "galeria" / f"{k_}-{nom}.jpg", OUT / "img" / f"gal-{k_}-{nom}.jpg")
         lista.append((nom, f"img/gal-{k_}-{nom}.jpg", f"{tit} del filtro {p_['corto']}"))
@@ -333,6 +346,23 @@ def ld_producto(p, url):
                                                                                       "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "CO"}, "deliveryTime": ENTREGA}}}
 
 
+import ads22_tema
+TEMA = ads22_tema.Tema(OUT, PRODUCTOS, ciudades)
+TEMA.escribir_assets()
+# el carrito, «gracias» y las páginas legales llevan el mismo encabezado y pie del sitio
+_pt = (OUT / "partes.php").read_text(encoding="utf-8")
+_i = _pt.index("'<header class=\"top\">")
+_j = _pt.index("<main class=\"wrap\">';", _i) + len("<main class=\"wrap\">';")
+_pt = _pt[:_i] + "$AQH . '<main class=\"wrap\">';" + _pt[_j:]
+_pt = _pt.replace("    $S = sitio();\n    $canon", "    $AQH = <<<'AQH'\n" + TEMA.encabezado() + "\nAQH;\n    $S = sitio();\n    $canon", 1)
+_pt = _pt.replace("family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700", "family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700", 1)
+_pt = _pt.replace('<link rel="stylesheet" href="/pasarela.css">', '<link rel="stylesheet" href="/pasarela.css"><link rel="stylesheet" href="/aqua-shell.css"><script src="/buscar.js" defer></script>', 1)
+_k = _pt.index("    return '</main><footer class=\"pie\">")
+_l = _pt.index("</footer></body></html>';", _k) + len("</footer></body></html>';")
+_pt = _pt[:_k] + "    $AQF = <<<'AQF'\n" + TEMA.pie() + "\nAQF;\n    return '</main>' . $AQF . '</body></html>';" + _pt[_l:]
+(OUT / "partes.php").write_text(_pt, encoding="utf-8")
+
+
 def pagina(f):
     t = f.read_text(encoding="utf-8")
     o = t
@@ -399,11 +429,6 @@ def pagina(f):
     t = re.sub(r'\s*<button type="button" class="btn btn-line" data-add="\w+" data-ir="1">⚡ Comprar ahora</button>', "", t)
     t = re.sub(r'\s*<a href="[^"]*" class="btn-detalle">Ver detalles[^<]*</a>', "", t)
     t = re.sub(r"\s*document\.getElementById\('lightboxWompi'\)\.setAttribute\([^\n]*?\|\| 'cin'\);", "", t)
-    if f.name == "index.html":
-        t, n1 = re.subn(r'<section class="hero">.*?</section>', lambda m: portada_tienda(), t, count=1, flags=re.S)
-        t, n2 = re.subn(r'<section class="pick" id="elige-tu-filtro">.*?</section>', "", t, count=1, flags=re.S)
-        t = t.replace('<a href="#catalogo" class="find-btn">Identificar mi filtro</a>', '<a href="#filtros" class="find-btn">Ver filtros</a>', 1)
-        assert n1 == 1 and n2 == 1, (n1, n2)
     if f.name in GAL_FICHAS:
         t, nsub = re.subn(r'<img[^>]*class="hero-img"[^>]*>', lambda m: galeria_html(GAL_FICHAS[f.name]), t, count=1)
         assert nsub == 1, f.name
@@ -445,6 +470,7 @@ def pagina(f):
         lista = {"@context": "https://schema.org", "@type": "ItemList", "name": "Filtros de agua Samsung para nevecón", "itemListElement": [
             {"@type": "ListItem", "position": i + 1, "item": ld_producto(p, f"{DOMINIO}/{p['url']}")} for i, p in enumerate(PRODUCTOS.values())]}
         t = t.replace("</head>", '<script type="application/ld+json">\n' + json.dumps(lista, ensure_ascii=False, indent=2) + "\n</script>\n</head>", 1)
+    t = TEMA.aplicar(t, f.name)
     if t != o:
         f.write_text(t, encoding="utf-8")
         return 1

@@ -1020,7 +1020,7 @@ SITIOS_PROPIOS = {  # marcas con tienda en su propio dominio, y lo que cambia en
                              links={"sam-cin-o": "https://checkout.wompi.co/l/MEGm9S", "sam-qin-o": "https://checkout.wompi.co/l/oogWOK", "sam-ex-o": "https://checkout.wompi.co/l/bjU3bv"},
                              recargo_cod=0, mas_ciudades=True, redirige_html=True, compra_primero=True),
 }
-for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá", "Samsung Colombia"]:
+for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
     SP = SITIOS_PROPIOS.get(clave)
     marca = SP["marca"] if SP and SP.get("marca") else clave
     s = slug(marca)
