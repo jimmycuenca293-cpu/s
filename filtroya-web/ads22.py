@@ -221,7 +221,13 @@ IMG_VIEJA = {}
 def foto_cuadrada(origen, destino, lado=800, uso=0.92):
     """Recorta el producto, le quita el fondo blanco (solo el que toca el borde: el blanco del propio filtro se conserva) y lo centra en un cuadro transparente."""
     from PIL import ImageChops, ImageDraw
-    im = Image.open(origen).convert("RGB")
+    im = Image.open(origen)
+    if im.mode in ("RGBA", "LA", "P"):  # fotos con fondo transparente: se pegan sobre blanco para quitarlo igual que a las demás
+        im = im.convert("RGBA")
+        base_ = Image.new("RGB", im.size, (255, 255, 255))
+        base_.paste(im, mask=im.getchannel("A"))
+        im = base_
+    im = im.convert("RGB")
     marco = Image.new("RGB", (im.width + 4, im.height + 4), (255, 255, 255))
     marco.paste(im, (2, 2))
     sello = (255, 0, 255)
@@ -244,8 +250,14 @@ def foto_cuadrada(origen, destino, lado=800, uso=0.92):
     lienzo.save(destino, "WEBP", quality=90, method=6)
 
 
+def fotos_de(k):
+    d = AQUI / "fotos"
+    return sorted(x for x in d.glob(f"{k}-*.*") if x.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp")) if d.is_dir() else []
+
+
 for k_, f_ in FOTO_HD.items():
-    foto_cuadrada(AQUI / "public_html" / "filtrosnevecones-img" / f_, OUT / "img" / f"p-{k_}.webp")
+    propias = fotos_de(k_)  # las fotos que mandó el dueño van primero; la foto principal es la -1
+    foto_cuadrada(propias[0] if propias else AQUI / "public_html" / "filtrosnevecones-img" / f_, OUT / "img" / f"p-{k_}.webp")
     IMG_VIEJA[PRODUCTOS[k_]["img"]] = f"img/p-{k_}.webp"
     PRODUCTOS[k_]["img"] = f"img/p-{k_}.webp"
 
@@ -256,7 +268,7 @@ GAL_FICHAS = {"filtro-haf-cin.html": "cin", "filtro-haf-qin.html": "qin", "filtr
 GALERIA = {}
 for k_, p_ in PRODUCTOS.items():
     lista = [("principal", p_["img"], "Foto del filtro " + p_["corto"])]
-    for extra in sorted((AQUI / "fotos").glob(f"{k_}-*.jpg")) if (AQUI / "fotos").is_dir() else []:
+    for extra in fotos_de(k_)[1:]:
         foto_cuadrada(extra, OUT / "img" / ("real-" + extra.stem + ".webp"), uso=0.92)
         lista.append(("real", "img/real-" + extra.stem + ".webp", "Foto real del filtro " + p_["corto"]))
     for nom, tit in (("identificar", "Cómo identificar tu filtro"), ("instalacion", "Cómo se instala"), ("ficha", "Ficha técnica")):
