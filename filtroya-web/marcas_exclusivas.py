@@ -65,6 +65,7 @@ MARCAS_INFO = {
 
 BOGOTA = set()  # claves de las tiendas locales de Bogotá
 PACKS = set()  # marcas cuyo sitio ofrece también el pack de 2
+COMPRA_PRIMERO = set()  # marcas cuya portada abre con los productos (título corto + catálogo) en vez del carrusel y el encabezado grande
 SOLO_LINEA = set()  # marcas cuyo sitio propio vende solo con pago en línea (sin WhatsApp ni contra entrega)
 AUTORIZADO = {}  # marca -> frase corta («Distribuidores autorizados de X») que dice su sitio propio (lo confirmó el dueño)
 
@@ -151,8 +152,8 @@ def cod_linea(p, largo=False):
     """Opción de pago contra entrega: en efectivo a la transportadora, con su precio."""
     if p["marca"] in SOLO_LINEA:
         return ""
-    t = f'Pago contra entrega en efectivo a la transportadora: <b>{cop(p["precio"] + COD_RECARGO)}</b>'
-    return f'<span class="m-cod">{t}' + (f'<small>Pagas al recibir tu pedido. Incluye {cop(COD_RECARGO)} de recargo por contra entrega.</small>' if largo else '') + '</span>'
+    t = f'Pago contra entrega en efectivo a la transportadora: <b>{cop(p["precio"] + COD_RECARGO)}</b>' + ('' if COD_RECARGO else ' · sin recargo')
+    return f'<span class="m-cod">{t}' + (f'<small>Pagas al recibir tu pedido.' + (f' Incluye {cop(COD_RECARGO)} de recargo por contra entrega.' if COD_RECARGO else ' El precio es el mismo que pagando en línea.') + '</small>' if largo else '') + '</span>'
 
 
 def tarjeta(p, base, foto, ubic):
@@ -331,9 +332,12 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
     fotos = "".join(f'<span class="f f{i + 1}">{foto(p, p["nombre_largo"] + "", lazy=False)}</span>' for i, p in enumerate(destacados))
     pasos = [("Encuentra tu filtro", f"Por la referencia del filtro viejo o el modelo de tu nevecón {marca}."), ("Paga en línea", "Con tarjeta, PSE o Nequi en página segura."), ("Recíbelo en casa", "Envío gratis a toda Colombia con número de guía.")]
     senales = ["El agua o el hielo saben o huelen raro (a cloro, a tierra o a encerrado).", "El dispensador bota menos agua o sale con poca presión.", "El hielo sale turbio, pequeño o la máquina de hielo produce menos.", "Ya pasaron 6 meses desde el último cambio."]
-    car = carrusel(marca, ps, base, foto, ubic) if marca in AUTORIZADO else ""
+    car = carrusel(marca, ps, base, foto, ubic) if marca in AUTORIZADO and marca not in COMPRA_PRIMERO else ""
+    grid_home = sec(cab("Catálogo " + marca, f"Elige tu filtro {marca}", "Agrégalo al carrito y paga en línea" + ("" if marca in SOLO_LINEA else " o contra entrega") + ".") + '<div class="m-grid">' + "".join(tarjeta(p, base, foto, ubic) for p in ps) + "</div>", id_="filtros")
+    hero_mini = ('<section class="m-hero m-mini"><div class="m-wrap"><div>' + f'<p class="m-aut">✔ {esc(AUTORIZADO.get(marca, ""))}</p><h1>Filtros de agua {esc(marca)} para tu nevecón</h1>'
+                 '<ul><li>Pago seguro con Wompi</li>' + ("" if marca in SOLO_LINEA else "<li>Contra entrega disponible</li>") + '<li>Producto nuevo y sellado</li><li>5 días de retracto</li></ul></div></div></section>')
     return _sin_hero(marca, inicio(M, php_str, titulo, desc, base, ld) + car + f"""
-<section class="m-hero"><div class="m-wrap">
+{hero_mini + grid_home if marca in COMPRA_PRIMERO else f'''<section class="m-hero"><div class="m-wrap">
   <div>
     <span class="m-hero-logo"><?= logo_marca_html($M) ?><span><b>Filtros {esc(marca)}</b>Envío gratis a toda Colombia</span></span>
     <?php if (!empty($M['autorizado'])) echo '<p class="m-aut">✔ ' . h($M['autorizado']) . '</p>'; ?>
@@ -343,12 +347,12 @@ def portada(marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciudades,
     <ul><li>100 %</li><li>Empaque sellado</li><li>Envío gratis</li><li>Pago seguro</li></ul>
   </div>
   <div class="m-fotos">{fotos}<span class="sello-o"><span><b>Envío</b>gratis<br>a toda Colombia</span></span></div>
-</div></section>
+</div></section>'''}
 {buscador_home(marca, ps, base) if marca in AUTORIZADO and marca not in BOGOTA else ''}
 {confianza(marca)}
 {'' if marca in BOGOTA else bodega_sec(marca) if False else ''}
 {__import__('bogota_seo').bloque_portada(base, sec, cab) if marca in BOGOTA and False else ''}
-{sec(cab("Catálogo " + marca, f"Filtros {marca}", f"{len(ps)} referencias {esc(marca)}, nuevas y en su empaque. Todas con envío gratis a toda Colombia.") + '<div class="m-grid">' + "".join(tarjeta(p, base, foto, ubic) for p in ps) + "</div>", id_="filtros")}
+{"" if marca in COMPRA_PRIMERO else sec(cab("Catálogo " + marca, f"Filtros {marca}", f"{len(ps)} referencias {esc(marca)}, nuevas y en su empaque. Todas con envío gratis a toda Colombia.") + '<div class="m-grid">' + "".join(tarjeta(p, base, foto, ubic) for p in ps) + "</div>", id_="filtros")}
 {(sec("<?= pagos_pro_html('home') ?>") if marca in AUTORIZADO else "")}
 {bodega_sec(marca) if marca in BOGOTA else ''}
 {buscador_home(marca, ps, base) if marca in BOGOTA else ''}
@@ -412,7 +416,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
              ("Precio", f"{cop(p['precio'])}"), ("Envío", "Gratis a toda Colombia, 2 a 3 días hábiles en las principales ciudades")]
     if alias:
         ficha.insert(2, ("También aparece como", ", ".join(alias)))
-    if marca in SOLO_LINEA:  # ficha al estilo de samsung.com: galería grande, caja de compra, pestañas y secciones
+    if marca in SOLO_LINEA or marca in COMPRA_PRIMERO:  # ficha al estilo de samsung.com: galería grande, caja de compra, pestañas y secciones
         tipo = "Externo, va en la manguera" if externo else "Interno, va dentro del nevecón"
         espec = "".join(f"<dt>{esc(x)}</dt><dd>{esc(y)}</dd>" for x, y in ficha)
         chips_m = "".join(f'<a href="{R["modelos"][norm(mo)][2]}">{esc(mo)}</a>' for mo in p["modelos"])
@@ -433,8 +437,9 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
     <?php if ($R['n']) echo '<a href="#opiniones" class="sx-rate">' . estrellas_html($R['prom']) . ' <b>' . $R['prom'] . '</b> <span>(' . $R['n'] . ($R['n'] === 1 ? ' opinión' : ' opiniones') . ')</span></a>'; ?>
     <div class="sx-price"><b>{cop(p["precio"])}</b><small>Precio final en pesos colombianos · Envío gratis a toda Colombia</small></div>
     {'<div class="sx-comp"><b>Compatible con</b><div class="m-chips">' + chips_m + '</div></div>' if p["modelos"] else ''}
-    <div class="sx-cta">{f'<button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button>' if marca in BOGOTA else f'<button class="m-btn" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="m-btn sec" type="button" data-add="{p["id"]}">Agregar al carrito</button>'}</div>
+    <div class="sx-cta">{f'<button class="m-btn" type="button" data-add="{p["id"]}">Agregar al carrito</button>' if marca in BOGOTA or marca in COMPRA_PRIMERO else f'<button class="m-btn" type="button" data-add="{p["id"]}" data-ir="1">Comprar ahora</button><button class="m-btn sec" type="button" data-add="{p["id"]}">Agregar al carrito</button>'}</div>
     {pack_html(p) if marca in PACKS else ""}
+    {cod_linea(p, True)}
     <ul class="sx-seg"><li><span>🔒</span><b>Pago 100 % seguro</b><small>Pasarela Wompi, de Bancolombia</small></li><li><span>🚚</span><b>Envío gratis con guía</b><small>2 a 3 días hábiles a las principales ciudades</small></li><li><span>↩</span><b>5 días de retracto</b><small>Si te equivocas de filtro, sin instalar</small></li><li><span>🧾</span><b>Recibo por correo</b><small>Llega apenas se confirma el pago</small></li></ul>
     <?= pagos_pro_html('producto') ?>
   </div>
@@ -454,7 +459,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
 <span id="preguntas"></span>{sec(cab("Preguntas", f"Preguntas sobre el {p['nombre_largo']}") + faq_h, alt=True)}
 {sec(cab("Más de " + marca, f"Otros filtros {marca}") + '<div class="m-grid">' + "".join(tarjeta(x, base, foto, ubic) for x in otros) + "</div>") if otros else ""}
 {sec(marcas_seo.relacionadas(R, url, marca, M, base), alt=True)}
-<div class="m-barra"><span><small>{esc(nombre)}</small><b>{cop(p["precio"])}</b></span><button class="m-btn" type="button" data-add="{p["id"]}"{"" if marca in BOGOTA else ' data-ir="1"'}>{"Agregar al carrito" if marca in BOGOTA else "Comprar ahora"}</button></div>
+<div class="m-barra"><span><small>{esc(nombre)}</small><b>{cop(p["precio"])}</b></span><button class="m-btn" type="button" data-add="{p["id"]}"{"" if marca in BOGOTA or marca in COMPRA_PRIMERO else ' data-ir="1"'}>{"Agregar al carrito" if marca in BOGOTA or marca in COMPRA_PRIMERO else "Comprar ahora"}</button></div>
 </main>
 <?php pie_marca($M); ?>
 """

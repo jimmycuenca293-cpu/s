@@ -1013,14 +1013,32 @@ SITIOS_PROPIOS = {  # marcas con tienda en su propio dominio, y lo que cambia en
                            dominio="https://filtroneverasamsungenbogota.click", token="9Ci1c2c1FvzgyKhoc9KZUBkDw-LATeIIL8GvNX_yetg", nombre="Filtros Samsung Bogotá", wa="3054796329", tel="305 479 6329",
                            solo_linea=True, correo="pedidos@filtrosaguanevecones.com", bogota=True, packs=True, marca="Samsung", slug="samsung-bogota",
                            productos={"sam-cin-o", "sam-qin-o", "sam-ex-o"}),
+    "Samsung Colombia": dict(frase="Distribuidores autorizados de Samsung", dist=("distribuidores autorizados de Samsung", "distribuidor autorizado de Samsung"),
+                             dominio="https://filtrodeaguasamsung.com", token="82OYND3le6w8UJopCSGa_ge39KLuH_feDaw1AUrFIZU", nombre="Filtro de Agua Samsung", wa="3054796329", tel="305 479 6329",
+                             correo="pedidos@filtrosaguanevecones.com", marca="Samsung", slug="samsung-colombia", productos={"sam-cin-o", "sam-qin-o", "sam-ex-o"},
+                             precios={"sam-cin-o": 139900, "sam-qin-o": 139900, "sam-ex-o": 79900},
+                             links={"sam-cin-o": "https://checkout.wompi.co/l/MEGm9S", "sam-qin-o": "https://checkout.wompi.co/l/oogWOK", "sam-ex-o": "https://checkout.wompi.co/l/bjU3bv"},
+                             recargo_cod=0, mas_ciudades=True, redirige_html=True, compra_primero=True),
 }
-for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
+for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá", "Samsung Colombia"]:
     SP = SITIOS_PROPIOS.get(clave)
     marca = SP["marca"] if SP and SP.get("marca") else clave
     s = slug(marca)
     d = SITIOS / (SP["slug"] if SP and SP.get("slug") else s)
     CAT_SITIO = [p for p in CATALOGO if p["marca"] != marca or not (SP and SP.get("productos")) or p["id"] in SP["productos"]]
+    if SP and SP.get("precios"):  # este dominio conserva sus precios y sus links de Wompi (copias: el catálogo global no cambia)
+        CAT_SITIO = [dict(p, precio=SP["precios"][p["id"]], precio_antes=SP["precios"][p["id"]], linkPago=SP["links"][p["id"]], linkMonto=SP["precios"][p["id"]]) if p["id"] in SP["precios"] else p for p in CAT_SITIO]
     ids = {p["id"] for p in CAT_SITIO if p["marca"] == marca}
+    CIU = ([c for c in CIUDADES_CO if c[0] == "Bogotá"] if SP and SP.get("bogota") else CIUDADES_CO)
+    if SP and SP.get("mas_ciudades"):  # además de la lista de la app, los municipios que ya tenían página en el sitio anterior
+        import ciudades_extra
+        vistos = {slug(c[0]) for c in CIUDADES_CO}
+        CIU = list(CIUDADES_CO)
+        for depto_, nombres_ in list(ciudades_extra.NUEVAS.items()) + list(ciudades_extra.ANTERIORES.items()):
+            for n_ in nombres_:
+                if slug(n_) not in vistos:
+                    vistos.add(slug(n_))
+                    CIU.append([n_, depto_, 3])
     if d.exists():  # los pedidos de filtrosnevecones-data/ nunca se borran
         for hijo in d.iterdir():
             if hijo.name not in ("data", PREFIJO + "data"):
@@ -1076,8 +1094,66 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
     marcas_exclusivas.BOGOTA = {marca} if SP and SP.get("bogota") else set()
     marcas_exclusivas.PACKS = {marca} if SP and SP.get("packs") else set()
     marcas_exclusivas.SOLO_LINEA = {marca} if SP and SP.get("solo_linea") else set()
+    marcas_exclusivas.COMPRA_PRIMERO = {marca} if SP and SP.get("compra_primero") else set()
+    marcas_exclusivas.COD_RECARGO = SP.get("recargo_cod", 5000) if SP else 5000
     (d / (PREFIJO + "asistente.js")).write_text(asistente.generar([p for p in CAT_SITIO if p["marca"] == marca], lambda p: f"/{p['slug']}/", correo=(SP or {}).get("correo", "") if SP and SP.get("solo_linea") else ""), encoding="utf-8")
-    rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CAT_SITIO, slug, norm, ubic, foto, php_str, ([c for c in CIUDADES_CO if c[0] == "Bogotá"] if SP and SP.get("bogota") else CIUDADES_CO), logo)
+    rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CAT_SITIO, slug, norm, ubic, foto, php_str, CIU, logo)
+    if SP and SP.get("redirige_html"):  # inicio: conserva título, descripción y H1 de la portada que hoy está bien posicionada; sin el filtro que este sitio no vende; contra entrega sin recargo
+        _ix = d / "index.php"
+        _t = _ix.read_text(encoding="utf-8")
+        for _v, _n in (("Filtros de agua Samsung para nevera | Envío gratis", "Filtro de Agua Samsung Nevecón y Nevera | HAF-CIN, HAF-QIN"),
+                       ("Filtros de agua Samsung para tu nevecón", "Filtro de Agua Samsung Original para tu Nevecón"),
+                       ("Filtros de agua Samsung para nevecones de dos puertas, French door, Bespoke y Family Hub: HAF-CIN, HAF-QIN, Aqua-Pure Plus y el filtro externo de manguera. Envío gratis a toda Colombia y pago seguro con tarjeta, PSE o Nequi.",
+                        "Filtro de agua Samsung para nevecón y nevera: HAF-CIN/EXP DA29-00020B y HAF-QIN/EXP DA97-17376B $139.900, externo DA29-10105J $79.900. Certificación NSF/ANSI 42 y 53. Envío gratis y pago contra entrega en toda Colombia."),
+                       ("Filtros de agua Samsung para nevecones de dos puertas, French door, Bespoke y Family Hub: HAF-CIN, HAF-QIN, Aqua-Pure Plus y el filtro externo de manguera.",
+                        "Filtro de agua Samsung para nevecón y nevera: HAF-CIN/EXP DA29-00020B y HAF-QIN/EXP DA97-17376B $139.900, externo DA29-10105J $79.900. Certificación NSF/ANSI 42 y 53. Envío gratis y pago contra entrega en toda Colombia.")):
+            assert _v in _t, _v[:50]
+            _t = _t.replace(_v, _n)
+        _ix.write_text(_t, encoding="utf-8")
+        for _f in list(d.rglob("*.php")) + list(d.rglob("*.js")):
+            if "/api/" in str(_f) or "/data/" in str(_f):
+                continue
+            _a = _f.read_text(encoding="utf-8")
+            _b = (_a.replace(" (recargo de $ 5.000 por producto)", "").replace("HAF-CIN, HAF-QIN, Aqua-Pure Plus (HAFCU1) o el externo", "HAF-CIN, HAF-QIN o el externo")
+                  .replace("HAF-CIN, HAF-QIN, Aqua-Pure Plus y el filtro externo", "HAF-CIN, HAF-QIN y el filtro externo"))
+            if _b != _a:
+                _f.write_text(_b, encoding="utf-8")
+    if SP and SP.get("redirige_html"):  # el sitio anterior era HTML estático: sus direcciones .html pasan (301) a la página nueva equivalente, para no perder el posicionamiento
+        pdp = {p["id"]: f"/{p['slug']}/" for p in CAT_SITIO if p["marca"] == marca}
+        cin_, qin_, ext_ = pdp["sam-cin-o"], pdp["sam-qin-o"], pdp["sam-ex-o"]
+        esp = {"index": "/", "filtro-haf-cin": cin_, "filtro-haf-qin": qin_, "filtro-externo": ext_, "precio-filtro-agua-nevecon-samsung": "/precio-filtro-samsung/",
+               "guias-filtro-agua-nevecon-samsung": "/blog/", "cambiar-filtro-agua-nevecon-samsung": "/cambio-e-instalacion/", "envio-filtros-samsung-colombia": "/filtros-samsung-por-ciudad/",
+               "filtro-agua-samsung-por-ciudad-colombia": "/filtros-samsung-por-ciudad/", "donde-comprar-filtro-agua-samsung-colombia": "/donde-comprar-filtro-samsung/",
+               "filtro-samsung-contra-entrega": "/donde-comprar-filtro-samsung/", "como-identificar-filtro-samsung": "/cual-es-mi-filtro/", "equivalencias-codigos-filtro-samsung": "/cual-es-mi-filtro/",
+               "diferencia-haf-cin-haf-qin": "/cual-es-mi-filtro/", "cada-cuanto-cambiar-filtro-agua-samsung": "/cada-cuanto-cambiar-filtro-samsung/", "reiniciar-luz-filtro-nevecon-samsung": "/luz-filtro-samsung/",
+               "instalar-filtro-externo-samsung-da29-10105j": "/cambio-e-instalacion/", "agua-nevecon-samsung-sabe-mal": "/agua-o-hielo-con-mal-sabor-nevera-samsung/", "hielo-nevecon-samsung-mal-sabor-o-pequeno": "/agua-o-hielo-con-mal-sabor-nevera-samsung/",
+               "nevecon-samsung-no-sale-agua-dispensador": "/nevera-samsung-no-sale-agua-despues-de-cambiar-el-filtro/", "nevecon-samsung-gotea-por-el-filtro": "/filtro-nevera-samsung-gotea/"}
+        for k_, tgt in (("cin", cin_), ("qin", qin_), ("externo", ext_)):
+            for pre_ in ("cada-cuanto-filtro-", "como-cambiar-filtro-", "compatibilidad-filtro-", "comprar-contra-entrega-filtro-", "original-o-generico-filtro-", "problemas-filtro-", "reiniciar-luz-filtro-", "precio-filtro-"):
+                kk = "haf-" + k_ if k_ != "externo" else "externo"
+                esp[pre_ + kk] = {"cada-cuanto-filtro-": "/cada-cuanto-cambiar-filtro-samsung/", "como-cambiar-filtro-": "/cambio-e-instalacion/", "reiniciar-luz-filtro-": "/luz-filtro-samsung/",
+                                  "comprar-contra-entrega-filtro-": "/donde-comprar-filtro-samsung/"}.get(pre_, tgt)
+        refs_ = {"referencia-filtro-samsung-da29-00020b": cin_, "referencia-filtro-samsung-da97-17376b": qin_, "referencia-filtro-samsung-da29-10105j": ext_}
+        for p_ in CAT_SITIO:
+            if p_["marca"] == marca:
+                for r_ in p_["refs"]:
+                    esp.setdefault("referencia-filtro-samsung-" + slug(r_), refs_.get("referencia-filtro-samsung-" + slug(r_), f"/filtro-{slug(r_)}/"))
+                for m_ in p_["modelos"]:
+                    esp["filtro-nevecon-samsung-" + slug(m_)] = f"/filtro-nevera-{slug(m_)}/"
+        redirs = ["# --- Direcciones .html del sitio anterior (301 a la página nueva equivalente) ---"]
+        cs_ = "|".join(sorted({slug(c_[0]) for c_ in CIU}, key=len, reverse=True))
+        pre_c = "filtro-agua-samsung|filtro-haf-cin|filtro-haf-qin|filtro-externo|cambiar-filtro-nevecon-samsung|precio-filtro-nevecon-samsung|comprar-filtro-samsung-contra-entrega"
+        redirs.append(rf"RewriteRule ^(?:{pre_c})-({cs_})\.html$ /filtro-nevera-samsung-$1/ [R=301,L]")
+        deptos_ = "|".join(sorted({slug(dp_) for dp_ in __import__("ciudades_extra").NUEVAS} | {slug(c_[1]) for c_ in CIU}, key=len, reverse=True))
+        redirs.append(rf"RewriteRule ^filtros-samsung-({deptos_})\.html$ /filtros-samsung-por-ciudad/ [R=301,L]")
+        for k_, v_ in sorted(esp.items()):
+            redirs.append(f"RewriteRule ^{re.escape(k_)}\\.html$ {v_} [R=301,L]")
+        redirs.append(r"RewriteRule ^[a-z0-9-]+\.html$ / [R=301,L]")
+        hf = d / ".htaccess"
+        th = hf.read_text(encoding="utf-8")
+        marca_ht = "RewriteRule ^sitemap\\.xml$ sitemap.php [L]"
+        assert marca_ht in th
+        hf.write_text(th.replace(marca_ht, "\n".join(redirs) + "\n" + marca_ht, 1), encoding="utf-8")
     if SP:  # etiqueta de Search Console, dominio, nombre, WhatsApp y correo propios del dominio de esta marca
         for nom in ("api/lib.php", PREFIJO + "api/lib.php"):
             fl = d / nom
@@ -1095,6 +1171,8 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
                       .replace("'telefono'  => '310 714 7299'", f"'telefono'  => '{SP['tel']}'"))
                 if SP.get("bogota"):
                     t_ = t_.replace("'direccion' => 'Dirección del negocio'", "'direccion' => 'Bodega en el barrio Cedritos, Bogotá D.C.'").replace("'horario'   => 'lunes a sábado, de 8:00 a. m. a 6:00 p. m.'", "'horario'   => 'atención por correo, de lunes a sábado'")
+                if SP.get("recargo_cod") is not None:
+                    t_ = t_.replace("'contraentrega' => ['activo' => true, 'recargo' => 5000]", f"'contraentrega' => ['activo' => true, 'recargo' => {SP['recargo_cod']}]")
                 if SP.get("solo_linea"):  # solo pago en línea: sin contra entrega ni WhatsApp
                     t_ = t_.replace("'contraentrega' => ['activo' => true, 'recargo' => 5000]", "'contraentrega' => ['activo' => false, 'recargo' => 5000]").replace(f"'whatsapp' => '{SP['wa']}'", "'whatsapp' => ''")
                 fc.write_text(t_, encoding="utf-8")
@@ -1135,8 +1213,10 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
         (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\n$t = isset($_GET['completo']) ? <<<'FULL'\n" + llms_full + "\nFULL\n : <<<'TXT'\n" + llms + "\nTXT;\necho str_replace('__BASE__', sitio()['base'], $t);\n", encoding="utf-8")
     else:
         (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + llms + "TXT);\n", encoding="utf-8")
-    cat_m = dict(cat_php, **({"ciudades": ["Bogotá"]} if SP and SP.get("bogota") else {}), paginas=rutas, guias=[], compat=[], blog=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
+    cat_m = dict(cat_php, **({"ciudades": ["Bogotá"]} if SP and SP.get("bogota") else {"ciudades": cat_php["ciudades"][:-1] + [c_[0] for c_ in CIU if c_[0] not in cat_php["ciudades"]] + ["Otro municipio"]} if SP and SP.get("mas_ciudades") else {}), paginas=rutas, guias=[], compat=[], blog=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
                  productos={k: v for k, v in cat_php["productos"].items() if k in ids})
+    if SP and SP.get("precios"):
+        cat_m["productos"] = {k_: (dict(v_, precio=SP["precios"][k_], link_pago=SP["links"][k_], link_pack="") if k_ in SP["precios"] else v_) for k_, v_ in cat_m["productos"].items()}
     (d / (PREFIJO + "api") / "catalogo.php").write_text("<?php\n// Generado por build.py para el sitio de " + marca + ": no lo edites a mano.\nreturn " + php_val(cat_m) + ";\n", encoding="utf-8")
     for nombre, cambios in CAMBIOS_MARCA.items():
         f = d / nombre

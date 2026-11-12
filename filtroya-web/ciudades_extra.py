@@ -1,0 +1,30 @@
+"""Municipios que se suman a la lista de ciudades en filtrodeaguasamsung.com (los que ya tenían página en el sitio anterior)."""
+NUEVAS = {'Antioquia': ['Marinilla', 'La Ceja', 'Guarne', 'Girardota', 'Barbosa', 'Carepa', 'Chigorodó', 'Yarumal', 'Puerto Berrío', 'Santa Fe de Antioquia', 'Andes', 'Segovia'],
+    'Atlántico': ['Galapa', 'Sabanagrande', 'Santo Tomás', 'Palmar de Varela'],
+    'Bolívar': ['Mompós', 'María la Baja', 'San Jacinto', 'Turbana'],
+    'Boyacá': ['Puerto Boyacá', 'Villa de Leyva', 'Moniquirá', 'Samacá', 'Nobsa'],
+    'Caldas': ['Anserma', 'Riosucio', 'Aguadas', 'Salamina'],
+    'Caquetá': ['San Vicente del Caguán'],
+    'Casanare': ['Villanueva', 'Paz de Ariporo', 'Monterrey'],
+    'Cauca': ['Piendamó', 'Guapi', 'Timbío', 'Miranda', 'Corinto'],
+    'Cesar': ['Bosconia', 'Agustín Codazzi', 'La Jagua de Ibirico', 'Curumaní', 'El Copey'],
+    'Chocó': ['Tadó', 'Condoto', 'Bahía Solano'],
+    'Córdoba': ['Planeta Rica', 'Tierralta', 'Ciénaga de Oro', 'San Pelayo', 'Ayapel', 'Puerto Libertador'],
+    'Cundinamarca': ['Sibaté', 'Tocancipá', 'Cota', 'Sopó', 'Tenjo', 'Villeta', 'La Mesa', 'Guaduas', 'Ubaté'],
+    'Huila': ['Campoalegre', 'Rivera', 'Gigante', 'Algeciras'],
+    'La Guajira': ['Fonseca', 'San Juan del Cesar', 'Villanueva', 'Dibulla', 'Manaure'],
+    'Magdalena': ['Plato', 'El Banco', 'Aracataca', 'Pivijay'],
+    'Meta': ['Puerto López', 'Puerto Gaitán', 'Cumaral', 'Restrepo'],
+    'Nariño': ['Túquerres', 'La Unión', 'Sandoná', 'Samaniego'],
+    'Norte de Santander': ['Tibú', 'Ábrego', 'El Zulia', 'Chinácota'],
+    'Putumayo': ['Orito', 'Sibundoy'],
+    'Quindío': ['Quimbaya', 'Circasia', 'Filandia', 'Salento'],
+    'Risaralda': ['Belén de Umbría', 'Marsella', 'Quinchía'],
+    'Santander': ['Socorro', 'Lebrija', 'Málaga', 'Vélez', 'Puerto Wilches', 'Sabana de Torres'],
+    'Sucre': ['Tolú', 'Sampués', 'San Marcos', 'Coveñas', 'San Onofre'],
+    'Tolima': ['Flandes', 'Mariquita', 'Guamo', 'Purificación', 'Natagaima', 'Ortega', 'Armero'],
+    'Valle del Cauca': ['El Cerrito', 'Florida', 'Pradera', 'Dagua', 'Roldanillo', 'Zarzal', 'Caicedonia', 'Ginebra', 'Guacarí']}
+
+# municipios que el sitio anterior ya tenía y no están en la lista base
+ANTERIORES = {"Bolívar": ["Arjona", "El Carmen de Bolívar"], "Atlántico": ["Baranoa"], "Tolima": ["Chaparral", "Líbano"], "Magdalena": ["Fundación"], "Chocó": ["Istmina"],
+              "Huila": ["La Plata"], "Córdoba": ["Montelíbano"], "Arauca": ["Saravena", "Tame"], "La Guajira": ["Uribia"]}
