@@ -577,7 +577,7 @@ function tabla_pedido(array $p, bool $completo): string
     if ($completo) {
         $filas += ['Nombre' => $p['nombre'], 'Celular' => $p['tel'], 'Correo' => $p['email'], 'Barrio' => $p['barrio'], 'Dirección' => $p['dir'],
             'Indicaciones' => $p['indicaciones'] ?: '—', 'Modelo del nevecón' => $p['modelo'] ?: '—', 'Recordatorio de cambio' => $p['recordar'] ? 'Sí' : 'No',
-            'Pago Wompi' => trim(($p['metodo'] ?: '') . ' · ' . ($p['tx_id'] ?: ''), ' ·')];
+            ($p['estado'] === 'contraentrega' ? 'Forma de pago' : 'Pago Wompi') => ($p['estado'] === 'contraentrega' ? 'CONTRA ENTREGA: cobrar en efectivo al entregar' : trim(($p['metodo'] ?: '') . ' · ' . ($p['tx_id'] ?: ''), ' ·'))];
     }
     $html = '<table style="border-collapse:collapse;width:100%">';
     foreach ($filas as $k => $v) {

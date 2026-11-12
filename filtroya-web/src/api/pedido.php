@@ -83,10 +83,10 @@ if ($pago === 'cod') {
     $pedc = $st->fetch();
     $asuntoc = "Nuevo pedido CONTRA ENTREGA {$ref} — " . cop($total) . ' — ' . $cli['nombre'] . ' — ' . $cli['ciudad'];
     out_y_seguir(['ref' => $ref, 'total' => $total, 'cod' => true, 'url' => '/gracias.php?cod=' . rawurlencode($ref), 'form' => form_navegador($pedc, $asuntoc)], function () use ($pedc, $asuntoc, $total, $recargo, $cli, $ref) {
-        avisar_por_todos($pedc, 'contraentrega', $asuntoc, '<h2 style="margin:0 0 8px">Nuevo pedido CONTRA ENTREGA</h2><p>El cliente pagará <b>' . cop($total) . '</b> a la transportadora al recibir (incluye ' . cop($recargo) . ' de recargo por contra entrega). Confirma los datos y despáchalo con la opción de recaudo.</p>'
+        avisar_por_todos($pedc, 'contraentrega', $asuntoc, '<h2 style="margin:0 0 8px">Nuevo pedido CONTRA ENTREGA</h2><p>El cliente pagará <b>' . cop($total) . '</b> a la transportadora al recibir ' . ($recargo ? ' (incluye ' . cop($recargo) . ' de recargo por contra entrega)' : '') . '. Confirma los datos y despáchalo con la opción de recaudo.</p>'
             . tabla_pedido($pedc, true) . '<p><a href="' . h(base_url()) . '/admin.php">Ver todos los pedidos</a></p>');
         $n = cfg()['negocio'];
-        enviar_correo($cli['email'], "Recibimos tu pedido {$ref}", '<h2 style="margin:0 0 8px">¡Gracias por tu pedido, ' . h($cli['nombre']) . '!</h2><p>Pagas <b>' . cop($total) . '</b> en efectivo a la transportadora cuando recibas tu pedido (incluye ' . cop($recargo) . ' de recargo por pago contra entrega). Te escribiremos al ' . h($cli['tel']) . ' para confirmar los datos antes de despachar.</p>'
+        enviar_correo($cli['email'], "Recibimos tu pedido {$ref}", '<h2 style="margin:0 0 8px">¡Gracias por tu pedido, ' . h($cli['nombre']) . '!</h2><p>Pagas <b>' . cop($total) . '</b> en efectivo a la transportadora cuando recibas tu pedido ' . ($recargo ? ' (incluye ' . cop($recargo) . ' de recargo por pago contra entrega)' : '') . '. Te escribiremos al ' . h($cli['tel']) . ' para confirmar los datos antes de despachar.</p>'
             . tabla_pedido($pedc, false) . '<p style="color:#5a6873;font-size:13px">¿Dudas? Escríbenos a ' . h($n['correo']) . ' (' . h($n['horario']) . ').</p>', $m);
     });
 }
