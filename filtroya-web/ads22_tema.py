@@ -251,6 +251,27 @@ class Tema:
         mciu = re.match(r"filtro-agua-samsung-([a-z0-9-]+)\.html$", nombre)
         if mciu and mciu.group(1) in self.ciudades:
             t = t.replace('<section class="navblock">', self.mas_busquedas(mciu.group(1)) + '<section class="navblock">', 1)
+        # contenido propio de cada ciudad (sectores, búsquedas y preguntas con sus datos), distinto en cada página
+        mfam = re.match(r"(filtro-agua-samsung|filtro-haf-cin|filtro-haf-qin|filtro-externo|cambiar-filtro-nevecon-samsung|precio-filtro-nevecon-samsung|comprar-filtro-samsung-contra-entrega)-([a-z0-9-]+)\.html$", nombre)
+        if mfam and mfam.group(2) in self.ciudades:
+            import ads22_local
+            s = mfam.group(2)
+            c = self.ciudades[s]
+            reg = self.hubs["region_de"].get(c["dept"])
+            vec = [(n, x) for n, x in self.por_dept.get(c["dept"], []) if x != s]
+            area = self.hubs["area_de"].get(s)
+            cerca = False
+            if area:  # en una zona metropolitana, los vecinos son los de su misma área
+                import ads22_hubs
+                miem = [(self.ciudades[x]["city"], x) for x in ads22_hubs.AREAS[area[0][len("filtro-agua-samsung-"):-5]][2] if x in self.ciudades and x != s]
+                if len(miem) >= 2:
+                    vec, cerca = miem, True
+            h, ldj = ads22_local.bloque(s, c["city"], c["dept"], c["days"], vec[:14], reg[1] if reg else None, area, mfam.group(1), self.P, cerca)
+            if '<section class="navblock">' in t:
+                t = t.replace('<section class="navblock">', h + '<section class="navblock">', 1)
+            else:
+                t = t.replace('<footer class="aq-f">', h + '<footer class="aq-f">', 1)
+            t = t.replace("</head>", '<script type="application/ld+json">' + ldj + "</script></head>", 1)
         if nombre == "index.html":
             t, n1 = re.subn(r'<section class="hero">.*?</section>', lambda m: self.portada(), t, count=1, flags=re.S)
             t, n2 = re.subn(r'<section class="pick" id="elige-tu-filtro">.*?</section>', "", t, count=1, flags=re.S)
