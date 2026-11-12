@@ -1019,17 +1019,25 @@ SITIOS_PROPIOS = {  # marcas con tienda en su propio dominio, y lo que cambia en
                              precios={"sam-cin-o": 139900, "sam-qin-o": 139900, "sam-ex-o": 79900},
                              links={"sam-cin-o": "https://checkout.wompi.co/l/MEGm9S", "sam-qin-o": "https://checkout.wompi.co/l/oogWOK", "sam-ex-o": "https://checkout.wompi.co/l/bjU3bv"},
                              recargo_cod=0, mas_ciudades=True, redirige_html=True, compra_primero=True),
+    "Samsung Medellín": dict(frase="Distribuidores de Samsung en Medellín", dist=("distribuidores de Samsung en Medellín", "distribuidor de Samsung en Medellín"),
+                             dominio="https://filtroneverasamsungenmedellin.click", token="G_mA_cNaIzt-rjbid4Ab6ZwXksZDDGinE2R0WsxIqhc", nombre="Filtros Samsung Medellín", wa="3054796329", tel="305 479 6329",
+                             solo_linea=True, correo="pedidos@filtrosaguanevecones.com", bogota=True, ciudad="Medellín", packs=True, marca="Samsung", slug="samsung-medellin",
+                             productos={"sam-cin-o", "sam-qin-o", "sam-ex-o"}),
 }
-for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
+for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá", "Samsung Medellín"]:
     SP = SITIOS_PROPIOS.get(clave)
     marca = SP["marca"] if SP and SP.get("marca") else clave
     s = slug(marca)
     d = SITIOS / (SP["slug"] if SP and SP.get("slug") else s)
+    CIUDAD_L = (SP or {}).get("ciudad", "Bogotá")
+    if SP and SP.get("bogota"):
+        import ciudad_local
+        ciudad_local.activar(CIUDAD_L)  # comunas/localidades, barrios y zonas de esta ciudad
     CAT_SITIO = [p for p in CATALOGO if p["marca"] != marca or not (SP and SP.get("productos")) or p["id"] in SP["productos"]]
     if SP and SP.get("precios"):  # este dominio conserva sus precios y sus links de Wompi (copias: el catálogo global no cambia)
         CAT_SITIO = [dict(p, precio=SP["precios"][p["id"]], precio_antes=SP["precios"][p["id"]], linkPago=SP["links"][p["id"]], linkMonto=SP["precios"][p["id"]]) if p["id"] in SP["precios"] else p for p in CAT_SITIO]
     ids = {p["id"] for p in CAT_SITIO if p["marca"] == marca}
-    CIU = ([c for c in CIUDADES_CO if c[0] == "Bogotá"] if SP and SP.get("bogota") else CIUDADES_CO)
+    CIU = ([c for c in CIUDADES_CO if c[0] == CIUDAD_L] if SP and SP.get("bogota") else CIUDADES_CO)
     if SP and SP.get("mas_ciudades"):  # además de la lista de la app, los municipios que ya tenían página en el sitio anterior
         import ciudades_extra
         vistos = {slug(c[0]) for c in CIUDADES_CO}
@@ -1087,8 +1095,8 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
         fb = ImageFont.truetype("/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf", 76)
         fm = ImageFont.truetype("/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf", 36)
         dr_.text((80, 300), "Filtros de agua para", font=fb, fill=(255, 255, 255))
-        dr_.text((80, 390), "nevera Samsung" + (" en Bogotá" if SP and SP.get("bogota") else ""), font=fb, fill=(169, 184, 255))
-        dr_.text((80, 520), ("Entrega en 1 a 2 días hábiles en Bogotá  ·  Envío gratis" if SP and SP.get("bogota") else "Distribuidores de Samsung a nivel nacional  ·  Envíos a toda Colombia"), font=fm, fill=(255, 255, 255))
+        dr_.text((80, 390), "nevera Samsung" + (f" en {CIUDAD_L}" if SP and SP.get("bogota") else ""), font=fb, fill=(169, 184, 255))
+        dr_.text((80, 520), (f"Entrega en 1 a 2 días hábiles en {CIUDAD_L}  ·  Envío gratis" if SP and SP.get("bogota") else "Distribuidores de Samsung a nivel nacional  ·  Envíos a toda Colombia"), font=fm, fill=(255, 255, 255))
         bgim.save(d / (PREFIJO + "img") / "compartir.jpg", quality=88)
     marcas_exclusivas.AUTORIZADO = {marca: SP["frase"]} if SP else {}
     marcas_exclusivas.BOGOTA = {marca} if SP and SP.get("bogota") else set()
@@ -1096,7 +1104,9 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
     marcas_exclusivas.SOLO_LINEA = {marca} if SP and SP.get("solo_linea") else set()
     marcas_exclusivas.COMPRA_PRIMERO = {marca} if SP and SP.get("compra_primero") else set()
     marcas_exclusivas.COD_RECARGO = SP.get("recargo_cod", 5000) if SP else 5000
-    (d / (PREFIJO + "asistente.js")).write_text(asistente.generar([p for p in CAT_SITIO if p["marca"] == marca], lambda p: f"/{p['slug']}/", correo=(SP or {}).get("correo", "") if SP and SP.get("solo_linea") else ""), encoding="utf-8")
+    _info_chat = ({"guiado": True, "ciudad": CIUDAD_L, "packs": bool(SP.get("packs")), "entrega": f"Entregamos en {CIUDAD_L} en 1 a 2 días hábiles, después de confirmar el pago.",
+                   "pago": "Pagas solo en línea, en la pasarela segura de Wompi (Bancolombia): tarjeta crédito o débito, PSE, Nequi o botón Bancolombia. Te llega la confirmación a tu correo."} if SP and SP.get("bogota") and CIUDAD_L != "Bogotá" else None)
+    (d / (PREFIJO + "asistente.js")).write_text(asistente.generar([p for p in CAT_SITIO if p["marca"] == marca], lambda p: f"/{p['slug']}/", correo=(SP or {}).get("correo", "") if SP and SP.get("solo_linea") else "", info=_info_chat), encoding="utf-8")
     rutas, M = marcas_exclusivas.generar_marca(marca, d, "/", CAT_SITIO, slug, norm, ubic, foto, php_str, CIU, logo)
     if SP and SP.get("redirige_html"):  # inicio: conserva título, descripción y H1 de la portada que hoy está bien posicionada; sin el filtro que este sitio no vende; contra entrega sin recargo
         _ix = d / "index.php"
@@ -1213,7 +1223,7 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
         (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\n$t = isset($_GET['completo']) ? <<<'FULL'\n" + llms_full + "\nFULL\n : <<<'TXT'\n" + llms + "\nTXT;\necho str_replace('__BASE__', sitio()['base'], $t);\n", encoding="utf-8")
     else:
         (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + llms + "TXT);\n", encoding="utf-8")
-    cat_m = dict(cat_php, **({"ciudades": ["Bogotá"]} if SP and SP.get("bogota") else {"ciudades": cat_php["ciudades"][:-1] + [c_[0] for c_ in CIU if c_[0] not in cat_php["ciudades"]] + ["Otro municipio"]} if SP and SP.get("mas_ciudades") else {}), paginas=rutas, guias=[], compat=[], blog=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
+    cat_m = dict(cat_php, **({"ciudades": [CIUDAD_L]} if SP and SP.get("bogota") else {"ciudades": cat_php["ciudades"][:-1] + [c_[0] for c_ in CIU if c_[0] not in cat_php["ciudades"]] + ["Otro municipio"]} if SP and SP.get("mas_ciudades") else {}), paginas=rutas, guias=[], compat=[], blog=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
                  productos={k: v for k, v in cat_php["productos"].items() if k in ids})
     if SP and SP.get("precios"):
         cat_m["productos"] = {k_: (dict(v_, precio=SP["precios"][k_], link_pago=SP["links"][k_], link_pack="") if k_ in SP["precios"] else v_) for k_, v_ in cat_m["productos"].items()}
@@ -1273,4 +1283,11 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá"]:
             quitar_envio(d)
             localizar_bogota(d)
         mejorar_fotos(d / "img", [p["id"] for p in CATALOGO if p["marca"] == marca])
+    if SP and SP.get("bogota") and CIUDAD_L != "Bogotá":  # la tienda de otra ciudad: se traduce todo el sitio (textos y direcciones)
+        import ciudad_local
+        n_tr = ciudad_local.postproceso(d, CIUDAD_L)
+        print(f"  {CIUDAD_L}: {n_tr} archivos traducidos desde la plantilla de Bogotá")
+    if SP and SP.get("bogota"):
+        import ciudad_local
+        ciudad_local.activar("Bogotá")
     print(f"Sitio {clave}: {d.relative_to(AQUI)}/ con {len(rutas)} páginas")

@@ -9,6 +9,7 @@ JS = r"""(function () {
   var n = function (s) { return String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); };
   var cop = function (v) { return '$ ' + String(v).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
   var correo = '__CORREO__';
+  var INFO = __INFO__;
   var wa = (document.querySelector('a[href*="wa.me/"]') || {}).href || '';
   wa = (wa.match(/wa\.me\/(\d+)/) || [])[1] || '';
   var css = '#fn-chat-b{position:fixed;left:14px;bottom:14px;z-index:60;display:flex;align-items:center;gap:8px;border:0;border-radius:99px;padding:12px 16px;background:#17181b;color:#fff;font:700 14px system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.28);cursor:pointer}'
@@ -21,6 +22,8 @@ JS = r"""(function () {
     + '.fn-b a.fn-bt{display:inline-block;margin:6px 6px 0 0;padding:8px 12px;border-radius:8px;background:#17181b;color:#fff;text-decoration:none;font-weight:700;font-size:14px}.fn-b a.fn-bt.wa{background:#25d366}'
     + '.fn-b .fn-pr{font-weight:800;font-size:17px}.fn-q{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 8px;background:#f6f5f2}.fn-q button{border:1px solid #cfc8b6;background:#fff;border-radius:99px;padding:6px 11px;font:600 13px system-ui,sans-serif;cursor:pointer}'
     + '#fn-f{display:flex;gap:6px;padding:10px;border-top:1px solid #e6e2d8;background:#fff}#fn-f input{flex:1;min-width:0;border:1px solid #cfc8b6;border-radius:10px;padding:10px;font:16px system-ui,sans-serif}#fn-f button{border:0;border-radius:10px;padding:0 14px;background:#eeb111;color:#231f20;font-weight:800;cursor:pointer}'
+    + '.fn-dots i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#9aa0aa;margin:0 2px;animation:fnd 1s infinite}.fn-dots i:nth-child(2){animation-delay:.15s}.fn-dots i:nth-child(3){animation-delay:.3s}@keyframes fnd{50%{transform:translateY(-4px);opacity:.5}}'
+    + '.fn-b button.fn-bt{display:inline-block;margin:6px 6px 0 0;padding:9px 13px;border-radius:8px;border:0;background:#1428a0;color:#fff;font:700 14px system-ui,sans-serif;cursor:pointer}'
     + '@media (max-width:520px){#fn-chat-b span{display:none}#fn-chat-b{padding:13px}}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
   var b = document.createElement('button'); b.id = 'fn-chat-b'; b.type = 'button'; b.setAttribute('aria-label', 'Abrir el asistente para encontrar tu filtro'); b.innerHTML = '<i></i><span>¿Cuál filtro es el mío?</span>';
@@ -29,10 +32,29 @@ JS = r"""(function () {
   document.body.appendChild(b); document.body.appendChild(w);
   var M = w.querySelector('#fn-m'), Q = w.querySelector('#fn-q'), I = w.querySelector('#fn-i'), abierto = false, saludo = false;
   function ev(a, d) { try { (window.dataLayer = window.dataLayer || []).push({event: 'chat_filtro', chat_accion: a, chat_dato: d || ''}); } catch (e) {} }
-  function msg(h, quien) { var d = document.createElement('div'); d.className = 'fn-b ' + quien; d.innerHTML = h; M.appendChild(d); M.scrollTop = M.scrollHeight; return d; }
+  function msg0(h, quien) { var d = document.createElement('div'); d.className = 'fn-b ' + quien; d.innerHTML = h; M.appendChild(d); M.scrollTop = M.scrollHeight; return d; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); }
-  function chips(l) { Q.innerHTML = ''; setTimeout(function () { M.scrollTop = M.scrollHeight; }, 0); l.forEach(function (x) { var c = document.createElement('button'); c.type = 'button'; c.textContent = x[0]; c.onclick = function () { x[1](); }; Q.appendChild(c); }); }
-  function menuBase() { chips([['¿Dónde está el modelo?', donde], ['Tengo la referencia del filtro viejo', function () { msg('Tengo la referencia del filtro viejo', 'yo'); msg('Escríbela aquí abajo. Está impresa en el filtro, por ejemplo <b>W10295370</b>, <b>EDR3RXD1</b> o <b>LT1000P</b>.', 'bot'); I.focus(); }], [wa || !correo ? 'Hablar con una persona' : 'Escribir por correo', persona]]); }
+  var pend = Promise.resolve();
+  function msg(h, quien) {
+    if (quien !== 'bot') return msg0(h, quien);
+    pend = pend.then(function () { return new Promise(function (r) { var d = msg0('<span class="fn-dots"><i></i><i></i><i></i></span>', 'bot'); setTimeout(function () { d.innerHTML = h; M.scrollTop = M.scrollHeight; r(); }, Math.min(900, 380 + String(h).length * 2)); }); });
+  }
+  function chips(l) { pend = pend.then(function () { chips0(l); }); }
+  function chips0(l) { Q.innerHTML = ''; setTimeout(function () { M.scrollTop = M.scrollHeight; }, 0); l.forEach(function (x) { var c = document.createElement('button'); c.type = 'button'; c.textContent = x[0]; c.onclick = function () { x[1](); }; Q.appendChild(c); }); }
+  function forma(f, txt) {
+    msg(txt, 'yo');
+    var p = D.filter(function (x) { return x.f === f; })[0];
+    if (!p) { msg('No tengo ese tipo en la tienda.', 'bot'); return; }
+    ev('forma', f);
+    msg(tarjeta(p, f === 'externo' ? 'Si va afuera, en la manguera del agua, es el <b>filtro externo</b>:' : f === 'redondo' ? 'Un cartucho <b>redondo, que se saca girándolo</b>, es este:' : 'Un cartucho <b>cuadrado, que se saca empujando</b>, es este:') + '<br><small>Confirma el código impreso en tu filtro viejo: debe ser <b>' + esc(p.r) + '</b>.</small>', 'bot');
+    chips([['Ver otra forma', viejo], ['Escribir mi modelo', modelo], ['¿Cómo pago?', pago]]);
+  }
+  function viejo() { msg('Tengo el filtro viejo', 'yo'); msg('Perfecto. Míralo y dime <b>¿cómo es?</b>', 'bot'); chips([['Redondo (se gira)', function () { forma('redondo', 'Es redondo'); }], ['Cuadrado (se empuja)', function () { forma('cuadrado', 'Es cuadrado'); }], ['Va en la manguera del agua', function () { forma('externo', 'Va en la manguera'); }]]); }
+  function modelo() { msg('Sé el modelo de mi nevecón', 'yo'); msg('Escríbelo aquí abajo (por ejemplo <b>RF28HMEDBSR</b> o <b>RF28R7351SR</b>) y te digo cuál filtro es.', 'bot'); I.focus(); }
+  function pago() { msg('¿Cómo pago?', 'yo'); msg(INFO.pago || 'Pagas en línea, en la pasarela segura de Wompi, con tarjeta, PSE, Nequi o Bancolombia.', 'bot'); chips([['Ver cómo es mi filtro', viejo], ['¿Cuánto tarda?', entrega]]); }
+  function entrega() { msg('¿Cuánto tarda?', 'yo'); msg(INFO.entrega || 'El tiempo de entrega depende de tu ciudad; lo ves en la página de tu ciudad.', 'bot'); chips([['Ver cómo es mi filtro', viejo], ['¿Cómo pago?', pago]]); }
+  function precios() { msg('¿Cuánto cuesta?', 'yo'); msg(D.map(function (p) { return '<b>' + esc(p.n) + '</b>: ' + cop(p.p); }).join('<br>') + (INFO.packs ? '<br><small>También en pack de 2, con ahorro.</small>' : ''), 'bot'); chips([['Ver cómo es mi filtro', viejo], ['¿Cómo pago?', pago]]); }
+  function menuBase() { if (INFO.guiado) { chips([['Tengo el filtro viejo', viejo], ['Sé el modelo de mi nevecón', modelo], ['No sé cuál es', donde], ['¿Cuánto cuesta?', precios], ['¿Cómo pago?', pago], ['¿Cuánto tarda?', entrega]]); return; } chips([['¿Dónde está el modelo?', donde], ['Tengo la referencia del filtro viejo', function () { msg('Tengo la referencia del filtro viejo', 'yo'); msg('Escríbela aquí abajo. Está impresa en el filtro, por ejemplo <b>W10295370</b>, <b>EDR3RXD1</b> o <b>LT1000P</b>.', 'bot'); I.focus(); }], [wa || !correo ? 'Hablar con una persona' : 'Escribir por correo', persona]]); }
   function donde() { msg('¿Dónde está el modelo?', 'yo'); msg('El modelo está en una <b>etiqueta dentro del refrigerador</b>, en la pared lateral (arriba) o detrás del cajón de las verduras. Suele empezar por letras y números, por ejemplo <b>WRF555SDFZ</b>, <b>RF28HMEDBSR</b> o <b>LFXS26973S</b>. Escríbelo aquí y te digo cuál filtro es.', 'bot'); I.focus(); }
   function persona(txt) {
     ev('whatsapp', txt || '');
@@ -42,7 +64,7 @@ JS = r"""(function () {
   }
   function tarjeta(p, motivo) {
     ev('recomienda', p.ref);
-    return motivo + '<br><br><b>' + esc(p.n) + '</b><br><span class="fn-pr">' + cop(p.p) + '</span> · envío gratis a toda Colombia<br><a class="fn-bt" href="' + p.u + '">Ver y comprar</a>';
+    return motivo + '<br><br><b>' + esc(p.n) + '</b><br><span class="fn-pr">' + cop(p.p) + '</span>' + (INFO.guiado ? '' : ' · envío gratis a toda Colombia') + '<br>' + (p.i ? '<button type="button" class="fn-bt" data-add="' + p.i + '">🛒 Agregar al carrito</button>' : '') + '<a class="fn-bt" href="' + p.u + '">' + (p.i ? 'Ver ficha' : 'Ver y comprar') + '</a>';
   }
   function buscar(q) {
     var t = n(q); if (t.length < 3) return null;
@@ -67,7 +89,7 @@ JS = r"""(function () {
   }
   function abrir() {
     abierto = !abierto; w.classList.toggle('on', abierto); b.setAttribute('aria-expanded', abierto);
-    if (abierto) { ev('abrir'); if (!saludo) { saludo = true; msg('¡Hola! 👋 Soy el asistente de la tienda. Escríbeme el <b>modelo de tu nevecón</b> o la <b>referencia del filtro viejo</b> y te digo cuál filtro es. Funciono las 24 horas; si prefieres, te paso con una persona' + (wa ? ' por WhatsApp.' : ' por correo.') + '', 'bot'); menuBase(); } setTimeout(function () { I.focus(); }, 50); }
+    if (abierto) { ev('abrir'); if (!saludo) { saludo = true; msg(INFO.guiado ? '¡Hola! 👋 Soy el <b>asistente de filtros</b>' + (INFO.ciudad ? ' de ' + esc(INFO.ciudad) : '') + '. Te ayudo a escoger el filtro de tu nevecón Samsung en un minuto. ¿Cómo prefieres?' : '¡Hola! 👋 Soy el asistente de la tienda. Escríbeme el <b>modelo de tu nevecón</b> o la <b>referencia del filtro viejo</b> y te digo cuál filtro es. Funciono las 24 horas; si prefieres, te paso con una persona' + (wa ? ' por WhatsApp.' : ' por correo.') + '', 'bot'); menuBase(); } setTimeout(function () { I.focus(); }, 50); }
   }
   // Buscador del encabezado y de la portada: sugerencias por modelo o referencia; si no hay coincidencia, lo contesta el asistente
   function sugerir(q) {
@@ -110,7 +132,10 @@ JS = r"""(function () {
 """
 
 
-def generar(productos, url, correo=''):
+def generar(productos, url, correo='', info=None):
     """productos: lista del catálogo; url(p) -> enlace de la página del producto."""
-    datos = [{"n": p["nombre_largo"] + "", "r": p["ref"], "p": p["precio"], "u": url(p), "a": [x for x in p["refs"] if x != p["ref"]], "m": p["modelos"]} for p in productos]
-    return JS.replace("__DATOS__", json.dumps(datos, ensure_ascii=False, separators=(",", ":"))).replace("__CORREO__", correo)
+    forma = {"DA29-00020B": "redondo", "DA97-17376B": "cuadrado", "DA29-10105J": "externo"}
+    datos = [{"n": p["nombre_largo"] + "", "r": p["ref"], "p": p["precio"], "u": url(p), "a": [x for x in p["refs"] if x != p["ref"]], "m": p["modelos"],
+              **({"i": p["id"], "f": forma.get(p["ref"], "")} if info and info.get("guiado") else {})} for p in productos]
+    return (JS.replace("__DATOS__", json.dumps(datos, ensure_ascii=False, separators=(",", ":"))).replace("__CORREO__", correo)
+            .replace("__INFO__", json.dumps(info or {}, ensure_ascii=False, separators=(",", ":"))))

@@ -58,6 +58,7 @@ LOCALIDADES = {
              ["Usme Centro", "Ciudad Usme", "Santa Librada", "Danubio Azul", "Comuneros", "Alfonso López", "La Fiscala", "Yomasa", "Gran Yomasa", "Marichuela"]),
 }
 MUNICIPIOS = []  # la tienda es solo de Bogotá
+CATS_OVERRIDE = None  # otra ciudad puede traer sus propias listas de barrios por tipo
 ZONAS = {"Norte": "norte", "Centro": "centro", "Occidente": "occidente", "Sur": "sur"}
 
 
@@ -158,7 +159,7 @@ def generar(pagina, ctx, h, R, hechas):
                miga_nombre=f"Zona {zona.lower()}")
 
     # ---------- barrios por tipo: zonas de edificios y barrios residenciales selectos / barrios populares ----------
-    CATS = {
+    CATS = CATS_OVERRIDE or {
         "barrios-exclusivos": ("Filtros Samsung en los barrios más exclusivos de Bogotá", "barrios exclusivos y residenciales de Bogotá",
                                ["El Chicó", "Chicó Norte", "Rosales", "El Nogal", "Santa Bárbara", "Country Club", "Antiguo Country", "Quinta Camacho", "El Retiro", "Los Cedros", "Cedritos", "Colina Campestre", "Niza", "Pontevedra", "Lago Gaitán", "Modelia", "Park Way", "Polo Club", "La Castellana", "Santa Ana"],
                                "En estos barrios abundan los apartamentos y las casas con nevecones de gama alta; entregamos hasta la portería o la puerta."),
@@ -244,9 +245,8 @@ def articulos(ps, base="/", inst="/cambio-e-instalacion/"):
     A.append(("cuanto-tarda-en-llegar-un-filtro-a-tu-barrio-en-bogota", "Cuánto tarda en llegar un filtro a tu barrio en Bogotá",
               "Tiempos de entrega de filtros de agua Samsung en las localidades y barrios de Bogotá: norte, centro, occidente y sur.",
               "En Bogotá llega en 1 a 2 días hábiles a cualquier localidad.",
-              "<p>Entregamos en las 19 localidades urbanas de Bogotá. El tiempo estimado es de <b>1 a 2 días hábiles</b> desde que se confirma el pago.</p>"
-              f"<ul class=\"m-ok\"><li><a href=\"{base}filtros-samsung-norte-de-bogota/\">Norte</a>: Usaquén, Chapinero, Suba, Barrios Unidos.</li><li><a href=\"{base}filtros-samsung-centro-de-bogota/\">Centro</a>: Santa Fe, La Candelaria, Los Mártires, Teusaquillo, Puente Aranda, Antonio Nariño.</li>"
-              f"<li><a href=\"{base}filtros-samsung-occidente-de-bogota/\">Occidente</a>: Engativá, Fontibón, Kennedy, Bosa.</li><li><a href=\"{base}filtros-samsung-sur-de-bogota/\">Sur</a>: San Cristóbal, Usme, Tunjuelito, Rafael Uribe Uribe, Ciudad Bolívar.</li></ul>",
+              f"<p>Entregamos en las {len(LOCALIDADES)} localidades urbanas de Bogotá. El tiempo estimado es de <b>1 a 2 días hábiles</b> desde que se confirma el pago.</p>"
+              '<ul class="m-ok">' + "".join(f'<li><a href="{base}filtros-samsung-{zs}-de-bogota/">{esc(z)}</a>: {esc(", ".join(l for l, d in LOCALIDADES.items() if d[0] == z))}.</li>' for z, zs in ZONAS.items()) + "</ul>",
               [("¿Entregan en mi barrio?", "Sí, en todas las localidades y barrios de Bogotá, en 1 a 2 días hábiles.")]))
     return A
 

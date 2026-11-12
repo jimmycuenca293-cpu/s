@@ -2,7 +2,8 @@
 comparativos, glosario, sede en Cedritos y los textos para llms.txt. Todo con respuesta directa al principio y datos de la tienda."""
 import html
 
-from bogota_seo import ENTREGA, LOCALIDADES, datos, esc, slug
+import bogota_seo as BS
+from bogota_seo import ENTREGA, esc, slug
 
 RUTAS = {}
 HUB = "/filtros-samsung-bogota-por-localidad/"
@@ -30,7 +31,7 @@ def generar(pagina, ctx, h, R, hub):
                + "</tbody></table></div>")
     tabla_m = ('<div class="m-tabla-wrap"><table class="m-tabla"><thead><tr><th>Modelo de nevecón Samsung</th><th>Filtro que usa</th></tr></thead><tbody>'
                + "".join(f'<tr><td><a href="{base}filtro-nevera-{m.lower()}/">{esc(m)}</a></td><td>{P(p)}</td></tr>' for p in (cin, qin) for m in p["modelos"]) + "</tbody></table></div>")
-    zonas = '<div class="m-chips">' + "".join(f'<a href="{base}filtros-samsung-{s}-de-bogota/">Zona {z.lower()}</a>' for z, s in (("Norte", "norte"), ("Centro", "centro"), ("Occidente", "occidente"), ("Sur", "sur"))) + f'<a href="{hub}">Todas las localidades y barrios</a></div>'
+    zonas = '<div class="m-chips">' + "".join(f'<a href="{base}filtros-samsung-{s}-de-bogota/">Zona {z.lower()}</a>' for z, s in BS.ZONAS.items()) + f'<a href="{hub}">Todas las localidades y barrios</a></div>'
     sede = (f'<div class="m-aviso"><span style="font-size:22px">📍</span><span><b>Estamos en Cedritos, Bogotá</b>Nuestra bodega está en el barrio Cedritos, en la localidad de Usaquén, al norte de Bogotá.</span></div>')
     hoy = {"datePublished": "2026-11-11", "dateModified": "2026-11-11"}
     art = lambda ruta, titulo, desc: {"@type": "Article", "headline": titulo, "description": desc, "inLanguage": "es-CO", **hoy, "author": {"@type": "Organization", "name": "__NOMBRE__"},
@@ -272,7 +273,7 @@ def llms(ps, base_url, rutas, hub):
 def llms_full(ps, base_url, rutas, hub):
     t = llms(ps, base_url, rutas, hub)
     t += "\n## Localidades de Bogotá donde entregamos\n"
-    for l, (zona, vec, perfil, bs) in LOCALIDADES.items():
+    for l, (zona, vec, perfil, bs) in BS.LOCALIDADES.items():
         t += f"- {l} (zona {zona.lower()}): " + ", ".join(bs) + f". {base_url}/filtro-nevera-samsung-{slug(l)}-bogota/\n"
     t += "\n## Preguntas y respuestas\n"
     for g, l in faq_bogota():
