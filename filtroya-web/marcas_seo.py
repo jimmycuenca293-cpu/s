@@ -17,6 +17,7 @@ import html
 
 import marcas_contenido
 import marcas_contenido_samsung
+import marcas_contenido_lg
 
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda n: "$ " + f"{n:,}".replace(",", ".")
@@ -48,7 +49,7 @@ def rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO):
             modelos.setdefault(norm(m), (m, p, f"{base}filtro-nevera-{slug(m)}/"))
     ciudades = {c[0]: (c, f"{base}filtro-nevera-{s}-{slug(c[0])}/") for c in CIUDADES_CO[:CIUDADES_SEO]}
     hub = f"{base}filtros-{s}-por-ciudad/"
-    extra = marcas_contenido.rutas(base, slug) if marca == "Whirlpool" else (marcas_contenido_samsung.rutas(base, slug) if marca == "Samsung" and base == "/" else None)
+    extra = marcas_contenido.rutas(base, slug) if marca == "Whirlpool" else (marcas_contenido_samsung.rutas(base, slug) if marca == "Samsung" and base == "/" else (marcas_contenido_lg.rutas(base, slug) if marca == "LG" and base == "/" else None))
     return {"temas": temas, "refs": refs, "modelos": modelos, "ciudades": ciudades, "hub": hub, "extra": extra}
 
 
@@ -249,6 +250,11 @@ def generar(R, escribir, dir_, ctx, h):
         refs_txt = ", ".join(p["ref"] for p in ps)
         servicio = {"@type": "Service", "name": f"Filtros de agua {marca} con envío a {nombre}", "serviceType": "Venta de filtros de agua para nevera",
                     "provider": {"@id": f"__BASE__{base}#tienda"}, "areaServed": {"@type": "City", "name": nombre, "containedInPlace": {"@type": "AdministrativeArea", "name": depto}}}
+        if M.get("ciudad_unica"):  # contenido propio por ciudad: textos, bloques, modelos y preguntas distintos en cada una
+            import ciudad_unica
+            u = ciudad_unica.contenido(marca, ciudad_unica.slug(nombre.split(" (")[0]), ps, base, c, vecinas, R)
+            pagina(ruta, u["titulo"], u["desc"], u["h1"], u["eyebrow"], u["intro"], u["cuerpo"], u["preguntas"], miga_nombre=u["miga_nombre"], ld_extra=servicio)
+            continue
         pagina(ruta, f"Filtro nevera {marca} en {nombre} | Envío gratis",
                f"Filtros de agua {marca} en {nombre}, {depto}: llegan en {dias} con envío gratis. Paga con tarjeta, PSE o Nequi.",
                f"Filtro para nevera {marca} en {nombre}", f"{nombre}, {depto}",
@@ -277,6 +283,9 @@ def generar(R, escribir, dir_, ctx, h):
                [(f"¿Envían filtros {marca} a mi ciudad?", "Sí, a toda Colombia. Si tu municipio no aparece, escríbenos y lo enviamos igual."),
                 ("¿El envío tiene costo?", "No, el envío es gratis y llega con número de guía.")],
                miga_nombre="Envíos por ciudad")
+    if M.get("hubs_nacional"):  # departamentos, regiones, áreas metropolitanas, A–Z, glosario y mapa del sitio
+        import hubs_nacional
+        hubs_nacional.generar(pagina, ctx, h, R, hechas)
     if M.get("bogota"):
         import bogota_seo
         bogota_seo.generar(pagina, ctx, h, R, hechas)
@@ -285,7 +294,7 @@ def generar(R, escribir, dir_, ctx, h):
 
 
     if R.get("extra"):
-        (marcas_contenido_samsung if marca == "Samsung" else marcas_contenido).generar(pagina, ctx, h, R)
+        {"Samsung": marcas_contenido_samsung, "LG": marcas_contenido_lg}.get(marca, marcas_contenido).generar(pagina, ctx, h, R)
     return hechas
 
 

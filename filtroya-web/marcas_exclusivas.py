@@ -65,6 +65,7 @@ MARCAS_INFO = {
 
 BOGOTA = set()  # claves de las tiendas locales de Bogotá
 PACKS = set()  # marcas cuyo sitio ofrece también el pack de 2
+CIUDAD_UNICA = set()  # marcas con página de ciudad de contenido propio y páginas de regiones, áreas y departamentos
 COMPRA_PRIMERO = set()  # marcas cuya portada abre con los productos (título corto + catálogo) en vez del carrusel y el encabezado grande
 SOLO_LINEA = set()  # marcas cuyo sitio propio vende solo con pago en línea (sin WhatsApp ni contra entrega)
 AUTORIZADO = {}  # marca -> frase corta («Distribuidores autorizados de X») que dice su sitio propio (lo confirmó el dueño)
@@ -78,7 +79,7 @@ def generar_marca(marca, dir_, base, CATALOGO, slug, norm, ubic, foto, php_str, 
     s = slug(marca)
     for p in ps:
         p["slug_o"] = p["slug"]
-    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": AUTORIZADO[marca]} if marca in AUTORIZADO else {}), **({"solo_linea": True} if marca in SOLO_LINEA else {}), **({"bogota": True, "ciudades_titulo": "Localidades", "bodega": "Bodega en el barrio Cedritos, Bogotá D.C."} if marca in BOGOTA else {}), **({"packs": True} if marca in PACKS else {}),
+    M = {"nombre": marca, "clase": s, "base": base, "tema": info["tema"], "fuentes": info["fuentes"], "tienda": f"Filtros {marca}", **(logo or {}), **({"autorizado": AUTORIZADO[marca]} if marca in AUTORIZADO else {}), **({"solo_linea": True} if marca in SOLO_LINEA else {}), **({"bogota": True, "ciudades_titulo": "Localidades", "bodega": "Bodega en el barrio Cedritos, Bogotá D.C."} if marca in BOGOTA else {}), **({"packs": True} if marca in PACKS else {}), **({"ciudad_unica": True, "hubs_nacional": True} if marca in CIUDAD_UNICA else {}),
          "productos": [[p["nombre_largo"] + "", p["slug_o"], cop(p["precio"])] for p in ps]}
     R = marcas_seo.rutas(marca, ps, base, slug, norm, ubic, CIUDADES_CO)
     _rutas = [p["slug_o"] + "/" for p in ps] + [r for r, _ in R["temas"]] + [v[2] for v in R["refs"].values()] + [v[2] for v in R["modelos"].values()]
@@ -428,7 +429,7 @@ def producto(p, marca, info, ps, base, M, slug, norm, ubic, foto, php_str, ciuda
         return inicio(M, php_str, titulo, desc, url, ld, resenas_php, head) + f"""<div class="m-wrap sx">
 {miga_h}
 <div class="sx-top">
-  <div class="sx-gal"><div class="sx-img"><span class="sx-tag">✔ Distribuidor Samsung</span>{foto(p, nombre, lazy=False)}</div>
+  <div class="sx-gal"><div class="sx-img"><span class="sx-tag">✔ {"Distribuidor Samsung" if marca == "Samsung" else "Distribuidor autorizado " + esc(marca)}</span>{foto(p, nombre, lazy=False)}</div>
     <ul class="sx-bad"><li>Producto nuevo</li><li>Empaque sellado</li><li>Referencia {esc(p["ref"])} impresa</li></ul></div>
   <div class="sx-buy">
     <span class="sx-eye">Accesorios · Filtros de agua para refrigerador</span>

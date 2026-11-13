@@ -1019,6 +1019,9 @@ SITIOS_PROPIOS = {  # marcas con tienda en su propio dominio, y lo que cambia en
                              precios={"sam-cin-o": 139900, "sam-qin-o": 139900, "sam-ex-o": 79900},
                              links={"sam-cin-o": "https://checkout.wompi.co/l/MEGm9S", "sam-qin-o": "https://checkout.wompi.co/l/oogWOK", "sam-ex-o": "https://checkout.wompi.co/l/bjU3bv"},
                              recargo_cod=0, mas_ciudades=True, redirige_html=True, compra_primero=True),
+    "LG": dict(frase="Distribuidores autorizados de LG", dist=("distribuidores autorizados de LG", "distribuidor autorizado de LG"),
+               dominio="https://tu-dominio-lg.com", token="", nombre="Filtros LG", wa="3054796329", tel="305 479 6329", correo="pedidos@filtrosaguanevecones.com",
+               solo_linea=True, mas_ciudades=True, ciudad_unica=True, compra_primero=True),
     "Samsung Medellín": dict(frase="Distribuidores de Samsung en Medellín", dist=("distribuidores de Samsung en Medellín", "distribuidor de Samsung en Medellín"),
                              dominio="https://filtroneverasamsungenmedellin.click", token="G_mA_cNaIzt-rjbid4Ab6ZwXksZDDGinE2R0WsxIqhc", nombre="Filtros Samsung Medellín", wa="3054796329", tel="305 479 6329",
                              solo_linea=True, correo="pedidos@filtrosaguanevecones.com", bogota=True, ciudad="Medellín", packs=True, marca="Samsung", slug="samsung-medellin",
@@ -1042,11 +1045,18 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá", "Samsung 
         import ciudades_extra
         vistos = {slug(c[0]) for c in CIUDADES_CO}
         CIU = list(CIUDADES_CO)
-        for depto_, nombres_ in list(ciudades_extra.NUEVAS.items()) + list(ciudades_extra.ANTERIORES.items()):
+        import ciudades_mas
+        nombres_vistos = {c_[0] for c_ in CIU}
+        for depto_, nombres_ in list(ciudades_extra.NUEVAS.items()) + list(ciudades_extra.ANTERIORES.items()) + list(ciudades_mas.MAS.items()):
             for n_ in nombres_:
-                if slug(n_) not in vistos:
-                    vistos.add(slug(n_))
-                    CIU.append([n_, depto_, 3])
+                if (n_, depto_) in {(c_[0], c_[1]) for c_ in CIU}:
+                    continue
+                nombre_ = n_ if (slug(n_) not in vistos and n_ not in nombres_vistos) else f"{n_} ({depto_})"
+                if slug(nombre_) in vistos:
+                    continue
+                vistos.add(slug(nombre_))
+                nombres_vistos.add(nombre_)
+                CIU.append([nombre_, depto_, 3])
     if d.exists():  # los pedidos de filtrosnevecones-data/ nunca se borran
         for hijo in d.iterdir():
             if hijo.name not in ("data", PREFIJO + "data"):
@@ -1102,6 +1112,7 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá", "Samsung 
     marcas_exclusivas.BOGOTA = {marca} if SP and SP.get("bogota") else set()
     marcas_exclusivas.PACKS = {marca} if SP and SP.get("packs") else set()
     marcas_exclusivas.SOLO_LINEA = {marca} if SP and SP.get("solo_linea") else set()
+    marcas_exclusivas.CIUDAD_UNICA = {marca} if SP and SP.get("ciudad_unica") else set()
     marcas_exclusivas.COMPRA_PRIMERO = {marca} if SP and SP.get("compra_primero") else set()
     marcas_exclusivas.COD_RECARGO = SP.get("recargo_cod", 5000) if SP else 5000
     _info_chat = ({"guiado": True, "ciudad": CIUDAD_L, "packs": bool(SP.get("packs")), "entrega": f"Entregamos en {CIUDAD_L} en 1 a 2 días hábiles, después de confirmar el pago.",
@@ -1222,6 +1233,11 @@ for clave in list(marcas_exclusivas.MARCAS_INFO) + ["Samsung Bogotá", "Samsung 
         llms_full = bc.llms_full(ps_m, "__BASE__", bc.RUTAS, bc.HUB).rstrip("\n") + "\n\n## Blog\n" + blog_
         (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\n$t = isset($_GET['completo']) ? <<<'FULL'\n" + llms_full + "\nFULL\n : <<<'TXT'\n" + llms + "\nTXT;\necho str_replace('__BASE__', sitio()['base'], $t);\n", encoding="utf-8")
     else:
+        if marca == "LG":
+            import marcas_contenido_lg
+            llms += ("\n## Preguntas y respuestas\n" + "".join(f"- **{q}** {a_}\n" for _, l in marcas_contenido_lg.preguntas_ia(ps_m, slug) for q, a_ in l[:6])
+                     + "\n## Blog\n- [Blog de filtros LG](__BASE__/blog/)\n" + "".join(f"- [{t}](__BASE__/blog/{sl}/): {d_}\n" for sl, t, d_, _, _, _ in marcas_contenido_lg.articulos(ps_m))
+                     + "- [Preguntas frecuentes](__BASE__/preguntas-frecuentes/)\n- [Ciudades de la A a la Z](__BASE__/ciudades-con-filtros-lg-a-z/)\n- [Mapa del sitio](__BASE__/mapa-del-sitio/)\n")
         (d / "llms.php").write_text("<?php\nrequire __DIR__ . '/" + PREFIJO + "api/sitio.php';\nheader('Content-Type: text/plain; charset=utf-8');\necho str_replace('__BASE__', sitio()['base'], <<<'TXT'\n" + llms + "TXT);\n", encoding="utf-8")
     cat_m = dict(cat_php, **({"ciudades": [CIUDAD_L]} if SP and SP.get("bogota") else {"ciudades": cat_php["ciudades"][:-1] + [c_[0] for c_ in CIU if c_[0] not in cat_php["ciudades"]] + ["Otro municipio"]} if SP and SP.get("mas_ciudades") else {}), paginas=rutas, guias=[], compat=[], blog=[], rutas_ciudad={}, marcas=[{"nombre": marca, "slug": s}],
                  productos={k: v for k, v in cat_php["productos"].items() if k in ids})
