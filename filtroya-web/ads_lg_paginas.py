@@ -27,6 +27,7 @@ for p in PS:
             REFS.append((r, p))
 items += [[r, R_REF(r), "Código", f"equivale al {p['corto']}"] for r, p in REFS]
 ARTS = marcas_contenido_lg.articulos(PS, "/", "/cambio-e-instalacion/")
+exec(open(AQUI / "ads_lg_guias.py", encoding="utf-8").read())
 items += [[t, U(sl), "Guía", ""] for sl, t, d, _, _, _ in ARTS]
 js = ("(function(){var D=" + json.dumps(items, ensure_ascii=False, separators=(",", ":")) + ";"
       "function n(s){return s.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9 ]+/g,' ').trim()}var X=D.map(function(r){return n(r[0]+' '+r[2]+' '+r[3])});"
@@ -117,7 +118,7 @@ FAQ_HOME = [("¿Qué filtro necesita mi nevecón LG?", "El de tu modelo: " + MOD
             ("¿Cómo pago?", FPAGO), ("¿Los filtros son nuevos?", "Sí, nuevos y en su empaque, con la referencia impresa."), ("¿Hay retracto?", "Sí, 5 días hábiles desde la entrega, con el filtro sin usar."),
             ("¿Son distribuidores autorizados?", "Sí, somos distribuidores autorizados de filtros para neveras LG; no somos LG Electronics ni su canal oficial de venta.")]
 ld_home = [{"@type": "ItemList", "name": "Filtros de agua LG para nevecón", "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": ld_producto(p)} for i, p in enumerate(PS)]}]
-pagina("index.html", "Filtro de Agua LG para Nevecón y Nevera | LT1000P, LT700P | Envío Gratis Colombia",
+pagina("index.html", "Filtro de Agua LG para Nevecón | LT1000P, LT700P | Envío Gratis",
        f"Filtro de agua LG para nevecón y nevera: " + ", ".join(f"{p['corto']} {cop(p['precio'])}" for p in PS[:5]) + f" y externo {cop(PS[-1]['precio'])}. Distribuidores autorizados. Envío gratis y pago contra entrega en toda Colombia.",
        "filtro agua lg, filtro nevecon lg, filtro nevera lg, lt1000p, lt700p, lt800p, lt500p, lt600p, adq73693903, filtro agua refrigerador lg, precio filtro lg, filtro lg contra entrega, cambiar filtro nevecon lg",
        [("Inicio", None)], hero + qa_home + estante + modelos_sec + confianza + rapidas_sec + fichas_sec + comp_sec + cob_sec + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0")
@@ -246,7 +247,7 @@ for sl, titulo, desc, resumen, cuerpo_a, preguntas in ARTS:
     cuerpo = (hero_simple("Guía · Filtros LG", titulo, desc) + qa(titulo, esc(resumen)) + seccion(esc(titulo), '<div class="prose">' + cuerpo_a + "</div>") + faq_html(preguntas)
               + seccion("Sigue leyendo", '<div class="link-grid">' + "".join(f'<a href="{U(o[0])}">{esc(o[1])}<small>{esc(o[2][:90])}</small></a>' for o in otros) + "</div>", alt=True))
     art = {"@type": "Article", "headline": titulo, "description": desc, "inLanguage": "es-CO", "datePublished": HOY, "dateModified": HOY, "author": {"@type": "Organization", "name": "Filtro de Agua LG Colombia"}, "publisher": {"@id": f"{DOMINIO}/#tienda"}}
-    pagina(U(sl), titulo[:70], desc, "filtro lg, nevera lg, " + sl.replace("-", " "), [("Inicio", "index.html"), ("Guías", "guias-filtro-agua-nevecon-lg.html"), (titulo, None)], cuerpo, preguntas, [art], prio="0.7")
+    pagina(U(sl), titulo, desc, "filtro lg, nevera lg, " + sl.replace("-", " "), [("Inicio", "index.html"), ("Guías", "guias-filtro-agua-nevecon-lg.html"), (titulo, None)], cuerpo, preguntas, [art], prio="0.7")
 pagina("guias-filtro-agua-nevecon-lg.html", "Guías del filtro de agua LG: cambio, precio, modelos", "Guías prácticas sobre filtros de agua para nevecón LG: cómo escoger el filtro, cada cuánto cambiarlo, reiniciar el aviso, problemas comunes y precios.", "guias filtro lg",
        [("Inicio", "index.html"), ("Guías", None)], hero_simple("Guías", "Guías del filtro de agua para nevecón LG", "Respuestas claras para escoger, cambiar y cuidar tu filtro.") + qa("¿Dónde aprendo a cambiar el filtro de mi nevecón LG?", "En estas guías: cómo identificarlo, cada cuánto cambiarlo, cómo reiniciar el aviso y qué hacer si el dispensador no saca agua.")
        + seccion("Todas las guías", '<div class="link-grid">' + "".join(f'<a href="{U(sl)}">{esc(t)}<small>{esc(d[:100])}</small></a>' for sl, t, d, _, _, _ in ARTS) + "</div>"), prio="0.7")
@@ -293,12 +294,13 @@ pagina("mapa-del-sitio.html", "Mapa del sitio | Filtros de agua LG", "Todas las 
        [("Inicio", "index.html"), ("Mapa del sitio", None)], hero_simple("Mapa del sitio", "Mapa del sitio: filtros LG", "Todas las páginas en un solo lugar.") + qa("¿Qué hay en esta tienda?", f"Seis filtros de agua LG, {len(MODELOS)} modelos de nevecón, {len(REFS)} códigos equivalentes, {len(CIU)} ciudades, guías y preguntas frecuentes.") + seccion("Páginas", cuerpo), prio="0.4")
 (OUT / "404.html").write_text("<!DOCTYPE html><html lang='es-CO'><head><meta charset='utf-8'><meta name='robots' content='noindex'><title>Página no encontrada</title></head><body style='font-family:sans-serif;padding:40px'><h1>Página no encontrada</h1><p><a href='index.html'>Ir al inicio</a></p></body></html>", encoding="utf-8")
 
+exec(open(AQUI / "ads_lg_enlaces.py", encoding="utf-8").read())
 # ---------------------------------------------------------------- robots, sitemap, llms y .htaccess
 (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\nDisallow: /carrito.php\nDisallow: /gracias.php\nDisallow: /admin.php\nDisallow: /diagnostico.php\nDisallow: /opinion.php\nDisallow: /api/\nDisallow: /data/\n\n"
                                 + "".join(f"User-agent: {b}\nAllow: /\n\n" for b in ("GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web", "Claude-SearchBot", "Claude-User", "PerplexityBot", "Perplexity-User", "Google-Extended", "Applebot-Extended", "Bingbot", "Googlebot"))
                                 + f"Sitemap: {DOMINIO}/sitemap.xml\n", encoding="utf-8")
-(OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
-    f"  <url><loc>{DOMINIO}/{'' if n == 'index.html' else n}</loc><lastmod>{HOY}</lastmod><changefreq>weekly</changefreq><priority>{pr}</priority></url>\n" for n, pr, _, _ in PAGINAS) + "</urlset>\n", encoding="utf-8")
+(OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' + "".join(
+    f"  <url><loc>{DOMINIO}/{'' if n == 'index.html' else n}</loc><lastmod>{HOY}</lastmod><changefreq>weekly</changefreq><priority>{pr}</priority>{('<image:image><image:loc>' + IMG_MAP[n] + '</image:loc></image:image>') if n in IMG_MAP else ''}</url>\n" for n, pr, _, _ in PAGINAS) + "</urlset>\n", encoding="utf-8")
 ll = [f"# Filtro de Agua LG Colombia", "", f"> Tienda en línea de filtros de agua para nevecones LG en Colombia. Distribuidores autorizados. Envío gratis a {len(CIU)} ciudades, pago con Wompi (tarjeta, PSE, Nequi, Bancolombia) o contra entrega, 5 días de retracto.", "",
       "## Filtros y precios (COP, envío gratis)"] + [f"- [{p['nombre']}]({DOMINIO}/{p['url']}): {cop(p['precio'])}. Equivale a {', '.join(p['refs'][1:5]) or p['ref']}." + (f" Nevecones: {', '.join(p['modelos'])}." if p["modelos"] else "") for p in PS]
 ll += ["", "## Respuestas rápidas"] + [f"- **{q}** {a}" for q, a in rapidas] + ["", "## Páginas principales", f"- [Cuál es mi filtro]({DOMINIO}/cual-es-mi-filtro.html)", f"- [Precios]({DOMINIO}/precio-filtro-agua-nevecon-lg.html)", f"- [Cómo cambiar el filtro]({DOMINIO}/cambio-e-instalacion.html)",

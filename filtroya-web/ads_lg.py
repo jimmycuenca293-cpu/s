@@ -307,7 +307,7 @@ def strip_rapida():
 
 def ld_base(nombre, titulo, desc, miga):
     url = f"{DOMINIO}/{nombre}" if nombre != "index.html" else f"{DOMINIO}/"
-    g = [{"@type": "WebPage", "@id": url, "name": titulo, "url": url, "inLanguage": "es-CO", "description": desc, "dateModified": HOY, "isPartOf": {"@id": f"{DOMINIO}/#tienda"}},
+    g = [{"@type": "WebPage", "@id": url, "name": titulo, "url": url, "inLanguage": "es-CO", "description": desc, "dateModified": HOY, "isPartOf": {"@id": f"{DOMINIO}/#tienda"}, "about": {"@type": "Brand", "name": "LG"}, "speakable": {"@type": "SpeakableSpecification", "cssSelector": [".qa h3", ".qa p"]}},
          {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, **({"item": f"{DOMINIO}/{u}"} if u else {})} for i, (n, u) in enumerate(miga)]}]
     return g
 
@@ -330,6 +330,12 @@ TIENDA_LD = {"@type": "OnlineStore", "@id": f"{DOMINIO}/#tienda", "name": "Filtr
 
 def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), prio="0.6", og=None, hero=None):
     titulo = titulo.strip()
+    if len(titulo) > 66:
+        titulo = titulo[:66].rsplit(" ", 1)[0].rstrip(" ,:;·|-")
+    if len(desc) > 160:
+        c = desc[:160]
+        k = max(c.rfind(". "), c.rfind(": "), c.rfind("; "), c.rfind(", "))
+        desc = (c[:k] if k > 90 else c[:c.rfind(" ")]).rstrip(" ,;:.") + "."
     url = f"{DOMINIO}/{nombre}" if nombre != "index.html" else f"{DOMINIO}/"
     graf = ld_base(nombre, titulo, desc, miga) + ([ld_faq(list(preguntas))] if preguntas else []) + list(ld_extra)
     if nombre == "index.html":
@@ -337,10 +343,12 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     bc = '<div class="breadcrumb wrap" style="font:500 13px Inter,sans-serif;padding:16px 22px 0;">' + " / ".join(f'<a href="{u}">{esc(n)}</a>' if u else esc(n) for n, u in miga) + "</div>" if len(miga) > 1 else ""
     head = ('<!DOCTYPE html><html lang="es-CO"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">'
             f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}"><meta name="keywords" content="{esc(kw)}"><link rel="canonical" href="{url}">'
-            '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="theme-color" content="#a50034">'
+            '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="theme-color" content="#a50034"><meta name="author" content="Filtro de Agua LG Colombia"><meta name="geo.region" content="CO"><meta name="geo.placename" content="Colombia"><meta name="language" content="es-CO">'
+            f'<link rel="alternate" hreflang="es-CO" href="{url}"><link rel="alternate" hreflang="es" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}"><link rel="alternate" type="text/plain" href="{DOMINIO}/llms.txt" title="llms.txt">'
+            + (f'<link rel="preload" as="image" href="{og}">' if og else "")
             + (f'<meta name="google-site-verification" content="{TOKEN}">' if TOKEN else "")
             + f'<meta property="og:type" content="website"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="Filtro de Agua LG Colombia"><meta property="og:title" content="{esc(titulo)}">'
-            f'<meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{DOMINIO}/{og or PS[0]["img"]}">'
+            f'<meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{DOMINIO}/{og or PS[0]["img"]}"><meta property="og:image:alt" content="{esc(titulo)}">'
             f'<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(titulo)}"><meta name="twitter:description" content="{esc(desc)}">'
             '<link rel="icon" href="img/icono-lg.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
             '<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">'
