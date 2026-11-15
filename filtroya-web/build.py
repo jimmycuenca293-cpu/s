@@ -1020,7 +1020,7 @@ SITIOS_PROPIOS = {  # marcas con tienda en su propio dominio, y lo que cambia en
                              links={"sam-cin-o": "https://checkout.wompi.co/l/MEGm9S", "sam-qin-o": "https://checkout.wompi.co/l/oogWOK", "sam-ex-o": "https://checkout.wompi.co/l/bjU3bv"},
                              recargo_cod=0, mas_ciudades=True, redirige_html=True, compra_primero=True),
     "LG": dict(frase="Distribuidores autorizados de LG", dist=("distribuidores autorizados de LG", "distribuidor autorizado de LG"),
-               dominio="https://tu-dominio-lg.com", token="", nombre="Filtros LG", wa="3054796329", tel="305 479 6329", correo="pedidos@filtrosaguanevecones.com",
+               dominio="https://tu-dominio-lg.com", token="", nombre="Filtros LG", wa="3205102995", tel="320 510 2995", correo="pedidos@filtrosaguanevecones.com",
                solo_linea=True, mas_ciudades=True, ciudad_unica=True, compra_primero=True),
     "Samsung Medellín": dict(frase="Distribuidores de Samsung en Medellín", dist=("distribuidores de Samsung en Medellín", "distribuidor de Samsung en Medellín"),
                              dominio="https://filtroneverasamsungenmedellin.click", token="G_mA_cNaIzt-rjbid4Ab6ZwXksZDDGinE2R0WsxIqhc", nombre="Filtros Samsung Medellín", wa="3054796329", tel="305 479 6329",

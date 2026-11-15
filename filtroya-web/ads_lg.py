@@ -28,10 +28,11 @@ AQUI = pathlib.Path(__file__).resolve().parent
 OUT = pathlib.Path(sys.argv[1])
 DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else "https://tu-dominio-lg.com").rstrip("/")
 TOKEN = sys.argv[3] if len(sys.argv) > 3 else ""
+GTM = (sys.argv[4] if len(sys.argv) > 4 else "").strip().upper()
 HOY = datetime.date.today().isoformat()
 _M = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
 FECHA_LARGA = f"{datetime.date.today().day} de {_M[datetime.date.today().month - 1]} de {datetime.date.today().year}"
-WA, TEL = "573054796329", "305 479 6329"
+WA, TEL = "573205102995", "320 510 2995"
 SRC = AQUI / "src"
 esc = lambda s: html.escape(str(s), quote=True)
 cop = lambda v: "$" + f"{int(v):,}".replace(",", ".")
@@ -196,8 +197,8 @@ def php_val(v):
 (api / "catalogo.php").write_text("<?php\n// Generado por ads_lg.py: no lo edites a mano.\nreturn " + php_val(cat) + ";\n", encoding="utf-8")
 cfg = (SRC / "api" / "config.sample.php").read_text(encoding="utf-8")
 cfg = (cfg.replace("'dominio' => 'https://filtrosnevecones.com'", f"'dominio' => '{DOMINIO}'").replace("w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4", TOKEN)
-       .replace("'nombre'    => 'Filtros Nevecones Colombia'", "'nombre'    => 'Filtro de Agua LG Colombia'").replace("'whatsapp' => '3107147299'", "'whatsapp' => '3054796329'")
-       .replace("'telefono'  => '310 714 7299'", "'telefono'  => '305 479 6329'").replace("'contraentrega' => ['activo' => true, 'recargo' => 5000]", "'contraentrega' => ['activo' => true, 'recargo' => 0]"))
+       .replace("'nombre'    => 'Filtros Nevecones Colombia'", "'nombre'    => 'Filtro de Agua LG Colombia'").replace("'whatsapp' => '3107147299'", "'whatsapp' => '3205102995'")
+       .replace("'telefono'  => '310 714 7299'", "'telefono'  => '320 510 2995'").replace("'gtm' => 'GTM-5WSNHV66'", f"'gtm' => '{GTM}'").replace("'contraentrega' => ['activo' => true, 'recargo' => 5000]", "'contraentrega' => ['activo' => true, 'recargo' => 0]"))
 (api / "config.sample.php").write_text(cfg, encoding="utf-8")
 shutil.copy(SRC / "estilo.css", OUT / "estilo.css")
 shutil.copy(SRC / "carrito.js", OUT / "carrito.js")
@@ -358,13 +359,14 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
             f'<link rel="alternate" hreflang="es-CO" href="{url}"><link rel="alternate" hreflang="es" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}"><link rel="alternate" type="text/plain" href="{DOMINIO}/llms.txt" title="llms.txt"><link rel="alternate" type="application/json" href="{DOMINIO}/datos-filtros-lg.json" title="Catálogo estructurado">'
             + (f'<link rel="preload" as="image" href="{og}">' if og else "")
             + (f'<meta name="google-site-verification" content="{TOKEN}">' if TOKEN else "")
+            + (("<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','" + GTM + "');</script>") if GTM else "")
             + f'<meta property="og:type" content="website"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="Filtro de Agua LG Colombia"><meta property="og:title" content="{esc(titulo)}">'
             f'<meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{DOMINIO}/{og or PS[0]["img"]}"><meta property="og:image:alt" content="{esc(titulo)}">'
             f'<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(titulo)}"><meta name="twitter:description" content="{esc(desc)}">'
             '<link rel="icon" href="img/icono-lg.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
             '<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">'
             '<link rel="stylesheet" href="tema.css?v=lg1"><link rel="stylesheet" href="pasarela.css">'
-            f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>')
+            f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>' + (f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>' if GTM else ""))
     if cuerpo.startswith('<section class="hero">') and nombre not in ("404.html",):
         k = cuerpo.index("</section>") + len("</section>")
         cuerpo = cuerpo[:k] + estante_min() + cuerpo[k:]
