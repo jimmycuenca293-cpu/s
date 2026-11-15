@@ -346,10 +346,10 @@ function entrega_txt(string $e): string
 
 // Envío por SMTP (el buzón de tu dominio en Hostinger). Es mucho más confiable que mail(), que muchos hosting bloquean o mandan a spam.
 // Devuelve '' si salió bien o el motivo del error.
-function smtp_enviar(string $para, string $asunto, string $html, string $de, string $nombre, string $responder): string
+function smtp_enviar(string $para, string $asunto, string $html, string $de, string $nombre, string $responder, ?int $puerto_forzado = null): string
 {
     $s = cfg()['smtp'] ?? [];
-    $host = (string) ($s['host'] ?? ''); $puerto = (int) ($s['puerto'] ?? 465); $user = (string) ($s['usuario'] ?? ''); $clave = (string) ($s['clave'] ?? '');
+    $host = (string) ($s['host'] ?? ''); $puerto = $puerto_forzado ?? (int) ($s['puerto'] ?? 465); $user = (string) ($s['usuario'] ?? ''); $clave = (string) ($s['clave'] ?? '');
     if ($host === '' || $user === '' || $clave === '') return 'SMTP sin configurar';
     $ctx = stream_context_create(['ssl' => ['verify_peer' => true, 'verify_peer_name' => true]]);
     $fp = @stream_socket_client(($puerto === 465 ? 'ssl://' : 'tcp://') . $host . ':' . $puerto, $en, $es, 15, STREAM_CLIENT_CONNECT, $ctx);
@@ -391,6 +391,12 @@ function enviar_correo(string $para, string $asunto, string $html, ?string &$mot
     if (!filter_var($para, FILTER_VALIDATE_EMAIL)) $motivo = 'El correo de destino no es válido: «' . $para . '»';
     else {
         $e = smtp_enviar($para, $asunto, $cuerpo, $de, $nombre, $c['negocio']['correo']);
+        // Si el hosting bloquea el puerto configurado, se prueba el otro puerto de Hostinger (465 <-> 587) antes de rendirse
+        if ($e !== '' && str_starts_with($e, 'No se pudo conectar')) {
+            $alt = ((int) ((cfg()['smtp']['puerto'] ?? 465)) === 465) ? 587 : 465;
+            $e2 = smtp_enviar($para, $asunto, $cuerpo, $de, $nombre, $c['negocio']['correo'], $alt);
+            $e = $e2 === '' ? '' : $e . ' | ' . $e2;
+        }
         if ($e === '') $ok = true;
         else {
             $motivo = $e;

@@ -39,7 +39,7 @@ js = ("(function(){var D=" + json.dumps(items, ensure_ascii=False, separators=("
       "caja.innerHTML=h||'<p>No encontramos «'+q.replace(/</g,'')+'». Prueba con tu ciudad, el modelo de tu nevecón o el código del filtro.</p>';caja.hidden=false}"
       "document.querySelectorAll('[data-aq-q]').forEach(function(i){var c=i.parentNode.querySelector('.aq-res');i.addEventListener('input',function(){pintar(c,buscar(i.value),i.value)});i.addEventListener('focus',function(){if(i.value)pintar(c,buscar(i.value),i.value)});"
       "i.addEventListener('keydown',function(e){if(e.key==='Enter'){var a=c.querySelector('a');if(a)location.href=a.getAttribute('href')}if(e.key==='Escape')c.hidden=true})});"
-      "(function(){var t=document.querySelector('[data-tk]');if(!t)return;var c=D.filter(function(r){return r[2]==='Ciudad'}).map(function(r){return r[0].split(' (')[0]});if(!c.length)return;var h=c.map(function(n){return '<span>'+n+'</span>'}).join('');t.innerHTML=h+h;t.style.setProperty('--d',Math.round(c.length*0.55)+'s')})();"
+      "(function(){var t=document.querySelector('[data-tk]');if(!t)return;var c=D.filter(function(r){return r[2]==='Ciudad'}).map(function(r){return [r[0].split(' (')[0],r[1]]});if(!c.length)return;var h=c.map(function(n){return '<a href=\\\"'+n[1]+'\\\">'+n[0]+'</a>'}).join('');t.innerHTML=h+h;t.style.setProperty('--d',Math.round(c.length*2.4)+'s')})();"
       "document.addEventListener('click',function(e){document.querySelectorAll('.aq-res').forEach(function(c){if(!c.parentNode.contains(e.target))c.hidden=true});document.querySelectorAll('.aq-nav details[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open')})});})();")
 (OUT / "buscar.js").write_text(js, encoding="utf-8")
 
@@ -326,3 +326,17 @@ ll += ["", "## Datos completos", f"- [Catálogo estructurado JSON]({DOMINIO}/dat
                                "RewriteCond %{HTTP_HOST} ^www\\.(.+)$ [NC]\nRewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]\n<FilesMatch \"\\.(sqlite|sqlite-wal|sqlite-shm|log)$\">\n  Require all denied\n</FilesMatch>\n", encoding="utf-8")
 exec(open(AQUI / "ads_lg_tecnico.py", encoding="utf-8").read())
 print(f"listo: {OUT} · {len(PAGINAS)} páginas · {len(CIU)} ciudades · {len(PS)} filtros")
+
+
+# ---- versión por contenido en CSS y JS: el navegador (caché de 1 mes) siempre carga la última versión
+import hashlib as _hl
+_V = {}
+for _f in ("tema.css", "buscar.js", "carrito.js", "pasarela.css", "estilo.css"):
+    if (OUT / _f).exists():
+        _V[_f] = _hl.md5((OUT / _f).read_bytes()).hexdigest()[:8]
+_pat = re.compile(r"""(["'])(/?)(tema\.css|buscar\.js|carrito\.js|pasarela\.css|estilo\.css)(\?v=[\w]+)?(?=["'])""")
+for _h in list(OUT.glob("*.html")) + list(OUT.glob("*.php")):
+    _t = _h.read_text(encoding="utf-8")
+    _t2 = _pat.sub(lambda m: f"{m.group(1)}{m.group(2)}{m.group(3)}?v={_V[m.group(3)]}" if m.group(3) in _V else m.group(0), _t)
+    if _t2 != _t:
+        _h.write_text(_t2, encoding="utf-8")
