@@ -1,6 +1,6 @@
 # Subpáginas por zona, guías de mantenimiento por ciudad y guías de voltaje por país (se ejecuta dentro de st_paginas.py antes de la salida).
 TIT_Z = ["Servicio técnico Samsung en {z}, {c}", "Técnico Samsung a domicilio en {z} ({c})", "Reparación de electrodomésticos Samsung en {z}, {c}", "{z}: servicio técnico Samsung en {c}",
-         "Servicio técnico de línea blanca Samsung en {z} ({c})", "Arreglo de {nev} y {lav} Samsung en {z}, {c}", "Técnico de {nev} Samsung en {z} | {c}", "Servicio Samsung a domicilio en {z}, {c}"]
+         "Servicio técnico de línea blanca Samsung en {z} ({c})", "Arreglo de {nev} y {lav} Samsung en {z}, {c}", "Técnico de {nev} Samsung en {z} | {c}", "Servicio Samsung a domicilio en {z}, {c}", "Centro de servicio técnico Samsung en {z}, {c}", "Centro de servicio Samsung en {z} ({c})"]
 DESC_Z = ["Servicio técnico Samsung a domicilio en {z}, {c}: {nev}, {lav}, secadoras y más. Escríbenos y coordinamos la visita; el valor se confirma antes de reparar.",
           "¿Falló tu Samsung en {z} ({c})? Revisamos y reparamos línea blanca en tu casa. Diagnóstico primero y valor confirmado antes de reparar.",
           "Técnicos para electrodomésticos Samsung en {z}, {c}: {nev}, {lav}, lavavajillas, estufas y microondas, con visita a domicilio.",

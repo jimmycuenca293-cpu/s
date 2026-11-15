@@ -3,6 +3,7 @@ mapa = lambda t, its: f'<h2 style="font-size:22px;margin:22px 0 10px">{esc(t)}</
 cuerpo = (mapa("Países", [(f"Servicio técnico Samsung en {P['nombre']}", R_PAIS(pk)) for pk, P in PAISES.items()]) + mapa("Ciudades", [(f"Servicio técnico Samsung en {c['n']}", R_CIU(c)) for c in CIU])
           + mapa("Zonas", [(f"Servicio técnico Samsung en {z}, {c['n']}", R_Z(c, z)) for c, z in ZONAS_P]) + mapa("Mantenimiento por ciudad", [(f"Mantenimiento en {c['n']}", R_MANT(c)) for c in CIU]) + mapa("Voltaje por país", [(f"Voltaje en {P['nombre']}", R_VOLT(pk)) for pk, P in PAISES.items()])
           + mapa("Servicios por país", [(f"Servicio técnico de {pal(k, s)[1]} Samsung en {P['nombre']}", R_SERV(k, s)) for k, P in PAISES.items() for s in SERV_PAIS[k]]) + mapa("Guías de fallas", [(g["tit"], R_G(g)) for g in GUIAS]) + mapa("Cómo leer el modelo y códigos de error", [(t, f"{sl}.html") for sl, t in GUIAS_MOD] + [("Códigos de error de lavadoras Samsung", "codigos-de-error-lavadora-samsung.html")])
+          + mapa("Líneas Samsung por país", [(f"{cap(pal(pk, sv)[1])} Samsung {ln} en {PAISES[pk]['nombre']}", u) for pk, sv, ln, u in LINEAS_P]) + mapa("Fallas frecuentes por ciudad", [(pr["tit"].format(S=cap(pal(c["pk"], pr["sv"])[0]), s=pal(c["pk"], pr["sv"])[0], c=c["n"]), R_PROB(c, pr)) for c, pr in PROB_P])
           + mapa("Por departamento", [(f"Servicio técnico Samsung en {d} ({PAISES[k]['nombre']})", R_DEP(k, d)) for k, d in DEP_HUBS]) + mapa("Preguntas y respuestas por país", [(f"Preguntas frecuentes en {P['nombre']}", f"preguntas-frecuentes-servicio-samsung-{pk}.html") for pk, P in PAISES.items()] + [(f"Respuestas rápidas en {P['nombre']}", f"respuestas-ia-servicio-tecnico-samsung-{pk}.html") for pk, P in PAISES.items()])
           + mapa("Ayuda", [("Solicitar visita", "solicitar-visita.html"), ("Cobertura", "cobertura-servicio-tecnico-samsung.html"), ("Preguntas frecuentes", "preguntas-frecuentes-servicio-tecnico-samsung.html"), ("Respuestas rápidas", "respuestas-para-ia-servicio-tecnico-samsung.html"), ("Quiénes somos", "quienes-somos.html"), ("Contacto", "contacto.html")]))
 pagina("mapa-del-sitio.html", "Mapa del sitio | Servicio técnico Samsung", "Todas las páginas del sitio: países, ciudades, servicios y guías de fallas.", "mapa del sitio servicio tecnico samsung", [("Inicio", "index.html"), ("Mapa del sitio", None)],
@@ -13,6 +14,8 @@ items = [[P["nombre"], R_PAIS(pk), "País", f"{len(CIU_PAIS[pk])} ciudades", ""]
 items += [[cap(pal(k, s)[1]), R_SERV(k, s), "Servicio", PAISES[k]["nombre"], k] for k in PAISES for s in SERV_PAIS[k]] + [[g["tit"], R_G(g), "Guía de fallas", "", ""] for g in GUIAS]
 items += [[f"{cap(pal(c['pk'], sv)[1])} en {c['n']}", R_CS(c, sv), "Reparación", c["pais"], c["pk"]] for c in CIU for sv in SERV_PAIS[c["pk"]]]
 items += [[f"{z} · {c['n']}", R_Z(c, z), "Zona", c["pais"], c["pk"]] for c, z in ZONAS_P]
+items += [[f"{cap(pal(pk, sv)[1])} Samsung {ln}", u, "Línea", PAISES[pk]["nombre"], pk] for pk, sv, ln, u in LINEAS_P]
+items += [[pr["tit"].format(S=cap(pal(c["pk"], pr["sv"])[0]), s=pal(c["pk"], pr["sv"])[0], c=c["n"]), R_PROB(c, pr), "Falla", c["pais"], c["pk"]] for c, pr in PROB_P]
 js = ("(function(){var D=" + json.dumps(items, ensure_ascii=False, separators=(",", ":")) + ";"
       "function n(s){return s.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9 ]+/g,' ').trim()}var X=D.map(function(r){return n(r[0]+' '+r[2]+' '+r[3])});"
       "function buscar(q,P){q=n(q);if(!q)return[];var t=q.split(/ +/),o=[];for(var i=0;i<D.length;i++){if(P&&D[i][4]&&D[i][4]!==P)continue;var ok=true,sc=0;for(var j=0;j<t.length;j++){var p=X[i].indexOf(t[j]);if(p<0){ok=false;break}sc+=p===0?0:1}if(ok){var e=n(D[i][0]);o.push([sc+(e.indexOf(q)===0?-2:0)+(D[i][2]==='Ciudad'||D[i][2]==='País'?0:.5),i])}}o.sort(function(a,b){return a[0]-b[0]});return o.slice(0,14).map(function(x){return D[x[1]]})}"
@@ -147,4 +150,39 @@ RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
   Header set Strict-Transport-Security "max-age=31536000" env=HTTPS
 </IfModule>
 """, encoding="utf-8")
+# ---- imágenes con nombre descriptivo (SEO de imágenes) y sitemap de imágenes
+RN = {"nevera-family-hub": "nevera-samsung-side-by-side-family-hub", "nevera-superior-inox": "nevera-samsung-superior-inox", "lavadora-superior": "lavadora-samsung-carga-superior", "secadora-torre": "torre-lavado-secado-samsung-apilada", "secadora": "secadora-samsung-carga-frontal",
+      "torre-lavado": "torre-de-lavado-samsung", "microondas": "microondas-samsung-ceramic-inside", "portada-tecnico": "tecnico-samsung-a-domicilio-portada", "tecnico-neveras": "tecnico-reparando-nevera-samsung", "tecnico-lavadora": "tecnico-reparando-lavadora-samsung",
+      "c-revision": "tecnico-samsung-revision-en-casa", "c-compresor": "tecnico-samsung-revisando-compresor", "sam-cin-o": "filtro-agua-samsung-haf-cin", "sam-qin-o": "filtro-agua-samsung-haf-qin", "sam-cu1-o": "filtro-agua-samsung-aqua-pure-plus", "sam-ex-o": "filtro-agua-externo-samsung"}
+for _i in range(1, 8):
+    RN[f"stp{_i}"] = f"tecnico-samsung-visita-a-domicilio-{_i}"
+for _o, _n in sorted(RN.items(), key=lambda x: -len(x[0])):
+    for _suf in ("", "-m", "-s", "-400"):
+        _f = OUT / "img" / f"{_o}{_suf}.webp"
+        if _f.exists():
+            _f.rename(OUT / "img" / f"{_n}{_suf}.webp")
+_pat = re.compile(r"img/(" + "|".join(re.escape(o) for o in sorted(RN, key=lambda x: -len(x))) + r")((?:-m|-s|-400)?)\.webp")
+for _h in list(OUT.glob("*.html")) + [OUT / "tema.css"]:
+    _t = _h.read_text(encoding="utf-8")
+    _t2 = _pat.sub(lambda m: f"img/{RN[m.group(1)]}{m.group(2)}.webp", _t)
+    if _t2 != _t:
+        _h.write_text(_t2, encoding="utf-8")
+_img = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n'
+for _n, _pr, _t, _d, _tp in PAGINAS:
+    _h = OUT / _n
+    _imgs = []
+    for _m in re.finditer(r'<img[^>]+src="img/([^"]+\.webp)"[^>]*alt="([^"]*)"', _h.read_text(encoding="utf-8")):
+        if _m.group(1) not in [x[0] for x in _imgs]:
+            _imgs.append((_m.group(1), _m.group(2)))
+    if _imgs:
+        _img += f"  <url><loc>{DOMINIO}/{'' if _n == 'index.html' else _n}</loc>" + "".join(f"<image:image><image:loc>{DOMINIO}/img/{a}</image:loc><image:caption>{esc(b)}</image:caption></image:image>" for a, b in _imgs[:8]) + "</url>\n"
+(OUT / "sitemap-imagenes.xml").write_text(_img + "</urlset>\n", encoding="utf-8")
+_sm = (OUT / "sitemap.xml").read_text(encoding="utf-8")
+(OUT / "sitemap.xml").write_text(_sm.replace("</sitemapindex>", f"  <sitemap><loc>{DOMINIO}/sitemap-imagenes.xml</loc><lastmod>{HOY}</lastmod></sitemap>\n</sitemapindex>"), encoding="utf-8")
+_rb = (OUT / "robots.txt").read_text(encoding="utf-8")
+(OUT / "robots.txt").write_text(_rb + f"Sitemap: {DOMINIO}/sitemap-imagenes.xml\n", encoding="utf-8")
+# IndexNow (Bing y buscadores que lo usan): archivo de clave + lista de URLs para enviar después de publicar
+_key = hashlib.md5(("indexnow|" + DOMINIO).encode()).hexdigest()
+(OUT / f"{_key}.txt").write_text(_key, encoding="utf-8")
+(OUT.parent / (OUT.name + "-indexnow-urls.txt")).write_text("\n".join(f"{DOMINIO}/{'' if n == 'index.html' else n}" for n, *_ in PAGINAS), encoding="utf-8")
 print(f"listo: {OUT} · {len(PAGINAS)} páginas · {len(CIU)} ciudades · {len(PAISES)} países")
