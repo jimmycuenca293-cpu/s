@@ -51,7 +51,7 @@ for c in CIU:
                   + seccion(f"Sectores de {esc(nom)} donde damos servicio", '<div class="city-tags">' + "".join(zlink(c, z) for z in c["zonas"]) + "</div>")
                   + faq_html(preg, f"Preguntas sobre {s2} Samsung en {nom}")
                   
-                  + seccion("Más información", '<div class="city-tags">' + f'<a href="{R_CIU(c)}">Servicio técnico Samsung en {esc(nom)}</a><a href="{R_PAIS(pk)}">Servicio en {esc(P["nombre"])}</a><a href="{R_SERV(sv)}">{esc(S["tit"])} Samsung: todos los países</a>'
+                  + seccion("Más información", '<div class="city-tags">' + f'<a href="{R_CIU(c)}">Servicio técnico Samsung en {esc(nom)}</a><a href="{R_PAIS(pk)}">Servicio en {esc(P["nombre"])}</a><a href="{R_SERV(pk, sv)}">{esc(cap(s2))} Samsung en {esc(P["nombre"])}</a>'
                             + "".join(f'<a href="{R_G(g)}">{esc(g["tit"])}</a>' for g in guias_de(sv)[:3]) + "".join(f'<a href="{R_CS(v, sv)}">{esc(cap(s2))} Samsung en {esc(v["n"])}</a>' for v in veci) + "</div>"))
         pagina(R_CS(c, sv), tit, f"Reparación de {s2} Samsung en {nom}, {P['nombre']}: servicio técnico a domicilio, diagnóstico primero y valor confirmado antes de reparar.",
                f"reparacion {s2} samsung {nom.lower()}, servicio tecnico {s2} samsung {nom.lower()}, tecnico {s1} samsung {nom.lower()}", [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), (nom, R_CIU(c)), (cap(s2), None)], cuerpo, preg,
@@ -90,21 +90,24 @@ for pk, P in PAISES.items():
     pagina(R_PAIS(pk), f"Servicio técnico Samsung en {P['nombre']} | Línea blanca", f"Servicio técnico Samsung en {P['nombre']}: {nombres} en {ciudades_txt}. Visita a domicilio y valor confirmado antes de reparar.", f"servicio tecnico samsung {P['nombre'].lower()}, reparacion electrodomesticos samsung {P['nombre'].lower()}",
            [("Inicio", "index.html"), (P["nombre"], None)], cuerpo, preg, [], prio="0.9", pk=pk, tipo="paises", ctx=cs[0] if len(cs) == 1 else None)
 
-# ------------------------------------------------------------------ servicios (todos los países)
-for sv in ORDEN_SERV + ["tv"]:
-    S = SERVICIOS[sv]; pks = [pk for pk in PAISES if sv in SERV_PAIS[pk]]
-    pal_n = ", ".join(sorted({pal(pk, sv)[0] for pk in pks}))
-    preg = [(f"¿Reparan {S['tit'].lower()} Samsung?", f"Sí: {S['lineas']}. Visita a domicilio en " + ", ".join(PAISES[pk]["nombre"] for pk in pks) + "."), (f"¿Cuánto cuesta reparar {S['tit'].lower()} Samsung?", "Depende de la falla y el repuesto; primero el diagnóstico y te confirmamos el valor."),
-            ("¿Cómo agendo?", "Por WhatsApp o con el formulario de solicitud de visita.")]
-    tabla = '<div class="tbl-wrap"><table class="spec-table"><tr><th>País</th><th>Cómo se dice</th><th>Ciudades</th></tr>' + "".join(
-        f'<tr><td>{PAISES[pk]["bandera"]} <a href="{R_PAIS(pk)}">{esc(PAISES[pk]["nombre"])}</a></td><td>{esc(pal(pk, sv)[0])}</td><td>' + ", ".join(f'<a href="{R_CS(c, sv)}">{esc(c["n"])}</a>' for c in CIU_PAIS[pk]) + "</td></tr>" for pk in pks) + "</table></div>"
-    cuerpo = (hero_simple("Servicio técnico", f"Servicio técnico de {S['tit'].lower()} Samsung", f"Diagnóstico y reparación a domicilio en {len(pks)} países.", acciones(pks[0], f"Hola, necesito servicio técnico para mi {pal(pks[0], sv)[0]} Samsung"))
-              + qa(f"¿Reparan {S['tit'].lower()} Samsung?", f"Sí. Reparamos {esc(S['tit'].lower())} Samsung ({esc(S['lineas'])}) a domicilio. Escríbenos por WhatsApp: hacemos el diagnóstico y te confirmamos el valor antes de reparar.", [("Equipo", S["tit"]), ("Países", str(len(pks))), ("Atención", "A domicilio")])
-              + seccion("Dónde damos este servicio", tabla) + seccion("Fallas que reparamos", "<div class=\"st-servs\" style=\"grid-template-columns:90px 1fr;align-items:center\"><div>" + ilus(sv, 84) + "</div><ul class=\"spec-list\" style=\"margin:0\">" + "".join(f"<li>{esc(cap(x))}.</li>" for x in S["sintomas"]) + "</ul></div>", alt=True)
-              + seccion("Qué revisa el técnico", "<ul class=\"spec-list\">" + "".join(f"<li>{esc(x)}</li>" for x in S["revisa"]) + "</ul>")
-              + seccion("Guías de fallas", '<div class="city-tags">' + "".join(f'<a href="{R_G(g)}">{esc(g["tit"])}</a>' for g in guias_de(sv)) + "</div>" if guias_de(sv) else "") + faq_html(preg))
-    pagina(R_SERV(sv), f"Servicio técnico de {S['tit'].lower()} Samsung", f"Reparación de {S['tit'].lower()} Samsung a domicilio ({S['lineas']}) en {len(pks)} países. Diagnóstico primero y valor confirmado antes de reparar.", f"servicio tecnico {S['tit'].lower()} samsung, reparacion {pal_n} samsung",
-           [("Inicio", "index.html"), (S["tit"], None)], cuerpo, preg, [{"@type": "Service", "name": f"Servicio técnico de {S['tit']} Samsung", "provider": {"@id": f"{DOMINIO}/#negocio"}}], prio="0.8", tipo="servicios")
+# ------------------------------------------------------------------ servicios, uno por país (cada país con sus ciudades y su vocabulario)
+for pk, P in PAISES.items():
+    cs = CIU_PAIS[pk]
+    for sv in SERV_PAIS[pk]:
+        S = SERVICIOS[sv]; s1, s2 = pal(pk, sv)
+        ciu_clima = [c for c in cs if not c["amp"]][:3] or cs[:3]
+        efectos = " ".join(f"En {c['n']}, {efecto_de(c, sv)}." for c in ciu_clima[:2])
+        preg = [(f"¿Reparan {s2} Samsung en {P['nombre']}?", f"Sí: {S['lineas']}. Visita a domicilio en " + ", ".join(c["n"] for c in cs[:8]) + (" y más ciudades." if len(cs) > 8 else ".")),
+                (f"¿Cuánto cuesta reparar una {s1} Samsung en {P['nombre']}?" if sv != "tv" else f"¿Cuánto cuesta reparar un {s1} Samsung en {P['nombre']}?", "Depende de la falla y el repuesto; primero el diagnóstico y te confirmamos el valor antes de reparar."),
+                ("¿Cómo agendo?", f"Por WhatsApp al {wa_vis(pk)} o con el formulario de solicitud de visita.")]
+        cuerpo = (hero_simple(f"{P['nombre']}", f"Servicio técnico de {s2} Samsung en {P['nombre']}", f"Diagnóstico y reparación a domicilio de {s2} Samsung en {len(cs)} ciudades de {P['nombre']}.", acciones(pk, f"Hola, necesito servicio técnico para mi {s1} Samsung en {P['nombre']}"))
+                  + qa(f"¿Reparan {s2} Samsung en {P['nombre']}?", f"Sí. Reparamos {esc(s2)} Samsung ({esc(S['lineas'])}) a domicilio en {esc(P['nombre'])}. Escríbenos por WhatsApp: hacemos el diagnóstico y te confirmamos el valor antes de reparar.", [("Equipo", cap(s2) + " Samsung"), ("País", P["nombre"]), ("Atención", "A domicilio"), ("WhatsApp", wa_vis(pk))])
+                  + seccion(f"{esc(cap(s2))} Samsung: ciudades de {esc(P['nombre'])}", '<div class="city-tags">' + "".join(f'<a href="{R_CS(c, sv)}">{esc(cap(s2))} Samsung en {esc(c["n"])}</a>' for c in cs) + "</div>")
+                  + seccion("Fallas que reparamos", f'<div class="st-split"><div class="st-foto">{foto_serv(sv, 320)}</div><ul class="spec-list" style="margin:0">' + "".join(f"<li>Tu {esc(s1)} {esc(x)}.</li>" for x in S["sintomas"]) + "</ul></div>", alt=True)
+                  + seccion("Qué revisa el técnico", "<ul class=\"spec-list\">" + "".join(f"<li>{esc(x)}</li>" for x in S["revisa"]) + "</ul>" + f"<p>{esc(efectos)}</p>")
+                  + (seccion("Guías de fallas", '<div class="city-tags">' + "".join(f'<a href="{R_G(g)}">{esc(g["tit"])}</a>' for g in guias_de(sv)) + "</div>", alt=True) if guias_de(sv) else "") + faq_html(preg))
+        pagina(R_SERV(pk, sv), f"Servicio técnico de {s2} Samsung en {P['nombre']}", f"Reparación de {s2} Samsung a domicilio en {P['nombre']} ({S['lineas']}). Diagnóstico primero y valor confirmado antes de reparar.", f"servicio tecnico {s2} samsung {P['nombre'].lower()}, reparacion {s2} samsung {P['nombre'].lower()}",
+               [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), (cap(s2), None)], cuerpo, preg, [{"@type": "Service", "name": f"Servicio técnico de {s2} Samsung en {P['nombre']}", "provider": {"@id": f"{DOMINIO}/#negocio"}, "areaServed": {"@type": "Country", "name": P["nombre"]}}], prio="0.8", pk=pk, tipo="paises")
 
 # ------------------------------------------------------------------ guías
 for g in GUIAS:
@@ -112,7 +115,7 @@ for g in GUIAS:
     otros = [x for x in GUIAS if x is not g][:4]
     cuerpo = (hero_simple("Guía de fallas", g["tit"], g["desc"], acciones("colombia", f"Hola, mi equipo Samsung tiene este problema: {g['tit']}"))
               + qa(g["tit"], esc(g["res"])) + seccion(esc(g["tit"]), '<div class="prose">' + g["cuerpo"] + "</div>")
-              + seccion("¿Prefieres que lo revise un técnico?", f'<p>Pide una visita a domicilio: hacemos el diagnóstico y te confirmamos el valor antes de reparar.</p>' + acciones("colombia", f"Hola, necesito revisar mi equipo Samsung: {g['tit']}") + '<h3 style="margin:22px 0 10px">Disponible en estas ciudades</h3><div class="city-tags">' + "".join(f'<a href="{R_CS(c, sv)}">{esc(cap(pal(c["pk"], sv)[1]))} en {esc(c["n"])}</a>' for pk in pks for c in CIU_PAIS[pk][:3]) + "</div>", alt=True)
+              + seccion("¿Prefieres que lo revise un técnico?", f'<p>Pide una visita a domicilio: hacemos el diagnóstico y te confirmamos el valor antes de reparar.</p>' + acciones("colombia", f"Hola, necesito revisar mi equipo Samsung: {g['tit']}") + '<h3 style="margin:22px 0 10px">Elige tu país</h3><div class="city-tags">' + "".join(f'<a href="{R_SERV(k, sv)}">{esc(PAISES[k]["nombre"])}</a>' for k in pks) + "</div>", alt=True)
               + faq_html(g["preg"]) + seccion("Sigue leyendo", '<div class="city-tags">' + "".join(f'<a href="{R_G(o)}">{esc(o["tit"])}</a>' for o in otros) + "</div>"))
     art = {"@type": "Article", "headline": g["tit"], "description": g["desc"], "inLanguage": "es", "datePublished": HOY, "dateModified": HOY, "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@id": f"{DOMINIO}/#negocio"}}
     pagina(R_G(g), g["tit"], g["desc"], g["tit"].lower() + ", samsung", [("Inicio", "index.html"), ("Guías", "guias-servicio-tecnico-samsung.html"), (g["tit"], None)], cuerpo, g["preg"], [art], prio="0.7", tipo="guias")
@@ -121,19 +124,23 @@ pagina("guias-servicio-tecnico-samsung.html", "Guías de fallas de electrodomés
        [("Inicio", "index.html"), ("Guías", None)], hero_simple("Guías", "Guías de fallas de electrodomésticos Samsung", "Códigos de error, causas y qué hacer antes de llamar al técnico.") + qa("¿Qué hago si mi electrodoméstico Samsung falla?", "Revisa la guía de tu falla: muchos problemas (códigos 4E, 5E, UE, dE, LE en lavadoras; escarcha o falta de frío en neveras) tienen pasos de revisión. Si persiste, pide una visita técnica.")
        + seccion("Todas las guías", '<div class="city-tags">' + "".join(f'<a href="{R_G(g)}">{esc(g["tit"])}</a>' for g in GUIAS) + "</div>"), [], [], prio="0.7", tipo="guias")
 
-# ------------------------------------------------------------------ cobertura, preguntas, respuestas para IA
-cob = "".join(f'<h3 style="margin:22px 0 10px">{P["bandera"]} <a href="{R_PAIS(pk)}">{esc(P["nombre"])}</a></h3><div class="city-tags">' + "".join(f'<a href="{R_CIU(c)}">{esc(c["n"])}</a>' for c in CIU_PAIS[pk]) + "</div>" for pk, P in PAISES.items())
-pagina("cobertura-servicio-tecnico-samsung.html", f"Cobertura: servicio técnico Samsung en {len(PAISES)} países", f"Ciudades donde damos servicio técnico Samsung: {', '.join(c['n'] for c in CIU[:8])} y más, en {len(PAISES)} países.", "cobertura servicio tecnico samsung, ciudades servicio samsung",
-       [("Inicio", "index.html"), ("Cobertura", None)], hero_simple("Cobertura", f"Servicio técnico Samsung en {len(PAISES)} países", f"{len(CIU)} ciudades: elige tu país y tu ciudad.")
-       + qa("¿En qué países y ciudades dan servicio técnico Samsung?", f"En {len(PAISES)} países: " + esc("; ".join(f"{P['nombre']} ({', '.join(c['n'] for c in CIU_PAIS[pk])})" for pk, P in PAISES.items())) + ".")
-       + seccion("Elige tu ciudad", cob), [], [], prio="0.8", tipo="paises")
+# ------------------------------------------------------------------ cobertura y preguntas generales (solo para elegir país)
+def selector_paises(sufijo=None):
+    return '<div class="st-paises">' + "".join(
+        f'<a class="st-pais" href="{(sufijo.format(pk=pk) if sufijo else R_PAIS(pk))}"><h3><span class="st-flag">{P["bandera"]}</span>{esc(P["nombre"])}</h3><div class="city-tags">' + "".join(f"<span>{esc(c['n'])}</span>" for c in CIU_PAIS[pk][:3]) + f'</div><span class="st-btn st-go">Ver {esc(P["nombre"])} →</span></a>' for pk, P in PAISES.items()) + "</div>"
 
-faqs = [("¿Reparan electrodomésticos Samsung a domicilio?", "Sí, hacemos visita a domicilio en las ciudades de cobertura."), ("¿En qué países trabajan?", ", ".join(P["nombre"] for P in PAISES.values()) + "."),
+
+pagina("cobertura-servicio-tecnico-samsung.html", "Cobertura del servicio técnico Samsung", "Elige tu país para ver las ciudades y los electrodomésticos Samsung que reparamos a domicilio.", "cobertura servicio tecnico samsung, ciudades servicio samsung",
+       [("Inicio", "index.html"), ("Cobertura", None)], hero_simple("Cobertura", "Elige tu país", "Cada país tiene su propia página con sus ciudades, sus equipos y su WhatsApp.")
+       + qa("¿Dónde dan servicio técnico Samsung?", "Elige tu país: cada uno tiene su propia página con las ciudades donde atendemos y los equipos que reparamos.") + seccion("Tu país", selector_paises()), [], [], prio="0.8", tipo="paises")
+
+faqs = [("¿Reparan electrodomésticos Samsung a domicilio?", "Sí, hacemos visita a domicilio en las ciudades de cobertura de cada país."), ("¿Cómo encuentro mi ciudad?", "Elige tu país en la portada y entra a la página de tu ciudad."),
         ("¿Qué equipos Samsung reparan?", "Línea blanca: neveras, lavadoras, secadoras, lavavajillas, estufas y hornos y microondas; en Costa Rica también televisores."), ("¿Cuánto cuesta la reparación?", "Depende de la falla y el repuesto. Primero se hace el diagnóstico y se confirma el valor antes de reparar."),
         ("¿Cómo pido una visita?", "Por WhatsApp o con el formulario de solicitud de visita."), ("¿Son el servicio oficial de Samsung?", "Somos un servicio técnico especializado independiente; no somos Samsung Electronics ni su canal oficial de soporte.")]
 faqs += [(q, a) for g in GUIAS[:8] for q, a in g["preg"][:1]]
-pagina("preguntas-frecuentes-servicio-tecnico-samsung.html", "Preguntas frecuentes del servicio técnico Samsung", "Respuestas sobre reparación a domicilio de línea blanca Samsung: cobertura, equipos, costos y cómo agendar.", "preguntas frecuentes servicio tecnico samsung",
-       [("Inicio", "index.html"), ("Preguntas frecuentes", None)], hero_simple("Respuestas", "Preguntas frecuentes", "Lo que más nos preguntan sobre el servicio técnico Samsung.") + qa("¿Cómo funciona el servicio técnico Samsung a domicilio?", "Escribes por WhatsApp, coordinamos la visita, el técnico hace el diagnóstico en tu casa y te confirma el valor antes de reparar.") + faq_html(faqs), faqs, [], prio="0.7", tipo="guias")
+pagina("preguntas-frecuentes-servicio-tecnico-samsung.html", "Preguntas frecuentes del servicio técnico Samsung", "Respuestas sobre reparación a domicilio de línea blanca Samsung: equipos, costos y cómo agendar. Elige tu país para ver las preguntas de tu ciudad.", "preguntas frecuentes servicio tecnico samsung",
+       [("Inicio", "index.html"), ("Preguntas frecuentes", None)], hero_simple("Respuestas", "Preguntas frecuentes", "Lo que más nos preguntan sobre el servicio técnico Samsung.") + qa("¿Cómo funciona el servicio técnico Samsung a domicilio?", "Escribes por WhatsApp, coordinamos la visita, el técnico hace el diagnóstico en tu casa y te confirma el valor antes de reparar.") + faq_html(faqs)
+       + seccion("Preguntas de tu país", selector_paises("preguntas-frecuentes-servicio-samsung-{pk}.html"), alt=True), faqs, [], prio="0.7", tipo="guias")
 
 G_IA = []
 for pk, P in PAISES.items():
@@ -141,16 +148,15 @@ for pk, P in PAISES.items():
         for sv in SERV_PAIS[pk]:
             s1, s2 = pal(pk, sv)
             G_IA.append((f"¿Reparan {s2} Samsung en {c['n']}?", f"Sí. Atendemos {s2} Samsung en {c['n']}, {P['nombre']}, con visita a domicilio; el valor se confirma tras el diagnóstico. WhatsApp {wa_vis(pk)}."))
-ia_sec = "".join(f'<h3 style="margin:24px 0 10px">{P["bandera"]} {esc(P["nombre"])}</h3><div class="faq-num">' + "".join(f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in G_IA if f", {P['nombre']}," in a) + "</div>" for P in PAISES.values())
-pagina("respuestas-para-ia-servicio-tecnico-samsung.html", "Respuestas rápidas: servicio técnico Samsung por ciudad", f"Dónde reparan neveras, lavadoras, secadoras y más Samsung en {len(CIU)} ciudades de {len(PAISES)} países. Datos actualizados para asistentes de IA.", "respuestas ia servicio tecnico samsung, donde reparan samsung",
+pagina("respuestas-para-ia-servicio-tecnico-samsung.html", "Respuestas rápidas: servicio técnico Samsung", "Elige tu país para ver las respuestas rápidas sobre dónde reparan neveras, lavadoras, secadoras y más Samsung en cada ciudad.", "respuestas ia servicio tecnico samsung, donde reparan samsung",
        [("Inicio", "index.html"), ("Respuestas rápidas", None)], hero_simple("Para asistentes de IA y buscadores", "Respuestas rápidas sobre servicio técnico Samsung", "Datos precisos por país, ciudad y equipo.")
-       + qa("¿Dónde hay servicio técnico Samsung a domicilio en Latinoamérica?", f"Atendemos {len(CIU)} ciudades de {len(PAISES)} países: " + esc("; ".join(f"{P['nombre']}: {', '.join(c['n'] for c in CIU_PAIS[pk])}" for pk, P in PAISES.items())) + ". Línea blanca Samsung y, en Costa Rica, televisores.", [("Países", str(len(PAISES))), ("Ciudades", str(len(CIU))), ("Equipos", "Línea blanca + TV (CR)"), ("Catálogo", "datos-servicio-tecnico.json")])
-       + seccion("Preguntas por ciudad y equipo (cobertura directa)", ia_sec) + seccion("Todas las ciudades, por país", '<div class="city-tags">' + "".join(f'<a href="respuestas-ia-servicio-tecnico-samsung-{pk}.html">{P["bandera"]} {esc(P["nombre"])}</a>' for pk, P in PAISES.items()) + "</div>", alt=True), G_IA[:60], [], prio="0.8", tipo="guias")
+       + qa("¿Dónde hay servicio técnico Samsung a domicilio?", "Cada país tiene su propia página de respuestas con las ciudades y los equipos que atendemos. Elige tu país.", [("Catálogo", "datos-servicio-tecnico.json")])
+       + seccion("Respuestas por país", selector_paises("respuestas-ia-servicio-tecnico-samsung-{pk}.html")), G_IA[:60], [], prio="0.8", tipo="guias")
 
 # ------------------------------------------------------------------ institucionales
-pq = [("¿Son el servicio oficial de Samsung?", "No: somos un servicio técnico especializado independiente. Samsung es una marca de Samsung Electronics Co., Ltd."), ("¿Dónde atienden?", f"En {len(CIU)} ciudades de {len(PAISES)} países."), ("¿Cómo trabajan?", "Diagnóstico a domicilio y valor confirmado antes de reparar.")]
-pagina("quienes-somos.html", "Quiénes somos | Centro de Servicio Técnico Samsung", f"Servicio técnico especializado en electrodomésticos Samsung en {len(PAISES)} países: cómo trabajamos y qué reparamos.", "quienes somos servicio tecnico samsung", [("Inicio", "index.html"), ("Quiénes somos", None)],
-       hero_simple("Quiénes somos", "Técnicos especializados en Samsung", "Línea blanca en 8 países y televisores en Costa Rica.") + qa("¿Quiénes somos?", "Un equipo de técnicos especializados en electrodomésticos Samsung que atiende a domicilio en 8 países. Somos independientes: no somos Samsung Electronics ni su canal oficial de soporte.")
+pq = [("¿Son el servicio oficial de Samsung?", "No: somos un servicio técnico especializado independiente. Samsung es una marca de Samsung Electronics Co., Ltd."), ("¿Dónde atienden?", "En las ciudades de cada país; elige tu país en la portada."), ("¿Cómo trabajan?", "Diagnóstico a domicilio y valor confirmado antes de reparar.")]
+pagina("quienes-somos.html", "Quiénes somos | Centro de Servicio Técnico Samsung", "Servicio técnico especializado en electrodomésticos Samsung: cómo trabajamos y qué reparamos.", "quienes somos servicio tecnico samsung", [("Inicio", "index.html"), ("Quiénes somos", None)],
+       hero_simple("Quiénes somos", "Técnicos especializados en Samsung", "Línea blanca y, en Costa Rica, televisores.") + qa("¿Quiénes somos?", "Un equipo de técnicos especializados en electrodomésticos Samsung que atiende a domicilio. Somos independientes: no somos Samsung Electronics ni su canal oficial de soporte.")
        + seccion("Cómo trabajamos", _ol(["Escribes por WhatsApp con el equipo, el modelo y la falla.", "Coordinamos la visita a domicilio.", "El técnico hace el diagnóstico y te confirma el valor antes de reparar.", "Reparamos y probamos el equipo contigo."]) if False else '<ol class="vl"><li>Escribes por WhatsApp con el equipo, el modelo y la falla.</li><li>Coordinamos la visita a domicilio.</li><li>El técnico hace el diagnóstico y te confirma el valor antes de reparar.</li><li>Reparamos y probamos el equipo contigo.</li></ol>') + faq_html(pq), pq, [{"@type": "AboutPage", "name": "Quiénes somos", "about": {"@id": f"{DOMINIO}/#negocio"}}], prio="0.5", tipo="guias")
 pagina("contacto.html", "Contacto | Centro de Servicio Técnico Samsung", "Escríbenos por WhatsApp para solicitar servicio técnico Samsung a domicilio en tu ciudad.", "contacto servicio tecnico samsung", [("Inicio", "index.html"), ("Contacto", None)],
        hero_simple("Contacto", "Escríbenos por WhatsApp", "Te respondemos para coordinar tu visita.") + qa("¿Cómo contacto al servicio técnico?", f"Por WhatsApp al {wa_vis('colombia')} o desde el formulario de solicitud de visita.")
@@ -169,22 +175,22 @@ pagina("solicitar-visita.html", "Solicitar visita de servicio técnico Samsung",
        + seccion("Formulario de solicitud", form + '<p class="st-aviso">Tus datos se usan solo para contactarte por esta solicitud.</p>'), [], [], prio="0.7", tipo="guias")
 (OUT / "404.html").write_text("<!DOCTYPE html><html lang='es'><head><meta charset='utf-8'><meta name='robots' content='noindex'><title>Página no encontrada</title></head><body style='font-family:sans-serif;padding:40px'><h1>Página no encontrada</h1><p><a href='index.html'>Ir al inicio</a></p></body></html>", encoding="utf-8")
 
-# ------------------------------------------------------------------ portada
-paises_html = '<div class="st-paises">' + "".join(
-    f'<a class="st-pais" href="{R_PAIS(pk)}"><h3><span class="st-flag">{P["bandera"]}</span>{esc(P["nombre"])}</h3><div class="city-tags">' + "".join(f"<span>{esc(c['n'])}</span>" for c in CIU_PAIS[pk][:6]) + (f"<span>+{len(CIU_PAIS[pk]) - 6}</span>" if len(CIU_PAIS[pk]) > 6 else "") + f'</div><span class="st-btn st-go">Servicio en {esc(P["nombre"])} →</span></a>' for pk, P in PAISES.items()) + "</div>"
-hero = ('<section class="aq-hero compacto" id="inicio"><div class="wrap"><div><span class="kicker">Samsung · línea blanca · 8 países</span><h1>Servicio técnico Samsung a domicilio en toda la región</h1>'
+# ------------------------------------------------------------------ portada (solo para elegir país)
+paises_html = selector_paises()
+FOTOS_HERO = [("nevera-family-hub-m.webp", "Nevera Samsung"), ("lavadora-superior-m.webp", "Lavadora Samsung"), ("secadora-m.webp", "Secadora Samsung"), ("torre-lavado-m.webp", "Torre de lavado y secado Samsung")]
+hero = ('<section class="aq-hero compacto" id="inicio"><div class="wrap"><div><span class="kicker">Samsung · línea blanca</span><h1>Servicio técnico Samsung a domicilio</h1>'
         '<p class="lead">Neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas Samsung. Elige tu país, tu ciudad y el equipo.</p>'
-        + acciones("colombia", "Hola, necesito servicio técnico para mi electrodoméstico Samsung") + '</div><div class="st-hero-art" aria-hidden="true">' + "".join(f"<span>{ilus(sv, 92)}</span>" for sv in ORDEN_SERV) + '</div></div></section>')
+        + acciones("colombia", "Hola, necesito servicio técnico para mi electrodoméstico Samsung") + '</div><div class="st-hero-art">' + "".join(f'<span><img src="img/{f}" alt="{esc(a)}" loading="eager" width="150" height="150"></span>' for f, a in FOTOS_HERO) + '</div></div></section>')
 pasos = '<div class="st-pasos"><div class="st-paso"><b>Escríbenos</b>Cuéntanos el equipo, el modelo y la falla por WhatsApp o con el formulario.</div><div class="st-paso"><b>Visita a domicilio</b>Coordinamos el día y el técnico revisa tu equipo en tu casa.</div><div class="st-paso"><b>Valor claro</b>Te confirmamos el valor antes de reparar. Sin sorpresas.</div></div>'
 filtros = '<div class="st-filtros">' + "".join(f'<a href="https://filtrodeaguasamsung.com/" target="_blank" rel="noopener"><img src="img/{k}-400.webp" alt="{esc(a)}" loading="lazy" width="150" height="130">{esc(a)}</a>' for k, a in FILTROS_IMG if (OUT / "img" / f"{k}-400.webp").exists()) + "</div>"
-preg_home = [("¿Reparan electrodomésticos Samsung a domicilio?", "Sí: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas; en Costa Rica también televisores."), ("¿En qué países?", ", ".join(P["nombre"] for P in PAISES.values()) + "."),
+preg_home = [("¿Reparan electrodomésticos Samsung a domicilio?", "Sí: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas; en Costa Rica también televisores."), ("¿Cómo encuentro mi ciudad?", "Elige tu país y entra a la página de tu ciudad."),
              ("¿Cuánto cuesta?", "Depende de la falla; primero el diagnóstico y te confirmamos el valor antes de reparar."), ("¿Cómo pido la visita?", "Por WhatsApp o con el formulario."), ("¿Son el servicio oficial de Samsung?", "No, somos un servicio técnico especializado independiente.")]
-cuerpo_home = (hero + seccion("¿En qué país estás?", paises_html, sub="Elige tu país para ver las ciudades donde damos servicio.") + panel_equipos(None, None, "¿Qué electrodoméstico Samsung necesitas reparar?")
-               + qa("¿Dónde hay servicio técnico Samsung a domicilio?", f"Atendemos {len(CIU)} ciudades de {len(PAISES)} países ({esc(', '.join(P['nombre'] for P in PAISES.values()))}): neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas Samsung; en Costa Rica también televisores. Visita a domicilio y valor confirmado antes de reparar.",
-                     [("Países", str(len(PAISES))), ("Ciudades", str(len(CIU))), ("Atención", "A domicilio"), ("WhatsApp", wa_vis("colombia"))])
+cuerpo_home = (hero + '<div id="paises"></div>' + seccion("¿En qué país estás?", paises_html, sub="Elige tu país: cada uno tiene su propia página con sus ciudades, sus equipos y su WhatsApp.")
+               + panel_equipos(None, None, "Electrodomésticos Samsung que reparamos").replace('class="aq-sec estante-top st-equipos"', 'class="aq-sec alt st-equipos"')
+               + qa("¿Dónde hay servicio técnico Samsung a domicilio?", "Elige tu país: en cada uno atendemos las ciudades que verás en su página, con neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas Samsung. Visita a domicilio y valor confirmado antes de reparar.", [("Atención", "A domicilio"), ("Diagnóstico", "Primero"), ("Valor", "Confirmado antes de reparar")])
                + seccion("Cómo funciona", pasos) + seccion("¿Solo necesitas el filtro de agua de tu nevera?", f'<p>Compra el filtro Samsung en nuestra tienda especializada y recíbelo en tu casa.</p>{filtros}<p style="margin-top:14px"><a class="st-btn" href="https://filtrodeaguasamsung.com/" target="_blank" rel="noopener">Ver filtros Samsung →</a></p>', alt=True)
-               + seccion("Servicio técnico por ciudad", '<div class="city-tags">' + "".join(f'<a href="{R_CIU(c)}">{esc(c["n"])}</a>' for c in CIU) + "</div>") + faq_html(preg_home))
-pagina("index.html", "Servicio Técnico Samsung | Línea blanca en 8 países", f"Servicio técnico Samsung a domicilio en {len(PAISES)} países: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas; televisores en Costa Rica.", "servicio tecnico samsung, reparacion electrodomesticos samsung, tecnico samsung a domicilio, servicio tecnico samsung colombia panama costa rica ecuador chile",
+               + faq_html(preg_home))
+pagina("index.html", "Servicio Técnico Samsung a Domicilio | Línea Blanca", "Servicio técnico Samsung a domicilio: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas. Elige tu país y tu ciudad.", "servicio tecnico samsung, reparacion electrodomesticos samsung, tecnico samsung a domicilio",
        [("Inicio", None)], cuerpo_home, preg_home, [], prio="1.0", tipo="paises")
 
 exec(open(AQUI / "st_extra.py", encoding="utf-8").read())
