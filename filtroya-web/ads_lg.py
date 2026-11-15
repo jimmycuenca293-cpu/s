@@ -29,6 +29,8 @@ OUT = pathlib.Path(sys.argv[1])
 DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else "https://tu-dominio-lg.com").rstrip("/")
 TOKEN = sys.argv[3] if len(sys.argv) > 3 else ""
 HOY = datetime.date.today().isoformat()
+_M = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+FECHA_LARGA = f"{datetime.date.today().day} de {_M[datetime.date.today().month - 1]} de {datetime.date.today().year}"
 WA, TEL = "573054796329", "305 479 6329"
 SRC = AQUI / "src"
 esc = lambda s: html.escape(str(s), quote=True)
@@ -152,7 +154,7 @@ def pintar(t):
 
 
 css = pintar((AQUI / "ads22_tema.css").read_text(encoding="utf-8"))
-css += "\n.aq-hero .kicker,.hero .kicker{background:rgba(255,255,255,.16)}.aq-brand img{height:38px}.aq-qa-sec{padding:0 0 12px}\n"
+css += "\n.aq-hero .kicker,.hero .kicker{background:rgba(255,255,255,.16)}.aq-brand img{height:38px}.aq-qa-sec{padding:0 0 12px}.qa-datos{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}.qa-datos li{background:rgba(255,255,255,.7);border:1px solid rgba(165,0,52,.14);border-radius:10px;padding:8px 12px;font-size:.88rem}.qa-datos b{display:block;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:#a50034}.qa-meta{margin:12px 0 0;font-size:.78rem;opacity:.7}\n"
 (OUT / "tema.css").write_text(css, encoding="utf-8")
 m_v = re.search(r":root\{([^}]*)\}", css)
 c1 = css[css.index("/* ---------- barra superior y encabezado ---------- */"):css.index("/* ---------- portada de página (hero) ---------- */")]
@@ -272,7 +274,7 @@ def pie():
             f'<div><h5>Filtros</h5><ul>{refs}<li><a href="cual-es-mi-filtro.html">Cómo identificar el mío</a></li></ul></div>'
             f'<div><h5>Ciudades</h5><ul>{ciu}<li><a href="filtro-agua-lg-por-ciudad-colombia.html"><b>Ver todas →</b></a></li></ul></div><div><h5>Departamentos</h5><ul>{deptos}</ul></div>'
             '<div><h5>Ayuda</h5><ul><li><a href="guias-filtro-agua-nevecon-lg.html">Guías</a></li><li><a href="cambio-e-instalacion.html">Cómo cambiar el filtro</a></li><li><a href="precio-filtro-agua-nevecon-lg.html">Precios</a></li>'
-            '<li><a href="preguntas-frecuentes-filtro-agua-lg.html">Preguntas frecuentes</a></li><li><a href="glosario-filtro-nevera-lg.html">Glosario</a></li><li><a href="mapa-del-sitio.html">Mapa del sitio</a></li>'
+            '<li><a href="respuestas-para-ia-filtros-lg.html">Respuestas rápidas</a></li><li><a href="preguntas-frecuentes-filtro-agua-lg.html">Preguntas frecuentes</a></li><li><a href="glosario-filtro-nevera-lg.html">Glosario</a></li><li><a href="mapa-del-sitio.html">Mapa del sitio</a></li>'
             '<li><a href="envio-filtros-lg-colombia.html">Envíos</a></li><li><a href="terminos.php">Términos</a></li><li><a href="privacidad.php">Datos personales</a></li></ul></div></div>'
             '<div class="aq-wrap aq-f-pay"><div><span class="m">Tarjeta</span><span class="m">PSE</span><span class="m">Nequi</span><span class="m">Bancolombia</span><span class="m">Contra entrega</span></div>'
             '<div>© 2026 Filtro de Agua LG Colombia — Distribuidor Autorizado</div></div></footer>'
@@ -286,8 +288,13 @@ def tarjeta(p, k=None):
             f'<div class="tf-pr">{cop(p["precio"])}<small>COP · envío gratis</small></div><button type="button" class="tf-add" data-add="{p["id"]}">🛒 Agregar al carrito</button></div></article>')
 
 
-def qa(titulo, respuesta):
-    return f'<section class="aq-qa-sec"><div class="wrap"><div class="qa"><p class="tag">⚡ Respuesta rápida</p><h2>{esc(titulo)}</h2><p>{respuesta}</p></div></div></section>'
+def qa(titulo, respuesta, datos=None):
+    """Cuadro de respuesta rápida: respuesta directa + datos clave verificables + fecha (lo que citan los asistentes de IA)."""
+    d = ""
+    if datos:
+        d = '<ul class="qa-datos">' + "".join(f"<li><b>{esc(k)}</b>{esc(v)}</li>" for k, v in datos) + "</ul>"
+    return (f'<section class="aq-qa-sec"><div class="wrap"><div class="qa" data-ia="respuesta"><p class="tag">⚡ Respuesta rápida</p><h2>{esc(titulo)}</h2><p>{respuesta}</p>{d}'
+            f'<p class="qa-meta">Información verificada · actualizada el {FECHA_LARGA} · Distribuidor autorizado de filtros para neveras LG en Colombia</p></div></div></section>')
 
 
 def seccion(h2, cuerpo, alt=False, sub=""):
@@ -317,7 +324,7 @@ def ld_faq(preg):
 
 
 def ld_producto(p):
-    return {"@type": "Product", "name": p["nombre"], "sku": p["ref"], "mpn": p["ref"], "image": f"{DOMINIO}/{p['img']}", "brand": {"@type": "Brand", "name": "LG"}, "category": "Filtros de agua para nevecón",
+    return {"@type": "Product", "name": p["nombre"], "sku": p["ref"], "mpn": p["ref"], "image": f"{DOMINIO}/{p['img']}", "brand": {"@type": "Brand", "name": "LG"}, "category": "Filtros de agua para nevecón", "additionalProperty": [{"@type": "PropertyValue", "name": "Código LG", "value": p["ref"]}, {"@type": "PropertyValue", "name": "Códigos equivalentes", "value": ", ".join(p["refs"][1:]) or p["ref"]}, {"@type": "PropertyValue", "name": "Nevecones compatibles", "value": ", ".join(p["modelos"]) or "Confirmar con el código del filtro viejo"}, {"@type": "PropertyValue", "name": "Instalación", "value": "Externo (manguera del agua)" if p["ubic"] == "externo" else "Interno (dentro del refrigerador)"}, {"@type": "PropertyValue", "name": "Cambio recomendado", "value": "Cada 6 meses"}],
             "description": f"Filtro de agua {p['nombre']} (código {p['ref']}), equivalente a {', '.join(p['refs'][1:4]) or p['ref']}. Para nevecones LG.",
             "offers": {"@type": "Offer", "url": f"{DOMINIO}/{p['url']}", "priceCurrency": "COP", "price": str(p["precio"]), "availability": "https://schema.org/InStock", "itemCondition": "https://schema.org/NewCondition",
                        "priceValidUntil": "2027-12-31", "seller": {"@id": f"{DOMINIO}/#tienda"}, "hasMerchantReturnPolicy": {"@type": "MerchantReturnPolicy", "applicableCountry": "CO", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow", "merchantReturnDays": 5},
@@ -344,7 +351,7 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     head = ('<!DOCTYPE html><html lang="es-CO"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">'
             f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}"><meta name="keywords" content="{esc(kw)}"><link rel="canonical" href="{url}">'
             '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="theme-color" content="#a50034"><meta name="author" content="Filtro de Agua LG Colombia"><meta name="geo.region" content="CO"><meta name="geo.placename" content="Colombia"><meta name="language" content="es-CO">'
-            f'<link rel="alternate" hreflang="es-CO" href="{url}"><link rel="alternate" hreflang="es" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}"><link rel="alternate" type="text/plain" href="{DOMINIO}/llms.txt" title="llms.txt">'
+            f'<link rel="alternate" hreflang="es-CO" href="{url}"><link rel="alternate" hreflang="es" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}"><link rel="alternate" type="text/plain" href="{DOMINIO}/llms.txt" title="llms.txt"><link rel="alternate" type="application/json" href="{DOMINIO}/datos-filtros-lg.json" title="Catálogo estructurado">'
             + (f'<link rel="preload" as="image" href="{og}">' if og else "")
             + (f'<meta name="google-site-verification" content="{TOKEN}">' if TOKEN else "")
             + f'<meta property="og:type" content="website"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="Filtro de Agua LG Colombia"><meta property="og:title" content="{esc(titulo)}">'
