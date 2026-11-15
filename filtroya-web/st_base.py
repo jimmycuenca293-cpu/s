@@ -69,7 +69,7 @@ def encabezado(pk=None):
     num = wa_vis(pk) if pk else None
     return ('<div class="aq-h"><div class="aq-bar"><span>' + esc(bar1) + '</span><span>' + esc(bar2) + '</span><a href="' + wa + '"' + (' target="_blank" rel="noopener">WhatsApp ' + esc(num) if pk else '>Elegir mi país') + '</a></div>'
             f'<div class="aq-ticker" role="marquee" aria-label="Ciudades">{tk}</div>'
-            '<div class="aq-row aq-wrap"><a class="aq-brand" href="' + (R_PAIS(pk) if pk else "index.html") + '"><img class="st-brand-logo" src="img/samsung-logo.png" alt="Samsung" width="126" height="20"><span><b>Centro de Servicio Técnico</b><small>' + esc(sub) + '</small></span></a>'
+            '<div class="aq-row aq-wrap"><a class="aq-brand" href="' + (R_PAIS(pk) if pk else "index.html") + '"><img class="st-brand-logo" src="img/samsung-logo.png" alt="Samsung" width="126" height="20"><span><b>Soporte Técnico</b><small>' + esc(sub) + '</small></span></a>'
             '<form class="aq-search" role="search" onsubmit="return false">' + ICO["lupa"].replace("<svg", '<svg aria-hidden="true"') + f'<input type="search" data-aq-q data-aq-pais="{pk or ""}" placeholder="{esc(ph)}" autocomplete="off" aria-label="Buscar"><div class="aq-res" hidden></div></form>'
             '<a class="aq-cta" href="' + (R_SOL(pk) if pk else "index.html#paises") + '">Solicitar visita</a></div>'
             '<nav class="aq-nav" aria-label="Principal"><div class="aq-wrap">' + nav + '</div></nav></div>')
@@ -92,7 +92,7 @@ def pie(pk=None):
     return ('<footer class="aq-f"><div class="aq-wrap"><div class="brandcol"><span class="logo-w"><img src="img/samsung-oval.png" alt="Samsung" width="90" height="30" loading="lazy"></span>'
             f'<p>{esc(blurb)}Samsung y su logotipo son marcas de Samsung Electronics Co., Ltd., y se usan solo para identificar la marca del equipo que reparamos. Este sitio es un servicio técnico independiente y no pertenece a Samsung Electronics ni es su canal oficial de soporte.</p></div>'
             f'{col2}<div><h5>Ayuda</h5><ul>{ayuda}</ul></div></div>'
-            f'<div class="aq-wrap aq-f-pay"><div>© {_d.year} Centro de Servicio Técnico Samsung</div></div></footer>'
+            f'<div class="aq-wrap aq-f-pay"><div>© {_d.year} Soporte Técnico Samsung</div></div></footer>'
             + (f'<div class="st-barra"><a class="st-btn wa" href="{wa_link(pk, "Hola, necesito servicio técnico para mi electrodoméstico Samsung")}" target="_blank" rel="noopener">{ICO["wa"]} WhatsApp</a><a class="st-btn sol" href="{R_SOL(pk)}">Solicitar visita</a></div>' if pk else '<div class="st-barra"><a class="st-btn wa" href="index.html#paises">Elegir mi país</a></div>'))
 
 
@@ -213,7 +213,7 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     hl = PAISES[pk]["cod"] if pk else "es"
     head = ('<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">'
             f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}"><meta name="keywords" content="{esc(kw)}"><link rel="canonical" href="{url}">'
-            + (f'<meta name="st-pais" content="{pk}">' if pk else '') + '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="theme-color" content="#1428a0"><meta name="author" content="Centro de Servicio Técnico Samsung">'
+            + (f'<meta name="st-pais" content="{pk}">' if pk else '') + '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="theme-color" content="#1428a0"><meta name="author" content="Soporte Técnico Samsung">'
             f'<link rel="alternate" hreflang="{hl}" href="{url}">' + (f'<link rel="alternate" hreflang="x-default" href="{url}">' if nombre == "index.html" else "") + f'<link rel="alternate" type="text/plain" href="{DOMINIO}/{(pk + "/llms.txt") if pk else "llms.txt"}" title="llms.txt"><link rel="alternate" type="application/json" href="{DOMINIO}/datos-servicio-tecnico.json" title="Datos estructurados">'
             + "".join(f'<meta name="google-site-verification" content="{t}">' for t in TOKENS)
             + (("<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','" + GTM + "');</script>") if GTM else "")

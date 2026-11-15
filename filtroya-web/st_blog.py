@@ -92,7 +92,7 @@ for pk, P in PAISES.items():
     # 10
     posts.append(("elegir-tecnico", f"Elegir técnico de electrodomésticos en {c0['n']}, {P['nombre']}", f"Diez criterios para elegir un técnico de electrodomésticos Samsung en {c0['n']}: diagnóstico previo, valor confirmado, honestidad y respuesta rápida.",
                   f"Un buen técnico de electrodomésticos hace el diagnóstico antes de reparar, te confirma el valor antes de empezar, te explica la falla con claridad y te orienta con honestidad si conviene reparar o cambiar el equipo.",
-                  seccion("Criterios para elegir", "<ol class=\"vl\">" + "".join(f"<li>{esc(x)}</li>" for x in mix(f"b10|{pk}", CRITERIOS, 7)) + "</ol>") + seccion(f"Dónde pedirlo en {esc(P['nombre'])}", f"<p>{esc(_ciu_txt(pk, 14))}.</p><p><a href=\"{R_CIU(c0)}\">Centro de servicio técnico Samsung en {esc(c0['n'])}</a></p>", alt=True),
+                  seccion("Criterios para elegir", "<ol class=\"vl\">" + "".join(f"<li>{esc(x)}</li>" for x in mix(f"b10|{pk}", CRITERIOS, 7)) + "</ol>") + seccion(f"Dónde pedirlo en {esc(P['nombre'])}", f"<p>{esc(_ciu_txt(pk, 14))}.</p><p><a href=\"{R_CIU(c0)}\">Soporte técnico Samsung en {esc(c0['n'])}</a></p>", alt=True),
                   [("¿Debo pagar antes de que repare?", "Pide siempre el valor confirmado antes de reparar y acuerda la forma de pago."), ("¿Y si no quiero reparar?", "Puedes decidir tras el diagnóstico."), ("¿Cómo contacto?", f"Por WhatsApp al {wa}.")]))
     for sl, tit, desc, res, cuerpo_p, preg in posts:
         otros = [x for x in posts if x[0] != sl]
@@ -100,14 +100,14 @@ for pk, P in PAISES.items():
         cuerpo = (hero_simple(f"Blog · {P['nombre']} · {CAT[sl]}", tit, desc, acciones(pk, f"Hola, leí su artículo «{tit}» y necesito un técnico Samsung"))
                   + qa(tit if tit.endswith("?") else f"{tit.split(':')[0].split(' en ')[0]}: la respuesta rápida", esc(res), [("Categoría", CAT[sl]), ("País", P["nombre"]), ("Lectura", "4 min"), ("Actualizado", FECHA_LARGA)])
                   + cuerpo_p + faq_html(preg) + seccion("Sigue leyendo", rel, alt=True)
-                  + seccion("¿Necesitas un técnico?", f'<div class="city-tags"><a href="{R_PAIS(pk)}">Centro de servicio técnico Samsung en {esc(P["nombre"])}</a>' + "".join(f'<a href="{R_CIU(c)}">{esc(c["n"])}</a>' for c in cs[:8]) + "</div>"))
+                  + seccion("¿Necesitas un técnico?", f'<div class="city-tags"><a href="{R_PAIS(pk)}">Soporte técnico Samsung en {esc(P["nombre"])}</a>' + "".join(f'<a href="{R_CIU(c)}">{esc(c["n"])}</a>' for c in cs[:8]) + "</div>"))
         art = {"@type": "BlogPosting", "headline": tit, "description": desc, "inLanguage": P["cod"], "datePublished": HOY, "dateModified": HOY, "articleSection": CAT[sl], "author": {"@type": "Organization", "name": NOMBRE},
                "publisher": {"@id": f"{DOMINIO}/#negocio"}, "mainEntityOfPage": U(R_BLOG(pk, sl))}
         pagina(R_BLOG(pk, sl), tit, desc, f"{tit.lower()}, blog servicio tecnico samsung {P['nombre'].lower()}", [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), ("Blog", f"{pk}/blog/index.html"), (CAT[sl], None)], cuerpo, preg, [art], prio="0.6", pk=pk, tipo="blog")
         BLOG.append((pk, sl, tit, R_BLOG(pk, sl), desc))
     lista = "".join(f'<a href="{u}" style="display:block;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:10px;text-decoration:none;color:var(--ink)"><b>{esc(t)}</b><br><small style="color:var(--mute)">{esc(d)}</small></a>' for k, sl, t, u, d in BLOG if k == pk)
     pagina(f"{pk}/blog/index.html", f"Blog de servicio técnico Samsung en {P['nombre']}", f"Artículos sobre cuidado, fallas, mantenimiento y electricidad de tus electrodomésticos Samsung en {P['nombre']}: guías prácticas del centro de servicio técnico.", f"blog servicio tecnico samsung {P['nombre'].lower()}, consejos electrodomesticos samsung",
-           [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), ("Blog", None)], hero_simple(f"Blog · {P['nombre']}", f"Blog del centro de servicio técnico Samsung en {P['nombre']}", "Guías prácticas para cuidar y reparar tus electrodomésticos.")
+           [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), ("Blog", None)], hero_simple(f"Blog · {P['nombre']}", f"Blog de soporte técnico Samsung en {P['nombre']}", "Guías prácticas para cuidar y reparar tus electrodomésticos.")
            + qa(f"¿Dónde encuentro consejos para mis electrodomésticos Samsung en {P['nombre']}?", f"En este blog: cuidado según el clima de {esc(P['nombre'])}, qué hacer en un corte de luz, mantenimiento anual, mitos y cómo elegir un buen técnico.") + seccion("Artículos", lista), [], [], prio="0.7", pk=pk, tipo="blog")
 
 # ------------------------------------------------------------------ enlazar el blog desde cada país, ciudad y guía

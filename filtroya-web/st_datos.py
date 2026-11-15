@@ -1,4 +1,4 @@
-# Datos del proyecto «Centro de servicio técnico Samsung» (varios países, línea blanca y, en Costa Rica, televisores).
+# Datos del proyecto «Soporte técnico Samsung» (varios países, línea blanca y, en Costa Rica, televisores).
 # Cada país tiene su propio vocabulario: así las páginas hablan como la gente busca en ese país.
 
 PAISES = {

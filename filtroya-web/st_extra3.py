@@ -210,7 +210,7 @@ for c in CIU:
                   + seccion(f"{esc(nom)}: clima y {esc(s1)}", f"<p>{esc(clima)}</p><p>{esc(uno(key + '|tip', TIPS[sv]))}</p>")
                   + bloque_mitos(key, [sv], 1)
                   + faq_html(preg, f"Preguntas sobre esta falla en {nom}")
-                  + seccion("Más información", '<div class="city-tags">' + f'<a href="{R_CS(c, sv)}">{esc(cap(s2))} Samsung en {esc(nom)}</a><a href="{R_CIU(c)}">Centro de servicio técnico Samsung en {esc(nom)}</a><a href="{R_MANT(c)}">Mantenimiento en {esc(nom)}</a>'
+                  + seccion("Más información", '<div class="city-tags">' + f'<a href="{R_CS(c, sv)}">{esc(cap(s2))} Samsung en {esc(nom)}</a><a href="{R_CIU(c)}">Soporte técnico Samsung en {esc(nom)}</a><a href="{R_MANT(c)}">Mantenimiento en {esc(nom)}</a>'
                             + "".join(f'<a href="{R_G(g, pk)}">{esc(g["tit"])}</a>' for g in guias_de(sv)[:2]) + "".join(zlink(c, z, f"{z}") for z in c["zonas"][:4]) + "</div>"))
         tt = pr["tit"].format(**f)
         pagina(R_PROB(c, pr), tt, pr["d"].format(**f) if "d" in pr else f"{tt}: causas, qué revisar y técnico Samsung a domicilio en {nom}, {P['nombre']}. Valor confirmado antes de reparar.", f"{s1} samsung {pr['sl'].replace('-', ' ')} {nom.lower()}, tecnico {s1} samsung {nom.lower()}",
