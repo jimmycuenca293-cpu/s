@@ -127,6 +127,9 @@ def foto_cuadrada(origen, destino, lado=800, uso=0.92):
 
 for p in PS:
     foto_cuadrada(AQUI / "public_html" / "filtrosnevecones-img" / f"{p['id']}.jpg", OUT / "img" / f"p-{p['id']}.webp")
+    from PIL import Image as _I
+    _im = _I.open(OUT / "img" / f"p-{p['id']}.webp").convert("RGBA")
+    _im.resize((480, 480), _I.LANCZOS).save(OUT / "img" / f"p-{p['id']}-480.webp", "WEBP", quality=82, method=6)
 shutil.copy(AQUI / "logos" / "lg-web.png", OUT / "img" / "logo-lg.png")
 shutil.copy(AQUI / "logos" / "lg-icono.png", OUT / "img" / "icono-lg.png")
 
@@ -276,7 +279,7 @@ def pie():
             f'<div><h5>Ciudades</h5><ul>{ciu}<li><a href="filtro-agua-lg-por-ciudad-colombia.html"><b>Ver todas →</b></a></li></ul></div><div><h5>Departamentos</h5><ul>{deptos}</ul></div>'
             '<div><h5>Ayuda</h5><ul><li><a href="guias-filtro-agua-nevecon-lg.html">Guías</a></li><li><a href="cambio-e-instalacion.html">Cómo cambiar el filtro</a></li><li><a href="precio-filtro-agua-nevecon-lg.html">Precios</a></li>'
             '<li><a href="respuestas-para-ia-filtros-lg.html">Respuestas rápidas</a></li><li><a href="preguntas-frecuentes-filtro-agua-lg.html">Preguntas frecuentes</a></li><li><a href="glosario-filtro-nevera-lg.html">Glosario</a></li><li><a href="mapa-del-sitio.html">Mapa del sitio</a></li>'
-            '<li><a href="envio-filtros-lg-colombia.html">Envíos</a></li><li><a href="terminos.php">Términos</a></li><li><a href="privacidad.php">Datos personales</a></li></ul></div></div>'
+            '<li><a href="envio-filtros-lg-colombia.html">Envíos</a></li><li><a href="quienes-somos.html">Quiénes somos</a></li><li><a href="contacto.html">Contacto</a></li><li><a href="terminos.php">Términos</a></li><li><a href="privacidad.php">Datos personales</a></li></ul></div></div>'
             '<div class="aq-wrap aq-f-pay"><div><span class="m">Tarjeta</span><span class="m">PSE</span><span class="m">Nequi</span><span class="m">Bancolombia</span><span class="m">Contra entrega</span></div>'
             '<div>© 2026 Filtro de Agua LG Colombia — Distribuidor Autorizado</div></div></footer>'
             f'<a class="aq-wa" href="https://wa.me/{WA}" aria-label="WhatsApp"><svg width="22" height="22" fill="#fff" viewBox="0 0 16 16"><path d="M13.6 2.3A7.85 7.85 0 0 0 8 0C3.6 0 .07 3.56.06 7.93c0 1.4.37 2.76 1.06 3.97L0 16l4.2-1.1a7.93 7.93 0 0 0 3.8.97c4.37 0 7.93-3.56 7.93-7.93a7.9 7.9 0 0 0-2.33-5.64zM8 14.5a6.57 6.57 0 0 1-3.36-.92l-.24-.14-2.5.65.67-2.43-.16-.25A6.56 6.56 0 0 1 1.4 7.93C1.4 4.3 4.36 1.34 8 1.34a6.56 6.56 0 0 1 4.65 1.93 6.5 6.5 0 0 1 1.93 4.66c0 3.63-2.96 6.57-6.58 6.57z"/></svg><span>¿Dudas? Escríbenos</span></a>')
@@ -284,7 +287,7 @@ def pie():
 
 def tarjeta(p, k=None):
     feat = (["Va fuera del nevecón, en la línea de agua", "Se conecta a la manguera del agua"] if p["ubic"] == "externo" else ["Filtro interno para nevecones LG", f"Equivale a {', '.join(p['refs'][1:3])}" if len(p["refs"]) > 1 else "Referencia original"]) + ["Cámbialo cada 6 meses"]
-    return (f'<article class="tf-card"><a class="tf-img" href="{p["url"]}" aria-label="Ficha técnica del {esc(p["corto"])}"><img src="{p["img"]}" alt="Filtro de agua {esc(p["h"])} original" width="400" height="300" loading="lazy"></a>'
+    return (f'<article class="tf-card"><a class="tf-img" href="{p["url"]}" aria-label="Ficha técnica del {esc(p["corto"])}"><img src="{p["img"][:-5]}-480.webp" srcset="{p["img"][:-5]}-480.webp 480w, {p["img"]} 800w" sizes="(max-width:700px) 92vw, 360px" alt="Filtro de agua {esc(p["h"])} original" width="480" height="480" {"loading=eager fetchpriority=high" if k == 0 else "loading=lazy"} decoding="async"></a>'
             f'<div class="tf-b"><h3><a href="{p["url"]}">{esc(p["nombre"])}</a></h3><span class="tf-code">{esc(p["ref"])}</span><ul class="tf-feat">{"".join(f"<li>{esc(x)}</li>" for x in feat)}</ul>'
             f'<div class="tf-pr">{cop(p["precio"])}<small>COP · envío gratis</small></div><button type="button" class="tf-add" data-add="{p["id"]}">🛒 Agregar al carrito</button></div></article>')
 
@@ -337,7 +340,7 @@ TIENDA_LD = {"@type": "OnlineStore", "@id": f"{DOMINIO}/#tienda", "name": "Filtr
 
 
 def estante_min():
-    return ('<section class="aq-sec estante-top"><div class="wrap"><h2>Filtros LG disponibles · envío gratis a toda Colombia</h2><div class="tf-grid">' + "".join(tarjeta(p) for p in PS) + "</div></div></section>")
+    return ('<section class="aq-sec estante-top"><div class="wrap"><h2>Filtros LG disponibles · envío gratis a toda Colombia</h2><div class="tf-grid">' + "".join(tarjeta(p, i) for i, p in enumerate(PS)) + "</div></div></section>")
 
 
 def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), prio="0.6", og=None, hero=None):

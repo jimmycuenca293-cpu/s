@@ -29,6 +29,7 @@ for p in PS:
 items += [[r, R_REF(r), "Código", f"equivale al {p['corto']}"] for r, p in REFS]
 ARTS = marcas_contenido_lg.articulos(PS, "/", "/cambio-e-instalacion/")
 exec(open(AQUI / "ads_lg_guias.py", encoding="utf-8").read())
+exec(open(AQUI / "ads_lg_guias2.py", encoding="utf-8").read())
 items += [[t, U(sl), "Guía", ""] for sl, t, d, _, _, _ in ARTS]
 js = ("(function(){var D=" + json.dumps(items, ensure_ascii=False, separators=(",", ":")) + ";"
       "function n(s){return s.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9 ]+/g,' ').trim()}var X=D.map(function(r){return n(r[0]+' '+r[2]+' '+r[3])});"
@@ -86,7 +87,7 @@ hero = ('<section class="aq-hero compacto" id="inicio"><div class="wrap"><div><s
 qa_home = qa("¿Qué filtro de agua necesita mi nevecón LG?",
              f"Depende del modelo de tu nevecón: {esc(MOD_TXT)}. También vendemos el LT600P (5231JA2006) y el filtro externo ADQ73693903 para los equipos que lo usan. Los filtros LG cuestan entre {RANGO} con <b>envío gratis a toda Colombia</b>; "
              "pagas en línea con Wompi o contra entrega y recibes la confirmación por correo. Somos distribuidores autorizados.")
-estante = seccion("Elige tu filtro LG · envío gratis a toda Colombia", '<div class="tf-grid">' + "".join(tarjeta(p) for p in PS) + "</div>").replace('<section class="aq-sec">', '<section class="aq-sec estante-top" id="filtros">', 1)
+estante = seccion("Elige tu filtro LG · envío gratis a toda Colombia", '<div class="tf-grid">' + "".join(tarjeta(p, i) for i, p in enumerate(PS)) + "</div>").replace('<section class="aq-sec">', '<section class="aq-sec estante-top" id="filtros">', 1)
 tabla_mod = ('<div class="tbl-wrap"><table class="spec-table"><tr><th>Modelo de nevecón LG</th><th>Filtro que usa</th><th>Precio</th></tr>'
              + "".join(f'<tr><td><a href="{R_MOD(m)}">{esc(m)}</a></td><td><a href="{p["url"]}">{esc(p["nombre"])}</a></td><td><b>{cop(p["precio"])}</b></td></tr>' for m, p in MODELOS) + "</table></div>"
              "<p class=\"note\" style=\"margin-top:14px\">¿Tu modelo no está en la lista? Escríbelo en el buscador o mira el código impreso en tu filtro viejo: <a href=\"cual-es-mi-filtro.html\">cómo identificar tu filtro</a>.</p>")
@@ -142,10 +143,12 @@ for p in PS:
     inst = '<h3 style="margin:22px 0 10px">Cómo cambiarlo</h3><ol class="vl">' + "".join(f"<li>{esc(x)}</li>" for x in pasos) + '</ol><p class="note" style="margin-top:12px">Guía completa: <a href="cambio-e-instalacion.html">cómo cambiar e instalar el filtro</a>.</p>'
     preg = [(f"¿Qué nevecones usan el {p['ref']}?", (", ".join(p["modelos"]) + ". Confirma con el código de tu filtro viejo.") if p["modelos"] else "Equipos LG que usan esta referencia; confirma con el código de tu filtro viejo o escríbenos."),
             (f"¿Qué equivale al {p['ref']}?", equi + "."), (f"¿Cuánto cuesta el filtro LG {p['ref']}?", f"{cop2(p['precio'])} con envío gratis."), ("¿Cada cuánto se cambia?", "Cada 6 meses."), ("¿Puedo pagar contra entrega?", FPAGO)]
+    _ex, _pr2 = extra_producto(p)
+    preg = preg + _pr2
     cuerpo = (f'<section class="hero hero-prod"><div class="wrap hero-grid"><div><span class="kicker">Repuesto original · código {esc(p["ref"])}</span><h1>Filtro de Agua LG {esc(p["corto"])} Original</h1>'
               f'<p class="sub" style="margin-top:16px;">{esc(p["nombre"])}: equivale a {esc(equi)}. {esc(", ".join(p["modelos"][:3]) + " y más." if p["modelos"] else p["nota"])}</p><div class="hero-price">{cop(p["precio"])} <small>COP · envío gratis</small></div>'
               f'<div class="hero-cta"><button type="button" class="btn btn-solid" data-add="{p["id"]}">🛒 Agregar al carrito</button></div></div>{galeria_html(p)}</div></section>'
-              + qa_p + seccion("Ficha técnica", ficha + compat + eq_h + inst) + faq_html(preg)
+              + qa_p + seccion("Ficha técnica", ficha + compat + eq_h + inst) + _ex + faq_html(preg)
               + seccion("Otros filtros LG", '<div class="tf-grid">' + "".join(tarjeta(x) for x in otros) + "</div>", alt=True) + GAL_JS)
     pagina(p["url"], f"Filtro de Agua LG {p['corto']} ({p['ref']}) | {cop(p['precio'])} | Envío Gratis"[:70], f"Compra el filtro de agua {p['nombre']} (código {p['ref']}) por {cop(p['precio'])}: equivale a {', '.join(p['refs'][1:4]) or p['ref']}. Envío gratis y pago contra entrega en toda Colombia.",
            f"filtro lg {p['corto'].lower()}, {p['ref'].lower()}, " + ", ".join(r.lower() for r in p["refs"][1:5]) + ", filtro nevecon lg, precio filtro lg", [("Inicio", "index.html"), ("Filtros LG", "index.html#filtros"), (p["nombre"], None)], cuerpo, preg, [ld_producto(p)], prio="0.9", og=p["img"])
@@ -303,6 +306,7 @@ pagina("mapa-del-sitio.html", "Mapa del sitio | Filtros de agua LG", "Todas las 
        [("Inicio", "index.html"), ("Mapa del sitio", None)], hero_simple("Mapa del sitio", "Mapa del sitio: filtros LG", "Todas las páginas en un solo lugar.") + qa("¿Qué hay en esta tienda?", f"Seis filtros de agua LG, {len(MODELOS)} modelos de nevecón, {len(REFS)} códigos equivalentes, {len(CIU)} ciudades, guías y preguntas frecuentes.") + seccion("Páginas", cuerpo), prio="0.4")
 (OUT / "404.html").write_text("<!DOCTYPE html><html lang='es-CO'><head><meta charset='utf-8'><meta name='robots' content='noindex'><title>Página no encontrada</title></head><body style='font-family:sans-serif;padding:40px'><h1>Página no encontrada</h1><p><a href='index.html'>Ir al inicio</a></p></body></html>", encoding="utf-8")
 
+exec(open(AQUI / "ads_lg_inst.py", encoding="utf-8").read())
 exec(open(AQUI / "ads_lg_enlaces.py", encoding="utf-8").read())
 exec(open(AQUI / "ads_lg_ia.py", encoding="utf-8").read())
 # ---------------------------------------------------------------- robots, sitemap, llms y .htaccess
