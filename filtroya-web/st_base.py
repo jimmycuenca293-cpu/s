@@ -26,6 +26,13 @@ css += """
 @media(max-width:760px){.st-barra{display:flex}body{padding-bottom:64px}.aq-wa{display:none}}
 .st-form{display:grid;gap:12px;max-width:640px}.st-form label{display:grid;gap:4px;font-weight:600;font-size:.92rem}.st-form input,.st-form select,.st-form textarea{font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}.st-form textarea{min-height:100px}.st-ok{background:#ecfdf5;border:1px solid #86efac;border-radius:14px;padding:16px}.st-hp{position:absolute;left:-9999px}
 .st-aviso{font-size:.8rem;color:var(--mute);margin-top:10px}
+.st-eq{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.st-eq-c{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 10px 26px rgba(20,40,160,.07);transition:.2s}
+.st-eq-c:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(20,40,160,.16);border-color:var(--aqua)}
+.st-eq-top{display:flex;gap:14px;align-items:center}.st-eq-img{flex:none;background:var(--aqua-soft);border-radius:16px;padding:8px;display:flex}.st-eq-top h3{margin:0;font-size:1.12rem;line-height:1.2}
+.st-eq-top img{height:13px;width:auto;display:block;margin-top:6px;opacity:.9}.st-eq-lin{margin:0;font-size:.82rem;color:var(--mute)}
+.st-eq-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}.st-eq-chips li{background:var(--aqua-soft);color:var(--ocean);border-radius:999px;padding:4px 10px;font-size:.76rem;font-weight:600}
+.st-eq-btn{display:flex;gap:8px;margin-top:auto}.st-eq-btn a{flex:1;text-align:center;padding:10px 8px;font-size:13.5px}.st-eq-badge{font-size:.72rem;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:999px;padding:2px 8px;margin-left:6px;font-weight:700}
 """
 (OUT / "tema.css").write_text(css, encoding="utf-8")
 
@@ -97,6 +104,26 @@ def tiles_serv(pk, c=None):
     return f'<div class="st-servs">{out}</div>'
 
 
+def panel_equipos(pk=None, c=None, titulo=None):
+    """Todos los electrodomésticos que reparamos, con imagen, líneas Samsung y fallas típicas. pk/c dan el idioma local y el destino."""
+    base = pk or "colombia"
+    sv_lista = SERV_PAIS[pk] if pk else ORDEN_SERV + ["tv"]
+    out = ""
+    for sv in sv_lista:
+        S = SERVICIOS[sv]
+        s1, s2 = pal(base, sv) if (pk or sv != "tv") else pal("costa-rica", "tv")
+        nom = c["n"] if c else None
+        href = R_CS(c, sv) if c else R_SERV(sv)
+        msg = f"Hola, necesito servicio técnico para mi {s1} Samsung" + (f" en {nom}" if nom else "")
+        badge = '<span class="st-eq-badge">Solo Costa Rica</span>' if (sv == "tv" and not pk) else ""
+        chips = "".join(f"<li>{esc(x)}</li>" for x in S["sintomas"][:3])
+        out += (f'<article class="st-eq-c"><div class="st-eq-top"><a class="st-eq-img" href="{href}" aria-label="{esc(S["tit"])}">{ilus(sv, 72)}</a><div><h3>{esc(cap(s2) if c or pk else S["tit"])}{badge}</h3><img src="img/samsung-logo.png" alt="Samsung" width="80" height="13" loading="lazy"></div></div>'
+                f'<p class="st-eq-lin">{esc(cap(S["lineas"]))}</p><ul class="st-eq-chips">{chips}</ul>'
+                f'<div class="st-eq-btn"><a class="st-btn sol" href="{href}">{"Ver servicio" + (" en " + esc(nom) if nom else "")}</a><a class="st-btn wa" href="{wa_link(base, msg)}" target="_blank" rel="noopener">{ICO["wa"]} WhatsApp</a></div></article>')
+    ttl = titulo or ("Todos los electrodomésticos Samsung que reparamos" + (f" en {esc(c['n'])}" if c else ""))
+    return f'<section class="aq-sec estante-top st-equipos"><div class="wrap"><h2>{ttl}</h2><div class="st-eq">{out}</div></div></section>'
+
+
 def ld_base(nombre, titulo, desc, miga, pk=None):
     url = f"{DOMINIO}/{nombre}" if nombre != "index.html" else f"{DOMINIO}/"
     return [{"@type": "WebPage", "@id": url, "name": titulo, "url": url, "inLanguage": PAISES[pk]["cod"] if pk else "es", "description": desc, "dateModified": HOY, "isPartOf": {"@id": f"{DOMINIO}/#negocio"},
@@ -114,7 +141,7 @@ NEGOCIO_LD = {"@type": ["ProfessionalService", "LocalBusiness"], "@id": f"{DOMIN
               "knowsAbout": [SERVICIOS[s]["tit"] for s in SERVICIOS], "contactPoint": {"@type": "ContactPoint", "telephone": "+" + WA_DEF, "contactType": "customer service", "availableLanguage": "es"}}
 
 
-def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), prio="0.6", pk=None, tipo="guias"):
+def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), prio="0.6", pk=None, tipo="guias", ctx=None):
     titulo = titulo.strip()
     if len(titulo) > 66:
         titulo = titulo[:66].rsplit(" ", 1)[0].rstrip(" ,:;·|-")
@@ -140,6 +167,9 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
             '<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="tema.css?v=st1">'
             f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>'
             + (f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>' if GTM else ""))
+    if cuerpo.startswith('<section class="hero">') and "st-equipos" not in cuerpo:
+        k = cuerpo.index("</section>") + len("</section>")
+        cuerpo = cuerpo[:k] + panel_equipos(pk, ctx) + cuerpo[k:]
     t = head + encabezado(pk) + bc + cuerpo + pie() + '<script src="buscar.js" defer></script></body></html>'
     (OUT / nombre).write_text(t, encoding="utf-8")
     PAGINAS.append((nombre, prio, titulo, desc, tipo))
