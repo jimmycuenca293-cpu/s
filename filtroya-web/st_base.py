@@ -104,7 +104,7 @@ def tiles_serv(pk, c=None):
     return f'<div class="st-servs">{out}</div>'
 
 
-def panel_equipos(pk=None, c=None, titulo=None):
+def panel_equipos(pk=None, c=None, titulo=None, compacto=False):
     """Todos los electrodomésticos que reparamos, con imagen, líneas Samsung y fallas típicas. pk/c dan el idioma local y el destino."""
     base = pk or "colombia"
     sv_lista = SERV_PAIS[pk] if pk else ORDEN_SERV + ["tv"]
@@ -117,10 +117,15 @@ def panel_equipos(pk=None, c=None, titulo=None):
         msg = f"Hola, necesito servicio técnico para mi {s1} Samsung" + (f" en {nom}" if nom else "")
         badge = '<span class="st-eq-badge">Solo Costa Rica</span>' if (sv == "tv" and not pk) else ""
         chips = "".join(f"<li>{esc(x)}</li>" for x in S["sintomas"][:3])
+        if compacto:
+            out += (f'<a class="st-serv" href="{href}">{ilus(sv, 64)}<b>{esc(cap(s2))}</b><small>{"Ver servicio en " + esc(nom) if nom else "Ver servicio"}</small></a>')
+            continue
         out += (f'<article class="st-eq-c"><div class="st-eq-top"><a class="st-eq-img" href="{href}" aria-label="{esc(S["tit"])}">{ilus(sv, 72)}</a><div><h3>{esc(cap(s2) if c or pk else S["tit"])}{badge}</h3><img src="img/samsung-logo.png" alt="Samsung" width="80" height="13" loading="lazy"></div></div>'
                 f'<p class="st-eq-lin">{esc(cap(S["lineas"]))}</p><ul class="st-eq-chips">{chips}</ul>'
                 f'<div class="st-eq-btn"><a class="st-btn sol" href="{href}">{"Ver servicio" + (" en " + esc(nom) if nom else "")}</a><a class="st-btn wa" href="{wa_link(base, msg)}" target="_blank" rel="noopener">{ICO["wa"]} WhatsApp</a></div></article>')
     ttl = titulo or ("Todos los electrodomésticos Samsung que reparamos" + (f" en {esc(c['n'])}" if c else ""))
+    if compacto:
+        return f'<section class="aq-sec estante-top st-equipos"><div class="wrap"><h2>{ttl}</h2><div class="st-servs">{out}</div></div></section>'
     return f'<section class="aq-sec estante-top st-equipos"><div class="wrap"><h2>{ttl}</h2><div class="st-eq">{out}</div></div></section>'
 
 
@@ -141,7 +146,7 @@ NEGOCIO_LD = {"@type": ["ProfessionalService", "LocalBusiness"], "@id": f"{DOMIN
               "knowsAbout": [SERVICIOS[s]["tit"] for s in SERVICIOS], "contactPoint": {"@type": "ContactPoint", "telephone": "+" + WA_DEF, "contactType": "customer service", "availableLanguage": "es"}}
 
 
-def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), prio="0.6", pk=None, tipo="guias", ctx=None):
+def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), prio="0.6", pk=None, tipo="guias", ctx=None, compacto=False):
     titulo = titulo.strip()
     if len(titulo) > 66:
         titulo = titulo[:66].rsplit(" ", 1)[0].rstrip(" ,:;·|-")
@@ -169,7 +174,7 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
             + (f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>' if GTM else ""))
     if cuerpo.startswith('<section class="hero">') and "st-equipos" not in cuerpo:
         k = cuerpo.index("</section>") + len("</section>")
-        cuerpo = cuerpo[:k] + panel_equipos(pk, ctx) + cuerpo[k:]
+        cuerpo = cuerpo[:k] + panel_equipos(pk, ctx, None, compacto) + cuerpo[k:]
     t = head + encabezado(pk) + bc + cuerpo + pie() + '<script src="buscar.js" defer></script></body></html>'
     (OUT / nombre).write_text(t, encoding="utf-8")
     PAGINAS.append((nombre, prio, titulo, desc, tipo))

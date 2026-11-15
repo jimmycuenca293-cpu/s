@@ -49,7 +49,7 @@ def wa_link(pk, msg):
 CIU = []
 for pk, P in PAISES.items():
     for (n, dep, zonas, tipo) in P["ciudades"]:
-        CIU.append(dict(n=n, dep=dep, zonas=zonas, pk=pk, s=slug(n), pais=P["nombre"], cap=(tipo == "1")))
+        CIU.append(dict(n=n, dep=dep, zonas=[(f"Centro de {n}" if z == "Centro" else z) for z in zonas], pk=pk, s=slug(n), pais=P["nombre"], cap=(tipo == "1")))
 CIU_PAIS = {pk: [c for c in CIU if c["pk"] == pk] for pk in PAISES}
 SERV_PAIS = {pk: [s for s in ORDEN_SERV] + (["tv"] if PAISES[pk]["tv"] else []) for pk in PAISES}
 GEN = {"nevera": "neveras", "lava": "lavadoras", "seca": "secadoras", "lavaplatos": "lavavajillas", "cocina": "cocinas-y-hornos", "micro": "microondas", "tv": "televisores"}
@@ -103,4 +103,5 @@ def ilus(sv, tam=96):
 
 ICO = {"lupa": '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>', "wa": '<svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor"><path d="M13.6 2.3A7.85 7.85 0 0 0 8 0C3.6 0 .07 3.56.06 7.93c0 1.4.37 2.76 1.06 3.97L0 16l4.2-1.1a7.93 7.93 0 0 0 3.8.97c4.37 0 7.93-3.56 7.93-7.93a7.9 7.9 0 0 0-2.33-5.64zM8 14.5a6.57 6.57 0 0 1-3.36-.92l-.24-.14-2.5.65.67-2.43-.16-.25A6.56 6.56 0 0 1 1.4 7.9c0-3.63 2.97-6.6 6.6-6.6 1.77 0 3.43.69 4.68 1.94a6.55 6.55 0 0 1 1.93 4.67c0 3.63-2.96 6.6-6.6 6.6zm3.62-4.94c-.2-.1-1.17-.58-1.35-.64-.18-.07-.31-.1-.44.1-.13.2-.5.64-.62.78-.11.13-.23.15-.43.05-.2-.1-.83-.3-1.58-.97-.58-.52-.98-1.16-1.1-1.35-.1-.2-.01-.3.09-.4.09-.09.2-.23.3-.35.1-.12.13-.2.2-.33.06-.13.03-.25-.02-.35-.05-.1-.44-1.06-.6-1.45-.16-.38-.32-.33-.44-.34h-.38c-.13 0-.35.05-.53.25-.18.2-.7.68-.7 1.67 0 .98.72 1.93.82 2.07.1.13 1.4 2.14 3.4 3 .47.2.84.33 1.13.42.48.15.91.13 1.25.08.38-.06 1.17-.48 1.34-.94.16-.46.16-.86.11-.94-.05-.08-.18-.13-.38-.23z"/></svg>'}
 exec(open(AQUI / "st_base.py", encoding="utf-8").read())
+exec(open(AQUI / "st_motor.py", encoding="utf-8").read())
 exec(open(AQUI / "st_paginas.py", encoding="utf-8").read())

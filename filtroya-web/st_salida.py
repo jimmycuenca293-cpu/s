@@ -1,6 +1,7 @@
 # Archivos de salida: buscador y banner, formulario de solicitud, API, mapa del sitio, sitemaps, robots, llms y datos (se ejecuta al final de st_paginas.py).
 mapa = lambda t, its: f'<h2 style="font-size:22px;margin:22px 0 10px">{esc(t)}</h2><ul class="spec-list">' + "".join(f'<li><a href="{u}">{esc(n)}</a></li>' for n, u in its) + "</ul>"
 cuerpo = (mapa("Países", [(f"Servicio técnico Samsung en {P['nombre']}", R_PAIS(pk)) for pk, P in PAISES.items()]) + mapa("Ciudades", [(f"Servicio técnico Samsung en {c['n']}", R_CIU(c)) for c in CIU])
+          + mapa("Zonas", [(f"Servicio técnico Samsung en {z}, {c['n']}", R_Z(c, z)) for c, z in ZONAS_P]) + mapa("Mantenimiento por ciudad", [(f"Mantenimiento en {c['n']}", R_MANT(c)) for c in CIU]) + mapa("Voltaje por país", [(f"Voltaje en {P['nombre']}", R_VOLT(pk)) for pk, P in PAISES.items()])
           + mapa("Servicios", [(f"Servicio técnico de {SERVICIOS[s]['tit'].lower()} Samsung", R_SERV(s)) for s in ORDEN_SERV + ["tv"]]) + mapa("Guías de fallas", [(g["tit"], R_G(g)) for g in GUIAS])
           + mapa("Ayuda", [("Solicitar visita", "solicitar-visita.html"), ("Cobertura", "cobertura-servicio-tecnico-samsung.html"), ("Preguntas frecuentes", "preguntas-frecuentes-servicio-tecnico-samsung.html"), ("Respuestas rápidas", "respuestas-para-ia-servicio-tecnico-samsung.html"), ("Quiénes somos", "quienes-somos.html"), ("Contacto", "contacto.html")]))
 pagina("mapa-del-sitio.html", "Mapa del sitio | Servicio técnico Samsung", "Todas las páginas: países, ciudades, servicios y guías de fallas del servicio técnico Samsung.", "mapa del sitio servicio tecnico samsung", [("Inicio", "index.html"), ("Mapa del sitio", None)],
@@ -10,6 +11,7 @@ pagina("mapa-del-sitio.html", "Mapa del sitio | Servicio técnico Samsung", "Tod
 items = [[P["nombre"], R_PAIS(pk), "País", f"{len(CIU_PAIS[pk])} ciudades"] for pk, P in PAISES.items()] + [[c["n"], R_CIU(c), "Ciudad", c["pais"]] for c in CIU]
 items += [[SERVICIOS[s]["tit"], R_SERV(s), "Servicio", "Reparación Samsung"] for s in ORDEN_SERV + ["tv"]] + [[g["tit"], R_G(g), "Guía de fallas", ""] for g in GUIAS]
 items += [[f"{cap(pal(c['pk'], sv)[1])} en {c['n']}", R_CS(c, sv), "Reparación", c["pais"]] for c in CIU for sv in SERV_PAIS[c["pk"]]]
+items += [[f"{z} · {c['n']}", R_Z(c, z), "Zona", c["pais"]] for c, z in ZONAS_P]
 js = ("(function(){var D=" + json.dumps(items, ensure_ascii=False, separators=(",", ":")) + ";"
       "function n(s){return s.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9 ]+/g,' ').trim()}var X=D.map(function(r){return n(r[0]+' '+r[2]+' '+r[3])});"
       "function buscar(q){q=n(q);if(!q)return[];var t=q.split(/ +/),o=[];for(var i=0;i<D.length;i++){var ok=true,sc=0;for(var j=0;j<t.length;j++){var p=X[i].indexOf(t[j]);if(p<0){ok=false;break}sc+=p===0?0:1}if(ok){var e=n(D[i][0]);o.push([sc+(e.indexOf(q)===0?-2:0)+(D[i][2]==='Ciudad'||D[i][2]==='País'?0:.5),i])}}o.sort(function(a,b){return a[0]-b[0]});return o.slice(0,14).map(function(x){return D[x[1]]})}"
@@ -82,7 +84,7 @@ if os.environ.get("SMTP_CLAVE"):
 
 # datos estructurados, llms, robots, sitemaps, .htaccess
 DATA = {"negocio": {"nombre": NOMBRE, "tipo": "Servicio técnico independiente especializado en electrodomésticos Samsung (no es Samsung Electronics)", "url": DOMINIO + "/", "atencion": "A domicilio", "diagnostico": "Primero el diagnóstico; el valor se confirma antes de reparar", "actualizado": HOY},
-        "paises": {P["nombre"]: {"url": f"{DOMINIO}/{R_PAIS(pk)}", "whatsapp": "+" + wa_num(pk), "ciudades": [{"ciudad": c["n"], "zonas": c["zonas"], "url": f"{DOMINIO}/{R_CIU(c)}", "servicios": {pal(pk, sv)[1]: f"{DOMINIO}/{R_CS(c, sv)}" for sv in SERV_PAIS[pk]}} for c in CIU_PAIS[pk]]} for pk, P in PAISES.items()},
+        "paises": {P["nombre"]: {"url": f"{DOMINIO}/{R_PAIS(pk)}", "whatsapp": "+" + wa_num(pk), "ciudades": [{"ciudad": c["n"], "zonas": {z: f"{DOMINIO}/{R_Z(c, z)}" for z in c["zonas"]}, "mantenimiento": f"{DOMINIO}/{R_MANT(c)}", "clima": CLIMA[c["s"]]["clima"], "altitud_m": CLIMA[c["s"]]["alt"], "url": f"{DOMINIO}/{R_CIU(c)}", "servicios": {pal(pk, sv)[1]: f"{DOMINIO}/{R_CS(c, sv)}" for sv in SERV_PAIS[pk]}} for c in CIU_PAIS[pk]]} for pk, P in PAISES.items()},
         "servicios": {SERVICIOS[s]["tit"]: {"lineas": SERVICIOS[s]["lineas"], "fallas": SERVICIOS[s]["sintomas"], "url": f"{DOMINIO}/{R_SERV(s)}"} for s in SERVICIOS}}
 (OUT / "datos-servicio-tecnico.json").write_text(json.dumps(DATA, ensure_ascii=False, indent=1), encoding="utf-8")
 ll = [f"# {NOMBRE}", "", f"> Servicio técnico independiente especializado en electrodomésticos Samsung (no somos Samsung Electronics). Visita a domicilio en {len(CIU)} ciudades de {len(PAISES)} países: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas; televisores en Costa Rica. Primero el diagnóstico; el valor se confirma antes de reparar. Actualizado el {FECHA_LARGA}.", "", "## Países y ciudades"]
@@ -93,8 +95,8 @@ ll += ["", "## Datos", f"- [Datos estructurados]({DOMINIO}/datos-servicio-tecnic
 LF = ll[:3] + ["", "## Preguntas y respuestas", ""] + [x for q, a in G_IA for x in (f"**{q}**", a, "")] + ["## Guías (texto completo)", ""] + [x for g in GUIAS for x in (f"### {g['tit']}", g["res"], re.sub(r"<[^>]+>", " ", g["cuerpo"]), "")]
 (OUT / "llms-full.txt").write_text("\n".join(LF) + "\n", encoding="utf-8")
 (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /data/\n\n" + "".join(f"User-agent: {b}\nAllow: /\n\n" for b in ("GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web", "Claude-SearchBot", "Claude-User", "PerplexityBot", "Perplexity-User", "Google-Extended", "Applebot-Extended", "Bingbot", "Googlebot", "Amazonbot", "meta-externalagent", "cohere-ai", "DuckAssistBot", "MistralAI-User", "YouBot", "Applebot"))
-                                + f"Sitemap: {DOMINIO}/sitemap.xml\n" + "".join(f"Sitemap: {DOMINIO}/sitemap-{g}.xml\n" for g in ("paises", "ciudades", "servicios", "guias")), encoding="utf-8")
-grupos = {g: [] for g in ("paises", "ciudades", "servicios", "guias")}
+                                + f"Sitemap: {DOMINIO}/sitemap.xml\n" + "".join(f"Sitemap: {DOMINIO}/sitemap-{g}.xml\n" for g in ("paises", "ciudades", "zonas", "servicios", "guias")), encoding="utf-8")
+grupos = {g: [] for g in ("paises", "ciudades", "zonas", "servicios", "guias")}
 for n, pr, _t, _d, tp in PAGINAS:
     grupos[tp].append((n, pr))
 for g, l in grupos.items():
