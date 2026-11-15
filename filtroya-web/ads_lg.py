@@ -28,6 +28,8 @@ AQUI = pathlib.Path(__file__).resolve().parent
 OUT = pathlib.Path(sys.argv[1])
 DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else "https://tu-dominio-lg.com").rstrip("/")
 TOKEN = sys.argv[3] if len(sys.argv) > 3 else ""
+TOKENS = [t_.strip() for t_ in TOKEN.split(",") if t_.strip()]
+TOKEN = TOKENS[0] if TOKENS else ""
 GTM = (sys.argv[4] if len(sys.argv) > 4 else "").strip().upper()
 HOY = datetime.date.today().isoformat()
 _M = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
@@ -362,7 +364,7 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
             '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="theme-color" content="#a50034"><meta name="author" content="Filtro de Agua LG Colombia"><meta name="geo.region" content="CO"><meta name="geo.placename" content="Colombia"><meta name="language" content="es-CO">'
             f'<link rel="alternate" hreflang="es-CO" href="{url}"><link rel="alternate" hreflang="es" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}"><link rel="alternate" type="text/plain" href="{DOMINIO}/llms.txt" title="llms.txt"><link rel="alternate" type="application/json" href="{DOMINIO}/datos-filtros-lg.json" title="Catálogo estructurado">'
             + (f'<link rel="preload" as="image" href="{og}">' if og else "")
-            + (f'<meta name="google-site-verification" content="{TOKEN}">' if TOKEN else "")
+            + "".join(f'<meta name="google-site-verification" content="{t_}">' for t_ in TOKENS)
             + (("<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','" + GTM + "');</script>") if GTM else "")
             + f'<meta property="og:type" content="website"><meta property="og:locale" content="es_CO"><meta property="og:site_name" content="Filtro de Agua LG Colombia"><meta property="og:title" content="{esc(titulo)}">'
             f'<meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{DOMINIO}/{og or PS[0]["img"]}"><meta property="og:image:alt" content="{esc(titulo)}">'
