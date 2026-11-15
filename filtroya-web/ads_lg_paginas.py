@@ -1,3 +1,4 @@
+import hashlib
 # Páginas de la tienda de LG. Se ejecuta dentro de ads_lg.py (comparte sus funciones y datos).
 FPAGO = "Pagas en línea con Wompi (tarjeta, PSE, Nequi o Bancolombia) o contra entrega, en efectivo, sin recargo."
 MOD_TXT = "; ".join(f"{p['corto']} ({', '.join(p['modelos'])})" for p in PS if p["modelos"])
@@ -78,14 +79,14 @@ top3 = PS[:3]
 stage = ('<div class="aq-stage"><i></i><i></i><i></i><i></i>' + "".join(f'<a class="s{i + 1}" href="{p["url"]}" aria-label="{esc(p["corto"])}"><img src="{p["img"]}" alt="Filtro de agua LG {esc(p["corto"])}, código {esc(p["ref"])}" width="300" height="300" {"loading=eager" if i == 1 else "loading=lazy"}></a>' for i, p in enumerate(top3))
          + f'<span class="aq-price-tag">Desde {cop(PREC[0])}</span></div>')
 chips = "".join(f'<a href="{R_MOD(m)}">{m}</a>' for m, p in MODELOS[:2]) + "".join(f'<a href="{R_CIU(s)}">{esc(CIUDAD[s][0])}</a>' for s in TOP[:3])
-hero = ('<section class="aq-hero" id="inicio"><div class="wrap"><div><span class="kicker">Distribuidor autorizado · Toda Colombia</span><h1>Filtro de Agua LG Original para tu Nevecón</h1>'
+hero = ('<section class="aq-hero compacto" id="inicio"><div class="wrap"><div><span class="kicker">Distribuidor autorizado · Toda Colombia</span><h1>Filtro de Agua LG Original para tu Nevecón</h1>'
         '<p class="lead">Escoge tu referencia, agrégala al carrito y paga en línea o contra entrega. Te enviamos a tu ciudad y confirmamos que sea el filtro de tu nevecón LG antes de despachar.</p>'
         '<div class="aq-big"><form role="search" onsubmit="return false">' + ICONOS["lupa"].replace("<svg", '<svg aria-hidden="true"') + '<input type="search" data-aq-q placeholder="Escribe tu ciudad o el modelo de tu nevecón (LFX28968ST…)" autocomplete="off" aria-label="Buscar"><div class="aq-res" hidden></div></form></div>'
         f'<div class="aq-pop-chips"><span>Prueba:</span>{chips}</div><div class="aq-trust"><span>Producto nuevo y sellado</span><span>Pago seguro Wompi</span><span>Contra entrega</span><span>5 días de retracto</span></div></div>{stage}</div></section>')
 qa_home = qa("¿Qué filtro de agua necesita mi nevecón LG?",
              f"Depende del modelo de tu nevecón: {esc(MOD_TXT)}. También vendemos el LT600P (5231JA2006) y el filtro externo ADQ73693903 para los equipos que lo usan. Los filtros LG cuestan entre {RANGO} con <b>envío gratis a toda Colombia</b>; "
              "pagas en línea con Wompi o contra entrega y recibes la confirmación por correo. Somos distribuidores autorizados.")
-estante = seccion("Elige tu filtro LG", '<div class="tf-grid">' + "".join(tarjeta(p) for p in PS) + "</div>", sub=f"Seis referencias reales para nevecones LG, con su ficha técnica completa. Toca la foto o el nombre.").replace('<section class="aq-sec">', '<section class="aq-sec" id="filtros">', 1)
+estante = seccion("Elige tu filtro LG · envío gratis a toda Colombia", '<div class="tf-grid">' + "".join(tarjeta(p) for p in PS) + "</div>").replace('<section class="aq-sec">', '<section class="aq-sec estante-top" id="filtros">', 1)
 tabla_mod = ('<div class="tbl-wrap"><table class="spec-table"><tr><th>Modelo de nevecón LG</th><th>Filtro que usa</th><th>Precio</th></tr>'
              + "".join(f'<tr><td><a href="{R_MOD(m)}">{esc(m)}</a></td><td><a href="{p["url"]}">{esc(p["nombre"])}</a></td><td><b>{cop(p["precio"])}</b></td></tr>' for m, p in MODELOS) + "</table></div>"
              "<p class=\"note\" style=\"margin-top:14px\">¿Tu modelo no está en la lista? Escríbelo en el buscador o mira el código impreso en tu filtro viejo: <a href=\"cual-es-mi-filtro.html\">cómo identificar tu filtro</a>.</p>")
@@ -121,7 +122,7 @@ ld_home = [{"@type": "ItemList", "name": "Filtros de agua LG para nevecón", "it
 pagina("index.html", "Filtro de Agua LG para Nevecón | LT1000P, LT700P | Envío Gratis",
        f"Filtro de agua LG para nevecón y nevera: " + ", ".join(f"{p['corto']} {cop(p['precio'])}" for p in PS[:5]) + f" y externo {cop(PS[-1]['precio'])}. Distribuidores autorizados. Envío gratis y pago contra entrega en toda Colombia.",
        "filtro agua lg, filtro nevecon lg, filtro nevera lg, lt1000p, lt700p, lt800p, lt500p, lt600p, adq73693903, filtro agua refrigerador lg, precio filtro lg, filtro lg contra entrega, cambiar filtro nevecon lg",
-       [("Inicio", None)], hero + qa_home + estante + modelos_sec + confianza + rapidas_sec + fichas_sec + comp_sec + cob_sec + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0")
+       [("Inicio", None)], hero + estante + qa_home + modelos_sec + confianza + rapidas_sec + fichas_sec + comp_sec + cob_sec + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=PS[1]["img"])
 
 # ---------------------------------------------------------------- fichas de producto
 for p in PS:
@@ -183,11 +184,19 @@ for c in CIU:
     qa_t = [f"Sí. Enviamos filtros de agua LG a {corto_c} ({c[1]}) con envío gratis; llegan en {d_}. Hay {len(PS)} referencias ({', '.join(p['ref'] for p in PS[:4])}…) desde {cop(PREC[0])}. {FPAGO}",
             f"Vendemos y enviamos el filtro de tu nevecón LG a {corto_c}: entrega en {d_}, envío gratis y precios de {RANGO}. Escoge tu referencia por el código del filtro viejo o por el modelo de tu nevecón; pagas en línea o contra entrega.",
             f"En {corto_c}{' (' + area + ')' if area else ''} entregamos filtros LG en {d_}, con envío sin costo. Referencias: " + ", ".join(p["corto"] for p in PS) + f". Paga con Wompi o en efectivo al recibir."]
-    cuerpo = (hero_simple(u["eyebrow"], u["h1"], html.unescape(re.sub(r"<[^>]+>", "", u["intro"]))) + qa(f"¿Envían filtros de agua LG a {corto_c}?", esc(rng.choice(qa_t))) + strip_rapida()
+    cuerpo = (hero_simple(u["eyebrow"], u["h1"], html.unescape(re.sub(r"<[^>]+>", "", u["intro"]))) + qa(f"¿Envían filtros de agua LG a {corto_c}?", esc(rng.choice(qa_t)))
               + '<section class="aq-sec"><div class="wrap">' + u["cuerpo"] + "</div></section>" + faq_html(u["preguntas"], f"Preguntas de {corto_c}"))
-    pagina(R_CIU(s), u["titulo"], u["desc"], f"filtro agua lg {corto_c.lower()}, filtro nevecon lg {corto_c.lower()}, comprar filtro lg {corto_c.lower()}, filtro nevera lg {c[1].lower()}", [("Inicio", "index.html"), ("Todas las ciudades", "filtro-agua-lg-por-ciudad-colombia.html"), (corto_c, None)],
+    _pat = ["Filtro de agua LG en {c}: precio, envío gratis y contra entrega", "Comprar filtro de nevera LG en {c} | Envío gratis", "Filtro nevecón LG en {c} | Desde " + cop(PREC[0]) + " con envío gratis",
+            "Filtro de agua para nevera LG en {c}: compra en línea", "Filtros LG en {c} | Contra entrega y envío gratis"]
+    _t = _pat[int(hashlib.md5(s.encode()).hexdigest()[:6], 16) % 5].format(c=c[0])
+    if len(_t) > 66:
+        _t = f"Filtro de agua LG en {c[0]} | Envío gratis"
+    if len(_t) > 66:
+        _t = f"Filtro LG en {c[0]} | Envío gratis"
+    _items = {"@type": "ItemList", "name": f"Filtros de agua LG con envío a {c[0]}", "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": {**ld_producto(p), "offers": {**ld_producto(p)["offers"], "areaServed": {"@type": "City", "name": c[0]}}}} for i, p in enumerate(PS)]}
+    pagina(R_CIU(s), _t, u["desc"], f"filtro agua lg {corto_c.lower()}, filtro nevecon lg {corto_c.lower()}, comprar filtro lg {corto_c.lower()}, filtro nevera lg {c[1].lower()}", [("Inicio", "index.html"), ("Todas las ciudades", "filtro-agua-lg-por-ciudad-colombia.html"), (corto_c, None)],
            cuerpo, u["preguntas"], [{"@type": "Service", "name": f"Filtros de agua LG con envío a {c[0]}", "serviceType": "Venta de filtros de agua para nevera", "provider": {"@id": f"{DOMINIO}/#tienda"},
-                                     "areaServed": {"@type": "City", "name": c[0], "containedInPlace": {"@type": "AdministrativeArea", "name": c[1]}}}], prio="0.7" if s in GRANDES_S else "0.5")
+                                     "areaServed": {"@type": "City", "name": c[0], "containedInPlace": {"@type": "AdministrativeArea", "name": c[1]}}}, _items], prio="0.7" if s in GRANDES_S else "0.5")
     if s in GRANDES_S:
         rng2 = random.Random(f"precio|{s}")
         orden = PS[:]
@@ -309,4 +318,5 @@ ll += ["", "## Datos completos", f"- [Catálogo estructurado JSON]({DOMINIO}/dat
 (OUT / "llms.txt").write_text("\n".join(ll) + "\n", encoding="utf-8")
 (OUT / ".htaccess").write_text("DirectoryIndex index.html index.php\nErrorDocument 404 /404.html\nOptions -Indexes\nRewriteEngine On\nRewriteCond %{HTTPS} off\nRewriteCond %{HTTP:X-Forwarded-Proto} !https\nRewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]\n"
                                "RewriteCond %{HTTP_HOST} ^www\\.(.+)$ [NC]\nRewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]\n<FilesMatch \"\\.(sqlite|sqlite-wal|sqlite-shm|log)$\">\n  Require all denied\n</FilesMatch>\n", encoding="utf-8")
+exec(open(AQUI / "ads_lg_tecnico.py", encoding="utf-8").read())
 print(f"listo: {OUT} · {len(PAGINAS)} páginas · {len(CIU)} ciudades · {len(PS)} filtros")

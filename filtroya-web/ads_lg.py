@@ -154,7 +154,7 @@ def pintar(t):
 
 
 css = pintar((AQUI / "ads22_tema.css").read_text(encoding="utf-8"))
-css += "\n.aq-hero .kicker,.hero .kicker{background:rgba(255,255,255,.16)}.aq-brand img{height:38px}.aq-qa-sec{padding:0 0 12px}.qa-datos{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}.qa-datos li{background:rgba(255,255,255,.7);border:1px solid rgba(165,0,52,.14);border-radius:10px;padding:8px 12px;font-size:.88rem}.qa-datos b{display:block;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:#a50034}.qa-meta{margin:12px 0 0;font-size:.78rem;opacity:.7}\n"
+css += "\n.aq-hero .kicker,.hero .kicker{background:rgba(255,255,255,.16)}.aq-brand img{height:38px}.aq-qa-sec{padding:0 0 12px}.aq-hero.compacto{padding:12px 0 40px}.aq-hero.compacto .lead,.aq-hero.compacto .aq-trust{display:none}.aq-hero.compacto .aq-stage{max-width:230px}.aq-sec.estante-top h2{font-size:1.45rem;margin:0 0 12px}.aq-hero.compacto .aq-hero-in{gap:20px}.aq-hero.compacto h1{font-size:clamp(1.65rem,3vw,2.3rem);margin:2px 0 8px}.aq-hero.compacto p.lead{font-size:.98rem}.aq-hero.compacto .aq-big{margin-top:12px}.aq-hero.compacto .aq-trust{margin-top:10px}@media(max-width:640px){.aq-hero.compacto p.lead{display:none}.aq-hero.compacto{padding:12px 0 36px}.aq-hero.compacto .aq-big{display:none}}.aq-sec.estante-top{padding-top:8px}.aq-up{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;background:#a50034;color:#fff;border:2px solid #fff;border-radius:999px;padding:12px 18px;font:700 14px Inter,sans-serif;text-decoration:none;box-shadow:0 10px 26px rgba(0,0,0,.3);opacity:0;pointer-events:none;transform:translateY(12px);transition:.25s}.aq-up.on{opacity:1;pointer-events:auto;transform:none}.qa-datos{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}.qa-datos li{background:rgba(255,255,255,.7);border:1px solid rgba(165,0,52,.14);border-radius:10px;padding:8px 12px;font-size:.88rem}.qa-datos b{display:block;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:#a50034}.qa-meta{margin:12px 0 0;font-size:.78rem;opacity:.7}\n"
 (OUT / "tema.css").write_text(css, encoding="utf-8")
 m_v = re.search(r":root\{([^}]*)\}", css)
 c1 = css[css.index("/* ---------- barra superior y encabezado ---------- */"):css.index("/* ---------- portada de página (hero) ---------- */")]
@@ -335,6 +335,10 @@ TIENDA_LD = {"@type": "OnlineStore", "@id": f"{DOMINIO}/#tienda", "name": "Filtr
              "currenciesAccepted": "COP", "paymentAccepted": "Tarjeta de crédito, tarjeta débito, PSE, Nequi, Bancolombia, contra entrega", "contactPoint": {"@type": "ContactPoint", "telephone": "+57" + WA[2:], "contactType": "customer service", "areaServed": "CO", "availableLanguage": "es"}}
 
 
+def estante_min():
+    return ('<section class="aq-sec estante-top"><div class="wrap"><h2>Filtros LG disponibles · envío gratis a toda Colombia</h2><div class="tf-grid">' + "".join(tarjeta(p) for p in PS) + "</div></div></section>")
+
+
 def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), prio="0.6", og=None, hero=None):
     titulo = titulo.strip()
     if len(titulo) > 66:
@@ -361,7 +365,10 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
             '<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">'
             '<link rel="stylesheet" href="tema.css?v=lg1"><link rel="stylesheet" href="pasarela.css">'
             f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>')
-    t = head + encabezado() + bc + fix(cuerpo) + pie() + '<script src="carrito.js" defer></script><script src="buscar.js" defer></script></body></html>'
+    if cuerpo.startswith('<section class="hero">') and nombre not in ("404.html",):
+        k = cuerpo.index("</section>") + len("</section>")
+        cuerpo = cuerpo[:k] + estante_min() + cuerpo[k:]
+    t = head + encabezado() + bc + fix(cuerpo) + pie() + '<a class="aq-up" href="' + ("#filtros" if nombre == "index.html" else "index.html#filtros") + '">↑ Ver filtros</a><script>(function(){var a=document.querySelector(".aq-up");if(!a)return;function f(){a.classList.toggle("on",window.scrollY>700)}addEventListener("scroll",f,{passive:true});f()})()</script><script src="carrito.js" defer></script><script src="buscar.js" defer></script></body></html>'
     (OUT / nombre).write_text(t, encoding="utf-8")
     PAGINAS.append((nombre, prio, titulo, desc))
     return t
