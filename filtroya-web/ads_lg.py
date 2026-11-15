@@ -5,7 +5,7 @@ carrito, pedidos por correo y hoja, llms.txt, sitemap y robots.
 
 Uso:  python3 ads_lg.py <carpeta_de_salida> [dominio] [etiqueta_search_console]
 """
-import datetime
+import os, datetime
 import html
 import json
 import pathlib
@@ -204,7 +204,14 @@ cfg = (SRC / "api" / "config.sample.php").read_text(encoding="utf-8")
 cfg = (cfg.replace("'dominio' => 'https://filtrosnevecones.com'", f"'dominio' => '{DOMINIO}'").replace("w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4", TOKEN)
        .replace("'nombre'    => 'Filtros Nevecones Colombia'", "'nombre'    => 'Filtro de Agua LG Colombia'").replace("'whatsapp' => '3107147299'", "'whatsapp' => '3205102995'")
        .replace("'telefono'  => '310 714 7299'", "'telefono'  => '320 510 2995'").replace("'gtm' => 'GTM-5WSNHV66'", f"'gtm' => '{GTM}'").replace("'contraentrega' => ['activo' => true, 'recargo' => 5000]", "'contraentrega' => ['activo' => true, 'recargo' => 0]"))
+# Hoja de cálculo, correo y panel: se leen de variables de entorno para no guardar claves en el repositorio
+for _k, _v in (("'hoja' => ['url' => '', 'clave' => '']", f"'hoja' => ['url' => '{os.environ.get('HOJA_URL', '')}', 'clave' => '{os.environ.get('HOJA_CLAVE', '')}']"), ("'admin_clave' => ''", f"'admin_clave' => '{os.environ.get('ADMIN_CLAVE', '')}'")):
+    cfg = cfg.replace(_k, _v, 1)
+if os.environ.get("SMTP_CLAVE"):
+    cfg = cfg.replace("'clave'   => '',", f"'clave'   => '{os.environ['SMTP_CLAVE']}',", 1)
 (api / "config.sample.php").write_text(cfg, encoding="utf-8")
+if os.environ.get("HOJA_CLAVE"):
+    (api / "config.php").write_text(cfg, encoding="utf-8")
 shutil.copy(SRC / "estilo.css", OUT / "estilo.css")
 shutil.copy(SRC / "carrito.js", OUT / "carrito.js")
 for f in ("carrito.php", "gracias.php", "admin.php", "diagnostico.php", "terminos.php", "privacidad.php", "garantia-y-retracto.php", "opinion.php"):
