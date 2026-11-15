@@ -20,8 +20,9 @@ CRITERIOS = ["Hace el diagnóstico antes de reparar y te explica la falla en pal
 VIDA = [("Ruido nuevo o vibración fuerte", "Normalmente se repara", "Se evalúa si hay daño en el compresor o el motor"), ("El equipo no enciende", "Muchas veces es fuente o tarjeta: se repara", "Si la tarjeta ya no se consigue, el técnico lo dice"),
         ("Fuga o humedad", "Se repara si es manguera, sello o desagüe", "Se evalúa si el tanque o el evaporador están dañados"), ("Falla repetida tras varias reparaciones", "Conviene un diagnóstico completo", "Puede convenir cambiar el equipo si la causa es estructural"),
         ("Consumo de energía muy alto", "Se revisan sellos, ventiladores y sensores", "Si el compresor está agotado, se compara costo de reparación y de un equipo nuevo")]
-BLOG = []  # (pk, slug, titulo, url)
-R_BLOG = lambda pk, sl: f"blog-{sl}-{pk}.html"
+BLOG = []
+_G4, _G5, _GU = [next(g for g in GUIAS if g['slug'].endswith(x)) for x in ('codigo-4e', 'codigo-5e', 'codigo-ue')]  # (pk, slug, titulo, url)
+R_BLOG = lambda pk, sl: f"{pk}/blog/{sl}/index.html"
 CAT = {"cuidado-clima": "Cuidado del equipo", "vida-util": "Reparar o cambiar", "checklist-visita": "Antes de la visita", "corte-de-luz": "Electricidad", "errores-lavadora": "Lavadoras", "secadora-lluvias": "Secadoras", "ahorro-energia": "Ahorro de energía",
        "mitos": "Mitos y verdades", "mantenimiento-anual": "Mantenimiento", "elegir-tecnico": "Cómo elegir técnico"}
 for pk, P in PAISES.items():
@@ -60,7 +61,7 @@ for pk, P in PAISES.items():
     posts.append(("errores-lavadora", f"Errores comunes con la {lav1} Samsung en {P['nombre']}", f"Los errores más frecuentes al usar una {lav1} Samsung en {P['nombre']}: exceso de detergente, sobrecarga, puerta cerrada y códigos ignorados.",
                   f"Los errores más comunes con una {lav1} Samsung son usar demasiado detergente, sobrecargar el tambor, cerrar la puerta al terminar y ignorar los códigos de error (4E, 5E, UE, dE, LE). Evitarlos prolonga su vida y evita malos olores.",
                   seccion("Los errores", '<ol class="vl">' + "".join(f"<li>{esc(x)}</li>" for x in mix(f"b5|{pk}", TIPS["lava"], 6)) + "</ol>")
-                  + seccion("Códigos que no debes ignorar", "<p>Consulta la <a href=\"codigos-de-error-lavadora-samsung.html\">lista de códigos de error</a> y las guías de <a href=\"lavadora-samsung-codigo-4e.html\">4E</a>, <a href=\"lavadora-samsung-codigo-5e.html\">5E</a> y <a href=\"lavadora-samsung-codigo-ue.html\">UE</a>.</p>", alt=True)
+                  + seccion("Códigos que no debes ignorar", f"<p>Consulta la <a href=\"{R_COD_LISTA(pk)}\">lista de códigos de error</a> y las guías de <a href=\"{R_G(_G4, pk)}\">4E</a>, <a href=\"{R_G(_G5, pk)}\">5E</a> y <a href=\"{R_G(_GU, pk)}\">UE</a>.</p>", alt=True)
                   + seccion(f"En {esc(c0['n'])}", f"<p>{esc(parrafo_clima(c0, c0['zonas'][0], 'lava', f'b5c|{pk}'))}</p>"),
                   [("¿Cuánto detergente usar?", "El indicado por el fabricante según la dureza del agua y la carga; el exceso deja residuos."), (f"¿Debo dejar la puerta abierta?", "Sí, entreabierta, para que el sello se seque."), ("¿Qué hago si aparece un código?", f"Anótalo y escríbenos al {wa}.")]))
     # 6
@@ -101,20 +102,13 @@ for pk, P in PAISES.items():
                   + cuerpo_p + faq_html(preg) + seccion("Sigue leyendo", rel, alt=True)
                   + seccion("¿Necesitas un técnico?", f'<div class="city-tags"><a href="{R_PAIS(pk)}">Centro de servicio técnico Samsung en {esc(P["nombre"])}</a>' + "".join(f'<a href="{R_CIU(c)}">{esc(c["n"])}</a>' for c in cs[:8]) + "</div>"))
         art = {"@type": "BlogPosting", "headline": tit, "description": desc, "inLanguage": P["cod"], "datePublished": HOY, "dateModified": HOY, "articleSection": CAT[sl], "author": {"@type": "Organization", "name": NOMBRE},
-               "publisher": {"@id": f"{DOMINIO}/#negocio"}, "mainEntityOfPage": f"{DOMINIO}/{R_BLOG(pk, sl)}"}
-        pagina(R_BLOG(pk, sl), tit, desc, f"{tit.lower()}, blog servicio tecnico samsung {P['nombre'].lower()}", [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), ("Blog", f"blog-{pk}.html"), (CAT[sl], None)], cuerpo, preg, [art], prio="0.6", pk=pk, tipo="blog")
+               "publisher": {"@id": f"{DOMINIO}/#negocio"}, "mainEntityOfPage": U(R_BLOG(pk, sl))}
+        pagina(R_BLOG(pk, sl), tit, desc, f"{tit.lower()}, blog servicio tecnico samsung {P['nombre'].lower()}", [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), ("Blog", f"{pk}/blog/index.html"), (CAT[sl], None)], cuerpo, preg, [art], prio="0.6", pk=pk, tipo="blog")
         BLOG.append((pk, sl, tit, R_BLOG(pk, sl), desc))
     lista = "".join(f'<a href="{u}" style="display:block;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:10px;text-decoration:none;color:var(--ink)"><b>{esc(t)}</b><br><small style="color:var(--mute)">{esc(d)}</small></a>' for k, sl, t, u, d in BLOG if k == pk)
-    pagina(f"blog-{pk}.html", f"Blog de servicio técnico Samsung en {P['nombre']}", f"Artículos sobre cuidado, fallas, mantenimiento y electricidad de tus electrodomésticos Samsung en {P['nombre']}: guías prácticas del centro de servicio técnico.", f"blog servicio tecnico samsung {P['nombre'].lower()}, consejos electrodomesticos samsung",
+    pagina(f"{pk}/blog/index.html", f"Blog de servicio técnico Samsung en {P['nombre']}", f"Artículos sobre cuidado, fallas, mantenimiento y electricidad de tus electrodomésticos Samsung en {P['nombre']}: guías prácticas del centro de servicio técnico.", f"blog servicio tecnico samsung {P['nombre'].lower()}, consejos electrodomesticos samsung",
            [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), ("Blog", None)], hero_simple(f"Blog · {P['nombre']}", f"Blog del centro de servicio técnico Samsung en {P['nombre']}", "Guías prácticas para cuidar y reparar tus electrodomésticos.")
            + qa(f"¿Dónde encuentro consejos para mis electrodomésticos Samsung en {P['nombre']}?", f"En este blog: cuidado según el clima de {esc(P['nombre'])}, qué hacer en un corte de luz, mantenimiento anual, mitos y cómo elegir un buen técnico.") + seccion("Artículos", lista), [], [], prio="0.7", pk=pk, tipo="blog")
-
-pagina("blog.html", "Blog del centro de servicio técnico Samsung", "Consejos prácticos para cuidar y reparar tus electrodomésticos Samsung. Elige tu país para leer los artículos de tu ciudad.", "blog servicio tecnico samsung, consejos electrodomesticos samsung",
-       [("Inicio", "index.html"), ("Blog", None)], hero_simple("Blog", "Blog del centro de servicio técnico Samsung", "Elige tu país: cada uno tiene sus propios artículos.") + qa("¿Dónde leo consejos sobre mis electrodomésticos Samsung?", "En el blog de tu país: cada uno tiene artículos propios con datos de su clima, su electricidad y sus ciudades.")
-       + seccion("Tu país", selector_paises("blog-{pk}.html")), [], [], prio="0.7", tipo="blog")
-# feed RSS del blog
-_items = "".join(f"<item><title>{esc(t)}</title><link>{DOMINIO}/{u}</link><guid>{DOMINIO}/{u}</guid><description>{esc(d)}</description></item>" for k, sl, t, u, d in BLOG)
-(OUT / "blog.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>Blog · {NOMBRE}</title><link>{DOMINIO}/blog.html</link><description>Consejos para cuidar y reparar electrodomésticos Samsung</description>{_items}</channel></rss>\n', encoding="utf-8")
 
 # ------------------------------------------------------------------ enlazar el blog desde cada país, ciudad y guía
 for pk, P in PAISES.items():
@@ -122,5 +116,5 @@ for pk, P in PAISES.items():
     for c in CIU_PAIS[pk]:
         if c["amp"]:
             continue
-        _ins(R_CIU(c), seccion(f"Artículos del blog para {esc(c['n'])}", '<div class="city-tags">' + "".join(f'<a href="{u}">{esc(t)}</a>' for k, sl, t, u, d in mix(f"bl|{c['s']}", [b for b in BLOG if b[0] == pk], 4)) + f'<a href="blog-{pk}.html"><b>Ver todo el blog →</b></a></div>', alt=True))
+        _ins(R_CIU(c), seccion(f"Artículos del blog para {esc(c['n'])}", '<div class="city-tags">' + "".join(f'<a href="{u}">{esc(t)}</a>' for k, sl, t, u, d in mix(f"bl|{c['s']}", [b for b in BLOG if b[0] == pk], 4)) + f'<a href="{pk}/blog/index.html"><b>Ver todo el blog →</b></a></div>', alt=True))
 

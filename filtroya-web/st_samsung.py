@@ -69,7 +69,7 @@ for pk, P in PAISES.items():
             zs = [f"Centro de {n}"]
         if amp:
             CLIMA[s_] = dict(BUCKETS[b], alt=alt)
-        CIU.append(dict(n=n, dep=dep, zonas=zs, pk=pk, s=s_, pais=P["nombre"], cap=(not amp and n == P["ciudades"][0][0]), amp=amp, zp=zp))
+        CIU.append(dict(n=n, d=slug(n), dep=dep, zonas=zs, pk=pk, s=s_, pais=P["nombre"], cap=(not amp and n == P["ciudades"][0][0]), amp=amp, zp=zp))
 CIU_PAIS = {pk: [c for c in CIU if c["pk"] == pk] for pk in PAISES}
 SERV_PAIS = {pk: [s for s in ORDEN_SERV] + (["tv"] if PAISES[pk]["tv"] else []) for pk in PAISES}
 GEN = {"nevera": "neveras", "lava": "lavadoras", "seca": "secadoras", "lavaplatos": "lavavajillas", "cocina": "cocinas-y-hornos", "micro": "microondas", "tv": "televisores"}
@@ -81,11 +81,31 @@ def pal(pk, sv):  # (singular, plural) en el vocabulario del país
     return P[key]
 
 
-R_PAIS = lambda pk: f"{pk}.html"
-R_CIU = lambda c: f"servicio-tecnico-samsung-{c['s']}.html"
-R_CS = lambda c, sv: f"reparacion-{slug(pal(c['pk'], sv)[1])}-samsung-{c['s']}.html"
-R_SERV = lambda pk, sv: f"servicio-tecnico-{slug(pal(pk, sv)[1])}-samsung-{pk}.html"
-R_G = lambda g: f"{g['slug']}.html"
+# URLs internas: cada país es un directorio propio (/colombia/medellin/lavadoras/). Los hrefs se escriben desde la raíz y pagina() los vuelve relativos.
+R_PAIS = lambda pk: f"{pk}/index.html"
+R_CIU = lambda c: f"{c['pk']}/{c['d']}/index.html"
+R_CS = lambda c, sv: f"{c['pk']}/{c['d']}/{slug(pal(c['pk'], sv)[1])}/index.html"
+R_SERV = lambda pk, sv: f"{pk}/{slug(pal(pk, sv)[1])}/index.html"
+R_G = lambda g, pk: f"{pk}/guias/{g['slug']}/index.html"
+R_GUIAS = lambda pk: f"{pk}/guias/index.html"
+R_INST = lambda pk, n: f"{pk}/{n}/index.html"
+R_FAQ = lambda pk: R_INST(pk, "preguntas-frecuentes")
+R_IA = lambda pk: R_INST(pk, "respuestas-rapidas")
+R_SOL = lambda pk: R_INST(pk, "solicitar-visita")
+R_MAPA = lambda pk: R_INST(pk, "mapa-del-sitio")
+R_COD = lambda pk, cod: f"{pk}/guias/{slug(pal(pk, 'lava')[0])}-samsung-codigo-{slug(cod)}/index.html"
+R_COD_LISTA = lambda pk: f"{pk}/guias/codigos-de-error-{slug(pal(pk, 'lava')[0])}-samsung/index.html"
+R_MOD = lambda pk, sv: f"{pk}/guias/como-leer-el-modelo-de-tu-{slug(pal(pk, sv)[0])}-samsung/index.html"
+for _pk in PAISES:
+    _ds = [c["d"] for c in CIU_PAIS[_pk]]
+    assert len(_ds) == len(set(_ds)), _pk
+
+
+def U(n):  # URL pública limpia de una página
+    n = "" if n == "index.html" else (n[:-10] if n.endswith("/index.html") else n)
+    return f"{DOMINIO}/{n}"
+
+
 PAGINAS = []  # (nombre, prioridad, titulo, desc, tipo)
 (OUT / "img").mkdir(parents=True, exist_ok=True)
 

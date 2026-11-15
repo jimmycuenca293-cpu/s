@@ -133,9 +133,9 @@ def faq_cs(c, sv):
     return [(q.format(**f), a.format(**f)) for q, a in mix(f"fq|{c['s']}|{sv}", FAQ_CS, 3)]
 
 
-R_Z = lambda c, z: f"servicio-tecnico-samsung-{slug(z)}-{c['s']}.html"
-R_MANT = lambda c: f"mantenimiento-electrodomesticos-samsung-{c['s']}.html"
-R_VOLT = lambda pk: f"voltaje-electrodomesticos-samsung-{pk}.html"
+R_Z = lambda c, z: f"{c['pk']}/{c['d']}/{slug(z)}/index.html"
+R_MANT = lambda c: f"{c['pk']}/{c['d']}/mantenimiento/index.html"
+R_VOLT = lambda pk: f"{pk}/voltaje/index.html"
 
 
 def zlink(c, z, texto=None):

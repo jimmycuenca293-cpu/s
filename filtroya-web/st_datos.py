@@ -33,7 +33,7 @@ PAISES = {
     "guatemala": dict(nombre="Guatemala", bandera="🇬🇹", cod="es-GT", pref="+502", wa_pref="502", art="Guatemala",
                       nevera=("refrigeradora", "refrigeradoras"), lava=("lavadora", "lavadoras"), seca=("secadora", "secadoras"), lavaplatos=("lavaplatos", "lavavajillas"), cocina=("estufa", "estufas y hornos"),
                       micro=("microondas", "microondas"), tv=None,
-                      ciudades=[("Ciudad de Guatemala", "Guatemala", ["Zona 1", "Zona 4", "Zona 10", "Zona 11", "Zona 14", "Zona 15", "Mixco", "Carretera a El Salvador"], "1")]),
+                      ciudades=[("Ciudad de Guatemala", "Guatemala", ["Zona 1", "Zona 4", "Zona 10", "Zona 11", "Zona 14", "Zona 15", "Mixco", "Carretera CA-1 Oriente"], "1")]),
     "el-salvador": dict(nombre="El Salvador", bandera="🇸🇻", cod="es-SV", pref="+503", wa_pref="503", art="El Salvador",
                         nevera=("refrigeradora", "refrigeradoras"), lava=("lavadora", "lavadoras"), seca=("secadora", "secadoras"), lavaplatos=("lavavajillas", "lavavajillas"), cocina=("cocina", "cocinas y hornos"),
                         micro=("microondas", "microondas"), tv=None,

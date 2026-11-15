@@ -6,9 +6,9 @@ DESC_Z = ["Servicio técnico Samsung a domicilio en {z}, {c}: {nev}, {lav}, seca
           "Técnicos para electrodomésticos Samsung en {z}, {c}: {nev}, {lav}, lavavajillas, estufas y microondas, con visita a domicilio.",
           "Atendemos {z}, en {c}: reparación y mantenimiento de línea blanca Samsung sin llevar el equipo a un taller. Pide tu visita por WhatsApp."]
 QA_Z = ["¿Hay técnico Samsung a domicilio en {z}?", "¿Reparan electrodomésticos Samsung en {z}, {c}?", "¿Quién repara una Samsung en {z} ({c})?", "¿Atienden en {z} para neveras y lavadoras Samsung?"]
-R_Z = lambda c, z: f"servicio-tecnico-samsung-{slug(z)}-{c['s']}.html"
-R_MANT = lambda c: f"mantenimiento-electrodomesticos-samsung-{c['s']}.html"
-R_VOLT = lambda pk: f"voltaje-electrodomesticos-samsung-{pk}.html"
+R_Z = lambda c, z: f"{c['pk']}/{c['d']}/{slug(z)}/index.html"
+R_MANT = lambda c: f"{c['pk']}/{c['d']}/mantenimiento/index.html"
+R_VOLT = lambda pk: f"{pk}/voltaje/index.html"
 ZONAS_P = []  # (c, z)
 
 for c in CIU:

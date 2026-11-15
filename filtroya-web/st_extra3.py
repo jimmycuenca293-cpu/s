@@ -33,7 +33,7 @@ FAQ_L = [("¿Reparan la {s1} Samsung {linea} en {pais}?", "Sí, con visita a dom
          ("¿Cómo sé si mi equipo es {linea}?", "Mira el nombre en el equipo o el modelo de la etiqueta; si tienes dudas, envíanos una foto por WhatsApp."), ("¿Cuánto cuesta reparar una {s1} Samsung {linea}?", "Depende de la falla y el repuesto; el valor se confirma tras el diagnóstico y antes de reparar."),
          ("¿Atienden equipos fuera de garantía?", "Sí, dentro y fuera de garantía; consulta las condiciones de tu garantía en el manual."), ("¿Qué datos necesito para pedir la visita?", "El modelo (etiqueta), la falla y la dirección.")]
 LINEAS_P = []  # (pk, sv, linea, url)
-R_LIN = lambda pk, linea: f"reparacion-{slug(linea)}-samsung-{pk}.html"
+R_LIN = lambda pk, linea: f"{pk}/{slug(linea)}/index.html"
 for pk, P in PAISES.items():
     cs = CIU_PAIS[pk]
     for sv, lista in LINEAS.items():
@@ -84,7 +84,7 @@ PROB = [
          pasos=["Limpia el filtro de pelusa.", "Revisa que el ducto no esté doblado ni tapado.", "No sobrecargues el tambor.", "Centrifuga bien la ropa en la lavadora.", "Deja ventilado el espacio de la {s}.", "Si tarda cada vez más, pide revisión."]),
 ]
 PROB_P = []
-R_PROB = lambda c, p: f"{slug(pal(c['pk'], p['sv'])[0])}-samsung-{p['sl']}-{c['s']}.html"
+R_PROB = lambda c, p: f"{c['pk']}/{c['d']}/{slug(pal(c['pk'], p['sv'])[0])}-{p['sl']}/index.html"
 for c in CIU:
     if c["amp"]:
         continue
@@ -110,7 +110,7 @@ for c in CIU:
                   + bloque_mitos(key, [sv], 1)
                   + faq_html(preg, f"Preguntas sobre esta falla en {nom}")
                   + seccion("Más información", '<div class="city-tags">' + f'<a href="{R_CS(c, sv)}">{esc(cap(s2))} Samsung en {esc(nom)}</a><a href="{R_CIU(c)}">Centro de servicio técnico Samsung en {esc(nom)}</a><a href="{R_MANT(c)}">Mantenimiento en {esc(nom)}</a>'
-                            + "".join(f'<a href="{R_G(g)}">{esc(g["tit"])}</a>' for g in guias_de(sv)[:2]) + "".join(zlink(c, z, f"{z}") for z in c["zonas"][:4]) + "</div>"))
+                            + "".join(f'<a href="{R_G(g, pk)}">{esc(g["tit"])}</a>' for g in guias_de(sv)[:2]) + "".join(zlink(c, z, f"{z}") for z in c["zonas"][:4]) + "</div>"))
         tt = pr["tit"].format(**f)
         pagina(R_PROB(c, pr), tt, f"{tt}: causas, qué revisar y técnico Samsung a domicilio en {nom}, {P['nombre']}. Valor confirmado antes de reparar.", f"{s1} samsung {pr['sl'].replace('-', ' ')} {nom.lower()}, tecnico {s1} samsung {nom.lower()}",
                [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), (nom, R_CIU(c)), (tt, None)], cuerpo, preg, [{"@type": "Article", "headline": tt, "inLanguage": PAISES[pk]["cod"], "datePublished": HOY, "dateModified": HOY, "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@id": f"{DOMINIO}/#negocio"}}],
