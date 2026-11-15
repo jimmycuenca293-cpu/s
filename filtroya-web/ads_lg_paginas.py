@@ -76,9 +76,9 @@ function pie(): void { echo pie_html(); }
 """.replace("__AQH__", encoding_ := encabezado()).replace("__AQF__", pie()), encoding="utf-8")
 
 # ---------------------------------------------------------------- portada
-top3 = PS[:3]
+top3 = [PS[1], PS[0], PS[2]]
 stage = ('<div class="aq-stage"><i></i><i></i><i></i><i></i>' + "".join(f'<a class="s{i + 1}" href="{p["url"]}" aria-label="{esc(p["corto"])}"><img src="{p["img"]}" alt="Filtro de agua LG {esc(p["corto"])}, código {esc(p["ref"])}" width="300" height="300" {"loading=eager" if i == 1 else "loading=lazy"}></a>' for i, p in enumerate(top3))
-         + f'<span class="aq-price-tag">Desde {cop(PREC[0])}</span></div>')
+         + f'<span class="aq-price-tag">★ Más vendido: LT1000P · {cop(PS[0]["precio"])}</span></div>')
 chips = "".join(f'<a href="{R_MOD(m)}">{m}</a>' for m, p in MODELOS[:2]) + "".join(f'<a href="{R_CIU(s)}">{esc(CIUDAD[s][0])}</a>' for s in TOP[:3])
 hero = ('<section class="aq-hero compacto" id="inicio"><div class="wrap"><div><span class="kicker">Distribuidor autorizado · Toda Colombia</span><h1>Filtro de Agua LG Original para tu Nevecón</h1>'
         '<p class="lead">Escoge tu referencia, agrégala al carrito y paga en línea o contra entrega. Te enviamos a tu ciudad y confirmamos que sea el filtro de tu nevecón LG antes de despachar.</p>'
@@ -123,7 +123,7 @@ ld_home = [{"@type": "ItemList", "name": "Filtros de agua LG para nevecón", "it
 pagina("index.html", "Filtro de Agua LG para Nevecón | LT1000P, LT700P | Envío Gratis",
        f"Filtro de agua LG para nevecón y nevera: " + ", ".join(f"{p['corto']} {cop(p['precio'])}" for p in PS[:5]) + f" y externo {cop(PS[-1]['precio'])}. Distribuidores autorizados. Envío gratis y pago contra entrega en toda Colombia.",
        "filtro agua lg, filtro nevecon lg, filtro nevera lg, lt1000p, lt700p, lt800p, lt500p, lt600p, adq73693903, filtro agua refrigerador lg, precio filtro lg, filtro lg contra entrega, cambiar filtro nevecon lg",
-       [("Inicio", None)], hero + estante + qa_home + modelos_sec + confianza + rapidas_sec + fichas_sec + comp_sec + cob_sec + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=PS[1]["img"])
+       [("Inicio", None)], hero + estante + qa_home + modelos_sec + confianza + rapidas_sec + fichas_sec + comp_sec + cob_sec + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=PS[0]["img"])
 
 # ---------------------------------------------------------------- fichas de producto
 for p in PS:
@@ -150,7 +150,7 @@ for p in PS:
               f'<div class="hero-cta"><button type="button" class="btn btn-solid" data-add="{p["id"]}">🛒 Agregar al carrito</button></div></div>{galeria_html(p)}</div></section>'
               + qa_p + seccion("Ficha técnica", ficha + compat + eq_h + inst) + _ex + faq_html(preg)
               + seccion("Otros filtros LG", '<div class="tf-grid">' + "".join(tarjeta(x) for x in otros) + "</div>", alt=True) + GAL_JS)
-    pagina(p["url"], f"Filtro de Agua LG {p['corto']} ({p['ref']}) | {cop(p['precio'])} | Envío Gratis"[:70], f"Compra el filtro de agua {p['nombre']} (código {p['ref']}) por {cop(p['precio'])}: equivale a {', '.join(p['refs'][1:4]) or p['ref']}. Envío gratis y pago contra entrega en toda Colombia.",
+    pagina(p["url"], f"Filtro de Agua LG {p['corto']}" + ("" if p["corto"] == p["ref"] else f" ({p['ref']})") + f" | {cop(p['precio'])} | Envío Gratis", f"Compra el filtro de agua {p['nombre']} (código {p['ref']}) por {cop(p['precio'])}: equivale a {', '.join(p['refs'][1:4]) or p['ref']}. Envío gratis y pago contra entrega en toda Colombia.",
            f"filtro lg {p['corto'].lower()}, {p['ref'].lower()}, " + ", ".join(r.lower() for r in p["refs"][1:5]) + ", filtro nevecon lg, precio filtro lg", [("Inicio", "index.html"), ("Filtros LG", "index.html#filtros"), (p["nombre"], None)], cuerpo, preg, [ld_producto(p)], prio="0.9", og=p["img"])
 
 # ---------------------------------------------------------------- códigos equivalentes y modelos de nevecón
@@ -308,6 +308,7 @@ pagina("mapa-del-sitio.html", "Mapa del sitio | Filtros de agua LG", "Todas las 
 
 exec(open(AQUI / "ads_lg_inst.py", encoding="utf-8").read())
 exec(open(AQUI / "ads_lg_enlaces.py", encoding="utf-8").read())
+exec(open(AQUI / "ads_lg_lt1000.py", encoding="utf-8").read())
 exec(open(AQUI / "ads_lg_ia.py", encoding="utf-8").read())
 # ---------------------------------------------------------------- robots, sitemap, llms y .htaccess
 (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\nDisallow: /carrito.php\nDisallow: /gracias.php\nDisallow: /admin.php\nDisallow: /diagnostico.php\nDisallow: /opinion.php\nDisallow: /api/\nDisallow: /data/\n\n"

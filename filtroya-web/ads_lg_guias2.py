@@ -93,4 +93,7 @@ def extra_producto(p):
     preg = [(f"¿El {p['ref']} es igual al {p['refs'][1] if len(p['refs']) > 1 else p['ref']}?", f"Sí, son códigos de la misma pieza: {eq}."), (f"¿Puedo usar el {p['ref']} en otro modelo de nevera LG?", "No es recomendable: cada referencia corresponde a modelos específicos. Confirma con el código de tu filtro viejo."),
             (f"¿Qué pasa si no cambio el {p['ref']}?", "El filtro pierde capacidad: el agua y el hielo pueden cambiar de sabor y el caudal baja."), (f"¿Dónde comprar el {p['ref']} con envío gratis?", f"Aquí, con pago en línea o contra entrega: {cop2(p['precio'])}."),
             (f"¿Cómo sé si mi filtro es el {p['ref']}?", "Por el código impreso en el cuerpo del filtro o por el modelo de tu nevera.")]
+    if p["id"] == "lg-1000-o":
+        preg.insert(0, ("¿LTP1000, LT 1000P y LT1000 son el mismo filtro?", "Sí, es la misma referencia escrita de distintas formas: LT1000P. Confirma con el código impreso en tu filtro."))
+        s1 += '<p>Guía completa: <a href="lt1000p-guia-completa-filtro-lg.html">todo sobre el LT1000P</a>.</p>'
     return seccion("Todo sobre el filtro " + esc(p["corto"]), s1 + s2 + s3 + s4), preg

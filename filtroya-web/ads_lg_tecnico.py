@@ -1,6 +1,6 @@
 # SEO técnico: sitemaps por tipo, feed de Google Merchant Center, caché, compresión y cabeceras de seguridad. Se ejecuta al final de ads_lg_paginas.py.
 def _tipo(n):
-    if n == "index.html" or n in {p["url"] for p in PS} or n.startswith(("filtro-nevecon-lg-", "referencia-filtro-lg-", "comparativa-")):
+    if n == "index.html" or n in {p["url"] for p in PS} or n.startswith(("filtro-nevecon-lg-", "referencia-filtro-lg-", "comparativa-", "filtro-lt1000p-", "lt1000p-")):
         return "filtros"
     if n.startswith(("filtro-agua-lg-", "precio-filtro-lg-")) and n != "filtro-agua-lg-por-ciudad-colombia.html":
         return "ciudades"
