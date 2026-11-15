@@ -37,6 +37,7 @@ css += """
 .st-eq-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}.st-eq-chips li{background:var(--aqua-soft);color:var(--ocean);border-radius:999px;padding:4px 10px;font-size:.76rem;font-weight:600}
 .st-eq-btn{display:flex;gap:8px;margin-top:auto}.st-eq-btn a{flex:1;text-align:center;padding:10px 8px;font-size:13.5px}.st-eq-badge{font-size:.72rem;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:999px;padding:2px 8px;margin-left:6px;font-weight:700}
 """
+css += "\n.glos{margin:0}.glos dt{margin-top:14px}.glos dd{margin:3px 0 0;color:#445}\n"
 (OUT / "tema.css").write_text(css, encoding="utf-8")
 
 
