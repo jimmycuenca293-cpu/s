@@ -201,8 +201,8 @@ function cerca(lat,lon){var b=null,bd=1e9,dd=null,dm=1e9;C.forEach(function(c){v
 function barra(html){var d=document.createElement('div');d.className='st-geo';d.setAttribute('role','region');d.setAttribute('aria-label','Tu ubicación');d.innerHTML=html;document.body.insertBefore(d,document.body.firstChild);return d}
 function usar(btn,msg){if(!navigator.geolocation){msg.textContent='Tu navegador no permite ubicación.';return}btn.disabled=true;msg.textContent='Buscando tu ubicación…';
 navigator.geolocation.getCurrentPosition(function(p){var r=cerca(p.coords.latitude,p.coords.longitude);if(!r){msg.textContent='No pudimos ubicarte.';btn.disabled=false;return}K('st_pais',r.c[0]);
-if(r.d>350){msg.innerHTML='Estás lejos de nuestras ciudades. La más cercana es '+r.c[1]+' ('+Math.round(r.d)+' km). <a href="'+r.c[2]+'">Ver '+r.c[1]+'</a>';btn.disabled=false;return}
-msg.textContent='Estás cerca de '+r.c[1]+'. Te llevamos a su página…';location.href=r.c[2]},function(){msg.textContent='No se pudo obtener la ubicación. Elige tu país abajo.';btn.disabled=false},{timeout:10000,maximumAge:600000})}
+if(r.d>800){msg.innerHTML='Estás lejos de nuestras ciudades. La más cercana es '+r.c[1]+' ('+Math.round(r.d)+' km). <a href="'+r.c[2]+'">Ver '+r.c[1]+'</a>';btn.disabled=false;return}
+msg.textContent='Estás cerca de '+r.c[1]+'. Te llevamos a su página…';location.href=r.c[2]},function(){msg.textContent='No se pudo obtener la ubicación. Elige tu país abajo.';btn.disabled=false},{enableHighAccuracy:true,timeout:12000,maximumAge:300000})}
 window.STUbicacion=usar;
 document.addEventListener('DOMContentLoaded',function(){
  document.querySelectorAll('[data-geo]').forEach(function(b){var msg=b.parentNode.querySelector('[data-geo-msg]')||document.createElement('span');b.addEventListener('click',function(){usar(b,msg)})});
@@ -211,7 +211,19 @@ document.addEventListener('DOMContentLoaded',function(){
   b.querySelector('[data-ub]').addEventListener('click',function(){usar(this,b.querySelector('[data-um]'))});b.querySelector('.st-x').addEventListener('click',function(){K('st_geo_x','1');b.remove()});
   var cards=document.querySelectorAll('.st-pais');cards.forEach(function(a){if(a.getAttribute('href')===P[det][1]){a.classList.add('st-pais-det');var g=a.parentNode;g.insertBefore(a,g.firstChild)}})}
  else if(!aqui&&!det){}
+ try{if(navigator.permissions&&!aqui){navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='granted'){var b=document.querySelector('[data-geo]');if(b)usar(b,b.parentNode.querySelector('[data-geo-msg]')||document.createElement('span'))}})}}catch(e){}
 });})();
+""", encoding="utf-8")
+for _pk in PAISES:
+    _cg = [g for g in _geo if g[0] == _pk]
+    (OUT / _pk / "geo.js").write_text("""(function(){var C=""" + json.dumps(_cg, ensure_ascii=False, separators=(",", ":")) + """,R=window.ST_ROOT||'';
+function dist(a,b,c,d){var r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);return 12742*Math.asin(Math.sqrt(h))}
+function cerca(lat,lon){var b=null,bd=1e9,dd=null,dm=1e9;C.forEach(function(c){var d=dist(lat,lon,c[3],c[4]);if(d<bd){bd=d;b=c}if(!c[5]&&d<dm){dm=d;dd=c}});if(b&&b[5]&&dd&&dm-bd<25){b=dd;bd=dm}return b?{c:b,d:bd}:null}
+function usar(btn,msg){if(!navigator.geolocation){msg.textContent='Tu navegador no permite ubicación.';return}btn.disabled=true;msg.textContent='Buscando tu ubicación…';
+navigator.geolocation.getCurrentPosition(function(p){var r=cerca(p.coords.latitude,p.coords.longitude);btn.disabled=false;if(!r){msg.textContent='No pudimos ubicarte.';return}
+if(r.d>150){msg.innerHTML='Tu ubicación está lejos de nuestras ciudades. La más cercana es '+r.c[1]+' ('+Math.round(r.d)+' km). <a href="'+R+r.c[2]+'">Ver '+r.c[1]+'</a>';return}
+msg.textContent='Estás en '+r.c[1]+'. Abriendo su página…';location.href=R+r.c[2]},function(){btn.disabled=false;msg.textContent='No se pudo obtener la ubicación. Elige tu ciudad en el menú.'},{enableHighAccuracy:true,timeout:12000,maximumAge:300000})}
+document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('[data-geo]').forEach(function(b){var m=b.parentNode.querySelector('[data-geo-msg]')||(function(){var s=document.createElement('p');s.className='st-aviso';s.setAttribute('data-geo-msg','');b.parentNode.parentNode.insertBefore(s,b.parentNode.nextSibling);return s})();b.addEventListener('click',function(){usar(b,m)})})});})();
 """, encoding="utf-8")
 # ---- imágenes con nombre descriptivo (SEO de imágenes) y sitemap de imágenes
 RN = {"nevera-family-hub": "nevera-samsung-side-by-side-family-hub", "nevera-superior-inox": "nevera-samsung-superior-inox", "lavadora-superior": "lavadora-samsung-carga-superior", "secadora-torre": "torre-lavado-secado-samsung-apilada", "secadora": "secadora-samsung-carga-frontal",

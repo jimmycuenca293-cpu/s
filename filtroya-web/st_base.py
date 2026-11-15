@@ -221,7 +221,7 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     if cuerpo.startswith('<section class="hero st-bg"') and "st-equipos" not in cuerpo:
         k = cuerpo.index("</section>") + len("</section>")
         cuerpo = cuerpo[:k] + panel_equipos(pk, ctx, None, compacto) + cuerpo[k:]
-    t = head + encabezado(pk) + bc + cuerpo + pie(pk) + '<script>window.ST_ROOT="__ROOT__"</script><script src="' + (f"{pk}/buscar.js" if pk else "buscar.js") + '" defer></script>' + ("" if pk else '<script src="geo.js" defer></script>') + '</body></html>'
+    t = head + encabezado(pk) + bc + cuerpo + pie(pk) + '<script>window.ST_ROOT="__ROOT__"</script><script src="' + (f"{pk}/buscar.js" if pk else "buscar.js") + '" defer></script>' + ('<script src="geo.js" defer></script>' if not pk else (f'<script src="{pk}/geo.js" defer></script>' if nombre == R_PAIS(pk) else "")) + '</body></html>'
     assert nombre not in {x[0] for x in PAGINAS}, f"URL repetida: {nombre}"
     (OUT / nombre).parent.mkdir(parents=True, exist_ok=True)
     (OUT / nombre).write_text(t, encoding="utf-8")
