@@ -28,7 +28,7 @@ function FY(f){if(Array.isArray(f)){f.forEach(FY);return}if(!f||!f.url||!f.datos
 f.addEventListener('submit',function(e){e.preventDefault();var d={};new FormData(f).forEach(function(v,k){d[k]=v});if(!d.nombre||!d.tel||String(d.tel).replace(/\\D/g,'').length<7){R.innerHTML='<p style="color:#b91c1c">Escribe tu nombre y un celular válido.</p>';return}
 R.textContent='Enviando…';fetch('/api/solicitud.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(function(r){return r.json()}).then(function(j){if(!j.ok)throw new Error(j.mensaje||'Error');FY(j.form);
 var m=encodeURIComponent('Hola, acabo de solicitar una visita ('+j.ref+') para mi '+d.equipo+' Samsung en '+d.ciudad);R.innerHTML='<div class="st-ok"><b>¡Solicitud recibida!</b><br>Tu referencia es '+j.ref+'. Te contactaremos pronto. Si es urgente, escríbenos por WhatsApp.<br><a class="st-btn wa" style="margin-top:10px" target="_blank" rel="noopener" href="https://wa.me/'+(window.SV_WA||'')+'?text='+m+'">Escribir por WhatsApp</a></div>';f.reset();ciu()}).catch(function(){R.innerHTML='<p style="color:#b91c1c">No pudimos enviar el formulario. Escríbenos por WhatsApp y te atendemos.</p>'})})})();
-""".replace("window.SV_WA||''", f"'{WA_DEF}'"), encoding="utf-8")
+""".replace("window.SV_WA||''", "(window.SV_WA||{})[d.pais]||''"), encoding="utf-8")
 
 # API: solicitud de visita (correo por SMTP a todos los destinatarios + formulario desde el navegador)
 api = OUT / "api"; api.mkdir(exist_ok=True); (OUT / "data").mkdir(exist_ok=True)

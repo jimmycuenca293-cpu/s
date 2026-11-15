@@ -58,15 +58,15 @@ def encabezado(pk=None):
         tk = f'<span class="aq-tk-tag">Servicio en {esc(P["nombre"])}</span><div class="aq-tk-view"><div class="aq-tk-track" data-tk="{pk}"></div></div>'
         ph = f"Tu ciudad en {P['nombre']} o electrodoméstico…"
     else:
-        wa = wa_link("colombia", "Hola, necesito servicio técnico para mi electrodoméstico Samsung")
+        wa = "index.html#paises"
         pais_pop = '<div><h5>Elige tu país</h5><div class="aq-chips">' + "".join(f'<a href="{R_PAIS(k)}">{esc(P["nombre"])}</a>' for k, P in PAISES.items()) + "</div></div>"
         bar1 = "Servicio técnico Samsung a domicilio"; bar2 = "Elige tu país para ver tu ciudad"; sub = "Línea blanca"
         nav = ('<a href="index.html">Inicio</a>' f'<details class="aq-dd"><summary>Países</summary><div class="aq-pop ciu"><div class="aq-wrap">{pais_pop}</div></div></details>'
                '<a href="guias-servicio-tecnico-samsung.html">Guías de fallas</a><a href="preguntas-frecuentes-servicio-tecnico-samsung.html">Preguntas</a><a href="solicitar-visita.html"><b>Solicitar visita</b></a>')
         tk = '<span class="aq-tk-tag">Elige tu país</span><div class="aq-tk-view"><div class="aq-tk-track" data-tk="paises"></div></div>'
         ph = "Tu país, tu ciudad o electrodoméstico…"
-    num = wa_vis(pk or "colombia")
-    return ('<div class="aq-h"><div class="aq-bar"><span>' + esc(bar1) + '</span><span>' + esc(bar2) + '</span><a href="' + wa + '" target="_blank" rel="noopener">WhatsApp ' + esc(num) + '</a></div>'
+    num = wa_vis(pk) if pk else None
+    return ('<div class="aq-h"><div class="aq-bar"><span>' + esc(bar1) + '</span><span>' + esc(bar2) + '</span><a href="' + wa + '"' + (' target="_blank" rel="noopener">WhatsApp ' + esc(num) if pk else '>Elegir mi país') + '</a></div>'
             f'<div class="aq-ticker" role="marquee" aria-label="Ciudades">{tk}</div>'
             '<div class="aq-row aq-wrap"><a class="aq-brand" href="index.html"><img class="st-brand-logo" src="img/samsung-logo.png" alt="Samsung" width="126" height="20"><span><b>Centro de Servicio Técnico</b><small>' + esc(sub) + '</small></span></a>'
             '<form class="aq-search" role="search" onsubmit="return false">' + ICO["lupa"].replace("<svg", '<svg aria-hidden="true"') + f'<input type="search" data-aq-q data-aq-pais="{pk or ""}" placeholder="{esc(ph)}" autocomplete="off" aria-label="Buscar"><div class="aq-res" hidden></div></form>'
@@ -92,7 +92,7 @@ def pie(pk=None):
             f'<p>{esc(blurb)}Samsung y su logotipo son marcas de Samsung Electronics Co., Ltd., y se usan solo para identificar la marca del equipo que reparamos. Este sitio es un servicio técnico independiente y no pertenece a Samsung Electronics ni es su canal oficial de soporte.</p></div>'
             f'{col2}<div><h5>Ayuda</h5><ul>{ayuda}</ul></div></div>'
             f'<div class="aq-wrap aq-f-pay"><div>© {_d.year} Centro de Servicio Técnico Samsung</div></div></footer>'
-            f'<div class="st-barra"><a class="st-btn wa" href="{wa_link(pk or "colombia", "Hola, necesito servicio técnico para mi electrodoméstico Samsung")}" target="_blank" rel="noopener">{ICO["wa"]} WhatsApp</a><a class="st-btn sol" href="solicitar-visita.html">Solicitar visita</a></div>')
+            + (f'<div class="st-barra"><a class="st-btn wa" href="{wa_link(pk, "Hola, necesito servicio técnico para mi electrodoméstico Samsung")}" target="_blank" rel="noopener">{ICO["wa"]} WhatsApp</a><a class="st-btn sol" href="solicitar-visita.html">Solicitar visita</a></div>' if pk else '<div class="st-barra"><a class="st-btn wa" href="index.html#paises">Elegir mi país</a><a class="st-btn sol" href="solicitar-visita.html">Solicitar visita</a></div>'))
 
 
 def qa(titulo, respuesta, datos=None):
@@ -117,6 +117,8 @@ def hero_simple(kicker, h1, sub, extra=""):
 
 
 def acciones(pk, msg):
+    if not pk:
+        return '<div class="st-acc"><a class="st-btn sol" href="index.html#paises">Elegir mi país</a><a class="st-btn" href="solicitar-visita.html">Solicitar visita</a></div>'
     return f'<div class="st-acc"><a class="st-btn wa" href="{wa_link(pk, msg)}" target="_blank" rel="noopener">{ICO["wa"]} Escribir por WhatsApp</a><a class="st-btn sol" href="solicitar-visita.html">Solicitar visita</a></div>'
 
 
@@ -131,7 +133,7 @@ def tiles_serv(pk, c=None):
 
 def panel_equipos(pk=None, c=None, titulo=None, compacto=False):
     """Todos los electrodomésticos que reparamos, con su foto. pk/c dan el vocabulario local y el destino."""
-    base = pk or "colombia"
+    base = pk or "colombia"  # solo para el vocabulario; sin país, los botones llevan a elegir país
     sv_lista = SERV_PAIS[pk] if pk else ORDEN_SERV
     out = ""
     for sv in sv_lista:
@@ -146,7 +148,7 @@ def panel_equipos(pk=None, c=None, titulo=None, compacto=False):
         chips = "".join(f"<li>{esc(x)}</li>" for x in S["sintomas"][:3])
         out += (f'<article class="st-eq-c"><a class="st-foto" href="{href}" aria-label="{esc(cap(s2))}">{foto_serv(sv, 220)}</a><div class="st-eq-top"><h3>{esc(cap(s2) if (c or pk) else S["tit"])}</h3><img src="img/samsung-logo.png" alt="Samsung" width="80" height="13" loading="lazy"></div>'
                 f'<p class="st-eq-lin">{esc(cap(S["lineas"]))}</p><ul class="st-eq-chips">{chips}</ul>'
-                f'<div class="st-eq-btn"><a class="st-btn sol" href="{href}">{"Ver servicio" + (" en " + esc(nom) if nom else "")}</a><a class="st-btn wa" href="{wa_link(base, msg)}" target="_blank" rel="noopener">{ICO["wa"]} WhatsApp</a></div></article>')
+                f'<div class="st-eq-btn"><a class="st-btn sol" href="{href}">{"Ver servicio" + (" en " + esc(nom) if nom else "")}</a>{(f'<a class="st-btn wa" href="{wa_link(pk, msg)}" target="_blank" rel="noopener">{ICO["wa"]} WhatsApp</a>' if pk else '<a class="st-btn" href="index.html#paises">Elegir país</a>')}</div></article>')
     ttl = titulo or ("Todos los electrodomésticos Samsung que reparamos" + (f" en {esc(c['n'])}" if c else (f" en {esc(PAISES[pk]['nombre'])}" if pk else "")))
     if compacto:
         return f'<section class="aq-sec estante-top st-equipos"><div class="wrap"><h2>{ttl}</h2><div class="st-servs">{out}</div></div></section>'
@@ -166,8 +168,8 @@ def ld_faq(preg):
 
 NEGOCIO_LD = {"@type": ["ProfessionalService", "LocalBusiness"], "@id": f"{DOMINIO}/#negocio", "name": NOMBRE, "url": f"{DOMINIO}/", "logo": f"{DOMINIO}/img/samsung-oval.png", "image": f"{DOMINIO}/img/samsung-oval.png",
               "description": "Servicio técnico especializado en electrodomésticos Samsung: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas en 8 países; televisores en Costa Rica.",
-              "telephone": "+" + WA_DEF, "priceRange": "$$", "areaServed": [{"@type": "Country", "name": P["nombre"]} for P in PAISES.values()] + [{"@type": "City", "name": c["n"]} for c in CIU],
-              "knowsAbout": [SERVICIOS[s]["tit"] for s in SERVICIOS], "contactPoint": {"@type": "ContactPoint", "telephone": "+" + WA_DEF, "contactType": "customer service", "availableLanguage": "es"}}
+              "priceRange": "$$", "areaServed": [{"@type": "Country", "name": P["nombre"]} for P in PAISES.values()] + [{"@type": "City", "name": c["n"]} for c in CIU],
+              "knowsAbout": [SERVICIOS[s]["tit"] for s in SERVICIOS], "contactPoint": [{"@type": "ContactPoint", "telephone": "+" + wa_num(k), "contactType": "customer service", "areaServed": P["nombre"], "availableLanguage": "es"} for k, P in PAISES.items()]}
 
 
 def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), prio="0.6", pk=None, tipo="guias", ctx=None, compacto=False):
