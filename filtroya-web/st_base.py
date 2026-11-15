@@ -43,7 +43,7 @@ def tel_txt(pk):
 
 def encabezado(pk=None):
     wa = wa_link(pk or "colombia", "Hola, necesito servicio técnico para mi electrodoméstico Samsung")
-    pais_pop = "".join(f'<div><h5><a href="{R_PAIS(k)}">{P["bandera"]} {esc(P["nombre"])}</a></h5><div class="aq-chips">' + "".join(f'<a href="{R_CIU(c)}">{esc(c["n"])}</a>' for c in CIU_PAIS[k]) + "</div></div>" for k, P in PAISES.items())
+    pais_pop = "".join(f'<div><h5><a href="{R_PAIS(k)}">{P["bandera"]} {esc(P["nombre"])}</a></h5><div class="aq-chips">' + "".join(f'<a href="{R_CIU(c)}">{esc(c["n"])}</a>' for c in CIU_PAIS[k][:8]) + (f'<a href="{R_PAIS(k)}"><b>+{len(CIU_PAIS[k]) - 8} ciudades →</b></a>' if len(CIU_PAIS[k]) > 8 else "") + "</div></div>" for k, P in PAISES.items())
     serv_pop = "".join(f'<a href="{R_SERV(sv)}">{ilus(sv, 48)}<span><b>{esc(SERVICIOS[sv]["tit"])}</b><small>Servicio técnico</small></span></a>' for sv in ORDEN_SERV + ["tv"])
     return ('<div class="aq-h"><div class="aq-bar"><span>🛠️ Servicio técnico Samsung · línea blanca en 8 países</span><span>🗓️ Visita a domicilio · diagnóstico primero</span><a href="' + wa + '" target="_blank" rel="noopener">WhatsApp ' + esc(wa_vis(pk or "colombia")) + '</a></div>'
             '<div class="aq-ticker" role="marquee" aria-label="Ciudades donde damos servicio"><span class="aq-tk-tag">🌎 Servicio en toda la región</span><div class="aq-tk-view"><div class="aq-tk-track" data-tk></div></div></div>'

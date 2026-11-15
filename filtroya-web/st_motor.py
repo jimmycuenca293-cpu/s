@@ -1,6 +1,6 @@
 # Motor de contenido: bancos de frases y consejos para que cada ciudad, zona y servicio tenga texto propio (se ejecuta dentro de st_samsung.py).
 import itertools
-from st_guias import _ul, _ol, _h
+from st_guias import _ul, _ol, _h, AVISO
 from st_clima import CLIMA, VOLT, EFECTO, tipo_riesgo
 
 
@@ -110,9 +110,14 @@ def efecto_de(c, sv):
     return EFECTO[r][sv]
 
 
+def alt_txt(cl):
+    return f"{cl['alt']:,}".replace(",", ".") if cl.get("alt") else ""
+
+
 def parrafo_clima(c, z, sv, clave):
     cl, _ = ctx_ciudad(c)
-    return uno(clave, CLIMA_Z).format(c=c["n"], z=z, clima=cl["clima"], ll=cl["lluvia"], alt=f"{cl['alt']:,}".replace(",", "."), rasgo=cl["rasgo"][:1].upper() + cl["rasgo"][1:], efecto=efecto_de(c, sv))
+    pool = CLIMA_Z if cl.get("alt") else [x for x in CLIMA_Z if "{alt}" not in x]
+    return uno(clave, pool).format(c=c["n"], z=z, clima=cl["clima"], ll=cl["lluvia"], alt=alt_txt(cl), rasgo=cl["rasgo"][:1].upper() + cl["rasgo"][1:], efecto=efecto_de(c, sv))
 
 
 def bloque_local(c, sv, clave):
@@ -131,3 +136,12 @@ def faq_cs(c, sv):
 R_Z = lambda c, z: f"servicio-tecnico-samsung-{slug(z)}-{c['s']}.html"
 R_MANT = lambda c: f"mantenimiento-electrodomesticos-samsung-{c['s']}.html"
 R_VOLT = lambda pk: f"voltaje-electrodomesticos-samsung-{pk}.html"
+
+
+def zlink(c, z, texto=None):
+    t = esc(texto or z)
+    return f'<a href="{R_Z(c, z)}">{t}</a>' if c.get("zp", True) else f"<span>{esc(z)}</span>"
+
+
+def nota_amp(c):
+    return (f" En {c['n']} la cobertura es ampliada: coordinamos la visita según la disponibilidad del técnico, así que escríbenos con anticipación." if c.get("amp") else "")

@@ -47,9 +47,23 @@ def wa_link(pk, msg):
 
 # ------------------------------------------------------------------ datos derivados
 CIU = []
+from st_datos2 import EXTRA, BUCKETS
+from st_clima import CLIMA
+_usados = set()
 for pk, P in PAISES.items():
-    for (n, dep, zonas, tipo) in P["ciudades"]:
-        CIU.append(dict(n=n, dep=dep, zonas=[(f"Centro de {n}" if z == "Centro" else z) for z in zonas], pk=pk, s=slug(n), pais=P["nombre"], cap=(tipo == "1")))
+    todos = [(n, dep, zonas, None, None, False) for (n, dep, zonas, tipo) in P["ciudades"]] + [(n, dep, zonas, b, alt, True) for (n, dep, zonas, b, alt) in EXTRA.get(pk, [])]
+    for (n, dep, zonas, b, alt, amp) in todos:
+        s_ = slug(n)
+        if s_ in _usados:
+            s_ = f"{s_}-{pk}"
+        _usados.add(s_)
+        zs = [(f"Centro de {n}" if z == "Centro" else z) for z in zonas]
+        zp = len(zs) >= 3
+        if not zs:
+            zs = [f"Centro de {n}"]
+        if amp:
+            CLIMA[s_] = dict(BUCKETS[b], alt=alt)
+        CIU.append(dict(n=n, dep=dep, zonas=zs, pk=pk, s=s_, pais=P["nombre"], cap=(not amp and n == P["ciudades"][0][0]), amp=amp, zp=zp))
 CIU_PAIS = {pk: [c for c in CIU if c["pk"] == pk] for pk in PAISES}
 SERV_PAIS = {pk: [s for s in ORDEN_SERV] + (["tv"] if PAISES[pk]["tv"] else []) for pk in PAISES}
 GEN = {"nevera": "neveras", "lava": "lavadoras", "seca": "secadoras", "lavaplatos": "lavavajillas", "cocina": "cocinas-y-hornos", "micro": "microondas", "tv": "televisores"}

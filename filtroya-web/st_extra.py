@@ -14,7 +14,7 @@ ZONAS_P = []  # (c, z)
 for c in CIU:
     pk = c["pk"]; P = PAISES[pk]; cl = CLIMA[c["s"]]; nev = pal(pk, "nevera")[1]; lav = pal(pk, "lava")[1]
     zs = c["zonas"]
-    for i, z in enumerate(zs):
+    for i, z in enumerate(zs if c["zp"] else []):
         key = f"z|{c['s']}|{z}"
         svs = SERV_PAIS[pk]
         spot = mix(key + "|sp", svs, 2)
@@ -59,9 +59,9 @@ CAL = {"pre": ["Revisa los sellos de la nevera y de la lavadora y cámbialos si 
 for c in CIU:
     pk = c["pk"]; P = PAISES[pk]; cl = CLIMA[c["s"]]; v = VOLT[pk]; key = f"m|{c['s']}"
     riesgo = tipo_riesgo(cl); svs = SERV_PAIS[pk]
-    alt = f"{cl['alt']:,}".replace(",", ".")
-    ctxp = uno(key + "|ctx", [f"{c['n']} tiene un clima {cl['clima']}, a unos {alt} metros sobre el nivel del mar. Las lluvias llegan {cl['lluvia']}.", f"El clima de {c['n']} es {cl['clima']}; está a unos {alt} metros de altitud y llueve {cl['lluvia']}.",
-                              f"Con unos {alt} m de altitud, {c['n']} tiene un clima {cl['clima']} y lluvias {cl['lluvia']}."])
+    alt = alt_txt(cl)
+    ctxp = uno(key + "|ctx", ([f"{c['n']} tiene un clima {cl['clima']}, a unos {alt} metros sobre el nivel del mar. Las lluvias llegan {cl['lluvia']}.", f"El clima de {c['n']} es {cl['clima']}; está a unos {alt} metros de altitud y llueve {cl['lluvia']}.",
+                              f"Con unos {alt} m de altitud, {c['n']} tiene un clima {cl['clima']} y lluvias {cl['lluvia']}."] if alt else [f"{c['n']} tiene un clima {cl['clima']}. Las lluvias llegan {cl['lluvia']}.", f"El clima de {c['n']} es {cl['clima']} y llueve {cl['lluvia']}."]))
     efectos = "".join(f"<li><b>{esc(cap(pal(pk, sv)[1]))}:</b> {esc(efecto_de(c, sv))}.</li>" for sv in svs)
     tabla = ('<div class="tbl-wrap"><table class="spec-table"><tr><th>Cuándo</th><th>Qué hacer</th></tr>'
              + f"<tr><td>Antes de las lluvias ({esc(cl['lluvia'])})</td><td>{esc(' '.join(mix(key + '|pre', CAL['pre'], 2)))}</td></tr>"
@@ -75,10 +75,10 @@ for c in CIU:
     preg = [(f"¿Cada cuánto hay que dar mantenimiento a una nevera Samsung en {c['n']}?", f"Una limpieza del condensador cada seis meses y una revisión preventiva al año; en {c['n']} conviene reforzar por {cl['riesgo']}."),
             (f"¿Qué voltaje usan los electrodomésticos en {c['n']}?", f"{v[0]} a {v[1]}, con enchufes {v[2]}."), (f"¿Cuándo llamar a un técnico en {c['n']}?", "Si hay ruidos nuevos, fugas, códigos de error o el equipo no cumple su función.")]
     cuerpo = (hero_simple(f"{c['n']} · {P['nombre']}", f"Mantenimiento de electrodomésticos Samsung en {c['n']}", f"Guía según el clima de {c['n']}: calendario, riesgos por equipo y electricidad.", acciones(pk, f"Hola, quiero mantenimiento para mis electrodomésticos Samsung en {c['n']}"))
-              + qa(f"¿Cómo cuidar mis electrodomésticos Samsung en {c['n']}?", esc(resp), [("Clima", cl["clima"][:40]), ("Altitud", f"{alt} m"), ("Lluvias", cl["lluvia"][:40]), ("Red eléctrica", f"{v[0]} · {v[1]}")])
+              + qa(f"¿Cómo cuidar mis electrodomésticos Samsung en {c['n']}?", esc(resp), [("Clima", cl["clima"][:40]), ("Altitud", f"{alt} m" if alt else "Costa o llanura"), ("Lluvias", cl["lluvia"][:40]), ("Red eléctrica", f"{v[0]} · {v[1]}")])
               + seccion(f"El clima de {esc(c['n'])} y tus equipos", f"<p>{esc(ctxp)}</p><ul class=\"spec-list\">{efectos}</ul>") + seccion("Calendario de mantenimiento", tabla, alt=True)
               + seccion(f"Electricidad en {esc(c['n'])}", f"<p>{esc(elec)}</p>") + faq_html(preg)
-              + seccion("Más información", '<div class="city-tags">' + f'<a href="{R_CIU(c)}">Servicio técnico Samsung en {esc(c["n"])}</a><a href="{R_VOLT(pk)}">Voltaje en {esc(P["nombre"])}</a>' + "".join(f'<a href="{R_Z(c, z)}">{esc(z)}</a>' for z in c["zonas"]) + "</div>"))
+              + seccion("Más información", '<div class="city-tags">' + f'<a href="{R_CIU(c)}">Servicio técnico Samsung en {esc(c["n"])}</a><a href="{R_VOLT(pk)}">Voltaje en {esc(P["nombre"])}</a>' + "".join(zlink(c, z) for z in c["zonas"]) + "</div>"))
     pagina(R_MANT(c), f"Mantenimiento de electrodomésticos Samsung en {c['n']}", f"Guía de mantenimiento para neveras, lavadoras y secadoras Samsung en {c['n']} según su clima ({cl['clima'][:40]}), lluvias y electricidad.", f"mantenimiento electrodomesticos samsung {c['n'].lower()}",
            [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), (c["n"], R_CIU(c)), ("Mantenimiento", None)], cuerpo, preg, [], prio="0.6", pk=pk, tipo="guias", ctx=c, compacto=True)
 
