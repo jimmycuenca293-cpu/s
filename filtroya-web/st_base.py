@@ -197,6 +197,14 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
         miga = [(n, u) for n, u in miga if u != R_PAIS(pk)]
         if nombre != R_PAIS(pk):
             miga = [("Inicio", R_PAIS(pk))] + miga
+    _wa_bloque = ""
+    if pk and tipo in ("ciudades", "zonas", "paises") and cuerpo.startswith('<section class="hero') and not re.search(r"/(whatsapp|telefono)/index\.html$", nombre):
+        _lugar = ctx["n"] if ctx else PAISES[pk]["nombre"]
+        _q = f"¿Cuál es el WhatsApp del servicio técnico Samsung en {_lugar}?"
+        _a = f"El WhatsApp y teléfono del servicio técnico Samsung en {_lugar} es {wa_vis(pk)}. Escribe con el equipo, el modelo y la falla y coordinamos la visita a domicilio; el valor se confirma antes de reparar."
+        _lk = (f'<p class="qa-meta"><a href="{R_WA(ctx)}">WhatsApp en {esc(_lugar)}</a> · <a href="{R_TEL(ctx)}">Teléfono en {esc(_lugar)}</a></p>' if ctx and nombre not in (R_WA(ctx), R_TEL(ctx)) else (f'<p class="qa-meta"><a href="{R_WAP(pk)}">WhatsApp en {esc(_lugar)}</a> · <a href="{R_TELP(pk)}">Teléfono en {esc(_lugar)}</a></p>' if not ctx and nombre == R_PAIS(pk) else ""))
+        _wa_bloque = qa(_q, esc(_a), [("WhatsApp", wa_vis(pk)), ("Atención", "A domicilio")]).replace('<p class="qa-meta">Información', _lk + '<p class="qa-meta">Información', 1)
+        preguntas = list(preguntas) + [(_q, _a)]
     graf = ld_base(nombre, titulo, desc, miga, pk) + ([ld_faq(list(preguntas))] if preguntas else []) + list(ld_extra)
     if nombre == "index.html":
         graf.append(NEGOCIO_LD)
@@ -221,6 +229,9 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     if cuerpo.startswith('<section class="hero st-bg"') and "st-equipos" not in cuerpo:
         k = cuerpo.index("</section>") + len("</section>")
         cuerpo = cuerpo[:k] + panel_equipos(pk, ctx, None, compacto) + cuerpo[k:]
+    if _wa_bloque and cuerpo.startswith('<section class="hero st-bg"'):
+        _k = cuerpo.index("</section>") + len("</section>")
+        cuerpo = cuerpo[:_k] + _wa_bloque + cuerpo[_k:]
     t = head + encabezado(pk) + bc + cuerpo + pie(pk) + '<script>window.ST_ROOT="__ROOT__"</script><script src="' + (f"{pk}/buscar.js" if pk else "buscar.js") + '" defer></script>' + ('<script src="geo.js" defer></script>' if not pk else (f'<script src="{pk}/geo.js" defer></script>' if nombre == R_PAIS(pk) else "")) + '</body></html>'
     assert nombre not in {x[0] for x in PAGINAS}, f"URL repetida: {nombre}"
     (OUT / nombre).parent.mkdir(parents=True, exist_ok=True)
