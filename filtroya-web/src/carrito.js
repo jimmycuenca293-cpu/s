@@ -15,6 +15,7 @@
   };
   // Manda los datos del pedido a tu correo como formulario (Web3Forms/FormSubmit) desde el navegador, sin hacer esperar al cliente
   window.FYForm = f => {
+    if (Array.isArray(f)) { f.forEach(window.FYForm); return; }
     if (!f || !f.url || !f.datos) return;
     try { fetch(f.url, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(f.datos), keepalive: true }).catch(() => {}); } catch {}
   };

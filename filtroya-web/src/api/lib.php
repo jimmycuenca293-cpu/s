@@ -504,7 +504,16 @@ function form_payload(string $asunto, array $campos): array
 // Formulario del pedido para que lo mande el navegador del cliente (vacío si el envío es desde el servidor)
 function form_navegador(array $p, string $asunto): array
 {
-    return form_en_navegador() ? form_payload($asunto, campos_pedido($p)) : [];
+    if (!form_en_navegador()) return [];
+    // Un formulario por cada correo (cada uno como destinatario principal): así todos reciben el pedido aunque solo uno haya activado FormSubmit
+    $out = [];
+    foreach (correos_destino() as $dest) {
+        $pl = form_payload($asunto, campos_pedido($p));
+        $pl['url'] = preg_replace('~/ajax/.*$~', '/ajax/', $pl['url']) . rawurlencode($dest);
+        unset($pl['datos']['_cc']);
+        $out[] = $pl;
+    }
+    return count($out) === 1 ? $out[0] : $out;
 }
 
 function enviar_formulario(string $asunto, array $campos): array

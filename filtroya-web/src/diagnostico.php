@@ -51,8 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && hash_equals($_SESSION['csrf'] ?? ''
     $formulario = enviar_formulario('Prueba del formulario de pedidos — ' . $c['negocio']['nombre'], ['Pedido' => 'PRUEBA', 'Nombre' => 'Cliente de prueba', 'Celular' => '3000000000', 'Ciudad' => 'Cali', 'Direccion' => 'Calle de prueba', 'Productos' => '1 × Filtro de prueba']);
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && hash_equals($_SESSION['csrf'] ?? '', (string) ($_POST['csrf'] ?? '')) && isset($_POST['probar_correo'])) {
-    $r = enviar_correo(correo_destino(), 'Prueba de correo — ' . $c['negocio']['nombre'], '<h2 style="margin:0 0 8px">Prueba de correo</h2><p>Si lees esto, los pedidos con los datos del cliente te van a llegar a este correo.</p>', $motivo);
-    $prueba = [$r, (string) $motivo];
+    $r = true; $motivo = '';
+    foreach (correos_destino() as $dest) {
+        $okd = enviar_correo($dest, 'Prueba de correo — ' . $c['negocio']['nombre'], '<h2 style="margin:0 0 8px">Prueba de correo</h2><p>Si lees esto, los pedidos con los datos del cliente te van a llegar a este correo.</p>', $md);
+        $r = $r && $okd; $motivo .= ($okd ? '' : $dest . ': ' . $md . ' ') ;
+    }
+    $prueba = [$r, trim((string) $motivo)];
 }
 $smtp = $c['smtp'] ?? [];
 (($smtp['clave'] ?? '') !== '' && ($smtp['usuario'] ?? '') !== '') ? $ok('SMTP configurado', 'Usuario ' . h((string) $smtp['usuario']) . ' en ' . h((string) $smtp['host']) . ':' . (int) $smtp['puerto'])
@@ -71,13 +75,19 @@ foreach ($filas as [$tipo, $t, $d]) {
     $ico = ['ok' => '✅', 'warn' => '⚠️', 'bad' => '❌'][$tipo];
     echo '<div class="caja" style="display:flex;gap:12px"><span aria-hidden="true">' . $ico . '</span><div><b>' . h($t) . '</b><br><span class="m">' . $d . '</span></div></div>';
 }
-echo '</div><h2>Prueba de correo</h2><form method="post" class="caja"><input type="hidden" name="csrf" value="' . h($_SESSION['csrf'] ?? '') . '"><p class="m">Manda un correo de prueba a <b>' . h(correo_destino()) . '</b>.</p><button class="btn sm" name="probar_correo" value="1">Enviar correo de prueba</button>'
+echo '</div><h2>Prueba de correo</h2><form method="post" class="caja"><input type="hidden" name="csrf" value="' . h($_SESSION['csrf'] ?? '') . '"><p class="m">Manda un correo de prueba a <b>' . h(implode(', ', correos_destino())) . '</b>.</p><button class="btn sm" name="probar_correo" value="1">Enviar correo de prueba</button>'
     . ($prueba ? '<p style="margin-top:10px">' . ($prueba[0] ? '✅ Enviado' . ($prueba[1] ? ' (' . h($prueba[1]) . ')' : '') . '. Revisa la bandeja y el spam.' : '❌ No se pudo enviar: <b>' . h($prueba[1]) . '</b>') . '</p>' : '') . '</form>';
 if (form_en_navegador()) {
-    $pl = form_payload('Prueba del formulario de pedidos — ' . $c['negocio']['nombre'], ['Pedido' => 'PRUEBA', 'Nombre' => 'Cliente de prueba', 'Celular' => '3000000000', 'Correo del cliente' => correo_destino(), 'Ciudad' => 'Cali', 'Direccion' => 'Calle de prueba', 'Productos' => '1 × Filtro de prueba']);
-    echo '<h2>Datos del pedido como formulario (' . 'FormSubmit' . ')</h2><div class="caja"><p class="m">Cada pedido llega a <b>' . h(correo_destino()) . '</b> como un formulario que manda el navegador del cliente. Pulsa el botón y revisa ese correo (y el spam). La primera vez con FormSubmit llega un correo para activar: toca <b>Activate Form</b> y vuelve a probar.</p><button class="btn sm" type="button" id="probar-nav">Enviar formulario de prueba</button><p id="res-nav" style="margin-top:10px" aria-live="polite"></p></div>'
-        . '<script>document.getElementById("probar-nav").addEventListener("click", async () => { const o = document.getElementById("res-nav"); o.textContent = "Enviando…"; const f = ' . json_encode($pl, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) . ';'
-        . ' try { const r = await fetch(f.url, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(f.datos) }); const j = await r.json().catch(() => ({})); o.textContent = (j.success ? "✅ Enviado: " : "❌ No se envió: ") + (j.message || r.status); } catch (e) { o.textContent = "❌ No se pudo enviar: " + e.message; } });</script>';
+    $pls = [];
+    foreach (correos_destino() as $dest) {
+        $pl1 = form_payload('Prueba del formulario de pedidos — ' . $c['negocio']['nombre'], ['Pedido' => 'PRUEBA', 'Nombre' => 'Cliente de prueba', 'Celular' => '3000000000', 'Correo del cliente' => $dest, 'Ciudad' => 'Bogotá', 'Direccion' => 'Calle de prueba', 'Productos' => '1 × Filtro de prueba']);
+        $pl1['url'] = preg_replace('~/ajax/.*$~', '/ajax/', $pl1['url']) . rawurlencode($dest); unset($pl1['datos']['_cc']);
+        $pls[] = ['para' => $dest] + $pl1;
+    }
+    $pl = $pls;
+    echo '<h2>Datos del pedido como formulario (' . 'FormSubmit' . ')</h2><div class="caja"><p class="m">Cada pedido llega a <b>' . h(implode(', ', correos_destino())) . '</b> como un formulario que manda el navegador del cliente. Pulsa el botón y revisa <b>cada uno de esos correos</b> (y el spam). La primera vez, FormSubmit manda a cada correo un mensaje para activar: toca <b>Activate Form</b> en cada uno y vuelve a probar.</p><button class="btn sm" type="button" id="probar-nav">Enviar formulario de prueba</button><p id="res-nav" style="margin-top:10px" aria-live="polite"></p></div>'
+        . '<script>document.getElementById("probar-nav").addEventListener("click", async () => { const o = document.getElementById("res-nav"); o.textContent = "Enviando…"; const L = ' . json_encode($pl, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) . '; const R = [];'
+        . ' for (const f of L) { try { const r = await fetch(f.url, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(f.datos) }); const j = await r.json().catch(() => ({})); R.push((j.success ? "✅ " : "❌ ") + f.para + ": " + (j.message || r.status)); } catch (e) { R.push("❌ " + f.para + ": " + e.message); } } o.innerHTML = R.join("<br>"); });</script>';
 } else {
 echo '<h2>Datos del pedido como formulario (FormSubmit o Web3Forms)</h2><form method="post" class="caja"><input type="hidden" name="csrf" value="' . h($_SESSION['csrf'] ?? '') . '"><p class="m">Cada pedido también se manda a <b>' . h(correo_destino()) . '</b> como un formulario. La primera vez FormSubmit te manda un correo para activarlo: toca <b>Activate Form</b>. Después de eso llegan solos.</p><button class="btn sm" name="probar_formulario" value="1">Enviar formulario de prueba</button>'
     . ($formulario ? '<p style="margin-top:10px">' . ($formulario['ok'] ? '✅ Enviado: ' : '❌ ') . h($formulario['mensaje']) . '</p>' : '') . '</form>';

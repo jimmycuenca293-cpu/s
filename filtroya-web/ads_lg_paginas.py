@@ -39,6 +39,7 @@ js = ("(function(){var D=" + json.dumps(items, ensure_ascii=False, separators=("
       "caja.innerHTML=h||'<p>No encontramos «'+q.replace(/</g,'')+'». Prueba con tu ciudad, el modelo de tu nevecón o el código del filtro.</p>';caja.hidden=false}"
       "document.querySelectorAll('[data-aq-q]').forEach(function(i){var c=i.parentNode.querySelector('.aq-res');i.addEventListener('input',function(){pintar(c,buscar(i.value),i.value)});i.addEventListener('focus',function(){if(i.value)pintar(c,buscar(i.value),i.value)});"
       "i.addEventListener('keydown',function(e){if(e.key==='Enter'){var a=c.querySelector('a');if(a)location.href=a.getAttribute('href')}if(e.key==='Escape')c.hidden=true})});"
+      "(function(){var t=document.querySelector('[data-tk]');if(!t)return;var c=D.filter(function(r){return r[2]==='Ciudad'}).map(function(r){return r[0].split(' (')[0]});if(!c.length)return;var h=c.map(function(n){return '<span>'+n+'</span>'}).join('');t.innerHTML=h+h;t.style.setProperty('--d',Math.round(c.length*0.55)+'s')})();"
       "document.addEventListener('click',function(e){document.querySelectorAll('.aq-res').forEach(function(c){if(!c.parentNode.contains(e.target))c.hidden=true});document.querySelectorAll('.aq-nav details[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open')})});})();")
 (OUT / "buscar.js").write_text(js, encoding="utf-8")
 
@@ -79,7 +80,7 @@ function pie(): void { echo pie_html(); }
 top3 = [PS[1], PS[0], PS[2]]
 stage = ('<div class="aq-stage"><i></i><i></i><i></i><i></i>' + "".join(f'<a class="s{i + 1}" href="{p["url"]}" aria-label="{esc(p["corto"])}"><img src="{p["img"]}" alt="Filtro de agua LG {esc(p["corto"])}, código {esc(p["ref"])}" width="300" height="300" {"loading=eager" if i == 1 else "loading=lazy"}></a>' for i, p in enumerate(top3))
          + f'<span class="aq-price-tag">★ Más vendido: LT1000P · {cop(PS[0]["precio"])}</span></div>')
-chips = "".join(f'<a href="{R_MOD(m)}">{m}</a>' for m, p in MODELOS[:2]) + "".join(f'<a href="{R_CIU(s)}">{esc(CIUDAD[s][0])}</a>' for s in TOP[:3])
+chips = "".join(f'<a href="{R_MOD(m)}">{m}</a>' for m, p in MODELOS[:2]) + '<a href="filtro-agua-lg-por-ciudad-colombia.html">Toda Colombia · ver ciudades →</a>'
 hero = ('<section class="aq-hero compacto" id="inicio"><div class="wrap"><div><span class="kicker">Distribuidor autorizado · Toda Colombia</span><h1>Filtro de Agua LG Original para tu Nevecón</h1>'
         '<p class="lead">Escoge tu referencia, agrégala al carrito y paga en línea o contra entrega. Te enviamos a tu ciudad y confirmamos que sea el filtro de tu nevecón LG antes de despachar.</p>'
         '<div class="aq-big"><form role="search" onsubmit="return false">' + ICONOS["lupa"].replace("<svg", '<svg aria-hidden="true"') + '<input type="search" data-aq-q placeholder="Escribe tu ciudad o el modelo de tu nevecón (LFX28968ST…)" autocomplete="off" aria-label="Buscar"><div class="aq-res" hidden></div></form></div>'
