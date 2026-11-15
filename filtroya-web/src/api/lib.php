@@ -411,11 +411,18 @@ function enviar_correo(string $para, string $asunto, string $html, ?string &$mot
 // No depende del correo del hosting. La primera vez FormSubmit manda un correo de activación a correo_avisos: hay que tocar «Activate».
 // Devuelve ['ok' => bool, 'mensaje' => texto].
 // Correo donde llegan los pedidos. Si en config.php quedó vacío o con el ejemplo, se usa el de la tienda.
+// Correos que reciben cada pedido: en config.php 'correo_avisos' puede llevar uno o varios separados por coma
+function correos_destino(): array
+{
+    $lista = [];
+    foreach (preg_split('/[,;\s]+/', trim((string) (cfg()['correo_avisos'] ?? ''))) as $v) {
+        if (filter_var($v, FILTER_VALIDATE_EMAIL) && !str_contains($v, 'tucorreo') && !in_array(strtolower($v), array_map('strtolower', $lista), true)) $lista[] = $v;
+    }
+    return $lista ?: ['serviciotecnicoyrepuestoscali@gmail.com'];
+}
 function correo_destino(): string
 {
-    $v = trim((string) (cfg()['correo_avisos'] ?? ''));
-    if (filter_var($v, FILTER_VALIDATE_EMAIL) && !str_contains($v, 'tucorreo')) return $v;
-    return 'serviciotecnicoyrepuestoscali@gmail.com';
+    return correos_destino()[0];
 }
 
 // Anota cada intento de aviso (para verlo en el diagnóstico y reintentar los que fallaron)
@@ -456,7 +463,8 @@ function enviar_hoja(array $p, string $tipo): void
 // Devuelve true si llegó por al menos uno.
 function avisar_por_todos(array $p, string $tipo, string $asunto, string $html): bool
 {
-    $ok1 = enviar_correo(correo_destino(), $asunto, $html, $m1);
+    $ok1 = false; $m1 = '';
+    foreach (correos_destino() as $dest) { $okd = enviar_correo($dest, $asunto, $html, $md); $ok1 = $ok1 || $okd; if (!$okd) $m1 = $md; }
     anotar_aviso($p['ref'], $tipo, 'correo', $ok1, (string) $m1);
     enviar_hoja($p, $tipo);
     if (form_en_navegador()) return $ok1;  // el formulario lo manda el navegador del cliente
@@ -489,6 +497,7 @@ function form_payload(string $asunto, array $campos): array
     }
     $datos = ['_subject' => $asunto, '_template' => 'table', '_captcha' => 'false', 'Resumen del pedido' => $resumen] + $campos;
     if ($mail) $datos['_replyto'] = $mail;
+    if (count(correos_destino()) > 1) $datos['_cc'] = implode(',', array_slice(correos_destino(), 1));
     return ['url' => (string) ($f['url'] ?? 'https://formsubmit.co/ajax/') . rawurlencode(correo_destino()), 'datos' => $datos];
 }
 

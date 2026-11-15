@@ -207,6 +207,8 @@ cfg = (cfg.replace("'dominio' => 'https://filtrosnevecones.com'", f"'dominio' =>
 # Hoja de cálculo, correo y panel: se leen de variables de entorno para no guardar claves en el repositorio
 for _k, _v in (("'hoja' => ['url' => '', 'clave' => '']", f"'hoja' => ['url' => '{os.environ.get('HOJA_URL', '')}', 'clave' => '{os.environ.get('HOJA_CLAVE', '')}']"), ("'admin_clave' => ''", f"'admin_clave' => '{os.environ.get('ADMIN_CLAVE', '')}'")):
     cfg = cfg.replace(_k, _v, 1)
+if os.environ.get("CORREO_AVISOS"):
+    cfg = cfg.replace("'correo_avisos'    => 'serviciotecnicoyrepuestoscali@gmail.com'", f"'correo_avisos'    => '{os.environ['CORREO_AVISOS']}'", 1)
 if os.environ.get("SMTP_CLAVE"):
     cfg = cfg.replace("'clave'   => '',", f"'clave'   => '{os.environ['SMTP_CLAVE']}',", 1)
 (api / "config.sample.php").write_text(cfg, encoding="utf-8")
