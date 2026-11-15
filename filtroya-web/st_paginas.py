@@ -46,7 +46,7 @@ for c in CIU:
                        [("Ciudad", f"{nom}, {P['nombre']}"), ("Equipo", cap(s2) + " Samsung"), ("Atención", "A domicilio" + (" (cobertura ampliada)" if c["amp"] else "")), ("WhatsApp", wa_vis(pk))])
                   + seccion(f"{esc(cap(s2))} Samsung en {esc(nom)}", f"<p>{esc(intro)}</p><p>{esc(nota + nota_amp(c))}</p><p>Líneas Samsung que atendemos: {esc(S['lineas'])}.</p>")
                   + seccion(f"Fallas que reparamos en {esc(s2)} Samsung", "<ul class=\"spec-list\">" + "".join(f"<li>Tu {esc(s1)} {esc(x)}.</li>" for x in S["sintomas"]) + "</ul>", alt=True)
-                  + bloque_local(c, sv, f"bl|{c['s']}|{sv}") + bloque_mitos(f"mt|{c['s']}|{sv}", [sv], 1)
+                  + bloque_local(c, sv, f"bl|{c['s']}|{sv}") + bloque_snippets(c, f"ss|{c['s']}|{sv}", 1, False) + bloque_mitos(f"mt|{c['s']}|{sv}", [sv], 1)
                   + seccion("Qué revisa el técnico", "<ul class=\"spec-list\">" + "".join(f"<li>{esc(x)}</li>" for x in S["revisa"]) + "</ul>" + (f'<p style="margin-top:14px">Si quieres adelantar algo: <a href="{R_G(guias_de(sv)[0])}">guía de fallas de {esc(s2)} Samsung</a>.</p>' if guias_de(sv) else ""))
                   + seccion(f"Sectores de {esc(nom)} donde damos servicio", '<div class="city-tags">' + "".join(zlink(c, z) for z in c["zonas"]) + "</div>")
                   + faq_html(preg, f"Preguntas sobre {s2} Samsung en {nom}")
@@ -76,8 +76,9 @@ for c in CIU:
               + seccion(f"Sectores de {esc(nom)} que atendemos", '<div class="city-tags">' + "".join(zlink(c, z, f"Servicio técnico Samsung en {z}") for z in c["zonas"]) + f'<a href="{R_MANT(c)}">Mantenimiento según el clima de {esc(nom)}</a></div>')
               + seccion(f"{esc(nom)}: clima, electricidad y electrodomésticos", f"<p>{esc(parrafo_clima(c, c['zonas'][0], uno('cs|' + c['s'], SERV_PAIS[pk]), 'cp|' + c['s']))}</p><p>{esc('En ' + nom + ' la red eléctrica es de ' + VOLT[pk][0] + ' a ' + VOLT[pk][1] + '. ' + cap(CLIMA[c['s']]['riesgo']) + ': por eso recomendamos protector de voltaje y mantenimiento preventivo.')}</p>"
                         + f'<p><a href="{R_MANT(c)}">Guía de mantenimiento para {esc(nom)}</a> · <a href="{R_VOLT(pk)}">Voltaje en {esc(P["nombre"])}</a></p>')
+              + bloque_snippets(c, f"sc|{c['s']}", 3, True)
               + seccion("Fallas más comunes", "<ul class=\"spec-list\">" + "".join(f'<li><a href="{R_G(g)}">{esc(g["tit"])}</a></li>' for g in mix("fm|" + c["s"], GUIAS, 8)) + "</ul>", alt=True)
-              + faq_html(preg) + seccion("Otras ciudades", '<div class="city-tags">' + "".join(f'<a href="{R_CIU(v)}">{esc(v["n"])}</a>' for v in CIU if v is not c) + f'</div><p style="margin-top:12px"><a href="{R_PAIS(pk)}">Servicio técnico Samsung en {esc(P["nombre"])}</a></p>'))
+              + faq_html(preg) + seccion("Otras ciudades", '<div class="city-tags">' + "".join(f'<a href="{R_CIU(v)}">{esc(v["n"])}</a>' for v in CIU_PAIS[pk] if v is not c) + f'</div><p style="margin-top:12px"><a href="{R_PAIS(pk)}">Servicio técnico Samsung en {esc(P["nombre"])}</a></p>'))
     pagina(R_CIU(c), tit, f"Centro de servicio técnico Samsung en {nom}, {P['nombre']}: {nombres}. Visita a domicilio, diagnóstico primero y valor confirmado antes de reparar.", f"centro de servicio tecnico samsung {nom.lower()}, centro de servicio samsung {nom.lower()}, servicio tecnico samsung {nom.lower()}, tecnico samsung {nom.lower()}, reparacion electrodomesticos samsung {nom.lower()}",
            [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), (nom, None)], cuerpo, preg,
            [{"@type": "Service", "name": f"Servicio técnico Samsung en {nom}", "provider": {"@id": f"{DOMINIO}/#negocio"}, "areaServed": {"@type": "City", "name": nom, "containedInPlace": {"@type": "Country", "name": P["nombre"]}}}], prio="0.8", pk=pk, tipo="ciudades", ctx=c)
@@ -184,7 +185,7 @@ paises_html = selector_paises()
 FOTOS_HERO = [("nevera-family-hub-m.webp", "Nevera Samsung"), ("lavadora-superior-m.webp", "Lavadora Samsung"), ("secadora-m.webp", "Secadora Samsung"), ("torre-lavado-m.webp", "Torre de lavado y secado Samsung")]
 hero = ('<section class="aq-hero compacto" id="inicio"><div class="wrap"><div><span class="kicker">Samsung · línea blanca</span><h1>Centro de servicio técnico Samsung a domicilio</h1>'
         '<p class="lead">Neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas Samsung. Elige tu país, tu ciudad y el equipo.</p>'
-        + acciones(None, "Hola, necesito servicio técnico para mi electrodoméstico Samsung") + '</div><div class="st-hero-art">' + "".join(f'<span><img src="img/{f}" alt="{esc(a)}" loading="eager" width="150" height="150"></span>' for f, a in FOTOS_HERO) + '</div></div></section>')
+        + acciones(None, "Hola, necesito servicio técnico para mi electrodoméstico Samsung").replace('</div>', '<button type="button" class="st-btn" data-geo>Usar mi ubicación</button></div><p class="st-aviso" data-geo-msg style="color:#d5dcff">Tu ubicación solo se usa en tu navegador para llevarte a tu ciudad.</p>', 1) + '</div><div class="st-hero-art">' + "".join(f'<span><img src="img/{f}" alt="{esc(a)}" loading="eager" width="150" height="150"></span>' for f, a in FOTOS_HERO) + '</div></div></section>')
 pasos = '<div class="st-pasos"><div class="st-paso"><b>Escríbenos</b>Cuéntanos el equipo, el modelo y la falla por WhatsApp o con el formulario.</div><div class="st-paso"><b>Visita a domicilio</b>Coordinamos el día y el técnico revisa tu equipo en tu casa.</div><div class="st-paso"><b>Valor claro</b>Te confirmamos el valor antes de reparar. Sin sorpresas.</div></div>'
 filtros = '<div class="st-filtros">' + "".join(f'<a href="https://filtrodeaguasamsung.com/" target="_blank" rel="noopener"><img src="img/{k}-400.webp" alt="{esc(a)}" loading="lazy" width="150" height="130">{esc(a)}</a>' for k, a in FILTROS_IMG if (OUT / "img" / f"{k}-400.webp").exists()) + "</div>"
 preg_home = [("¿Reparan electrodomésticos Samsung a domicilio?", "Sí: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas; en Costa Rica también televisores."), ("¿Cómo encuentro mi ciudad?", "Elige tu país y entra a la página de tu ciudad."),
@@ -192,12 +193,12 @@ preg_home = [("¿Reparan electrodomésticos Samsung a domicilio?", "Sí: neveras
 cuerpo_home = (hero + '<div id="paises"></div>' + seccion("¿En qué país estás?", paises_html, sub="Elige tu país: cada uno tiene su propia página con sus ciudades, sus equipos y su WhatsApp.")
                + panel_equipos(None, None, "Electrodomésticos Samsung que reparamos").replace('class="aq-sec estante-top st-equipos"', 'class="aq-sec alt st-equipos"')
                + qa("¿Dónde hay servicio técnico Samsung a domicilio?", "Elige tu país: en cada uno atendemos las ciudades que verás en su página, con neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas Samsung. Visita a domicilio y valor confirmado antes de reparar.", [("Atención", "A domicilio"), ("Diagnóstico", "Primero"), ("Valor", "Confirmado antes de reparar")])
-               + seccion("Cómo funciona", pasos) + seccion("¿Solo necesitas el filtro de agua de tu nevera?", f'<p>Compra el filtro Samsung en nuestra tienda especializada y recíbelo en tu casa.</p>{filtros}<p style="margin-top:14px"><a class="st-btn" href="https://filtrodeaguasamsung.com/" target="_blank" rel="noopener">Ver filtros Samsung →</a></p>', alt=True)
-               + faq_html(preg_home))
+               + seccion("Cómo funciona", pasos) + faq_html(preg_home))
 pagina("index.html", "Centro de Servicio Técnico Samsung | A Domicilio", "Centro de servicio técnico Samsung a domicilio: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas. Elige tu país y tu ciudad.", "centro de servicio tecnico samsung, servicio tecnico samsung, reparacion electrodomesticos samsung, tecnico samsung a domicilio",
        [("Inicio", None)], cuerpo_home, preg_home, [], prio="1.0", tipo="paises")
 
 exec(open(AQUI / "st_extra.py", encoding="utf-8").read())
 exec(open(AQUI / "st_extra2.py", encoding="utf-8").read())
 exec(open(AQUI / "st_extra3.py", encoding="utf-8").read())
+exec(open(AQUI / "st_blog.py", encoding="utf-8").read())
 exec(open(AQUI / "st_salida.py", encoding="utf-8").read())

@@ -119,8 +119,10 @@ FOTO = {"nevera": ("nevera-family-hub-m.webp", "Nevera Samsung", False), "lava":
         "tv": ("stp7.webp", "Técnico en visita por un televisor Samsung", True)}
 
 
-def foto_serv(sv, alto=150, mini=False):
+def foto_serv(sv, alto=150, mini=False, ctx=None):
     f, alt, cover = FOTO[sv]
+    if ctx:
+        alt = f"{alt}: servicio técnico a domicilio en {ctx}"
     if mini:
         f = f.replace("-m.webp", "-s.webp") if not cover else f
     return f'<img class="st-fimg{" cover" if cover else ""}" src="img/{f}" alt="{esc(alt)}" loading="lazy" decoding="async">'

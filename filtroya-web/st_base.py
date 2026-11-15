@@ -25,7 +25,7 @@ css += """
 .st-barra{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;gap:8px;padding:8px max(10px,env(safe-area-inset-left,0px)) calc(8px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line);box-shadow:0 -8px 22px rgba(20,40,160,.12)}.st-barra a{flex:1}
 @media(max-width:760px){.st-barra{display:flex}body{padding-bottom:64px}.aq-wa{display:none}}
 .st-form{display:grid;gap:12px;max-width:640px}.st-form label{display:grid;gap:4px;font-weight:600;font-size:.92rem}.st-form input,.st-form select,.st-form textarea{font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}.st-form textarea{min-height:100px}.st-ok{background:#ecfdf5;border:1px solid #86efac;border-radius:14px;padding:16px}.st-hp{position:absolute;left:-9999px}
-.st-aviso{font-size:.8rem;color:var(--mute);margin-top:10px}.hero.st-bg{background:linear-gradient(105deg,rgba(7,26,107,.9),rgba(20,40,160,.72) 52%,rgba(20,40,160,.32)),var(--bgimg) center 30%/cover no-repeat;min-height:300px}.hero.st-bg h1,.hero.st-bg .sub{text-shadow:0 2px 14px rgba(0,0,0,.35)}.st-split{display:grid;gap:20px;grid-template-columns:minmax(220px,340px) 1fr;align-items:center}@media(max-width:720px){.st-split{grid-template-columns:1fr}}
+.st-aviso{font-size:.8rem;color:var(--mute);margin-top:10px}.st-geo{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;background:#eef2ff;border-bottom:1px solid var(--line);padding:10px 14px;font:500 14px Inter,sans-serif;position:relative}.st-geo .st-btn{padding:8px 14px;font-size:13px}.st-x{border:0;background:none;font-size:22px;cursor:pointer;color:var(--mute);line-height:1}.st-pais-det{outline:3px solid var(--aqua);box-shadow:0 16px 34px rgba(20,40,160,.22)}.hero.st-bg{background:linear-gradient(105deg,rgba(7,26,107,.9),rgba(20,40,160,.72) 52%,rgba(20,40,160,.32)),var(--bgimg) center 30%/cover no-repeat;min-height:300px}.hero.st-bg h1,.hero.st-bg .sub{text-shadow:0 2px 14px rgba(0,0,0,.35)}.st-split{display:grid;gap:20px;grid-template-columns:minmax(220px,340px) 1fr;align-items:center}@media(max-width:720px){.st-split{grid-template-columns:1fr}}
 .st-foto{display:block;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;aspect-ratio:4/3}.st-fimg{width:100%;height:100%;display:block;object-fit:contain;background:#fff}.st-fimg.cover{object-fit:cover}
 .st-serv .st-fimg{height:150px;border-radius:12px}.st-servs{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .aq-pop.prod .st-fimg{width:48px;height:48px;border-radius:8px}.st-eq-top{display:flex;gap:10px;justify-content:space-between;align-items:center}
@@ -54,7 +54,7 @@ def encabezado(pk=None):
         bar1 = f"Servicio técnico Samsung en {P['nombre']}"; bar2 = "Visita a domicilio · diagnóstico primero"; sub = f"Línea blanca · {P['nombre']}"
         nav = ('<a href="index.html">Inicio</a>' f'<details class="aq-dd"><summary>Ciudades de {esc(P["nombre"])}</summary>{pop_c}</details>'
                f'<details class="aq-dd"><summary>Servicios</summary><div class="aq-pop prod"><div class="aq-wrap">{serv_pop}</div></div></details>'
-               f'<a href="guias-servicio-tecnico-samsung.html">Guías de fallas</a><a href="preguntas-frecuentes-servicio-samsung-{pk}.html">Preguntas</a><a href="solicitar-visita.html"><b>Solicitar visita</b></a><a href="index.html#paises">Cambiar de país</a>')
+               f'<a href="guias-servicio-tecnico-samsung.html">Guías de fallas</a><a href="blog-{pk}.html">Blog</a><a href="preguntas-frecuentes-servicio-samsung-{pk}.html">Preguntas</a><a href="solicitar-visita.html"><b>Solicitar visita</b></a><a href="index.html#paises">Cambiar de país</a>')
         tk = f'<span class="aq-tk-tag">Servicio en {esc(P["nombre"])}</span><div class="aq-tk-view"><div class="aq-tk-track" data-tk="{pk}"></div></div>'
         ph = f"Tu ciudad en {P['nombre']} o electrodoméstico…"
     else:
@@ -62,7 +62,7 @@ def encabezado(pk=None):
         pais_pop = '<div><h5>Elige tu país</h5><div class="aq-chips">' + "".join(f'<a href="{R_PAIS(k)}">{esc(P["nombre"])}</a>' for k, P in PAISES.items()) + "</div></div>"
         bar1 = "Servicio técnico Samsung a domicilio"; bar2 = "Elige tu país para ver tu ciudad"; sub = "Línea blanca"
         nav = ('<a href="index.html">Inicio</a>' f'<details class="aq-dd"><summary>Países</summary><div class="aq-pop ciu"><div class="aq-wrap">{pais_pop}</div></div></details>'
-               '<a href="guias-servicio-tecnico-samsung.html">Guías de fallas</a><a href="preguntas-frecuentes-servicio-tecnico-samsung.html">Preguntas</a><a href="solicitar-visita.html"><b>Solicitar visita</b></a>')
+               '<a href="guias-servicio-tecnico-samsung.html">Guías de fallas</a><a href="blog.html">Blog</a><a href="preguntas-frecuentes-servicio-tecnico-samsung.html">Preguntas</a><a href="solicitar-visita.html"><b>Solicitar visita</b></a>')
         tk = '<span class="aq-tk-tag">Elige tu país</span><div class="aq-tk-view"><div class="aq-tk-track" data-tk="paises"></div></div>'
         ph = "Tu país, tu ciudad o electrodoméstico…"
     num = wa_vis(pk) if pk else None
@@ -80,7 +80,7 @@ def pie(pk=None):
         sv = "".join(f'<li><a href="{R_SERV(pk, s)}">{esc(cap(pal(pk, s)[1]))}</a></li>' for s in SERV_PAIS[pk])
         top = "".join(f'<li><a href="{R_CIU(c)}">{esc(c["n"])}</a></li>' for c in cs[:9]) + f'<li><a href="{R_PAIS(pk)}"><b>Ver todas →</b></a></li>'
         blurb = (f"Servicio técnico especializado en electrodomésticos Samsung en {P['nombre']}: " + ", ".join(pal(pk, s)[1] for s in SERV_PAIS[pk]) + ". ")
-        ayuda = (f'<li><a href="solicitar-visita.html">Solicitar visita</a></li><li><a href="guias-servicio-tecnico-samsung.html">Guías de fallas</a></li><li><a href="preguntas-frecuentes-servicio-samsung-{pk}.html">Preguntas frecuentes</a></li>'
+        ayuda = (f'<li><a href="solicitar-visita.html">Solicitar visita</a></li><li><a href="guias-servicio-tecnico-samsung.html">Guías de fallas</a></li><li><a href="blog-{pk}.html">Blog</a></li><li><a href="preguntas-frecuentes-servicio-samsung-{pk}.html">Preguntas frecuentes</a></li>'
                  f'<li><a href="respuestas-ia-servicio-tecnico-samsung-{pk}.html">Respuestas rápidas</a></li><li><a href="{R_VOLT(pk)}">Voltaje en {esc(P["nombre"])}</a></li><li><a href="quienes-somos.html">Quiénes somos</a></li><li><a href="contacto.html">Contacto</a></li><li><a href="index.html#paises">Cambiar de país</a></li>')
         col2 = f'<div><h5>Servicios</h5><ul>{sv}</ul></div><div><h5>Ciudades</h5><ul>{top}</ul></div>'
     else:
@@ -127,7 +127,7 @@ def tiles_serv(pk, c=None):
     for sv in SERV_PAIS[pk]:
         s1, s2 = pal(pk, sv)
         href = R_CS(c, sv) if c else R_SERV(pk, sv)
-        out += f'<a class="st-serv" href="{href}">{foto_serv(sv, 150)}<b>{esc(cap(s2))}</b><small>{"Ver servicio en " + esc(c["n"]) if c else "Reparación y mantenimiento"}</small></a>'
+        out += f'<a class="st-serv" href="{href}">{foto_serv(sv, 150, False, c["n"] if c else (PAISES[pk]["nombre"] if pk else None))}<b>{esc(cap(s2))}</b><small>{"Ver servicio en " + esc(c["n"]) if c else "Reparación y mantenimiento"}</small></a>'
     return f'<div class="st-servs">{out}</div>'
 
 
@@ -143,10 +143,10 @@ def panel_equipos(pk=None, c=None, titulo=None, compacto=False):
         href = R_CS(c, sv) if c else (R_SERV(pk, sv) if pk else "solicitar-visita.html")
         msg = f"Hola, necesito servicio técnico para mi {s1} Samsung" + (f" en {nom}" if nom else "")
         if compacto:
-            out += f'<a class="st-serv" href="{href}">{foto_serv(sv, 130)}<b>{esc(cap(s2))}</b><small>{"Ver servicio en " + esc(nom) if nom else "Ver servicio"}</small></a>'
+            out += f'<a class="st-serv" href="{href}">{foto_serv(sv, 130, False, nom or (PAISES[pk]["nombre"] if pk else None))}<b>{esc(cap(s2))}</b><small>{"Ver servicio en " + esc(nom) if nom else "Ver servicio"}</small></a>'
             continue
         chips = "".join(f"<li>{esc(x)}</li>" for x in S["sintomas"][:3])
-        out += (f'<article class="st-eq-c"><a class="st-foto" href="{href}" aria-label="{esc(cap(s2))}">{foto_serv(sv, 220)}</a><div class="st-eq-top"><h3>{esc(cap(s2) if (c or pk) else S["tit"])}</h3><img src="img/samsung-logo.png" alt="Samsung" width="80" height="13" loading="lazy"></div>'
+        out += (f'<article class="st-eq-c"><a class="st-foto" href="{href}" aria-label="{esc(cap(s2))}">{foto_serv(sv, 220, False, nom or (PAISES[pk]["nombre"] if pk else None))}</a><div class="st-eq-top"><h3>{esc(cap(s2) if (c or pk) else S["tit"])}</h3><img src="img/samsung-logo.png" alt="Samsung" width="80" height="13" loading="lazy"></div>'
                 f'<p class="st-eq-lin">{esc(cap(S["lineas"]))}</p><ul class="st-eq-chips">{chips}</ul>'
                 f'<div class="st-eq-btn"><a class="st-btn sol" href="{href}">{"Ver servicio" + (" en " + esc(nom) if nom else "")}</a>{(f'<a class="st-btn wa" href="{wa_link(pk, msg)}" target="_blank" rel="noopener">{ICO["wa"]} WhatsApp</a>' if pk else '<a class="st-btn" href="index.html#paises">Elegir país</a>')}</div></article>')
     ttl = titulo or ("Todos los electrodomésticos Samsung que reparamos" + (f" en {esc(c['n'])}" if c else (f" en {esc(PAISES[pk]['nombre'])}" if pk else "")))
@@ -172,8 +172,19 @@ NEGOCIO_LD = {"@type": ["ProfessionalService", "LocalBusiness"], "@id": f"{DOMIN
               "knowsAbout": [SERVICIOS[s]["tit"] for s in SERVICIOS], "contactPoint": [{"@type": "ContactPoint", "telephone": "+" + wa_num(k), "contactType": "customer service", "areaServed": P["nombre"], "availableLanguage": "es"} for k, P in PAISES.items()]}
 
 
+def faq_base(pk):
+    ap = f" en {PAISES[pk]['nombre']}" if pk else ""
+    wa = f"Escríbenos por WhatsApp al {wa_vis(pk)}" if pk else "Elige tu país y escríbenos por WhatsApp"
+    return [(f"¿Qué electrodomésticos Samsung reparan{ap}?", "Línea blanca: neveras, lavadoras, secadoras, lavavajillas, estufas y hornos, y microondas" + ("; en Costa Rica también televisores." if (not pk or pk == "costa-rica") else ".")),
+            ("¿Cómo pido una visita técnica?", f"{wa} o usa el formulario de solicitud de visita; coordinamos el día y el técnico va a tu domicilio."), ("¿El diagnóstico va antes de la reparación?", "Sí: el técnico revisa el equipo, te explica la falla y el valor se confirma antes de reparar."),
+            ("¿Atienden equipos fuera de garantía?", "Sí. Si tu equipo aún tiene garantía, revisa sus condiciones en el manual antes de intervenirlo."), ("¿Son el servicio oficial de Samsung?", "No: somos un servicio técnico especializado independiente; Samsung es una marca de Samsung Electronics Co., Ltd.")]
+
+
 def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), prio="0.6", pk=None, tipo="guias", ctx=None, compacto=False):
     titulo = titulo.strip()
+    if not preguntas and nombre != "404.html":
+        preguntas = faq_base(pk)
+        cuerpo = cuerpo + faq_html(preguntas)
     if len(titulo) > 66:
         titulo = titulo[:66].rsplit(" ", 1)[0].rstrip(" ,:;·|-")
     if len(desc) > 160:
@@ -188,7 +199,7 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     hl = PAISES[pk]["cod"] if pk else "es"
     head = ('<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">'
             f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}"><meta name="keywords" content="{esc(kw)}"><link rel="canonical" href="{url}">'
-            '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="theme-color" content="#1428a0"><meta name="author" content="Centro de Servicio Técnico Samsung">'
+            + (f'<meta name="st-pais" content="{pk}">' if pk else '') + '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="theme-color" content="#1428a0"><meta name="author" content="Centro de Servicio Técnico Samsung">'
             f'<link rel="alternate" hreflang="{hl}" href="{url}">' + (f'<link rel="alternate" hreflang="x-default" href="{url}">' if nombre == "index.html" else "") + f'<link rel="alternate" type="text/plain" href="{DOMINIO}/{("llms-" + pk + ".txt") if pk else "llms.txt"}" title="llms.txt"><link rel="alternate" type="application/json" href="{DOMINIO}/datos-servicio-tecnico.json" title="Datos estructurados">'
             + "".join(f'<meta name="google-site-verification" content="{t}">' for t in TOKENS)
             + (("<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','" + GTM + "');</script>") if GTM else "")
@@ -205,7 +216,7 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     if cuerpo.startswith('<section class="hero st-bg"') and "st-equipos" not in cuerpo:
         k = cuerpo.index("</section>") + len("</section>")
         cuerpo = cuerpo[:k] + panel_equipos(pk, ctx, None, compacto) + cuerpo[k:]
-    t = head + encabezado(pk) + bc + cuerpo + pie(pk) + '<script src="buscar.js" defer></script></body></html>'
+    t = head + encabezado(pk) + bc + cuerpo + pie(pk) + '<script src="buscar.js" defer></script><script src="geo.js" defer></script></body></html>'
     (OUT / nombre).write_text(t, encoding="utf-8")
     PAGINAS.append((nombre, prio, titulo, desc, tipo))
     return t

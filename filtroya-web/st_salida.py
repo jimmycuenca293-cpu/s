@@ -3,7 +3,7 @@ mapa = lambda t, its: f'<h2 style="font-size:22px;margin:22px 0 10px">{esc(t)}</
 cuerpo = (mapa("Países", [(f"Servicio técnico Samsung en {P['nombre']}", R_PAIS(pk)) for pk, P in PAISES.items()]) + mapa("Ciudades", [(f"Servicio técnico Samsung en {c['n']}", R_CIU(c)) for c in CIU])
           + mapa("Zonas", [(f"Servicio técnico Samsung en {z}, {c['n']}", R_Z(c, z)) for c, z in ZONAS_P]) + mapa("Mantenimiento por ciudad", [(f"Mantenimiento en {c['n']}", R_MANT(c)) for c in CIU]) + mapa("Voltaje por país", [(f"Voltaje en {P['nombre']}", R_VOLT(pk)) for pk, P in PAISES.items()])
           + mapa("Servicios por país", [(f"Servicio técnico de {pal(k, s)[1]} Samsung en {P['nombre']}", R_SERV(k, s)) for k, P in PAISES.items() for s in SERV_PAIS[k]]) + mapa("Guías de fallas", [(g["tit"], R_G(g)) for g in GUIAS]) + mapa("Cómo leer el modelo y códigos de error", [(t, f"{sl}.html") for sl, t in GUIAS_MOD] + [("Códigos de error de lavadoras Samsung", "codigos-de-error-lavadora-samsung.html")])
-          + mapa("Líneas Samsung por país", [(f"{cap(pal(pk, sv)[1])} Samsung {ln} en {PAISES[pk]['nombre']}", u) for pk, sv, ln, u in LINEAS_P]) + mapa("Fallas frecuentes por ciudad", [(pr["tit"].format(S=cap(pal(c["pk"], pr["sv"])[0]), s=pal(c["pk"], pr["sv"])[0], c=c["n"]), R_PROB(c, pr)) for c, pr in PROB_P])
+          + mapa("Blog", [("Blog del centro de servicio técnico Samsung", "blog.html")] + [(t, u) for k, sl, t, u, d in BLOG]) + mapa("Líneas Samsung por país", [(f"{cap(pal(pk, sv)[1])} Samsung {ln} en {PAISES[pk]['nombre']}", u) for pk, sv, ln, u in LINEAS_P]) + mapa("Fallas frecuentes por ciudad", [(pr["tit"].format(S=cap(pal(c["pk"], pr["sv"])[0]), s=pal(c["pk"], pr["sv"])[0], c=c["n"]), R_PROB(c, pr)) for c, pr in PROB_P])
           + mapa("Por departamento", [(f"Servicio técnico Samsung en {d} ({PAISES[k]['nombre']})", R_DEP(k, d)) for k, d in DEP_HUBS]) + mapa("Preguntas y respuestas por país", [(f"Preguntas frecuentes en {P['nombre']}", f"preguntas-frecuentes-servicio-samsung-{pk}.html") for pk, P in PAISES.items()] + [(f"Respuestas rápidas en {P['nombre']}", f"respuestas-ia-servicio-tecnico-samsung-{pk}.html") for pk, P in PAISES.items()])
           + mapa("Ayuda", [("Solicitar visita", "solicitar-visita.html"), ("Cobertura", "cobertura-servicio-tecnico-samsung.html"), ("Preguntas frecuentes", "preguntas-frecuentes-servicio-tecnico-samsung.html"), ("Respuestas rápidas", "respuestas-para-ia-servicio-tecnico-samsung.html"), ("Quiénes somos", "quienes-somos.html"), ("Contacto", "contacto.html")]))
 pagina("mapa-del-sitio.html", "Mapa del sitio | Servicio técnico Samsung", "Todas las páginas del sitio: países, ciudades, servicios y guías de fallas.", "mapa del sitio servicio tecnico samsung", [("Inicio", "index.html"), ("Mapa del sitio", None)],
@@ -15,6 +15,7 @@ items += [[cap(pal(k, s)[1]), R_SERV(k, s), "Servicio", PAISES[k]["nombre"], k] 
 items += [[f"{cap(pal(c['pk'], sv)[1])} en {c['n']}", R_CS(c, sv), "Reparación", c["pais"], c["pk"]] for c in CIU for sv in SERV_PAIS[c["pk"]]]
 items += [[f"{z} · {c['n']}", R_Z(c, z), "Zona", c["pais"], c["pk"]] for c, z in ZONAS_P]
 items += [[f"{cap(pal(pk, sv)[1])} Samsung {ln}", u, "Línea", PAISES[pk]["nombre"], pk] for pk, sv, ln, u in LINEAS_P]
+items += [[t, u, "Blog", PAISES[k]["nombre"], k] for k, sl, t, u, d in BLOG]
 items += [[pr["tit"].format(S=cap(pal(c["pk"], pr["sv"])[0]), s=pal(c["pk"], pr["sv"])[0], c=c["n"]), R_PROB(c, pr), "Falla", c["pais"], c["pk"]] for c, pr in PROB_P]
 js = ("(function(){var D=" + json.dumps(items, ensure_ascii=False, separators=(",", ":")) + ";"
       "function n(s){return s.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9 ]+/g,' ').trim()}var X=D.map(function(r){return n(r[0]+' '+r[2]+' '+r[3])});"
@@ -112,8 +113,8 @@ for pk, P in PAISES.items():
 ll += ["", "## Información por país"] + [f"- [{P['nombre']}]({DOMINIO}/llms-{pk}.txt)" for pk, P in PAISES.items()]
 (OUT / "llms.txt").write_text("\n".join(ll) + "\n", encoding="utf-8")
 (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /data/\n\n" + "".join(f"User-agent: {b}\nAllow: /\n\n" for b in ("GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web", "Claude-SearchBot", "Claude-User", "PerplexityBot", "Perplexity-User", "Google-Extended", "Applebot-Extended", "Bingbot", "Googlebot", "Amazonbot", "meta-externalagent", "cohere-ai", "DuckAssistBot", "MistralAI-User", "YouBot", "Applebot"))
-                                + f"Sitemap: {DOMINIO}/sitemap.xml\n" + "".join(f"Sitemap: {DOMINIO}/sitemap-{g}.xml\n" for g in ("paises", "ciudades", "zonas", "servicios", "guias")), encoding="utf-8")
-grupos = {g: [] for g in ("paises", "ciudades", "zonas", "servicios", "guias")}
+                                + f"Sitemap: {DOMINIO}/sitemap.xml\n" + "".join(f"Sitemap: {DOMINIO}/sitemap-{g}.xml\n" for g in ("paises", "ciudades", "zonas", "blog", "servicios", "guias")), encoding="utf-8")
+grupos = {g: [] for g in ("paises", "ciudades", "zonas", "blog", "servicios", "guias")}
 for n, pr, _t, _d, tp in PAGINAS:
     grupos[tp].append((n, pr))
 for g, l in grupos.items():
@@ -149,6 +150,54 @@ RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
   Header set X-Frame-Options "SAMEORIGIN"
   Header set Strict-Transport-Security "max-age=31536000" env=HTTPS
 </IfModule>
+""", encoding="utf-8")
+# ---- detección de país y ciudad (zona horaria sin permiso; ubicación exacta solo si el cliente la permite)
+import csv as _c
+_COD = {"colombia": "co", "panama": "pa", "costa-rica": "cr", "paraguay": "py", "guatemala": "gt", "el-salvador": "sv", "ecuador": "ec", "chile": "cl"}
+_NORM = lambda x: slug(x)
+_coord = {}
+_csv = AQUI.parent / "app-servicio-tecnico-latam" / "tecnicos.csv"
+if _csv.exists():
+    for _r in _c.DictReader(open(_csv, encoding="utf-8")):
+        if _r["marca"] == "samsung":
+            try:
+                _coord.setdefault((_r["pais"], _NORM(_r["ciudad"])), (float(_r["lat"]), float(_r["lon"])))
+            except ValueError:
+                pass
+_extra = {("co", "giron"): (7.07, -73.17), ("co", "piedecuesta"): (6.99, -73.05), ("co", "rionegro"): (6.155, -75.374), ("co", "la-estrella"): (6.158, -75.643), ("co", "sabaneta"): (6.151, -75.616), ("co", "dosquebradas"): (4.84, -75.67),
+          ("co", "santa-rosa-de-cabal"): (4.868, -75.62), ("co", "jamundi"): (3.26, -76.54), ("co", "buga"): (3.9, -76.3), ("co", "duitama"): (5.82, -73.03), ("co", "ipiales"): (0.83, -77.64), ("co", "san-andres"): (12.58, -81.7),
+          ("co", "fusagasuga"): (4.34, -74.36), ("co", "facatativa"): (4.81, -74.36), ("co", "bogota"): (4.711, -74.072), ("pa", "ciudad-de-panama"): (8.983, -79.517), ("cr", "san-jose"): (9.928, -84.091), ("py", "asuncion"): (-25.264, -57.576),
+          ("gt", "ciudad-de-guatemala"): (14.635, -90.507), ("sv", "san-salvador"): (13.693, -89.218), ("ec", "quito"): (-0.18, -78.468), ("ec", "guayaquil"): (-2.17, -79.92), ("cl", "santiago-de-chile"): (-33.449, -70.669)}
+_geo = []
+for _c_ in CIU:
+    _k = (_COD[_c_["pk"]], _NORM(_c_["n"]))
+    _ll = _coord.get(_k) or _extra.get(_k) or _coord.get((_k[0], _NORM(_c_["n"].replace("de Chile", "").strip())))
+    if _ll:
+        _geo.append([_c_["pk"], _c_["n"], R_CIU(_c_), round(_ll[0], 3), round(_ll[1], 3), 1 if _c_["amp"] else 0])
+_pp = {pk: [P["nombre"], R_PAIS(pk)] for pk, P in PAISES.items()}
+(OUT / "geo.js").write_text("""(function(){var C=""" + json.dumps(_geo, ensure_ascii=False, separators=(",", ":")) + """,P=""" + json.dumps(_pp, ensure_ascii=False, separators=(",", ":")) + """;
+var TZ={'America/Bogota':'colombia','America/Panama':'panama','America/Costa_Rica':'costa-rica','America/Asuncion':'paraguay','America/Guatemala':'guatemala','America/El_Salvador':'el-salvador','America/Guayaquil':'ecuador','Pacific/Galapagos':'ecuador','America/Santiago':'chile','America/Punta_Arenas':'chile'};
+var LG={'es-co':'colombia','es-pa':'panama','es-cr':'costa-rica','es-py':'paraguay','es-gt':'guatemala','es-sv':'el-salvador','es-ec':'ecuador','es-cl':'chile'};
+function K(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+var m=document.querySelector('meta[name="st-pais"]'),aqui=m?m.content:'';
+var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+var det=K('st_pais')||TZ[tz]||LG[(navigator.language||'').toLowerCase()]||'';
+function dist(a,b,c,d){var R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(h))}
+function cerca(lat,lon){var b=null,bd=1e9,dd=null,dm=1e9;C.forEach(function(c){var d=dist(lat,lon,c[3],c[4]);if(d<bd){bd=d;b=c}if(!c[5]&&d<dm){dm=d;dd=c}});if(b&&b[5]&&dd&&dm-bd<25){b=dd;bd=dm}return b?{c:b,d:bd}:null}
+function barra(html){var d=document.createElement('div');d.className='st-geo';d.setAttribute('role','region');d.setAttribute('aria-label','Tu ubicación');d.innerHTML=html;document.body.insertBefore(d,document.body.firstChild);return d}
+function usar(btn,msg){if(!navigator.geolocation){msg.textContent='Tu navegador no permite ubicación.';return}btn.disabled=true;msg.textContent='Buscando tu ubicación…';
+navigator.geolocation.getCurrentPosition(function(p){var r=cerca(p.coords.latitude,p.coords.longitude);if(!r){msg.textContent='No pudimos ubicarte.';btn.disabled=false;return}K('st_pais',r.c[0]);
+if(r.d>350){msg.innerHTML='Estás lejos de nuestras ciudades. La más cercana es '+r.c[1]+' ('+Math.round(r.d)+' km). <a href="'+r.c[2]+'">Ver '+r.c[1]+'</a>';btn.disabled=false;return}
+msg.textContent='Estás cerca de '+r.c[1]+'. Te llevamos a su página…';location.href=r.c[2]},function(){msg.textContent='No se pudo obtener la ubicación. Elige tu país abajo.';btn.disabled=false},{timeout:10000,maximumAge:600000})}
+window.STUbicacion=usar;
+document.addEventListener('DOMContentLoaded',function(){
+ document.querySelectorAll('[data-geo]').forEach(function(b){var msg=b.parentNode.querySelector('[data-geo-msg]')||document.createElement('span');b.addEventListener('click',function(){usar(b,msg)})});
+ if(K('st_geo_x')==='1')return;
+ if(det&&P[det]&&det!==aqui){var b=barra('<span>Parece que estás en <b>'+P[det][0]+'</b>.</span> <a class="st-btn sol" href="'+P[det][1]+'">Ver servicio técnico Samsung en '+P[det][0]+'</a> <button type="button" class="st-btn" data-ub>Usar mi ubicación exacta</button> <span data-um></span> <button type="button" class="st-x" aria-label="Cerrar">×</button>');
+  b.querySelector('[data-ub]').addEventListener('click',function(){usar(this,b.querySelector('[data-um]'))});b.querySelector('.st-x').addEventListener('click',function(){K('st_geo_x','1');b.remove()});
+  var cards=document.querySelectorAll('.st-pais');cards.forEach(function(a){if(a.getAttribute('href')===P[det][1]){a.classList.add('st-pais-det');var g=a.parentNode;g.insertBefore(a,g.firstChild)}})}
+ else if(!aqui&&!det){}
+});})();
 """, encoding="utf-8")
 # ---- imágenes con nombre descriptivo (SEO de imágenes) y sitemap de imágenes
 RN = {"nevera-family-hub": "nevera-samsung-side-by-side-family-hub", "nevera-superior-inox": "nevera-samsung-superior-inox", "lavadora-superior": "lavadora-samsung-carga-superior", "secadora-torre": "torre-lavado-secado-samsung-apilada", "secadora": "secadora-samsung-carga-frontal",

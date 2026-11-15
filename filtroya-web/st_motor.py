@@ -211,3 +211,26 @@ def mezclar_secciones(cuerpo, clave):
     mid = [x.replace('class="aq-sec alt"', 'class="aq-sec"', 1) for x in mid]
     mid = [x.replace('class="aq-sec"', 'class="aq-sec alt"', 1) if i % 2 else x for i, x in enumerate(mid)]
     return "".join(hero + qa_ + mid + faq + cola)
+
+
+# ------------------------------------------------------------------ fragmentos destacados: respuestas de 40 a 55 palabras + pasos + tabla
+SNIP_Q = [("¿Cuánto cuesta un técnico Samsung en {c}?", "El costo depende de la falla y del repuesto. En {c} primero se hace el diagnóstico en tu casa y el valor de la reparación se te confirma antes de empezar, de modo que sepas cuánto vas a pagar antes de aceptar. Escríbenos por WhatsApp al {wa} con el modelo y la falla."),
+          ("¿Cómo pedir un técnico Samsung a domicilio en {c}?", "Escribe por WhatsApp al {wa} con el equipo, el modelo (está en la etiqueta) y la falla. Coordinamos el día y la franja, el técnico llega a tu dirección en {c}, revisa el equipo y te confirma el valor antes de repararlo."),
+          ("¿Cuánto demora la visita de un técnico Samsung en {c}?", "El tiempo depende de la agenda del día y de la zona de {c}. Al escribirnos por WhatsApp ({wa}) te confirmamos la fecha y la franja disponibles, y puedes adelantar el diagnóstico enviando fotos o un video corto de la falla."),
+          ("¿Qué electrodomésticos Samsung reparan en {c}?", "En {c} reparamos {equipos} Samsung, con visita a domicilio. Atendemos equipos dentro y fuera de garantía; el diagnóstico es primero y el valor se confirma antes de reparar."),
+          ("¿Vale la pena reparar una Samsung en {c} o es mejor cambiarla?", "Depende de la falla y de la edad del equipo. Muchas fallas (sellos, ventiladores, sensores, bombas, filtros) se reparan a un costo razonable. El técnico te orienta en el diagnóstico y tú decides si repararla o no."),
+          ("¿Un técnico independiente puede reparar mi Samsung?", "Sí, para equipos fuera de garantía. Si tu equipo aún tiene garantía, revisa sus condiciones en el manual antes de intervenir. En {c} reparamos con diagnóstico previo y valor confirmado antes de la reparación.")]
+PASOS4 = [["Escríbenos por WhatsApp con el equipo, el modelo y la falla.", "Confirma el día y la franja de la visita.", "El técnico revisa el equipo en tu casa y te explica qué tiene.", "Aprueba el valor y se repara; el equipo se prueba contigo."],
+          ["Cuéntanos qué le pasa a tu Samsung y envía una foto de la etiqueta.", "Elige el día que mejor te sirva.", "Recibe al técnico y mira el diagnóstico.", "Decide si reparar con el valor ya confirmado."],
+          ["Pide la visita por WhatsApp o con el formulario.", "Acordamos hora y dirección.", "El técnico diagnostica en el lugar.", "Reparamos con tu aprobación y probamos el equipo."]]
+
+
+def bloque_snippets(c, clave, n=3, tabla=True):
+    pk = c["pk"]; f = dict(c=c["n"], wa=wa_vis(pk), equipos=", ".join(pal(pk, s)[1] for s in SERV_PAIS[pk]))
+    qs = "".join(f"<h3>{esc(q.format(**f))}</h3><p>{esc(a.format(**f))}</p>" for q, a in mix(clave + "|sq", SNIP_Q, n))
+    pasos = '<h3>Cómo pedir la visita en 4 pasos</h3><ol class="vl">' + "".join(f"<li>{esc(x)}</li>" for x in uno(clave + "|p4", PASOS4)) + "</ol>"
+    tb = ""
+    if tabla:
+        filas = "".join(f'<tr><td>{esc(cap(pal(pk, sv)[1]))}</td><td>{esc(SERVICIOS[sv]["sintomas"][i % len(SERVICIOS[sv]["sintomas"])])}</td><td>{esc(SERVICIOS[sv]["revisa"][i % len(SERVICIOS[sv]["revisa"])])}</td></tr>' for i, sv in enumerate(SERV_PAIS[pk]))
+        tb = f'<h3>Equipos, fallas frecuentes y qué se revisa en {esc(c["n"])}</h3><div class="tbl-wrap"><table class="spec-table"><tr><th>Equipo Samsung</th><th>Falla frecuente</th><th>Qué revisa el técnico</th></tr>{filas}</table></div>'
+    return seccion(f"Preguntas rápidas sobre el servicio técnico Samsung en {esc(c['n'])}", qs + pasos + tb)
