@@ -170,6 +170,10 @@ def selector_paises():
 
 
 # ------------------------------------------------------------------ por país: portada de guías, quiénes somos, contacto, solicitar visita
+def fig(img, alt, pie=""):
+    return f'<figure style="margin:0"><img src="img/{img}.webp" alt="{esc(alt)}" width="1024" height="572" loading="lazy" style="width:100%;height:auto;border-radius:16px">' + (f'<figcaption style="color:#5a6873;font-size:14px;margin-top:8px">{esc(pie)}</figcaption>' if pie else "") + "</figure>"
+
+
 def _ol(l):
     return '<ol class="vl">' + "".join(f"<li>{esc(x)}</li>" for x in l) + "</ol>"
 
@@ -189,12 +193,13 @@ for pk, P in PAISES.items():
            [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), ("Quiénes somos", None)],
            hero_simple(f"{P['bandera']} Quiénes somos", f"Técnicos especializados en Samsung en {P['nombre']}", f"Reparamos {eq}.") + qa(f"¿Quiénes somos en {P['nombre']}?", f"Un equipo de técnicos especializados en electrodomésticos Samsung que atiende a domicilio en {esc(ciu_txt)}. Somos independientes: no somos Samsung Electronics ni su canal oficial de soporte.")
            + seccion("Cómo trabajamos", _ol(["Escribes por WhatsApp con el equipo, el modelo y la falla.", "Coordinamos la visita a domicilio.", "El técnico hace el diagnóstico y te confirma el valor antes de reparar.", "Reparamos y probamos el equipo contigo."]))
+           + seccion(f"Atención en {esc(P['nombre'])}", fig("atencion-al-cliente-servicio-samsung", f"Atención al cliente del servicio técnico Samsung en {P['nombre']}", "Te atendemos por WhatsApp y coordinamos la visita.") + "<br>" + fig("tecnico-samsung-saluda-en-la-puerta", f"Técnico Samsung llegando a domicilio en {P['nombre']}"), alt=True)
            + faq_html(pq), pq, [{"@type": "AboutPage", "name": "Quiénes somos", "about": {"@id": f"{DOMINIO}/#negocio"}}], prio="0.5", pk=pk, tipo="guias")
     # contacto
     pagina(R_INST(pk, "contacto"), f"Contacto | Servicio técnico Samsung en {P['nombre']}", f"Escríbenos por WhatsApp al {wa_vis(pk)} para solicitar servicio técnico Samsung a domicilio en {P['nombre']}.", f"contacto servicio tecnico samsung {P['nombre'].lower()}",
            [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), ("Contacto", None)],
            hero_simple(f"{P['bandera']} Contacto", f"Escríbenos por WhatsApp en {P['nombre']}", "Te respondemos para coordinar tu visita.") + qa(f"¿Cómo contacto al servicio técnico Samsung en {P['nombre']}?", f"Escribe por WhatsApp al {esc(wa_vis(pk))} o usa el formulario de solicitud de visita.")
-           + seccion("Canales", '<ul class="spec-list">' + f'<li>{P["bandera"]} <b>WhatsApp {esc(P["nombre"])}:</b> <a href="{wa_link(pk, f"Hola, necesito servicio técnico Samsung en {P['nombre']}")}" target="_blank" rel="noopener">{esc(wa_vis(pk))}</a></li>' + "</ul>" + acciones(pk, f"Hola, necesito servicio técnico Samsung en {P['nombre']}")),
+           + seccion("Canales", '<ul class="spec-list">' + f'<li>{P["bandera"]} <b>WhatsApp {esc(P["nombre"])}:</b> <a href="{wa_link(pk, f"Hola, necesito servicio técnico Samsung en {P['nombre']}")}" target="_blank" rel="noopener">{esc(wa_vis(pk))}</a></li>' + "</ul>" + acciones(pk, f"Hola, necesito servicio técnico Samsung en {P['nombre']}")) + seccion("Así es la visita", fig("tecnico-samsung-entrega-orden-de-servicio", f"Técnico Samsung entregando la orden de servicio en {P['nombre']}"), alt=True),
            [], [{"@type": "ContactPage", "name": "Contacto", "about": {"@id": f"{DOMINIO}/#negocio"}}], prio="0.5", pk=pk, tipo="guias")
     # solicitar visita (solo ciudades y WhatsApp de este país)
     opts_e = "".join(f'<option>{esc(cap(pal(pk, s)[0]))}</option>' for s in SERV_PAIS[pk])

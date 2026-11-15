@@ -186,15 +186,19 @@ def preguntas_ia(c, clave, k=4):
 
 
 # fondos de encabezado (fotos reales) por tipo de página
-HERO_FOTOS = ["portada-tecnico", "tecnico-neveras", "stp1", "stp3", "stp5", "stp7", "c-revision", "c-compresor", "stp2", "stp4"]
-HERO_SV = {"nevera": ["tecnico-neveras", "stp1", "stp4"], "lava": ["tecnico-lavadora", "stp6"], "seca": ["stp2", "c-revision"]}
+HERO_FOTOS = ["portada-tecnico", "tecnico-neveras", "stp1", "stp3", "stp5", "stp7", "c-revision", "c-compresor", "stp2", "stp4", "tecnico-samsung-saluda-en-la-puerta", "tecnico-samsung-reparando-lavadora-a-domicilio"]
+HERO_SV = {"nevera": ["tecnico-neveras", "stp1", "stp4", "tecnico-samsung-saluda-en-la-puerta"], "lava": ["tecnico-lavadora", "stp6", "tecnico-samsung-reparando-lavadora-a-domicilio"], "seca": ["stp2", "c-revision", "tecnico-samsung-reparando-lavadora-a-domicilio"], "tv": ["taller-reparacion-televisores-samsung"]}
+HERO_INST = ["atencion-al-cliente-servicio-samsung", "tecnico-samsung-entrega-orden-de-servicio"]
 PLURAL_SV = {slug(pal(k, sv)[1]): sv for k in PAISES for sv in SERV_PAIS[k]}
 
 
 def hero_img(nombre):
-    m = re.match(r"reparacion-(.+?)-samsung-", nombre)
-    if m and PLURAL_SV.get(m.group(1)) in HERO_SV:
-        return uno(nombre + "|h", HERO_SV[PLURAL_SV[m.group(1)]])
+    p = nombre.split("/")
+    if len(p) >= 2 and p[1] in ("quienes-somos", "contacto", "solicitar-visita"):
+        return uno(nombre + "|h", HERO_INST)
+    sv = PLURAL_SV.get(p[-2]) if len(p) >= 3 else None
+    if sv in HERO_SV:
+        return uno(nombre + "|h", HERO_SV[sv])
     return uno(nombre + "|h", HERO_FOTOS)
 
 
