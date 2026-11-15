@@ -16,7 +16,7 @@ DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else "https://centrodeserviciotecnic
 TOKENS = [t.strip() for t in (sys.argv[3] if len(sys.argv) > 3 else "").split(",") if t.strip()]
 GTM = (sys.argv[4] if len(sys.argv) > 4 else "").strip().upper()
 # WhatsApp de cada país (los de los proyectos anteriores): Panamá cubre también Guatemala y El Salvador; Ecuador cubre también Paraguay.
-WA_PAIS = {"colombia": "573013810242", "panama": "50769337976", "guatemala": "50769337976", "el-salvador": "50769337976", "costa-rica": "50670055853", "ecuador": "593993508191", "paraguay": "593993508191", "chile": "56983176106"}
+WA_PAIS = {"colombia": "573013810242", "panama": "50769337976", "guatemala": "50769337976", "el-salvador": "50769337976", "costa-rica": "50670055753", "ecuador": "593993508191", "paraguay": "593993508191", "chile": "56983176106"}
 CONTACTOS = {**WA_PAIS, **json.loads(os.environ.get("ST_CONTACTOS", "{}"))}
 WA_DEF = os.environ.get("ST_WA", WA_PAIS["colombia"])
 HOY = datetime.date.today().isoformat()
