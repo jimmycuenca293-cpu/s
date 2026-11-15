@@ -131,7 +131,7 @@ for f in ("nevera-family-hub", "nevera-superior-inox", "lavadora-superior", "sec
 for f in ("stp1", "stp2", "stp3", "stp4", "stp5", "stp6", "stp7", "c-revision", "c-compresor", "tecnico-lavadora", "tecnico-neveras", "portada-tecnico"):
     shutil.copy(IMG_ORIGEN / f"{f}.webp", OUT / "img" / f"{f}.webp")
 NUEVAS = {1: "tecnico-samsung-saluda-en-la-puerta", 2: "atencion-al-cliente-servicio-samsung", 3: "tecnico-samsung-entrega-orden-de-servicio", 4: "tecnico-samsung-reparando-lavadora-a-domicilio", 5: "taller-reparacion-televisores-samsung"}
-for _n in ("estufa-samsung-4-hornillas-horno", "horno-empotrado-samsung-acero"):
+for _n in ("estufa-samsung-4-hornillas-horno", "horno-empotrado-samsung-acero", "lavavajillas-samsung-acero-inoxidable"):
     for _suf in ("", "-m", "-s"):
         shutil.copy(AQUI / "st_img" / "nuevas" / f"{_n}{_suf}.webp", OUT / "img" / f"{_n}{_suf}.webp")
 for _i, _n in NUEVAS.items():
@@ -141,7 +141,7 @@ _mi = _I.open(AQUI / "st_img" / "microondas.png").convert("RGB")
 for _suf, _lado in (("", 800), ("-m", 460), ("-s", 240)):
     _mi.resize((_lado, _lado), _I.LANCZOS).save(OUT / "img" / f"microondas{_suf}.webp", "WEBP", quality=85, method=6)
 FOTO = {"nevera": ("nevera-family-hub-m.webp", "Nevera Samsung", False), "lava": ("lavadora-superior-m.webp", "Lavadora Samsung", False), "seca": ("secadora-m.webp", "Secadora Samsung", False),
-        "lavaplatos": ("stp2.webp", "Técnico revisando un lavavajillas Samsung", True), "cocina": ("estufa-samsung-4-hornillas-horno-m.webp", "Estufa y horno Samsung", False), "micro": ("microondas-m.webp", "Microondas Samsung", False),
+        "lavaplatos": ("lavavajillas-samsung-acero-inoxidable-m.webp", "Lavavajillas Samsung", False), "cocina": ("estufa-samsung-4-hornillas-horno-m.webp", "Estufa y horno Samsung", False), "micro": ("microondas-m.webp", "Microondas Samsung", False),
         "tv": ("taller-reparacion-televisores-samsung.webp", "Técnico reparando la tarjeta de un televisor Samsung en el taller", True)}
 
 

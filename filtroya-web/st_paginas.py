@@ -236,5 +236,6 @@ pagina("index.html", "Centro de Servicio Técnico Samsung | A Domicilio", "Centr
 exec(open(AQUI / "st_extra.py", encoding="utf-8").read())
 exec(open(AQUI / "st_extra2.py", encoding="utf-8").read())
 exec(open(AQUI / "st_extra3.py", encoding="utf-8").read())
+exec(open(AQUI / "st_extra4.py", encoding="utf-8").read())
 exec(open(AQUI / "st_blog.py", encoding="utf-8").read())
 exec(open(AQUI / "st_salida.py", encoding="utf-8").read())
