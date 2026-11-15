@@ -35,12 +35,13 @@ for c in CIU:
             s1, _ = pal(pk, sv)
             sig.append(f"Tu {s1} Samsung {uno(key + '|sg' + sv, SERVICIOS[sv]['sintomas'])}.")
         pasos = [x.format(**f) for x in uno(key + "|vs", VISITA)]
-        preg = [(q.format(**f), a.format(**f)) for q, a in mix(key + "|fq", FAQ_Z, 5)]
+        preg = [(q.format(**f), a.format(**f)) for q, a in mix(key + "|fq", FAQ_Z, 4)] + preguntas_ia(c, key, 2)
         msg = f"Hola, necesito servicio técnico Samsung en {z}, {c['n']}"
         cuerpo = (hero_simple(f"{z} · {c['n']}", f"Servicio técnico Samsung en {z}, {c['n']}", f"Visita técnica a domicilio para línea blanca Samsung en {z}, {c['dep']}.", acciones(pk, msg))
                   + qa(uno(key + "|qa", QA_Z).format(**f), f"Sí. Atendemos <b>{esc(z)}</b>, en {esc(c['n'])}, con visita a domicilio para {esc(equipos)} Samsung. Escríbenos por WhatsApp: hacemos el diagnóstico y te confirmamos el valor antes de reparar.",
                        [("Zona", z), ("Ciudad", c["n"]), ("Atención", "A domicilio"), ("WhatsApp", wa_vis(pk))])
                   + seccion(f"Atención en {esc(z)}", f"<p>{esc(intro)}</p><p>{esc(climat)}</p>") + secs
+                  + bloque_mitos(key, spot)
                   + seccion("Señales de que tu equipo necesita revisión", "<ul class=\"spec-list\">" + "".join(f"<li>{esc(x)}</li>" for x in sig) + "</ul>", alt=True)
                   + seccion(f"Cómo coordinamos la visita en {esc(z)}", '<ol class="vl">' + "".join(f"<li>{esc(x)}</li>" for x in pasos) + "</ol>")
                   + faq_html(preg, f"Preguntas sobre el servicio en {z}")

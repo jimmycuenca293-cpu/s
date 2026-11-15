@@ -145,3 +145,69 @@ def zlink(c, z, texto=None):
 
 def nota_amp(c):
     return (f" En {c['n']} la cobertura es ampliada: coordinamos la visita según la disponibilidad del técnico, así que escríbenos con anticipación." if c.get("amp") else "")
+
+
+MITOS = {
+    "nevera": [("Poner la nevera al máximo frío la enfría más rápido.", "Solo gasta más energía y puede congelar los alimentos del refrigerador; usa el nivel recomendado."), ("Si la nevera hace ruido, siempre es el compresor.", "Muchas veces es el ventilador del evaporador con hielo o un tubo que roza; un técnico lo distingue en minutos."),
+               ("La escarcha es normal y no importa.", "Una capa fina sí; mucha escarcha suele indicar sellos dañados o falla en el deshielo.")],
+    "lava": [("Más detergente lava mejor.", "El exceso deja residuos, espuma de más y malos olores."), ("Un código de error siempre significa que hay que cambiar la tarjeta.", "La mayoría de códigos (4E, 5E, UE, dE, LE) apuntan a algo sencillo: agua, desagüe, carga o puerta."),
+             ("Cerrar la puerta tras lavar protege la lavadora.", "Al contrario: cerrada atrapa humedad y favorece el moho; déjala entreabierta.")],
+    "seca": [("Un ciclo más largo seca mejor.", "Si el filtro o el ducto están tapados, alargar el ciclo solo gasta energía."), ("Si no calienta, hay que cambiarla.", "A menudo es un sensor, un filtro tapado o la resistencia; se repara sin cambiar el equipo.")],
+    "lavaplatos": [("Hay que enjuagar todo a mano antes de cargar.", "Raspar los restos basta; enjuagar del todo reduce la eficacia del detergente."), ("Si queda agua en el fondo, el equipo está dañado.", "Casi siempre es el filtro o la manguera de desagüe; se resuelve con limpieza o una revisión rápida.")],
+    "cocina": [("Una llama amarilla es normal.", "Puede indicar mala mezcla de aire; conviene una revisión."), ("Si el horno no calienta, hay que cambiarlo.", "Muchas veces es la resistencia o el sensor de temperatura; se repara.")],
+    "micro": [("Se puede calentar vacío un rato sin problema.", "Sin alimento el magnetrón se sobrecalienta y se daña."), ("Si gira pero no calienta, basta cambiar el plato.", "El problema suele estar en el magnetrón, el diodo o el condensador, no en el plato.")],
+    "tv": [("Dejar el televisor en espera siempre es inofensivo.", "Los picos de voltaje pueden dañar la fuente aunque esté apagado; usa protector."), ("Si hay sonido pero no imagen, el panel está perdido.", "Muy a menudo es la retroiluminación, que se repara.")],
+}
+ANTES = ["Anota el modelo y el número de serie de la etiqueta del equipo.", "Toma una foto o un video corto de la falla.", "Anota el código de error si el panel lo muestra.", "Desconecta el equipo si hay agua, chispas u olor a quemado.", "Ten a mano la dirección exacta y un teléfono de contacto.",
+         "Cuéntanos desde cuándo falla y si pasó algo antes (tormenta, mudanza, corte de luz).", "Mueve lo que haya alrededor para que el técnico pueda acceder al equipo.", "Revisa que el equipo esté conectado a un tomacorriente que funcione.", "Si es una lavadora o lavavajillas, ten a la mano las llaves de agua.",
+         "Si vives en conjunto o edificio, avisa a la portería de la visita.", "Despeja el espacio frente al equipo para trabajar con comodidad.", "Ten a la mano la factura o la fecha de compra si la tienes.", "Si la falla es intermitente, anota cuándo ocurre.", "Mantén a las mascotas y a los niños alejados del área de trabajo."]
+AIQ = [("¿Dónde reparar una {nev} Samsung en {c}?", "Con visita a domicilio: escribe por WhatsApp al {wa}, hacemos el diagnóstico y te confirmamos el valor antes de reparar."),
+       ("¿Quién arregla {lavs} Samsung a domicilio en {c}?", "Nuestros técnicos van a tu casa en {c}. Coordinas por WhatsApp ({wa}) y se revisa el equipo en tu hogar."),
+       ("¿Cuánto cuesta un técnico para una Samsung en {c}?", "Depende de la falla y del repuesto. Se hace el diagnóstico y el valor se confirma antes de reparar."),
+       ("¿Cómo pido un técnico Samsung en {c} por WhatsApp?", "Escribe al {wa} con el equipo, el modelo y la falla; coordinamos el día y el técnico va a tu dirección."),
+       ("¿Qué electrodomésticos Samsung reparan en {c}?", "{equipos}."),
+       ("¿Un técnico Samsung independiente puede reparar equipos con garantía?", "Esto depende de las condiciones de tu garantía; consúltalas en el manual del equipo. Para equipos sin garantía, reparamos con diagnóstico previo."),
+       ("¿Tienen servicio técnico Samsung en {c} los fines de semana?", "La disponibilidad se confirma al escribirnos; acordamos el día que mejor te sirva."),
+       ("¿Qué debo tener listo para la visita en {c}?", "El modelo del equipo, una descripción de la falla y la dirección exacta.")]
+
+
+def bloque_mitos(clave, svs, n=2):
+    pares = [(sv, m) for sv in svs for m in MITOS.get(sv, [])]
+    sel = mix(clave + "|mt", pares, n)
+    items = "".join(f"<li><b>Mito:</b> {esc(m[0])}<br><b>Verdad:</b> {esc(m[1])}</li>" for sv, m in sel)
+    ant = "".join(f"<li>{esc(x)}</li>" for x in mix(clave + "|an", ANTES, 3))
+    return seccion("Mitos y verdades", f'<ul class="spec-list">{items}</ul><h3 style="margin:18px 0 8px">Antes de llamar, ten listo</h3><ul class="spec-list">{ant}</ul>')
+
+
+def preguntas_ia(c, clave, k=4):
+    pk = c["pk"]; svs = SERV_PAIS[pk]
+    f = dict(c=c["n"], nev=pal(pk, "nevera")[1], lavs=pal(pk, "lava")[1], wa=wa_vis(pk), equipos=cap(", ".join(pal(pk, s)[1] for s in svs)))
+    return [(q.format(**f), a.format(**f)) for q, a in mix(clave + "|ai", AIQ, k)]
+
+
+# fondos de encabezado (fotos reales) por tipo de página
+HERO_FOTOS = ["portada-tecnico", "tecnico-neveras", "stp1", "stp3", "stp5", "stp7", "c-revision", "c-compresor", "stp2", "stp4"]
+HERO_SV = {"nevera": ["tecnico-neveras", "stp1", "stp4"], "lava": ["tecnico-lavadora", "stp6"], "seca": ["stp2", "c-revision"]}
+PLURAL_SV = {slug(pal(k, sv)[1]): sv for k in PAISES for sv in SERV_PAIS[k]}
+
+
+def hero_img(nombre):
+    m = re.match(r"reparacion-(.+?)-samsung-", nombre)
+    if m and PLURAL_SV.get(m.group(1)) in HERO_SV:
+        return uno(nombre + "|h", HERO_SV[PLURAL_SV[m.group(1)]])
+    return uno(nombre + "|h", HERO_FOTOS)
+
+
+def mezclar_secciones(cuerpo, clave):
+    """Reordena las secciones intermedias de forma distinta en cada página (misma información, estructura diferente)."""
+    partes = [x for x in re.split(r"(?=<section class=)", cuerpo) if x]
+    hero = [x for x in partes if x.startswith('<section class="hero')]
+    qa_ = [x for x in partes if 'aq-qa-sec' in x[:40]]
+    faq = [x for x in partes if 'class="faq-num"' in x]
+    cola = [x for x in partes if re.search(r"<h2>(Zonas cercanas|Más información|Otros equipos)", x[:300])]
+    usados = hero + qa_ + faq + cola
+    mid = [x for x in partes if x not in usados]
+    random.Random(int(hashlib.md5(clave.encode()).hexdigest()[:8], 16)).shuffle(mid)
+    mid = [x.replace('class="aq-sec alt"', 'class="aq-sec"', 1) for x in mid]
+    mid = [x.replace('class="aq-sec"', 'class="aq-sec alt"', 1) if i % 2 else x for i, x in enumerate(mid)]
+    return "".join(hero + qa_ + mid + faq + cola)

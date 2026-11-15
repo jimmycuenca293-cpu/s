@@ -25,7 +25,7 @@ css += """
 .st-barra{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;gap:8px;padding:8px max(10px,env(safe-area-inset-left,0px)) calc(8px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line);box-shadow:0 -8px 22px rgba(20,40,160,.12)}.st-barra a{flex:1}
 @media(max-width:760px){.st-barra{display:flex}body{padding-bottom:64px}.aq-wa{display:none}}
 .st-form{display:grid;gap:12px;max-width:640px}.st-form label{display:grid;gap:4px;font-weight:600;font-size:.92rem}.st-form input,.st-form select,.st-form textarea{font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}.st-form textarea{min-height:100px}.st-ok{background:#ecfdf5;border:1px solid #86efac;border-radius:14px;padding:16px}.st-hp{position:absolute;left:-9999px}
-.st-aviso{font-size:.8rem;color:var(--mute);margin-top:10px}.st-split{display:grid;gap:20px;grid-template-columns:minmax(220px,340px) 1fr;align-items:center}@media(max-width:720px){.st-split{grid-template-columns:1fr}}
+.st-aviso{font-size:.8rem;color:var(--mute);margin-top:10px}.hero.st-bg{background:linear-gradient(105deg,rgba(7,26,107,.9),rgba(20,40,160,.72) 52%,rgba(20,40,160,.32)),var(--bgimg) center 30%/cover no-repeat;min-height:300px}.hero.st-bg h1,.hero.st-bg .sub{text-shadow:0 2px 14px rgba(0,0,0,.35)}.st-split{display:grid;gap:20px;grid-template-columns:minmax(220px,340px) 1fr;align-items:center}@media(max-width:720px){.st-split{grid-template-columns:1fr}}
 .st-foto{display:block;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;aspect-ratio:4/3}.st-fimg{width:100%;height:100%;display:block;object-fit:contain;background:#fff}.st-fimg.cover{object-fit:cover}
 .st-serv .st-fimg{height:150px;border-radius:12px}.st-servs{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .aq-pop.prod .st-fimg{width:48px;height:48px;border-radius:8px}.st-eq-top{display:flex;gap:10px;justify-content:space-between;align-items:center}
@@ -189,7 +189,7 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     head = ('<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">'
             f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}"><meta name="keywords" content="{esc(kw)}"><link rel="canonical" href="{url}">'
             '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="theme-color" content="#1428a0"><meta name="author" content="Centro de Servicio Técnico Samsung">'
-            f'<link rel="alternate" hreflang="{hl}" href="{url}">' + (f'<link rel="alternate" hreflang="x-default" href="{url}">' if nombre == "index.html" else "") + f'<link rel="alternate" type="text/plain" href="{DOMINIO}/llms.txt" title="llms.txt"><link rel="alternate" type="application/json" href="{DOMINIO}/datos-servicio-tecnico.json" title="Datos estructurados">'
+            f'<link rel="alternate" hreflang="{hl}" href="{url}">' + (f'<link rel="alternate" hreflang="x-default" href="{url}">' if nombre == "index.html" else "") + f'<link rel="alternate" type="text/plain" href="{DOMINIO}/{("llms-" + pk + ".txt") if pk else "llms.txt"}" title="llms.txt"><link rel="alternate" type="application/json" href="{DOMINIO}/datos-servicio-tecnico.json" title="Datos estructurados">'
             + "".join(f'<meta name="google-site-verification" content="{t}">' for t in TOKENS)
             + (("<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','" + GTM + "');</script>") if GTM else "")
             + f'<meta property="og:type" content="website"><meta property="og:locale" content="{hl.replace("-", "_")}"><meta property="og:site_name" content="{NOMBRE}"><meta property="og:title" content="{esc(titulo)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{DOMINIO}/img/samsung-oval.png">'
@@ -198,7 +198,11 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
             '<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="tema.css?v=st1">'
             f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>'
             + (f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>' if GTM else ""))
-    if cuerpo.startswith('<section class="hero">') and "st-equipos" not in cuerpo:
+    if cuerpo.startswith('<section class="hero">') and tipo in ("ciudades", "zonas"):
+        cuerpo = mezclar_secciones(cuerpo, nombre)
+    if cuerpo.startswith('<section class="hero">'):
+        cuerpo = cuerpo.replace('<section class="hero">', f'<section class="hero st-bg" style="--bgimg:url(img/{hero_img(nombre)}.webp)">', 1)
+    if cuerpo.startswith('<section class="hero st-bg"') and "st-equipos" not in cuerpo:
         k = cuerpo.index("</section>") + len("</section>")
         cuerpo = cuerpo[:k] + panel_equipos(pk, ctx, None, compacto) + cuerpo[k:]
     t = head + encabezado(pk) + bc + cuerpo + pie(pk) + '<script src="buscar.js" defer></script></body></html>'

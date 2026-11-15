@@ -38,7 +38,7 @@ for c in CIU:
                 (f"¿Cuánto cuesta reparar una {s1} Samsung en {nom}?" if sv != "tv" else f"¿Cuánto cuesta reparar un {s1} Samsung en {nom}?", "Depende de la falla y del repuesto. Primero se hace el diagnóstico y te confirmamos el valor antes de reparar."),
                 (f"¿Van a domicilio en {nom}?", f"Sí, atendemos en tu casa en {z3} y otras zonas de {nom}."),
                 (f"¿Qué líneas Samsung atienden?", f"{S['lineas'].capitalize()}."),
-                ("¿Cómo agendo la visita?", f"Escríbenos por WhatsApp al {wa_vis(pk)} o usa el formulario de solicitud de visita.")] + faq_cs(c, sv)
+                ("¿Cómo agendo la visita?", f"Escríbenos por WhatsApp al {wa_vis(pk)} o usa el formulario de solicitud de visita.")] + faq_cs(c, sv) + preguntas_ia(c, f"aq|{c['s']}|{sv}", 2)
         otros = [x for x in SERV_PAIS[pk] if x != sv]
         veci = [x for x in CIU_PAIS[pk] if x is not c][:6]
         cuerpo = (hero_simple(f"{nom} · {P['nombre']}", f"Reparación de {s2} Samsung en {nom}", f"Servicio técnico a domicilio para {s2} Samsung en {nom}, {c['dep']}.", acciones(pk, msg))
@@ -46,7 +46,7 @@ for c in CIU:
                        [("Ciudad", f"{nom}, {P['nombre']}"), ("Equipo", cap(s2) + " Samsung"), ("Atención", "A domicilio" + (" (cobertura ampliada)" if c["amp"] else "")), ("WhatsApp", wa_vis(pk))])
                   + seccion(f"{esc(cap(s2))} Samsung en {esc(nom)}", f"<p>{esc(intro)}</p><p>{esc(nota + nota_amp(c))}</p><p>Líneas Samsung que atendemos: {esc(S['lineas'])}.</p>")
                   + seccion(f"Fallas que reparamos en {esc(s2)} Samsung", "<ul class=\"spec-list\">" + "".join(f"<li>Tu {esc(s1)} {esc(x)}.</li>" for x in S["sintomas"]) + "</ul>", alt=True)
-                  + bloque_local(c, sv, f"bl|{c['s']}|{sv}")
+                  + bloque_local(c, sv, f"bl|{c['s']}|{sv}") + bloque_mitos(f"mt|{c['s']}|{sv}", [sv], 1)
                   + seccion("Qué revisa el técnico", "<ul class=\"spec-list\">" + "".join(f"<li>{esc(x)}</li>" for x in S["revisa"]) + "</ul>" + (f'<p style="margin-top:14px">Si quieres adelantar algo: <a href="{R_G(guias_de(sv)[0])}">guía de fallas de {esc(s2)} Samsung</a>.</p>' if guias_de(sv) else ""))
                   + seccion(f"Sectores de {esc(nom)} donde damos servicio", '<div class="city-tags">' + "".join(zlink(c, z) for z in c["zonas"]) + "</div>")
                   + faq_html(preg, f"Preguntas sobre {s2} Samsung en {nom}")
@@ -64,7 +64,7 @@ for c in CIU:
     nombres = ", ".join(pal(pk, s)[1] for s in SERV_PAIS[pk])
     preg = [(f"¿Hay servicio técnico Samsung en {nom}?", f"Sí. Atendemos {nombres} Samsung en {nom} con visita a domicilio."),
             (f"¿Qué electrodomésticos Samsung reparan en {nom}?", f"{cap(nombres)}."),
-            ("¿Cómo pido una visita?", f"Por WhatsApp al {wa_vis(pk)} o desde el formulario de solicitud de visita."), ("¿Cuánto cuesta?", "Se cotiza después del diagnóstico; te confirmamos el valor antes de reparar.")]
+            ("¿Cómo pido una visita?", f"Por WhatsApp al {wa_vis(pk)} o desde el formulario de solicitud de visita."), ("¿Cuánto cuesta?", "Se cotiza después del diagnóstico; te confirmamos el valor antes de reparar.")] + preguntas_ia(c, f"ac|{c['s']}", 4)
     msg = f"Hola, necesito servicio técnico Samsung en {nom}"
     cuerpo = (hero_simple(f"{nom} · {P['nombre']}", f"Servicio técnico Samsung en {nom}", f"Reparación y mantenimiento de línea blanca Samsung a domicilio en {nom}, {c['dep']}.", acciones(pk, msg))
               + qa(f"¿Hay servicio técnico Samsung en {nom}?", f"Sí. En <b>{esc(nom)}</b> reparamos {esc(nombres)} Samsung a domicilio, en zonas como {esc(zonas_txt(c, 4))}. Escríbenos por WhatsApp, hacemos el diagnóstico y te confirmamos el valor antes de reparar.",
@@ -80,7 +80,7 @@ for c in CIU:
 
 # ------------------------------------------------------------------ países
 for pk, P in PAISES.items():
-    cs = CIU_PAIS[pk]; nombres = ", ".join(pal(pk, s)[1] for s in SERV_PAIS[pk]); ciudades_txt = ", ".join(c["n"] for c in cs)
+    cs = CIU_PAIS[pk]; nombres = ", ".join(pal(pk, s)[1] for s in SERV_PAIS[pk]); ciudades_txt = ", ".join(c["n"] for c in cs[:10]) + (f" y {len(cs) - 10} ciudades más" if len(cs) > 10 else "")
     preg = [(f"¿Hay servicio técnico Samsung en {P['nombre']}?", f"Sí, atendemos en {ciudades_txt}: {nombres} Samsung a domicilio."), (f"¿Cómo se dice «refrigerador» en {P['nombre']}?", f"En {P['nombre']} se usa «{pal(pk, 'nevera')[0]}»; por eso nuestras páginas usan ese término."),
             ("¿Cómo pido una visita?", f"Por WhatsApp al {wa_vis(pk)} o con el formulario de solicitud."), ("¿Cuánto cuesta?", "Se cotiza tras el diagnóstico; te confirmamos el valor antes de reparar.")]
     cuerpo = (hero_simple(f"{P['bandera']} {P['nombre']}", f"Servicio técnico Samsung en {P['nombre']}", f"Reparación de {nombres} Samsung a domicilio en {ciudades_txt}.", acciones(pk, f"Hola, necesito servicio técnico Samsung en {P['nombre']}"))

@@ -110,8 +110,12 @@ for f in ("nevera-family-hub", "nevera-superior-inox", "lavadora-superior", "sec
         shutil.copy(IMG_ORIGEN / f"{f}{suf}.webp", OUT / "img" / f"{f}{suf}.webp")
 for f in ("stp1", "stp2", "stp3", "stp4", "stp5", "stp6", "stp7", "c-revision", "c-compresor", "tecnico-lavadora", "tecnico-neveras", "portada-tecnico"):
     shutil.copy(IMG_ORIGEN / f"{f}.webp", OUT / "img" / f"{f}.webp")
+from PIL import Image as _I
+_mi = _I.open(AQUI / "st_img" / "microondas.png").convert("RGB")
+for _suf, _lado in (("", 800), ("-m", 460), ("-s", 240)):
+    _mi.resize((_lado, _lado), _I.LANCZOS).save(OUT / "img" / f"microondas{_suf}.webp", "WEBP", quality=85, method=6)
 FOTO = {"nevera": ("nevera-family-hub-m.webp", "Nevera Samsung", False), "lava": ("lavadora-superior-m.webp", "Lavadora Samsung", False), "seca": ("secadora-m.webp", "Secadora Samsung", False),
-        "lavaplatos": ("stp2.webp", "Técnico revisando un lavavajillas Samsung", True), "cocina": ("stp5.webp", "Técnico revisando una estufa u horno Samsung", True), "micro": ("stp4.webp", "Técnico revisando un microondas Samsung", True),
+        "lavaplatos": ("stp2.webp", "Técnico revisando un lavavajillas Samsung", True), "cocina": ("stp5.webp", "Técnico revisando una estufa u horno Samsung", True), "micro": ("microondas-m.webp", "Microondas Samsung", False),
         "tv": ("stp7.webp", "Técnico en visita por un televisor Samsung", True)}
 
 

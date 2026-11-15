@@ -95,6 +95,19 @@ ll += ["", "## Datos", f"- [Datos estructurados]({DOMINIO}/datos-servicio-tecnic
 (OUT / "llms.txt").write_text("\n".join(ll) + "\n", encoding="utf-8")
 LF = ll[:3] + ["", "## Preguntas y respuestas", ""] + [x for q, a in G_IA for x in (f"**{q}**", a, "")] + ["## Guías (texto completo)", ""] + [x for g in GUIAS for x in (f"### {g['tit']}", g["res"], re.sub(r"<[^>]+>", " ", g["cuerpo"]), "")]
 (OUT / "llms-full.txt").write_text("\n".join(LF) + "\n", encoding="utf-8")
+# llms por país (cada país con su propia información para asistentes de IA)
+for pk, P in PAISES.items():
+    cs = CIU_PAIS[pk]; v = VOLT[pk]
+    L = [f"# Servicio técnico Samsung en {P['nombre']}", "", f"> Servicio técnico independiente especializado en electrodomésticos Samsung en {P['nombre']} (no somos Samsung Electronics). Visita a domicilio; primero el diagnóstico y el valor se confirma antes de reparar. WhatsApp +{wa_num(pk)}. Actualizado el {FECHA_LARGA}.", "",
+         "## Equipos que reparamos"] + [f"- [{cap(pal(pk, s_)[1])}]({DOMINIO}/{R_SERV(pk, s_)}): {SERVICIOS[s_]['lineas']}." for s_ in SERV_PAIS[pk]]
+    L += ["", "## Ciudades"] + [f"- [{c['n']}]({DOMINIO}/{R_CIU(c)})" + (" (cobertura ampliada, con coordinación previa)" if c["amp"] else "") for c in cs]
+    L += ["", "## Datos útiles", f"- Red eléctrica: {v[0]} a {v[1]}, enchufes {v[2]}.", f"- [Voltaje y electrodomésticos Samsung en {P['nombre']}]({DOMINIO}/{R_VOLT(pk)})", f"- [Preguntas frecuentes]({DOMINIO}/preguntas-frecuentes-servicio-samsung-{pk}.html)", f"- [Respuestas rápidas]({DOMINIO}/respuestas-ia-servicio-tecnico-samsung-{pk}.html)", "", "## Preguntas y respuestas"]
+    for c in cs:
+        for sv in SERV_PAIS[pk]:
+            L += [f"**¿Reparan {pal(pk, sv)[1]} Samsung en {c['n']}?** Sí, con visita a domicilio" + (" (cobertura ampliada)" if c["amp"] else "") + f"; el valor se confirma tras el diagnóstico. WhatsApp +{wa_num(pk)}.", ""]
+    (OUT / f"llms-{pk}.txt").write_text("\n".join(L) + "\n", encoding="utf-8")
+ll += ["", "## Información por país"] + [f"- [{P['nombre']}]({DOMINIO}/llms-{pk}.txt)" for pk, P in PAISES.items()]
+(OUT / "llms.txt").write_text("\n".join(ll) + "\n", encoding="utf-8")
 (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /data/\n\n" + "".join(f"User-agent: {b}\nAllow: /\n\n" for b in ("GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web", "Claude-SearchBot", "Claude-User", "PerplexityBot", "Perplexity-User", "Google-Extended", "Applebot-Extended", "Bingbot", "Googlebot", "Amazonbot", "meta-externalagent", "cohere-ai", "DuckAssistBot", "MistralAI-User", "YouBot", "Applebot"))
                                 + f"Sitemap: {DOMINIO}/sitemap.xml\n" + "".join(f"Sitemap: {DOMINIO}/sitemap-{g}.xml\n" for g in ("paises", "ciudades", "zonas", "servicios", "guias")), encoding="utf-8")
 grupos = {g: [] for g in ("paises", "ciudades", "zonas", "servicios", "guias")}
