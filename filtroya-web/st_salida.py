@@ -502,6 +502,9 @@ if SOLO:
                         tops.append(b.group(0)); continue
                     h = re.sub(r"<[^>]+>", "", h2m.group(1)).strip() if h2m else ""
                     body.append((h, b.group(0), "st-equipos" in cls))
+                if SOLO_CFG[SOLO].get("telefono_vis") and (kind == "home" or re.search(r"(whatsapp|telefono|ubicacion-y-horario|servicio-tecnico-samsung-24-horas)", n2)):
+                    _tv = SOLO_CFG[SOLO]["telefono_vis"]
+                    tops.append(qa(f"¿Cuál es el teléfono del servicio técnico Samsung en {_cn}?", f'El teléfono y WhatsApp del servicio técnico Samsung en {html.escape(_cn)} es <a href="tel:+{wa_num(_cc["pk"])}"><b>{html.escape(_tv)}</b></a>. Abierto las 24 horas, con visita a domicilio; escribe con el equipo, el modelo y la falla.', [("Teléfono", _tv), ("WhatsApp", _tv), ("Horario", "24 horas"), ("Atención", "A domicilio")]))
                 for ex in extra:
                     h2m = re.search(r"<h2>(.*?)</h2>", ex, re.S)
                     body.append((re.sub(r"<[^>]+>", "", h2m.group(1)), ex, False))
