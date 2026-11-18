@@ -15,11 +15,17 @@ AQUI = pathlib.Path(__file__).resolve().parent
 SOLO = os.environ.get("ST_SOLO", "").strip()
 BARRIOS_SOLO = {"ibague": ["Centro", "Jordán", "Picaleña", "El Salado", "Ambalá", "Interlaken", "Cádiz", "La Pola", "Belén", "Calambeo", "Piedra Pintada", "Mirolindo", "Arkacentro", "Gaitán", "El Vergel", "Topacio", "Alaska", "Boquerón", "Las Américas", "Libertador", "Santa Ana", "Restrepo", "Galán", "Granjas", "Combeima", "Ciudad Luz", "La Francia", "Ancón"]}
 BARRIOS_SOLO["valledupar"] = ["Centro", "Los Mayales", "Los Campanos", "Alfonso López", "Villa Castro", "Novalito", "La Nevada", "Sicarare", "Garupal", "Cañaguate", "Altos del Rosario", "Villa Corelca", "Primero de Mayo", "12 de Octubre", "Los Fundadores", "Simón Bolívar", "Dangond", "Mareigua", "Divino Niño", "El Eneal", "Los Almendros", "Ciudad Salguero", "Altamira", "Los Cortijos", "Villa Alexandra", "7 de Agosto", "La Esperanza", "San Joaquín", "Sabanas del Rosario", "La Granja", "Los Músicos", "Villa Rosario", "Badillo", "Patillal", "Guacoche", "Mariangola", "Valencia de Jesús", "Atánquez", "Aguas Blancas", "Río Seco"]
-SOLO_CFG = {"ibague": dict(nombre="Ibagué", dep="Tolima", lat=4.4389, lon=-75.2322, region="CO-TOL", tv=False, token="VnmP5YjaE7DzC-ztjsRFetEvNfbNaK9Mes-zaxXigoA"),
+BARRIOS_SOLO["guatemala"] = [f"Zona {i}" for i in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 24, 25)] + ["Zona Viva", "Cayalá", "Oakland", "Centro Histórico", "Landívar", "Roosevelt", "Miraflores", "Vista Hermosa", "Las Charcas", "Atlántida", "Primero de Julio", "Quinta Samayoa", "Ciudad San Cristóbal", "Lomas de San Cristóbal", "Mixco", "Villa Nueva", "Santa Catarina Pinula", "San Miguel Petapa", "Villa Canales", "Fraijanes", "San José Pinula"]
+SOLO_CFG = {"guatemala": dict(pk="guatemala", ciudad="Ciudad de Guatemala", d="ciudad-de-guatemala", nombre="Ciudad de Guatemala", marca="Guatemala", dep="Guatemala", lat=14.6349, lon=-90.5069, region="GT-GU", tv=False, token=""),
+            "ibague": dict(nombre="Ibagué", dep="Tolima", lat=4.4389, lon=-75.2322, region="CO-TOL", tv=False, token="VnmP5YjaE7DzC-ztjsRFetEvNfbNaK9Mes-zaxXigoA"),
             "valledupar": dict(nombre="Valledupar", dep="Cesar", lat=10.4631, lon=-73.2532, region="CO-CES", tv=True, token="VjJ7cDiGgcLc66zuDmiqsxP3shFDuvTvFdV6yD28Bus")}
+for _k, _v in SOLO_CFG.items():
+    _v.setdefault("pk", "colombia"); _v.setdefault("ciudad", _v["nombre"]); _v.setdefault("d", _k); _v.setdefault("marca", _v["nombre"])
+SOLO_PK = SOLO_CFG[SOLO]["pk"] if SOLO else ""
+SOLO_D = SOLO_CFG[SOLO]["d"] if SOLO else ""
 if SOLO:
     _sl = lambda n: re.sub(r"[^a-z0-9]+", "-", unicodedata.normalize("NFKD", n).encode("ascii", "ignore").decode().lower()).strip("-")
-    PAISES = {"colombia": dict(PAISES["colombia"], ciudades=[(n, d, BARRIOS_SOLO.get(SOLO, z), t) for (n, d, z, t) in PAISES["colombia"]["ciudades"] if _sl(n) == SOLO], tv=(("televisor", "televisores") if SOLO_CFG[SOLO]["tv"] else None))}
+    PAISES = {SOLO_PK: dict(PAISES[SOLO_PK], ciudades=[(n, d, BARRIOS_SOLO.get(SOLO, z), t) for (n, d, z, t) in PAISES[SOLO_PK]["ciudades"] if _sl(n) == SOLO_D], tv=(("televisor", "televisores") if SOLO_CFG[SOLO]["tv"] else None))}
 OUT = pathlib.Path(sys.argv[1])
 DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else (f"https://serviciotecnicosamsung{SOLO}.click" if SOLO else "https://samsungsoportetecnico.com")).rstrip("/")
 TOKENS = [t.strip() for t in (sys.argv[3] if len(sys.argv) > 3 else "").split(",") if t.strip()]
@@ -33,7 +39,7 @@ HOY = datetime.date.today().isoformat()
 _M = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
 _d = datetime.date.today()
 FECHA_LARGA = f"{_d.day} de {_M[_d.month - 1]} de {_d.year}"
-NOMBRE = f"Servicio Técnico Samsung {SOLO_CFG[SOLO]['nombre']}" if SOLO else "Soporte Técnico Samsung"
+NOMBRE = f"Servicio Técnico Samsung {SOLO_CFG[SOLO]['marca']}" if SOLO else "Soporte Técnico Samsung"
 esc = lambda s: html.escape(str(s), quote=True)
 
 
@@ -65,7 +71,7 @@ def wa_link(pk, msg):
 CIU = []
 from st_datos2 import EXTRA, BUCKETS
 if SOLO:
-    EXTRA = {"colombia": [(n, d, BARRIOS_SOLO[SOLO], b, a) for (n, d, z, b, a) in EXTRA.get("colombia", []) if _sl(n) == SOLO]}
+    EXTRA = {SOLO_PK: [(n, d, BARRIOS_SOLO[SOLO], b, a) for (n, d, z, b, a) in EXTRA.get(SOLO_PK, []) if _sl(n) == SOLO_D]}
 from st_clima import CLIMA
 _usados = set()
 for pk, P in PAISES.items():
@@ -111,6 +117,7 @@ R_WA = lambda c: f"{c['pk']}/{c['d']}/whatsapp/index.html"
 R_TEL = lambda c: f"{c['pk']}/{c['d']}/telefono/index.html"
 R_WAP = lambda pk: f"{pk}/whatsapp/index.html"
 R_TELP = lambda pk: f"{pk}/telefono/index.html"
+R_GAL = lambda c: f"{c['pk']}/{c['d']}/galeria/index.html"
 R_BARRIOS = lambda c: f"{c['pk']}/{c['d']}/barrios/index.html"
 R_ZS = lambda c, z, sv: f"{c['pk']}/{c['d']}/{slug(z)}/{slug(pal(c['pk'], sv)[1])}/index.html"
 R_MAPA = lambda pk: R_INST(pk, "mapa-del-sitio")
@@ -124,7 +131,7 @@ for _pk in PAISES:
 
 def solo_ruta(n):  # en el modo de una ciudad, colombia/ibague/x -> x
     if SOLO:
-        for pre in (f"colombia/{SOLO}/", "colombia/"):
+        for pre in (f"{SOLO_PK}/{SOLO_D}/", f"{SOLO_PK}/"):
             if n.startswith(pre):
                 return n[len(pre):] or "index.html"
     return n
@@ -183,6 +190,8 @@ def foto_serv(sv, alto=150, mini=False, ctx=None):
         alt = f"{alt}: servicio técnico a domicilio en {ctx}"
     if mini:
         f = f.replace("-m.webp", "-s.webp") if not cover else f
+    elif SOLO and not cover:
+        f = f.replace("-m.webp", ".webp")  # sitio de una ciudad: imagen grande y nítida
     return f'<img class="st-fimg{" cover" if cover else ""}" src="img/{f}" alt="{esc(alt)}" loading="lazy" decoding="async">'
 
 

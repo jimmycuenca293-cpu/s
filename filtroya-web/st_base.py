@@ -38,7 +38,7 @@ css += """
 .st-eq-btn{display:flex;gap:8px;margin-top:auto}.st-eq-btn a{flex:1;text-align:center;padding:10px 8px;font-size:13.5px}.st-eq-badge{font-size:.72rem;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:999px;padding:2px 8px;margin-left:6px;font-weight:700}
 """
 css += "\n.glos{margin:0}.glos dt{margin-top:14px}.glos dd{margin:3px 0 0;color:#445}\n"
-css += "\n.sec-img{margin:0 0 18px}.sec-img img{width:100%;max-height:260px;object-fit:cover;border-radius:16px;display:block}.sec-img.prod img{object-fit:contain;background:#fff;border:1px solid #e3e8f0;height:210px;max-width:420px}.toc{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font:600 14px Inter,sans-serif}.toc b{margin-right:6px}.toc a{color:#1428a0;text-decoration:none;border-bottom:1px dotted #1428a0}\n"
+css += "\n.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}.gal figure{margin:0}.gal img{width:100%;height:auto;border-radius:14px;display:block;background:#fff}.gal figcaption{font-size:13px;color:#5a6873;margin-top:6px}\n.sec-img{margin:0 0 18px}.sec-img img{width:100%;max-height:260px;object-fit:cover;border-radius:16px;display:block}.sec-img.prod img{object-fit:contain;background:#fff;border:1px solid #e3e8f0;height:210px;max-width:420px}.toc{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font:600 14px Inter,sans-serif}.toc b{margin-right:6px}.toc a{color:#1428a0;text-decoration:none;border-bottom:1px dotted #1428a0}\n"
 (OUT / "tema.css").write_text(css, encoding="utf-8")
 
 
@@ -60,7 +60,7 @@ def encabezado(pk=None):
         bar1 = f"Servicio técnico Samsung en {cs[0]['n'] if SOLO else P['nombre']}"; bar2 = "Visita a domicilio · diagnóstico primero"; sub = f"Línea blanca · {cs[0]['n'] if SOLO else P['nombre']}"
         nav = (f'<a href="{R_PAIS(pk)}">Inicio</a>' f'<details class="aq-dd"><summary>{esc(_lbl)}</summary>{pop_c}</details>'
                f'<details class="aq-dd"><summary>Servicios</summary><div class="aq-pop prod"><div class="aq-wrap">{serv_pop}</div></div></details>'
-               f'<a href="{R_GUIAS(pk)}">Guías de fallas</a><a href="{pk}/blog/index.html">Blog</a><a href="{R_FAQ(pk)}">Preguntas</a><a href="{R_SOL(pk)}"><b>Solicitar visita</b></a>')
+               f'<a href="{R_GUIAS(pk)}">Guías de fallas</a>' + (f'<a href="{R_GAL(cs[0])}">Galería</a>' if SOLO else "") + f'<a href="{pk}/blog/index.html">Blog</a><a href="{R_FAQ(pk)}">Preguntas</a><a href="{R_SOL(pk)}"><b>Solicitar visita</b></a>')
         tk = f'<span class="aq-tk-tag">Servicio en {esc(P["nombre"])}</span><div class="aq-tk-view"><div class="aq-tk-track" data-tk="{pk}"></div></div>'
         ph = (f"Tu barrio de {cs[0]['n']} o electrodoméstico…" if SOLO else f"Tu ciudad en {P['nombre']} o electrodoméstico…")
     else:
@@ -141,7 +141,7 @@ def tiles_serv(pk, c=None):
 
 def panel_equipos(pk=None, c=None, titulo=None, compacto=False):
     """Todos los electrodomésticos que reparamos, con su foto. pk/c dan el vocabulario local y el destino."""
-    base = pk or "colombia"  # solo para el vocabulario; sin país, los botones llevan a elegir país
+    base = pk or SOLO_PK or "colombia"  # solo para el vocabulario; sin país, los botones llevan a elegir país
     sv_lista = SERV_PAIS[pk] if pk else ORDEN_SERV
     out = ""
     for sv in sv_lista:
@@ -205,7 +205,7 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     titulo = titulo.strip()
     if SOLO:
         _p = nombre.split("/")
-        if nombre in ("index.html", "colombia/index.html") or (_p[0] == "colombia" and len(_p) == 3 and _p[2] == "index.html" and _p[1] not in ("guias", "blog", "preguntas-frecuentes", "respuestas-rapidas", "solicitar-visita", "contacto", "quienes-somos", "mapa-del-sitio", "voltaje", SOLO)):
+        if nombre in ("index.html", f"{SOLO_PK}/index.html") or (_p[0] == SOLO_PK and len(_p) == 3 and _p[2] == "index.html" and _p[1] not in ("guias", "blog", "preguntas-frecuentes", "respuestas-rapidas", "solicitar-visita", "contacto", "quienes-somos", "mapa-del-sitio", "voltaje", SOLO_D)):
             return ""
     if not preguntas and nombre != "404.html":
         preguntas = faq_base(pk)
@@ -266,11 +266,11 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
         for _a, _b in (("Soporte Técnico Samsung", "Servicio Técnico Samsung"), ("Soporte técnico Samsung", "Servicio técnico Samsung"), ("Soporte Samsung", "Servicio Samsung"), ("| Soporte técnico", "| A domicilio"), ("Soporte Técnico</b>", "Servicio Técnico</b>")):
             t = t.replace(_a, _b)
     if SOLO:
-        t = t.replace("1 ciudades", "1 ciudad").replace("Servicio en Colombia", f"Servicio en {CIU[0]['n']}").replace(" Samsung en Colombia:", f" Samsung en {CIU[0]['n']}:")
+        t = t.replace("1 ciudades", "1 ciudad").replace(f"Servicio en {PAISES[SOLO_PK]['nombre']}", f"Servicio en {CIU[0]['n']}").replace(f" Samsung en {PAISES[SOLO_PK]['nombre']}:", f" Samsung en {CIU[0]['n']}:")
         if (nombre.split("/")[2:3] or [""])[0].endswith("-samsung") or (nombre.split("/")[2:3] or [""])[0].endswith(("-samsung",)):
-            t = t.replace(" en Colombia", f" en {CIU[0]['n']}")
+            t = t.replace(f" en {PAISES[SOLO_PK]['nombre']}", f" en {CIU[0]['n']}")
         if nombre.split("/")[1:2] and nombre.split("/")[1] in ("guias", "blog", "preguntas-frecuentes", "respuestas-rapidas", "solicitar-visita", "contacto", "quienes-somos", "mapa-del-sitio"):
-            t = t.replace(" en Colombia", f" en {CIU[0]['n']}")
+            t = t.replace(f" en {PAISES[SOLO_PK]['nombre']}", f" en {CIU[0]['n']}")
     (OUT / nombre).parent.mkdir(parents=True, exist_ok=True)
     (OUT / nombre).write_text(t, encoding="utf-8")
     PAGINAS.append((nombre, prio, titulo, desc, tipo))

@@ -303,35 +303,37 @@ def _rel_solo(nombre, t):
     """Modo de una ciudad: quita el prefijo colombia/ibague/ de los enlaces antes de hacerlos relativos."""
     def f(m):
         ruta = m.group(2)
-        for pre in (f"colombia/{SOLO}/", "colombia/"):
+        for pre in (f"{SOLO_PK}/{SOLO_D}/", f"{SOLO_PK}/"):
             if ruta.startswith(pre):
                 ruta = ruta[len(pre):] or "index.html"
                 break
-        if ruta in ("colombia", f"colombia/{SOLO}"):
+        if ruta in (SOLO_PK, f"{SOLO_PK}/{SOLO_D}"):
             ruta = "index.html"
         return f'{m.group(1)}="{ruta}{m.group(3) or ""}"'
     return _attr.sub(f, t)
 
 
+import urllib.parse
 if SOLO:
     # ---- enriquecimiento final de cada página: imágenes por sección, índice «En esta página», búsquedas relacionadas, precarga de la imagen principal
     _cc = CIU[0]; _cn = _cc["n"]; _wa_ = wa_vis(_cc["pk"])
-    IMG_SV = {"nevera": ["nevera-samsung-side-by-side-family-hub-m", "tecnico-reparando-nevera-samsung", "nevera-samsung-superior-inox-m", "tecnico-samsung-revisando-compresor"],
-              "lava": ["lavadora-samsung-carga-superior-m", "tecnico-samsung-reparando-lavadora-a-domicilio", "tecnico-reparando-lavadora-samsung", "torre-de-lavado-samsung-m"],
-              "seca": ["secadora-samsung-carga-frontal-m", "torre-lavado-secado-samsung-apilada-m", "tecnico-samsung-visita-a-domicilio-6", "tecnico-samsung-revision-en-casa"],
-              "lavaplatos": ["lavavajillas-samsung-acero-inoxidable-m", "tecnico-samsung-visita-a-domicilio-2", "tecnico-samsung-revision-en-casa", "tecnico-samsung-visita-a-domicilio-4"],
-              "cocina": ["estufa-samsung-4-hornillas-horno-m", "horno-empotrado-samsung-acero-m", "tecnico-samsung-visita-a-domicilio-5", "tecnico-samsung-revision-en-casa"],
-              "micro": ["microondas-samsung-ceramic-inside-m", "tecnico-samsung-visita-a-domicilio-3", "tecnico-samsung-revision-en-casa", "tecnico-samsung-visita-a-domicilio-1"],
+    IMG_SV = {"nevera": ["nevera-samsung-side-by-side-family-hub", "tecnico-reparando-nevera-samsung", "nevera-samsung-superior-inox", "tecnico-samsung-revisando-compresor"],
+              "lava": ["lavadora-samsung-carga-superior", "tecnico-samsung-reparando-lavadora-a-domicilio", "tecnico-reparando-lavadora-samsung", "torre-de-lavado-samsung"],
+              "seca": ["secadora-samsung-carga-frontal", "torre-lavado-secado-samsung-apilada", "tecnico-samsung-visita-a-domicilio-6", "tecnico-samsung-revision-en-casa"],
+              "lavaplatos": ["lavavajillas-samsung-acero-inoxidable", "tecnico-samsung-visita-a-domicilio-2", "tecnico-samsung-revision-en-casa", "tecnico-samsung-visita-a-domicilio-4"],
+              "cocina": ["estufa-samsung-4-hornillas-horno", "horno-empotrado-samsung-acero", "tecnico-samsung-visita-a-domicilio-5", "tecnico-samsung-revision-en-casa"],
+              "micro": ["microondas-samsung-ceramic-inside", "tecnico-samsung-visita-a-domicilio-3", "tecnico-samsung-revision-en-casa", "tecnico-samsung-visita-a-domicilio-1"],
               "tv": ["taller-reparacion-televisores-samsung", "tecnico-samsung-visita-a-domicilio-7", "tecnico-samsung-revision-en-casa", "tecnico-samsung-entrega-orden-de-servicio"],
               None: ["tecnico-samsung-saluda-en-la-puerta", "atencion-al-cliente-servicio-samsung", "tecnico-samsung-entrega-orden-de-servicio", "tecnico-samsung-a-domicilio-portada", "tecnico-samsung-revision-en-casa", "tecnico-samsung-visita-a-domicilio-1", "tecnico-samsung-visita-a-domicilio-4"]}
-    IMG_DESC = {"nevera-samsung-side-by-side-family-hub-m": "Nevera Samsung Family Hub", "nevera-samsung-superior-inox-m": "Nevera Samsung de acero inoxidable", "tecnico-reparando-nevera-samsung": "Técnico revisando una nevera Samsung", "tecnico-samsung-revisando-compresor": "Técnico revisando el compresor de una nevera Samsung",
-                "lavadora-samsung-carga-superior-m": "Lavadora Samsung de carga superior", "tecnico-samsung-reparando-lavadora-a-domicilio": "Técnico Samsung reparando una lavadora a domicilio", "tecnico-reparando-lavadora-samsung": "Técnico revisando una lavadora Samsung", "torre-de-lavado-samsung-m": "Torre de lavado Samsung",
-                "secadora-samsung-carga-frontal-m": "Secadora Samsung de carga frontal", "torre-lavado-secado-samsung-apilada-m": "Torre de lavado y secado Samsung", "lavavajillas-samsung-acero-inoxidable-m": "Lavavajillas Samsung de acero inoxidable",
-                "estufa-samsung-4-hornillas-horno-m": "Estufa Samsung con horno", "horno-empotrado-samsung-acero-m": "Horno empotrado Samsung", "microondas-samsung-ceramic-inside-m": "Microondas Samsung", "taller-reparacion-televisores-samsung": "Técnico reparando la tarjeta de un televisor Samsung",
+    IMG_DESC = {"nevera-samsung-side-by-side-family-hub": "Nevera Samsung Family Hub", "nevera-samsung-superior-inox": "Nevera Samsung de acero inoxidable", "tecnico-reparando-nevera-samsung": "Técnico revisando una nevera Samsung", "tecnico-samsung-revisando-compresor": "Técnico revisando el compresor de una nevera Samsung",
+                "lavadora-samsung-carga-superior": "Lavadora Samsung de carga superior", "tecnico-samsung-reparando-lavadora-a-domicilio": "Técnico Samsung reparando una lavadora a domicilio", "tecnico-reparando-lavadora-samsung": "Técnico revisando una lavadora Samsung", "torre-de-lavado-samsung": "Torre de lavado Samsung",
+                "secadora-samsung-carga-frontal": "Secadora Samsung de carga frontal", "torre-lavado-secado-samsung-apilada": "Torre de lavado y secado Samsung", "lavavajillas-samsung-acero-inoxidable": "Lavavajillas Samsung de acero inoxidable",
+                "estufa-samsung-4-hornillas-horno": "Estufa Samsung con horno", "horno-empotrado-samsung-acero": "Horno empotrado Samsung", "microondas-samsung-ceramic-inside": "Microondas Samsung", "taller-reparacion-televisores-samsung": "Técnico reparando la tarjeta de un televisor Samsung",
                 "tecnico-samsung-saluda-en-la-puerta": "Técnico Samsung saludando al llegar a una visita a domicilio", "atencion-al-cliente-servicio-samsung": "Atención al cliente del servicio técnico Samsung", "tecnico-samsung-entrega-orden-de-servicio": "Técnico Samsung entregando la orden de servicio",
                 "tecnico-samsung-a-domicilio-portada": "Técnico Samsung a domicilio", "tecnico-samsung-revision-en-casa": "Técnico Samsung haciendo una revisión en casa"}
     for _i in range(1, 8):
         IMG_DESC[f"tecnico-samsung-visita-a-domicilio-{_i}"] = "Técnico Samsung en visita a domicilio"
+    PROD = {"nevera-samsung-side-by-side-family-hub", "nevera-samsung-superior-inox", "lavadora-samsung-carga-superior", "torre-de-lavado-samsung", "secadora-samsung-carga-frontal", "torre-lavado-secado-samsung-apilada", "lavavajillas-samsung-acero-inoxidable", "estufa-samsung-4-hornillas-horno", "horno-empotrado-samsung-acero", "microondas-samsung-ceramic-inside"}
     _PAL = {sv_: (pal(_cc["pk"], sv_)[0], pal(_cc["pk"], sv_)[1]) for sv_ in SERV_PAIS[_cc["pk"]]}
     _WORDS = sorted([(slug(w), sv_) for sv_, (a_, b_) in _PAL.items() for w in {a_, b_}] + [("estufa", "cocina"), ("horno", "cocina"), ("televisor", "tv"), ("lavavajillas", "lavaplatos"), ("lavaplatos", "lavaplatos")], key=lambda x: -len(x[0]))
     _ZSLUG = {slug(z): z for z in _cc["zonas"]}
@@ -359,15 +361,20 @@ if SOLO:
             nombre_img = pool[len(usadas) % len(pool)] if len(usadas) < len(pool) else IMG_SV[None][len(usadas) % len(IMG_SV[None])]
             usadas.append(nombre_img)
             desc = IMG_DESC.get(nombre_img, "Técnico Samsung a domicilio")
-            prod = nombre_img.endswith("-m")
+            prod = nombre_img in PROD
             alt = f"{desc} en {lugar}" + (f", {_cn}" if barrio else "")
-            return tag + f'<figure class="sec-img{" prod" if prod else ""}"><img src="img/{nombre_img}.webp" alt="{html.escape(alt, quote=True)}" width="{460 if prod else 1024}" height="{460 if prod else 572}" loading="lazy" decoding="async"></figure>'
+            return tag + f'<figure class="sec-img{" prod" if prod else ""}"><img src="img/{nombre_img}.webp" alt="{html.escape(alt, quote=True)}" width="{800 if prod else 1024}" height="{800 if prod else 572}" loading="lazy" decoding="async"></figure>'
         t = re.sub(r'<section class="aq-sec( alt)?"( id="[^"]*")?><div class="wrap"><h2>(.*?)</h2>', lambda m: sec(m), t)
         # índice «En esta página»
         hs = re.findall(r'<section class="aq-sec[^"]*" id="(s\d+)"><div class="wrap"><h2>(.*?)</h2>', t)
         if len(hs) >= 4:
             toc = '<nav class="toc" aria-label="En esta página"><b>En esta página</b>' + "".join(f'<a href="#{i_}">{re.sub(r"<[^>]+>", "", h_)}</a>' for i_, h_ in hs[:_TOC_N]) + "</nav>"
             t = re.sub(r'(<section class="aq-qa-sec">.*?</section>)', lambda m: m.group(1) + f'<section class="aq-sec"><div class="wrap">{toc}</div></section>', t, count=1, flags=re.S)
+        # mapa de la zona (Google Maps, sin clave) en la portada, los barrios y la galería
+        if (not seg or (len(seg) == 1 and barrio)) and n2 != "404.html":
+            q_ = urllib.parse.quote_plus(f"{lugar}, {_cn}, {PAISES[_cc['pk']]['nombre']}")
+            mapa_ = f'<section class="aq-sec"><div class="wrap"><h2>Mapa: atendemos {html.escape(lugar)}</h2><iframe title="Mapa de {html.escape(lugar)}" src="https://www.google.com/maps?q={q_}&amp;output=embed" width="100%" height="320" style="border:0;border-radius:16px" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><p class="sub2">Visita a domicilio en esta zona; escribe al {html.escape(_wa_)}.</p></div></section>'
+            t = t.replace('<footer class="aq-f">', mapa_ + '<footer class="aq-f">', 1) if '<footer class="aq-f">' in t else t
         # búsquedas relacionadas
         s1 = _PAL[sv_][0] if sv_ else "electrodoméstico"; s2 = _PAL[sv_][1] if sv_ else "electrodomésticos"
         fr = [f"servicio técnico Samsung {lugar}", f"técnico de {s2} Samsung {lugar}", f"reparación de {s2} Samsung a domicilio {lugar}", f"{s1} Samsung no funciona {lugar}", f"mantenimiento de {s2} Samsung {lugar}", f"cuánto cuesta reparar {s1} Samsung {lugar}",
@@ -391,7 +398,7 @@ if SOLO:
         _nn = solo_ruta(_n)
         _t = _f.read_text(encoding="utf-8")
         _t = _rel_solo(_n, _t)
-        _t = _t.replace(f"{DOMINIO}/colombia/{SOLO}/", f"{DOMINIO}/").replace(f"{DOMINIO}/colombia/", f"{DOMINIO}/")
+        _t = _t.replace(f"{DOMINIO}/{SOLO_PK}/{SOLO_D}/", f"{DOMINIO}/").replace(f"{DOMINIO}/{SOLO_PK}/", f"{DOMINIO}/")
         _d = OUT / _nn
         _d.parent.mkdir(parents=True, exist_ok=True)
         _d.write_text(_t, encoding="utf-8")
@@ -399,21 +406,21 @@ if SOLO:
             _f.unlink()
         _nuevos.append((_nn, *_r))
     for _x in ("buscar.js", "llms.txt", "llms-full.txt", "datos-servicio-tecnico.json"):
-        _o = OUT / "colombia" / _x
+        _o = OUT / SOLO_PK / _x
         if _o.exists():
-            _tx = _o.read_text(encoding="utf-8").replace(f"{DOMINIO}/colombia/{SOLO}/", f"{DOMINIO}/").replace(f"{DOMINIO}/colombia/", f"{DOMINIO}/")
+            _tx = _o.read_text(encoding="utf-8").replace(f"{DOMINIO}/{SOLO_PK}/{SOLO_D}/", f"{DOMINIO}/").replace(f"{DOMINIO}/{SOLO_PK}/", f"{DOMINIO}/")
             if _x in ("llms.txt", "llms-full.txt"):
                 _tx = _tx.replace("1 ciudades", "1 ciudad").replace("Servicio técnico Samsung en Colombia", f"Servicio técnico Samsung en {CIU[0]['n']}, {CIU[0]['dep']}").replace("Samsung en Colombia (no", f"Samsung en {CIU[0]['n']}, Colombia (no")
             (OUT / _x).write_text(_tx, encoding="utf-8"); _o.unlink()
     for _x in ("geo.js",):
-        if (OUT / "colombia" / _x).exists():
-            (OUT / "colombia" / _x).unlink()
-    for _a, _b in (("sitemap-colombia.xml", f"sitemap-{SOLO}.xml"), ("sitemap-imagenes-colombia.xml", f"sitemap-imagenes-{SOLO}.xml")):
+        if (OUT / SOLO_PK / _x).exists():
+            (OUT / SOLO_PK / _x).unlink()
+    for _a, _b in ((f"sitemap-{SOLO_PK}.xml", f"sitemap-{SOLO}.xml"), (f"sitemap-imagenes-{SOLO_PK}.xml", f"sitemap-imagenes-{SOLO}.xml")):
         if (OUT / _a).exists():
             (OUT / _b).write_text((OUT / _a).read_text(encoding="utf-8"), encoding="utf-8"); (OUT / _a).unlink()
     for _x in [p for p in OUT.glob("sitemap*.xml")] + [OUT / "robots.txt"]:
-        _tx = _x.read_text(encoding="utf-8").replace("sitemap-colombia.xml", f"sitemap-{SOLO}.xml").replace("sitemap-imagenes-colombia.xml", f"sitemap-imagenes-{SOLO}.xml")
-        _tx = _tx.replace(f"{DOMINIO}/colombia/{SOLO}/", f"{DOMINIO}/").replace(f"{DOMINIO}/colombia/", f"{DOMINIO}/")
+        _tx = _x.read_text(encoding="utf-8").replace(f"sitemap-{SOLO_PK}.xml", f"sitemap-{SOLO}.xml").replace(f"sitemap-imagenes-{SOLO_PK}.xml", f"sitemap-imagenes-{SOLO}.xml")
+        _tx = _tx.replace(f"{DOMINIO}/{SOLO_PK}/{SOLO_D}/", f"{DOMINIO}/").replace(f"{DOMINIO}/{SOLO_PK}/", f"{DOMINIO}/")
         _x.write_text(_tx, encoding="utf-8")
     for _x in ("sitemap-inicio.xml", "sitemap-imagenes-inicio.xml"):
         if (OUT / _x).exists():
@@ -422,23 +429,24 @@ if SOLO:
     _sm = re.sub(r"  <sitemap><loc>[^<]*(?:sitemap-inicio|sitemap-imagenes-inicio)\.xml</loc>.*?</sitemap>\n", "", _sm)
     for _pk in PAISES:
         pass
-    for _pk2 in ("panama", "costa-rica", "paraguay", "guatemala", "el-salvador", "ecuador", "chile"):
+    for _pk2 in [k_ for k_ in ("colombia", "panama", "costa-rica", "paraguay", "guatemala", "el-salvador", "ecuador", "chile") if k_ != SOLO and k_ != SOLO_PK or (k_ == SOLO_PK and SOLO_PK != SOLO)]:
         _sm = re.sub(rf"  <sitemap><loc>[^<]*sitemap(?:-imagenes)?-{_pk2}\.xml</loc>.*?</sitemap>\n", "", _sm)
     (OUT / "sitemap.xml").write_text(_sm, encoding="utf-8")
     _rb = (OUT / "robots.txt").read_text(encoding="utf-8")
-    _rb = re.sub(r"Sitemap: [^\n]*(?:inicio|panama|costa-rica|paraguay|guatemala|el-salvador|ecuador|chile)\.xml\n", "", _rb)
+    _otros = "|".join(["inicio"] + [k_ for k_ in ("colombia", "panama", "costa-rica", "paraguay", "guatemala", "el-salvador", "ecuador", "chile") if k_ != SOLO and k_ != SOLO_PK] + ([SOLO_PK] if SOLO_PK != SOLO else []))
+    _rb = re.sub(rf"Sitemap: [^\n]*sitemap(?:-imagenes)?-(?:{_otros})\.xml\n", "", _rb)
     (OUT / "robots.txt").write_text(_rb, encoding="utf-8")
     PAGINAS[:] = [tuple(x) for x in _nuevos]
     for _n, *_r in PAGINAS:
         _f = OUT / _n
         _f.write_text(_rel(_n, _f.read_text(encoding="utf-8")), encoding="utf-8")
-    for _d in sorted((OUT / "colombia").rglob("*"), reverse=True) if (OUT / "colombia").exists() else []:
+    for _d in sorted((OUT / SOLO_PK).rglob("*"), reverse=True) if (OUT / SOLO_PK).exists() else []:
         try:
             _d.rmdir() if _d.is_dir() else None
         except OSError:
             pass
     try:
-        (OUT / "colombia").rmdir()
+        (OUT / SOLO_PK).rmdir()
     except OSError:
         pass
 else:
