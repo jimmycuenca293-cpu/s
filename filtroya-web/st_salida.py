@@ -10,6 +10,11 @@ for pk, P in PAISES.items():
     pagina(R_MAPA(pk), f"Mapa del sitio | Servicio técnico Samsung en {P['nombre']}", f"Todas las páginas del servicio técnico Samsung en {P['nombre']}: ciudades, zonas, equipos y guías de fallas.", f"mapa del sitio servicio tecnico samsung {P['nombre'].lower()}", [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), ("Mapa del sitio", None)],
            hero_simple(f"{P['bandera']} Mapa del sitio", f"Todas las páginas de {P['nombre']}", "Ciudades, equipos y guías.") + qa(f"¿Qué hay en la sección de {P['nombre']}?", f"Servicio técnico Samsung en {len(cs_)} ciudades de {esc(P['nombre'])}, páginas por equipo, guías de fallas y respuestas rápidas.") + seccion("Páginas", cuerpo), [], [], prio="0.4", pk=pk, tipo="guias")
 
+if SOLO:
+    _nom = CIU[0]['n']
+    _items = "".join(f"<item><title>{esc(t)}</title><link>{U(u)}</link><guid>{U(u)}</guid><description>{esc(d)}</description></item>" for k_, sl, t, u, d in BLOG)
+    (OUT / "feed.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>Blog · {NOMBRE}</title><link>{DOMINIO}/</link><description>Consejos para cuidar y reparar electrodomésticos Samsung en {_nom}</description>{_items}</channel></rss>\n', encoding="utf-8")
+
 # buscador + banner de ciudades
 CL = lambda u: (lambda v: v[:-10] if v.endswith("index.html") else v)(solo_ruta(u))
 items = []
@@ -146,6 +151,8 @@ for g, l in grupos.items():
 ErrorDocument 404 /404.html
 Options -Indexes
 RewriteEngine On
+RewriteCond %{THE_REQUEST} \\s/+(.*?/)?index\\.html[\\s?]
+RewriteRule ^(.*?/)?index\\.html$ /$1 [R=301,L]
 RewriteCond %{HTTPS} off
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

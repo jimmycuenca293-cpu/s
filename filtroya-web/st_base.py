@@ -179,12 +179,16 @@ NEGOCIO_LD = {"@type": ["ProfessionalService", "LocalBusiness"], "@id": f"{DOMIN
               "knowsAbout": [SERVICIOS[s]["tit"] for s in SERVICIOS], "contactPoint": [{"@type": "ContactPoint", "telephone": "+" + wa_num(k), "contactType": "customer service", "areaServed": P["nombre"], "availableLanguage": "es"} for k, P in PAISES.items()]}
 
 
+GEO_META = '<meta name="geo.region" content="CO-TOL"><meta name="geo.placename" content="Ibagué"><meta name="geo.position" content="4.4389;-75.2322"><meta name="ICBM" content="4.4389, -75.2322">'
+
+
 def negocio_solo():
     c = CIU[0]; P = PAISES[c["pk"]]
     return {"@type": ["ProfessionalService", "LocalBusiness"], "@id": f"{DOMINIO}/#negocio", "name": NOMBRE, "url": U(R_CIU(c)), "telephone": "+" + wa_num(c["pk"]), "image": f"{DOMINIO}/img/samsung-oval.png", "logo": f"{DOMINIO}/img/samsung-oval.png",
             "description": f"Servicio técnico independiente de electrodomésticos Samsung a domicilio en {c['n']}, {c['dep']}: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas.", "priceRange": "$$",
             "address": {"@type": "PostalAddress", "addressLocality": c["n"], "addressRegion": c["dep"], "addressCountry": "CO"}, "geo": {"@type": "GeoCoordinates", "latitude": 4.4389, "longitude": -75.2322},
             "areaServed": [{"@type": "City", "name": c["n"]}] + [{"@type": "Place", "name": z + ", " + c["n"]} for z in c["zonas"]], "knowsAbout": [SERVICIOS[s_]["tit"] for s_ in SERV_PAIS[c["pk"]]],
+            "hasOfferCatalog": {"@type": "OfferCatalog", "name": f"Servicio técnico Samsung en {c['n']}", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Reparación y mantenimiento de {pal(c['pk'], s_)[1]} Samsung en {c['n']}", "url": U(R_CS(c, s_))}} for s_ in SERV_PAIS[c["pk"]]]},
             "contactPoint": [{"@type": "ContactPoint", "telephone": "+" + wa_num(c["pk"]), "contactType": "customer service", "areaServed": "CO", "availableLanguage": "es"}]}
 
 
@@ -235,11 +239,12 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     head = ('<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">'
             f'<title>{esc(titulo)}</title><meta name="description" content="{esc(desc)}"><meta name="keywords" content="{esc(kw)}"><link rel="canonical" href="{url}">'
             + (f'<meta name="st-pais" content="{pk}">' if pk else '') + '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"><meta name="theme-color" content="#1428a0"><meta name="author" content="Soporte Técnico Samsung">'
+            + ('<link rel="alternate" type="application/rss+xml" title="Blog" href="feed.xml">' if SOLO else "") +
             f'<link rel="alternate" hreflang="{hl}" href="{url}">' + (f'<link rel="alternate" hreflang="x-default" href="{url}">' if nombre == "index.html" else "") + f'<link rel="alternate" type="text/plain" href="{DOMINIO}/{(pk + "/llms.txt") if pk else "llms.txt"}" title="llms.txt"><link rel="alternate" type="application/json" href="{DOMINIO}/datos-servicio-tecnico.json" title="Datos estructurados">'
             + "".join(f'<meta name="google-site-verification" content="{t}">' for t in TOKENS)
             + (("<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','" + GTM + "');</script>") if GTM else "")
-            + f'<meta property="og:type" content="website"><meta property="og:locale" content="{hl.replace("-", "_")}"><meta property="og:site_name" content="{NOMBRE}"><meta property="og:title" content="{esc(titulo)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{DOMINIO}/img/samsung-oval.png">'
-            f'<meta name="twitter:card" content="summary"><meta name="twitter:title" content="{esc(titulo)}"><meta name="twitter:description" content="{esc(desc)}">'
+            + f'<meta property="og:type" content="website"><meta property="og:locale" content="{hl.replace("-", "_")}"><meta property="og:site_name" content="{NOMBRE}"><meta property="og:title" content="{esc(titulo)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{DOMINIO}/img/{hero_img(nombre) if SOLO else "samsung-oval"}.{"webp" if SOLO else "png"}">'
+            f'<meta name="twitter:card" content="{"summary_large_image" if SOLO else "summary"}">{GEO_META if SOLO else ""}<meta name="twitter:title" content="{esc(titulo)}"><meta name="twitter:description" content="{esc(desc)}">'
             '<link rel="icon" href="img/icono-samsung.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
             '<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="tema.css?v=st1">'
             f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>'
