@@ -318,7 +318,7 @@ if SOLO:
     # ---- enriquecimiento final de cada página: imágenes por sección, índice «En esta página», búsquedas relacionadas, precarga de la imagen principal
     _cc = CIU[0]; _cn = _cc["n"]; _wa_ = wa_vis(_cc["pk"])
     IMG_SV = {"nevera": ["tecnico-reparando-refrigeradora-samsung-en-cocina", "tecnico-samsung-revisando-nevera-con-la-clienta", "nevera-samsung-side-by-side-family-hub", "tecnico-reparando-nevera-samsung", "nevera-samsung-superior-inox", "cliente-con-nevera-samsung-family-hub", "familia-en-cocina-con-nevera-samsung"],
-              "lava": ["tecnico-samsung-midiendo-circuito-de-lavadora", "tecnico-samsung-reparando-lavadora-a-domicilio", "lavadora-samsung-carga-superior", "tecnico-diagnosticando-lavadora-samsung-a-domicilio", "torre-de-lavado-samsung"],
+              "lava": ["tecnico-samsung-midiendo-circuito-de-lavadora", "tecnico-samsung-reparando-lavadora-a-domicilio", "lavadora-samsung-carga-superior", "torre-de-lavado-samsung", "tecnico-samsung-visita-a-domicilio-6"],
               "seca": ["secadora-samsung-carga-frontal", "torre-lavado-secado-samsung-apilada", "tecnico-samsung-midiendo-circuito-de-lavadora", "tecnico-samsung-visita-a-domicilio-6"],
               "lavaplatos": ["lavavajillas-samsung-acero-inoxidable", "cocina-con-electrodomesticos-samsung", "tecnico-samsung-visita-a-domicilio-2", "tecnico-samsung-visita-a-domicilio-4"],
               "cocina": ["estufa-samsung-4-hornillas-horno", "horno-empotrado-samsung-acero", "cocina-con-electrodomesticos-samsung", "tecnico-samsung-visita-a-domicilio-5"],
