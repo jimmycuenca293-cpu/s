@@ -47,7 +47,7 @@ if SOLO:
            hero_simple(f"{_nom} · {_c['dep']}", f"Servicio técnico Samsung por barrios en {_nom}", "Elige tu barrio y el equipo.", acciones(_pk, f"Hola, necesito servicio técnico Samsung en {_nom}"))
            + qa(f"¿En qué barrios de {_nom} atienden?", "Atendemos " + esc(", ".join(_c["zonas"])) + f". WhatsApp {esc(wa_vis(_pk))}.") + seccion("Barrios", _tags) + seccion("Equipo por barrio", _tabla, alt=True) + faq_html(_pq), _pq, [], prio="0.8", pk=_pk, tipo="zonas", ctx=_c, compacto=True)
     # guía local
-    R_IG = f"{_pk}/{_c['d']}/clima-y-electrodomesticos-en-ibague/index.html"
+    R_IG = f"{_pk}/{_c['d']}/clima-y-electrodomesticos-en-{_c['d']}/index.html"
     v = VOLT[_pk]
     _ig_q = [(f"¿Cómo afecta el clima de {_nom} a mis electrodomésticos Samsung?", f"{_nom} tiene clima {_cl['clima']}. Los meses de más lluvia son {_cl['lluvia']}."), (f"¿Qué voltaje hay en {_nom}?", f"{v[0]} a {v[1]}, con enchufes {v[2]}."),
              ("¿Conviene usar protector de voltaje?", "Sí, para neveras, lavadoras y televisores: los picos de tensión dañan tarjetas y fuentes."), ("¿Cada cuánto hacer mantenimiento?", "Una revisión preventiva al año y limpieza periódica de filtros y condensadores.")]

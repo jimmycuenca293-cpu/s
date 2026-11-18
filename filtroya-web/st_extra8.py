@@ -11,6 +11,12 @@ if SOLO:
         ("diagnostico", "Diagnóstico de {s2} Samsung en {c}", "¿Cómo es el diagnóstico de una {s1} Samsung en {c}?", "El técnico revisa el equipo en tu casa, encuentra la causa de la falla, te la explica y te confirma el valor de la reparación antes de empezar."),
         ("como-elegir-tecnico", "Cómo elegir un buen técnico de {s2} Samsung en {c}", "¿Cómo elijo un buen técnico para mi {s1} Samsung en {c}?", "Elige un técnico que haga el diagnóstico primero, confirme el valor antes de reparar, te explique la falla con claridad y te oriente con honestidad."),
     ]
+    _TBX = {}
+    if SOLO != "ibague":
+        TERMS += [("centro-de-servicio", "Centro de servicio Samsung para {s2} en {c}", "¿Dónde queda el centro de servicio Samsung para {s2} en {c}?", "Atendemos a domicilio en {c}: no tienes que llevar tu {s1} Samsung a ningún lugar, el técnico va a tu casa. Somos un servicio técnico independiente."),
+                  ("falla-urgente", "Qué hacer si tu {s1} Samsung falla de urgente en {c}", "¿Qué hago si mi {s1} Samsung falla de urgente en {c}?", "Desconecta el equipo si hay olor a quemado, agua o chispas, y escribe por WhatsApp con el modelo y la falla; coordinamos la visita en {c}.")]
+        _TBX["centro-de-servicio"] = lambda s1, s2, k: ["Visita a domicilio: no tienes que mover el equipo.", "Diagnóstico en tu casa con herramientas de medición.", "Valor confirmado antes de reparar.", "Atención por WhatsApp para coordinar.", "Somos un servicio técnico independiente de Samsung.", "Cobertura por barrios de la ciudad."]
+        _TBX["falla-urgente"] = lambda s1, s2, k: ["Desconecta el equipo si hay olor a quemado, agua o chispas.", "Anota el modelo y el código de error.", "Toma una foto de la falla.", "Escribe por WhatsApp con tu barrio.", "No intentes abrir el equipo.", "Coordinamos la visita según la agenda del día."]
     R_TERM = lambda t, sv: f"{_pk}/{_c['d']}/{t}-{slug(pal(_pk, sv)[1])}/index.html"
     TERM_BLOQUE = {
         "mantenimiento": lambda s1, s2, k: ["Limpieza de las partes que acumulan polvo, grasa o sarro.", "Revisión de sellos, mangueras y conexiones.", "Prueba de funcionamiento en un ciclo completo.", "Revisión de la nivelación y de la ventilación.", "Recomendaciones de uso según el clima de la ciudad.", "Aviso de partes con desgaste antes de que fallen."],
@@ -22,6 +28,7 @@ if SOLO:
         "diagnostico": lambda s1, s2, k: ["Lectura de códigos de error y revisión visual.", "Pruebas de funcionamiento de las partes principales.", "Medición eléctrica donde aplica.", "Explicación de la causa de la falla.", "Opciones: reparar, cambiar la pieza o reemplazar el equipo.", "Valor confirmado antes de reparar."],
         "como-elegir-tecnico": lambda s1, s2, k: ["Que haga el diagnóstico antes de reparar.", "Que te confirme el valor antes de empezar.", "Que te explique la falla con claridad.", "Que te diga con honestidad si conviene reparar o cambiar.", "Que pruebe el equipo contigo al terminar.", "Que atienda por un canal claro, como WhatsApp."],
     }
+    TERM_BLOQUE.update(_TBX)
     for _sv in SERV_PAIS[_pk]:
         _s1, _s2 = pal(_pk, _sv); S = SERVICIOS[_sv]
         for (t, h1t, qq, aa) in TERMS:
@@ -49,6 +56,8 @@ if SOLO:
         _ins(R_CS(_c, _sv), seccion(f"Todo sobre {esc(_s2)} Samsung en {esc(_nom)}", '<div class="city-tags">' + "".join(f'<a href="{R_TERM(t2, _sv)}">{esc(h2.format(s1=_s1, s2=_s2, c=_nom))}</a>' for (t2, h2, *_r) in TERMS) + "</div>", alt=True))
     # fallas principales por barrio
     FB = {"nevera": ["no-enfria", "con-escarcha"], "lava": ["no-desagua", "no-centrifuga"], "seca": ["no-seca"], "lavaplatos": ["no-lava-bien"], "cocina": ["horno-no-calienta"], "micro": ["no-calienta"]}
+    if SOLO != "ibague":  # sitio con el doble de cobertura de fallas por barrio (incluye televisores)
+        FB = {"nevera": ["no-enfria", "con-escarcha", "hace-ruido", "no-hace-hielo"], "lava": ["no-desagua", "no-centrifuga", "no-enciende"], "seca": ["no-seca", "no-calienta"], "lavaplatos": ["no-lava-bien", "no-desagua"], "cocina": ["horno-no-calienta", "no-enciende-quemador"], "micro": ["no-calienta", "no-gira-el-plato"], "tv": ["no-enciende", "pantalla-negra-con-sonido", "lineas-en-la-pantalla"]}
     R_FB = lambda z, pr: f"{_pk}/{_c['d']}/{slug(z)}/{slug(pal(_pk, pr['sv'])[0])}-{pr['sl']}/index.html"
     _pr_idx = {(pr["sv"], pr["sl"]): pr for _cc, pr in PROB_P}
     for _z in _c["zonas"]:

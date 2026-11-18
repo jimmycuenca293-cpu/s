@@ -14,13 +14,16 @@ AQUI = pathlib.Path(__file__).resolve().parent
 # Modo sitio de una sola ciudad (ST_SOLO=ibague): solo Colombia y esa ciudad; las URLs quedan en la raíz (/lavadoras/, /el-salado/…)
 SOLO = os.environ.get("ST_SOLO", "").strip()
 BARRIOS_SOLO = {"ibague": ["Centro", "Jordán", "Picaleña", "El Salado", "Ambalá", "Interlaken", "Cádiz", "La Pola", "Belén", "Calambeo", "Piedra Pintada", "Mirolindo", "Arkacentro", "Gaitán", "El Vergel", "Topacio", "Alaska", "Boquerón", "Las Américas", "Libertador", "Santa Ana", "Restrepo", "Galán", "Granjas", "Combeima", "Ciudad Luz", "La Francia", "Ancón"]}
+BARRIOS_SOLO["valledupar"] = ["Centro", "Los Mayales", "Los Campanos", "Alfonso López", "Villa Castro", "Novalito", "La Nevada", "Sicarare", "Garupal", "Cañaguate", "Altos del Rosario", "Villa Corelca", "Primero de Mayo", "12 de Octubre", "Los Fundadores", "Simón Bolívar", "Dangond", "Mareigua", "Divino Niño", "El Eneal", "Los Almendros", "Ciudad Salguero", "Altamira", "Los Cortijos", "Villa Alexandra", "7 de Agosto", "La Esperanza", "San Joaquín", "Sabanas del Rosario", "La Granja", "Los Músicos", "Villa Rosario", "Badillo", "Patillal", "Guacoche", "Mariangola", "Valencia de Jesús", "Atánquez", "Aguas Blancas", "Río Seco"]
+SOLO_CFG = {"ibague": dict(nombre="Ibagué", dep="Tolima", lat=4.4389, lon=-75.2322, region="CO-TOL", tv=False, token="VnmP5YjaE7DzC-ztjsRFetEvNfbNaK9Mes-zaxXigoA"),
+            "valledupar": dict(nombre="Valledupar", dep="Cesar", lat=10.4631, lon=-73.2532, region="CO-CES", tv=True, token="")}
 if SOLO:
     _sl = lambda n: re.sub(r"[^a-z0-9]+", "-", unicodedata.normalize("NFKD", n).encode("ascii", "ignore").decode().lower()).strip("-")
-    PAISES = {"colombia": dict(PAISES["colombia"], ciudades=[(n, d, BARRIOS_SOLO.get(SOLO, z), t) for (n, d, z, t) in PAISES["colombia"]["ciudades"] if _sl(n) == SOLO])}
+    PAISES = {"colombia": dict(PAISES["colombia"], ciudades=[(n, d, BARRIOS_SOLO.get(SOLO, z), t) for (n, d, z, t) in PAISES["colombia"]["ciudades"] if _sl(n) == SOLO], tv=(("televisor", "televisores") if SOLO_CFG[SOLO]["tv"] else None))}
 OUT = pathlib.Path(sys.argv[1])
-DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else ("https://serviciotecnicosamsungibague.click" if SOLO else "https://samsungsoportetecnico.com")).rstrip("/")
+DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else (f"https://serviciotecnicosamsung{SOLO}.click" if SOLO else "https://samsungsoportetecnico.com")).rstrip("/")
 TOKENS = [t.strip() for t in (sys.argv[3] if len(sys.argv) > 3 else "").split(",") if t.strip()]
-TOKENS = list(dict.fromkeys(TOKENS + (["VnmP5YjaE7DzC-ztjsRFetEvNfbNaK9Mes-zaxXigoA"] if SOLO else ["o38zbB3vp7xMgOaD4hdjS24tYMas1y4ozPiacc5Hiuc"])))  # Search Console: Ibagué / samsungsoportetecnico.com
+TOKENS = list(dict.fromkeys(TOKENS + ([SOLO_CFG[SOLO]["token"]] if SOLO and SOLO_CFG[SOLO]["token"] else ([] if SOLO else ["o38zbB3vp7xMgOaD4hdjS24tYMas1y4ozPiacc5Hiuc"]))))  # Search Console
 GTM = (sys.argv[4] if len(sys.argv) > 4 else "").strip().upper()
 # WhatsApp de cada país (los de los proyectos anteriores): Panamá cubre también Guatemala y El Salvador; Ecuador cubre también Paraguay.
 WA_PAIS = {"colombia": "573013810242", "panama": "50769337976", "guatemala": "50769337976", "el-salvador": "50769337976", "costa-rica": "50670055753", "ecuador": "593993508191", "paraguay": "593993508191", "chile": "56983176106"}
@@ -30,7 +33,7 @@ HOY = datetime.date.today().isoformat()
 _M = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
 _d = datetime.date.today()
 FECHA_LARGA = f"{_d.day} de {_M[_d.month - 1]} de {_d.year}"
-NOMBRE = "Servicio Técnico Samsung Ibagué" if SOLO else "Soporte Técnico Samsung"
+NOMBRE = f"Servicio Técnico Samsung {SOLO_CFG[SOLO]['nombre']}" if SOLO else "Soporte Técnico Samsung"
 esc = lambda s: html.escape(str(s), quote=True)
 
 
@@ -62,7 +65,7 @@ def wa_link(pk, msg):
 CIU = []
 from st_datos2 import EXTRA, BUCKETS
 if SOLO:
-    EXTRA = {}
+    EXTRA = {"colombia": [(n, d, BARRIOS_SOLO[SOLO], b, a) for (n, d, z, b, a) in EXTRA.get("colombia", []) if _sl(n) == SOLO]}
 from st_clima import CLIMA
 _usados = set()
 for pk, P in PAISES.items():
@@ -79,6 +82,9 @@ for pk, P in PAISES.items():
         if amp:
             CLIMA[s_] = dict(BUCKETS[b], alt=alt)
         CIU.append(dict(n=n, d=slug(n), dep=dep, zonas=zs, pk=pk, s=s_, pais=P["nombre"], cap=(not amp and n == P["ciudades"][0][0]), amp=amp, zp=zp))
+if SOLO:
+    for _cc in CIU:
+        _cc["amp"] = False; _cc["cap"] = True; _cc["zp"] = True
 CIU_PAIS = {pk: [c for c in CIU if c["pk"] == pk] for pk in PAISES}
 SERV_PAIS = {pk: [s for s in ORDEN_SERV] + (["tv"] if PAISES[pk]["tv"] else []) for pk in PAISES}
 GEN = {"nevera": "neveras", "lava": "lavadoras", "seca": "secadoras", "lavaplatos": "lavavajillas", "cocina": "cocinas-y-hornos", "micro": "microondas", "tv": "televisores"}

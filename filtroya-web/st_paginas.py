@@ -147,6 +147,7 @@ LOCAL_G = ["En {pais} la red eléctrica es de {v0} y {v1}: antes de culpar al eq
 def guia_pais(g, pk):
     P = PAISES[pk]; cs = CIU_PAIS[pk]; v = VOLT[pk]; sv = g["serv"]
     tit = loc(g["tit"], pk); desc = loc(g["desc"], pk); res = loc(g["res"], pk); cuerpo_g = loc(g["cuerpo"], pk); preg = [(loc(q, pk), loc(a, pk)) for q, a in g["preg"]]
+    preg = [(q, a_.replace("En Costa Rica, sí, a domicilio.", "Sí, a domicilio en " + (CIU[0]["n"] if SOLO else P["nombre"]) + ".")) for q, a_ in preg]
     otros = [x for x in mix(f"og|{pk}|{g['slug']}", [x for x in GUIAS_PK(pk) if x is not g], 4)]
     f = dict(pais=P["nombre"], v0=v[0], v1=v[1], ciu=", ".join(c["n"] for c in mix(f"gc|{pk}|{g['slug']}", cs, 3)), wa=wa_vis(pk))
     local = "<p>" + esc(uno(f"gl|{pk}|{g['slug']}", LOCAL_G).format(**f)) + "</p>"

@@ -179,14 +179,14 @@ NEGOCIO_LD = {"@type": ["ProfessionalService", "LocalBusiness"], "@id": f"{DOMIN
               "knowsAbout": [SERVICIOS[s]["tit"] for s in SERVICIOS], "contactPoint": [{"@type": "ContactPoint", "telephone": "+" + wa_num(k), "contactType": "customer service", "areaServed": P["nombre"], "availableLanguage": "es"} for k, P in PAISES.items()]}
 
 
-GEO_META = '<meta name="geo.region" content="CO-TOL"><meta name="geo.placename" content="Ibagué"><meta name="geo.position" content="4.4389;-75.2322"><meta name="ICBM" content="4.4389, -75.2322">'
+GEO_META = (lambda g: f'<meta name="geo.region" content="{g["region"]}"><meta name="geo.placename" content="{g["nombre"]}"><meta name="geo.position" content="{g["lat"]};{g["lon"]}"><meta name="ICBM" content="{g["lat"]}, {g["lon"]}">')(SOLO_CFG[SOLO]) if SOLO else ""
 
 
 def negocio_solo():
     c = CIU[0]; P = PAISES[c["pk"]]
     return {"@type": ["ProfessionalService", "LocalBusiness"], "@id": f"{DOMINIO}/#negocio", "name": NOMBRE, "url": U(R_CIU(c)), "telephone": "+" + wa_num(c["pk"]), "image": f"{DOMINIO}/img/samsung-oval.png", "logo": f"{DOMINIO}/img/samsung-oval.png",
             "description": f"Servicio técnico independiente de electrodomésticos Samsung a domicilio en {c['n']}, {c['dep']}: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas.", "priceRange": "$$",
-            "address": {"@type": "PostalAddress", "addressLocality": c["n"], "addressRegion": c["dep"], "addressCountry": "CO"}, "geo": {"@type": "GeoCoordinates", "latitude": 4.4389, "longitude": -75.2322},
+            "address": {"@type": "PostalAddress", "addressLocality": c["n"], "addressRegion": c["dep"], "addressCountry": "CO"}, "geo": {"@type": "GeoCoordinates", "latitude": SOLO_CFG[SOLO]["lat"], "longitude": SOLO_CFG[SOLO]["lon"]},
             "areaServed": [{"@type": "City", "name": c["n"]}] + [{"@type": "Place", "name": z + ", " + c["n"]} for z in c["zonas"]], "knowsAbout": [SERVICIOS[s_]["tit"] for s_ in SERV_PAIS[c["pk"]]],
             "hasOfferCatalog": {"@type": "OfferCatalog", "name": f"Servicio técnico Samsung en {c['n']}", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Reparación y mantenimiento de {pal(c['pk'], s_)[1]} Samsung en {c['n']}", "url": U(R_CS(c, s_))}} for s_ in SERV_PAIS[c["pk"]]]},
             "contactPoint": [{"@type": "ContactPoint", "telephone": "+" + wa_num(c["pk"]), "contactType": "customer service", "areaServed": "CO", "availableLanguage": "es"}]}
