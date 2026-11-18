@@ -372,7 +372,7 @@ if SOLO:
             prod = nombre_img in PROD
             alt = f"{desc} en {lugar}" + (f", {_cn}" if barrio else "")
             w_, h_ = _dim(nombre_img)
-            return tag + f'<figure class="sec-img{" prod" if prod else ""}" style="max-width:{min(w_, 420 if prod else 560)}px"><img src="img/{nombre_img}.webp" alt="{html.escape(alt, quote=True)}" width="{w_}" height="{h_}" loading="lazy" decoding="async"></figure>'
+            return tag + f'<figure class="sec-img{" prod" if prod else ""}" style="max-width:{min(w_, 420 if prod else 560)}px"><img src="img/{nombre_img}.webp" alt="{html.escape(alt, quote=True)}" width="{w_}" height="{h_}" loading="lazy" decoding="async" onerror="this.parentNode.remove()"></figure>'
         t = re.sub(r'<section class="aq-sec( alt)?"( id="[^"]*")?><div class="wrap"><h2>(.*?)</h2>', lambda m: sec(m), t)
         # encabezado dividido: texto + foto a su tamaño nativo (sin estirar ni recortar)
         mh = re.search(r'<section class="hero st-bg" style="--bgimg:url\(([^)]*)\)"><div class="wrap">(.*?)</div></section>', t, re.S)
@@ -380,7 +380,7 @@ if SOLO:
             himg = hero if "/" not in hero else hero
             hw, hh = _dim(himg)
             hdesc = IMG_DESC.get(himg, "Técnico Samsung a domicilio")
-            fig = f'<figure class="st-hfig"><img src="img/{himg}.webp" alt="{html.escape(hdesc + " en " + lugar, quote=True)}" width="{hw}" height="{hh}" fetchpriority="high" decoding="async"></figure>'
+            fig = f'<figure class="st-hfig"><img src="img/{himg}.webp" alt="{html.escape(hdesc + " en " + lugar, quote=True)}" width="{hw}" height="{hh}" fetchpriority="high" decoding="async" onerror="this.parentNode.remove()"></figure>'
             t = t.replace(mh.group(0), f'<section class="hero st-split"><div class="wrap st-hgrid"><div class="st-ht">{mh.group(2)}</div>{fig}</div></section>', 1)
         # índice «En esta página»
         hs = re.findall(r'<section class="aq-sec[^"]*" id="(s\d+)"><div class="wrap"><h2>(.*?)</h2>', t)
@@ -454,6 +454,8 @@ if SOLO:
     _otros = "|".join(["inicio"] + [k_ for k_ in ("colombia", "panama", "costa-rica", "paraguay", "guatemala", "el-salvador", "ecuador", "chile") if k_ != SOLO and k_ != SOLO_PK] + ([SOLO_PK] if SOLO_PK != SOLO else []))
     _rb = re.sub(rf"Sitemap: [^\n]*sitemap(?:-imagenes)?-(?:{_otros})\.xml\n", "", _rb)
     (OUT / "robots.txt").write_text(_rb, encoding="utf-8")
+    _imgs = sorted(p.name for p in (OUT / "img").glob("*") if p.suffix in (".webp", ".png", ".jpg"))
+    (OUT / "prueba-imagenes.html").write_text('<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prueba de imágenes</title><style>body{font:14px sans-serif;margin:16px}div{display:inline-block;width:200px;margin:6px;vertical-align:top}img{width:200px;height:120px;object-fit:contain;background:#eee;border:1px solid #ccc}</style></head><body><h1>Prueba de imágenes (' + str(len(_imgs)) + ')</h1><p>Si ves un cuadro roto o vacío, ese archivo no está en el servidor: sube de nuevo la carpeta <b>img</b> completa.</p>' + "".join(f'<div><img src="img/{n}" alt=""><br>{n}</div>' for n in _imgs) + "</body></html>", encoding="utf-8")
     PAGINAS[:] = [tuple(x) for x in _nuevos]
     for _n, *_r in PAGINAS:
         _f = OUT / _n
