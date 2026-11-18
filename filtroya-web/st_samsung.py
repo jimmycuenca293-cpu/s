@@ -29,7 +29,7 @@ if SOLO:
     _sl = lambda n: re.sub(r"[^a-z0-9]+", "-", unicodedata.normalize("NFKD", n).encode("ascii", "ignore").decode().lower()).strip("-")
     PAISES = {SOLO_PK: dict(PAISES[SOLO_PK], ciudades=[(n, d, BARRIOS_SOLO.get(SOLO, z), t) for (n, d, z, t) in PAISES[SOLO_PK]["ciudades"] if _sl(n) == SOLO_D], tv=(("televisor", "televisores") if SOLO_CFG[SOLO]["tv"] else None))}
 OUT = pathlib.Path(sys.argv[1])
-DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else (f"https://serviciotecnicosamsung{SOLO}.click" if SOLO else "https://samsungsoportetecnico.com")).rstrip("/")
+DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else (f"https://{SOLO_CFG[SOLO].get('dominio') or 'serviciotecnicosamsung' + SOLO + '.click'}" if SOLO else "https://samsungsoportetecnico.com")).rstrip("/")
 TOKENS = [t.strip() for t in (sys.argv[3] if len(sys.argv) > 3 else "").split(",") if t.strip()]
 TOKENS = list(dict.fromkeys(TOKENS + ([SOLO_CFG[SOLO]["token"]] if SOLO and SOLO_CFG[SOLO]["token"] else ([] if SOLO else ["o38zbB3vp7xMgOaD4hdjS24tYMas1y4ozPiacc5Hiuc"]))))  # Search Console
 GTM = (sys.argv[4] if len(sys.argv) > 4 else "").strip().upper()
