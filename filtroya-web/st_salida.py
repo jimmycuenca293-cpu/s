@@ -11,7 +11,7 @@ for pk, P in PAISES.items():
            hero_simple(f"{P['bandera']} Mapa del sitio", f"Todas las páginas de {P['nombre']}", "Ciudades, equipos y guías.") + qa(f"¿Qué hay en la sección de {P['nombre']}?", f"Servicio técnico Samsung en {len(cs_)} ciudades de {esc(P['nombre'])}, páginas por equipo, guías de fallas y respuestas rápidas.") + seccion("Páginas", cuerpo), [], [], prio="0.4", pk=pk, tipo="guias")
 
 # buscador + banner de ciudades
-CL = lambda u: u[:-10] if u.endswith("index.html") else u
+CL = lambda u: (lambda v: v[:-10] if v.endswith("index.html") else v)(solo_ruta(u))
 items = []
 for _pk, _P in PAISES.items():
     _it = [[_P["nombre"], R_PAIS(_pk), "País", f"{len(CIU_PAIS[_pk])} ciudades", _pk]] + [[c["n"], R_CIU(c), "Ciudad", c["pais"], _pk] for c in CIU_PAIS[_pk]]
@@ -27,6 +27,10 @@ home_items = [[P["nombre"], CL(R_PAIS(pk)), "País", f"{len(CIU_PAIS[pk])} ciuda
 
 
 def mk_js(its):
+    return _mk_js(its).replace("r[2]==='Ciudad'&&r[4]===K", "r[2]==='Zona'&&r[4]===K") if SOLO else _mk_js(its)
+
+
+def _mk_js(its):
     return ("(function(){var D=" + json.dumps(its, ensure_ascii=False, separators=(",", ":")) + ";"
           "function n(s){return s.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9 ]+/g,' ').trim()}var X=D.map(function(r){return n(r[0]+' '+r[2]+' '+r[3])});"
           "function buscar(q,P){q=n(q);if(!q)return[];var t=q.split(/ +/),o=[];for(var i=0;i<D.length;i++){if(P&&D[i][4]&&D[i][4]!==P)continue;var ok=true,sc=0;for(var j=0;j<t.length;j++){var p=X[i].indexOf(t[j]);if(p<0){ok=false;break}sc+=p===0?0:1}if(ok){var e=n(D[i][0]);o.push([sc+(e.indexOf(q)===0?-2:0)+(D[i][2]==='Ciudad'||D[i][2]==='País'?0:.5),i])}}o.sort(function(a,b){return a[0]-b[0]});return o.slice(0,14).map(function(x){return D[x[1]]})}"
@@ -286,7 +290,80 @@ def _rel(nombre, t):
     return t
 
 
-for _n in [n for n, *_ in PAGINAS]:
-    _f = OUT / _n
-    _f.write_text(_rel(_n, _f.read_text(encoding="utf-8")), encoding="utf-8")
+def _rel_solo(nombre, t):
+    """Modo de una ciudad: quita el prefijo colombia/ibague/ de los enlaces antes de hacerlos relativos."""
+    def f(m):
+        ruta = m.group(2)
+        for pre in (f"colombia/{SOLO}/", "colombia/"):
+            if ruta.startswith(pre):
+                ruta = ruta[len(pre):] or "index.html"
+                break
+        if ruta in ("colombia", f"colombia/{SOLO}"):
+            ruta = "index.html"
+        return f'{m.group(1)}="{ruta}{m.group(3) or ""}"'
+    return _attr.sub(f, t)
+
+
+if SOLO:
+    import os as _os
+    _nuevos = []
+    for _n, *_r in PAGINAS:
+        _f = OUT / _n
+        _nn = solo_ruta(_n)
+        _t = _f.read_text(encoding="utf-8")
+        _t = _rel_solo(_n, _t)
+        _t = _t.replace(f"{DOMINIO}/colombia/{SOLO}/", f"{DOMINIO}/").replace(f"{DOMINIO}/colombia/", f"{DOMINIO}/")
+        _d = OUT / _nn
+        _d.parent.mkdir(parents=True, exist_ok=True)
+        _d.write_text(_t, encoding="utf-8")
+        if _d != _f:
+            _f.unlink()
+        _nuevos.append((_nn, *_r))
+    for _x in ("buscar.js", "llms.txt", "llms-full.txt", "datos-servicio-tecnico.json"):
+        _o = OUT / "colombia" / _x
+        if _o.exists():
+            _tx = _o.read_text(encoding="utf-8").replace(f"{DOMINIO}/colombia/{SOLO}/", f"{DOMINIO}/").replace(f"{DOMINIO}/colombia/", f"{DOMINIO}/")
+            if _x in ("llms.txt", "llms-full.txt"):
+                _tx = _tx.replace("1 ciudades", "1 ciudad").replace("Servicio técnico Samsung en Colombia", f"Servicio técnico Samsung en {CIU[0]['n']}, {CIU[0]['dep']}").replace("Samsung en Colombia (no", f"Samsung en {CIU[0]['n']}, Colombia (no")
+            (OUT / _x).write_text(_tx, encoding="utf-8"); _o.unlink()
+    for _x in ("geo.js",):
+        if (OUT / "colombia" / _x).exists():
+            (OUT / "colombia" / _x).unlink()
+    for _a, _b in (("sitemap-colombia.xml", f"sitemap-{SOLO}.xml"), ("sitemap-imagenes-colombia.xml", f"sitemap-imagenes-{SOLO}.xml")):
+        if (OUT / _a).exists():
+            (OUT / _b).write_text((OUT / _a).read_text(encoding="utf-8"), encoding="utf-8"); (OUT / _a).unlink()
+    for _x in [p for p in OUT.glob("sitemap*.xml")] + [OUT / "robots.txt"]:
+        _tx = _x.read_text(encoding="utf-8").replace("sitemap-colombia.xml", f"sitemap-{SOLO}.xml").replace("sitemap-imagenes-colombia.xml", f"sitemap-imagenes-{SOLO}.xml")
+        _tx = _tx.replace(f"{DOMINIO}/colombia/{SOLO}/", f"{DOMINIO}/").replace(f"{DOMINIO}/colombia/", f"{DOMINIO}/")
+        _x.write_text(_tx, encoding="utf-8")
+    for _x in ("sitemap-inicio.xml", "sitemap-imagenes-inicio.xml"):
+        if (OUT / _x).exists():
+            (OUT / _x).unlink()
+    _sm = (OUT / "sitemap.xml").read_text(encoding="utf-8")
+    _sm = re.sub(r"  <sitemap><loc>[^<]*(?:sitemap-inicio|sitemap-imagenes-inicio)\.xml</loc>.*?</sitemap>\n", "", _sm)
+    for _pk in PAISES:
+        pass
+    for _pk2 in ("panama", "costa-rica", "paraguay", "guatemala", "el-salvador", "ecuador", "chile"):
+        _sm = re.sub(rf"  <sitemap><loc>[^<]*sitemap(?:-imagenes)?-{_pk2}\.xml</loc>.*?</sitemap>\n", "", _sm)
+    (OUT / "sitemap.xml").write_text(_sm, encoding="utf-8")
+    _rb = (OUT / "robots.txt").read_text(encoding="utf-8")
+    _rb = re.sub(r"Sitemap: [^\n]*(?:inicio|panama|costa-rica|paraguay|guatemala|el-salvador|ecuador|chile)\.xml\n", "", _rb)
+    (OUT / "robots.txt").write_text(_rb, encoding="utf-8")
+    PAGINAS[:] = [tuple(x) for x in _nuevos]
+    for _n, *_r in PAGINAS:
+        _f = OUT / _n
+        _f.write_text(_rel(_n, _f.read_text(encoding="utf-8")), encoding="utf-8")
+    for _d in sorted((OUT / "colombia").rglob("*"), reverse=True) if (OUT / "colombia").exists() else []:
+        try:
+            _d.rmdir() if _d.is_dir() else None
+        except OSError:
+            pass
+    try:
+        (OUT / "colombia").rmdir()
+    except OSError:
+        pass
+else:
+    for _n in [n for n, *_ in PAGINAS]:
+        _f = OUT / _n
+        _f.write_text(_rel(_n, _f.read_text(encoding="utf-8")), encoding="utf-8")
 print(f"listo: {OUT} · {len(PAGINAS)} páginas · {len(CIU)} ciudades · {len(PAISES)} países")

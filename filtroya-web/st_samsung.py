@@ -11,8 +11,14 @@ from st_datos import PAISES, SERVICIOS, ORDEN_SERV
 from st_guias import GUIAS
 
 AQUI = pathlib.Path(__file__).resolve().parent
+# Modo sitio de una sola ciudad (ST_SOLO=ibague): solo Colombia y esa ciudad; las URLs quedan en la raíz (/lavadoras/, /el-salado/…)
+SOLO = os.environ.get("ST_SOLO", "").strip()
+BARRIOS_SOLO = {"ibague": ["Centro", "Jordán", "Picaleña", "El Salado", "Ambalá", "Interlaken", "Cádiz", "La Pola", "Belén", "Calambeo", "Piedra Pintada", "Mirolindo", "Arkacentro", "Gaitán", "El Vergel", "Topacio", "Alaska", "Boquerón", "Las Américas", "Libertador", "Santa Ana", "Restrepo", "Galán", "Granjas", "Combeima", "Ciudad Luz", "La Francia", "Ancón"]}
+if SOLO:
+    _sl = lambda n: re.sub(r"[^a-z0-9]+", "-", unicodedata.normalize("NFKD", n).encode("ascii", "ignore").decode().lower()).strip("-")
+    PAISES = {"colombia": dict(PAISES["colombia"], ciudades=[(n, d, BARRIOS_SOLO.get(SOLO, z), t) for (n, d, z, t) in PAISES["colombia"]["ciudades"] if _sl(n) == SOLO])}
 OUT = pathlib.Path(sys.argv[1])
-DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else "https://samsungsoportetecnico.com").rstrip("/")
+DOMINIO = (sys.argv[2] if len(sys.argv) > 2 else ("https://serviciotecnicosamsungibague.click" if SOLO else "https://samsungsoportetecnico.com")).rstrip("/")
 TOKENS = [t.strip() for t in (sys.argv[3] if len(sys.argv) > 3 else "").split(",") if t.strip()]
 TOKENS = list(dict.fromkeys(TOKENS + ["o38zbB3vp7xMgOaD4hdjS24tYMas1y4ozPiacc5Hiuc"]))  # Search Console de samsungsoportetecnico.com
 GTM = (sys.argv[4] if len(sys.argv) > 4 else "").strip().upper()
@@ -24,7 +30,7 @@ HOY = datetime.date.today().isoformat()
 _M = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
 _d = datetime.date.today()
 FECHA_LARGA = f"{_d.day} de {_M[_d.month - 1]} de {_d.year}"
-NOMBRE = "Soporte Técnico Samsung"
+NOMBRE = "Servicio Técnico Samsung Ibagué" if SOLO else "Soporte Técnico Samsung"
 esc = lambda s: html.escape(str(s), quote=True)
 
 
@@ -55,6 +61,8 @@ def wa_link(pk, msg):
 # ------------------------------------------------------------------ datos derivados
 CIU = []
 from st_datos2 import EXTRA, BUCKETS
+if SOLO:
+    EXTRA = {}
 from st_clima import CLIMA
 _usados = set()
 for pk, P in PAISES.items():
@@ -97,6 +105,8 @@ R_WA = lambda c: f"{c['pk']}/{c['d']}/whatsapp/index.html"
 R_TEL = lambda c: f"{c['pk']}/{c['d']}/telefono/index.html"
 R_WAP = lambda pk: f"{pk}/whatsapp/index.html"
 R_TELP = lambda pk: f"{pk}/telefono/index.html"
+R_BARRIOS = lambda c: f"{c['pk']}/{c['d']}/barrios/index.html"
+R_ZS = lambda c, z, sv: f"{c['pk']}/{c['d']}/{slug(z)}/{slug(pal(c['pk'], sv)[1])}/index.html"
 R_MAPA = lambda pk: R_INST(pk, "mapa-del-sitio")
 R_COD = lambda pk, cod: f"{pk}/guias/{slug(pal(pk, 'lava')[0])}-samsung-codigo-{slug(cod)}/index.html"
 R_COD_LISTA = lambda pk: f"{pk}/guias/codigos-de-error-{slug(pal(pk, 'lava')[0])}-samsung/index.html"
@@ -106,7 +116,16 @@ for _pk in PAISES:
     assert len(_ds) == len(set(_ds)), _pk
 
 
+def solo_ruta(n):  # en el modo de una ciudad, colombia/ibague/x -> x
+    if SOLO:
+        for pre in (f"colombia/{SOLO}/", "colombia/"):
+            if n.startswith(pre):
+                return n[len(pre):] or "index.html"
+    return n
+
+
 def U(n):  # URL pública limpia de una página
+    n = solo_ruta(n)
     n = "" if n == "index.html" else (n[:-10] if n.endswith("/index.html") else n)
     return f"{DOMINIO}/{n}"
 

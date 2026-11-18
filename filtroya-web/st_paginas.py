@@ -64,6 +64,8 @@ for c in CIU:
 for c in CIU:
     pk = c["pk"]; P = PAISES[pk]; nom = c["n"]
     tit = pick(f"c|{c['s']}", [f"Soporte Técnico Samsung en {nom}", f"Soporte Samsung en {nom} | A domicilio", f"Servicio técnico Samsung en {nom} | Soporte técnico", f"Técnico Samsung en {nom} | Soporte Técnico"])
+    if SOLO:
+        tit = f"Servicio técnico Samsung en {nom} | A domicilio"
     if len(tit) > 66:
         tit = f"Soporte técnico Samsung en {nom}"
     if len(tit) > 66:
@@ -81,7 +83,7 @@ for c in CIU:
                         + f'<p><a href="{R_MANT(c)}">Guía de mantenimiento para {esc(nom)}</a> · <a href="{R_VOLT(pk)}">Voltaje en {esc(P["nombre"])}</a></p>')
               + bloque_snippets(c, f"sc|{c['s']}", 3, True)
               + seccion("Fallas más comunes", "<ul class=\"spec-list\">" + "".join(f'<li><a href="{R_G(g, pk)}">{esc(g["tit"])}</a></li>' for g in mix("fm|" + c["s"], GUIAS_PK(pk), 8)) + "</ul>", alt=True)
-              + faq_html(preg) + seccion("Otras ciudades", '<div class="city-tags">' + "".join(f'<a href="{R_CIU(v)}">{esc(v["n"])}</a>' for v in CIU_PAIS[pk] if v is not c) + f'</div><p style="margin-top:12px"><a href="{R_PAIS(pk)}">Servicio técnico Samsung en {esc(P["nombre"])}</a></p>'))
+              + faq_html(preg) + ("" if SOLO else seccion("Otras ciudades", '<div class="city-tags">' + "".join(f'<a href="{R_CIU(v)}">{esc(v["n"])}</a>' for v in CIU_PAIS[pk] if v is not c) + f'</div><p style="margin-top:12px"><a href="{R_PAIS(pk)}">Servicio técnico Samsung en {esc(P["nombre"])}</a></p>')))
     pagina(R_CIU(c), tit, f"Soporte técnico Samsung en {nom}, {P['nombre']}: {nombres}. Visita a domicilio, diagnóstico primero y valor confirmado antes de reparar.", f"centro de servicio tecnico samsung {nom.lower()}, centro de servicio samsung {nom.lower()}, servicio tecnico samsung {nom.lower()}, tecnico samsung {nom.lower()}, reparacion electrodomesticos samsung {nom.lower()}",
            [("Inicio", "index.html"), (P["nombre"], R_PAIS(pk)), (nom, None)], cuerpo, preg,
            [{"@type": "Service", "name": f"Servicio técnico Samsung en {nom}", "provider": {"@id": f"{DOMINIO}/#negocio"}, "areaServed": {"@type": "City", "name": nom, "containedInPlace": {"@type": "Country", "name": P["nombre"]}}}], prio="0.8", pk=pk, tipo="ciudades", ctx=c)
@@ -239,5 +241,6 @@ exec(open(AQUI / "st_extra3.py", encoding="utf-8").read())
 exec(open(AQUI / "st_extra4.py", encoding="utf-8").read())
 exec(open(AQUI / "st_extra5.py", encoding="utf-8").read())
 exec(open(AQUI / "st_extra6.py", encoding="utf-8").read())
+exec(open(AQUI / "st_extra7.py", encoding="utf-8").read())
 exec(open(AQUI / "st_blog.py", encoding="utf-8").read())
 exec(open(AQUI / "st_salida.py", encoding="utf-8").read())
