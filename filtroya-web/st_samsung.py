@@ -169,6 +169,8 @@ for f in ("nevera-family-hub", "nevera-superior-inox", "lavadora-superior", "sec
         shutil.copy(IMG_ORIGEN / f"{f}{suf}.webp", OUT / "img" / f"{f}{suf}.webp")
 for f in ("stp1", "stp2", "stp3", "stp4", "stp5", "stp6", "stp7", "c-revision", "c-compresor", "tecnico-lavadora", "tecnico-neveras", "portada-tecnico"):
     shutil.copy(IMG_ORIGEN / f"{f}.webp", OUT / "img" / f"{f}.webp")
+for _f in sorted((AQUI / "st_img" / "lib").glob("*.webp")):
+    shutil.copy(_f, OUT / "img" / _f.name)
 NUEVAS = {1: "tecnico-samsung-saluda-en-la-puerta", 2: "atencion-al-cliente-servicio-samsung", 3: "tecnico-samsung-entrega-orden-de-servicio", 4: "tecnico-samsung-reparando-lavadora-a-domicilio", 5: "taller-reparacion-televisores-samsung"}
 for _n in ("estufa-samsung-4-hornillas-horno", "horno-empotrado-samsung-acero", "lavavajillas-samsung-acero-inoxidable"):
     for _suf in ("", "-m", "-s"):
