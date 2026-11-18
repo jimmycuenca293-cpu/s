@@ -1,12 +1,13 @@
 # Sitio de una sola ciudad: páginas de barrio por equipo, portada de barrios y guía local (solo con ST_SOLO).
+SOLO_EXTRA = []  # (título, url, tipo)
 if SOLO:
-    LINEAS_P.clear()
     _c = CIU[0]; _pk = _c["pk"]; _P = PAISES[_pk]; _nom = _c["n"]; _cl = CLIMA[_c["s"]]
     TIT_ZS = ["Técnico de {s2} Samsung en {z}, {c} | A domicilio", "Reparación de {s2} Samsung en {z} ({c})", "{z}: servicio técnico de {s2} Samsung en {c}", "Arreglo de {s2} Samsung en {z}, {c}", "Técnico de {s1} Samsung a domicilio en {z} ({c})"]
     INTRO_ZS = ["Si vives en {z} y tu {s1} Samsung falló, el técnico llega a tu casa o apartamento en {c}: coordinas por WhatsApp y el diagnóstico se hace en el lugar.",
                 "Atendemos {s2} Samsung en {z}, {c}, sin que tengas que mover el equipo. Primero se diagnostica y el valor se confirma antes de reparar.",
                 "¿Tu {s1} Samsung en {z} no funciona como antes? Un técnico va a {z}, revisa el equipo y te explica qué falla y qué opciones tienes.",
                 "En {z} ({c}) reparamos y damos mantenimiento a {s2} Samsung a domicilio. Escribe al WhatsApp con el modelo y la falla y coordinamos la visita."]
+    BARRIO_P = ["Desde {z} el técnico puede encadenar visitas con {n1} y {n2}, por eso solemos coordinar los horarios por zona.", "Si tu {s1} falla en {z}, envíanos la dirección o el conjunto y una referencia cercana para ubicarte rápido en {c}.", "{z} es uno de los barrios de {c} donde atendemos {s2} Samsung; también cubrimos {n1}, {n2} y {n3}.", "Atendemos {z} con visita a domicilio. Escribe al {wa} con el modelo y la falla, y confirmamos el día en que el técnico pasa por {z}.", "Para {z}, el diagnóstico de tu {s1} Samsung se hace en tu casa; si necesitas ayuda para ubicar el modelo, te guiamos por WhatsApp.", "Muchos clientes de {n1} y {n2} nos escriben por su {s1} Samsung; en {z} la atención es la misma: diagnóstico primero y valor confirmado."]
     for _z in _c["zonas"]:
         for _sv in SERV_PAIS[_pk]:
             _s1, _s2 = pal(_pk, _sv); S = SERVICIOS[_sv]; k = f"zs|{_z}|{_sv}"
@@ -18,15 +19,22 @@ if SOLO:
                     (f"¿Cuánto cuesta reparar una {_s1} Samsung en {_z}?", "Depende de la falla y del repuesto; el técnico hace el diagnóstico y el valor se confirma antes de reparar."),
                     (f"¿Cuánto demora llegar a {_z}?", "La visita se coordina por WhatsApp según tu disponibilidad y la agenda del día."),
                     ] + preguntas_ia(_c, k, 3)
+            n3 = mix(k + "|n", otros, 3)
+            bp = uno(k + "|bp", BARRIO_P).format(z=_z, n1=n3[0], n2=n3[1], n3=n3[2], c=_nom, s1=_s1, s2=_s2, wa=wa)
+            secs = [seccion(f"Fallas que atendemos en {esc(_z)}", _ul2(mix(k + "|sn", S["sintomas"], 4)) + f"<p>{esc(parrafo_clima(_c, _z, _sv, k + '|cl'))}</p>"),
+                    seccion(f"Qué incluye la visita en {esc(_z)}", _ul2(mix(k + "|v", VISITA_E[_sv], 3)), alt=True),
+                    seccion(f"Cuidados para tu {esc(_s1)} Samsung en {esc(_nom)}", _cuidado(_c, _sv, k, 2)),
+                    seccion(f"Glosario: partes de tu {esc(_s1)} Samsung", _glos(_sv, k, 3), alt=True),
+                    seccion("Cómo funciona la visita", _como(_c, k)),
+                    seccion(f"{esc(cap(_s2))} Samsung en otros barrios de {esc(_nom)}", '<div class="city-tags">' + "".join(f'<a href="{R_ZS(_c, zz, _sv)}">{esc(zz)}</a>' for zz in mix(k + "|o", otros, 6)) + f'<a href="{R_CS(_c, _sv)}"><b>{esc(cap(_s2))} Samsung en {esc(_nom)} →</b></a></div>', alt=True),
+                    seccion(f"Otros equipos Samsung en {esc(_z)}", '<div class="city-tags">' + "".join(f'<a href="{R_ZS(_c, _z, s_)}">{esc(cap(pal(_pk, s_)[1]))}</a>' for s_ in SERV_PAIS[_pk] if s_ != _sv) + f'<a href="{R_Z(_c, _z)}">Servicio técnico Samsung en {esc(_z)}</a></div>')]
+            keep = sorted(mix(k + "|ks", list(range(len(secs))), 5))
             cuerpo = (hero_simple(f"{_z} · {_nom}", tit.split(" | ")[0], f"Servicio técnico de {_s2} Samsung a domicilio en {_z}, {_nom}, {_c['dep']}.", acciones(_pk, f"Hola, necesito técnico para mi {_s1} Samsung en {_z}, {_nom}"))
                       + qa(f"¿Hay técnico de {_s2} Samsung en {_z}, {_nom}?", f"Sí. {esc(uno(k + '|i', INTRO_ZS).format(**f_))} WhatsApp {esc(wa)}.", [("Barrio", _z), ("Ciudad", _nom), ("Equipo", cap(_s2) + " Samsung"), ("WhatsApp", wa)])
-                      + seccion(f"Fallas que atendemos en {esc(_z)}", _ul2(S["sintomas"][:6]) + f"<p>{esc(parrafo_clima(_c, _z, _sv, k + '|cl'))}</p>")
-                      + seccion(f"Qué incluye la visita en {esc(_z)}", _ul2(mix(k + "|v", VISITA_E[_sv], 5)), alt=True)
-                      + seccion(f"Cuidados para tu {esc(_s1)} Samsung en {esc(_nom)}", _cuidado(_c, _sv, k))
-                      + seccion(f"Glosario: partes de tu {esc(_s1)} Samsung", _glos(_sv, k), alt=True)
-                      + seccion(f"{esc(cap(_s2))} Samsung en otros barrios de {esc(_nom)}", '<div class="city-tags">' + "".join(f'<a href="{R_ZS(_c, zz, _sv)}">{esc(zz)}</a>' for zz in mix(k + "|o", otros, 10)) + f'<a href="{R_CS(_c, _sv)}"><b>{esc(cap(_s2))} Samsung en {esc(_nom)} →</b></a></div>')
-                      + seccion(f"Otros equipos Samsung en {esc(_z)}", '<div class="city-tags">' + "".join(f'<a href="{R_ZS(_c, _z, s_)}">{esc(cap(pal(_pk, s_)[1]))}</a>' for s_ in SERV_PAIS[_pk] if s_ != _sv) + f'<a href="{R_Z(_c, _z)}">Servicio técnico Samsung en {esc(_z)}</a></div>', alt=True)
-                      + faq_html(preg, f"Preguntas sobre {_s2} Samsung en {_z}"))
+                      + seccion(f"Atención en {esc(_z)}", f"<p>{esc(bp)}</p>")
+                      + "".join(secs[i_] for i_ in keep)
+                      + faq_html(preg[:4] + preg[4:5], f"Preguntas sobre {_s2} Samsung en {_z}"))
+            SOLO_EXTRA.append((tit.split(' | ')[0], R_ZS(_c, _z, _sv), 'Barrio y equipo'))
             pagina(R_ZS(_c, _z, _sv), tit, f"{cap(_s2)} Samsung en {_z}, {_nom}: técnico a domicilio, diagnóstico primero y valor confirmado antes de reparar. WhatsApp {wa}.", f"tecnico {_s1} samsung {_z.lower()} {_nom.lower()}, reparacion {_s2} samsung {_z.lower()}",
                    [("Inicio", "index.html"), (_P["nombre"], R_PAIS(_pk)), (_nom, R_CIU(_c)), (_z, R_Z(_c, _z)), (cap(_s2), None)], cuerpo, preg, [{"@type": "Service", "name": f"Reparación de {_s2} Samsung en {_z}, {_nom}", "provider": {"@id": f"{DOMINIO}/#negocio"}, "areaServed": {"@type": "Place", "name": f"{_z}, {_nom}"}}],
                    prio="0.7", pk=_pk, tipo="zonas", ctx=_c, compacto=True)

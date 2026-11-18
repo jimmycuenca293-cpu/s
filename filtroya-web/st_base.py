@@ -261,6 +261,8 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
             t = t.replace(_a, _b)
     if SOLO:
         t = t.replace("1 ciudades", "1 ciudad").replace("Servicio en Colombia", f"Servicio en {CIU[0]['n']}").replace(" Samsung en Colombia:", f" Samsung en {CIU[0]['n']}:")
+        if (nombre.split("/")[2:3] or [""])[0].endswith("-samsung") or (nombre.split("/")[2:3] or [""])[0].endswith(("-samsung",)):
+            t = t.replace(" en Colombia", f" en {CIU[0]['n']}")
         if nombre.split("/")[1:2] and nombre.split("/")[1] in ("guias", "blog", "preguntas-frecuentes", "respuestas-rapidas", "solicitar-visita", "contacto", "quienes-somos", "mapa-del-sitio"):
             t = t.replace(" en Colombia", f" en {CIU[0]['n']}")
     (OUT / nombre).parent.mkdir(parents=True, exist_ok=True)

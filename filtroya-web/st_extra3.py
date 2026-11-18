@@ -33,7 +33,7 @@ FAQ_L = [("¿Reparan la {s1} Samsung {linea} en {pais}?", "Sí, con visita a dom
          ("¿Cómo sé si mi equipo es {linea}?", "Mira el nombre en el equipo o el modelo de la etiqueta; si tienes dudas, envíanos una foto por WhatsApp."), ("¿Cuánto cuesta reparar una {s1} Samsung {linea}?", "Depende de la falla y el repuesto; el valor se confirma tras el diagnóstico y antes de reparar."),
          ("¿Atienden equipos fuera de garantía?", "Sí, dentro y fuera de garantía; consulta las condiciones de tu garantía en el manual."), ("¿Qué datos necesito para pedir la visita?", "El modelo (etiqueta), la falla y la dirección.")]
 LINEAS_P = []  # (pk, sv, linea, url)
-R_LIN = lambda pk, linea: f"{pk}/{slug(linea)}/index.html"
+R_LIN = (lambda pk, linea: f"{pk}/{CIU[0]['d']}/{slug(linea)}-samsung/index.html") if SOLO else (lambda pk, linea: f"{pk}/{slug(linea)}/index.html")
 for pk, P in PAISES.items():
     cs = CIU_PAIS[pk]
     for sv, lista in LINEAS.items():
@@ -184,6 +184,8 @@ PROB = [
          causas=["Qué falla tiene el equipo (sensor, tarjeta, motor, resistencia, sello).", "Si el repuesto está disponible y su precio.", "El modelo y la antigüedad del equipo.", "Si basta una reparación o conviene reemplazar la pieza completa.", "La zona de la ciudad y el día de la visita.", "Si tiene garantía vigente por su compra."],
          pasos=["Escribe por WhatsApp con el modelo y la falla.", "Envía una foto de la etiqueta del equipo.", "Coordina la visita a domicilio.", "El técnico hace el diagnóstico.", "Recibe el valor antes de que se repare.", "Decide si repararlo o no."]),
 ]
+if SOLO:
+    exec(open(AQUI / "st_prob_solo.py", encoding="utf-8").read())
 PROB_P = []
 R_PROB = lambda c, p: f"{c['pk']}/{c['d']}/{slug(pal(c['pk'], p['sv'])[0])}-{p['sl']}/index.html"
 for c in CIU:
