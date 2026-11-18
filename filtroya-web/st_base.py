@@ -57,7 +57,7 @@ def encabezado(pk=None):
             ciu_pop = "".join(f'<a href="{R_Z(_c0, z)}">{esc(z)}</a>' for z in _c0["zonas"]) + f'<a href="{R_BARRIOS(_c0)}"><b>Ver todos los barrios →</b></a>'
         pop_c = f'<div class="aq-pop ciu"><div class="aq-wrap"><div><h5>{esc(_lbl)}</h5><div class="aq-chips">{ciu_pop}</div></div></div></div>'
         serv_pop = "".join(f'<a href="{R_SERV(pk, sv)}">{foto_serv(sv, 48, True)}<span><b>{esc(cap(pal(pk, sv)[1]))}</b><small>Servicio técnico</small></span></a>' for sv in SERV_PAIS[pk])
-        bar1 = f"Servicio técnico Samsung en {cs[0]['n'] if SOLO else P['nombre']}"; bar2 = "Visita a domicilio · diagnóstico primero"; sub = f"Línea blanca · {cs[0]['n'] if SOLO else P['nombre']}"
+        bar1 = f"Servicio técnico Samsung en {cs[0]['n'] if SOLO else P['nombre']}"; bar2 = ("Abierto las 24 horas · visita a domicilio" if SOLO and SOLO_CFG[SOLO].get("horas24") else "Visita a domicilio · diagnóstico primero"); sub = f"Línea blanca · {cs[0]['n'] if SOLO else P['nombre']}"
         nav = (f'<a href="{R_PAIS(pk)}">Inicio</a>' f'<details class="aq-dd"><summary>{esc(_lbl)}</summary>{pop_c}</details>'
                f'<details class="aq-dd"><summary>Servicios</summary><div class="aq-pop prod"><div class="aq-wrap">{serv_pop}</div></div></details>'
                f'<a href="{R_GUIAS(pk)}">Guías de fallas</a>' + (f'<a href="{R_GAL(cs[0])}">Galería</a>' if SOLO else "") + f'<a href="{pk}/blog/index.html">Blog</a><a href="{R_FAQ(pk)}">Preguntas</a><a href="{R_SOL(pk)}"><b>Solicitar visita</b></a>')
@@ -91,6 +91,8 @@ def pie(pk=None):
         if SOLO:
             top = "".join(f'<li><a href="{R_Z(cs[0], z)}">{esc(z)}</a></li>' for z in cs[0]["zonas"][:9]) + f'<li><a href="{R_BARRIOS(cs[0])}"><b>Ver todos →</b></a></li>'
         col2 = f'<div><h5>Servicios</h5><ul>{sv}</ul></div><div><h5>{"Barrios" if SOLO else "Ciudades"}</h5><ul>{top}</ul></div>'
+        if SOLO and SOLO_CFG[SOLO].get("direccion"):
+            col2 += f'<div><h5>Ubicación y horario</h5><ul><li>{esc(SOLO_CFG[SOLO]["direccion"])}</li><li>Abierto las 24 horas</li><li><a href="tel:+{wa_num(pk)}">{esc(wa_vis(pk))}</a></li><li><a href="{R_UBIC(cs[0])}">Cómo contactarnos →</a></li><li><a href="{R_24H(cs[0])}">Servicio las 24 horas</a></li></ul></div>'
     else:
         blurb = "Servicio técnico especializado en electrodomésticos Samsung. "
         paises = "".join(f'<li><a href="{R_PAIS(k)}">{esc(P["nombre"])}</a></li>' for k, P in PAISES.items())
@@ -187,7 +189,8 @@ def negocio_solo():
     c = CIU[0]; P = PAISES[c["pk"]]
     return {"@type": ["ProfessionalService", "LocalBusiness"], "@id": f"{DOMINIO}/#negocio", "name": NOMBRE, "url": U(R_CIU(c)), "telephone": "+" + wa_num(c["pk"]), "image": f"{DOMINIO}/img/samsung-oval.png", "logo": f"{DOMINIO}/img/samsung-oval.png",
             "description": f"Servicio técnico independiente de electrodomésticos Samsung a domicilio en {c['n']}, {c['dep']}: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas.", "priceRange": "$$",
-            "address": {"@type": "PostalAddress", "addressLocality": c["n"], "addressRegion": c["dep"], "addressCountry": "CO"}, "geo": {"@type": "GeoCoordinates", "latitude": SOLO_CFG[SOLO]["lat"], "longitude": SOLO_CFG[SOLO]["lon"]},
+            "address": ({"@type": "PostalAddress", "streetAddress": SOLO_CFG[SOLO]["calle"] + ", " + SOLO_CFG[SOLO]["barrio_dir"], "addressLocality": c["n"], "addressRegion": c["dep"], "addressCountry": "CO"} if SOLO_CFG[SOLO].get("calle") else {"@type": "PostalAddress", "addressLocality": c["n"], "addressRegion": c["dep"], "addressCountry": "CO"}),
+            **({"openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}], "hasMap": "https://www.google.com/maps?q=" + __import__("urllib.parse").parse.quote_plus(SOLO_CFG[SOLO]["direccion"])} if SOLO_CFG[SOLO].get("horas24") else {}), "geo": {"@type": "GeoCoordinates", "latitude": SOLO_CFG[SOLO]["lat"], "longitude": SOLO_CFG[SOLO]["lon"]},
             "areaServed": [{"@type": "City", "name": c["n"]}] + [{"@type": "Place", "name": z + ", " + c["n"]} for z in c["zonas"]], "knowsAbout": [SERVICIOS[s_]["tit"] for s_ in SERV_PAIS[c["pk"]]],
             "hasOfferCatalog": {"@type": "OfferCatalog", "name": f"Servicio técnico Samsung en {c['n']}", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Reparación y mantenimiento de {pal(c['pk'], s_)[1]} Samsung en {c['n']}", "url": U(R_CS(c, s_))}} for s_ in SERV_PAIS[c["pk"]]]},
             "contactPoint": [{"@type": "ContactPoint", "telephone": "+" + wa_num(c["pk"]), "contactType": "customer service", "areaServed": "CO", "availableLanguage": "es"}]}
@@ -203,6 +206,8 @@ def faq_base(pk):
 
 def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), prio="0.6", pk=None, tipo="guias", ctx=None, compacto=False):
     titulo = titulo.strip()
+    if SOLO and SOLO_CFG[SOLO].get("titulo_home") and nombre == R_CIU(CIU[0]):
+        titulo = SOLO_CFG[SOLO]["titulo_home"]; desc = SOLO_CFG[SOLO]["desc_home"]
     if SOLO:
         _p = nombre.split("/")
         if nombre in ("index.html", f"{SOLO_PK}/index.html") or (_p[0] == SOLO_PK and len(_p) == 3 and _p[2] == "index.html" and _p[1] not in ("guias", "blog", "preguntas-frecuentes", "respuestas-rapidas", "solicitar-visita", "contacto", "quienes-somos", "mapa-del-sitio", "voltaje", SOLO_D)):
