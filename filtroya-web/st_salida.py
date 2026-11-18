@@ -348,6 +348,114 @@ if SOLO:
     _sv_de = lambda n: next((sv_ for w, sv_ in _WORDS if w in n and sv_ in _PAL), None)
     _TOC_N = 9
 
+    _FALLAS_RE = r"(no-|con-|hace-|huele|gotea|se-|puerta|vibra|espuma|llama|olor|perilla|horno-|hornillas|display|deja|tiene|consume|cuanto-cuesta|pantalla|lineas|manchas|sin-sonido|parpadea|hdmi|control-remoto|smart-tv)"
+    _TERM_RE = r"^(mantenimiento-|instalacion-|tecnico-a-domicilio-|cerca-de-mi-|repuestos-|garantia-|diagnostico-|como-elegir-tecnico-|centro-de-servicio-|falla-urgente-)"
+    _EQ_SLUGS = {slug(b_) for a_, b_ in _PAL.values()}
+    _PLUR_RE = "|".join(re.escape(cap(b_)) for a_, b_ in _PAL.values())
+
+    def _kind(seg):
+        if not seg:
+            return "home"
+        if seg[-1] in ("whatsapp", "telefono"):
+            return "contacto"
+        if seg[-1] == "galeria":
+            return "galeria"
+        if len(seg) == 1:
+            if seg[0] in _ZSLUG:
+                return "zona"
+            if re.match(_TERM_RE, seg[0]):
+                return "termino"
+            if seg[0] in _EQ_SLUGS:
+                return "equipo"
+            if re.search(_FALLAS_RE, seg[0]):
+                return "falla"
+            return "otro"
+        if len(seg) == 2 and seg[0] in _ZSLUG:
+            return "zona_equipo" if seg[1] in _EQ_SLUGS else "zona_falla"
+        return "otro"
+
+    def _rank(kind, h, ciudad_re):
+        """Posición de cada sección en el recorrido de la página (menor = más arriba). None = se elimina."""
+        if re.search(r"Búsquedas relacionadas", h):
+            return 95
+        if re.search(r"^Preguntas rápidas", h):
+            return 78
+        if re.search(r"^(Preguntas|¿.*\?$)", h) and not re.search(r"Prefieres", h):
+            return 80
+        if re.search(r"^Contacto del servicio|^Otro canal", h):
+            return 85
+        if re.search(r"^Qué enviar por WhatsApp", h):
+            return 10
+        if re.search(r"^Mapa:", h):
+            return 35 if kind in ("home", "zona") else 88
+        if re.search(r"^Todos los electrodomésticos", h):
+            return {"home": 10, "zona": 12, "equipo": 62}.get(kind)
+        if re.search(r"^Atención en", h):
+            return 5
+        if kind == "equipo" and re.search(rf"^({_PLUR_RE}) Samsung en {ciudad_re}$", h):
+            return 5
+        if kind == "termino" and re.search(r"^Qué incluye en ", h):
+            return 6
+        if kind == "otro" and re.search(r"^¿Prefieres que lo revise", h):
+            return 58
+        if kind == "otro" and re.search(r"^Glosario de partes", h):
+            return 57
+        if kind == "otro" and re.search(r"^Qué incluye la visita", h):
+            return 59
+        if kind == "otro" and h == "Barrios":
+            return 10
+        if kind == "otro" and h == "Equipo por barrio":
+            return 20
+        if re.search(r"^Fallas de .* que sí", h):
+            return 23
+        if re.search(r"^Conviene reparar", h):
+            return 20
+        if re.search(r"^Conviene cambiar", h):
+            return 21
+        if re.search(r"^Fallas más comunes", h):
+            return None if kind == "home" else 40
+        if re.search(r"^Fallas frecuentes en", h):
+            return 40
+        if re.search(r"^(Fallas que (atendemos|reparamos)|Qué revisa el técnico|Causas más comunes|Fallas frecuentes de|Todas las fallas|Qué influye en el valor|Fallas de .* que sí)", h):
+            return 20
+        if re.search(r"^Qué revisar primero", h):
+            return 22
+        if re.search(r"^Señales", h):
+            return 25
+        if re.search(r"^Cómo funciona el servicio en ", h) and kind == "zona":
+            return None
+        if re.search(r"^(Cómo (funciona|coordinamos|decidir|pedir)|Cómo es la visita)", h):
+            return 20 if kind == "home" else 30
+        if re.search(r"^Qué incluye y qué debes saber", h) and kind in ("equipo", "zona_equipo"):
+            return None
+        if re.search(r"^(Qué incluye|Prepara|Seguridad con)", h):
+            return 25 if kind == "home" else 35
+        if kind == "equipo" and re.search(r"^(Todo sobre|Guías y fallas de|Sectores)", h):
+            return None
+        if re.search(r"^Sectores", h):
+            return 30 if kind == "home" else 41
+        if kind == "zona" and re.search(r"^Equipos que reparamos en", h):
+            return 13
+        if re.search(r"^Servicio técnico por barrio", h):
+            return 31
+        if re.search(r"^Datos de", h):
+            return 32 if kind == "home" else 42
+        if re.search(r"por barrio|otros barrios|^Zonas cercanas|cerca de ti|^Equipos que reparamos en|^Otros equipos", h):
+            return 41 if kind != "zona" else 45
+        if kind == "zona" and re.search(r" Samsung en [^:]+$", h) and not re.search(r"^(Guías|Todo sobre|Más sobre|Mantenimiento)", h):
+            return 14
+        if re.search(r"clima", h):
+            return 50
+        if re.search(r"^Cuidados|^Hábitos", h):
+            return 51
+        if re.search(r"^Mitos", h):
+            return 52
+        if re.search(r"^Glosario", h):
+            return 53
+        if re.search(r"^(Guías|Galería|Artículos|Más información|Más sobre|Todo sobre|Ayuda con|Sigue leyendo|Mantenimiento de)", h):
+            return 60
+        return 55
+
     def _enriquecer(n, t):
         n2 = solo_ruta(n)
         seg = [x for x in n2.split("/") if x and x != "index.html"]
@@ -356,15 +464,58 @@ if SOLO:
         lugar = barrio or _cn
         pool = IMG_SV.get(sv_) or IMG_SV[None]
         hero = RN.get(hero_img(n), hero_img(n))
-        # ids de sección + imágenes
+        kind = _kind(seg)
+        s1 = _PAL[sv_][0] if sv_ else "electrodoméstico"; s2 = _PAL[sv_][1] if sv_ else "electrodomésticos"
+        # --- secciones extra: mapa (portada y barrios) y búsquedas relacionadas
+        extra = []
+        if kind in ("home", "zona") and n2 != "404.html":
+            q_ = urllib.parse.quote_plus(f"{lugar}, {_cn}, {PAISES[_cc['pk']]['nombre']}")
+            extra.append(f'<section class="aq-sec"><div class="wrap"><h2>Mapa: atendemos {html.escape(lugar)}</h2><iframe title="Mapa de {html.escape(lugar)}" src="https://www.google.com/maps?q={q_}&amp;output=embed" width="100%" height="320" style="border:0;border-radius:16px" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><p class="sub2">Visita a domicilio en esta zona; escribe al {html.escape(_wa_)}.</p></div></section>')
+        fr = [f"servicio técnico Samsung {lugar}", f"técnico de {s2} Samsung {lugar}", f"reparación de {s2} Samsung a domicilio {lugar}", f"{s1} Samsung no funciona {lugar}", f"mantenimiento de {s2} Samsung {lugar}", f"cuánto cuesta reparar {s1} Samsung {lugar}",
+              f"técnico Samsung cerca de mí {lugar}", f"WhatsApp servicio técnico Samsung {_cn}", f"teléfono servicio técnico Samsung {_cn}", f"repuestos para {s2} Samsung {_cn}", f"garantía de {s1} Samsung {_cn}", f"{s2} Samsung {_cn} a domicilio"]
+        extra.append('<section class="aq-sec"><div class="wrap"><h2>Búsquedas relacionadas en ' + html.escape(lugar) + '</h2><div class="city-tags">' + "".join(f"<span>{html.escape(f_)}</span>" for f_ in fr) + f'<a href="{R_WA(_cc)}">WhatsApp {html.escape(_wa_)}</a></div></div></section>')
+        # --- orden consecutivo de las secciones
+        mh0 = re.search(r'<section class="hero[^"]*"[^>]*>.*?</section>', t, re.S)
+        ft = t.find('<footer class="aq-f">')
+        if mh0 and ft > mh0.end():
+            region = t[mh0.end():ft]
+            blocks = list(re.finditer(r'<section class="([^"]*)"[^>]*>.*?</section>', region, re.S))
+            if "".join(b.group(0) for b in blocks).strip() == region.strip() or True:
+                tops, body = [], []
+                ciudad_re = re.escape(_cn)
+                for b in blocks:
+                    cls = b.group(1)
+                    h2m = re.search(r"<h2>(.*?)</h2>", b.group(0), re.S)
+                    if "aq-qa-sec" in cls:
+                        tops.append(b.group(0)); continue
+                    h = re.sub(r"<[^>]+>", "", h2m.group(1)).strip() if h2m else ""
+                    body.append((h, b.group(0), "st-equipos" in cls))
+                for ex in extra:
+                    h2m = re.search(r"<h2>(.*?)</h2>", ex, re.S)
+                    body.append((re.sub(r"<[^>]+>", "", h2m.group(1)), ex, False))
+                vistos = set(); ordenadas = []
+                for k_, (h, blk, _p) in enumerate(body):
+                    r = _rank(kind, h, ciudad_re)
+                    if r is None or h in vistos:
+                        continue
+                    vistos.add(h)
+                    ordenadas.append((r, k_, blk))
+                ordenadas.sort(key=lambda x: (x[0], x[1]))
+                nuevo = []
+                for pos, (r, k_, blk) in enumerate(ordenadas):
+                    blk = re.sub(r'^<section class="[^"]*"', '<section class="aq-sec chap' + (" alt" if pos % 2 else "") + (" st-equipos" if "st-equipos" in blk[:80] else "") + '"', blk, count=1)
+                    nuevo.append(blk)
+                t = t[:mh0.end()] + "".join(tops) + "".join(nuevo) + t[ft:]
+        # --- ids de sección + imágenes
         cnt = [0]; usadas = []
 
         def sec(m):
             cnt[0] += 1
             h2 = m.group(3)
-            tag = f'<section class="aq-sec{m.group(1) or ""}" id="s{cnt[0]}"><div class="wrap"><h2>{h2}</h2>'
+            cls = m.group(1) or ""
+            tag = f'<section class="aq-sec{cls}" id="s{cnt[0]}"><div class="wrap"><h2>{h2}</h2>'
             plano = re.sub(r"<[^>]+>", "", h2)
-            if re.search(r"(?i)preguntas|faq", plano) or len(usadas) >= 7 or "galeria" in seg:
+            if "st-equipos" in cls or re.search(r"(?i)preguntas|faq|relacionadas|^mapa", plano) or len(usadas) >= 7 or kind == "galeria":
                 return tag
             nombre_img = pool[len(usadas) % len(pool)] if len(usadas) < len(pool) else IMG_SV[None][len(usadas) % len(IMG_SV[None])]
             usadas.append(nombre_img)
@@ -373,33 +524,21 @@ if SOLO:
             alt = f"{desc} en {lugar}" + (f", {_cn}" if barrio else "")
             w_, h_ = _dim(nombre_img)
             return tag + f'<figure class="sec-img{" prod" if prod else ""}" style="max-width:{min(w_, 420 if prod else 560)}px"><img src="img/{nombre_img}.webp" alt="{html.escape(alt, quote=True)}" width="{w_}" height="{h_}" loading="lazy" decoding="async" onerror="this.parentNode.remove()"></figure>'
-        t = re.sub(r'<section class="aq-sec( alt)?"( id="[^"]*")?><div class="wrap"><h2>(.*?)</h2>', lambda m: sec(m), t)
-        # encabezado dividido: texto + foto a su tamaño nativo (sin estirar ni recortar)
+        t = re.sub(r'<section class="aq-sec((?: [a-z-]+)*)"( id="[^"]*")?><div class="wrap"><h2>(.*?)</h2>', lambda m: sec(m), t)
+        # --- encabezado dividido: texto + foto a su tamaño nativo
         mh = re.search(r'<section class="hero st-bg" style="--bgimg:url\(([^)]*)\)"><div class="wrap">(.*?)</div></section>', t, re.S)
         if mh:
-            himg = hero if "/" not in hero else hero
+            himg = hero
             hw, hh = _dim(himg)
             hdesc = IMG_DESC.get(himg, "Técnico Samsung a domicilio")
             fig = f'<figure class="st-hfig"><img src="img/{himg}.webp" alt="{html.escape(hdesc + " en " + lugar, quote=True)}" width="{hw}" height="{hh}" fetchpriority="high" decoding="async" onerror="this.parentNode.remove()"></figure>'
             t = t.replace(mh.group(0), f'<section class="hero st-split"><div class="wrap st-hgrid"><div class="st-ht">{mh.group(2)}</div>{fig}</div></section>', 1)
-        # índice «En esta página»
-        hs = re.findall(r'<section class="aq-sec[^"]*" id="(s\d+)"><div class="wrap"><h2>(.*?)</h2>', t)
-        if len(hs) >= 4:
-            toc = '<nav class="toc" aria-label="En esta página"><b>En esta página</b>' + "".join(f'<a href="#{i_}">{re.sub(r"<[^>]+>", "", h_)}</a>' for i_, h_ in hs[:_TOC_N]) + "</nav>"
-            t = re.sub(r'(<section class="aq-qa-sec">.*?</section>)', lambda m: m.group(1) + f'<section class="aq-sec"><div class="wrap">{toc}</div></section>', t, count=1, flags=re.S)
-        # mapa de la zona (Google Maps, sin clave) en la portada, los barrios y la galería
-        if (not seg or (len(seg) == 1 and barrio)) and n2 != "404.html":
-            q_ = urllib.parse.quote_plus(f"{lugar}, {_cn}, {PAISES[_cc['pk']]['nombre']}")
-            mapa_ = f'<section class="aq-sec"><div class="wrap"><h2>Mapa: atendemos {html.escape(lugar)}</h2><iframe title="Mapa de {html.escape(lugar)}" src="https://www.google.com/maps?q={q_}&amp;output=embed" width="100%" height="320" style="border:0;border-radius:16px" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><p class="sub2">Visita a domicilio en esta zona; escribe al {html.escape(_wa_)}.</p></div></section>'
-            t = t.replace('<footer class="aq-f">', mapa_ + '<footer class="aq-f">', 1) if '<footer class="aq-f">' in t else t
-        # búsquedas relacionadas
-        s1 = _PAL[sv_][0] if sv_ else "electrodoméstico"; s2 = _PAL[sv_][1] if sv_ else "electrodomésticos"
-        fr = [f"servicio técnico Samsung {lugar}", f"técnico de {s2} Samsung {lugar}", f"reparación de {s2} Samsung a domicilio {lugar}", f"{s1} Samsung no funciona {lugar}", f"mantenimiento de {s2} Samsung {lugar}", f"cuánto cuesta reparar {s1} Samsung {lugar}",
-              f"técnico Samsung cerca de mí {lugar}", f"WhatsApp servicio técnico Samsung {_cn}", f"teléfono servicio técnico Samsung {_cn}", f"repuestos para {s2} Samsung {_cn}", f"garantía de {s1} Samsung {_cn}", f"{s2} Samsung {_cn} a domicilio"]
-        rel = '<section class="aq-sec alt"><div class="wrap"><h2>Búsquedas relacionadas en ' + html.escape(lugar) + '</h2><div class="city-tags">' + "".join(f"<span>{html.escape(f_)}</span>" for f_ in fr) + f'<a href="{R_WA(_cc)}">WhatsApp {html.escape(_wa_)}</a></div></div></section>'
-        if '<footer class="aq-f">' in t and n2 != "404.html":
-            t = t.replace('<footer class="aq-f">', rel + '<footer class="aq-f">', 1)
-        # precarga de la imagen principal y imagen en los datos estructurados
+        # --- índice numerado «En esta página» (mismo orden y números que los capítulos)
+        hs = re.findall(r'<section class="aq-sec chap[^"]*" id="(s\d+)"><div class="wrap"><h2>(.*?)</h2>', t)
+        if len(hs) >= 3:
+            toc = '<nav class="toc" aria-label="En esta página"><b>En esta página</b><ol>' + "".join(f'<li><a href="#{i_}">{re.sub(r"<[^>]+>", "", h_)}</a></li>' for i_, h_ in hs[:16]) + "</ol></nav>"
+            t = re.sub(r'(<section class="aq-qa-sec">.*?</section>)(?!.*<section class="aq-qa-sec">)', lambda m: m.group(1) + f'<section class="aq-sec toc-sec"><div class="wrap">{toc}</div></section>', t, count=1, flags=re.S)
+        # --- precarga de la imagen principal y imagen en los datos estructurados
         t = t.replace("</head>", f'<link rel="preload" as="image" href="img/{hero}.webp" fetchpriority="high"></head>', 1)
         t = t.replace('{"@type": "WebPage",', f'{{"@type": "WebPage", "primaryImageOfPage": {{"@type": "ImageObject", "url": "{DOMINIO}/img/{hero}.webp"}},', 1)
         return t
