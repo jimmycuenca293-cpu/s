@@ -434,7 +434,8 @@ if SOLO:
             (OUT / SOLO_PK / _x).unlink()
     for _a, _b in ((f"sitemap-{SOLO_PK}.xml", f"sitemap-{SOLO}.xml"), (f"sitemap-imagenes-{SOLO_PK}.xml", f"sitemap-imagenes-{SOLO}.xml")):
         if (OUT / _a).exists():
-            (OUT / _b).write_text((OUT / _a).read_text(encoding="utf-8"), encoding="utf-8"); (OUT / _a).unlink()
+            if _a != _b:
+                (OUT / _b).write_text((OUT / _a).read_text(encoding="utf-8"), encoding="utf-8"); (OUT / _a).unlink()
     for _x in [p for p in OUT.glob("sitemap*.xml")] + [OUT / "robots.txt"]:
         _tx = _x.read_text(encoding="utf-8").replace(f"sitemap-{SOLO_PK}.xml", f"sitemap-{SOLO}.xml").replace(f"sitemap-imagenes-{SOLO_PK}.xml", f"sitemap-imagenes-{SOLO}.xml")
         _tx = _tx.replace(f"{DOMINIO}/{SOLO_PK}/{SOLO_D}/", f"{DOMINIO}/").replace(f"{DOMINIO}/{SOLO_PK}/", f"{DOMINIO}/")
