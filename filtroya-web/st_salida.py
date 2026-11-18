@@ -517,6 +517,17 @@ if SOLO:
                 for pos, (r, k_, blk) in enumerate(ordenadas):
                     blk = re.sub(r'^<section class="[^"]*"', '<section class="aq-sec chap' + (" alt" if pos % 2 else "") + (" st-equipos" if "st-equipos" in blk[:80] else "") + '"', blk, count=1)
                     nuevo.append(blk)
+                _eqs = "".join(f'<a href="{R_CS(_cc, e_)}">{html.escape(cap(_PAL[e_][1]))} Samsung en {html.escape(_cn)}</a>' for e_ in _PAL)
+                _int = (f'<a href="{R_CIU(_cc)}">Servicio técnico Samsung en {html.escape(_cn)}</a>' + _eqs + f'<a href="{R_BARRIOS(_cc)}">Barrios donde atendemos</a><a href="{R_WA(_cc)}">WhatsApp del servicio técnico</a><a href="{R_GUIAS(_cc["pk"])}">Guías de reparación Samsung</a><a href="{R_FAQ(_cc["pk"])}">Preguntas frecuentes</a>'
+                        + (f'<a href="{R_UBIC(_cc)}">Ubicación y horario</a><a href="{R_24H(_cc)}">Servicio 24 horas</a>' if SOLO_CFG[SOLO].get("direccion") else ""))
+                _WK = {"nevera": ("Refrigerador", "Refrigerador (Wikipedia)"), "lava": ("Lavadora_(electrodoméstico)", "Lavadora (Wikipedia)"), "seca": ("Secadora_de_ropa", "Secadora de ropa (Wikipedia)"), "lavaplatos": ("Lavavajillas", "Lavavajillas (Wikipedia)"), "micro": ("Horno_de_microondas", "Horno de microondas (Wikipedia)"), "cocina": ("Cocina_(aparato)", "Cocina y horno (Wikipedia)"), "tv": ("Televisor", "Televisor (Wikipedia)")}
+                _ex = []
+                if sv_ in _WK:
+                    _ex.append(f'<a href="https://es.wikipedia.org/wiki/{_WK[sv_][0]}" target="_blank" rel="noopener noreferrer">{_WK[sv_][1]}</a>')
+                if _cc["pk"] == "colombia":
+                    _ex += ['<a href="https://www.samsung.com/co/support/" target="_blank" rel="noopener noreferrer">Sitio de soporte de Samsung Colombia (marca)</a>', '<a href="https://www.sic.gov.co/" target="_blank" rel="noopener noreferrer">Superintendencia de Industria y Comercio (derechos del consumidor)</a>']
+                _ex.append(f'<a href="https://www.google.com/maps/search/?api=1&amp;query={urllib.parse.quote_plus(_cn + " " + PAISES[_cc["pk"]]["nombre"])}" target="_blank" rel="noopener noreferrer">{html.escape(_cn)} en Google Maps</a>')
+                nuevo.append('<section class="aq-sec chap' + (" alt" if len(nuevo) % 2 else "") + f'"><div class="wrap"><h2>Más sobre {html.escape(s2)} Samsung en {html.escape(lugar)}</h2><div class="city-tags">' + _int + '</div><h3 style="margin:18px 0 8px">Enlaces de interés</h3><div class="city-tags">' + "".join(_ex) + '</div></div></section>')
                 t = t[:mh0.end()] + "".join(tops) + "".join(nuevo) + t[ft:]
         # --- ids de sección + imágenes
         cnt = [0]; usadas = []

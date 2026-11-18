@@ -215,6 +215,12 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
     if not preguntas and nombre != "404.html":
         preguntas = faq_base(pk)
         cuerpo = cuerpo + faq_html(preguntas)
+    if SOLO and pk:
+        _pn = PAISES[pk]["nombre"]; _cn_ = CIU[0]["n"]
+        if titulo.endswith("| " + _pn):
+            titulo = titulo[:-len(_pn)] + _cn_
+        elif _cn_ not in titulo and "Samsung" in titulo and len(titulo) < 56:
+            titulo = titulo + " en " + _cn_
     if len(titulo) > 66:
         titulo = titulo[:66].rsplit(" ", 1)[0].rstrip(" ,:;·|-")
     if len(desc) > 160:
