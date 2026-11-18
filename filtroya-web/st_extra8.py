@@ -12,6 +12,13 @@ if SOLO:
         ("como-elegir-tecnico", "Cómo elegir un buen técnico de {s2} Samsung en {c}", "¿Cómo elijo un buen técnico para mi {s1} Samsung en {c}?", "Elige un técnico que haga el diagnóstico primero, confirme el valor antes de reparar, te explique la falla con claridad y te oriente con honestidad."),
     ]
     _TBX = {}
+    if SOLO_CFG[SOLO].get("mas"):
+        TERMS += [("limpieza", "Limpieza de {s2} Samsung en {c}", "¿Quién hace la limpieza de una {s1} Samsung en {c}?", "El técnico hace la limpieza de las partes que acumulan polvo, grasa o sarro en tu {s1} Samsung, a domicilio en {c}, y revisa que todo funcione."),
+                  ("cotizacion", "Cotización de reparación de {s2} Samsung en {c}", "¿Cómo pido una cotización para mi {s1} Samsung en {c}?", "Escribe por WhatsApp con el modelo y la falla; el técnico hace el diagnóstico a domicilio en {c} y te confirma el valor antes de reparar."),
+                  ("visita-tecnica", "Visita técnica para {s2} Samsung en {c}", "¿Cómo es la visita técnica para una {s1} Samsung en {c}?", "El técnico llega a tu casa en {c}, revisa el equipo, te explica la falla y te confirma el valor antes de reparar.")]
+    _TBX2 = {"limpieza": lambda s1, s2, k: ["Limpieza de las partes que acumulan polvo, grasa o sarro.", "Revisión de filtros, sellos y conexiones.", "Prueba del equipo después de la limpieza.", "Recomendaciones de uso para que dure más.", "Aviso de piezas con desgaste.", "Todo a domicilio, sin llevar el equipo."],
+             "cotizacion": lambda s1, s2, k: ["Envías el modelo y la falla por WhatsApp.", "El técnico hace el diagnóstico en tu casa.", "Recibes el valor de la reparación por adelantado.", "No se cambia ninguna pieza sin tu aprobación.", "Si no conviene reparar, te lo decimos con honestidad.", "Sin compromiso de reparar tras la cotización."],
+             "visita-tecnica": lambda s1, s2, k: ["Coordinas el día de la visita por WhatsApp.", "El técnico llega con herramientas de diagnóstico.", "Revisa, mide y prueba el equipo en tu casa.", "Te explica la falla con claridad.", "Te confirma el valor antes de reparar.", "Prueba el equipo contigo al terminar."]}
     if SOLO != "ibague":
         TERMS += [("centro-de-servicio", "Centro de servicio Samsung para {s2} en {c}", "¿Dónde queda el centro de servicio Samsung para {s2} en {c}?", "Atendemos a domicilio en {c}: no tienes que llevar tu {s1} Samsung a ningún lugar, el técnico va a tu casa. Somos un servicio técnico independiente."),
                   ("falla-urgente", "Qué hacer si tu {s1} Samsung falla de urgente en {c}", "¿Qué hago si mi {s1} Samsung falla de urgente en {c}?", "Desconecta el equipo si hay olor a quemado, agua o chispas, y escribe por WhatsApp con el modelo y la falla; coordinamos la visita en {c}.")]
@@ -29,6 +36,7 @@ if SOLO:
         "como-elegir-tecnico": lambda s1, s2, k: ["Que haga el diagnóstico antes de reparar.", "Que te confirme el valor antes de empezar.", "Que te explique la falla con claridad.", "Que te diga con honestidad si conviene reparar o cambiar.", "Que pruebe el equipo contigo al terminar.", "Que atienda por un canal claro, como WhatsApp."],
     }
     TERM_BLOQUE.update(_TBX)
+    TERM_BLOQUE.update(_TBX2) if "_TBX2" in globals() else None
     for _sv in SERV_PAIS[_pk]:
         _s1, _s2 = pal(_pk, _sv); S = SERVICIOS[_sv]
         for (t, h1t, qq, aa) in TERMS:

@@ -314,27 +314,34 @@ def _rel_solo(nombre, t):
 
 
 import urllib.parse
+import hashlib
 if SOLO:
     # ---- enriquecimiento final de cada página: imágenes por sección, índice «En esta página», búsquedas relacionadas, precarga de la imagen principal
     _cc = CIU[0]; _cn = _cc["n"]; _wa_ = wa_vis(_cc["pk"])
-    IMG_SV = {"nevera": ["tecnico-reparando-refrigeradora-samsung-en-cocina", "tecnico-samsung-revisando-nevera-con-la-clienta", "nevera-samsung-side-by-side-family-hub", "tecnico-reparando-nevera-samsung", "nevera-samsung-superior-inox", "cliente-con-nevera-samsung-family-hub", "familia-en-cocina-con-nevera-samsung"],
-              "lava": ["tecnico-samsung-midiendo-circuito-de-lavadora", "tecnico-samsung-reparando-lavadora-a-domicilio", "lavadora-samsung-carga-superior", "torre-de-lavado-samsung", "tecnico-samsung-visita-a-domicilio-6"],
-              "seca": ["secadora-samsung-carga-frontal", "torre-lavado-secado-samsung-apilada", "tecnico-samsung-midiendo-circuito-de-lavadora", "tecnico-samsung-visita-a-domicilio-6"],
-              "lavaplatos": ["lavavajillas-samsung-acero-inoxidable", "cocina-con-electrodomesticos-samsung", "tecnico-samsung-visita-a-domicilio-2", "tecnico-samsung-visita-a-domicilio-4"],
-              "cocina": ["estufa-samsung-4-hornillas-horno", "horno-empotrado-samsung-acero", "cocina-con-electrodomesticos-samsung", "tecnico-samsung-visita-a-domicilio-5"],
-              "micro": ["microondas-samsung-ceramic-inside", "cocina-con-electrodomesticos-samsung", "tecnico-samsung-visita-a-domicilio-3", "tecnico-samsung-visita-a-domicilio-1"],
-              "tv": ["taller-reparacion-televisores-samsung", "tecnico-samsung-visita-a-domicilio-7", "tecnico-samsung-entrega-orden-de-servicio", "atencion-al-cliente-servicio-samsung"],
-              None: ["tecnico-samsung-llegando-a-la-puerta-del-cliente", "tecnico-samsung-saluda-en-la-puerta", "tecnico-samsung-atendiendo-en-recepcion", "atencion-al-cliente-servicio-samsung", "tecnico-samsung-con-bolso-de-herramientas", "tecnico-samsung-entrega-orden-de-servicio", "asesora-servicio-tecnico-samsung-por-telefono", "cliente-en-recepcion-servicio-tecnico-samsung", "atencion-telefonica-recepcion-servicio-samsung"]}
-    IMG_DESC = {"nevera-samsung-side-by-side-family-hub": "Nevera Samsung Family Hub", "nevera-samsung-superior-inox": "Nevera Samsung de acero inoxidable", "tecnico-reparando-nevera-samsung": "Técnico revisando una nevera Samsung", "lavadora-samsung-carga-superior": "Lavadora Samsung de carga superior", "tecnico-samsung-reparando-lavadora-a-domicilio": "Técnico Samsung reparando una lavadora a domicilio",
-                "torre-de-lavado-samsung": "Torre de lavado Samsung", "secadora-samsung-carga-frontal": "Secadora Samsung de carga frontal", "torre-lavado-secado-samsung-apilada": "Torre de lavado y secado Samsung", "lavavajillas-samsung-acero-inoxidable": "Lavavajillas Samsung de acero inoxidable", "estufa-samsung-4-hornillas-horno": "Estufa Samsung con horno",
-                "horno-empotrado-samsung-acero": "Horno empotrado Samsung", "microondas-samsung-ceramic-inside": "Microondas Samsung", "taller-reparacion-televisores-samsung": "Técnico reparando la tarjeta de un televisor Samsung", "tecnico-samsung-saluda-en-la-puerta": "Técnico Samsung saludando al llegar a una visita a domicilio",
-                "atencion-al-cliente-servicio-samsung": "Atención al cliente del servicio técnico Samsung", "tecnico-samsung-entrega-orden-de-servicio": "Técnico Samsung entregando la orden de servicio", "tecnico-samsung-a-domicilio-portada": "Técnico Samsung a domicilio",
-                "atencion-telefonica-recepcion-servicio-samsung": "Asesora del servicio técnico Samsung atendiendo una llamada", "tecnico-samsung-atendiendo-en-recepcion": "Técnico Samsung atendiendo a una asesora en recepción", "tecnico-samsung-llegando-a-la-puerta-del-cliente": "Técnico Samsung saludando a una clienta en la puerta de su casa",
-                "tecnico-samsung-revisando-nevera-con-la-clienta": "Técnico Samsung revisando una nevera frente a la clienta", "cliente-en-recepcion-servicio-tecnico-samsung": "Cliente consultando en la recepción del servicio técnico Samsung", "asesora-servicio-tecnico-samsung-por-telefono": "Asesora del servicio técnico Samsung al teléfono",
-                "tecnico-samsung-midiendo-circuito-de-lavadora": "Técnico Samsung midiendo el circuito eléctrico de una lavadora", "tecnico-reparando-refrigeradora-samsung-en-cocina": "Técnico reparando el compresor de una refrigeradora Samsung en la cocina", "tecnico-diagnosticando-lavadora-samsung-a-domicilio": "Técnico diagnosticando una lavadora Samsung a domicilio",
-                "familia-en-cocina-con-nevera-samsung": "Familia en la cocina con una nevera Samsung", "cliente-con-nevera-samsung-family-hub": "Cliente junto a una nevera Samsung Family Hub", "cocina-con-electrodomesticos-samsung": "Cocina con electrodomésticos Samsung", "tecnico-samsung-con-bolso-de-herramientas": "Técnico Samsung con su bolso de herramientas", "nevera-samsung-family-hub-pantallas": "Nevera Samsung Family Hub con pantallas"}
-    for _i in range(1, 8):
-        IMG_DESC[f"tecnico-samsung-visita-a-domicilio-{_i}"] = "Técnico Samsung en visita a domicilio"
+    # Fotos por papel dentro de la página (lo que se ve coincide con lo que dice la sección)
+    IMG_ROL = {
+        "reparar": {"nevera": ["tecnico-reparando-refrigeradora-samsung-en-cocina", "tecnico-samsung-revisando-nevera-con-la-clienta", "tecnico-samsung-visita-a-domicilio-1", "tecnico-samsung-visita-a-domicilio-3", "tecnico-samsung-revisando-compresor", "tecnico-samsung-visita-a-domicilio-2", "tecnico-samsung-visita-a-domicilio-4", "tecnico-samsung-visita-a-domicilio-5", "tecnico-reparando-nevera-samsung", "tecnico-samsung-revision-en-casa"],
+                    "lava": ["tecnico-samsung-visita-a-domicilio-6", "tecnico-samsung-reparando-lavadora-a-domicilio", "tecnico-samsung-midiendo-circuito-de-lavadora"],
+                    "seca": ["tecnico-samsung-revision-en-casa", "tecnico-samsung-visita-a-domicilio-6"], "lavaplatos": ["tecnico-samsung-revision-en-casa"], "cocina": ["tecnico-samsung-revision-en-casa"], "micro": ["tecnico-samsung-revision-en-casa"],
+                    "tv": ["taller-reparacion-televisores-samsung"], None: ["tecnico-samsung-revision-en-casa", "tecnico-samsung-visita-a-domicilio-6", "tecnico-samsung-visita-a-domicilio-1"]},
+        "visita": ["tecnico-samsung-saluda-en-la-puerta", "tecnico-samsung-llegando-a-la-puerta-del-cliente", "tecnico-samsung-visita-a-domicilio-7", "tecnico-samsung-a-domicilio-portada", "tecnico-samsung-con-bolso-de-herramientas"],
+        "atencion": ["atencion-al-cliente-servicio-samsung", "tecnico-samsung-atendiendo-en-recepcion", "atencion-telefonica-recepcion-servicio-samsung", "asesora-servicio-tecnico-samsung-por-telefono", "cliente-en-recepcion-servicio-tecnico-samsung", "tecnico-samsung-entrega-orden-de-servicio"],
+        "producto": {"nevera": ["nevera-samsung-side-by-side-family-hub", "nevera-samsung-superior-inox", "cliente-con-nevera-samsung-family-hub", "familia-en-cocina-con-nevera-samsung"], "lava": ["lavadora-samsung-carga-superior", "torre-de-lavado-samsung"], "seca": ["secadora-samsung-carga-frontal", "torre-lavado-secado-samsung-apilada"],
+                     "lavaplatos": ["lavavajillas-samsung-acero-inoxidable", "cocina-con-electrodomesticos-samsung"], "cocina": ["estufa-samsung-4-hornillas-horno", "horno-empotrado-samsung-acero", "cocina-con-electrodomesticos-samsung"], "micro": ["microondas-samsung-ceramic-inside", "cocina-con-electrodomesticos-samsung"],
+                     "tv": ["taller-reparacion-televisores-samsung"], None: ["cocina-con-electrodomesticos-samsung", "familia-en-cocina-con-nevera-samsung", "cliente-con-nevera-samsung-family-hub", "nevera-samsung-side-by-side-family-hub", "lavadora-samsung-carga-superior", "secadora-samsung-carga-frontal"]},
+    }
+    IMG_DESC = {"nevera-samsung-side-by-side-family-hub": "Nevera Samsung Family Hub", "nevera-samsung-superior-inox": "Nevera Samsung de acero inoxidable", "tecnico-reparando-nevera-samsung": "Técnico revisando una nevera Samsung por la parte trasera", "lavadora-samsung-carga-superior": "Lavadora Samsung de carga superior", "tecnico-samsung-reparando-lavadora-a-domicilio": "Técnico Samsung reparando una lavadora de carga frontal a domicilio",
+                "torre-de-lavado-samsung": "Torre de lavado Samsung", "secadora-samsung-carga-frontal": "Secadora Samsung de carga frontal", "torre-lavado-secado-samsung-apilada": "Torre de lavado y secado Samsung", "lavavajillas-samsung-acero-inoxidable": "Lavavajillas Samsung de acero inoxidable", "estufa-samsung-4-hornillas-horno": "Estufa Samsung de cuatro hornillas con horno",
+                "horno-empotrado-samsung-acero": "Horno empotrado Samsung de acero", "microondas-samsung-ceramic-inside": "Microondas Samsung", "taller-reparacion-televisores-samsung": "Técnico reparando la tarjeta de un televisor Samsung en el taller", "tecnico-samsung-saluda-en-la-puerta": "Técnico Samsung saludando al cliente en la puerta al llegar a la visita",
+                "atencion-al-cliente-servicio-samsung": "Asesora atendiendo a un cliente en el mostrador del servicio técnico Samsung", "tecnico-samsung-entrega-orden-de-servicio": "Técnico entregando la orden de servicio en el mostrador del servicio Samsung", "tecnico-samsung-a-domicilio-portada": "Técnico Samsung saludando en la puerta de una casa",
+                "atencion-telefonica-recepcion-servicio-samsung": "Asesora del servicio técnico Samsung atendiendo una llamada en recepción", "tecnico-samsung-atendiendo-en-recepcion": "Técnico Samsung conversando con la asesora en la recepción", "tecnico-samsung-llegando-a-la-puerta-del-cliente": "Técnico Samsung saludando a una clienta en la puerta de su casa",
+                "tecnico-samsung-revisando-nevera-con-la-clienta": "Técnico Samsung explicando la revisión de una nevera a la clienta", "cliente-en-recepcion-servicio-tecnico-samsung": "Cliente consultando con la asesora en la recepción del servicio técnico Samsung", "asesora-servicio-tecnico-samsung-por-telefono": "Asesora del servicio técnico Samsung al teléfono",
+                "tecnico-samsung-midiendo-circuito-de-lavadora": "Técnico Samsung midiendo el circuito eléctrico de una lavadora con un multímetro", "tecnico-reparando-refrigeradora-samsung-en-cocina": "Técnico reparando el compresor de una refrigeradora Samsung en la cocina", "familia-en-cocina-con-nevera-samsung": "Familia en la cocina junto a una nevera Samsung",
+                "cliente-con-nevera-samsung-family-hub": "Cliente junto a una nevera Samsung Family Hub", "cocina-con-electrodomesticos-samsung": "Cocina con nevera, lavavajillas, horno y microondas Samsung", "tecnico-samsung-con-bolso-de-herramientas": "Técnico Samsung con su bolso de herramientas", "nevera-samsung-family-hub-pantallas": "Nevera Samsung Family Hub con pantallas",
+                "tecnico-samsung-revisando-compresor": "Técnico Samsung con herramientas revisando el compresor de una nevera", "tecnico-samsung-revision-en-casa": "Técnico Samsung concentrado en una revisión dentro de la cocina del cliente",
+                "tecnico-samsung-visita-a-domicilio-1": "Técnico Samsung revisando la parte trasera de una nevera con el cliente presente", "tecnico-samsung-visita-a-domicilio-2": "Técnico Samsung arrodillado junto a su caja de herramientas revisando una nevera",
+                "tecnico-samsung-visita-a-domicilio-3": "Técnico Samsung inspeccionando una nevera con una linterna", "tecnico-samsung-visita-a-domicilio-4": "Técnico Samsung revisando el interior de una nevera mientras el cliente observa",
+                "tecnico-samsung-visita-a-domicilio-5": "Técnico Samsung diagnosticando una nevera en la cocina", "tecnico-samsung-visita-a-domicilio-6": "Técnico Samsung midiendo el circuito de una lavadora de carga frontal", "tecnico-samsung-visita-a-domicilio-7": "Técnico Samsung saludando al cliente en la puerta"}
     def _dim(nombre_img):
         try:
             from PIL import Image as _PI
@@ -392,6 +399,12 @@ if SOLO:
             return {"home": 10, "zona": 12, "equipo": 62}.get(kind)
         if re.search(r"^Atención en", h):
             return 5
+        if re.search(r"^(Qué es|Para qué sirve)", h):
+            return 5
+        if re.search(r"^Cuándo (conviene|hay que)", h):
+            return 18
+        if re.search(r"^Qué hace el técnico", h):
+            return 30
         if kind == "equipo" and re.search(rf"^({_PLUR_RE}) Samsung en {ciudad_re}$", h):
             return 5
         if kind == "termino" and re.search(r"^Qué incluye en ", h):
@@ -462,7 +475,6 @@ if SOLO:
         barrio = next((_ZSLUG[x] for x in seg if x in _ZSLUG), None)
         sv_ = _sv_de(n2)
         lugar = barrio or _cn
-        pool = IMG_SV.get(sv_) or IMG_SV[None]
         hero = RN.get(hero_img(n), hero_img(n))
         kind = _kind(seg)
         s1 = _PAL[sv_][0] if sv_ else "electrodoméstico"; s2 = _PAL[sv_][1] if sv_ else "electrodomésticos"
@@ -509,21 +521,50 @@ if SOLO:
         # --- ids de sección + imágenes
         cnt = [0]; usadas = []
 
+        def _rol(plano):
+            if re.search(r"(?i)atenci|contacto|whatsapp|enviar|pedir|recepci", plano):
+                return "atencion"
+            if re.search(r"(?i)fallas|causas|revis|señales|diagnóstico|repar|conviene|pieza|cambio", plano):
+                return "reparar"
+            if re.search(r"(?i)cómo funciona|coordinamos|incluye|prepara|seguridad|visita|cotizaci", plano):
+                return "visita"
+            return "producto"
+
+        def _foto(rol):
+            if rol == "reparar":
+                cand = IMG_ROL["reparar"].get(sv_) or IMG_ROL["reparar"][None]
+            elif rol == "producto":
+                cand = IMG_ROL["producto"].get(sv_) or IMG_ROL["producto"][None]
+            else:
+                cand = IMG_ROL[rol]
+            off = int(hashlib.md5(n2.encode()).hexdigest()[:6], 16)
+            libres = [c for c in cand if c not in usadas]
+            if libres:
+                return libres[off % len(libres)]
+            if rol in ("reparar", "producto"):
+                libres = [c for c in IMG_ROL["visita"] if c not in usadas]
+                if libres:
+                    return libres[off % len(libres)]
+            return None
+
         def sec(m):
             cnt[0] += 1
             h2 = m.group(3)
             cls = m.group(1) or ""
             tag = f'<section class="aq-sec{cls}" id="s{cnt[0]}"><div class="wrap"><h2>{h2}</h2>'
             plano = re.sub(r"<[^>]+>", "", h2)
-            if "st-equipos" in cls or re.search(r"(?i)preguntas|faq|relacionadas|^mapa", plano) or len(usadas) >= 7 or kind == "galeria":
+            if "st-equipos" in cls or re.search(r"(?i)preguntas|faq|relacionadas|^mapa|^barrios|datos|sectores|por barrio|otros barrios|zonas cercanas|cerca de ti|otro canal|más información|más sobre|todo sobre|guías y|^en esta", plano) or len(usadas) >= 8 or kind == "galeria":
                 return tag
-            nombre_img = pool[len(usadas) % len(pool)] if len(usadas) < len(pool) else IMG_SV[None][len(usadas) % len(IMG_SV[None])]
+            nombre_img = _foto(_rol(plano))
+            if not nombre_img:
+                return tag
             usadas.append(nombre_img)
             desc = IMG_DESC.get(nombre_img, "Técnico Samsung a domicilio")
             prod = nombre_img in PROD
             alt = f"{desc} en {lugar}" + (f", {_cn}" if barrio else "")
             w_, h_ = _dim(nombre_img)
-            return tag + f'<figure class="sec-img{" prod" if prod else ""}" style="max-width:{min(w_, 420 if prod else 560)}px"><img src="img/{nombre_img}.webp" alt="{html.escape(alt, quote=True)}" width="{w_}" height="{h_}" loading="lazy" decoding="async" onerror="this.parentNode.remove()"></figure>'
+            lado = " izq" if len(usadas) % 2 == 0 else ""
+            return tag + f'<figure class="sec-img{" prod" if prod else ""}{lado}" style="max-width:{min(w_, 420 if prod else 560)}px"><img src="img/{nombre_img}.webp" alt="{html.escape(alt, quote=True)}" width="{w_}" height="{h_}" loading="lazy" decoding="async" onerror="this.parentNode.remove()"><figcaption>{html.escape(desc)}</figcaption></figure>'
         t = re.sub(r'<section class="aq-sec((?: [a-z-]+)*)"( id="[^"]*")?><div class="wrap"><h2>(.*?)</h2>', lambda m: sec(m), t)
         # --- encabezado dividido: texto + foto a su tamaño nativo
         mh = re.search(r'<section class="hero st-bg" style="--bgimg:url\(([^)]*)\)"><div class="wrap">(.*?)</div></section>', t, re.S)
