@@ -38,6 +38,7 @@ css += """
 .st-eq-btn{display:flex;gap:8px;margin-top:auto}.st-eq-btn a{flex:1;text-align:center;padding:10px 8px;font-size:13.5px}.st-eq-badge{font-size:.72rem;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:999px;padding:2px 8px;margin-left:6px;font-weight:700}
 """
 css += "\n.glos{margin:0}.glos dt{margin-top:14px}.glos dd{margin:3px 0 0;color:#445}\n"
+css += "\n.sec-img{margin:0 0 18px}.sec-img img{width:100%;max-height:260px;object-fit:cover;border-radius:16px;display:block}.sec-img.prod img{object-fit:contain;background:#fff;border:1px solid #e3e8f0;height:210px;max-width:420px}.toc{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font:600 14px Inter,sans-serif}.toc b{margin-right:6px}.toc a{color:#1428a0;text-decoration:none;border-bottom:1px dotted #1428a0}\n"
 (OUT / "tema.css").write_text(css, encoding="utf-8")
 
 

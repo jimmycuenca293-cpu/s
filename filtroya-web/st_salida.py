@@ -314,6 +314,76 @@ def _rel_solo(nombre, t):
 
 
 if SOLO:
+    # ---- enriquecimiento final de cada página: imágenes por sección, índice «En esta página», búsquedas relacionadas, precarga de la imagen principal
+    _cc = CIU[0]; _cn = _cc["n"]; _wa_ = wa_vis(_cc["pk"])
+    IMG_SV = {"nevera": ["nevera-samsung-side-by-side-family-hub-m", "tecnico-reparando-nevera-samsung", "nevera-samsung-superior-inox-m", "tecnico-samsung-revisando-compresor"],
+              "lava": ["lavadora-samsung-carga-superior-m", "tecnico-samsung-reparando-lavadora-a-domicilio", "tecnico-reparando-lavadora-samsung", "torre-de-lavado-samsung-m"],
+              "seca": ["secadora-samsung-carga-frontal-m", "torre-lavado-secado-samsung-apilada-m", "tecnico-samsung-visita-a-domicilio-6", "tecnico-samsung-revision-en-casa"],
+              "lavaplatos": ["lavavajillas-samsung-acero-inoxidable-m", "tecnico-samsung-visita-a-domicilio-2", "tecnico-samsung-revision-en-casa", "tecnico-samsung-visita-a-domicilio-4"],
+              "cocina": ["estufa-samsung-4-hornillas-horno-m", "horno-empotrado-samsung-acero-m", "tecnico-samsung-visita-a-domicilio-5", "tecnico-samsung-revision-en-casa"],
+              "micro": ["microondas-samsung-ceramic-inside-m", "tecnico-samsung-visita-a-domicilio-3", "tecnico-samsung-revision-en-casa", "tecnico-samsung-visita-a-domicilio-1"],
+              "tv": ["taller-reparacion-televisores-samsung", "tecnico-samsung-visita-a-domicilio-7", "tecnico-samsung-revision-en-casa", "tecnico-samsung-entrega-orden-de-servicio"],
+              None: ["tecnico-samsung-saluda-en-la-puerta", "atencion-al-cliente-servicio-samsung", "tecnico-samsung-entrega-orden-de-servicio", "tecnico-samsung-a-domicilio-portada", "tecnico-samsung-revision-en-casa", "tecnico-samsung-visita-a-domicilio-1", "tecnico-samsung-visita-a-domicilio-4"]}
+    IMG_DESC = {"nevera-samsung-side-by-side-family-hub-m": "Nevera Samsung Family Hub", "nevera-samsung-superior-inox-m": "Nevera Samsung de acero inoxidable", "tecnico-reparando-nevera-samsung": "Técnico revisando una nevera Samsung", "tecnico-samsung-revisando-compresor": "Técnico revisando el compresor de una nevera Samsung",
+                "lavadora-samsung-carga-superior-m": "Lavadora Samsung de carga superior", "tecnico-samsung-reparando-lavadora-a-domicilio": "Técnico Samsung reparando una lavadora a domicilio", "tecnico-reparando-lavadora-samsung": "Técnico revisando una lavadora Samsung", "torre-de-lavado-samsung-m": "Torre de lavado Samsung",
+                "secadora-samsung-carga-frontal-m": "Secadora Samsung de carga frontal", "torre-lavado-secado-samsung-apilada-m": "Torre de lavado y secado Samsung", "lavavajillas-samsung-acero-inoxidable-m": "Lavavajillas Samsung de acero inoxidable",
+                "estufa-samsung-4-hornillas-horno-m": "Estufa Samsung con horno", "horno-empotrado-samsung-acero-m": "Horno empotrado Samsung", "microondas-samsung-ceramic-inside-m": "Microondas Samsung", "taller-reparacion-televisores-samsung": "Técnico reparando la tarjeta de un televisor Samsung",
+                "tecnico-samsung-saluda-en-la-puerta": "Técnico Samsung saludando al llegar a una visita a domicilio", "atencion-al-cliente-servicio-samsung": "Atención al cliente del servicio técnico Samsung", "tecnico-samsung-entrega-orden-de-servicio": "Técnico Samsung entregando la orden de servicio",
+                "tecnico-samsung-a-domicilio-portada": "Técnico Samsung a domicilio", "tecnico-samsung-revision-en-casa": "Técnico Samsung haciendo una revisión en casa"}
+    for _i in range(1, 8):
+        IMG_DESC[f"tecnico-samsung-visita-a-domicilio-{_i}"] = "Técnico Samsung en visita a domicilio"
+    _PAL = {sv_: (pal(_cc["pk"], sv_)[0], pal(_cc["pk"], sv_)[1]) for sv_ in SERV_PAIS[_cc["pk"]]}
+    _WORDS = sorted([(slug(w), sv_) for sv_, (a_, b_) in _PAL.items() for w in {a_, b_}] + [("estufa", "cocina"), ("horno", "cocina"), ("televisor", "tv"), ("lavavajillas", "lavaplatos"), ("lavaplatos", "lavaplatos")], key=lambda x: -len(x[0]))
+    _ZSLUG = {slug(z): z for z in _cc["zonas"]}
+    _sv_de = lambda n: next((sv_ for w, sv_ in _WORDS if w in n and sv_ in _PAL), None)
+    _TOC_N = 9
+
+    def _enriquecer(n, t):
+        n2 = solo_ruta(n)
+        seg = [x for x in n2.split("/") if x and x != "index.html"]
+        barrio = next((_ZSLUG[x] for x in seg if x in _ZSLUG), None)
+        sv_ = _sv_de(n2)
+        lugar = barrio or _cn
+        pool = IMG_SV.get(sv_) or IMG_SV[None]
+        hero = RN.get(hero_img(n), hero_img(n))
+        # ids de sección + imágenes
+        cnt = [0]; usadas = []
+
+        def sec(m):
+            cnt[0] += 1
+            h2 = m.group(3)
+            tag = f'<section class="aq-sec{m.group(1) or ""}" id="s{cnt[0]}"><div class="wrap"><h2>{h2}</h2>'
+            plano = re.sub(r"<[^>]+>", "", h2)
+            if re.search(r"(?i)preguntas|faq", plano) or len(usadas) >= 7:
+                return tag
+            nombre_img = pool[len(usadas) % len(pool)] if len(usadas) < len(pool) else IMG_SV[None][len(usadas) % len(IMG_SV[None])]
+            usadas.append(nombre_img)
+            desc = IMG_DESC.get(nombre_img, "Técnico Samsung a domicilio")
+            prod = nombre_img.endswith("-m")
+            alt = f"{desc} en {lugar}" + (f", {_cn}" if barrio else "")
+            return tag + f'<figure class="sec-img{" prod" if prod else ""}"><img src="img/{nombre_img}.webp" alt="{html.escape(alt, quote=True)}" width="{460 if prod else 1024}" height="{460 if prod else 572}" loading="lazy" decoding="async"></figure>'
+        t = re.sub(r'<section class="aq-sec( alt)?"( id="[^"]*")?><div class="wrap"><h2>(.*?)</h2>', lambda m: sec(m), t)
+        # índice «En esta página»
+        hs = re.findall(r'<section class="aq-sec[^"]*" id="(s\d+)"><div class="wrap"><h2>(.*?)</h2>', t)
+        if len(hs) >= 4:
+            toc = '<nav class="toc" aria-label="En esta página"><b>En esta página</b>' + "".join(f'<a href="#{i_}">{re.sub(r"<[^>]+>", "", h_)}</a>' for i_, h_ in hs[:_TOC_N]) + "</nav>"
+            t = re.sub(r'(<section class="aq-qa-sec">.*?</section>)', lambda m: m.group(1) + f'<section class="aq-sec"><div class="wrap">{toc}</div></section>', t, count=1, flags=re.S)
+        # búsquedas relacionadas
+        s1 = _PAL[sv_][0] if sv_ else "electrodoméstico"; s2 = _PAL[sv_][1] if sv_ else "electrodomésticos"
+        fr = [f"servicio técnico Samsung {lugar}", f"técnico de {s2} Samsung {lugar}", f"reparación de {s2} Samsung a domicilio {lugar}", f"{s1} Samsung no funciona {lugar}", f"mantenimiento de {s2} Samsung {lugar}", f"cuánto cuesta reparar {s1} Samsung {lugar}",
+              f"técnico Samsung cerca de mí {lugar}", f"WhatsApp servicio técnico Samsung {_cn}", f"teléfono servicio técnico Samsung {_cn}", f"repuestos para {s2} Samsung {_cn}", f"garantía de {s1} Samsung {_cn}", f"{s2} Samsung {_cn} a domicilio"]
+        rel = '<section class="aq-sec alt"><div class="wrap"><h2>Búsquedas relacionadas en ' + html.escape(lugar) + '</h2><div class="city-tags">' + "".join(f"<span>{html.escape(f_)}</span>" for f_ in fr) + f'<a href="{R_WA(_cc)}">WhatsApp {html.escape(_wa_)}</a></div></div></section>'
+        if '<footer class="aq-f">' in t and n2 != "404.html":
+            t = t.replace('<footer class="aq-f">', rel + '<footer class="aq-f">', 1)
+        # precarga de la imagen principal y imagen en los datos estructurados
+        t = t.replace("</head>", f'<link rel="preload" as="image" href="img/{hero}.webp" fetchpriority="high"></head>', 1)
+        t = t.replace('{"@type": "WebPage",', f'{{"@type": "WebPage", "primaryImageOfPage": {{"@type": "ImageObject", "url": "{DOMINIO}/img/{hero}.webp"}},', 1)
+        return t
+    for _n, *_r in PAGINAS:
+        _f = OUT / _n
+        _f.write_text(_enriquecer(_n, _f.read_text(encoding="utf-8")), encoding="utf-8")
+
+if SOLO:
     import os as _os
     _nuevos = []
     for _n, *_r in PAGINAS:
