@@ -168,8 +168,8 @@ RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
   ExpiresActive On
   ExpiresByType image/webp "access plus 1 year"
   ExpiresByType image/png "access plus 1 year"
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
   ExpiresByType text/html "access plus 1 hour"
 </IfModule>
 <IfModule mod_headers.c>
@@ -470,4 +470,29 @@ else:
     for _n in [n for n, *_ in PAGINAS]:
         _f = OUT / _n
         _f.write_text(_rel(_n, _f.read_text(encoding="utf-8")), encoding="utf-8")
+
+# ---- versión por contenido en CSS y JS: si cambia un archivo, el navegador lo descarga de nuevo aunque lo tenga guardado
+import hashlib as _hl2, posixpath as _pp
+_attr_v = re.compile(r'(href|src)="([^"#?]*?(?:tema\.css|buscar\.js|solicitar\.js|geo\.js))(?:\?v=[\w]+)?"')
+_hcache = {}
+
+
+def _vh(path):
+    if path not in _hcache:
+        _hcache[path] = _hl2.md5(path.read_bytes()).hexdigest()[:8] if path.exists() else ""
+    return _hcache[path]
+
+
+for _n in [n for n, *_ in PAGINAS]:
+    _f = OUT / _n
+    _base = _pp.dirname(_n)
+    _t = _f.read_text(encoding="utf-8")
+
+    def _sub(m):
+        _dest = OUT / _pp.normpath(_pp.join(_base, m.group(2)))
+        _h = _vh(_dest)
+        return f'{m.group(1)}="{m.group(2)}?v={_h}"' if _h else m.group(0)
+    _t2 = _attr_v.sub(_sub, _t)
+    if _t2 != _t:
+        _f.write_text(_t2, encoding="utf-8")
 print(f"listo: {OUT} · {len(PAGINAS)} páginas · {len(CIU)} ciudades · {len(PAISES)} países")
