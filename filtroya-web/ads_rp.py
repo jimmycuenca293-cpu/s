@@ -55,15 +55,28 @@ for r in csv.DictReader(open(RP / "catalogo.csv", encoding="utf-8-sig")):
     if not origen.exists():
         continue      # sin foto real no se publica
     pid = sku.lower()
+    from PIL import ImageFilter
     im = Image.open(origen).convert("RGBA")
-    im.save(OUT / "img" / f"p-{pid}.webp", "WEBP", quality=90, method=6)
-    im.resize((480, 480), Image.LANCZOS).save(OUT / "img" / f"p-{pid}-480.webp", "WEBP", quality=82, method=6)
+    if im.width < 1200:   # protectores de 800 px: se amplían con nitidez para el zoom
+        _a = im.getchannel("A"); _rgb = im.convert("RGB").resize((1200, 1200), Image.LANCZOS).filter(ImageFilter.UnsharpMask(radius=1.6, percent=90, threshold=2))
+        im = _rgb.convert("RGBA"); im.putalpha(_a.resize((1200, 1200), Image.LANCZOS))
+    im.save(OUT / "img" / f"p-{pid}.webp", "WEBP", quality=92, method=6)
+    im.resize((480, 480), Image.LANCZOS).save(OUT / "img" / f"p-{pid}-480.webp", "WEBP", quality=84, method=6)
+    sys.path.insert(0, str(AQUI / "tienda"))
+    import quitar_fondo as _qf
+    extras = []
+    for _n, _f in enumerate([x.strip() for x in r.get("fotos_extra", "").split("|") if x.strip()], start=2):
+        _src = RP / "fotos" / pathlib.Path(_f).name
+        if _src.exists():
+            _qf.procesar(str(_src), str(OUT / "img" / f"p-{pid}-a{_n}.webp"))
+            extras.append(f"img/p-{pid}-a{_n}.webp")
     precio = int(r["precio_venta"]) if r["precio_venta"].strip().isdigit() else None
     marca_eq = r["marca_equipo"].strip()
     _eqs = [e.strip() for e in r["equipo"].split("|") if e.strip()]
     p = dict(id=pid, sku=sku, ref=r["referencia"].strip() or sku, nombre=r["nombre"].strip(), equipo=_eqs[0], equipos_l=_eqs, equipo_txt=", ".join(e.lower() for e in _eqs[:-1]) + (" y " if len(_eqs) > 1 else "") + _eqs[-1].lower() if len(_eqs) > 1 else _eqs[0], equipo_s=slug(_eqs[0]), categoria=r["categoria"].strip(), cat_s=slug(r["categoria"]),
              marca_eq=marca_eq, marca_s=slug(marca_eq), marca_prod=r["marca_producto"].strip(), modelos=[m.strip() for m in r["modelos_compatibles"].split(",") if m.strip()], precio=precio, link=os.environ.get("WOMPI_" + sku.replace("-", "_"), ""),
-             desc=r["descripcion"].strip(), img=f"img/p-{pid}.webp", slug=slug(r["nombre"]), espec=ESPEC_PV.get(sku), extra=EXTRA_PV.get(sku, []))
+             desc=r["descripcion"].strip(), img=f"img/p-{pid}.webp", slug=slug(r["nombre"]), espec=ESPEC_PV.get(sku), extra=EXTRA_PV.get(sku, []), extras=extras)
+    assert "costo" not in p["desc"].lower(), f"La descripción pública de {sku} menciona el costo; muévela a estado_datos"
     p["url"] = p["slug"] + ".html"
     p["corto"] = p["nombre"]
     p["resumen"] = p["desc"] if p["desc"] and not p["desc"].startswith("Precio vigente") else f"{p['nombre']}."
@@ -146,6 +159,9 @@ if os.environ.get("HOJA_CLAVE"):
     (api / "config.php").write_text(cfg, encoding="utf-8")
 shutil.copy(SRC / "estilo.css", OUT / "estilo.css")
 shutil.copy(SRC / "carrito.js", OUT / "carrito.js")
+_cj = (OUT / "carrito.js").read_text(encoding="utf-8").replace('if (b.dataset.ir) { location.href = "/carrito.php"; return; }', 'if (b.dataset.ir) { location.href = "/carrito.php" + (b.dataset.pago === "cod" ? "?pago=cod" : ""); return; }')
+assert "pago=cod" in _cj
+(OUT / "carrito.js").write_text(_cj, encoding="utf-8")
 for f in ("carrito.php", "gracias.php", "admin.php", "diagnostico.php", "terminos.php", "privacidad.php", "garantia-y-retracto.php", "opinion.php"):
     shutil.copy(SRC / f, OUT / f)
 c = (OUT / "carrito.php").read_text(encoding="utf-8")
@@ -332,7 +348,7 @@ def tarjeta(p, k=None):
     elif p["ref"] != p["sku"]:
         feat.append("Ref. " + p["ref"])
     if p["precio"]:
-        pie_t = f'<div class="tf-pr">{cop(p["precio"])}<small>COP · envío gratis</small></div><button type="button" class="tf-add" data-add="{p["id"]}">🛒 Agregar al carrito</button>'
+        pie_t = f'<div class="tf-pr">{cop(p["precio"])}<small>COP · envío gratis</small></div><button type="button" class="tf-add" data-add="{p["id"]}">🛒 Agregar al carrito</button><button type="button" class="tf-cod" data-add="{p["id"]}" data-ir="1" data-pago="cod">🚚 Pagar contra entrega</button>'
     else:
         pie_t = f'<div class="tf-pr" style="font-size:1.1rem">Consulta el precio</div><a class="tf-add" style="text-align:center;text-decoration:none;display:block" href="{wa_pieza(p)}" rel="noopener">Consultar por WhatsApp</a>'
     return (f'<article class="tf-card"><a class="tf-img" href="{p["url"]}" aria-label="{esc(p["nombre"])}"><img src="{p["img"][:-5]}-480.webp" alt="{esc(p["nombre"])}" width="480" height="480" loading="lazy"></a>'

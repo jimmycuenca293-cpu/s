@@ -6,7 +6,7 @@ import sys, os
 from collections import deque
 from PIL import Image, ImageFilter
 UMBRAL = 246  # qué tan blanco debe ser un píxel para contarse como fondo
-def procesar(ruta, destino, lado=800):
+def procesar(ruta, destino, lado=1200):
     im = Image.open(ruta).convert("RGB"); w, h = im.size; px = im.load()
     fondo = [[False] * w for _ in range(h)]
     q = deque()
@@ -29,7 +29,10 @@ def procesar(ruta, destino, lado=800):
     out = im.convert("RGBA"); out.putalpha(mask)
     bb = out.getbbox()
     if bb: out = out.crop(bb)
-    s = int(lado * 0.86); out.thumbnail((s, s), Image.LANCZOS)
+    s = int(lado * 0.88); e = s / max(out.size)
+    out = out.resize((max(1, round(out.width * e)), max(1, round(out.height * e))), Image.LANCZOS)
+    if e > 1:
+        rgb = out.convert("RGB").filter(ImageFilter.UnsharpMask(radius=1.6, percent=90, threshold=2)); rgb.putalpha(out.getchannel("A")); out = rgb
     lienzo = Image.new("RGBA", (lado, lado), (0, 0, 0, 0))
     lienzo.paste(out, ((lado - out.width) // 2, (lado - out.height) // 2), out)
     lienzo.save(destino)

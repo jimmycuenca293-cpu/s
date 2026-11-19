@@ -9,8 +9,60 @@ HAY_PRESO = any(p_["categoria"] == "Presostatos" for p_ in PS)
 PREG_PV = {}
 
 
-def galeria_html(p):
-    return '<div class="gal" data-gal><div class="gal-main"><img decoding="async" src="' + p["img"] + '" alt="' + esc(p["nombre"]) + '" width="520" height="520"></div></div>'
+GAL_CSS = """
+.g2{display:grid;gap:12px}.g2-main{position:relative;overflow:hidden;border-radius:20px;background:linear-gradient(160deg,#eef3ff,#dfe8fb);aspect-ratio:1;cursor:zoom-in;touch-action:manipulation}
+.g2-main img{width:100%;height:100%;object-fit:contain;display:block;transition:transform .18s ease-out;will-change:transform}.g2-main.z{cursor:zoom-out}.g2-main.z img{transform:scale(2.2)}
+.g2-lupa{position:absolute;right:12px;bottom:12px;background:#fff;border-radius:999px;padding:6px 12px;font:700 12px Inter,sans-serif;color:#1428a0;box-shadow:0 4px 12px rgba(0,0,0,.15);pointer-events:none}
+.g2-th{display:flex;gap:10px;flex-wrap:wrap}.g2-th button{width:84px;height:84px;border-radius:12px;border:2px solid #dbe3f5;background:#fff;padding:4px;cursor:pointer}.g2-th button[aria-selected=true]{border-color:#1428a0;box-shadow:0 0 0 3px rgba(20,40,160,.15)}.g2-th img{width:100%;height:100%;object-fit:contain;display:block}
+.g2-tip{margin:0;font-size:13px;color:#5b6478}
+.pay2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}.pay2 .btn{width:100%;justify-content:center;align-items:center;flex-direction:column;gap:2px;min-height:58px;font-size:1rem;text-align:center}.pay2 .btn small{display:block;font-weight:500;font-size:.72rem;opacity:.85}
+.btn.cod{background:#fff;color:#0f1f80;border:2px solid #1428a0}.btn.cod:hover{background:#eef2ff}.pay2-sec{margin:10px 0 0}.pay2-sec button{background:none;border:0;color:#1428a0;font:600 .95rem Inter,sans-serif;cursor:pointer;text-decoration:underline;padding:0}
+.tf-cod{width:auto;margin:8px 20px 0;padding:13px;border-radius:99px;border:2px solid #1428a0;background:#fff;color:#0f1f80;font:700 .95rem Inter,sans-serif;cursor:pointer}.tf-cod:hover{background:#eef2ff}
+@media(max-width:560px){.pay2{grid-template-columns:1fr}.g2-th button{width:68px;height:68px}}
+"""
+(OUT / "tema.css").write_text((OUT / "tema.css").read_text(encoding="utf-8") + GAL_CSS, encoding="utf-8")
+GAL_JS = ("<script>(function(){document.querySelectorAll('[data-g2]').forEach(function(g){var m=g.querySelector('.g2-main'),i=m.querySelector('img');"
+          "g.querySelectorAll('.g2-th button').forEach(function(b){b.addEventListener('click',function(){g.querySelectorAll('.g2-th button').forEach(function(x){x.setAttribute('aria-selected','false')});b.setAttribute('aria-selected','true');i.src=b.dataset.src;i.alt=b.dataset.alt;m.classList.remove('z');i.style.transformOrigin='50% 50%'})});"
+          "function o(e){var r=m.getBoundingClientRect(),t=e.touches?e.touches[0]:e;i.style.transformOrigin=((t.clientX-r.left)/r.width*100)+'% '+((t.clientY-r.top)/r.height*100)+'%'}"
+          "m.addEventListener('mouseenter',function(){if(matchMedia('(hover:hover)').matches)m.classList.add('z')});m.addEventListener('mouseleave',function(){m.classList.remove('z')});m.addEventListener('mousemove',o);"
+          "m.addEventListener('click',function(e){if(!matchMedia('(hover:hover)').matches){o(e);m.classList.toggle('z')}});})})();</script>")
+
+
+def ficha_img(p, filas):
+    from PIL import Image as _I, ImageDraw as _D, ImageFont as _F
+    B = "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"; R = "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf"
+    W = 1200; im = _I.new("RGB", (W, W), "#f2f6ff"); d = _D.Draw(im)
+    d.rectangle((0, 0, W, 210), fill="#1428a0"); fb = _F.truetype(B, 46); fr = _F.truetype(R, 34); fk = _F.truetype(B, 30)
+    t = p["nombre"]; lineas = []; actual = ""
+    for w in t.split():
+        if d.textlength(actual + " " + w, font=fb) > W - 120 and actual:
+            lineas.append(actual); actual = w
+        else:
+            actual = (actual + " " + w).strip()
+    lineas.append(actual)
+    y = 36
+    for l in lineas[:3]:
+        d.text((60, y), l, fill="white", font=fb); y += 56
+    d.text((60, 172), "Ficha técnica", fill="#ffc21a", font=fk)
+    y = 250
+    for a, b in filas[:9]:
+        d.rounded_rectangle((50, y, W - 50, y + 84), radius=16, fill="white" if (y // 90) % 2 else "#e8eeff")
+        d.text((80, y + 24), a, fill="#1428a0", font=fk)
+        v = b if d.textlength(b, font=fr) < 560 else b[:36] + "…"
+        d.text((560, y + 22), v, fill="#14213d", font=fr); y += 92
+    if y < 860:
+        _f = _I.open(OUT / "img" / f"p-{p['id']}.webp").convert("RGBA"); _f.thumbnail((300, 300)); im.paste(_f, (W - 360, y + 10), _f)
+    d.text((60, W - 70), "Envío a toda Colombia · Pago con Wompi o contra entrega", fill="#5b6478", font=_F.truetype(R, 30))
+    im.save(OUT / "img" / f"p-{p['id']}-ficha.webp", "WEBP", quality=88, method=6)
+
+
+def galeria_html(p, filas=None):
+    fotos = [(p["img"], p["nombre"])] + [(x, f"{p['nombre']}, otra vista") for x in p["extras"]]
+    if filas:
+        ficha_img(p, filas); fotos.append((f"img/p-{p['id']}-ficha.webp", f"Ficha técnica de {p['nombre']}"))
+    th = "".join(f'<button type="button" aria-selected="{"true" if i == 0 else "false"}" data-src="{s}" data-alt="{esc(a)}" aria-label="{esc(a)}"><img src="{s}" alt="" loading="lazy"></button>' for i, (s, a) in enumerate(fotos))
+    return (f'<div class="g2" data-g2><div class="g2-main"><img decoding="async" src="{fotos[0][0]}" alt="{esc(fotos[0][1])}" width="1200" height="1200"><span class="g2-lupa">🔍 Pasa el mouse para ampliar</span></div>'
+            f'<div class="g2-th">{th}</div><p class="g2-tip">Toca la foto para acercarla. Cambia de imagen con las miniaturas.</p></div>')
 
 
 def wa_pieza(p):
@@ -43,6 +95,7 @@ _partes = _src_lg.split('(OUT / "partes.php").write_text(r"""')[1].split('""".re
 _c = (OUT / "carrito.php").read_text(encoding="utf-8")
 _c = re.sub(r'Busca el filtro de tu nevecón por la referencia o por[^<]*', 'Elige los repuestos que necesitas para tu lavadora o tu nevera.', _c)
 _c = re.sub(r'(<label)([^>]*>(?:(?!</label>).)*Recuérdame por correo cuando toque cambiar el filtro)', r'\1 hidden\2', _c, flags=re.S)
+_c = _c.replace('let entrega = null, pago = "linea";', 'let entrega = null, pago = new URLSearchParams(location.search).get("pago") === "cod" ? "cod" : "linea";')
 _c = _c.replace('${n === 1 ? "filtro" : "filtros"}', '${n === 1 ? "repuesto" : "repuestos"}').replace('Modelo del nevecón <i>(opcional)</i>', 'Modelo de tu equipo <i>(opcional)</i>').replace('Nos ayuda a confirmar que le sirve', 'Ej.: WA13J5710SG o RT38K5930S8')
 _c = _c.replace('Ver todos los filtros', 'Ver los repuestos').replace('href="/tienda/"', 'href="/index.html#repuestos"')
 (OUT / "carrito.php").write_text(_c, encoding="utf-8")
@@ -79,7 +132,7 @@ hero = ('<section class="aq-hero" id="inicio"><div class="wrap"><div><span class
         '<div class="aq-trust"><span>Envío a toda Colombia</span><span>Pago seguro Wompi</span><span>Contra entrega</span><span>5 días de retracto</span></div></div>' + stage + '</div></section>')
 tiles_eq = "".join(f'<a class="aq-tile" href="{R_EQ(eq)}"><b>Repuestos para {esc(eq.lower())}</b><p>{conteo(eq)} repuesto{"s" if conteo(eq) > 1 else ""}: {esc(", ".join(c.lower() for c in EQUIPOS[eq]))}.</p></a>' for eq in EQ_LISTA)
 sec_eq = seccion("Compra por equipo", f'<div class="aq-tiles">{tiles_eq}</div>', sub="Elige tu electrodoméstico y mira solo lo que le sirve.")
-estante = seccion("Repuestos disponibles", '<div class="tf-grid">' + "".join(tarjeta(p) for p in PS[:6]) + "</div>").replace('<section class="aq-sec">', '<section class="aq-sec estante-top" id="repuestos">', 1)
+estante = seccion("Repuestos disponibles", '<div class="tf-grid">' + "".join(tarjeta(p) for p in PS) + "</div>").replace('<section class="aq-sec">', '<section class="aq-sec estante-top" id="repuestos">', 1)
 cats = [(eq, c, len(v)) for eq, cs in EQUIPOS.items() for c, v in cs.items()]
 sec_cat = seccion("Busca por tipo de pieza", '<div class="city-tags">' + "".join(f'<a href="{R_CAT(eq, c)}">{esc(c)} para {esc(eq.lower())} ({n})</a>' for eq, c, n in cats) + "</div>", alt=True)
 sec_marca = seccion("Repuestos por marca de electrodoméstico", '<div class="city-tags">' + "".join(f'<a href="marca-{slug(m)}.html">Repuestos {esc(m)}</a>' for m in MARCAS_EQ) + "</div><p class=\"note\" style=\"margin-top:14px\">¿No ves tu marca? Escríbenos con el modelo y te decimos si tenemos la pieza.</p>")
@@ -96,7 +149,7 @@ FAQ_HOME = [("¿Cómo sé qué repuesto necesita mi lavadora?", "Mira el modelo 
 ld_home = [{"@type": "ItemList", "name": "Repuestos de línea blanca", "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": ld_producto(p)} for i, p in enumerate(PS)]}]
 pagina("index.html", "Repuestos de Línea Blanca | Lavadoras y Neveras | Envío a Colombia", f"Repuestos para lavadoras y neveras: {CATS_TXT} con foto, precio y compatibilidad. Paga con Wompi o contra entrega. Envío a toda Colombia.",
        "repuestos linea blanca, repuestos lavadoras, repuestos neveras, mangueras lavadora, protector de voltaje, repuestos contra entrega, comprar repuestos lavadora",
-       [("Inicio", None)], hero + sec_eq.replace('<div class="aq-tiles">','<div class="aq-tiles eqt">') + estante + sec_cat + sec_marca + qa_home + confianza + seccion("Cómo comprar en 4 pasos", pasos, alt=True) + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=dest[0]["img"])
+       [("Inicio", None)], hero + estante + confianza + sec_eq.replace('<div class="aq-tiles">','<div class="aq-tiles eqt">') + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=dest[0]["img"])
 
 # ---------------------------------------------------------------- páginas por equipo, tipo de pieza y marca
 def filtros_html(eq):
@@ -154,11 +207,12 @@ for p in PS:
             ("¿Puedo pagar contra entrega?", FPAGO), ("¿Hacen envíos a toda Colombia?", "Sí, por transportadora; el tiempo se confirma al hacer el pedido."), ("¿Hay retracto?", "Sí, 5 días hábiles desde la entrega, con el producto sin usar ni instalar.")]
     if pv:
         preg.append(("¿Sirve para equipos de 220 V?", "No. Este protector es de 110 VAC."))
-    botones = ('<button type="button" class="btn btn-solid" data-add="' + p["id"] + '">🛒 Agregar al carrito</button><button type="button" class="btn" data-add="' + p["id"] + '" data-ir="1">Comprar ahora</button>') if p["precio"] else f'<a class="btn btn-solid" href="{wa_pieza(p)}" rel="noopener">Consultar precio por WhatsApp</a>'
+    botones = (f'<div class="pay2"><button type="button" class="btn btn-solid" data-add="{p["id"]}" data-ir="1">💳 Comprar ahora<small>Pago en línea · Wompi</small></button><button type="button" class="btn cod" data-add="{p["id"]}" data-ir="1" data-pago="cod">🚚 Pago contra entrega<small>Pagas al recibir</small></button></div>'
+               f'<p class="pay2-sec"><button type="button" data-add="{p["id"]}">🛒 Agregar al carrito y seguir comprando</button></p>') if p["precio"] else f'<a class="btn btn-solid" href="{wa_pieza(p)}" rel="noopener">Consultar precio por WhatsApp</a>'
     cuerpo = (f'<section class="hero hero-prod"><div class="wrap hero-grid"><div><span class="kicker">{esc(p["categoria"])} · {esc(p["equipo_txt"])}</span><h1>{esc(p["nombre"])}</h1>'
               f'<p class="sub" style="margin-top:16px;">{esc(p["resumen"])}</p>' + (f'<div class="hero-price">{cop(p["precio"])} <small>COP · envío gratis</small></div>' if p["precio"] else '<div class="hero-price" style="font-size:1.6rem">Consulta el precio</div>')
-              + f'<div class="hero-cta">{botones}</div><p class="sub" style="margin-top:14px"><a href="{wa_pieza(p)}" rel="noopener">¿Dudas con tu modelo? Escríbenos →</a></p></div>{galeria_html(p)}</div></section>'
-              + qa_p + seccion("Especificaciones", ficha) + faq_html(preg) + (seccion("Otros repuestos para " + p["equipo"].lower(), '<div class="tf-grid">' + "".join(tarjeta(x) for x in otros) + "</div>", alt=True) if otros else ""))
+              + f'<div class="hero-cta">{botones}</div><p class="sub" style="margin-top:14px"><a href="{wa_pieza(p)}" rel="noopener">¿Dudas con tu modelo? Escríbenos →</a></p></div>{galeria_html(p, filas)}</div></section>'
+              + qa_p + seccion("Especificaciones", ficha) + faq_html(preg) + (seccion("Otros repuestos para " + p["equipo"].lower(), '<div class="tf-grid">' + "".join(tarjeta(x) for x in otros) + "</div>", alt=True) if otros else "") + GAL_JS)
     pagina(p["url"], f"{p['nombre']}" + (f" | {cop(p['precio'])}" if p["precio"] else " | Consulta el precio"), f"{p['nombre']}: {p['resumen'][:90].rstrip('. ')}. " + (f"{cop(p['precio'])}, envío gratis y pago contra entrega." if p["precio"] else "Consulta el precio por WhatsApp."),
            f"{p['nombre'].lower()}, {p['categoria'].lower()} {p['equipo'].lower()}, comprar {p['categoria'].lower()}", [("Inicio", "index.html"), (f"Repuestos para {p['equipo'].lower()}", R_EQ(p["equipo"])), (p["nombre"], None)], cuerpo, preg, [ld_producto(p)], prio="0.9", og=p["img"])
 
@@ -200,6 +254,13 @@ ll += ["", "## Ayuda"] + [f"- [{t}]({DOMINIO}/{u})" for t, u in ARTS_BASE]
 (OUT / ".htaccess").write_text("DirectoryIndex index.html index.php\nErrorDocument 404 /404.html\nOptions -Indexes\nRewriteEngine On\nRewriteCond %{HTTPS} off\nRewriteCond %{HTTP:X-Forwarded-Proto} !https\nRewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]\n"
                                "RewriteCond %{HTTP_HOST} ^www\\.(.+)$ [NC]\nRewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]\n<FilesMatch \"\\.(sqlite|sqlite-wal|sqlite-shm|log)$\">\n  Require all denied\n</FilesMatch>\n"
                                "<IfModule mod_expires.c>\nExpiresActive On\nExpiresByType image/webp \"access plus 1 month\"\nExpiresByType text/css \"access plus 1 week\"\n</IfModule>\n", encoding="utf-8")
+for _f in list(OUT.glob("*.html")) + list(OUT.glob("*.php")) + list(OUT.glob("*.css")):
+    _t = _f.read_text(encoding="utf-8")
+    _t2 = _t.replace("family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700", "family=Inter:wght@400;500;600;700;800").replace("Bricolage Grotesque", "Inter")
+    if _f.name == "tema.css":
+        _t2 += "h1,h2,h3,h4{letter-spacing:-.025em;font-weight:800}.tf-b h3{font-weight:700;letter-spacing:-.01em}"
+    if _t2 != _t:
+        _f.write_text(_t2, encoding="utf-8")
 print(f"listo: {OUT} · {len(PAGINAS)} páginas · {len(PS)} repuestos")
 _V = {}
 for _f in ("tema.css", "buscar.js", "carrito.js", "pasarela.css", "estilo.css"):
