@@ -155,8 +155,13 @@ if os.environ.get("CORREO_AVISOS"):
 if os.environ.get("SMTP_CLAVE"):
     cfg = cfg.replace("'clave'   => '',", f"'clave'   => '{os.environ['SMTP_CLAVE']}',", 1)
 (api / "config.sample.php").write_text(cfg, encoding="utf-8")
+(OUT / "filtrosnevecones-marca.json").write_text('{"clase":"rl"}', encoding="utf-8")   # los pedidos de esta tienda empiezan por RL-
 if os.environ.get("HOJA_CLAVE"):
-    (api / "config.php").write_text(cfg, encoding="utf-8")
+    _w = cfg
+    for _a, _b in (("pub_test_XXXXXXXXXXXXXXXX", "WOMPI_PUBLIC"), ("test_integrity_XXXXXXXXXXXXXXXX", "WOMPI_INTEGRIDAD"), ("test_events_XXXXXXXXXXXXXXXX", "WOMPI_EVENTOS")):
+        if os.environ.get(_b):
+            _w = _w.replace(_a, os.environ[_b], 1)
+    (api / "config.php").write_text(_w, encoding="utf-8")
 shutil.copy(SRC / "estilo.css", OUT / "estilo.css")
 shutil.copy(SRC / "carrito.js", OUT / "carrito.js")
 _cj = (OUT / "carrito.js").read_text(encoding="utf-8").replace('if (b.dataset.ir) { location.href = "/carrito.php"; return; }', 'if (b.dataset.ir) { location.href = "/carrito.php" + (b.dataset.pago === "cod" ? "?pago=cod" : ""); return; }')
