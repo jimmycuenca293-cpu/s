@@ -45,6 +45,8 @@ PS = []
 (OUT / "img").mkdir(parents=True)
 for r in csv.DictReader(open(RP / "catalogo.csv", encoding="utf-8-sig")):
     sku = r["sku"]
+    if r.get("publicar", "si").strip().lower() != "si":
+        continue      # pausado en el catálogo
     if sku in FOTO_PV:
         origen = BM / "img" / f"{FOTO_PV[sku]}.webp"
     else:

@@ -65,7 +65,11 @@ _legal = lambda titulo, desc, ruta, cuerpo: ("<?php require __DIR__ . '/partes.p
 
 # ---------------------------------------------------------------- portada
 def conteo(eq): return sum(len(v) for v in EQUIPOS[eq].values())
-dest = [next(p for p in PS if p["equipo"] == "Lavadoras" and p["categoria"].startswith("Mangueras de entrada")), next(p for p in PS if p["categoria"] == "Presostatos"), next(p for p in PS if p["sku"] == "PV-BM-NEV")]
+_c1 = next((p for p in PS if p["equipo"] == "Lavadoras" and p["categoria"].startswith("Mangueras de entrada")), None)
+_c2 = next((p for p in PS if p["categoria"] == "Presostatos"), None)
+_c3 = next((p for p in PS if p["sku"] == "PV-BM-NEV"), None)
+dest = [x for x in (_c1, _c2, _c3) if x] or PS[:3]
+dest = (dest + [x for x in PS if x not in dest])[:3]
 stage = ('<div class="aq-stage"><i></i><i></i><i></i><i></i>' + "".join(f'<a class="s{i + 1}" href="{p["url"]}" aria-label="{esc(p["nombre"])}"><img src="{p["img"]}" alt="{esc(p["nombre"])}" width="300" height="300" {"loading=eager" if i == 0 else "loading=lazy"}></a>' for i, p in enumerate(dest))
          + '<span class="aq-price-tag">Repuestos para lavadoras y neveras · envío a toda Colombia</span></div>')
 hero = ('<section class="aq-hero" id="inicio"><div class="wrap"><div><span class="kicker">Lavadoras · Neveras · Toda Colombia</span><h1>Repuestos de línea blanca para tu lavadora y tu nevera</h1>'
@@ -73,7 +77,7 @@ hero = ('<section class="aq-hero" id="inicio"><div class="wrap"><div><span class
         '<div class="aq-trust"><span>Envío a toda Colombia</span><span>Pago seguro Wompi</span><span>Contra entrega</span><span>5 días de retracto</span></div></div>' + stage + '</div></section>')
 tiles_eq = "".join(f'<a class="aq-tile" href="{R_EQ(eq)}"><b>Repuestos para {esc(eq.lower())}</b><p>{conteo(eq)} repuesto{"s" if conteo(eq) > 1 else ""}: {esc(", ".join(c.lower() for c in EQUIPOS[eq]))}.</p></a>' for eq in EQ_LISTA)
 sec_eq = seccion("Compra por equipo", f'<div class="aq-tiles">{tiles_eq}</div>', sub="Elige tu electrodoméstico y mira solo lo que le sirve.")
-estante = seccion("Repuestos para tu lavadora", '<div class="tf-grid">' + "".join(tarjeta(p) for p in EQUIPOS["Lavadoras"].get("Mangueras de entrada", []) + EQUIPOS["Lavadoras"].get("Presostatos", [])[:2]) + "</div>").replace('<section class="aq-sec">', '<section class="aq-sec estante-top" id="repuestos">', 1)
+estante = seccion("Repuestos disponibles", '<div class="tf-grid">' + "".join(tarjeta(p) for p in PS[:6]) + "</div>").replace('<section class="aq-sec">', '<section class="aq-sec estante-top" id="repuestos">', 1)
 cats = [(eq, c, len(v)) for eq, cs in EQUIPOS.items() for c, v in cs.items()]
 sec_cat = seccion("Busca por tipo de pieza", '<div class="city-tags">' + "".join(f'<a href="{R_CAT(eq, c)}">{esc(c)} para {esc(eq.lower())} ({n})</a>' for eq, c, n in cats) + "</div>", alt=True)
 sec_marca = seccion("Repuestos por marca de electrodoméstico", '<div class="city-tags">' + "".join(f'<a href="marca-{slug(m)}.html">Repuestos {esc(m)}</a>' for m in MARCAS_EQ) + "</div><p class=\"note\" style=\"margin-top:14px\">¿No ves tu marca? Escríbenos con el modelo y te decimos si tenemos la pieza.</p>")
@@ -158,7 +162,7 @@ for p in PS:
 
 # ---------------------------------------------------------------- guías y páginas de ayuda
 def pag_info(nombre, titulo, desc, kw, h1, cuerpo, preg=(), prio="0.6"):
-    c = hero_simple("Repuestos de línea blanca", h1, desc) + cuerpo + (faq_html(list(preg)) if preg else "") + seccion("Repuestos para tu lavadora", '<div class="tf-grid">' + "".join(tarjeta(x) for x in EQUIPOS["Lavadoras"]["Mangueras de entrada"][:3]) + "</div>", alt=True)
+    c = hero_simple("Repuestos de línea blanca", h1, desc) + cuerpo + (faq_html(list(preg)) if preg else "") + seccion("Repuestos disponibles", '<div class="tf-grid">' + "".join(tarjeta(x) for x in PS[:3]) + "</div>", alt=True)
     pagina(nombre, titulo, desc, kw, [("Inicio", "index.html"), (h1, None)], c, preg, prio=prio)
 
 
