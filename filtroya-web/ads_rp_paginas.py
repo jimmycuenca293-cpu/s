@@ -284,7 +284,10 @@ def cont_seo(p):
 # ---------------------------------------------------------------- formulario de pago contra entrega (llena los datos y arma el WhatsApp)
 _prods = {x["id"]: {"n": x["nombre"], "p": x["precio"], "r": (x["ref"] if x["ref"] != x["sku"] else "")} for x in PS if x["precio"]}
 _ciu = TOP_CIU + [c for c in CIUDADES if c not in TOP_CIU]
-PEDIDO_JS = """(function(){var P=%s,C=%s,WA='%s',K='rp_cliente',m,cur;
+PEDIDO_JS = """(function(){var P=%s,C=%s,WA='%s',K='rp_cliente',B='rp_borrador',m,cur,ok=false,F=['nom','tel','ciu','bar','dir','ind'];
+function bor(){try{return JSON.parse(localStorage.getItem(B)||'null')}catch(e){return null}}
+function guardar(){if(!m||m.hidden||ok)return;var d={id:cur,c:document.getElementById('pc-c').value};F.forEach(function(k){d[k]=document.getElementById('pc-'+k).value});try{localStorage.setItem(B,JSON.stringify(d))}catch(e){}}
+function sucio(){return F.some(function(k){var e=document.getElementById('pc-'+k);return e&&e.value.trim()})}
 function cop(n){return '$'+String(n).replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.')}
 function g(){try{return JSON.parse(localStorage.getItem(K)||'{}')}catch(e){return{}}}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -298,23 +301,29 @@ m.innerHTML='<div class="pc-b"><button type="button" class="pc-x" aria-label="Ce
 +'<div class="pc-t"><span>Total a pagar al recibir</span><b id="pc-tot"></b></div><p class="pc-e" id="pc-err" hidden></p>'
 +'<button class="pc-s" type="submit">Enviar pedido por WhatsApp</button><p class="pc-n">Pagas en efectivo cuando recibes. Envío gratis. Guardamos tus datos solo en este celular para tu próximo pedido.</p></form></div>';
 document.body.appendChild(m);
-m.addEventListener('click',function(e){if(e.target===m||e.target.closest('.pc-x'))cerrar();var q=e.target.closest('[data-q]');if(q){var c=document.getElementById('pc-c');c.value=Math.min(10,Math.max(1,(parseInt(c.value)||1)+parseInt(q.dataset.q)));tot()}});
-document.getElementById('pc-c').addEventListener('input',tot);document.getElementById('pc-f').addEventListener('submit',enviar);document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!m.hidden)cerrar()})}
+m.addEventListener('click',function(e){if(e.target.closest('.pc-x')||(e.target===m&&!sucio()))cerrar();var q=e.target.closest('[data-q]');if(q){var c=document.getElementById('pc-c');c.value=Math.min(10,Math.max(1,(parseInt(c.value)||1)+parseInt(q.dataset.q)));tot()}});
+document.getElementById('pc-c').addEventListener('input',tot);document.getElementById('pc-f').addEventListener('submit',enviar);m.addEventListener('input',guardar);m.addEventListener('click',function(e){if(e.target.closest('[data-q]'))guardar()});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!m.hidden)cerrar()})}
 function qty(){return Math.min(10,Math.max(1,parseInt(document.getElementById('pc-c').value)||1))}
 function tot(){document.getElementById('pc-tot').textContent=cop(P[cur].p*qty())}
-function abrir(id){if(!P[id])return;cur=id;if(!m)build();var c=g();document.getElementById('pc-n').textContent=P[id].n;document.getElementById('pc-p').textContent=cop(P[id].p)+' c/u · envío gratis';document.getElementById('pc-c').value=1;
-['nom','tel','ciu','bar','dir','ind'].forEach(function(k){var e=document.getElementById('pc-'+k);e.value=c[k]||''});document.getElementById('pc-err').hidden=true;tot();m.hidden=false;document.body.style.overflow='hidden';setTimeout(function(){document.getElementById(c.nom?'pc-c':'pc-nom').focus()},50)}
-function cerrar(){m.hidden=true;document.body.style.overflow=''}
+function abrir(id){if(!P[id])return;cur=id;if(!m)build();m.querySelector('.pc-b').scrollTop=0;var c=g();document.getElementById('pc-n').textContent=P[id].n;document.getElementById('pc-p').textContent=cop(P[id].p)+' c/u · envío gratis';document.getElementById('pc-c').value=1;
+['nom','tel','ciu','bar','dir','ind'].forEach(function(k){var e=document.getElementById('pc-'+k);e.value=c[k]||''});var d=bor();if(d&&d.id===id){F.forEach(function(k){if(d[k])document.getElementById('pc-'+k).value=d[k]});document.getElementById('pc-c').value=d.c||1}document.getElementById('pc-err').hidden=true;tot();m.hidden=false;document.body.style.overflow='hidden';setTimeout(function(){document.getElementById(c.nom?'pc-c':'pc-nom').focus()},50)}
+function cerrar(){m.hidden=true;document.body.style.overflow='';if(ok){try{localStorage.removeItem(B)}catch(e){}m.remove();m=null;ok=false;var r=document.querySelector('.pc-rt');if(r)r.remove()}else pill()}
 function enviar(e){e.preventDefault();var v=function(k){return document.getElementById('pc-'+k).value.trim()},tel=v('tel').replace(/\\D/g,''),er=document.getElementById('pc-err');if(tel.length===12&&tel.indexOf('57')===0)tel=tel.slice(2);
 var msg=v('nom').length<3?'Escribe tu nombre completo.':!/^3\\d{9}$/.test(tel)?'Escribe un celular válido (10 dígitos que empiezan por 3).':v('ciu').length<3?'Escribe tu ciudad.':v('bar').length<2?'Escribe tu barrio.':v('dir').length<5?'Escribe tu dirección.':'';
 if(msg){er.textContent=msg;er.hidden=false;return}
 var n=qty(),pr=P[cur],tx='Hola, quiero pedir *contra entrega*:\\n• '+pr.n+(pr.r?' (ref. '+pr.r+')':'')+' x'+n+'\\nPrecio: '+cop(pr.p)+' c/u (envío gratis)\\nTotal a pagar al recibir: '+cop(pr.p*n)+'\\n\\nNombre: '+v('nom')+'\\nCelular: '+tel+'\\nCiudad: '+v('ciu')+'\\nBarrio: '+v('bar')+'\\nDirección: '+v('dir')+(v('ind')?'\\nIndicaciones: '+v('ind'):'');
 try{localStorage.setItem(K,JSON.stringify({nom:v('nom'),tel:tel,ciu:v('ciu'),bar:v('bar'),dir:v('dir'),ind:v('ind')}))}catch(x){}
 try{window.dataLayer=window.dataLayer||[];dataLayer.push({event:'pedido_contraentrega_whatsapp',producto:cur,value:pr.p*n,currency:'COP'})}catch(x){}
-var u='https://wa.me/'+WA+'?text='+encodeURIComponent(tx),w=window.open(u,'_blank');if(!w)location.href=u;cerrar()}
-document.addEventListener('click',function(e){var b=e.target.closest('[data-cod]');if(b){e.preventDefault();abrir(b.getAttribute('data-cod'))}})})();""" % (json.dumps(_prods, ensure_ascii=False), json.dumps(_ciu, ensure_ascii=False), WA)
+var u='https://wa.me/'+WA+'?text='+encodeURIComponent(tx);ok=true;var b=m.querySelector('.pc-b');b.innerHTML='<button type="button" class="pc-x" aria-label="Cerrar">×</button><div class="pc-ok"><div class="pc-ic">✔</div><h2>Tu pedido está listo</h2><p>Se abrió WhatsApp con todos tus datos. Solo toca <b>Enviar</b> en el chat para que lo recibamos.</p><a class="pc-s pc-a" href="'+u+'" target="_blank" rel="noopener">Abrir WhatsApp otra vez</a><button type="button" class="pc-c2" id="pc-cp">Copiar mi pedido</button><p class="pc-n">Si WhatsApp no se abrió, usa el botón verde o copia tu pedido y pégalo en el chat. Tus datos no se pierden hasta que cierres esta ventana.</p></div>';
+b.querySelector('#pc-cp').addEventListener('click',function(){var t=this;(navigator.clipboard?navigator.clipboard.writeText(tx):Promise.reject()).then(function(){t.textContent='✔ Copiado'},function(){t.textContent='Selecciona y copia desde WhatsApp'})});var w=window.open(u,'_blank');if(!w){/* el botón verde abre WhatsApp */}}
+function pill(){var d=bor();if(!d||!P[d.id]||document.querySelector('.pc-rt')||!(d.nom||d.tel||d.dir))return;var r=document.createElement('div');r.className='pc-rt';r.innerHTML='<button type="button" data-cod="'+d.id+'">Tienes un pedido sin terminar · <b>Retomar</b></button><button type="button" class="pc-rx" aria-label="Descartar">×</button>';r.querySelector('.pc-rx').addEventListener('click',function(){try{localStorage.removeItem(B)}catch(e){}r.remove()});document.body.appendChild(r)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',pill);else pill();
+document.addEventListener('click',function(e){var b=e.target.closest('[data-cod]');if(b){e.preventDefault();var r=document.querySelector('.pc-rt');if(r)r.remove();abrir(b.getAttribute('data-cod'))}})})();""" % (json.dumps(_prods, ensure_ascii=False), json.dumps(_ciu, ensure_ascii=False), WA)
 (OUT / "pedido.js").write_text(PEDIDO_JS, encoding="utf-8")
 PC_CSS = """
+.pc-ok{text-align:center;padding:8px 0}.pc-ic{width:64px;height:64px;border-radius:50%;background:#e3f6ea;color:#1faa59;font-size:34px;display:grid;place-items:center;margin:0 auto 12px}.pc-ok h2{margin:0 0 8px}.pc-ok p{color:#3d4b6b;margin:0 0 14px}.pc-a{display:flex!important;align-items:center;justify-content:center;text-decoration:none}.pc-c2{width:100%;min-height:48px;border:1.5px solid #cfd8ee;background:#fff;border-radius:12px;font:700 1rem Inter,sans-serif;cursor:pointer;margin-top:10px;color:#14213d}
+.pc-rt{position:fixed;left:12px;right:12px;bottom:76px;z-index:4000;max-width:460px;margin:0 auto;display:flex;background:#0b1f4d;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);overflow:hidden}.pc-rt button{border:0;background:none;color:#fff;font:600 .92rem Inter,sans-serif;padding:14px 16px;cursor:pointer;text-align:left;flex:1}.pc-rt b{color:#ffc21a}.pc-rt .pc-rx{flex:0 0 48px;font-size:22px;text-align:center;padding:0}
+.pc-s{position:sticky;bottom:0}.pc-b form{padding-bottom:4px}
 .pc-m{position:fixed;inset:0;z-index:5000;background:rgba(11,31,77,.55);display:flex;align-items:flex-end;justify-content:center;padding:0;overflow-y:auto}.pc-m[hidden]{display:none}
 .pc-b{position:relative;background:#fff;width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:24px 20px 28px;box-shadow:0 -10px 40px rgba(0,0,0,.25);max-height:95vh;overflow-y:auto}
 @media(min-width:640px){.pc-m{align-items:center;padding:24px}.pc-b{border-radius:20px}}
@@ -376,6 +385,77 @@ TECH_CSS = """
 .tk-r{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.tk-r.tk-in{opacity:1;transform:none}
 """
 (OUT / "tema.css").write_text((OUT / "tema.css").read_text(encoding="utf-8") + TECH_CSS.replace("%%", "%"), encoding="utf-8")
+
+
+# ---------------------------------------------------------------- navegación móvil, ordenar, aviso al agregar
+_menu = {"q": [[eq, R_EQ(eq), [[c, R_CAT(eq, c)] for c in cs]] for eq, cs in EQUIPOS.items()], "m": [[m, f"marca-{slug(m)}.html"] for m in MARCAS_EQ],
+         "a": [[t, u] for t, u in ARTS_BASE] + [["Envíos a toda Colombia", "envios-a-toda-colombia.html"], ["Contacto y WhatsApp", f"https://wa.me/{WA}?text=Hola%2C%20necesito%20un%20repuesto"]]}
+NAV_JS = """(function(){var M=__MENU__,WA='__WA__';
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function ev(n,d){try{window.dataLayer=window.dataLayer||[];d=d||{};d.event=n;dataLayer.push(d)}catch(x){}}
+var home=!!document.querySelector('.hx');
+/* menú lateral con equipos, tipos y marcas */
+var dr=document.createElement('div');dr.className='nv-d';dr.hidden=true;dr.setAttribute('role','dialog');dr.setAttribute('aria-modal','true');dr.setAttribute('aria-label','Menú');
+dr.innerHTML='<div class="nv-p"><div class="nv-h"><b>Menú</b><button type="button" class="nv-x" aria-label="Cerrar menú">×</button></div><div class="nv-s"><input type="search" placeholder="Busca tu repuesto o modelo" aria-label="Buscar"></div>'
++'<div class="nv-l"><a class="nv-top" href="index.html">🏠 Inicio</a><a class="nv-top" href="index.html#repuestos">🛒 Ver todos los repuestos</a>'
++'<h6>Compra por equipo</h6>'+M.q.map(function(e){return '<details><summary>'+esc(e[0])+'</summary><a href="'+e[1]+'">Todos los repuestos para '+esc(e[0].toLowerCase())+'</a>'+e[2].map(function(c){return '<a href="'+c[1]+'">'+esc(c[0])+'</a>'}).join('')+'</details>'}).join('')
++'<h6>Marcas</h6><div class="nv-m">'+M.m.map(function(m){return '<a href="'+m[1]+'">'+esc(m[0])+'</a>'}).join('')+'</div>'
++'<h6>Ayuda</h6>'+M.a.map(function(a){return '<a href="'+a[1]+'">'+esc(a[0])+'</a>'}).join('')+'<a class="nv-wa" href="https://wa.me/'+WA+'?text=Hola%2C%20necesito%20un%20repuesto" rel="noopener">💬 Escribir por WhatsApp</a></div></div>';
+document.body.appendChild(dr);
+function abrir(){dr.hidden=false;document.body.style.overflow='hidden';ev('menu_movil')}function cerrar(){dr.hidden=true;document.body.style.overflow=''}
+dr.addEventListener('click',function(e){if(e.target===dr||e.target.closest('.nv-x')||(e.target.closest('a')&&!e.target.closest('summary')))cerrar()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!dr.hidden)cerrar()});
+/* el buscador del menú reutiliza el del encabezado */
+var si=dr.querySelector('.nv-s input');si.addEventListener('keydown',function(e){if(e.key==='Enter'&&si.value.trim()){var h=document.querySelector('[data-aq-q]');if(h){cerrar();h.value=si.value;h.dispatchEvent(new Event('input'));h.focus();scrollTo(0,0)}}});
+/* barra inferior solo en celular */
+var tb=document.createElement('nav');tb.className='nv-b';tb.setAttribute('aria-label','Atajos');
+tb.innerHTML='<a href="index.html"><i>🏠</i>Inicio</a><button type="button" data-nv="menu"><i>☰</i>Menú</button><button type="button" data-nv="buscar"><i>🔍</i>Buscar</button><a href="carrito.php" class="nv-c"><i>🛒</i>Carrito<em hidden></em></a><a href="https://wa.me/'+WA+'?text=Hola%2C%20necesito%20un%20repuesto" rel="noopener" class="nv-w"><i>💬</i>WhatsApp</a>';
+document.body.appendChild(tb);document.body.classList.add('nv-on');
+tb.addEventListener('click',function(e){var b=e.target.closest('[data-nv]');if(!b)return;if(b.dataset.nv==='menu')abrir();else{scrollTo({top:0,behavior:'smooth'});setTimeout(function(){var h=document.querySelector('[data-aq-q]');if(h)h.focus()},350)}});
+var cn=document.querySelector('[data-cart-n]'),em=tb.querySelector('em');function sync(){if(cn&&em){em.textContent=cn.textContent;em.hidden=!cn.textContent.trim()||cn.hidden}}if(cn){sync();new MutationObserver(sync).observe(cn,{childList:true,characterData:true,subtree:true,attributes:true})}
+/* aviso al agregar al carrito */
+var tt;document.addEventListener('click',function(e){var b=e.target.closest('[data-add]');if(!b||b.dataset.ir)return;clearTimeout(tt);var t=document.querySelector('.nv-t');if(!t){t=document.createElement('div');t.className='nv-t';t.setAttribute('role','status');document.body.appendChild(t)}
+t.innerHTML='<span>✔ Agregado al carrito</span><a href="carrito.php">Ver carrito y pagar</a>';t.classList.add('on');tt=setTimeout(function(){t.classList.remove('on')},4500);ev('agregado_aviso')});
+/* ordenar listados */
+if(!home){var g=document.querySelector('.tf-grid');if(g&&g.querySelectorAll('.tf-card').length>3){var cs=[].slice.call(g.querySelectorAll('.tf-card')),bar=document.createElement('div');bar.className='nv-o';bar.innerHTML='<span>'+cs.length+' repuestos</span><label>Ordenar <select><option value="0">Recomendado</option><option value="1">Precio: menor a mayor</option><option value="2">Precio: mayor a menor</option></select></label>';g.parentNode.insertBefore(bar,g);
+function pr(c){var t=c.querySelector('.tf-pr');return t?parseInt((t.textContent.match(/\\$([\\d.]+)/)||[0,'0'])[1].replace(/\\./g,''),10):0}
+cs.forEach(function(c,i){c.dataset.o=i});bar.querySelector('select').addEventListener('change',function(){var v=this.value,a=cs.slice().sort(function(x,y){return v==='1'?pr(x)-pr(y):v==='2'?pr(y)-pr(x):x.dataset.o-y.dataset.o});a.forEach(function(c){g.appendChild(c)});ev('ordenar',{orden:v})})}}
+})();"""
+NAV_JS = NAV_JS.replace("__MENU__", json.dumps(_menu, ensure_ascii=False, separators=(",", ":"))).replace("__WA__", WA)
+(OUT / "nav.js").write_text(NAV_JS, encoding="utf-8")
+NAV_CSS = """
+.nv-b,.nv-d{display:none}
+@media(max-width:820px){
+.aq-nav{display:none!important}.aq-wa{display:none!important}.aq-bar span:nth-child(2){display:none}
+body.nv-on{padding-bottom:68px}
+.nv-b{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:3000;background:#fff;border-top:1px solid #dfe6f4;box-shadow:0 -4px 20px rgba(11,31,77,.1);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+.nv-b a,.nv-b button{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;font:600 .68rem Inter,sans-serif;color:#2a3a5c;text-decoration:none;padding:4px 0;cursor:pointer;min-height:48px}.nv-b i{font-style:normal;font-size:20px;line-height:1.2}.nv-w{color:#14733d!important}
+.nv-b em{position:absolute;top:0;left:55%;background:#1428a0;color:#fff;border-radius:999px;font:700 .62rem Inter,sans-serif;min-width:17px;height:17px;display:grid;place-items:center;font-style:normal;padding:0 4px}
+.nv-d{display:block;position:fixed;inset:0;z-index:4500;background:rgba(11,31,77,.55)}.nv-d[hidden]{display:none}
+.nv-p{position:absolute;left:0;top:0;bottom:0;width:min(88vw,380px);background:#fff;display:flex;flex-direction:column;box-shadow:8px 0 30px rgba(0,0,0,.25);animation:nvs .22s}@keyframes nvs{from{transform:translateX(-100%)}to{transform:none}}
+.nv-h{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #e6ebf6}.nv-h b{font:800 1.1rem Inter,sans-serif;color:#0b1f4d}.nv-x{border:0;background:none;font-size:30px;line-height:1;cursor:pointer;color:#5b6478}
+.nv-s{padding:12px 16px}.nv-s input{width:100%;box-sizing:border-box;padding:13px 14px;border:1.5px solid #cfd8ee;border-radius:12px;font:400 16px Inter,sans-serif}
+.nv-l{overflow-y:auto;padding:0 8px 24px}.nv-l h6{margin:18px 10px 6px;font:700 .75rem Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#1428a0}
+.nv-l a,.nv-l summary{display:block;padding:14px 12px;font:600 1rem Inter,sans-serif;color:#14213d;text-decoration:none;border-radius:10px;cursor:pointer}.nv-l a:active,.nv-l summary:active{background:#eef2ff}
+.nv-l details a{padding-left:28px;font-weight:500;color:#3d4b6b}.nv-l summary{list-style:none;display:flex;justify-content:space-between}.nv-l summary::after{content:'›';font-size:1.3rem;transition:.2s}.nv-l details[open] summary::after{transform:rotate(90deg)}.nv-l summary::-webkit-details-marker{display:none}
+.nv-m{display:flex;flex-wrap:wrap;gap:8px;padding:0 10px}.nv-m a{border:1.5px solid #cfd8ee;border-radius:999px;padding:8px 14px;font-size:.9rem}.nv-top{background:#f4f7fc}.nv-wa{margin:14px 10px 0;background:#1faa59;color:#fff!important;text-align:center}
+.tk-sb{bottom:68px}.pc-rt{bottom:80px}.nv-t{bottom:140px!important}
+}
+.nv-t{position:fixed;left:12px;right:12px;bottom:24px;z-index:4200;max-width:420px;margin:0 auto;background:#0b1f4d;color:#fff;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;font:600 .92rem Inter,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);transform:translateY(160%);transition:transform .25s}.nv-t.on{transform:none}.nv-t a{color:#ffc21a;white-space:nowrap}
+.nv-o{display:flex;justify-content:space-between;align-items:center;margin:0 0 14px;font:600 .92rem Inter,sans-serif;color:#2a3a5c}.nv-o select{margin-left:8px;padding:9px 12px;border:1.5px solid #cfd8ee;border-radius:10px;font:500 .92rem Inter,sans-serif;background:#fff}
+"""
+(OUT / "tema.css").write_text((OUT / "tema.css").read_text(encoding="utf-8") + NAV_CSS, encoding="utf-8")
+
+# ---------------------------------------------------------------- SEO extra: WebSite+buscador, manifest, feed de Google Merchant
+(OUT / "manifest.webmanifest").write_text(json.dumps({"name": NOMBRE, "short_name": "Repuestos", "start_url": "/", "display": "standalone", "background_color": "#ffffff", "theme_color": "#1428a0", "lang": "es-CO",
+    "icons": [{"src": "img/icono-bm.png", "sizes": "192x192", "type": "image/png"}]}, ensure_ascii=False), encoding="utf-8")
+_item = lambda p: ('<item><g:id>' + esc(p["sku"]) + '</g:id><g:title>' + esc(p["nombre"][:150]) + '</g:title><g:description>' + esc(p["resumen"][:4900]) + '</g:description><g:link>' + f'{DOMINIO}/{p["url"]}' + '</g:link><g:image_link>' + f'{DOMINIO}/{p["img"]}' + '</g:image_link>'
+    + '<g:availability>in_stock</g:availability><g:condition>new</g:condition><g:price>' + f'{p["precio"]}.00 COP' + '</g:price>'
+    + ('<g:brand>' + esc(p["marca_prod"]) + '</g:brand>' if p["marca_prod"] and not p["marca_prod"].startswith("PENDIENTE") else '<g:identifier_exists>no</g:identifier_exists>')
+    + ('<g:mpn>' + esc(p["ref"]) + '</g:mpn>' if p["ref"] != p["sku"] else '') + '<g:google_product_category>Home &amp; Garden &gt; Household Appliance Accessories</g:google_product_category><g:product_type>' + esc(p["categoria"] + " > " + p["equipo"]) + '</g:product_type>'
+    + '<g:shipping><g:country>CO</g:country><g:service>Estándar</g:service><g:price>0.00 COP</g:price></g:shipping></item>')
+(OUT / "feed-google-merchant.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0"><channel><title>' + esc(NOMBRE) + '</title><link>' + DOMINIO + '/</link><description>Repuestos de línea blanca con envío a toda Colombia</description>\n'
+    + "\n".join(_item(p) for p in PS if p["precio"]) + '\n</channel></rss>', encoding="utf-8")
 
 # ---------------------------------------------------------------- fichas de producto
 for p in PS:
@@ -469,10 +549,10 @@ for _f in list(OUT.glob("*.html")) + list(OUT.glob("*.php")) + list(OUT.glob("*.
         _f.write_text(_t2, encoding="utf-8")
 print(f"listo: {OUT} · {len(PAGINAS)} páginas · {len(PS)} repuestos")
 _V = {}
-for _f in ("tema.css", "buscar.js", "carrito.js", "pedido.js", "tech.js", "pasarela.css", "estilo.css"):
+for _f in ("tema.css", "buscar.js", "carrito.js", "pedido.js", "tech.js", "nav.js", "pasarela.css", "estilo.css"):
     if (OUT / _f).exists():
         _V[_f] = hashlib.md5((OUT / _f).read_bytes()).hexdigest()[:8]
-_pat = re.compile(r"""(["'])(/?)(tema\.css|buscar\.js|carrito\.js|pedido\.js|tech\.js|pasarela\.css|estilo\.css)(\?v=[\w]+)?(?=["'])""")
+_pat = re.compile(r"""(["'])(/?)(tema\.css|buscar\.js|carrito\.js|pedido\.js|tech\.js|nav\.js|pasarela\.css|estilo\.css)(\?v=[\w]+)?(?=["'])""")
 for _h in list(OUT.glob("*.html")) + list(OUT.glob("*.php")):
     _t = _h.read_text(encoding="utf-8")
     _t2 = _pat.sub(lambda m: f"{m.group(1)}{m.group(2)}{m.group(3)}?v={_V[m.group(3)]}" if m.group(3) in _V else m.group(0), _t)

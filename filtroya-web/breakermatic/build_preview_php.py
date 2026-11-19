@@ -30,14 +30,17 @@ for k, t in pages.items():
     cuerpo = re.sub(r"<script src=[^>]*></script>", "", cuerpo)
     views.append(f'<div class="vw" id="v-{k}" hidden>{enlaces(cuerpo)}</div>')
 css = "".join(open(f"{SITE}/{n}", encoding="utf-8").read() for n in ("tema.css", "pasarela.css", "aqua-shell.css", "estilo.css") if os.path.exists(f"{SITE}/{n}"))
-js = open(f"{SITE}/buscar.js", encoding="utf-8").read() + "\n" + (open(f"{SITE}/pedido.js", encoding="utf-8").read() + "\n" if os.path.exists(f"{SITE}/pedido.js") else "") + (open(f"{SITE}/tech.js", encoding="utf-8").read() + "\n" if os.path.exists(f"{SITE}/tech.js") else "") + open(f"{SITE}/carrito.js", encoding="utf-8").read().replace('"/carrito.php"', '"#carrito"').replace('/carrito.php', '#carrito')
+js = open(f"{SITE}/buscar.js", encoding="utf-8").read() + "\n" + (open(f"{SITE}/pedido.js", encoding="utf-8").read() + "\n" if os.path.exists(f"{SITE}/pedido.js") else "") + (open(f"{SITE}/tech.js", encoding="utf-8").read() + "\n" if os.path.exists(f"{SITE}/tech.js") else "") + (open(f"{SITE}/nav.js", encoding="utf-8").read() + "\n" if os.path.exists(f"{SITE}/nav.js") else "") + open(f"{SITE}/carrito.js", encoding="utf-8").read().replace('"/carrito.php"', '"#carrito"').replace('/carrito.php', '#carrito')
+
+SHIM = """document.addEventListener('click',function(e){var a=e.target.closest('.nv-d a,.nv-b a,.nv-t a,.pc-rt a');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|tel:)/.test(h))return;e.preventDefault();var p=h.split('#')[0].replace(/^\\//,'');var k=p?p.replace(/\\.(html|php)$/,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'inicio';if(k==='index')k='inicio';location.hash=k||'inicio';scrollTo(0,0)},true);"""
 out = f'''<title>{TITULO}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>{css}
 body{{margin:0}}.vw[hidden]{{display:none!important}}</style>
 {enlaces(hdr)}{"".join(views)}{enlaces(ftr)}
-<script>{js}</script>
+<script>{js}
+{SHIM}</script>
 <script>(function(){{function show(){{var k=(location.hash||'#inicio').slice(1)||'inicio',v=document.getElementById('v-'+k)||document.getElementById('v-inicio');[].forEach.call(document.querySelectorAll('.vw'),function(x){{x.hidden=true}});v.hidden=false;window.scrollTo(0,0)}}window.addEventListener('hashchange',function(){{if((location.hash||'')==='#carrito'){{location.reload();return}}show()}});show()}})();</script>'''
 shutil.rmtree(DST, ignore_errors=True); os.makedirs(DST + "/img")
 for f in glob.glob(SITE + "/img/*"): shutil.copy(f, DST + "/img/")
