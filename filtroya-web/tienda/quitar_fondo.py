@@ -5,7 +5,7 @@ Funciona con fondo blanco o casi blanco (foto de estudio). Requiere Pillow: pip 
 import sys, os
 from collections import deque
 from PIL import Image, ImageFilter
-UMBRAL = 232  # qué tan blanco debe ser un píxel para contarse como fondo
+UMBRAL = 246  # qué tan blanco debe ser un píxel para contarse como fondo
 def procesar(ruta, destino, lado=800):
     im = Image.open(ruta).convert("RGB"); w, h = im.size; px = im.load()
     fondo = [[False] * w for _ in range(h)]
