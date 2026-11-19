@@ -1,5 +1,6 @@
 # Páginas de la tienda de repuestos de línea blanca. Se ejecuta dentro de ads_rp.py (comparte sus funciones y datos).
 FPAGO = "Pagas en línea con Wompi (tarjeta, PSE, Nequi o Bancolombia) o contra entrega, en efectivo, sin recargo."
+N_CIU = int(os.environ.get("TIENDA_CIUDADES", "20"))
 R_EQ = lambda eq: f"repuestos-para-{slug(eq)}.html"
 R_CAT = lambda eq, cat: f"{slug(cat)}-para-{slug(eq)}.html"
 R_EQM = lambda eq, m: f"repuestos-para-{slug(eq)}-{slug(m)}.html"
@@ -182,7 +183,7 @@ cats = [(eq, c, len(v)) for eq, cs in EQUIPOS.items() for c, v in cs.items()]
 _pz = {}
 for _x in PS:
     _pz.setdefault((_x["equipos_l"][0], _x["categoria"]), []).append(_x)
-sec_pz = seccion("Compra por tipo de pieza", '<div class="pz">' + "".join(
+sec_pz = seccion("Compra por tipo de pieza", '<p style="margin:0 0 16px"><a class="btn btn-solid" href="repuestos.html">🔎 Filtrar por nevera, lavadora o tipo de repuesto</a></p><div class="pz">' + "".join(
     f'<a class="pz-t" href="{R_CAT(_e, _c)}"><span class="pz-i"><img src="{_v[0]["img"][:-5]}-480.webp" alt="{esc(_c)} para {esc(_e.lower())}" width="480" height="480" loading="lazy"></span><b>{esc(_c)}</b><small>para {esc(_e.lower())} · {len(_v)} producto{"s" if len(_v) > 1 else ""}</small>'
     + (f'<em>desde {cop(min(x["precio"] for x in _v if x["precio"]))}</em>' if any(x["precio"] for x in _v) else "") + '</a>' for (_e, _c), _v in _pz.items()) + "</div>", sub="Elige la pieza que necesitas y entra directo a esa sección.")
 sec_cat = seccion("Busca por tipo de pieza", '<div class="city-tags">' + "".join(f'<a href="{R_CAT(eq, c)}">{esc(c)} para {esc(eq.lower())} ({n})</a>' for eq, c, n in cats) + "</div>", alt=True)
@@ -200,7 +201,7 @@ FAQ_HOME = [("¿Cómo sé qué repuesto necesita mi lavadora?", "Mira el modelo 
 ld_home = [{"@type": "ItemList", "name": "Repuestos de línea blanca", "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": ld_producto(p)} for i, p in enumerate(PS)]}]
 pagina("index.html", "Repuestos de Línea Blanca | Lavadoras y Neveras | Envío a Colombia", f"Repuestos para lavadoras y neveras: {CATS_TXT} con foto, precio y compatibilidad. Paga con Wompi o contra entrega. Envío a toda Colombia.",
        "repuestos linea blanca, repuestos lavadoras, repuestos neveras, mangueras lavadora, protector de voltaje, repuestos contra entrega, comprar repuestos lavadora",
-       [("Inicio", None)], hero + sec_pz + estante + confianza + sec_eq.replace('<div class="aq-tiles">','<div class="aq-tiles eqt">') + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=dest[0]["img"])
+       [("Inicio", None)], hero + sec_pz + estante + confianza + seccion("Repuestos con envío a tu ciudad", '<div class="city-tags">' + "".join(f'<a href="repuestos-en-{slug(c_)}.html">Repuestos en {esc(c_)}</a>' for c_ in cat_php["ciudades"][:N_CIU]) + '</div><p style="margin-top:12px"><a href="envios-a-toda-colombia.html">Ver todas las ciudades con envío →</a></p>', alt=True) + sec_eq.replace('<div class="aq-tiles">','<div class="aq-tiles eqt">') + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=dest[0]["img"])
 
 CONT = {
     "Filtros de agua": dict(
@@ -338,7 +339,7 @@ function cerrar(){m.hidden=true;document.body.style.overflow='';if(ok){try{local
 function enviar(e){e.preventDefault();var v=function(k){return document.getElementById('pc-'+k).value.trim()},tel=v('tel').replace(/\\D/g,''),er=document.getElementById('pc-err');if(tel.length===12&&tel.indexOf('57')===0)tel=tel.slice(2);
 var msg=v('nom').length<3?'Escribe tu nombre completo.':!/^3\\d{9}$/.test(tel)?'Escribe un celular válido (10 dígitos que empiezan por 3).':v('ciu').length<3?'Escribe tu ciudad.':v('bar').length<2?'Escribe tu barrio.':v('dir').length<5?'Escribe tu dirección.':'';
 if(msg){er.textContent=msg;er.hidden=false;return}
-var n=qty(),pr=P[cur],tx='Hola, quiero pedir *contra entrega*:\\n• '+pr.n+(pr.r?' (ref. '+pr.r+')':'')+' x'+n+'\\nPrecio: '+cop(pr.p)+' c/u (envío gratis)\\nTotal a pagar al recibir: '+cop(pr.p*n)+'\\n\\nNombre: '+v('nom')+'\\nCelular: '+tel+'\\nCiudad: '+v('ciu')+'\\nBarrio: '+v('bar')+'\\nDirección: '+v('dir')+(v('ind')?'\\nIndicaciones: '+v('ind'):'');
+var n=qty(),pr=P[cur],tx='Hola, quiero pedir *contra entrega*:\\n• '+pr.n+(pr.r?' (ref. '+pr.r+')':'')+' x'+n+'\\nPrecio: '+cop(pr.p)+' c/u (envío gratis)\\nTotal a pagar al recibir: '+cop(pr.p*n)+'\\nPrecio fijo según la página web.\\nProducto: '+location.href.split('#')[0].split('?')[0]+'\\n\\nNombre: '+v('nom')+'\\nCelular: '+tel+'\\nCiudad: '+v('ciu')+'\\nBarrio: '+v('bar')+'\\nDirección: '+v('dir')+(v('ind')?'\\nIndicaciones: '+v('ind'):'');
 try{localStorage.setItem(K,JSON.stringify({nom:v('nom'),tel:tel,ciu:v('ciu'),bar:v('bar'),dir:v('dir'),ind:v('ind')}))}catch(x){}
 try{window.dataLayer=window.dataLayer||[];dataLayer.push({event:'pedido_contraentrega_whatsapp',producto:cur,value:pr.p*n,currency:'COP'})}catch(x){}
 var u='https://wa.me/'+WA+'?text='+encodeURIComponent(tx);ok=true;var b=m.querySelector('.pc-b');b.innerHTML='<button type="button" class="pc-x" aria-label="Cerrar">×</button><div class="pc-ok"><div class="pc-ic">✔</div><h2>Tu pedido está listo</h2><p>Se abrió WhatsApp con todos tus datos. Solo toca <b>Enviar</b> en el chat para que lo recibamos.</p><a class="pc-s pc-a" href="'+u+'" target="_blank" rel="noopener">Abrir WhatsApp otra vez</a><button type="button" class="pc-c2" id="pc-cp">Copiar mi pedido</button><p class="pc-n">Si WhatsApp no se abrió, usa el botón verde o copia tu pedido y pégalo en el chat. Tus datos no se pierden hasta que cierres esta ventana.</p></div>';
@@ -427,7 +428,7 @@ var home=!!document.querySelector('.hx');
 /* menú lateral con equipos, tipos y marcas */
 var dr=document.createElement('div');dr.className='nv-d';dr.hidden=true;dr.setAttribute('role','dialog');dr.setAttribute('aria-modal','true');dr.setAttribute('aria-label','Menú');
 dr.innerHTML='<div class="nv-p"><div class="nv-h"><b>Menú</b><button type="button" class="nv-x" aria-label="Cerrar menú">×</button></div><div class="nv-s"><input type="search" placeholder="Busca tu repuesto o modelo" aria-label="Buscar"></div>'
-+'<div class="nv-l"><a class="nv-top" href="index.html">🏠 Inicio</a><a class="nv-top" href="index.html#repuestos">🛒 Ver todos los repuestos</a>'
++'<div class="nv-l"><a class="nv-top" href="index.html">🏠 Inicio</a><a class="nv-top" href="repuestos.html">🔎 Filtrar todos los repuestos</a>'
 +'<h6>Compra por equipo</h6>'+M.q.map(function(e){return '<details><summary>'+esc(e[0])+'</summary><a href="'+e[1]+'">Todos los repuestos para '+esc(e[0].toLowerCase())+'</a>'+e[2].map(function(c){return '<a href="'+c[1]+'">'+esc(c[0])+'</a>'}).join('')+'</details>'}).join('')
 +'<h6>Marcas</h6><div class="nv-m">'+M.m.map(function(m){return '<a href="'+m[1]+'">'+esc(m[0])+'</a>'}).join('')+'</div>'
 +'<h6>Ayuda</h6>'+M.a.map(function(a){return '<a href="'+a[1]+'">'+esc(a[0])+'</a>'}).join('')+'<a class="nv-wa" href="https://wa.me/'+WA+'?text=Hola%2C%20necesito%20un%20repuesto" rel="noopener">💬 Escribir por WhatsApp</a></div></div>';
@@ -514,7 +515,7 @@ for p in PS:
     _cont, _faq2 = cont_seo(p)
     _hub = seccion("Más información y repuestos relacionados", '<div class="city-tags">' + f'<a href="{R_CAT(p["equipos_l"][0], p["categoria"])}">Más {esc(p["categoria"].lower())} para {esc(p["equipos_l"][0].lower())}</a><a href="{R_EQ(p["equipos_l"][0])}">Todos los repuestos para {esc(p["equipos_l"][0].lower())}</a>'
                    + (f'<a href="marca-{p["marca_s"]}.html">Repuestos {esc(p["marca_eq"])}</a>' if p["marca_eq"] not in ("", "Todas las marcas") else "")
-                   + '<a href="envios-a-toda-colombia.html">Envíos a toda Colombia</a><a href="envios-y-pagos.html">Medios de pago</a><a href="garantia-cambio-y-devolucion.html">Garantía y devolución</a><a href="como-encontrar-el-modelo-de-tu-electrodomestico.html">Cómo encontrar el modelo de tu equipo</a></div>', alt=True)
+                   + '<a href="envios-a-toda-colombia.html">Envíos a toda Colombia</a><a href="envios-y-pagos.html">Medios de pago</a><a href="garantia-cambio-y-devolucion.html">Garantía y devolución</a><a href="como-encontrar-el-modelo-de-tu-electrodomestico.html">Cómo encontrar el modelo de tu equipo</a></div>', alt=True) + seccion(f"{p['corto']} en tu ciudad", '<div class="city-tags">' + "".join(f'<a href="{p["slug"]}-en-{slug(c_)}.html">{esc(c_)}</a>' for c_ in cat_php["ciudades"][:N_CIU]) + "</div>")
     _faq3 = [(f"¿Cuánto cuesta {p['nombre'].lower()}?", (f"Cuesta {cop(p['precio'])} con envío gratis a toda Colombia." if p["precio"] else "Escríbenos por WhatsApp y te confirmamos el precio.")),
              ("¿Es un producto nuevo?", "Sí, nuevo y en su empaque."), ("¿Qué medios de pago aceptan?", "Tarjeta débito o crédito, PSE, Nequi, botón Bancolombia y efectivo contra entrega, sin recargo.")]
     preg = _faq2 + preg + _faq3
@@ -531,6 +532,80 @@ for p in PS:
         _t = p["nombre"]
     pagina(p["url"], _t, f"{p['nombre']}: {p['resumen'][:70].rstrip('. ')}. " + (f"{cop(p['precio'])} con envío gratis a toda Colombia y pago contra entrega." if p["precio"] else "Consulta el precio por WhatsApp. Envío a toda Colombia."),
            f"{p['nombre'].lower()}, {p['categoria'].lower()} {p['equipo'].lower()}, comprar {p['categoria'].lower()} colombia, {p['nombre'].lower()} precio, repuestos {p['equipo'].lower()} envio colombia", [("Inicio", "index.html"), (f"Repuestos para {p['equipo'].lower()}", R_EQ(p["equipo"])), (p["nombre"], None)], cuerpo, preg, [ld_producto(p)], prio="0.9", og=p["img"])
+
+# ---------------------------------------------------------------- páginas por ciudad: cada repuesto en cada ciudad principal + una por ciudad
+N_CIU = int(os.environ.get("TIENDA_CIUDADES", "20"))
+CIU_PAG = cat_php["ciudades"][:N_CIU]
+cp_url = lambda p, c: f"{p['slug']}-en-{slug(c)}.html"
+ch_url = lambda c: f"repuestos-en-{slug(c)}.html"
+PAGO_TXT = "tarjeta débito o crédito, PSE, Nequi o botón Bancolombia, o en efectivo contra entrega"
+for c in CIU_PAG:
+    for p in PS:
+        otras = "".join(f'<a href="{cp_url(p, o)}">{esc(p["corto"])} en {esc(o)}</a>' for o in CIU_PAG if o != c)
+        compat = ("Es compatible con: " + ", ".join(p["modelos"][:12]) + ".") if p["modelos"] else "Confirma que sirve para tu modelo escribiéndonos por WhatsApp con el modelo de tu equipo y una foto de la pieza."
+        precio = cop(p["precio"]) if p["precio"] else None
+        botones_c = (f'<div class="pay2"><button type="button" class="btn btn-solid" data-add="{p["id"]}" data-ir="1">💳 Comprar ahora<small>Pago en línea · Wompi</small></button><button type="button" class="btn cod" data-cod="{p["id"]}">🚚 Pago contra entrega<small>Llenas tus datos · pedido por WhatsApp</small></button></div>'
+                     if p["precio"] else f'<a class="btn btn-solid" href="{wa_pieza(p)}" rel="noopener">Consultar precio por WhatsApp</a>')
+        preg = [(f"¿Envían {p['nombre'].lower()} a {c}?", f"Sí. Enviamos a {c} por transportadora" + (", con envío gratis." if p["precio"] else ".") + " Al hacer el pedido te confirmamos el tiempo de entrega."),
+                (f"¿Puedo pagar contra entrega en {c}?", f"Sí. Si estás en {c} puedes pedir contra entrega: llenas tus datos, nos llega el pedido por WhatsApp con el precio de esta página y pagas en efectivo al recibir, sin recargo."),
+                (f"¿Cuánto cuesta {p['nombre'].lower()} en {c}?", (f"{precio} con envío gratis a {c}. Es el mismo precio en toda Colombia." if p["precio"] else "Escríbenos por WhatsApp y te confirmamos el precio.")),
+                ("¿Cómo sé si sirve para mi equipo?", compat)]
+        cuerpo = (f'<section class="hero hero-prod"><div class="wrap hero-grid"><div><span class="kicker">{esc(p["categoria"])} · Envío a {esc(c)}</span><h1>{esc(p["nombre"])} en {esc(c)}</h1>'
+                  f'<p class="sub" style="margin-top:16px;">Compra en línea {esc(p["nombre"].lower())} y recíbelo en {esc(c)}. {esc(p["resumen"])}</p>'
+                  + (f'<div class="hero-price">{precio} <small>COP · envío gratis a {esc(c)}</small></div>' if p["precio"] else "") + f'<div class="hero-cta">{botones_c}</div>'
+                  f'<p class="sub" style="margin-top:14px"><a href="{p["url"]}">Ver ficha técnica completa →</a></p></div>{galeria_html(p)}</div></section>'
+                  + seccion(f"Cómo comprar {p['corto'].lower()} en {c}", f'<ol class="vl"><li><b>Elige</b> «Comprar ahora» para pagar en línea con {PAGO_TXT.split(", o")[0]}, o «Pago contra entrega».</li><li><b>Llena tus datos</b> de entrega en {esc(c)}: nombre, celular, barrio y dirección.</li><li><b>Recíbelo</b> en {esc(c)}. Con contra entrega pagas en efectivo cuando llega, al precio fijo de esta página.</li></ol>')
+                  + seccion(f"Datos del repuesto para {c}", f'<p style="max-width:75ch">{esc(p["nombre"])} · {esc(p["categoria"])} para {esc(p["equipo_txt"])}. {esc(compat)} Medios de pago: {PAGO_TXT}. Envío a {esc(c)} por transportadora, con confirmación por correo y WhatsApp. Compra nueva, en su empaque, con 5 días hábiles de retracto.</p>', alt=True)
+                  + faq_html(preg) + seccion(f"{p['corto']} en otras ciudades", f'<div class="city-tags"><a href="{p["url"]}">Todo el país</a>{otras}</div>', alt=True)
+                  + seccion(f"Más repuestos en {c}", f'<div class="city-tags"><a href="{ch_url(c)}">Todos los repuestos en {esc(c)}</a><a href="{R_CAT(p["equipos_l"][0], p["categoria"])}">{esc(p["categoria"])} para {esc(p["equipos_l"][0].lower())}</a><a href="repuestos.html">Filtrar todos los repuestos</a></div>') + GAL_JS)
+        ld = [dict(ld_producto(p), **{"areaServed": {"@type": "City", "name": c}})]
+        pagina(cp_url(p, c), (f"{p['nombre']} en {c} | Envío gratis" if len(f"{p['nombre']} en {c} | Envío gratis") <= 66 else (f"{p['nombre']} en {c}" if len(f"{p['nombre']} en {c}") <= 66 else p["nombre"][:66 - len(f" en {c}")].rsplit(" ", 1)[0] + f" en {c}")),
+               f"Compra {p['nombre'].lower()} en {c}: " + (f"{precio} con envío gratis, " if p["precio"] else "") + "pago con Wompi o contra entrega en efectivo. Foto, compatibilidad y envío a " + c + ".",
+               f"{p['nombre'].lower()} {c.lower()}, comprar {p['categoria'].lower()} {c.lower()}, repuestos {p['equipo'].lower()} {c.lower()}, {p['categoria'].lower()} {p['equipo'].lower()} en {c.lower()} contra entrega",
+               [("Inicio", "index.html"), (f"Repuestos en {c}", ch_url(c)), (p["corto"], None)], cuerpo, preg, ld, prio="0.5", og=p["img"])
+    # portada de la ciudad
+    pag_lista(ch_url(c), f"Repuestos de línea blanca en {c} | Envío gratis", f"Repuestos para lavadoras y neveras en {c}: {CATS_TXT}. Envío gratis, pago con Wompi o contra entrega en {c}.",
+              f"repuestos lavadoras {c.lower()}, repuestos neveras {c.lower()}, repuestos linea blanca {c.lower()}, filtros de agua nevera {c.lower()}", f"Repuestos de línea blanca en {c}", PS,
+              f'<p style="max-width:75ch;margin-bottom:18px">Compra repuestos para tu lavadora o nevera y recíbelos en {esc(c)} con envío gratis. Pagas en línea con {PAGO_TXT.split(", o")[0]}, o contra entrega en efectivo al recibir. Cada pedido llega con foto, compatibilidad y precio fijo.</p>',
+              [("Inicio", "index.html"), (f"Repuestos en {c}", None)],
+              [(f"¿Hacen envíos a {c}?", f"Sí, enviamos a {c} por transportadora con envío gratis."), (f"¿Hay pago contra entrega en {c}?", "Sí, pagas en efectivo al recibir, sin recargo.")],
+              pie=seccion(f"Repuestos por categoría en {c}", '<div class="city-tags">' + "".join(f'<a href="{cp_url(p, c)}">{esc(p["corto"])} en {esc(c)}</a>' for p in PS) + "</div>", alt=True))
+
+# ---------------------------------------------------------------- catálogo con filtros por equipo, tipo, marca y precio
+_fa = []
+for p in PS:
+    _t = tarjeta(p).replace('<article class="tf-card"', f'<article class="tf-card" data-eq="{esc("|".join(p["equipos_l"]))}" data-c="{esc(p["categoria"])}" data-m="{esc(p["marca_eq"])}" data-p="{p["precio"] or 0}" data-n="{esc(p["nombre"].lower())}"', 1)
+    _fa.append(_t)
+_eqs_f = list(EQUIPOS)
+_cats_f = sorted({p["categoria"] for p in PS})
+_mar_f = sorted({p["marca_eq"] for p in PS if p["marca_eq"] and p["marca_eq"] != "Todas las marcas"})
+_chip = lambda k, v: f'<button type="button" class="fl-c" data-k="{k}" data-v="{esc(v)}">{esc(v)}</button>'
+FL = ('<div class="fl"><div class="fl-b"><input type="search" id="fl-q" placeholder="Buscar por nombre, referencia o modelo" aria-label="Buscar en el catálogo"></div>'
+      '<div class="fl-g"><span>Equipo</span><div>' + "".join(_chip("eq", e) for e in _eqs_f) + '</div></div>'
+      '<div class="fl-g"><span>Tipo de repuesto</span><div>' + "".join(_chip("c", c) for c in _cats_f) + '</div></div>'
+      '<div class="fl-g"><span>Marca del equipo</span><div>' + "".join(_chip("m", m) for m in _mar_f) + '</div></div>'
+      '<div class="fl-o"><b id="fl-n"></b><button type="button" id="fl-x" hidden>Quitar filtros</button><label>Ordenar <select id="fl-s"><option value="0">Recomendado</option><option value="1">Precio: menor a mayor</option><option value="2">Precio: mayor a menor</option></select></label></div>'
+      '<div class="tf-grid" id="fl-g">' + "".join(_fa) + '</div><p id="fl-0" hidden>No hay repuestos con esos filtros. <a href="https://wa.me/' + WA + '?text=Hola%2C%20busco%20un%20repuesto">Escríbenos por WhatsApp</a> y lo conseguimos.</p></div>')
+FL_JS = """<script>(function(){var g=document.getElementById('fl-g'),cs=[].slice.call(g.children),st={eq:'',c:'',m:'',q:'',s:'0'};
+function n(s){return String(s).toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'')}
+var u=new URLSearchParams(location.search);['eq','c','m'].forEach(function(k){if(u.get(k))st[k]=u.get(k)});cs.forEach(function(c,i){c.dataset.o=i});
+function draw(){var v=0,q=n(st.q);cs.forEach(function(c){var ok=(!st.eq||c.dataset.eq.split('|').indexOf(st.eq)>=0)&&(!st.c||c.dataset.c===st.c)&&(!st.m||c.dataset.m===st.m)&&(!q||n(c.dataset.n+' '+c.textContent).indexOf(q)>=0);c.hidden=!ok;if(ok)v++});
+document.querySelectorAll('.fl-c').forEach(function(b){var k=b.dataset.k,t=Object.assign({},st);t[k]=b.dataset.v;var any=cs.some(function(c){return (!t.eq||c.dataset.eq.split('|').indexOf(t.eq)>=0)&&(!t.c||c.dataset.c===t.c)&&(!t.m||c.dataset.m===t.m)});b.classList.toggle('on',st[k]===b.dataset.v);b.classList.toggle('off',!any)});document.getElementById('fl-n').textContent=v+' repuesto'+(v===1?'':'s');document.getElementById('fl-0').hidden=v>0;document.getElementById('fl-x').hidden=!(st.eq||st.c||st.m||st.q);
+var a=cs.slice().sort(function(x,y){return st.s==='1'?x.dataset.p-y.dataset.p:st.s==='2'?y.dataset.p-x.dataset.p:x.dataset.o-y.dataset.o});a.forEach(function(c){g.appendChild(c)});
+try{var p=new URLSearchParams();['eq','c','m'].forEach(function(k){if(st[k])p.set(k,st[k])});history.replaceState(null,'',p.toString()?'?'+p:location.pathname)}catch(e){}}
+document.querySelector('.fl').addEventListener('click',function(e){var b=e.target.closest('.fl-c');if(b){st[b.dataset.k]=st[b.dataset.k]===b.dataset.v?'':b.dataset.v;draw()}if(e.target.id==='fl-x'){st.eq=st.c=st.m=st.q='';document.getElementById('fl-q').value='';draw()}});
+document.getElementById('fl-q').addEventListener('input',function(){st.q=this.value;draw()});document.getElementById('fl-s').addEventListener('change',function(){st.s=this.value;draw()});draw()})();</script>"""
+pagina("repuestos.html", "Todos los repuestos | Filtra por equipo y tipo", f"Filtra los repuestos por nevera, lavadora o televisor, por tipo de pieza y por marca. {len(PS)} repuestos con foto, precio fijo, envío gratis y pago contra entrega.",
+       "repuestos nevera, repuestos lavadora, filtrar repuestos linea blanca, catalogo repuestos", [("Inicio", "index.html"), ("Todos los repuestos", None)],
+       hero_simple("Catálogo", "Todos los repuestos de línea blanca", "Elige tu equipo, el tipo de repuesto y la marca. Verás solo lo que le sirve a tu electrodoméstico.") + seccion("Filtrar repuestos", FL) + FL_JS, prio="0.9", og=PS[0]["img"])
+CSS_FL = """
+.fl-b input{width:100%;box-sizing:border-box;padding:14px 16px;border:1.5px solid #cfd8ee;border-radius:12px;font:400 16px Inter,sans-serif;margin-bottom:14px}
+.fl-g{margin-bottom:12px}.fl-g>span{display:block;font:700 .78rem Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1428a0;margin-bottom:8px}.fl-g>div{display:flex;flex-wrap:wrap;gap:8px}
+.fl-c{border:1.5px solid #cfd8ee;background:#fff;border-radius:999px;padding:9px 15px;font:600 .92rem Inter,sans-serif;cursor:pointer;color:#14213d}.fl-c.on{background:#1428a0;border-color:#1428a0;color:#fff}
+.fl-o{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin:18px 0 14px;font:600 .95rem Inter,sans-serif}.fl-o select{margin-left:6px;padding:9px 12px;border:1.5px solid #cfd8ee;border-radius:10px;font:500 .92rem Inter,sans-serif;background:#fff}#fl-x{border:0;background:none;color:#1428a0;text-decoration:underline;font:600 .92rem Inter,sans-serif;cursor:pointer}
+.tf-card[hidden]{display:none}.fl-c.off{opacity:.35}
+"""
+(OUT / "tema.css").write_text((OUT / "tema.css").read_text(encoding="utf-8") + CSS_FL, encoding="utf-8")
 
 # ---------------------------------------------------------------- guías y páginas de ayuda
 def pag_info(nombre, titulo, desc, kw, h1, cuerpo, preg=(), prio="0.6"):

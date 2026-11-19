@@ -326,7 +326,7 @@ def encabezado():
             '<div class="aq-row aq-wrap"><a class="aq-brand" href="index.html"><img src="img/logo-bm.png" alt="Repuestos de línea blanca" width="42" height="42"><span><b>Repuestos de línea blanca</b><small>Lavadoras · neveras · protectores</small></span></a>'
             '<form class="aq-search" role="search" onsubmit="return false">' + ICONOS["lupa"].replace("<svg", '<svg aria-hidden="true"') + '<input type="search" data-aq-q placeholder="Busca tu repuesto: manguera, protector de voltaje…" autocomplete="off" aria-label="Buscar repuesto"><div class="aq-res" hidden></div></form>'
             '<a class="aq-cart" href="carrito.php" aria-label="Ver carrito">🛒<span data-cart-n hidden></span></a><a class="aq-cta" href="index.html#repuestos">Ver repuestos</a></div>'
-            '<nav class="aq-nav" aria-label="Principal"><div class="aq-wrap"><a href="index.html">Inicio</a>'
+            '<nav class="aq-nav" aria-label="Principal"><div class="aq-wrap"><a href="index.html">Inicio</a><a href="repuestos.html"><b>Filtrar repuestos</b></a>'
             f'<details class="aq-dd"><summary>Equipos</summary><div class="aq-pop prod"><div class="aq-wrap">{eqs}</div></div></details>'
             f'<details class="aq-dd"><summary>Marcas</summary><div class="aq-pop prod"><div class="aq-wrap">{marcas}</div></div></details>'
             '<a href="como-elegir-repuesto-para-lavadora.html">¿Cuál necesito?</a><a href="como-encontrar-el-modelo-de-tu-electrodomestico.html">Tu modelo</a><a href="preguntas-frecuentes-repuestos.html">Preguntas</a><a href="envios-y-pagos.html">Envíos y pagos</a><a href="contacto.html">Contacto</a>'
