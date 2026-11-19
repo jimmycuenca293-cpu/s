@@ -300,7 +300,7 @@ def encabezado():
     marcas = "".join(f'<a href="marca-{slug(m)}.html"><span><b>{esc(m)}</b></span></a>' for m in MARCAS_EQ)
     return ('<div class="aq-h"><div class="aq-bar"><span>✔ Envío a toda Colombia</span><span>🔒 Pago seguro con Wompi · Contra entrega</span><a href="tel:+' + WA + '">' + TEL + '</a></div>'
             '<div class="aq-row aq-wrap"><a class="aq-brand" href="index.html"><img src="img/logo-bm.png" alt="Repuestos de línea blanca" width="42" height="42"><span><b>Repuestos de línea blanca</b><small>Lavadoras · neveras · protectores</small></span></a>'
-            '<form class="aq-search" role="search" onsubmit="return false">' + ICONOS["lupa"].replace("<svg", '<svg aria-hidden="true"') + '<input type="search" data-aq-q placeholder="Busca tu repuesto: manguera, presostato, protector…" autocomplete="off" aria-label="Buscar repuesto"><div class="aq-res" hidden></div></form>'
+            '<form class="aq-search" role="search" onsubmit="return false">' + ICONOS["lupa"].replace("<svg", '<svg aria-hidden="true"') + '<input type="search" data-aq-q placeholder="Busca tu repuesto: manguera, protector de voltaje…" autocomplete="off" aria-label="Buscar repuesto"><div class="aq-res" hidden></div></form>'
             '<a class="aq-cart" href="carrito.php" aria-label="Ver carrito">🛒<span data-cart-n hidden></span></a><a class="aq-cta" href="index.html#repuestos">Ver repuestos</a></div>'
             '<nav class="aq-nav" aria-label="Principal"><div class="aq-wrap"><a href="index.html">Inicio</a>'
             f'<details class="aq-dd"><summary>Equipos</summary><div class="aq-pop prod"><div class="aq-wrap">{eqs}</div></div></details>'

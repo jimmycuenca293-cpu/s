@@ -4,6 +4,8 @@ R_EQ = lambda eq: f"repuestos-para-{slug(eq)}.html"
 R_CAT = lambda eq, cat: f"{slug(cat)}-para-{slug(eq)}.html"
 R_EQM = lambda eq, m: f"repuestos-para-{slug(eq)}-{slug(m)}.html"
 EQ_LISTA = list(EQUIPOS)
+CATS_TXT = ", ".join(dict.fromkeys(c.lower() for p_ in PS for c in [p_["categoria"]]))
+HAY_PRESO = any(p_["categoria"] == "Presostatos" for p_ in PS)
 PREG_PV = {}
 
 
@@ -28,7 +30,7 @@ js = ("(function(){var D=" + json.dumps(items, ensure_ascii=False, separators=("
       "function buscar(q){q=n(q);if(!q)return[];var t=q.split(/ +/),o=[];for(var i=0;i<D.length;i++){var ok=true,sc=0;for(var j=0;j<t.length;j++){var p=X[i].indexOf(t[j]);if(p<0){ok=false;break}sc+=p===0?0:1}"
       "if(ok){var e=n(D[i][0]);o.push([sc+(e.indexOf(q)===0?-2:0),i])}}o.sort(function(a,b){return a[0]-b[0]});return o.slice(0,12).map(function(x){return D[x[1]]})}"
       "function pintar(caja,r,q){if(!q.trim()){caja.hidden=true;return}var g={},h='';r.forEach(function(x){(g[x[2]]=g[x[2]]||[]).push(x)});Object.keys(g).forEach(function(k){h+='<h6>'+k+'</h6>'+g[k].map(function(x){return '<a href=\"'+x[1]+'\"><span>'+x[0]+'</span><small>'+x[3]+'</small></a>'}).join('')});"
-      "caja.innerHTML=h||'<p>No encontramos «'+q.replace(/</g,'')+'». Prueba con manguera, presostato o protector.</p>';caja.hidden=false}"
+      "caja.innerHTML=h||'<p>No encontramos «'+q.replace(/</g,'')+'». Prueba con manguera o protector.</p>';caja.hidden=false}"
       "document.querySelectorAll('[data-aq-q]').forEach(function(i){var c=i.parentNode.querySelector('.aq-res');i.addEventListener('input',function(){pintar(c,buscar(i.value),i.value)});i.addEventListener('focus',function(){if(i.value)pintar(c,buscar(i.value),i.value)});"
       "i.addEventListener('keydown',function(e){if(e.key==='Enter'){var a=c.querySelector('a');if(a)location.href=a.getAttribute('href')}if(e.key==='Escape')c.hidden=true})});"
       "document.addEventListener('click',function(e){document.querySelectorAll('.aq-res').forEach(function(c){if(!c.parentNode.contains(e.target))c.hidden=true});document.querySelectorAll('.aq-nav details[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open')})});})();")
@@ -82,7 +84,7 @@ cats = [(eq, c, len(v)) for eq, cs in EQUIPOS.items() for c, v in cs.items()]
 sec_cat = seccion("Busca por tipo de pieza", '<div class="city-tags">' + "".join(f'<a href="{R_CAT(eq, c)}">{esc(c)} para {esc(eq.lower())} ({n})</a>' for eq, c, n in cats) + "</div>", alt=True)
 sec_marca = seccion("Repuestos por marca de electrodoméstico", '<div class="city-tags">' + "".join(f'<a href="marca-{slug(m)}.html">Repuestos {esc(m)}</a>' for m in MARCAS_EQ) + "</div><p class=\"note\" style=\"margin-top:14px\">¿No ves tu marca? Escríbenos con el modelo y te decimos si tenemos la pieza.</p>")
 qa_home = qa("¿Dónde comprar repuestos para lavadoras y neveras en Colombia?",
-             f"Aquí encuentras mangueras de entrada y de desagüe, presostatos y protectores de voltaje para lavadoras y neveras, con foto, precio y compatibilidad. Pagas en línea con Wompi o contra entrega y enviamos a toda Colombia. "
+             f"Aquí encuentras {CATS_TXT} para lavadoras y neveras, con foto, precio y compatibilidad. Pagas en línea con Wompi o contra entrega y enviamos a toda Colombia. "
              "Si no estás seguro de cuál es tu pieza, escríbenos por WhatsApp con el modelo de tu equipo.", [("Equipos", "Lavadoras y neveras"), ("Pago", "Wompi o contra entrega"), ("Envío", "Toda Colombia"), ("Retracto", "5 días hábiles")])
 tiles = [("caja", "Envío a toda Colombia", "Por transportadora, con confirmación por correo y WhatsApp."), ("candado", "Pago seguro", "Wompi (Bancolombia): tarjeta, PSE, Nequi o botón Bancolombia."),
          ("efectivo", "Contra entrega", "Paga en efectivo cuando recibas tu pedido, sin recargo."), ("retorno", "5 días de retracto", "Si no es lo que necesitas, lo cambiamos (sin usar y en su empaque).")]
@@ -92,8 +94,8 @@ FAQ_HOME = [("¿Cómo sé qué repuesto necesita mi lavadora?", "Mira el modelo 
             ("¿Cómo pago?", FPAGO), ("¿Hacen envíos a toda Colombia?", "Sí, por transportadora. El tiempo de entrega se confirma al hacer el pedido."), ("¿Los productos son nuevos?", "Sí, nuevos y en su empaque."),
             ("¿Hay retracto?", "Sí, 5 días hábiles desde la entrega, con el producto sin usar ni instalar y en su empaque.")]
 ld_home = [{"@type": "ItemList", "name": "Repuestos de línea blanca", "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": ld_producto(p)} for i, p in enumerate(PS)]}]
-pagina("index.html", "Repuestos de Línea Blanca | Lavadoras y Neveras | Envío a Colombia", "Repuestos para lavadoras y neveras: mangueras, presostatos y protectores de voltaje con foto, precio y compatibilidad. Paga con Wompi o contra entrega. Envío a toda Colombia.",
-       "repuestos linea blanca, repuestos lavadoras, repuestos neveras, mangueras lavadora, presostato lavadora, protector de voltaje, repuestos contra entrega, comprar repuestos lavadora",
+pagina("index.html", "Repuestos de Línea Blanca | Lavadoras y Neveras | Envío a Colombia", f"Repuestos para lavadoras y neveras: {CATS_TXT} con foto, precio y compatibilidad. Paga con Wompi o contra entrega. Envío a toda Colombia.",
+       "repuestos linea blanca, repuestos lavadoras, repuestos neveras, mangueras lavadora, protector de voltaje, repuestos contra entrega, comprar repuestos lavadora",
        [("Inicio", None)], hero + sec_eq.replace('<div class="aq-tiles">','<div class="aq-tiles eqt">') + estante + sec_cat + sec_marca + qa_home + confianza + seccion("Cómo comprar en 4 pasos", pasos, alt=True) + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=dest[0]["img"])
 
 # ---------------------------------------------------------------- páginas por equipo, tipo de pieza y marca
@@ -166,10 +168,10 @@ def pag_info(nombre, titulo, desc, kw, h1, cuerpo, preg=(), prio="0.6"):
     pagina(nombre, titulo, desc, kw, [("Inicio", "index.html"), (h1, None)], c, preg, prio=prio)
 
 
-pag_info("como-elegir-repuesto-para-lavadora.html", "Cómo elegir el repuesto de tu lavadora: mangueras y presostato", "Qué diferencia hay entre la manguera de entrada y la de desagüe, para qué sirve el presostato y cómo escoger la pieza correcta para tu lavadora.",
-         "como elegir manguera lavadora, manguera entrada o desague lavadora, presostato lavadora", "Cómo elegir el repuesto de tu lavadora",
-         seccion("Las piezas más cambiadas", "<ul class=\"spec-list\"><li><b>Manguera de entrada:</b> lleva el agua de la llave a la lavadora. Cada una trae un color de tuerca: azul para el agua fría y naranja para la caliente.</li><li><b>Manguera de desagüe:</b> saca el agua sucia al desagüe; las hay corrugadas, largas con extensión y con funda protectora.</li><li><b>Manguera tina-bomba:</b> va dentro de la lavadora y une la tina con la bomba de desagüe.</li><li><b>Presostato:</b> sensor que mide el nivel de agua dentro de la lavadora; se vende por marca y tipo (por ejemplo, inverter).</li></ul>") +
-         seccion("Cómo elegir", '<ol class="vl"><li>Identifica la pieza: entrada, desagüe, tina-bomba o presostato.</li><li>Compara la forma, el largo y las tuercas con tu pieza vieja.</li><li>En el presostato, confirma la marca y el modelo de tu lavadora.</li><li>Si dudas, escríbenos con una foto y el modelo.</li></ol>', alt=True), FAQ_HOME)
+pag_info("como-elegir-repuesto-para-lavadora.html", "Cómo elegir la manguera de tu lavadora: entrada, desagüe y tina-bomba", "Qué diferencia hay entre la manguera de entrada y la de desagüe y cómo escoger la pieza correcta para tu lavadora.",
+         "como elegir manguera lavadora, manguera entrada o desague lavadora", "Cómo elegir el repuesto de tu lavadora",
+         seccion("Las piezas más cambiadas", "<ul class=\"spec-list\"><li><b>Manguera de entrada:</b> lleva el agua de la llave a la lavadora. Cada una trae un color de tuerca: azul para el agua fría y naranja para la caliente.</li><li><b>Manguera de desagüe:</b> saca el agua sucia al desagüe; las hay corrugadas, largas con extensión y con funda protectora.</li><li><b>Manguera tina-bomba:</b> va dentro de la lavadora y une la tina con la bomba de desagüe.</li>"+("<li><b>Presostato:</b> sensor que mide el nivel de agua dentro de la lavadora; se vende por marca y tipo (por ejemplo, inverter).</li>" if HAY_PRESO else "")+"</ul>") +
+         seccion("Cómo elegir", '<ol class="vl"><li>Identifica la pieza: entrada, desagüe o tina-bomba.</li><li>Compara la forma, el largo y las tuercas con tu pieza vieja.</li><li>Si dudas, escríbenos con una foto y el modelo.</li></ol>', alt=True), FAQ_HOME)
 pag_info("como-encontrar-el-modelo-de-tu-electrodomestico.html", "Cómo encontrar el modelo de tu lavadora o nevera", "Dónde está la etiqueta del modelo en lavadoras y neveras y qué enviar por WhatsApp para confirmar que un repuesto le sirve.", "donde esta el modelo de mi lavadora, modelo de mi nevera, etiqueta modelo electrodomestico",
          "Cómo encontrar el modelo de tu electrodoméstico", seccion("Dónde mirar", "<ul class=\"spec-list\"><li><b>Lavadora:</b> en el marco de la puerta, en la parte trasera o en un costado.</li><li><b>Nevera:</b> dentro del refrigerador, en la pared lateral o cerca del cajón de verduras, y a veces atrás.</li></ul><p>Fotografía la etiqueta y la pieza dañada, y envíalas por WhatsApp para confirmar la compatibilidad.</p>"), FAQ_HOME)
 pag_info("preguntas-frecuentes-repuestos.html", "Preguntas frecuentes sobre repuestos de línea blanca", "Respuestas sobre compatibilidad, precios, envíos, pago contra entrega, garantía y retracto de los repuestos.", "preguntas frecuentes repuestos", "Preguntas frecuentes", "", FAQ_HOME)
