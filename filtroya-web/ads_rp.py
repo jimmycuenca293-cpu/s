@@ -38,7 +38,8 @@ def slug(n):
 
 # ---------------------------------------------------------------- datos (todo sale de repuestos/catalogo.csv)
 cat_php = json.loads(subprocess.run(["php", "-r", f'echo json_encode(require "{AQUI}/sitios/lg/api/catalogo.php");'], capture_output=True, text=True, check=True).stdout)
-ESPEC_PV = {"PV-BM-NEV": (10, 1, "4 minutos"), "PV-BM-LAV": (15, 2, "5 segundos"), "PV-BM-TV": (10, 2, "5 segundos")}
+ESPEC_PV = {"PV-BM-NEV": (10, 1, "4 minutos"), "PV-BM-LAV": (15, 2, "5 segundos"), "PV-BM-TV": (10, 2, "5 segundos"), "PV-MIST-15A": (15, 1, "5 segundos a 3 minutos")}
+EXTRA_PV = {"PV-MIST-15A": [("Modelo", "MST-PV110-1P-15A"), ("Supresor de picos", "140 J"), ("Garantía", "5 años, según el empaque del fabricante")]}
 FOTO_PV = {"PV-BM-NEV": "neveras", "PV-BM-LAV": "lavadoras", "PV-BM-TV": "televisores"}
 PLURAL = {"Lavadoras": "lavadoras", "Neveras": "neveras", "Televisores": "televisores"}
 PS = []
@@ -59,9 +60,10 @@ for r in csv.DictReader(open(RP / "catalogo.csv", encoding="utf-8-sig")):
     im.resize((480, 480), Image.LANCZOS).save(OUT / "img" / f"p-{pid}-480.webp", "WEBP", quality=82, method=6)
     precio = int(r["precio_venta"]) if r["precio_venta"].strip().isdigit() else None
     marca_eq = r["marca_equipo"].strip()
-    p = dict(id=pid, sku=sku, ref=r["referencia"].strip() or sku, nombre=r["nombre"].strip(), equipo=r["equipo"].strip(), equipo_s=slug(r["equipo"]), categoria=r["categoria"].strip(), cat_s=slug(r["categoria"]),
+    _eqs = [e.strip() for e in r["equipo"].split("|") if e.strip()]
+    p = dict(id=pid, sku=sku, ref=r["referencia"].strip() or sku, nombre=r["nombre"].strip(), equipo=_eqs[0], equipos_l=_eqs, equipo_txt=", ".join(e.lower() for e in _eqs[:-1]) + (" y " if len(_eqs) > 1 else "") + _eqs[-1].lower() if len(_eqs) > 1 else _eqs[0], equipo_s=slug(_eqs[0]), categoria=r["categoria"].strip(), cat_s=slug(r["categoria"]),
              marca_eq=marca_eq, marca_s=slug(marca_eq), marca_prod=r["marca_producto"].strip(), modelos=[m.strip() for m in r["modelos_compatibles"].split(",") if m.strip()], precio=precio, link=os.environ.get("WOMPI_" + sku.replace("-", "_"), ""),
-             desc=r["descripcion"].strip(), img=f"img/p-{pid}.webp", slug=slug(r["nombre"]), espec=ESPEC_PV.get(sku))
+             desc=r["descripcion"].strip(), img=f"img/p-{pid}.webp", slug=slug(r["nombre"]), espec=ESPEC_PV.get(sku), extra=EXTRA_PV.get(sku, []))
     p["url"] = p["slug"] + ".html"
     p["corto"] = p["nombre"]
     p["resumen"] = p["desc"] if p["desc"] and not p["desc"].startswith("Precio vigente") else f"{p['nombre']}."
@@ -69,7 +71,8 @@ for r in csv.DictReader(open(RP / "catalogo.csv", encoding="utf-8-sig")):
 PRECIO_MIN = min((p["precio"] for p in PS if p["precio"]), default=0)
 EQUIPOS = {}
 for p in PS:
-    EQUIPOS.setdefault(p["equipo"], {}).setdefault(p["categoria"], []).append(p)
+    for _e in p["equipos_l"]:
+        EQUIPOS.setdefault(_e, {}).setdefault(p["categoria"], []).append(p)
 MARCAS_EQ = sorted({p["marca_eq"] for p in PS if p["marca_eq"] and p["marca_eq"] != "Todas las marcas"})
 PAGINAS = []  # (nombre, prioridad, titulo, descripcion)
 shutil.copy(RP / "logo-512.png", OUT / "img" / "logo-bm.png")
@@ -216,7 +219,7 @@ def qa(titulo, respuesta, datos=None):
     if datos:
         d = '<ul class="qa-datos">' + "".join(f"<li><b>{esc(k)}</b>{esc(v)}</li>" for k, v in datos) + "</ul>"
     return (f'<section class="aq-qa-sec"><div class="wrap"><div class="qa" data-ia="respuesta"><p class="tag">⚡ Respuesta rápida</p><h2>{esc(titulo)}</h2><p>{respuesta}</p>{d}'
-            f'<p class="qa-meta">Información verificada · actualizada el {FECHA_LARGA} · Protectores Breakermatic con envío gratis a toda Colombia</p></div></div></section>')
+            f'<p class="qa-meta">Información verificada · actualizada el {FECHA_LARGA} · Envío a toda Colombia</p></div></div></section>')
 
 
 def seccion(h2, cuerpo, alt=False, sub=""):
@@ -323,7 +326,7 @@ def pie():
 
 
 def tarjeta(p, k=None):
-    feat = [p["categoria"] + " · " + p["equipo"], ("Para " + p["marca_eq"]) if p["marca_eq"] not in ("", "Todas las marcas") else "Sirve para varias marcas"]
+    feat = [p["categoria"] + " · " + p["equipo_txt"], ("Para " + p["marca_eq"]) if p["marca_eq"] not in ("", "Todas las marcas") else "Sirve para varias marcas"]
     if p["espec"]:
         feat.append(f"110 VAC · hasta {p['espec'][0]} A · {p['espec'][1]} toma(s)")
     elif p["ref"] != p["sku"]:

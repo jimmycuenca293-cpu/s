@@ -138,16 +138,16 @@ for p in PS:
         precio_t = f"Cuesta <b>{cop2(p['precio'])}</b>" + (" con envío gratis a toda Colombia." if True else ".")
     else:
         precio_t = "Escríbenos por WhatsApp para confirmar el precio y la disponibilidad."
-    compat = (f"Sirve para {', '.join(p['modelos'])}." if p["modelos"] else (f"Es compatible con lavadoras {p['marca_eq']}; confirma tu modelo por WhatsApp antes de comprar." if p["marca_eq"] not in ("", "Todas las marcas") else "Sirve para lavadoras de varias marcas; confirma con la descripción o escríbenos con el modelo."))
+    compat = (f"Sirve para {', '.join(p['modelos'])}." if p["modelos"] else (f"Es compatible con lavadoras {p['marca_eq']}; confirma tu modelo por WhatsApp antes de comprar." if p["marca_eq"] not in ("", "Todas las marcas") else (f"Sirve para {p['equipo_txt']} de varias marcas." if p["espec"] else "Sirve para lavadoras de varias marcas; confirma con la descripción o escríbenos con el modelo.")))
     qa_p = qa(f"{p['nombre']}: ¿qué es y para qué sirve?", f"{esc(p['resumen'])} {esc(compat)} {precio_t}",
-              [("Tipo", p["categoria"]), ("Equipo", p["equipo"]), ("Marca", p["marca_eq"] if p["marca_eq"] != "Todas las marcas" else "Varias"), ("Precio", cop(p["precio"]) if p["precio"] else "Consultar")])
-    filas = [("Tipo de pieza", p["categoria"]), ("Para", p["equipo"]), ("Marca del equipo", p["marca_eq"] or "Varias marcas")]
+              [("Tipo", p["categoria"]), ("Equipo", p["equipo_txt"].capitalize()), ("Marca", p["marca_prod"] if p["marca_prod"] and not p["marca_prod"].startswith("PENDIENTE") else p["marca_eq"] if p["marca_eq"] != "Todas las marcas" else "Varias"), ("Precio", cop(p["precio"]) if p["precio"] else "Consultar")])
+    filas = [("Tipo de pieza", p["categoria"]), ("Para", p["equipo_txt"].capitalize()), ("Marca del equipo", p["marca_eq"] or "Varias marcas")]
     if p["marca_prod"] and not p["marca_prod"].startswith("PENDIENTE"):
         filas.append(("Marca del producto", p["marca_prod"]))
     if p["ref"] != p["sku"]:
         filas.append(("Referencia", p["ref"]))
     if pv:
-        filas += [("Voltaje", "110 VAC · 50/60 Hz"), ("Corriente máxima", f"{pv[0]} A (aprox. {pv[0] * 110:,} W)".replace(",", ".")), ("Tomas", str(pv[1])), ("Ciclo de espera", pv[2])]
+        filas += [("Voltaje", "110 VAC · 50/60 Hz"), ("Corriente máxima", f"{pv[0]} A (aprox. {pv[0] * 110:,} W)".replace(",", ".")), ("Tomas", str(pv[1])), ("Ciclo de espera", pv[2])] + p["extra"]
     filas += [("Modelos compatibles", ", ".join(p["modelos"]) or "Confirma tu modelo por WhatsApp"), ("Precio", cop2(p["precio"]) + " COP" if p["precio"] else "Consultar por WhatsApp"), ("Pago", "Wompi (tarjeta, PSE, Nequi, Bancolombia) o contra entrega")]
     ficha = '<div class="tbl-wrap"><table class="spec-table">' + "".join(f"<tr><th>{esc(a)}</th><td>{esc(b)}</td></tr>" for a, b in filas) + "</table></div>"
     preg = [("¿Cómo sé si esta pieza sirve para mi equipo?", "Compara el modelo de tu equipo y la descripción de la pieza. Si no estás seguro, escríbenos por WhatsApp con el modelo y una foto de la pieza vieja."),
@@ -155,7 +155,7 @@ for p in PS:
     if pv:
         preg.append(("¿Sirve para equipos de 220 V?", "No. Este protector es de 110 VAC."))
     botones = ('<button type="button" class="btn btn-solid" data-add="' + p["id"] + '">🛒 Agregar al carrito</button><button type="button" class="btn" data-add="' + p["id"] + '" data-ir="1">Comprar ahora</button>') if p["precio"] else f'<a class="btn btn-solid" href="{wa_pieza(p)}" rel="noopener">Consultar precio por WhatsApp</a>'
-    cuerpo = (f'<section class="hero hero-prod"><div class="wrap hero-grid"><div><span class="kicker">{esc(p["categoria"])} · {esc(p["equipo"])}</span><h1>{esc(p["nombre"])}</h1>'
+    cuerpo = (f'<section class="hero hero-prod"><div class="wrap hero-grid"><div><span class="kicker">{esc(p["categoria"])} · {esc(p["equipo_txt"])}</span><h1>{esc(p["nombre"])}</h1>'
               f'<p class="sub" style="margin-top:16px;">{esc(p["resumen"])}</p>' + (f'<div class="hero-price">{cop(p["precio"])} <small>COP · envío gratis</small></div>' if p["precio"] else '<div class="hero-price" style="font-size:1.6rem">Consulta el precio</div>')
               + f'<div class="hero-cta">{botones}</div><p class="sub" style="margin-top:14px"><a href="{wa_pieza(p)}" rel="noopener">¿Dudas con tu modelo? Escríbenos →</a></p></div>{galeria_html(p)}</div></section>'
               + qa_p + seccion("Especificaciones", ficha) + faq_html(preg) + (seccion("Otros repuestos para " + p["equipo"].lower(), '<div class="tf-grid">' + "".join(tarjeta(x) for x in otros) + "</div>", alt=True) if otros else ""))
