@@ -30,7 +30,7 @@ for k, t in pages.items():
     cuerpo = re.sub(r"<script src=[^>]*></script>", "", cuerpo)
     views.append(f'<div class="vw" id="v-{k}" hidden>{enlaces(cuerpo)}</div>')
 css = "".join(open(f"{SITE}/{n}", encoding="utf-8").read() for n in ("tema.css", "pasarela.css", "aqua-shell.css", "estilo.css") if os.path.exists(f"{SITE}/{n}"))
-js = open(f"{SITE}/buscar.js", encoding="utf-8").read() + "\n" + (open(f"{SITE}/pedido.js", encoding="utf-8").read() + "\n" if os.path.exists(f"{SITE}/pedido.js") else "") + open(f"{SITE}/carrito.js", encoding="utf-8").read().replace('"/carrito.php"', '"#carrito"').replace('/carrito.php', '#carrito')
+js = open(f"{SITE}/buscar.js", encoding="utf-8").read() + "\n" + (open(f"{SITE}/pedido.js", encoding="utf-8").read() + "\n" if os.path.exists(f"{SITE}/pedido.js") else "") + (open(f"{SITE}/tech.js", encoding="utf-8").read() + "\n" if os.path.exists(f"{SITE}/tech.js") else "") + open(f"{SITE}/carrito.js", encoding="utf-8").read().replace('"/carrito.php"', '"#carrito"').replace('/carrito.php', '#carrito')
 out = f'''<title>{TITULO}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">

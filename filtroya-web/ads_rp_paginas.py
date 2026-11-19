@@ -31,7 +31,7 @@ HX_CSS = """
 .hx-p{background:#1428a0;color:#fff}.hx-p:hover{background:#0f1f80}.hx-w{background:#fff;color:#0f1f80;border:2px solid #1faa59}.hx-w:hover{background:#f0fbf4}
 .hx-u{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;color:#2a3a5c;font-weight:600;font-size:.95rem}.hx-u li:before{content:"✓";color:#1faa59;margin-right:8px;font-weight:800}
 .hx-r{display:grid;grid-template-columns:1fr 1fr;gap:14px}.hx-t{background:#fff;border:1px solid #e1e7f3;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;text-decoration:none;color:#0f1b33;box-shadow:0 8px 24px rgba(11,31,77,.06);transition:.2s}
-.hx-t:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(11,31,77,.12)}.hx-i{aspect-ratio:4/3;display:grid;place-items:center;background:#f4f7fc;border-radius:10px;overflow:hidden}.hx-i img{width:90%;height:90%;object-fit:contain}
+.hx-a{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:inherit}.hx-bt{display:grid;gap:6px;margin-top:8px}.hx-bt button{min-height:40px;border-radius:10px;font:700 .85rem Inter,sans-serif;cursor:pointer}.hx-bt .tf-add{background:#1428a0!important;color:#fff!important;border:0!important;border-radius:10px!important;box-shadow:none!important;width:auto!important;margin:0!important}.hx-bt .tf-cod{border-radius:10px!important}.hero-prod .pay2 .btn-solid{background:#1428a0!important;color:#fff!important}.hero-prod .pay2 .btn-solid small{color:#dbe3ff}.hx-bt .tf-cod{background:#fff;color:#1428a0;border:1.5px solid #1428a0;margin:0!important;width:auto!important}.hx-t:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(11,31,77,.12)}.hx-i{aspect-ratio:4/3;display:grid;place-items:center;background:#f4f7fc;border-radius:10px;overflow:hidden}.hx-i img{width:90%;height:90%;object-fit:contain}
 .hx-t b{font-size:.92rem;line-height:1.25;font-weight:700}.hx-t span{font-weight:800;color:#1428a0;font-size:1.05rem}
 @media(max-width:900px){.hx{padding:30px 0}.hx-g{grid-template-columns:1fr;gap:26px}.hx-u{grid-template-columns:1fr}.hx-b a{flex:1}}
 """
@@ -156,11 +156,12 @@ stage = ('<div class="aq-stage"><i></i><i></i><i></i><i></i>' + "".join(f'<a cla
          + '<span class="aq-price-tag">Repuestos para lavadoras y neveras · envío a toda Colombia</span></div>')
 _dest4 = [x for x in (next((p for p in PS if p["sku"] == "PV-MIST-15A"), None), next((p for p in PS if p["sku"] == "PV-BM-NEV"), None), next((p for p in PS if p["categoria"] == "Presostatos"), None), next((p for p in PS if p["categoria"].startswith("Mangueras")), None)) if x]
 _dest4 = (_dest4 + [x for x in PS if x not in _dest4])[:4]
-_tiles = "".join(f'<a class="hx-t" href="{x["url"]}"><div class="hx-i"><img src="{x["img"][:-5]}-480.webp" alt="{esc(x["nombre"])}" width="480" height="480" {"loading=eager" if i < 2 else "loading=lazy"}></div><b>{esc(x["nombre"])}</b><span>{cop(x["precio"]) if x["precio"] else "Consultar precio"}</span></a>' for i, x in enumerate(_dest4))
-hero = ('<section class="hx" id="inicio"><div class="wrap hx-g"><div class="hx-l"><span class="hx-k">Repuestos para lavadoras y neveras</span><h1>Repuestos de línea blanca con envío gratis y pago contra entrega</h1>'
-        '<p>Filtros de agua, mangueras, presostatos y protectores de voltaje con foto, precio y especificaciones. Pide por WhatsApp o paga en línea con Wompi, y recíbelo en tu casa.</p>'
+_btn = lambda x: (f'<div class="hx-bt"><button type="button" class="tf-add" data-add="{x["id"]}">🛒 Agregar</button><button type="button" class="tf-cod" data-cod="{x["id"]}">🚚 Contra entrega</button></div>' if x["precio"] else "")
+_tiles = "".join(f'<div class="hx-t"><a class="hx-a" href="{x["url"]}"><div class="hx-i"><img src="{x["img"][:-5]}-480.webp" alt="{esc(x["nombre"])}" width="480" height="480" {"loading=eager" if i < 2 else "loading=lazy"}></div><b>{esc(x["nombre"])}</b><span>{cop(x["precio"]) if x["precio"] else "Consultar precio"}</span></a>{_btn(x)}</div>' for i, x in enumerate(_dest4))
+hero = ('<section class="hx" id="inicio"><div class="wrap hx-g"><div class="hx-l"><span class="hx-k">Repuestos para lavadoras y neveras</span><h1>Repuestos para lavadoras y neveras, con todos los medios de pago</h1>'
+        '<p>Filtros de agua, mangueras, presostatos y protectores de voltaje con foto, precio y especificaciones. Paga como prefieras: tarjeta débito o crédito, PSE, Nequi, Bancolombia o efectivo contra entrega. Envío gratis a toda Colombia.</p>'
         f'<div class="hx-b"><a class="hx-p" href="#repuestos">Ver repuestos</a><a class="hx-w" href="https://wa.me/{WA}?text=Hola%2C%20necesito%20un%20repuesto" rel="noopener">Escribir por WhatsApp</a></div>'
-        '<ul class="hx-u"><li>Envío gratis a toda Colombia</li><li>Pago contra entrega</li><li>Pago seguro con Wompi</li><li>5 días de retracto</li></ul></div>'
+        '<ul class="hx-u"><li>Envío gratis a toda Colombia</li><li>Tarjeta, PSE, Nequi y Bancolombia</li><li>Contra entrega en efectivo</li><li>5 días de retracto</li></ul></div>'
         f'<div class="hx-r">{_tiles}</div></div></section>')
 tiles_eq = "".join(f'<a class="aq-tile" href="{R_EQ(eq)}"><b>Repuestos para {esc(eq.lower())}</b><p>{conteo(eq)} repuesto{"s" if conteo(eq) > 1 else ""}: {esc(", ".join(c.lower() for c in EQUIPOS[eq]))}.</p></a>' for eq in EQ_LISTA)
 sec_eq = seccion("Compra por equipo", f'<div class="aq-tiles">{tiles_eq}</div>', sub="Elige tu electrodoméstico y mira solo lo que le sirve.")
@@ -326,6 +327,56 @@ PC_CSS = """
 """
 (OUT / "tema.css").write_text((OUT / "tema.css").read_text(encoding="utf-8") + PC_CSS, encoding="utf-8")
 
+
+# ---------------------------------------------------------------- tecnología: asistente, verificador, barra de compra, vistos
+_tech = {x["id"]: {"n": x["nombre"], "u": x["url"], "p": x["precio"], "i": x["img"][:-5] + "-480.webp", "c": x["categoria"], "e": x["equipos_l"], "m": x["modelos"]} for x in PS}
+TECH_JS = """(function(){var T=%s,C=%s,WA='%s';
+function cop(n){return '$'+String(n).replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.')}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function nm(s){return String(s).toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9]+/g,'')}
+function ev(n,d){try{window.dataLayer=window.dataLayer||[];d=d||{};d.event=n;dataLayer.push(d)}catch(x){}}
+function wa(t){return 'https://wa.me/'+WA+'?text='+encodeURIComponent(t)}
+function card(id){var p=T[id];return '<div class="tk-c"><a href="'+p.u+'"><img src="'+p.i+'" alt="'+esc(p.n)+'" loading="lazy" width="240" height="240"><b>'+esc(p.n)+'</b><span>'+(p.p?cop(p.p):'Consultar precio')+'</span></a>'+(p.p?'<div class="hx-bt"><button type="button" class="tf-add" data-add="'+id+'">🛒 Agregar</button><button type="button" class="tf-cod" data-cod="'+id+'">🚚 Contra entrega</button></div>':'')+'</div>'}
+var ids=Object.keys(T);
+/* 1. Asistente: encuentra tu repuesto en 3 toques (solo inicio) */
+var host=document.getElementById('repuestos');
+if(host&&document.querySelector('.hx')){var eqs=[];ids.forEach(function(i){T[i].e.forEach(function(e){if(eqs.indexOf(e)<0)eqs.push(e)})});
+var sec=document.createElement('section');sec.className='aq-sec tk-f';sec.innerHTML='<div class="wrap"><h2>Encuentra tu repuesto en 3 toques</h2><p class="tk-s">Elige tu equipo y el tipo de pieza. Te mostramos solo lo que le sirve.</p><div class="tk-st" id="tk-st"></div><div class="tk-g" id="tk-g"></div></div>';host.parentNode.insertBefore(sec,host);
+var st={e:'',c:''};function pills(a,k,on){return a.map(function(x){return '<button type="button" class="tk-p'+(on===x?' on':'')+'" data-k="'+k+'" data-v="'+esc(x)+'">'+esc(x)+'</button>'}).join('')}
+function draw(){var h='<div><span>1. Mi equipo</span>'+pills(eqs,'e',st.e)+'</div>';if(st.e){var cs=[];ids.forEach(function(i){if(T[i].e.indexOf(st.e)>=0&&cs.indexOf(T[i].c)<0)cs.push(T[i].c)});h+='<div><span>2. Tipo de pieza</span>'+pills(cs,'c',st.c)+'</div>'}
+document.getElementById('tk-st').innerHTML=h;var g=document.getElementById('tk-g');if(st.e&&st.c){var r=ids.filter(function(i){return T[i].e.indexOf(st.e)>=0&&T[i].c===st.c});g.innerHTML='<p class="tk-n">'+r.length+' repuesto'+(r.length>1?'s':'')+' para '+esc(st.e.toLowerCase())+'</p><div class="tk-row">'+r.map(card).join('')+'</div><p class="tk-s"><a href="'+wa('Hola, busco '+st.c.toLowerCase()+' para '+st.e.toLowerCase()+'. Mi modelo es: ')+'" rel="noopener">¿No ves tu modelo? Escríbenos →</a></p>'}else g.innerHTML=''}
+sec.addEventListener('click',function(e){var b=e.target.closest('[data-k]');if(!b)return;st[b.dataset.k]=b.dataset.v;if(b.dataset.k==='e')st.c='';draw();ev('asistente_repuesto',{paso:b.dataset.k,valor:b.dataset.v})});draw()}
+/* 2. Producto: verificador de ciudad y de modelo, barra de compra */
+var ctas=document.querySelectorAll('.hero-cta'),pid,P;
+ctas.forEach(function(cta){var add=cta.querySelector('[data-add]');pid=add&&add.getAttribute('data-add');P=pid&&T[pid];if(!P)return;var bx=document.createElement('div');bx.className='tk-b';
+bx.innerHTML='<div class="tk-t"><label>¿Llega a tu ciudad?<input class="tk-ciu" list="tk-cl-'+pid+'" placeholder="Escribe tu ciudad"></label><datalist id="tk-cl-'+pid+'">'+C.map(function(c){return '<option value="'+esc(c)+'">'}).join('')+'</datalist><p class="tk-cr" hidden></p></div>'
++'<div class="tk-t"><label>¿Sirve para mi modelo?<input class="tk-mod" placeholder="Ej: WA17T6260BW"></label><p class="tk-mr" hidden></p></div>';cta.parentNode.insertBefore(bx,cta.nextSibling);
+bx.querySelector('.tk-ciu').addEventListener('change',function(){var v=this.value.trim(),r=bx.querySelector('.tk-cr'),ok=C.some(function(c){return nm(c)===nm(v)});r.hidden=!v;r.className=ok?'ok':'';r.innerHTML=ok?'✔ Sí enviamos a <b>'+esc(v)+'</b> con envío gratis. Puedes pagar con Wompi o contra entrega. El tiempo exacto te lo confirmamos al pedir.':'Escríbenos para confirmar el envío a «'+esc(v)+'»: <a href="'+wa('Hola, ¿envían a '+v+'? Me interesa: '+P.n)+'" rel="noopener">WhatsApp</a>';ev('verifica_ciudad',{ciudad:v,ok:ok})});
+bx.querySelector('.tk-mod').addEventListener('change',function(){var v=this.value.trim(),r=bx.querySelector('.tk-mr');if(!v){r.hidden=true;return}var q=nm(v),hit=P.m.some(function(m){var k=nm(m);return k&&(k.indexOf(q)>=0||q.indexOf(k)>=0)});r.hidden=false;r.className=hit?'ok':'';
+r.innerHTML=hit?'✔ <b>'+esc(v)+'</b> aparece en la lista de modelos compatibles de este repuesto.':'No aparece en nuestra lista. No lo descartes: <a href="'+wa('Hola, ¿este repuesto sirve para mi modelo '+v+'? '+P.n)+'" rel="noopener">confírmalo por WhatsApp</a> con una foto de tu pieza.';ev('verifica_modelo',{modelo:v,ok:hit})});
+if(ctas.length===1&&P.p){var sb=document.createElement('div');sb.className='tk-sb';sb.innerHTML='<div><b>'+esc(P.n)+'</b><span>'+cop(P.p)+' · envío gratis</span></div><button type="button" class="btn btn-solid" data-add="'+pid+'" data-ir="1">Comprar</button><button type="button" class="btn cod" data-cod="'+pid+'">Contra entrega</button>';document.body.appendChild(sb);
+var io=new IntersectionObserver(function(en){sb.classList.toggle('on',!en[0].isIntersecting&&en[0].boundingClientRect.top<0)});io.observe(cta)}
+if(ctas.length===1)try{var v=JSON.parse(localStorage.getItem('rp_vistos')||'[]').filter(function(x){return x!==pid});v.unshift(pid);localStorage.setItem('rp_vistos',JSON.stringify(v.slice(0,8)))}catch(x){}});
+/* 3. Vistos recientemente */
+try{var vs=JSON.parse(localStorage.getItem('rp_vistos')||'[]').filter(function(x){return T[x]&&x!==pid}).slice(0,4);var ft=document.querySelector('footer.aq-f');
+if(vs.length&&ft&&(P||document.querySelector('.hx'))){var s=document.createElement('section');s.className='aq-sec tk-f';s.innerHTML='<div class="wrap"><h2>Vistos recientemente</h2><div class="tk-row">'+vs.map(card).join('')+'</div></div>';ft.parentNode.insertBefore(s,ft)}}catch(x){}
+/* 4. Aparición suave de tarjetas y atajo "/" para buscar */
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion:reduce)').matches){var o=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('tk-in');o.unobserve(x.target)}})},{rootMargin:'0px 0px -40px 0px'});document.querySelectorAll('.tf-card,.aq-tile,.tk-c').forEach(function(c){c.classList.add('tk-r');o.observe(c)})}
+document.addEventListener('keydown',function(e){if(e.key==='/'&&!/INPUT|TEXTAREA/.test((document.activeElement||{}).tagName||'')){var i=document.querySelector('[data-aq-q]');if(i){e.preventDefault();i.focus()}}})})();""" % (json.dumps(_tech, ensure_ascii=False, separators=(",", ":")), json.dumps(_ciu, ensure_ascii=False, separators=(",", ":")), WA)
+(OUT / "tech.js").write_text(TECH_JS, encoding="utf-8")
+TECH_CSS = """
+.tk-f{padding:44px 0}.tk-f h2{margin:0 0 6px}.tk-s{color:#5b6478;margin:0 0 16px}.tk-st>div{margin-bottom:14px}.tk-st>div>span{display:block;font:700 .8rem Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#1428a0;margin-bottom:8px}
+.tk-p{border:1.5px solid #cfd8ee;background:#fff;border-radius:999px;padding:10px 16px;margin:0 8px 8px 0;font:600 .95rem Inter,sans-serif;cursor:pointer;color:#14213d;transition:.15s}.tk-p:hover{border-color:#1428a0}.tk-p.on{background:#1428a0;border-color:#1428a0;color:#fff}
+.tk-n{font-weight:700;margin:8px 0 12px}.tk-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.tk-c a{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:inherit}.tk-c{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid #e1e7f3;border-radius:16px;padding:12px;text-decoration:none;color:#14213d;transition:.2s}.tk-c:hover{box-shadow:0 10px 26px rgba(20,40,160,.14);transform:translateY(-3px)}.tk-c img{width:100%%;height:auto;aspect-ratio:1;object-fit:contain;border-radius:10px;background:#f4f7fc}.tk-c b{font-size:.88rem;line-height:1.3}.tk-c span{font-weight:800;color:#1428a0}
+.tk-b{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.tk-t{background:#f4f7fc;border:1px solid #e1e7f3;border-radius:14px;padding:12px 14px}.tk-t label{display:block;font:700 .85rem Inter,sans-serif;color:#2a3a5c}.tk-t input{display:block;width:100%%;margin-top:6px;padding:11px 12px;border:1.5px solid #cfd8ee;border-radius:10px;font:400 15px Inter,sans-serif;box-sizing:border-box;background:#fff}.tk-t p{margin:8px 0 0;font-size:.85rem;color:#5b6478}.tk-t p.ok{color:#14733d}
+@media(max-width:640px){.tk-b{grid-template-columns:1fr}}
+.tk-sb{position:fixed;left:0;right:0;bottom:0;z-index:900;background:#fff;border-top:1px solid #e1e7f3;box-shadow:0 -6px 24px rgba(11,31,77,.14);display:flex;align-items:center;gap:10px;padding:10px 16px;transform:translateY(110%%);transition:transform .25s}.tk-sb.on{transform:none}.tk-sb div{flex:1;min-width:0}.tk-sb b{display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tk-sb span{font-size:.8rem;color:#5b6478}.tk-sb .btn{min-height:44px;padding:0 16px;width:auto;white-space:nowrap}
+@media(max-width:560px){.tk-sb .cod{display:none}.aq-wa{bottom:76px}}
+.tk-r{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}.tk-r.tk-in{opacity:1;transform:none}
+"""
+(OUT / "tema.css").write_text((OUT / "tema.css").read_text(encoding="utf-8") + TECH_CSS.replace("%%", "%"), encoding="utf-8")
+
 # ---------------------------------------------------------------- fichas de producto
 for p in PS:
     otros = [x for x in PS if x is not p and x["equipo"] == p["equipo"]][:3]
@@ -418,10 +469,10 @@ for _f in list(OUT.glob("*.html")) + list(OUT.glob("*.php")) + list(OUT.glob("*.
         _f.write_text(_t2, encoding="utf-8")
 print(f"listo: {OUT} · {len(PAGINAS)} páginas · {len(PS)} repuestos")
 _V = {}
-for _f in ("tema.css", "buscar.js", "carrito.js", "pedido.js", "pasarela.css", "estilo.css"):
+for _f in ("tema.css", "buscar.js", "carrito.js", "pedido.js", "tech.js", "pasarela.css", "estilo.css"):
     if (OUT / _f).exists():
         _V[_f] = hashlib.md5((OUT / _f).read_bytes()).hexdigest()[:8]
-_pat = re.compile(r"""(["'])(/?)(tema\.css|buscar\.js|carrito\.js|pedido\.js|pasarela\.css|estilo\.css)(\?v=[\w]+)?(?=["'])""")
+_pat = re.compile(r"""(["'])(/?)(tema\.css|buscar\.js|carrito\.js|pedido\.js|tech\.js|pasarela\.css|estilo\.css)(\?v=[\w]+)?(?=["'])""")
 for _h in list(OUT.glob("*.html")) + list(OUT.glob("*.php")):
     _t = _h.read_text(encoding="utf-8")
     _t2 = _pat.sub(lambda m: f"{m.group(1)}{m.group(2)}{m.group(3)}?v={_V[m.group(3)]}" if m.group(3) in _V else m.group(0), _t)
