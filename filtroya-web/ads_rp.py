@@ -303,7 +303,7 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
             '<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">'
             '<link rel="stylesheet" href="tema.css?v=bm1"><link rel="stylesheet" href="pasarela.css">'
             f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>' + (f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>' if GTM else ""))
-    t = head + encabezado() + bc + cuerpo + pie() + '<a class="aq-up" href="' + ("#repuestos" if nombre == "index.html" else "index.html#repuestos") + '">↑ Ver repuestos</a><script>(function(){var a=document.querySelector(".aq-up");if(!a)return;function f(){a.classList.toggle("on",window.scrollY>700)}f();addEventListener("scroll",f,{passive:true})})();</script><script src="buscar.js" defer></script><script src="carrito.js" defer></script></body></html>'
+    t = head + encabezado() + bc + cuerpo + pie() + '<a class="aq-up" href="' + ("#repuestos" if nombre == "index.html" else "index.html#repuestos") + '">↑ Ver repuestos</a><script>(function(){var a=document.querySelector(".aq-up");if(!a)return;function f(){a.classList.toggle("on",window.scrollY>700)}f();addEventListener("scroll",f,{passive:true})})();</script><script src="buscar.js" defer></script><script src="carrito.js" defer></script><script>document.addEventListener("click",function(e){var a=e.target.closest("[data-cod]");if(a){window.dataLayer=window.dataLayer||[];dataLayer.push({event:"pedido_contraentrega_whatsapp",producto:a.getAttribute("data-cod")})}},true)</script></body></html>'
     (OUT / nombre).write_text(t, encoding="utf-8")
     PAGINAS.append((nombre, prio, titulo, desc))
     return t
@@ -348,7 +348,7 @@ def tarjeta(p, k=None):
     elif p["ref"] != p["sku"]:
         feat.append("Ref. " + p["ref"])
     if p["precio"]:
-        pie_t = f'<div class="tf-pr">{cop(p["precio"])}<small>COP · envío gratis</small></div><button type="button" class="tf-add" data-add="{p["id"]}">🛒 Agregar al carrito</button><button type="button" class="tf-cod" data-add="{p["id"]}" data-ir="1" data-pago="cod">🚚 Pagar contra entrega</button>'
+        pie_t = f'<div class="tf-pr">{cop(p["precio"])}<small>COP · envío gratis</small></div><button type="button" class="tf-add" data-add="{p["id"]}">🛒 Agregar al carrito</button><a class="tf-cod" href="{wa_cod(p)}" target="_blank" rel="noopener" data-cod="{p["id"]}">🚚 Pedir contra entrega por WhatsApp</a>'
     else:
         pie_t = f'<div class="tf-pr" style="font-size:1.1rem">Consulta el precio</div><a class="tf-add" style="text-align:center;text-decoration:none;display:block" href="{wa_pieza(p)}" rel="noopener">Consultar por WhatsApp</a>'
     return (f'<article class="tf-card"><a class="tf-img" href="{p["url"]}" aria-label="{esc(p["nombre"])}"><img src="{p["img"][:-5]}-480.webp" alt="{esc(p["nombre"])}" width="480" height="480" loading="lazy"></a>'

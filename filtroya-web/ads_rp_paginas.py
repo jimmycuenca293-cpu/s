@@ -65,6 +65,11 @@ def galeria_html(p, filas=None):
             f'<div class="g2-th">{th}</div><p class="g2-tip">Toca la foto para acercarla. Cambia de imagen con las miniaturas.</p></div>')
 
 
+def wa_cod(p):
+    q = __import__("urllib.parse").parse.quote
+    return f"https://wa.me/{WA}?text=" + q(f"Hola, quiero pedir contra entrega:\n• {p['nombre']}" + (f" (ref. {p['ref']})" if p["ref"] != p["sku"] else "") + f"\nPrecio: {cop(p['precio'])} (envío gratis)\n\nMi nombre:\nCiudad:\nBarrio y dirección:\nCelular:")
+
+
 def wa_pieza(p):
     return f"https://wa.me/{WA}?text=" + __import__("urllib.parse").parse.quote(f"Hola, quiero información de: {p['nombre']}" + (f" (ref. {p['ref']})" if p["ref"] != p["sku"] else "") + ". Mi modelo de equipo es: ")
 
@@ -92,6 +97,13 @@ js = ("(function(){var D=" + json.dumps(items, ensure_ascii=False, separators=("
 _src_lg = open(AQUI / "ads_lg_paginas.py", encoding="utf-8").read()
 _partes = _src_lg.split('(OUT / "partes.php").write_text(r"""')[1].split('""".replace("__AQH__"')[0].replace("/img/icono-lg.png", "/img/icono-bm.png")
 (OUT / "partes.php").write_text(_partes.replace("__AQH__", encabezado()).replace("__AQF__", pie()), encoding="utf-8")
+_g = (OUT / "gracias.php").read_text(encoding="utf-8")
+_wa_btn = ('    try { const d0 = JSON.parse(sessionStorage.getItem("fy_cod_" + cod) || "null"); const it = ((d0 && d0.items) || []).map(x => "• " + x.item_name + " x" + (x.quantity || 1)).join("\\n"); '
+           'const msg = "Hola, hice el pedido " + cod + " con pago contra entrega:\\n" + it + "\\nTotal: " + cop(d0 ? d0.total : 0) + " (envío gratis)"; '
+           'out.insertAdjacentHTML("beforeend", `<p style="margin-top:14px"><a class="btn" target="_blank" rel="noopener" href="https://wa.me/' + WA + '?text=${encodeURIComponent(msg)}">Enviar mi pedido por WhatsApp</a></p>`); } catch {}\n')
+_g = _g.replace('    try { localStorage.removeItem("fy_carrito"); } catch {}\n', '    try { localStorage.removeItem("fy_carrito"); } catch {}\n' + _wa_btn, 1)
+assert "Enviar mi pedido por WhatsApp" in _g
+(OUT / "gracias.php").write_text(_g, encoding="utf-8")
 _c = (OUT / "carrito.php").read_text(encoding="utf-8")
 _c = re.sub(r'Busca el filtro de tu nevecón por la referencia o por[^<]*', 'Elige los repuestos que necesitas para tu lavadora o tu nevera.', _c)
 _c = re.sub(r'(<label)([^>]*>(?:(?!</label>).)*Recuérdame por correo cuando toque cambiar el filtro)', r'\1 hidden\2', _c, flags=re.S)
@@ -207,7 +219,7 @@ for p in PS:
             ("¿Puedo pagar contra entrega?", FPAGO), ("¿Hacen envíos a toda Colombia?", "Sí, por transportadora; el tiempo se confirma al hacer el pedido."), ("¿Hay retracto?", "Sí, 5 días hábiles desde la entrega, con el producto sin usar ni instalar.")]
     if pv:
         preg.append(("¿Sirve para equipos de 220 V?", "No. Este protector es de 110 VAC."))
-    botones = (f'<div class="pay2"><button type="button" class="btn btn-solid" data-add="{p["id"]}" data-ir="1">💳 Comprar ahora<small>Pago en línea · Wompi</small></button><button type="button" class="btn cod" data-add="{p["id"]}" data-ir="1" data-pago="cod">🚚 Pago contra entrega<small>Pagas al recibir</small></button></div>'
+    botones = (f'<div class="pay2"><button type="button" class="btn btn-solid" data-add="{p["id"]}" data-ir="1">💳 Comprar ahora<small>Pago en línea · Wompi</small></button><a class="btn cod" href="{wa_cod(p)}" target="_blank" rel="noopener" data-cod="{p["id"]}">🚚 Pago contra entrega<small>Pedido por WhatsApp · pagas al recibir</small></a></div>'
                f'<p class="pay2-sec"><button type="button" data-add="{p["id"]}">🛒 Agregar al carrito y seguir comprando</button></p>') if p["precio"] else f'<a class="btn btn-solid" href="{wa_pieza(p)}" rel="noopener">Consultar precio por WhatsApp</a>'
     cuerpo = (f'<section class="hero hero-prod"><div class="wrap hero-grid"><div><span class="kicker">{esc(p["categoria"])} · {esc(p["equipo_txt"])}</span><h1>{esc(p["nombre"])}</h1>'
               f'<p class="sub" style="margin-top:16px;">{esc(p["resumen"])}</p>' + (f'<div class="hero-price">{cop(p["precio"])} <small>COP · envío gratis</small></div>' if p["precio"] else '<div class="hero-price" style="font-size:1.6rem">Consulta el precio</div>')
