@@ -34,7 +34,7 @@ h1{font-size:clamp(1.9rem,4.2vw,3rem);font-weight:800}h2{font-size:clamp(1.4rem,
 .top{background:var(--az);color:#fff;font-size:13px}.top .wrap{display:flex;justify-content:space-between;gap:12px;padding:8px 20px;flex-wrap:wrap}.top a{color:#fff;font-weight:600}
 header.h{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--bo);box-shadow:0 2px 10px rgba(10,30,80,.06)}
 .hr{display:flex;align-items:center;gap:18px;padding:12px 20px}.logo{white-space:nowrap;display:flex;align-items:center;gap:10px;font:700 21px Kameron,Georgia,serif;color:var(--az);text-decoration:none!important}
-.logo b{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--az),var(--az2));color:#fff;font-size:20px}
+.logo svg{flex:none;width:42px;height:42px}.logo b{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--az),var(--az2));color:#fff;font-size:20px}
 nav.m{display:flex;gap:4px;margin-left:12px;flex:1}nav.m a{white-space:nowrap;padding:9px 11px;border-radius:10px;color:var(--tx);font-weight:600;font-size:15px}nav.m a:hover{background:var(--bg);text-decoration:none}
 .bs{display:flex;align-items:center;background:var(--bg);border:1px solid var(--bo);border-radius:999px;padding:0 6px 0 14px;min-width:190px}@media(max-width:1380px){.bs{display:none}}.bs input{border:0;background:none;outline:none;padding:10px 6px;font:inherit;width:100%}.bs button{border:0;background:var(--az);color:#fff;border-radius:999px;width:34px;height:34px;cursor:pointer}
 .cartb{position:relative;display:flex;align-items:center;gap:8px;background:var(--az2);color:#fff!important;font-weight:700;padding:10px 16px;border-radius:10px;text-decoration:none!important}.cartb i{font-style:normal;background:#fff;color:var(--az);border-radius:999px;min-width:22px;height:22px;display:grid;place-items:center;font-size:12px}
@@ -65,19 +65,21 @@ footer.f{background:#123f43;color:#c9d6f7;padding:48px 0 24px;margin-top:0}foote
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 20px;border-radius:12px;z-index:90;display:none}
 @media(max-width:900px){.logo{font-size:16px}.logo b{width:36px;height:36px}.hr{gap:10px}.hr .logo{flex:1;min-width:0}.cartb{padding:9px 12px}.top .wrap span:last-child{display:none}nav.m{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;padding:10px 20px;border-bottom:1px solid var(--bo)}nav.m.o{display:flex}.burger{display:block}.hg,.ph{grid-template-columns:1fr}.bs{display:none}.hr{position:relative}.hero{padding:36px 0 44px}.wf .tp{display:none}.cartb span{display:none}.ph .big{min-height:200px;font-size:80px}}
 """
+TOKS = [x for x in os.environ.get("TIENDA_GSC", "").split(",") if x.strip()]
+TOK = "".join(f'<meta name="google-site-verification" content="{esc(x.strip())}">' for x in TOKS)
 def head(t, d, canon, extra=""):
     return (f'<!doctype html><html lang="es-CO"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(t)}</title><meta name="description" content="{esc(d)}">'
             f'<link rel="canonical" href="{DOM}/{canon}"><meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#0b2a6f"><meta property="og:title" content="{esc(t)}"><meta property="og:description" content="{esc(d)}"><meta property="og:type" content="website"><meta property="og:url" content="{DOM}/{canon}"><meta property="og:site_name" content="{esc(NOMBRE)}"><meta property="og:locale" content="es_CO">'
-            f'<meta name="geo.region" content="CO-VAC"><meta name="geo.placename" content="Cali"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 32\'%3E%3Crect width=\'32\' height=\'32\' rx=\'8\' fill=\'%230b2a6f\'/%3E%3Ctext x=\'16\' y=\'23\' font-size=\'20\' text-anchor=\'middle\' fill=\'white\'%3E%E2%9A%99%3C/text%3E%3C/svg%3E">'
+            f'<meta name="geo.region" content="CO-VAC"><meta name="geo.placename" content="Cali"><link rel="icon" type="image/svg+xml" href="@@R@@logo-mark.svg"><link rel="icon" type="image/png" href="@@R@@favicon.png"><link rel="apple-touch-icon" href="@@R@@logo-512.png"><meta property="og:image" content="{DOM}/og.jpg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{DOM}/og.jpg">{TOK}'
             f'<link href="https://fonts.googleapis.com/css2?family=Kameron:wght@500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="@@R@@tienda.css">{extra}</head><body>')
 def ld(o): return '<script type="application/ld+json">' + json.dumps(o, ensure_ascii=False) + "</script>"
-NEG = {"@type": ["Store", "LocalBusiness"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + WA, "priceRange": "$$",
+NEG = {"@type": ["Store", "LocalBusiness"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "logo": DOM + "/logo-512.png", "image": DOM + "/og.jpg", "telephone": "+" + WA, "priceRange": "$$",
        "address": {"@type": "PostalAddress", "streetAddress": DIR.split(",")[0] + ", " + DIR.split(",")[1].strip(), "addressLocality": CIUDAD, "addressRegion": "Valle del Cauca", "addressCountry": "CO"},
        "areaServed": {"@type": "Country", "name": "Colombia"}, "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}]}
 def header(act=""):
     nav = "".join(f'<a href="@@R@@{u}"{" aria-current=page" if act==u else ""}>{n}</a>' for u, n in [("", "Inicio"), ("tienda/", "Tienda"), ("como-encontrar-el-modelo/", "Tu modelo"), ("envios-pagos-y-garantias/", "Envíos y pagos"), ("nosotros/", "Nosotros"), ("contacto/", "Contacto")])
     return (f'<div class="top"><div class="wrap"><span>Repuestos para electrodomésticos Samsung · {CIUDAD}, Colombia</span><span>WhatsApp <a href="{wa("Hola, necesito un repuesto Samsung")}">{WAV}</a> · {esc(DIR.split(",")[0])}</span></div></div>'
-            f'<header class="h"><div class="wrap hr"><a class="logo" href="@@R@@"><b>⚙</b>{esc(NOMBRE)}</a><nav class="m" id="nav">{nav}</nav>'
+            f'<header class="h"><div class="wrap hr"><a class="logo" href="@@R@@"><svg viewBox="0 0 64 64" width="42" height="42" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo"><rect width="42" height="42" rx="16" fill="#1f6a70"/><polygon points="48.6,25.0 56.3,26.1 56.3,37.9 48.6,39.0 48.7,38.8 53.4,45.0 45.0,53.4 38.8,48.7 39.0,48.6 37.9,56.3 26.1,56.3 25.0,48.6 25.2,48.7 19.0,53.4 10.6,45.0 15.3,38.8 15.4,39.0 7.7,37.9 7.7,26.1 15.4,25.0 15.3,25.2 10.6,19.0 19.0,10.6 25.2,15.3 25.0,15.4 26.1,7.7 37.9,7.7 39.0,15.4 38.8,15.3 45.0,10.6 53.4,19.0 48.7,25.2" fill="#ffffff"/><circle cx="32" cy="32" r="9" fill="#1f6a70"/><circle cx="32" cy="32" r="4" fill="#D59529"/></svg>{esc(NOMBRE)}</a><nav class="m" id="nav">{nav}</nav>'
             f'<form class="bs" action="@@R@@tienda/" method="get" role="search"><input name="q" placeholder="Busca tu repuesto…" aria-label="Buscar repuesto"><button aria-label="Buscar">⌕</button></form>'
             f'<a class="cartb" href="@@R@@cotizacion/" aria-label="Mi cotización">🛒<span>Cotización</span><i id="cn">0</i></a><button class="burger" onclick="document.getElementById(\'nav\').classList.toggle(\'o\')" aria-label="Menú">☰</button></div></header>')
 def footer():
@@ -190,6 +192,7 @@ if(q&&L){var p=new URLSearchParams(location.search);if(p.get('q'))q.value=p.get(
 (function(){var im=document.querySelectorAll('.hero .sl img');if(im.length>1){var i=0;setInterval(function(){im[i].classList.remove('on');i=(i+1)%%im.length;im[i].classList.add('on')},5000)}})();c();r()})();""" % WA
 (OUT / "tienda.js").write_text(JS, encoding="utf-8")
 shutil.copytree(AQUI / "img", OUT / "img")
+for _f in ("logo-mark.svg", "favicon.png", "logo-512.png", "og.jpg"): shutil.copy(AQUI / _f, OUT / _f)
 urls = []
 for path, (t, prio) in PAGES.items():
     d = OUT / path; d.mkdir(parents=True, exist_ok=True); (d / "index.html").write_text(t, encoding="utf-8")
