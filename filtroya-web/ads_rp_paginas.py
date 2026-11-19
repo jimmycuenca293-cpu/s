@@ -165,7 +165,7 @@ hero = ('<section class="hx" id="inicio"><div class="wrap hx-g"><div class="hx-l
         f'<div class="hx-r">{_tiles}</div></div></section>')
 tiles_eq = "".join(f'<a class="aq-tile" href="{R_EQ(eq)}"><b>Repuestos para {esc(eq.lower())}</b><p>{conteo(eq)} repuesto{"s" if conteo(eq) > 1 else ""}: {esc(", ".join(c.lower() for c in EQUIPOS[eq]))}.</p></a>' for eq in EQ_LISTA)
 sec_eq = seccion("Compra por equipo", f'<div class="aq-tiles">{tiles_eq}</div>', sub="Elige tu electrodoméstico y mira solo lo que le sirve.")
-_grupos = [("Filtros de agua para nevera", lambda x: x["categoria"] == "Filtros de agua"), ("Mangueras para lavadora", lambda x: x["categoria"].startswith("Mangueras")), ("Presostatos para lavadora", lambda x: x["categoria"] == "Presostatos"), ("Filtros de motas para lavadora", lambda x: x["categoria"] == "Filtros de motas"), ("Protectores de voltaje", lambda x: x["categoria"] == "Protectores de voltaje")]
+_grupos = [("Filtros de agua para nevera", lambda x: x["categoria"] == "Filtros de agua"), ("Mangueras para lavadora", lambda x: x["categoria"].startswith("Mangueras")), ("Presostatos para lavadora", lambda x: x["categoria"] == "Presostatos"), ("Sensores de temperatura para nevera", lambda x: x["categoria"] == "Sensores de temperatura"), ("Filtros de motas para lavadora", lambda x: x["categoria"] == "Filtros de motas"), ("Protectores de voltaje", lambda x: x["categoria"] == "Protectores de voltaje")]
 _ids_cat = {}
 for _x in PS:
     _ids_cat.setdefault(_x["categoria"], (_x["equipo"], _x["categoria"]))
@@ -179,6 +179,12 @@ for _i, (_n, _f) in enumerate(_grupos):
     if _l:
         estante += seccion(_n, '<div class="tf-grid">' + "".join(tarjeta(x) for x in _l[:6]) + "</div>" + (_enlace_grupo(_n, _l) if len(_l) > 6 else ""), alt=bool(_i % 2)).replace('<section class="aq-sec">', '<section class="aq-sec estante-top" id="repuestos">' if _i == 0 else '<section class="aq-sec">', 1)
 cats = [(eq, c, len(v)) for eq, cs in EQUIPOS.items() for c, v in cs.items()]
+_pz = {}
+for _x in PS:
+    _pz.setdefault((_x["equipos_l"][0], _x["categoria"]), []).append(_x)
+sec_pz = seccion("Compra por tipo de pieza", '<div class="pz">' + "".join(
+    f'<a class="pz-t" href="{R_CAT(_e, _c)}"><span class="pz-i"><img src="{_v[0]["img"][:-5]}-480.webp" alt="{esc(_c)} para {esc(_e.lower())}" width="480" height="480" loading="lazy"></span><b>{esc(_c)}</b><small>para {esc(_e.lower())} · {len(_v)} producto{"s" if len(_v) > 1 else ""}</small>'
+    + (f'<em>desde {cop(min(x["precio"] for x in _v if x["precio"]))}</em>' if any(x["precio"] for x in _v) else "") + '</a>' for (_e, _c), _v in _pz.items()) + "</div>", sub="Elige la pieza que necesitas y entra directo a esa sección.")
 sec_cat = seccion("Busca por tipo de pieza", '<div class="city-tags">' + "".join(f'<a href="{R_CAT(eq, c)}">{esc(c)} para {esc(eq.lower())} ({n})</a>' for eq, c, n in cats) + "</div>", alt=True)
 sec_marca = seccion("Repuestos por marca de electrodoméstico", '<div class="city-tags">' + "".join(f'<a href="marca-{slug(m)}.html">Repuestos {esc(m)}</a>' for m in MARCAS_EQ) + "</div><p class=\"note\" style=\"margin-top:14px\">¿No ves tu marca? Escríbenos con el modelo y te decimos si tenemos la pieza.</p>")
 qa_home = qa("¿Dónde comprar repuestos para lavadoras y neveras en Colombia?",
@@ -194,44 +200,8 @@ FAQ_HOME = [("¿Cómo sé qué repuesto necesita mi lavadora?", "Mira el modelo 
 ld_home = [{"@type": "ItemList", "name": "Repuestos de línea blanca", "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": ld_producto(p)} for i, p in enumerate(PS)]}]
 pagina("index.html", "Repuestos de Línea Blanca | Lavadoras y Neveras | Envío a Colombia", f"Repuestos para lavadoras y neveras: {CATS_TXT} con foto, precio y compatibilidad. Paga con Wompi o contra entrega. Envío a toda Colombia.",
        "repuestos linea blanca, repuestos lavadoras, repuestos neveras, mangueras lavadora, protector de voltaje, repuestos contra entrega, comprar repuestos lavadora",
-       [("Inicio", None)], hero + estante + confianza + sec_eq.replace('<div class="aq-tiles">','<div class="aq-tiles eqt">') + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=dest[0]["img"])
+       [("Inicio", None)], hero + sec_pz + estante + confianza + sec_eq.replace('<div class="aq-tiles">','<div class="aq-tiles eqt">') + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=dest[0]["img"])
 
-# ---------------------------------------------------------------- páginas por equipo, tipo de pieza y marca
-def filtros_html(eq):
-    cs = EQUIPOS[eq]
-    marcas = sorted({p["marca_eq"] for c in cs.values() for p in c if p["marca_eq"] != "Todas las marcas"})
-    return ('<div class="city-tags"><b>Tipo de pieza:</b> ' + "".join(f'<a href="{R_CAT(eq, c)}">{esc(c)} ({len(v)})</a>' for c, v in cs.items()) + "</div>"
-            + ('<div class="city-tags" style="margin-top:10px"><b>Marca:</b> ' + "".join(f'<a href="{R_EQM(eq, m)}">{esc(m)}</a>' for m in marcas) + "</div>" if marcas else ""))
-
-
-def pag_lista(nombre, titulo, desc, kw, h1, lista, extra="", miga=None, faq=()):
-    cuerpo = (hero_simple("Repuestos de línea blanca", h1, desc) + seccion(h1, extra + '<div class="tf-grid">' + "".join(tarjeta(p) for p in lista) + "</div>")
-              + (faq_html(list(faq)) if faq else ""))
-    ld = [{"@type": "ItemList", "name": h1, "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{DOMINIO}/{p['url']}", "name": p["nombre"]} for i, p in enumerate(lista)]}]
-    pagina(nombre, titulo, desc, kw, miga or [("Inicio", "index.html"), (h1, None)], cuerpo, faq, ld, prio="0.8", og=lista[0]["img"])
-
-
-for eq, cs in EQUIPOS.items():
-    todos = [p for v in cs.values() for p in v]
-    pag_lista(R_EQ(eq), f"Repuestos para {eq} | Mangueras, Presostatos y más", f"Repuestos para {eq.lower()}: " + ", ".join(c.lower() for c in cs) + f". {len(todos)} producto(s) con foto, compatibilidad y pago contra entrega.",
-              f"repuestos para {eq.lower()}, repuestos {eq.lower()} colombia, comprar repuestos {eq.lower()}", f"Repuestos para {eq.lower()}", todos, filtros_html(eq))
-    for c, v in cs.items():
-        pag_lista(R_CAT(eq, c), f"{c} para {eq} | Precio y compatibilidad", f"{c} para {eq.lower()}: " + ", ".join(p["nombre"] for p in v[:3]) + ". Con foto, precio y pago contra entrega.",
-                  f"{c.lower()} para {eq.lower()}, comprar {c.lower()}, {c.lower()} {eq.lower()} precio", f"{c} para {eq.lower()}", v, "", [("Inicio", "index.html"), (f"Repuestos para {eq.lower()}", R_EQ(eq)), (c, None)])
-    marcas = sorted({p["marca_eq"] for p in todos if p["marca_eq"] != "Todas las marcas"})
-    for m in marcas:
-        v = [p for p in todos if p["marca_eq"] == m]
-        pag_lista(R_EQM(eq, m), f"Repuestos para {eq} {m} | Compatibles", f"Repuestos para {eq.lower()} {m}: " + ", ".join(p["nombre"] for p in v[:3]) + ".", f"repuestos {eq.lower()} {m.lower()}, {m.lower()} {eq.lower()} repuestos", f"Repuestos para {eq.lower()} {m}", v, "",
-                  [("Inicio", "index.html"), (f"Repuestos para {eq.lower()}", R_EQ(eq)), (m, None)])
-for m in MARCAS_EQ:
-    v = [p for p in PS if p["marca_eq"] == m]
-    pag_lista(f"marca-{slug(m)}.html", f"Repuestos {m} | Lavadoras y Neveras", f"Repuestos compatibles con electrodomésticos {m}: " + ", ".join(p["nombre"] for p in v[:3]) + ". Foto, precio y compatibilidad.", f"repuestos {m.lower()}, repuestos para {m.lower()}", f"Repuestos {m}", v,
-              "", [("Inicio", "index.html"), (f"Repuestos {m}", None)])
-
-
-# ---------------------------------------------------------------- SEO de cada producto para toda Colombia
-CIUDADES = sorted(cat_php["ciudades"], key=lambda c: slug(c))
-TOP_CIU = cat_php["ciudades"][:20]
 CONT = {
     "Filtros de agua": dict(
         que="El filtro de agua de la nevera limpia el agua y el hielo que salen del dispensador. Con el uso se satura, y por eso se cambia periódicamente: normalmente cada 6 meses de uso normal.",
@@ -258,6 +228,11 @@ CONT = {
         senales=["Salen motas o pelusas pegadas en la ropa después del lavado.", "El filtro está roto, deformado o la malla tiene huecos.", "Se perdió el filtro o ya no encaja bien en su lugar.", "El agua desagua más lento porque la pelusa se acumula."],
         elegir=["La marca de tu lavadora (este es para LG).", "El tamaño: esta referencia es la versión grande.", "Compara con el filtro viejo o escríbenos con el modelo de tu lavadora y una foto para confirmar que encaja."],
         faq=[("¿Cada cuánto se limpia el filtro de motas?", "Conviene limpiarlo con frecuencia, según el uso, y cambiarlo cuando esté roto, deformado o ya no retenga las motas."), ("¿Cómo sé si el filtro grande sirve para mi lavadora LG?", "Compáralo con el que tienes o envíanos por WhatsApp el modelo de tu lavadora y una foto del filtro viejo.")]),
+    "Sensores de temperatura": dict(
+        que="El sensor de temperatura de la nevera (termistor) le informa a la tarjeta qué tan frío está el compartimiento, para que encienda y apague el compresor y los ventiladores. Si falla, la nevera puede enfriar de más, no enfriar o mostrar un código de error.",
+        senales=["La nevera enfría de más o no enfría lo suficiente.", "El display muestra un código de error de sensor.", "El compresor trabaja sin parar o se apaga muy seguido.", "Estos síntomas también pueden venir de otras piezas: si dudas, escríbenos o consulta a un técnico."],
+        elegir=["La marca de tu nevera (este es para Samsung).", "La referencia impresa en el sensor viejo (por ejemplo, DA32-00006B).", "El conector y el color del cable: compáralos con tu sensor antes de pedir.", "Si no estás seguro, envíanos el modelo de tu nevera y una foto del sensor viejo."],
+        faq=[("¿Cómo sé si el sensor de temperatura de mi nevera está dañado?", "Los síntomas típicos son que enfríe de más, no enfríe o muestre un error de sensor, pero también pueden venir de otras piezas. Un técnico puede medirlo con un multímetro."), ("¿Cómo sé cuál sensor necesita mi nevera Samsung?", "Mira la referencia impresa en el sensor viejo o el modelo de tu nevera, y compáralos con la ficha del producto. Si dudas, escríbenos por WhatsApp.")]),
     "Presostatos": dict(
         que="El presostato es el sensor de nivel de agua de la lavadora: mide cuánta agua hay en la tina y le avisa a la tarjeta cuándo parar de llenar o empezar a lavar. Se vende por marca y tipo de lavadora.",
         senales=["La lavadora llena de más o no llena el agua que debe.", "No detecta el nivel de agua o muestra un error de nivel.", "El ciclo se detiene o repite el llenado sin avanzar.", "Estos síntomas pueden tener otras causas; un técnico confirma el diagnóstico."],
@@ -271,6 +246,53 @@ CONT = {
 }
 
 
+# ---------------------------------------------------------------- páginas por equipo, tipo de pieza y marca
+def cat_pie(c, eq, v):
+    k = CONT.get(c)
+    if not k:
+        return ""
+    otros = "".join(f'<a href="{R_CAT(e2, c2)}">{esc(c2)} para {esc(e2.lower())}</a>' for e2, cs2 in EQUIPOS.items() for c2 in cs2 if (e2, c2) != (eq, c))
+    return (seccion(f"Qué debes saber de {c.lower()} para {eq.lower()}", f"<p style=\"max-width:75ch\">{esc(k['que'])}</p>", alt=True)
+            + seccion("Cuándo cambiarla", "<ul class=\"spec-list\">" + "".join(f"<li>{esc(x)}</li>" for x in k["senales"]) + "</ul>")
+            + seccion("Cómo elegir la correcta", "<ul class=\"spec-list\">" + "".join(f"<li>{esc(x)}</li>" for x in k["elegir"]) + "</ul>", alt=True)
+            + seccion("También te puede interesar", f'<div class="city-tags">{otros}<a href="{R_EQ(eq)}">Todos los repuestos para {esc(eq.lower())}</a><a href="envios-a-toda-colombia.html">Envíos a toda Colombia</a></div>'))
+
+
+def filtros_html(eq):
+    cs = EQUIPOS[eq]
+    marcas = sorted({p["marca_eq"] for c in cs.values() for p in c if p["marca_eq"] != "Todas las marcas"})
+    return ('<div class="city-tags"><b>Tipo de pieza:</b> ' + "".join(f'<a href="{R_CAT(eq, c)}">{esc(c)} ({len(v)})</a>' for c, v in cs.items()) + "</div>"
+            + ('<div class="city-tags" style="margin-top:10px"><b>Marca:</b> ' + "".join(f'<a href="{R_EQM(eq, m)}">{esc(m)}</a>' for m in marcas) + "</div>" if marcas else ""))
+
+
+def pag_lista(nombre, titulo, desc, kw, h1, lista, extra="", miga=None, faq=(), pie=""):
+    cuerpo = (hero_simple("Repuestos de línea blanca", h1, desc) + seccion(h1, extra + '<div class="tf-grid">' + "".join(tarjeta(p) for p in lista) + "</div>") + pie
+              + (faq_html(list(faq)) if faq else ""))
+    ld = [{"@type": "ItemList", "name": h1, "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{DOMINIO}/{p['url']}", "name": p["nombre"]} for i, p in enumerate(lista)]}]
+    pagina(nombre, titulo, desc, kw, miga or [("Inicio", "index.html"), (h1, None)], cuerpo, faq, ld, prio="0.8", og=lista[0]["img"])
+
+
+for eq, cs in EQUIPOS.items():
+    todos = [p for v in cs.values() for p in v]
+    pag_lista(R_EQ(eq), f"Repuestos para {eq} | Mangueras, Presostatos y más", f"Repuestos para {eq.lower()}: " + ", ".join(c.lower() for c in cs) + f". {len(todos)} producto(s) con foto, compatibilidad y pago contra entrega.",
+              f"repuestos para {eq.lower()}, repuestos {eq.lower()} colombia, comprar repuestos {eq.lower()}", f"Repuestos para {eq.lower()}", todos, filtros_html(eq))
+    for c, v in cs.items():
+        pag_lista(R_CAT(eq, c), f"{c} para {eq} | Precio y compatibilidad", f"{c} para {eq.lower()}: " + ", ".join(p["nombre"] for p in v[:3]) + ". Con foto, precio y pago contra entrega.",
+                  f"{c.lower()} para {eq.lower()}, comprar {c.lower()}, {c.lower()} {eq.lower()} precio", f"{c} para {eq.lower()}", v, "", [("Inicio", "index.html"), (f"Repuestos para {eq.lower()}", R_EQ(eq)), (c, None)], faq=CONT.get(c, {}).get("faq", []), pie=cat_pie(c, eq, v))
+    marcas = sorted({p["marca_eq"] for p in todos if p["marca_eq"] != "Todas las marcas"})
+    for m in marcas:
+        v = [p for p in todos if p["marca_eq"] == m]
+        pag_lista(R_EQM(eq, m), f"Repuestos para {eq} {m} | Compatibles", f"Repuestos para {eq.lower()} {m}: " + ", ".join(p["nombre"] for p in v[:3]) + ".", f"repuestos {eq.lower()} {m.lower()}, {m.lower()} {eq.lower()} repuestos", f"Repuestos para {eq.lower()} {m}", v, "",
+                  [("Inicio", "index.html"), (f"Repuestos para {eq.lower()}", R_EQ(eq)), (m, None)])
+for m in MARCAS_EQ:
+    v = [p for p in PS if p["marca_eq"] == m]
+    pag_lista(f"marca-{slug(m)}.html", f"Repuestos {m} | Lavadoras y Neveras", f"Repuestos compatibles con electrodomésticos {m}: " + ", ".join(p["nombre"] for p in v[:3]) + ". Foto, precio y compatibilidad.", f"repuestos {m.lower()}, repuestos para {m.lower()}", f"Repuestos {m}", v,
+              "", [("Inicio", "index.html"), (f"Repuestos {m}", None)])
+
+
+# ---------------------------------------------------------------- SEO de cada producto para toda Colombia
+CIUDADES = sorted(cat_php["ciudades"], key=lambda c: slug(c))
+TOP_CIU = cat_php["ciudades"][:20]
 def cont_seo(p):
     c = CONT.get(p["categoria"])
     if not c:
@@ -326,6 +348,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 document.addEventListener('click',function(e){var b=e.target.closest('[data-cod]');if(b){e.preventDefault();var r=document.querySelector('.pc-rt');if(r)r.remove();abrir(b.getAttribute('data-cod'))}})})();""" % (json.dumps(_prods, ensure_ascii=False), json.dumps(_ciu, ensure_ascii=False), WA)
 (OUT / "pedido.js").write_text(PEDIDO_JS, encoding="utf-8")
 PC_CSS = """
+.pz{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px}.pz-t{display:flex;flex-direction:column;gap:4px;background:#fff;border:1px solid #e1e7f3;border-radius:16px;padding:14px;text-decoration:none;color:#14213d;transition:.2s}.pz-t:hover{box-shadow:0 12px 28px rgba(20,40,160,.15);transform:translateY(-3px)}
+.pz-i{display:grid;place-items:center;aspect-ratio:1;background:#f4f7fc;border-radius:12px;margin-bottom:8px;overflow:hidden}.pz-i img{width:88%;height:88%;object-fit:contain}.pz-t b{font-size:1rem}.pz-t small{color:#5b6478}.pz-t em{font-style:normal;font-weight:800;color:#1428a0}
+@media(max-width:560px){.pz{grid-template-columns:1fr 1fr;gap:12px}}
 .pc-ok{text-align:center;padding:8px 0}.pc-ic{width:64px;height:64px;border-radius:50%;background:#e3f6ea;color:#1faa59;font-size:34px;display:grid;place-items:center;margin:0 auto 12px}.pc-ok h2{margin:0 0 8px}.pc-ok p{color:#3d4b6b;margin:0 0 14px}.pc-a{display:flex!important;align-items:center;justify-content:center;text-decoration:none}.pc-c2{width:100%;min-height:48px;border:1.5px solid #cfd8ee;background:#fff;border-radius:12px;font:700 1rem Inter,sans-serif;cursor:pointer;margin-top:10px;color:#14213d}
 .pc-rt{position:fixed;left:12px;right:12px;bottom:76px;z-index:4000;max-width:460px;margin:0 auto;display:flex;background:#0b1f4d;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);overflow:hidden}.pc-rt button{border:0;background:none;color:#fff;font:600 .92rem Inter,sans-serif;padding:14px 16px;cursor:pointer;text-align:left;flex:1}.pc-rt b{color:#ffc21a}.pc-rt .pc-rx{flex:0 0 48px;font-size:22px;text-align:center;padding:0}
 .pc-s{position:sticky;bottom:0}.pc-b form{padding-bottom:4px}
@@ -487,13 +512,18 @@ for p in PS:
     if pv:
         preg.append(("¿Sirve para equipos de 220 V?", "No. Este protector es de 110 VAC."))
     _cont, _faq2 = cont_seo(p)
-    preg = _faq2 + preg
+    _hub = seccion("Más información y repuestos relacionados", '<div class="city-tags">' + f'<a href="{R_CAT(p["equipos_l"][0], p["categoria"])}">Más {esc(p["categoria"].lower())} para {esc(p["equipos_l"][0].lower())}</a><a href="{R_EQ(p["equipos_l"][0])}">Todos los repuestos para {esc(p["equipos_l"][0].lower())}</a>'
+                   + (f'<a href="marca-{p["marca_s"]}.html">Repuestos {esc(p["marca_eq"])}</a>' if p["marca_eq"] not in ("", "Todas las marcas") else "")
+                   + '<a href="envios-a-toda-colombia.html">Envíos a toda Colombia</a><a href="envios-y-pagos.html">Medios de pago</a><a href="garantia-cambio-y-devolucion.html">Garantía y devolución</a><a href="como-encontrar-el-modelo-de-tu-electrodomestico.html">Cómo encontrar el modelo de tu equipo</a></div>', alt=True)
+    _faq3 = [(f"¿Cuánto cuesta {p['nombre'].lower()}?", (f"Cuesta {cop(p['precio'])} con envío gratis a toda Colombia." if p["precio"] else "Escríbenos por WhatsApp y te confirmamos el precio.")),
+             ("¿Es un producto nuevo?", "Sí, nuevo y en su empaque."), ("¿Qué medios de pago aceptan?", "Tarjeta débito o crédito, PSE, Nequi, botón Bancolombia y efectivo contra entrega, sin recargo.")]
+    preg = _faq2 + preg + _faq3
     botones = (f'<div class="pay2"><button type="button" class="btn btn-solid" data-add="{p["id"]}" data-ir="1">💳 Comprar ahora<small>Pago en línea · Wompi</small></button><button type="button" class="btn cod" data-cod="{p["id"]}">🚚 Pago contra entrega<small>Llenas tus datos · pedido por WhatsApp</small></button></div>'
                f'<p class="pay2-sec"><button type="button" data-add="{p["id"]}">🛒 Agregar al carrito y seguir comprando</button></p>') if p["precio"] else f'<a class="btn btn-solid" href="{wa_pieza(p)}" rel="noopener">Consultar precio por WhatsApp</a>'
     cuerpo = (f'<section class="hero hero-prod"><div class="wrap hero-grid"><div><span class="kicker">{esc(p["categoria"])} · {esc(p["equipo_txt"])}</span><h1>{esc(p["nombre"])}</h1>'
               f'<p class="sub" style="margin-top:16px;">{esc(p["resumen"])}</p>' + (f'<div class="hero-price">{cop(p["precio"])} <small>COP · envío gratis</small></div>' if p["precio"] else '<div class="hero-price" style="font-size:1.6rem">Consulta el precio</div>')
               + f'<div class="hero-cta">{botones}</div><p class="sub" style="margin-top:14px"><a href="{wa_pieza(p)}" rel="noopener">¿Dudas con tu modelo? Escríbenos →</a></p></div>{galeria_html(p, filas)}</div></section>'
-              + qa_p + seccion("Especificaciones", ficha) + _cont + faq_html(preg) + (seccion("Otros repuestos para " + p["equipo"].lower(), '<div class="tf-grid">' + "".join(tarjeta(x) for x in otros) + "</div>", alt=True) if otros else "") + GAL_JS)
+              + qa_p + seccion("Especificaciones", ficha) + _cont + _hub + faq_html(preg) + (seccion("Otros repuestos para " + p["equipo"].lower(), '<div class="tf-grid">' + "".join(tarjeta(x) for x in otros) + "</div>", alt=True) if otros else "") + GAL_JS)
     _t = f"{p['nombre']} | Envío a toda Colombia"
     if len(_t) > 66:
         _t = f"{p['nombre']} | Colombia"
