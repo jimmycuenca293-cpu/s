@@ -5,3 +5,4 @@ sitios-ads/
 *.zip
 # Claves y pedidos: nunca al repositorio
 src/api/config.php
+tienda/.modelos/
