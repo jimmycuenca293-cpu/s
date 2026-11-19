@@ -7,7 +7,10 @@ from collections import deque
 from PIL import Image, ImageFilter
 UMBRAL = 246  # qué tan blanco debe ser un píxel para contarse como fondo
 def procesar(ruta, destino, lado=1200):
-    im = Image.open(ruta).convert("RGB"); w, h = im.size; px = im.load()
+    im = Image.open(ruta)
+    if im.mode in ("RGBA", "LA", "P"):
+        im = im.convert("RGBA"); _b = Image.new("RGBA", im.size, (255, 255, 255, 255)); _b.alpha_composite(im); im = _b
+    im = im.convert("RGB"); w, h = im.size; px = im.load()
     fondo = [[False] * w for _ in range(h)]
     q = deque()
     for x in range(w):
