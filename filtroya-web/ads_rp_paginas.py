@@ -165,7 +165,7 @@ hero = ('<section class="hx" id="inicio"><div class="wrap hx-g"><div class="hx-l
         f'<div class="hx-r">{_tiles}</div></div></section>')
 tiles_eq = "".join(f'<a class="aq-tile" href="{R_EQ(eq)}"><b>Repuestos para {esc(eq.lower())}</b><p>{conteo(eq)} repuesto{"s" if conteo(eq) > 1 else ""}: {esc(", ".join(c.lower() for c in EQUIPOS[eq]))}.</p></a>' for eq in EQ_LISTA)
 sec_eq = seccion("Compra por equipo", f'<div class="aq-tiles">{tiles_eq}</div>', sub="Elige tu electrodoméstico y mira solo lo que le sirve.")
-_grupos = [("Filtros de agua para nevera", lambda x: x["categoria"] == "Filtros de agua"), ("Mangueras para lavadora", lambda x: x["categoria"].startswith("Mangueras")), ("Presostatos para lavadora", lambda x: x["categoria"] == "Presostatos"), ("Protectores de voltaje", lambda x: x["categoria"] == "Protectores de voltaje")]
+_grupos = [("Filtros de agua para nevera", lambda x: x["categoria"] == "Filtros de agua"), ("Mangueras para lavadora", lambda x: x["categoria"].startswith("Mangueras")), ("Presostatos para lavadora", lambda x: x["categoria"] == "Presostatos"), ("Filtros de motas para lavadora", lambda x: x["categoria"] == "Filtros de motas"), ("Protectores de voltaje", lambda x: x["categoria"] == "Protectores de voltaje")]
 _ids_cat = {}
 for _x in PS:
     _ids_cat.setdefault(_x["categoria"], (_x["equipo"], _x["categoria"]))
@@ -253,6 +253,11 @@ CONT = {
         senales=["Sale agua por debajo de la lavadora.", "La manguera interna está agrietada, aplastada o suelta.", "La lavadora no desagua bien después de revisar la manguera externa."],
         elegir=["Que tenga la forma y el largo de la que vas a cambiar.", "Es una pieza interna: te recomendamos que la cambie un técnico.", "Envíanos una foto de la pieza vieja para confirmar."],
         faq=[("¿La manguera tina-bomba se instala sola?", "Va dentro de la lavadora y exige abrirla. Recomendamos que la cambie un técnico y que desconecte la lavadora de la corriente antes.")]),
+    "Filtros de motas": dict(
+        que="El filtro de motas de la lavadora atrapa pelusas e hilos que se sueltan de la ropa durante el lavado, para que no vuelvan a quedar en las prendas ni tapen el desagüe. Con el tiempo se llena, se rompe o se deforma y hay que cambiarlo.",
+        senales=["Salen motas o pelusas pegadas en la ropa después del lavado.", "El filtro está roto, deformado o la malla tiene huecos.", "Se perdió el filtro o ya no encaja bien en su lugar.", "El agua desagua más lento porque la pelusa se acumula."],
+        elegir=["La marca de tu lavadora (este es para LG).", "El tamaño: esta referencia es la versión grande.", "Compara con el filtro viejo o escríbenos con el modelo de tu lavadora y una foto para confirmar que encaja."],
+        faq=[("¿Cada cuánto se limpia el filtro de motas?", "Conviene limpiarlo con frecuencia, según el uso, y cambiarlo cuando esté roto, deformado o ya no retenga las motas."), ("¿Cómo sé si el filtro grande sirve para mi lavadora LG?", "Compáralo con el que tienes o envíanos por WhatsApp el modelo de tu lavadora y una foto del filtro viejo.")]),
     "Presostatos": dict(
         que="El presostato es el sensor de nivel de agua de la lavadora: mide cuánta agua hay en la tina y le avisa a la tarjeta cuándo parar de llenar o empezar a lavar. Se vende por marca y tipo de lavadora.",
         senales=["La lavadora llena de más o no llena el agua que debe.", "No detecta el nivel de agua o muestra un error de nivel.", "El ciclo se detiene o repite el llenado sin avanzar.", "Estos síntomas pueden tener otras causas; un técnico confirma el diagnóstico."],
