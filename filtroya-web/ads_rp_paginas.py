@@ -227,7 +227,7 @@ CONT = {
     "Filtros de motas": dict(
         que="El filtro de motas de la lavadora atrapa pelusas e hilos que se sueltan de la ropa durante el lavado, para que no vuelvan a quedar en las prendas ni tapen el desagüe. Con el tiempo se llena, se rompe o se deforma y hay que cambiarlo.",
         senales=["Salen motas o pelusas pegadas en la ropa después del lavado.", "El filtro está roto, deformado o la malla tiene huecos.", "Se perdió el filtro o ya no encaja bien en su lugar.", "El agua desagua más lento porque la pelusa se acumula."],
-        elegir=["La marca de tu lavadora (este es para LG).", "El tamaño: esta referencia es la versión grande.", "Compara con el filtro viejo o escríbenos con el modelo de tu lavadora y una foto para confirmar que encaja."],
+        elegir=["La marca de tu lavadora (este es para LG).", "El tamaño y la forma: compáralos con tu filtro viejo (con bolsa de malla, redondo o de marco).", "Compara con el filtro viejo o escríbenos con el modelo de tu lavadora y una foto para confirmar que encaja."],
         faq=[("¿Cada cuánto se limpia el filtro de motas?", "Conviene limpiarlo con frecuencia, según el uso, y cambiarlo cuando esté roto, deformado o ya no retenga las motas."), ("¿Cómo sé si el filtro grande sirve para mi lavadora LG?", "Compáralo con el que tienes o envíanos por WhatsApp el modelo de tu lavadora y una foto del filtro viejo.")]),
     "Sensores de temperatura": dict(
         que="El sensor de temperatura de la nevera (termistor) le informa a la tarjeta qué tan frío está el compartimiento, para que encienda y apague el compresor y los ventiladores. Si falla, la nevera puede enfriar de más, no enfriar o mostrar un código de error.",
