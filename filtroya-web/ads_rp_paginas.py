@@ -4,6 +4,11 @@ N_CIU = int(os.environ.get("TIENDA_CIUDADES", "20"))
 R_EQ = lambda eq: f"repuestos-para-{slug(eq)}.html"
 R_CAT = lambda eq, cat: f"{slug(cat)}-para-{slug(eq)}.html"
 R_EQM = lambda eq, m: f"repuestos-para-{slug(eq)}-{slug(m)}.html"
+MT = {}
+for _p in PS:
+    if _p["marca_eq"] and _p["marca_eq"] != "Todas las marcas":
+        MT.setdefault((_p["equipos_l"][0], _p["categoria"], _p["marca_eq"]), []).append(_p)
+mt_url = lambda eq, c, m: f"{slug(c)}-para-{slug(eq)}-{slug(m)}.html"
 EQ_LISTA = list(EQUIPOS)
 CATS_TXT = ", ".join(dict.fromkeys(c.lower() for p_ in PS for c in [p_["categoria"]]))
 HAY_PRESO = any(p_["categoria"] == "Presostatos" for p_ in PS)
@@ -91,7 +96,7 @@ def wa_pieza(p):
 
 
 # ---------------------------------------------------------------- buscador del encabezado
-ARTS_BASE = [("Cómo elegir el repuesto de tu lavadora", "como-elegir-repuesto-para-lavadora.html"), ("Cómo encontrar el modelo de tu electrodoméstico", "como-encontrar-el-modelo-de-tu-electrodomestico.html"),
+ARTS_BASE = [("Guías de repuestos", "guias-de-repuestos.html"), ("Cómo elegir el repuesto de tu lavadora", "como-elegir-repuesto-para-lavadora.html"), ("Cómo encontrar el modelo de tu electrodoméstico", "como-encontrar-el-modelo-de-tu-electrodomestico.html"),
              ("Preguntas frecuentes", "preguntas-frecuentes-repuestos.html"), ("Envíos y pagos", "envios-y-pagos.html"), ("Garantía, cambio y devolución", "garantia-cambio-y-devolucion.html")]
 items = [[p["nombre"], p["url"], "Repuesto", cop(p["precio"]) if p["precio"] else "consultar precio"] for p in PS]
 items += [[f"Repuestos para {eq.lower()}", R_EQ(eq), "Equipo", ""] for eq in EQ_LISTA]
@@ -187,6 +192,7 @@ sec_pz = seccion("Compra por tipo de pieza", '<p style="margin:0 0 16px"><a clas
     f'<a class="pz-t" href="{R_CAT(_e, _c)}"><span class="pz-i"><img src="{_v[0]["img"][:-5]}-480.webp" alt="{esc(_c)} para {esc(_e.lower())}" width="480" height="480" loading="lazy"></span><b>{esc(_c)}</b><small>para {esc(_e.lower())} · {len(_v)} producto{"s" if len(_v) > 1 else ""}</small>'
     + (f'<em>desde {cop(min(x["precio"] for x in _v if x["precio"]))}</em>' if any(x["precio"] for x in _v) else "") + '</a>' for (_e, _c), _v in _pz.items()) + "</div>", sub="Elige la pieza que necesitas y entra directo a esa sección.")
 sec_cat = seccion("Busca por tipo de pieza", '<div class="city-tags">' + "".join(f'<a href="{R_CAT(eq, c)}">{esc(c)} para {esc(eq.lower())} ({n})</a>' for eq, c, n in cats) + "</div>", alt=True)
+sec_mt = seccion("Busca por marca y tipo de repuesto", '<div class="city-tags">' + "".join(f'<a href="{mt_url(e3, c3, m3)}">{esc(c3)} {esc(m3)}</a>' for (e3, c3, m3) in MT) + "</div>", alt=True)
 sec_marca = seccion("Repuestos por marca de electrodoméstico", '<div class="city-tags">' + "".join(f'<a href="marca-{slug(m)}.html">Repuestos {esc(m)}</a>' for m in MARCAS_EQ) + "</div><p class=\"note\" style=\"margin-top:14px\">¿No ves tu marca? Escríbenos con el modelo y te decimos si tenemos la pieza.</p>")
 qa_home = qa("¿Dónde comprar repuestos para lavadoras y neveras en Colombia?",
              f"Aquí encuentras {CATS_TXT} para lavadoras y neveras, con foto, precio y compatibilidad. Pagas en línea con Wompi o contra entrega y enviamos a toda Colombia. "
@@ -201,7 +207,7 @@ FAQ_HOME = [("¿Cómo sé qué repuesto necesita mi lavadora?", "Mira el modelo 
 ld_home = [{"@type": "ItemList", "name": "Repuestos de línea blanca", "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": ld_producto(p)} for i, p in enumerate(PS)]}]
 pagina("index.html", "Repuestos de Línea Blanca | Lavadoras y Neveras | Envío a Colombia", f"Repuestos para lavadoras y neveras: {CATS_TXT} con foto, precio y compatibilidad. Paga con Wompi o contra entrega. Envío a toda Colombia.",
        "repuestos linea blanca, repuestos lavadoras, repuestos neveras, mangueras lavadora, protector de voltaje, repuestos contra entrega, comprar repuestos lavadora",
-       [("Inicio", None)], hero + sec_pz + estante + confianza + seccion("Repuestos con envío a tu ciudad", '<div class="city-tags">' + "".join(f'<a href="repuestos-en-{slug(c_)}.html">Repuestos en {esc(c_)}</a>' for c_ in cat_php["ciudades"][:N_CIU]) + '</div><p style="margin-top:12px"><a href="envios-a-toda-colombia.html">Ver todas las ciudades con envío →</a></p>', alt=True) + sec_eq.replace('<div class="aq-tiles">','<div class="aq-tiles eqt">') + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=dest[0]["img"])
+       [("Inicio", None)], hero + sec_pz + estante + confianza + seccion("Repuestos con envío a tu ciudad", '<div class="city-tags">' + "".join(f'<a href="repuestos-en-{slug(c_)}.html">Repuestos en {esc(c_)}</a>' for c_ in cat_php["ciudades"][:N_CIU]) + '</div><p style="margin-top:12px"><a href="envios-a-toda-colombia.html">Ver todas las ciudades con envío →</a></p>', alt=True) + sec_mt + sec_eq.replace('<div class="aq-tiles">','<div class="aq-tiles eqt">') + faq_html(FAQ_HOME), FAQ_HOME, ld_home, prio="1.0", og=dest[0]["img"])
 
 CONT = {
     "Filtros de agua": dict(
@@ -268,6 +274,7 @@ def cat_pie(c, eq, v):
     if not k:
         return ""
     otros = "".join(f'<a href="{R_CAT(e2, c2)}">{esc(c2)} para {esc(e2.lower())}</a>' for e2, cs2 in EQUIPOS.items() for c2 in cs2 if (e2, c2) != (eq, c))
+    otros += "".join(f'<a href="{mt_url(e3, c3, m3)}">{esc(c3)} para {esc(e3.lower())} {esc(m3)}</a>' for (e3, c3, m3) in MT if (e3, c3) == (eq, c))
     return (seccion(f"Qué debes saber de {c.lower()} para {eq.lower()}", f"<p style=\"max-width:75ch\">{esc(k['que'])}</p>", alt=True)
             + seccion("Cuándo cambiarla", "<ul class=\"spec-list\">" + "".join(f"<li>{esc(x)}</li>" for x in k["senales"]) + "</ul>")
             + seccion("Cómo elegir la correcta", "<ul class=\"spec-list\">" + "".join(f"<li>{esc(x)}</li>" for x in k["elegir"]) + "</ul>", alt=True)
@@ -299,11 +306,11 @@ for eq, cs in EQUIPOS.items():
     for m in marcas:
         v = [p for p in todos if p["marca_eq"] == m]
         pag_lista(R_EQM(eq, m), f"Repuestos para {eq} {m} | Compatibles", f"Repuestos para {eq.lower()} {m}: " + ", ".join(p["nombre"] for p in v[:3]) + ".", f"repuestos {eq.lower()} {m.lower()}, {m.lower()} {eq.lower()} repuestos", f"Repuestos para {eq.lower()} {m}", v, "",
-                  [("Inicio", "index.html"), (f"Repuestos para {eq.lower()}", R_EQ(eq)), (m, None)])
+                  [("Inicio", "index.html"), (f"Repuestos para {eq.lower()}", R_EQ(eq)), (m, None)], pie=seccion(f"{m}: por tipo de repuesto", '<div class="city-tags">' + "".join(f'<a href="{mt_url(e3, c3, m3)}">{esc(c3)} para {esc(e3.lower())} {esc(m3)}</a>' for (e3, c3, m3) in MT if m3 == m and e3 == eq) + "</div>", alt=True))
 for m in MARCAS_EQ:
     v = [p for p in PS if p["marca_eq"] == m]
     pag_lista(f"marca-{slug(m)}.html", f"Repuestos {m} | Lavadoras y Neveras", f"Repuestos compatibles con electrodomésticos {m}: " + ", ".join(p["nombre"] for p in v[:3]) + ". Foto, precio y compatibilidad.", f"repuestos {m.lower()}, repuestos para {m.lower()}", f"Repuestos {m}", v,
-              "", [("Inicio", "index.html"), (f"Repuestos {m}", None)])
+              "", [("Inicio", "index.html"), (f"Repuestos {m}", None)], pie=seccion(f"Repuestos {m} por tipo", '<div class="city-tags">' + "".join(f'<a href="{mt_url(e3, c3, m3)}">{esc(c3)} para {esc(e3.lower())} {esc(m3)}</a>' for (e3, c3, m3) in MT if m3 == m) + "</div>", alt=True))
 
 
 # ---------------------------------------------------------------- SEO de cada producto para toda Colombia
@@ -535,7 +542,7 @@ for p in PS:
         preg.append(("¿Sirve para equipos de 220 V?", "No. Este protector es de 110 VAC."))
     _cont, _faq2 = cont_seo(p)
     _hub = seccion("Más información y repuestos relacionados", '<div class="city-tags">' + f'<a href="{R_CAT(p["equipos_l"][0], p["categoria"])}">Más {esc(p["categoria"].lower())} para {esc(p["equipos_l"][0].lower())}</a><a href="{R_EQ(p["equipos_l"][0])}">Todos los repuestos para {esc(p["equipos_l"][0].lower())}</a>'
-                   + (f'<a href="marca-{p["marca_s"]}.html">Repuestos {esc(p["marca_eq"])}</a>' if p["marca_eq"] not in ("", "Todas las marcas") else "")
+                   + (f'<a href="marca-{p["marca_s"]}.html">Repuestos {esc(p["marca_eq"])}</a><a href="{mt_url(p["equipos_l"][0], p["categoria"], p["marca_eq"])}">{esc(p["categoria"])} para {esc(p["equipos_l"][0].lower())} {esc(p["marca_eq"])}</a>' if p["marca_eq"] not in ("", "Todas las marcas") else "")
                    + '<a href="envios-a-toda-colombia.html">Envíos a toda Colombia</a><a href="envios-y-pagos.html">Medios de pago</a><a href="garantia-cambio-y-devolucion.html">Garantía y devolución</a><a href="como-encontrar-el-modelo-de-tu-electrodomestico.html">Cómo encontrar el modelo de tu equipo</a></div>', alt=True) + seccion(f"{p['corto']} en tu ciudad", '<div class="city-tags">' + "".join(f'<a href="{p["slug"]}-en-{slug(c_)}.html">{esc(c_)}</a>' for c_ in cat_php["ciudades"][:N_CIU]) + "</div>")
     _faq3 = [(f"¿Cuánto cuesta {p['nombre'].lower()}?", (f"Cuesta {cop(p['precio'])} con envío gratis a toda Colombia." if p["precio"] else "Escríbenos por WhatsApp y te confirmamos el precio.")),
              ("¿Es un producto nuevo?", "Sí, nuevo y en su empaque."), ("¿Qué medios de pago aceptan?", "Tarjeta débito o crédito, PSE, Nequi, botón Bancolombia y efectivo contra entrega, sin recargo.")]
@@ -609,7 +616,7 @@ FL = ('<div class="fl"><div class="fl-b"><input type="search" id="fl-q" placehol
       '<div class="tf-grid" id="fl-g">' + "".join(_fa) + '</div><p id="fl-0" hidden>No hay repuestos con esos filtros. <a href="https://wa.me/' + WA + '?text=Hola%2C%20busco%20un%20repuesto">Escríbenos por WhatsApp</a> y lo conseguimos.</p></div>')
 FL_JS = """<script>(function(){var g=document.getElementById('fl-g'),cs=[].slice.call(g.children),st={eq:'',c:'',m:'',q:'',s:'0'};
 function n(s){return String(s).toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'')}
-var u=new URLSearchParams(location.search);['eq','c','m'].forEach(function(k){if(u.get(k))st[k]=u.get(k)});cs.forEach(function(c,i){c.dataset.o=i});
+var u=new URLSearchParams(location.search);['eq','c','m'].forEach(function(k){if(u.get(k))st[k]=u.get(k)});if(u.get('q')){st.q=u.get('q');document.getElementById('fl-q').value=st.q}cs.forEach(function(c,i){c.dataset.o=i});
 function draw(){var v=0,q=n(st.q);cs.forEach(function(c){var ok=(!st.eq||c.dataset.eq.split('|').indexOf(st.eq)>=0)&&(!st.c||c.dataset.c===st.c)&&(!st.m||c.dataset.m===st.m)&&(!q||n(c.dataset.n+' '+c.textContent).indexOf(q)>=0);c.hidden=!ok;if(ok)v++});
 document.querySelectorAll('.fl-c').forEach(function(b){var k=b.dataset.k,t=Object.assign({},st);t[k]=b.dataset.v;var any=cs.some(function(c){return (!t.eq||c.dataset.eq.split('|').indexOf(t.eq)>=0)&&(!t.c||c.dataset.c===t.c)&&(!t.m||c.dataset.m===t.m)});b.classList.toggle('on',st[k]===b.dataset.v);b.classList.toggle('off',!any)});document.getElementById('fl-n').textContent=v+' repuesto'+(v===1?'':'s');document.getElementById('fl-0').hidden=v>0;document.getElementById('fl-x').hidden=!(st.eq||st.c||st.m||st.q);
 var a=cs.slice().sort(function(x,y){return st.s==='1'?x.dataset.p-y.dataset.p:st.s==='2'?y.dataset.p-x.dataset.p:x.dataset.o-y.dataset.o});a.forEach(function(c){g.appendChild(c)});
@@ -627,6 +634,75 @@ CSS_FL = """
 .tf-card[hidden]{display:none}.fl-c.off{opacity:.35}
 """
 (OUT / "tema.css").write_text((OUT / "tema.css").read_text(encoding="utf-8") + CSS_FL, encoding="utf-8")
+
+# ---------------------------------------------------------------- páginas por marca y tipo de repuesto (ej. «Filtros de agua para nevera Samsung»)
+for (eq, c, m), v in MT.items():
+    k = CONT.get(c, {})
+    refs = ", ".join(x["ref"] for x in v if x["ref"] != x["sku"])[:140]
+    intro = (f'<p style="max-width:75ch;margin-bottom:18px">{esc(c)} para {esc(eq.lower())} {esc(m)}: {len(v)} opción{"es" if len(v) > 1 else ""} con foto, precio fijo y envío gratis a toda Colombia'
+             + (f' (referencias {esc(refs)})' if refs else "") + f'. Pagas en línea o contra entrega en efectivo. Compáralas con tu pieza actual y, si dudas, escríbenos con el modelo de tu {esc(eq.lower().rstrip("s"))} {esc(m)}.</p>')
+    pie_mt = (seccion(f"Cómo elegir {c.lower()} para {eq.lower()} {m}", "<ul class=\"spec-list\">" + "".join(f"<li>{esc(x)}</li>" for x in k.get("elegir", [])) + "</ul>", alt=True) if k else "") \
+        + seccion("Más repuestos relacionados", f'<div class="city-tags"><a href="{R_CAT(eq, c)}">Todos: {esc(c.lower())} para {esc(eq.lower())}</a><a href="{R_EQM(eq, m)}">Repuestos para {esc(eq.lower())} {esc(m)}</a><a href="marca-{slug(m)}.html">Repuestos {esc(m)}</a><a href="repuestos.html">Filtrar todo el catálogo</a></div>')
+    pag_lista(mt_url(eq, c, m), f"{c} para {eq} {m} | Precio y envío", f"{c} para {eq.lower()} {m}: " + ", ".join(x["nombre"] for x in v[:2]) + ". Precio, foto y compatibilidad. Envío gratis a toda Colombia.",
+              f"{c.lower()} {m.lower()}, {c.lower()} para {eq.lower()} {m.lower()}, comprar {c.lower()} {m.lower()}, {c.lower()} {m.lower()} colombia, {c.lower()} {m.lower()} precio", f"{c} para {eq.lower()} {m}", v, intro,
+              [("Inicio", "index.html"), (f"Repuestos para {eq.lower()}", R_EQ(eq)), (f"{c} para {eq.lower()}", R_CAT(eq, c)), (m, None)],
+              [(f"¿Dónde comprar {c.lower()} para {eq.lower()} {m} en Colombia?", f"Aquí: enviamos a toda Colombia con envío gratis y pago con Wompi o contra entrega."),
+               (f"¿Cómo sé cuál {c.lower().rstrip('s')} sirve para mi {eq.lower().rstrip('s')} {m}?", "Compara la referencia de tu pieza vieja o el modelo de tu equipo con la ficha del producto. Si dudas, escríbenos por WhatsApp.")] + list(k.get("faq", [])[:1]), pie=pie_mt)
+
+# ---------------------------------------------------------------- guías de repuestos (contenido útil para buscar en Google)
+def lk(sku, txt=None):
+    q = next((x for x in PS if x["sku"] == sku), None)
+    return f'<a href="{q["url"]}">{esc(txt or q["nombre"])}</a>' if q else esc(txt or sku)
+def lista(items): return "<ul class=\"spec-list\">" + "".join(f"<li>{x}</li>" for x in items) + "</ul>"
+def parr(t): return f'<p style="max-width:75ch">{t}</p>'
+GUIAS = []
+def guia(nombre, titulo, h1, desc, kw, secciones, preg, rel):
+    GUIAS.append((nombre, h1, desc))
+    cuerpo = hero_simple("Guía de repuestos", h1, desc) + "".join(seccion(t, c, alt=bool(i % 2)) for i, (t, c) in enumerate(secciones)) + faq_html(preg) \
+        + seccion("Repuestos relacionados", '<div class="tf-grid">' + "".join(tarjeta(x) for x in rel if x) + "</div>", alt=True)
+    art = {"@type": "Article", "headline": h1, "description": desc, "inLanguage": "es-CO", "datePublished": HOY, "dateModified": HOY, "author": {"@id": f"{DOMINIO}/#tienda"}, "publisher": {"@id": f"{DOMINIO}/#tienda"}, "mainEntityOfPage": f"{DOMINIO}/{nombre}"}
+    pagina(nombre, titulo, desc, kw, [("Inicio", "index.html"), ("Guías de repuestos", "guias-de-repuestos.html"), (h1, None)], cuerpo, preg, [art], prio="0.7")
+_S = lambda *sk: [next((x for x in PS if x["sku"] == s_), None) for s_ in sk]
+guia("presostato-lavadora-sintomas-y-como-elegirlo.html", "Presostato de lavadora: síntomas de falla y cómo elegirlo", "Presostato de lavadora: síntomas de falla y cómo elegirlo",
+     "Qué hace el presostato, síntomas de que falla (llena de más, no llena, error de nivel), qué revisar antes de cambiarlo y cómo elegir el correcto para tu lavadora.", "presostato lavadora, sensor de nivel de agua lavadora, presostato dañado síntomas, presostato lavadora samsung, presostato lavadora lg",
+     [("¿Qué hace el presostato de la lavadora?", parr("El presostato es el sensor de nivel de agua: mide cuánta agua hay en la tina y le avisa a la tarjeta cuándo parar de llenar o empezar a lavar.")),
+      ("Síntomas de un presostato dañado", lista(["La lavadora llena de más o no llena el agua que debe.", "Muestra un error de nivel de agua.", "El ciclo se detiene o repite el llenado sin avanzar.", "Estos síntomas también pueden venir de otras piezas: no cambies el presostato sin revisar lo demás."])),
+      ("Qué revisar antes de cambiarlo", lista(["Que la manguerita de aire del presostato no esté suelta, aplastada ni tapada.", "Que llegue agua con buena presión y que el filtro de la manguera de entrada no esté tapado.", "Desconecta siempre la lavadora de la corriente antes de abrirla."])),
+      ("Cómo elegir el presostato correcto", lista(["La marca de tu lavadora (Samsung, LG, etc.).", "El tipo: carga superior o frontal, con o sin tecnología inverter.", "El modelo de tu lavadora, que está en la etiqueta del equipo.", "Si no estás seguro, escríbenos con el modelo y una foto de tu presostato."]))],
+     [("¿Cómo sé si el presostato de mi lavadora está dañado?", "Si llena de más, no llena o muestra error de nivel puede ser el presostato, pero conviene revisar primero la manguerita de aire y el suministro de agua."), ("¿El presostato sirve para cualquier lavadora?", "No. Se elige por marca, tipo de carga y modelo.")], _S("PR-SAM-CS-INV", "PR-LG-CS-INV"))
+guia("varillas-de-suspension-lavadora-cuando-cambiarlas.html", "Varillas de suspensión de lavadora: síntomas y cuándo cambiarlas", "Varillas de suspensión de lavadora: síntomas y cuándo cambiarlas",
+     "Para qué sirven las varillas de suspensión, síntomas de que están gastadas (vibra, golpea, camina), qué revisar antes y por qué se cambian en juego.", "varillas de suspension lavadora, varillas lavadora samsung, lavadora vibra mucho, lavadora golpea al exprimir, amortiguadores lavadora",
+     [("¿Para qué sirven las varillas de suspensión?", parr("Sostienen la tina de la lavadora y absorben la vibración del lavado y del centrifugado. Con el uso se desgastan o pierden fuerza.")),
+      ("Síntomas de varillas gastadas", lista(["La lavadora vibra mucho o golpea al exprimir.", "Se mueve o «camina» mientras centrifuga.", "Hace ruidos fuertes cuando gira la tina.", "La tina se ve inclinada o roza el gabinete."])),
+      ("Qué revisar primero", lista(["Que la ropa esté bien repartida y la carga no sea excesiva.", "Que la lavadora esté nivelada y las patas firmes.", "Si sigue igual, revisa las varillas."])),
+      ("Cómo elegir las correctas", lista(["Marca y modelo de tu lavadora.", "El largo: mide tu varilla vieja (nuestro juego de Samsung mide 63,5 cm).", "Cámbialas en juego para que la tina quede pareja."]))],
+     [("¿Cuántas varillas lleva una lavadora?", "Muchas lavadoras de carga superior usan 4. Revisa el manual o abre la tapa inferior para confirmar las de tu modelo."), ("¿Puedo cambiar las varillas yo mismo?", "Exige abrir la lavadora y levantar la tina. Si no tienes experiencia, es mejor un técnico.")], _S("VS-SAM-635"))
+guia("rele-y-termico-nevera-sintomas-de-falla.html", "Relé y térmico de nevera: síntomas de falla y cómo elegir el kit", "Relé y térmico de nevera: síntomas de falla y cómo elegir el kit",
+     "Qué hacen el relé PTC y el protector térmico del compresor, síntomas de falla (clic repetido, no arranca) y cómo elegir el kit según la potencia en hp.", "rele nevera, termico nevera, rele ptc nevera, kit termico y rele nevera, nevera no arranca hace clic, rele klixon",
+     [("¿Qué hacen el relé PTC y el térmico?", parr("El relé PTC ayuda a arrancar el compresor y el protector térmico lo apaga si se calienta o consume de más. Juntos protegen el compresor de la nevera.")),
+      ("Síntomas de falla", lista(["La nevera no enfría y se oye un clic repetido.", "El compresor no arranca o se apaga a los pocos segundos.", "El térmico se dispara seguido.", "Otras fallas del compresor dan síntomas parecidos: pide revisión técnica."])),
+      ("Cómo elegir el kit", lista(["La potencia del compresor en hp (nuestro kit Klixon es para 1/12 hp a 1/2 hp).", "La forma y los terminales: compáralos con el kit que tienes.", "Es una pieza eléctrica: instálala con la nevera desconectada y, si no sabes, con un técnico."]))],
+     [("¿El relé y el térmico se cambian juntos?", "Suelen cambiarse en kit porque trabajan juntos, pero un técnico puede confirmarlo midiendo el compresor."), ("¿Cómo sé la potencia de mi compresor?", "Está en la etiqueta del compresor, en la parte trasera de la nevera.")], _S("KT-NEV-KLX"))
+guia("cuando-cambiar-el-filtro-de-agua-de-la-nevera.html", "Cuándo cambiar el filtro de agua de la nevera y cómo elegirlo", "Cuándo cambiar el filtro de agua de la nevera y cómo elegirlo",
+     "Cada cuánto se cambia el filtro de agua de la nevera, señales de que ya está saturado, filtro interno o externo y cómo encontrar la referencia para Samsung, LG, GE y Whirlpool.", "filtro de agua nevera, cada cuanto cambiar filtro nevera, filtro nevecon samsung, filtro nevecon lg, filtro agua whirlpool, filtro ge nevera",
+     [("¿Cada cuánto se cambia el filtro de agua?", parr("Normalmente cada 6 meses de uso normal, o antes si el agua cambia de sabor o el dispensador entrega menos.")),
+      ("Señales de que ya hay que cambiarlo", lista(["Pasaron unos 6 meses desde el último cambio.", "El agua o el hielo tienen mal sabor, mal olor o se ven turbios.", "El dispensador sale lento.", "El aviso de cambio de filtro de la nevera está encendido."])),
+      ("Filtro interno o externo", parr("El filtro interno va dentro de la nevera y el externo se instala por fuera, en la línea de agua. Mira cuál tienes antes de pedir.")),
+      ("Cómo encontrar la referencia", lista(["Está impresa en el filtro viejo (por ejemplo DA29-00020B en Samsung).", "O busca el modelo de tu nevera en la etiqueta interior y compáralo con la ficha.", "Por marca: " + " · ".join(f'<a href="{mt_url("Neveras", "Filtros de agua", m_)}">{m_}</a>' for m_ in ("Samsung", "LG", "GE", "Whirlpool") if ("Neveras", "Filtros de agua", m_) in MT)]))],
+     [("¿Puedo usar la nevera sin filtro?", "Muchas neveras permiten usar un tapón en vez del filtro, pero el agua no se filtra. Revisa el manual de tu modelo."), ("¿El filtro de una marca sirve en otra?", "No. Cada filtro es para ciertos modelos: compara la referencia.")],
+     [x for x in PS if x["categoria"] == "Filtros de agua"][:4])
+guia("filtro-de-motas-lavadora-como-limpiarlo-y-cambiarlo.html", "Filtro de motas de la lavadora: cómo limpiarlo y cuándo cambiarlo", "Filtro de motas de la lavadora: cómo limpiarlo y cuándo cambiarlo",
+     "Para qué sirve el filtro de motas, cada cuánto limpiarlo, señales de que está roto y los tipos que hay (con bolsa, redondo, de marco) para lavadoras LG y Samsung.", "filtro de motas lavadora, atrapa pelusas lavadora, atrapamotas samsung, filtro motas lg, pelusas en la ropa lavadora",
+     [("¿Para qué sirve el filtro de motas?", parr("Atrapa las pelusas y los hilos que se sueltan de la ropa durante el lavado, para que no vuelvan a quedar en las prendas ni tapen el desagüe.")),
+      ("Cada cuánto limpiarlo", parr("Conviene limpiarlo con frecuencia, según el uso: sácalo, enjuágalo con agua y vuelve a ponerlo.")),
+      ("Señales de que hay que cambiarlo", lista(["Salen pelusas pegadas en la ropa.", "El filtro está roto, deformado o con huecos en la malla.", "Se perdió o ya no encaja bien."])),
+      ("Tipos de filtro", lista(["Con bolsa de malla y marco (LG).", "Redondo de plástico con malla (LG).", "De marco rectangular con rejillas (Samsung).", "Compara con el tuyo o envíanos una foto con el modelo."]))],
+     [("¿El filtro de motas sirve para cualquier lavadora?", "No: cambian la forma y el tamaño según la marca y el modelo. Compara con el filtro viejo."), ("¿Cuántos filtros vienen por pedido?", "Cada ficha indica cuántas unidades trae; algunos vienen en par.")], _S("FM-LG-X2", "FM-LG-BOL", "FM-LG-RED", "FM-SAM-MOD"))
+pagina("guias-de-repuestos.html", "Guías de repuestos para lavadoras y neveras", "Guías para entender, elegir y cambiar repuestos de lavadoras y neveras: presostato, varillas, relé y térmico, filtros de agua y filtros de motas.",
+       "guias repuestos lavadora, guias repuestos nevera, como elegir repuestos linea blanca", [("Inicio", "index.html"), ("Guías de repuestos", None)],
+       hero_simple("Guías", "Guías de repuestos para lavadoras y neveras", "Síntomas, cómo elegir la pieza correcta y cuándo llamar a un técnico.") + seccion("Todas las guías", '<div class="aq-tiles">' + "".join(f'<a class="aq-tile" href="{n_}"><b>{esc(h_)}</b><p>{esc(d_)}</p></a>' for n_, h_, d_ in GUIAS) + "</div>"), [], [], prio="0.8")
+# WebSite con buscador para Google
+TIENDA_LD["potentialAction"] = {"@type": "SearchAction", "target": f"{DOMINIO}/repuestos.html?q={{search_term_string}}", "query-input": "required name=search_term_string"}
 
 # ---------------------------------------------------------------- guías y páginas de ayuda
 def pag_info(nombre, titulo, desc, kw, h1, cuerpo, preg=(), prio="0.6"):
@@ -674,6 +750,8 @@ ll += ["", "## Ayuda"] + [f"- [{t}]({DOMINIO}/{u})" for t, u in ARTS_BASE]
 for _f in list(OUT.glob("*.html")) + list(OUT.glob("*.php")) + list(OUT.glob("*.css")):
     _t = _f.read_text(encoding="utf-8")
     _t2 = _t.replace("family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700", "family=Inter:wght@400;500;600;700;800").replace("Bricolage Grotesque", "Inter").replace("ui-monospace,Menlo,Consolas,monospace", "'Inter',system-ui,sans-serif")
+    if _f.suffix == ".html":
+        _t2 = _t2.replace('<div class="g2-main"><img decoding="async"', '<div class="g2-main"><img fetchpriority="high" decoding="async"', 1)
     if _f.name == "tema.css":
         _t2 += "h1,h2,h3,h4{letter-spacing:-.025em;font-weight:800}.tf-b h3{font-weight:700;letter-spacing:-.01em}"
     if _t2 != _t:

@@ -254,7 +254,7 @@ def faq_html(preg, h2="Preguntas frecuentes"):
 
 def ld_base(nombre, titulo, desc, miga):
     url = f"{DOMINIO}/{nombre}" if nombre != "index.html" else f"{DOMINIO}/"
-    return [{"@type": "WebPage", "@id": url, "name": titulo, "url": url, "inLanguage": "es-CO", "description": desc, "dateModified": HOY, "isPartOf": {"@id": f"{DOMINIO}/#tienda"}, "about": {"@type": "Brand", "name": "Breakermatic"}},
+    return [{"@type": "WebPage", "@id": url, "name": titulo, "url": url, "inLanguage": "es-CO", "description": desc, "dateModified": HOY, "isPartOf": {"@id": f"{DOMINIO}/#tienda"}, "about": {"@type": "Thing", "name": "Repuestos para lavadoras y neveras"}},
             {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, **({"item": f"{DOMINIO}/{u}"} if u else {})} for i, (n, u) in enumerate(miga)]}]
 
 
@@ -340,7 +340,7 @@ def pie():
             '<p>Tienda en línea de repuestos para lavadoras y neveras, con envío a toda Colombia. Los nombres de marcas se usan solo para indicar compatibilidad; esta tienda es independiente y no tiene afiliación con los fabricantes.</p></div>'
             f'<div><h5>Equipos</h5><ul>{eqs}</ul></div><div><h5>Marcas</h5><ul>{marcas}</ul></div>'
             '<div><h5>Ayuda</h5><ul><li><a href="como-elegir-repuesto-para-lavadora.html">Cómo elegir</a></li><li><a href="como-encontrar-el-modelo-de-tu-electrodomestico.html">Tu modelo</a></li><li><a href="preguntas-frecuentes-repuestos.html">Preguntas frecuentes</a></li>'
-            '<li><a href="envios-y-pagos.html">Envíos y pagos</a></li><li><a href="garantia-cambio-y-devolucion.html">Garantía y cambios</a></li><li><a href="quienes-somos.html">Quiénes somos</a></li><li><a href="contacto.html">Contacto</a></li><li><a href="terminos.php">Términos</a></li><li><a href="privacidad.php">Datos personales</a></li><li><a href="mapa-del-sitio.html">Mapa del sitio</a></li></ul></div></div>'
+            '<li><a href="envios-y-pagos.html">Envíos y pagos</a></li><li><a href="garantia-cambio-y-devolucion.html">Garantía y cambios</a></li><li><a href="quienes-somos.html">Quiénes somos</a></li><li><a href="contacto.html">Contacto</a></li><li><a href="terminos.php">Términos</a></li><li><a href="privacidad.php">Datos personales</a></li><li><a href="guias-de-repuestos.html">Guías de repuestos</a></li><li><a href="mapa-del-sitio.html">Mapa del sitio</a></li></ul></div></div>'
             '<div class="aq-wrap aq-f-pay"><div><span class="m">Tarjeta</span><span class="m">PSE</span><span class="m">Nequi</span><span class="m">Bancolombia</span><span class="m">Contra entrega</span></div>'
             f'<div>© 2026 {esc(NOMBRE)}</div></div></footer>'
             f'<a class="aq-wa" href="https://wa.me/{WA}?text=Hola%2C%20necesito%20un%20repuesto" aria-label="WhatsApp"><svg width="22" height="22" fill="#fff" viewBox="0 0 16 16"><path d="M13.6 2.3A7.85 7.85 0 0 0 8 0C3.6 0 .07 3.56.06 7.93c0 1.4.37 2.76 1.06 3.97L0 16l4.2-1.1a7.93 7.93 0 0 0 3.8.97c4.37 0 7.93-3.56 7.93-7.93a7.9 7.9 0 0 0-2.33-5.61zM8 14.5c-1.2 0-2.37-.32-3.4-.93l-.24-.15-2.5.65.67-2.43-.16-.25A6.5 6.5 0 1 1 8 14.5z"/></svg><span>WhatsApp</span></a>')
