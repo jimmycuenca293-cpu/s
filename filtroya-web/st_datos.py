@@ -19,7 +19,7 @@ PAISES = {
                                ("Armenia", "Quindío", ["Centenario", "La Castellana", "Avenida Bolívar", "Centro"], "2"),
                                ("Manizales", "Caldas", ["Cable", "Milán", "Chipre", "La Enea", "Palermo", "Centro"], "2")]),
     "panama": dict(nombre="Panamá", bandera="🇵🇦", cod="es-PA", pref="+507", wa_pref="507", art="Panamá",
-                   nevera=("nevera", "neveras"), lava=("lavadora", "lavadoras"), seca=("secadora", "secadoras"), lavaplatos=("lavavajillas", "lavavajillas"), cocina=("estufa", "estufas y hornos"),
+                   nevera=("refrigeradora", "refrigeradoras"), lava=("lavadora", "lavadoras"), seca=("secadora", "secadoras"), lavaplatos=("lavavajillas", "lavavajillas"), cocina=("estufa", "estufas y hornos"),
                    micro=("microondas", "microondas"), tv=None,
                    ciudades=[("Ciudad de Panamá", "Panamá", ["Costa del Este", "San Francisco", "Bella Vista", "Obarrio", "El Cangrejo", "Punta Pacífica", "Albrook", "Marbella"], "1")]),
     "costa-rica": dict(nombre="Costa Rica", bandera="🇨🇷", cod="es-CR", pref="+506", wa_pref="506", art="Costa Rica",

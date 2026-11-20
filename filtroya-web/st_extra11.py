@@ -64,9 +64,10 @@ if SOLO and SOLO_CFG[SOLO].get("mas"):
                    [("Inicio", "index.html"), (_P["nombre"], R_PAIS(_pk)), (_nom, R_CIU(_c)), (cap(_s2), R_CS(_c, _sv)), (tit, None)], cuerpo, preg, [{"@type": "Service", "name": tit, "provider": {"@id": f"{DOMINIO}/#negocio"}, "areaServed": {"@type": "City", "name": _nom}}], prio="0.7", pk=_pk, tipo="ciudades", ctx=_c, compacto=True)
         _ins(R_CS(_c, _sv), seccion(f"Servicio por pieza: {esc(_s2)} Samsung en {esc(_nom)}", '<div class="city-tags">' + "".join(f'<a href="{R_PZ(_sv, p2[0])}">Cambio de {esc(p2[0])}</a>' for p2 in lista) + "</div>", alt=True))
     # comunas de la ciudad (sin asignar barrios que no confirmamos)
+    _com = SOLO_CFG[SOLO].get("comunas", True)
     R_CM = lambda n: f"{_pk}/{_c['d']}/comuna-{n}/index.html"
     R_CMS = f"{_pk}/{_c['d']}/comunas/index.html"
-    for n in range(1, 23):
+    for n in (range(1, 23) if _com else []):
         tit = f"Servicio técnico Samsung en la comuna {n} de {_nom}"
         preg = [(f"¿Atienden la comuna {n} de {_nom}?", f"Sí, atendemos la comuna {n} con visita a domicilio. Escribe al {_wa} con tu barrio y coordinamos la visita."), ("¿Qué equipos reparan?", ", ".join(pal(_pk, s_)[1] for s_ in SERV_PAIS[_pk]).capitalize() + "."), ("¿Cómo pido la visita?", f"Por WhatsApp al {_wa}: envía tu barrio, el equipo, el modelo y la falla.")] + preguntas_ia(_c, f"cm|{n}", 2)
         cuerpo = (hero_simple(f"{_nom} · Comuna {n}", tit, f"Visita a domicilio en la comuna {n}: neveras, lavadoras, secadoras, lavavajillas, estufas y microondas Samsung.", acciones(_pk, f"Hola, necesito servicio técnico Samsung en la comuna {n} de {_nom}"))
@@ -78,8 +79,9 @@ if SOLO and SOLO_CFG[SOLO].get("mas"):
         SOLO_EXTRA.append((tit, R_CM(n), "Comuna"))
         pagina(R_CM(n), tit, f"Servicio técnico Samsung a domicilio en la comuna {n} de {_nom}: neveras, lavadoras, secadoras, lavavajillas, estufas y microondas. WhatsApp {_wa}.", f"servicio tecnico samsung comuna {n} {_nom.lower()}, tecnico samsung comuna {n} {_nom.lower()}",
                [("Inicio", "index.html"), (_P["nombre"], R_PAIS(_pk)), (_nom, R_CIU(_c)), ("Comunas", R_CMS), (f"Comuna {n}", None)], cuerpo, preg, [], prio="0.6", pk=_pk, tipo="zonas", ctx=_c, compacto=True)
-    pagina(R_CMS, f"Comunas de {_nom} donde damos servicio técnico Samsung", f"Servicio técnico Samsung a domicilio en las 22 comunas de {_nom}. Elige tu comuna y escribe por WhatsApp {_wa}.", f"comunas {_nom.lower()} servicio tecnico samsung",
-           [("Inicio", "index.html"), (_P["nombre"], R_PAIS(_pk)), (_nom, R_CIU(_c)), ("Comunas", None)],
-           hero_simple(f"{_nom} · Comunas", f"Servicio técnico Samsung en las comunas de {_nom}", "Elige tu comuna.", acciones(_pk, f"Hola, necesito servicio técnico Samsung en {_nom}"))
-           + qa(f"¿En qué comunas de {_nom} atienden?", f"En las 22 comunas de {esc(_nom)}. WhatsApp {esc(_wa)}.") + seccion("Las 22 comunas", '<div class="city-tags">' + "".join(f'<a href="{R_CM(m)}">Comuna {m}</a>' for m in range(1, 23)) + "</div>"), [], [], prio="0.7", pk=_pk, tipo="zonas", ctx=_c, compacto=True)
-    _ins(R_CIU(_c), seccion(f"Comunas de {esc(_nom)}", f'<p><a href="{R_CMS}">Servicio técnico Samsung en las 22 comunas de {esc(_nom)} →</a></p>', alt=True))
+    if _com:
+        pagina(R_CMS, f"Comunas de {_nom} donde damos servicio técnico Samsung", f"Servicio técnico Samsung a domicilio en las 22 comunas de {_nom}. Elige tu comuna y escribe por WhatsApp {_wa}.", f"comunas {_nom.lower()} servicio tecnico samsung",
+               [("Inicio", "index.html"), (_P["nombre"], R_PAIS(_pk)), (_nom, R_CIU(_c)), ("Comunas", None)],
+               hero_simple(f"{_nom} · Comunas", f"Servicio técnico Samsung en las comunas de {_nom}", "Elige tu comuna.", acciones(_pk, f"Hola, necesito servicio técnico Samsung en {_nom}"))
+               + qa(f"¿En qué comunas de {_nom} atienden?", f"En las 22 comunas de {esc(_nom)}. WhatsApp {esc(_wa)}.") + seccion("Las 22 comunas", '<div class="city-tags">' + "".join(f'<a href="{R_CM(m)}">Comuna {m}</a>' for m in range(1, 23)) + "</div>"), [], [], prio="0.7", pk=_pk, tipo="zonas", ctx=_c, compacto=True)
+        _ins(R_CIU(_c), seccion(f"Comunas de {esc(_nom)}", f'<p><a href="{R_CMS}">Servicio técnico Samsung en las 22 comunas de {esc(_nom)} →</a></p>', alt=True))

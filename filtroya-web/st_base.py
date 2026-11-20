@@ -192,7 +192,7 @@ def negocio_solo():
     c = CIU[0]; P = PAISES[c["pk"]]
     return {"@type": ["ProfessionalService", "LocalBusiness"], "@id": f"{DOMINIO}/#negocio", "name": NOMBRE, "url": U(R_CIU(c)), "telephone": "+" + wa_num(c["pk"]), "image": f"{DOMINIO}/img/samsung-oval.png", "logo": f"{DOMINIO}/img/samsung-oval.png",
             "description": f"Servicio técnico independiente de electrodomésticos Samsung a domicilio en {c['n']}, {c['dep']}: neveras, lavadoras, secadoras, lavavajillas, estufas, hornos y microondas.", "priceRange": "$$",
-            "address": ({"@type": "PostalAddress", "streetAddress": SOLO_CFG[SOLO]["calle"] + ", " + SOLO_CFG[SOLO]["barrio_dir"], "addressLocality": c["n"], "addressRegion": c["dep"], "addressCountry": "CO"} if SOLO_CFG[SOLO].get("calle") else {"@type": "PostalAddress", "addressLocality": c["n"], "addressRegion": c["dep"], "addressCountry": "CO"}),
+            "address": ({"@type": "PostalAddress", "streetAddress": SOLO_CFG[SOLO]["calle"] + ", " + SOLO_CFG[SOLO]["barrio_dir"], "addressLocality": c["n"], "addressRegion": c["dep"], "addressCountry": SOLO_CFG[SOLO]["region"][:2]} if SOLO_CFG[SOLO].get("calle") else {"@type": "PostalAddress", "addressLocality": c["n"], "addressRegion": c["dep"], "addressCountry": SOLO_CFG[SOLO]["region"][:2]}),
             **({"openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}], "hasMap": "https://www.google.com/maps?q=" + __import__("urllib.parse").parse.quote_plus(SOLO_CFG[SOLO]["direccion"])} if SOLO_CFG[SOLO].get("horas24") else {}), "geo": {"@type": "GeoCoordinates", "latitude": SOLO_CFG[SOLO]["lat"], "longitude": SOLO_CFG[SOLO]["lon"]},
             "areaServed": [{"@type": "City", "name": c["n"]}] + [{"@type": "Place", "name": z + ", " + c["n"]} for z in c["zonas"]], "knowsAbout": [SERVICIOS[s_]["tit"] for s_ in SERV_PAIS[c["pk"]]],
             "hasOfferCatalog": {"@type": "OfferCatalog", "name": f"Servicio técnico Samsung en {c['n']}", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Reparación y mantenimiento de {pal(c['pk'], s_)[1]} Samsung en {c['n']}", "url": U(R_CS(c, s_))}} for s_ in SERV_PAIS[c["pk"]]]},
@@ -224,6 +224,9 @@ def pagina(nombre, titulo, desc, kw, miga, cuerpo, preguntas=(), ld_extra=(), pr
             titulo = titulo[:-len(_pn)] + _cn_
         elif _cn_ not in titulo and "Samsung" in titulo and len(titulo) < 56:
             titulo = titulo + " en " + _cn_
+    for _q in (" en el congelador", " en el refrigerador", " del congelador", " del refrigerador"):
+        if len(titulo) > 66 and _q in titulo:
+            titulo = titulo.replace(_q, "", 1)
     if len(titulo) > 66:
         titulo = titulo[:66].rsplit(" ", 1)[0].rstrip(" ,:;·|-")
     if len(desc) > 160:

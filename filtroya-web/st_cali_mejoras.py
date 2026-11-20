@@ -9,7 +9,9 @@ R = pathlib.Path(sys.argv[1])
 H1 = re.compile(r"<h1[^>]*>(.*?)</h1>", re.S)
 h1 = lambda f: re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", H1.search(f.read_text(encoding="utf-8")).group(1))).strip()
 FALLA = re.compile(r"-(no|con|hace)-")
-barrios = sorted(d.name for d in R.iterdir() if d.is_dir() and (d / "nevera-no-enfria" / "index.html").exists())
+def _es_barrio(d):
+    return d.is_dir() and sum(1 for x in d.iterdir() if x.is_dir() and FALLA.search(x.name) and (x / "index.html").exists()) >= 5
+barrios = sorted(d.name for d in R.iterdir() if _es_barrio(d))
 orden = [d for d in barrios]            # el orden alfabético reparte los enlaces de forma pareja
 fallas = sorted(x.name for x in (R / orden[0]).iterdir() if x.is_dir() and FALLA.search(x.name) and (x / "index.html").exists())
 tit = {(b, f): h1(R / b / f / "index.html") for b in orden for f in fallas if (R / b / f / "index.html").exists()}
@@ -27,7 +29,7 @@ for i, b in enumerate(orden):
         l1 = "".join(f'<a href="../../{v}/{f}/">{html.escape(tit[(v, f)])}</a>' for v in vec if (v, f) in tit)
         misma = [g for g in fallas if g != f and g.split("-")[0] == f.split("-")[0]] + [g for g in fallas if g != f and g.split("-")[0] != f.split("-")[0]]
         l2 = "".join(f'<a href="../{g}/">{html.escape(tit[(b, g)])}</a>' for g in misma[:6] if (b, g) in tit)
-        bloque = '<!--st-mejora-enlaces-->' + SEC.format(alt="", h2="La misma falla en otros barrios de Cali", links=l1) + SEC.format(alt=" alt", h2="Otras fallas que atendemos en este barrio", links=l2)
+        bloque = '<!--st-mejora-enlaces-->' + SEC.format(alt="", h2="La misma falla en otros barrios de la ciudad", links=l1) + SEC.format(alt=" alt", h2="Otras fallas que atendemos en este barrio", links=l2)
         k = t.rfind('<footer')
         if k < 0:
             continue
