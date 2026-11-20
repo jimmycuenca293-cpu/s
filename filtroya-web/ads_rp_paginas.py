@@ -112,7 +112,7 @@ js = ("(function(){var D=" + json.dumps(items, ensure_ascii=False, separators=("
 # partes.php y páginas PHP de compra
 _src_lg = open(AQUI / "ads_lg_paginas.py", encoding="utf-8").read()
 _partes = _src_lg.split('(OUT / "partes.php").write_text(r"""')[1].split('""".replace("__AQH__"')[0].replace("/img/icono-lg.png", "/img/icono-bm.png")
-(OUT / "partes.php").write_text(_partes.replace("__AQH__", encabezado()).replace("__AQF__", pie()), encoding="utf-8")
+(OUT / "partes.php").write_text(_partes.replace("__AQH__", encabezado()).replace("__AQF__", pie()).replace('<script src="/buscar.js', '<link rel="stylesheet" href="/nav.css"><script src="/nav.js" defer></script><script src="/buscar.js', 1), encoding="utf-8")
 _g = (OUT / "gracias.php").read_text(encoding="utf-8")
 _wa_btn = ('    try { const d0 = JSON.parse(sessionStorage.getItem("fy_cod_" + cod) || "null"); const it = ((d0 && d0.items) || []).map(x => "• " + x.item_name + " x" + (x.quantity || 1)).join("\\n"); '
            'const msg = "Hola, hice el pedido " + cod + " con pago contra entrega:\\n" + it + "\\nTotal: " + cop(d0 ? d0.total : 0) + " (envío gratis)"; '
@@ -460,6 +460,10 @@ cs.forEach(function(c,i){c.dataset.o=i});bar.querySelector('select').addEventLis
 NAV_JS = NAV_JS.replace("__MENU__", json.dumps(_menu, ensure_ascii=False, separators=(",", ":"))).replace("__WA__", WA)
 (OUT / "nav.js").write_text(NAV_JS, encoding="utf-8")
 NAV_CSS = """
+@media(max-width:820px){.hx h1{font-size:1.75rem!important;line-height:1.12!important}.hx-l p{font-size:.95rem!important;line-height:1.45}.hx-b{flex-direction:column;gap:10px}.hx-b a{text-align:center;width:100%;box-sizing:border-box}.hx-u{display:none}.hx{padding-top:24px!important}.breadcrumb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.aq-bar{flex-wrap:nowrap;justify-content:center;gap:14px}}
+@media(max-width:820px){.hero:not(.hero-prod) .sub{display:none}.hero:not(.hero-prod){padding:14px 0 64px!important}.hero:not(.hero-prod) h1{font-size:1.5rem!important;margin:0!important}.hero:not(.hero-prod) .kicker{display:none}.aq-sec{padding-top:22px!important;padding-bottom:22px!important}}
+@media(hover:none){.g2-lupa{font-size:0!important}.g2-lupa::after{content:'🔍 Toca para ampliar';font-size:.8rem}}
+@media(max-width:899px){.hero-prod .hero-grid>.g2{order:-1}.hero-prod .hero-grid{gap:18px}.hero-prod{padding-top:18px}}
 .nv-b,.nv-d{display:none}
 @media(max-width:820px){
 .aq-nav{display:none!important}.aq-wa{display:none!important}.aq-bar span:nth-child(2){display:none}
@@ -481,6 +485,7 @@ body.nv-on{padding-bottom:68px}
 .nv-o{display:flex;justify-content:space-between;align-items:center;margin:0 0 14px;font:600 .92rem Inter,sans-serif;color:#2a3a5c}.nv-o select{margin-left:8px;padding:9px 12px;border:1.5px solid #cfd8ee;border-radius:10px;font:500 .92rem Inter,sans-serif;background:#fff}
 """
 (OUT / "tema.css").write_text((OUT / "tema.css").read_text(encoding="utf-8") + NAV_CSS, encoding="utf-8")
+(OUT / "nav.css").write_text(NAV_CSS, encoding="utf-8")
 
 # ---------------------------------------------------------------- SEO extra: WebSite+buscador, manifest, feed de Google Merchant
 (OUT / "manifest.webmanifest").write_text(json.dumps({"name": NOMBRE, "short_name": "Repuestos", "start_url": "/", "display": "standalone", "background_color": "#ffffff", "theme_color": "#1428a0", "lang": "es-CO",
@@ -657,7 +662,7 @@ ll += ["", "## Ayuda"] + [f"- [{t}]({DOMINIO}/{u})" for t, u in ARTS_BASE]
                                "<IfModule mod_expires.c>\nExpiresActive On\nExpiresByType image/webp \"access plus 1 month\"\nExpiresByType text/css \"access plus 1 week\"\n</IfModule>\n", encoding="utf-8")
 for _f in list(OUT.glob("*.html")) + list(OUT.glob("*.php")) + list(OUT.glob("*.css")):
     _t = _f.read_text(encoding="utf-8")
-    _t2 = _t.replace("family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700", "family=Inter:wght@400;500;600;700;800").replace("Bricolage Grotesque", "Inter")
+    _t2 = _t.replace("family=Bricolage+Grotesque:wght@600;800&family=Inter:wght@400;500;600;700", "family=Inter:wght@400;500;600;700;800").replace("Bricolage Grotesque", "Inter").replace("ui-monospace,Menlo,Consolas,monospace", "'Inter',system-ui,sans-serif")
     if _f.name == "tema.css":
         _t2 += "h1,h2,h3,h4{letter-spacing:-.025em;font-weight:800}.tf-b h3{font-weight:700;letter-spacing:-.01em}"
     if _t2 != _t:
