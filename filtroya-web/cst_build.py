@@ -93,6 +93,15 @@ section.s{padding:30px 0}section.s.alt{background:var(--w)}.lead{color:var(--m);
 .band{position:relative;padding:56px 0;color:#fff;background:var(--hd) var(--bgi,none) center/cover;text-align:center}.band:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--c),var(--hd));opacity:.82}.band .w{position:relative}.band h2{color:#fff}.band p{max-width:640px;margin:0 auto 18px}
 .ph{background:linear-gradient(rgba(255,255,255,.93),rgba(255,255,255,.93)),var(--bgi) center/cover!important}
 .gal{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.gal img{aspect-ratio:4/3;object-fit:cover;width:100%;border-radius:16px;box-shadow:var(--sh)}
+.stp{display:flex;gap:8px;flex-wrap:wrap;list-style:none;padding:0;margin:0 0 16px;counter-reset:s}.stp li{counter-increment:s;display:flex;align-items:center;gap:8px;background:var(--w);border-radius:999px;padding:6px 14px 6px 6px;font-weight:700;font-size:.9rem;box-shadow:var(--sh);opacity:.55}.stp li:before{content:counter(s);width:26px;height:26px;border-radius:50%;background:var(--soft);color:var(--c);display:grid;place-items:center}.stp li.on{opacity:1;outline:2px solid var(--c)}.stp li.on:before{background:var(--c);color:#fff}
+.tiles{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}@media(min-width:700px){.tiles{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}}
+.tile{display:flex;flex-direction:column;background:var(--w);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);text-decoration:none;color:var(--t);border:2px solid transparent;transition:.15s}.tile:hover{transform:translateY(-3px);border-color:var(--a)}
+.ti-img{aspect-ratio:4/3;background:var(--soft);display:grid;place-items:center;font-size:2.4rem;font-weight:800;color:var(--c)}.ti-img img{width:100%;height:100%;object-fit:contain;padding:10px}
+.tile b{padding:12px 14px 0;font-size:1.05rem;color:var(--c)}.tile small{padding:2px 14px;color:var(--m)}.tile .go{margin:auto 14px 14px;padding-top:8px;font-weight:700;color:var(--c)}
+.symb{display:grid;gap:10px}@media(min-width:700px){.symb{grid-template-columns:1fr 1fr}}.sy{display:flex;gap:12px;align-items:center;background:var(--w);padding:14px 16px;border-radius:14px;box-shadow:var(--sh);text-decoration:none;color:var(--t);border:2px solid transparent}.sy:hover{border-color:var(--a)}.sy b{display:block;line-height:1.3}.sy small{color:var(--m)}.sy i{font-style:normal;font-weight:800;color:var(--c);font-size:1.4rem}
+.anc{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.anc a{padding:8px 14px;background:var(--w);border-radius:999px;box-shadow:var(--sh);text-decoration:none;font-weight:600;font-size:.9rem}
+.cta-box{display:grid;gap:12px}@media(min-width:700px){.cta-box{grid-template-columns:1fr 1fr}}.cta-box .card{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.sec-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.sec-h small{color:var(--m)}
 .rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
 .g{display:grid;gap:16px}@media(min-width:700px){.g.c2{grid-template-columns:1fr 1fr}.g.c3{grid-template-columns:repeat(3,1fr)}}@media(min-width:1000px){.g.c4{grid-template-columns:repeat(4,1fr)}}
 .card{background:var(--w);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}.card.l{text-decoration:none;color:inherit;display:block;transition:.15s}.card.l:hover{transform:translateY(-3px)}.card .t{font-weight:800;color:var(--c)}.card small{color:var(--m)}
@@ -117,9 +126,9 @@ def wa(txt): return f"https://wa.me/{TELN}?text=" + re.sub(r"[ ]", "%20", txt).r
 def chips(actual):
     if actual:
         d = M[actual]; b = base(actual)
-        it = [("Inicio", b)] + [(EQ[e][2].capitalize(), pathb(actual, "reparacion-" + EQ[e][0])) for e in d["equipos"]]
+        it = [("Inicio", b), ("Reparar mi equipo", b + "#equipos"), ("Fallas", pathb(actual, "fallas"))]
         if d["codigos"]: it.append(("Códigos de error", pathb(actual, "codigos-de-error")))
-        it += [("Fallas", pathb(actual, "fallas")), ("Cobertura", pathb(actual, "cobertura")), ("Series y modelos", pathb(actual, "series-y-modelos")), ("Costos y garantía", pathb(actual, "cuanto-cuesta-la-reparacion")), ("Preguntas", pathb(actual, "preguntas-frecuentes")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma"))]
+        it += [("Costos y garantía", pathb(actual, "cuanto-cuesta-la-reparacion")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), ("Preguntas", pathb(actual, "preguntas-frecuentes")), ("Zonas", pathb(actual, "cobertura"))]
     else:
         it = [("Inicio", "/"), ("Todas las marcas", "/marcas/"), ("Zonas", "/zonas/"), ("Blog", "/blog/"), ("Quiénes somos", "/nosotros/")]
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
@@ -186,7 +195,7 @@ def decorar(marca, cuerpo, hero, path):
 def copia_ruta(m, f):
     return f"/img/{m}/" + re.sub(r"[^a-z0-9.-]", "-", f.name.lower())
 
-def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld=None, bd=None, prio="0.7", extra_js="", lead=None, noindex=False, marcas_ok=False):
+def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld=None, bd=None, prio="0.7", extra_js="", lead=None, noindex=False, marcas_ok=False, cta2=None):
     """path: '/lg/reparacion-lavadoras/' ; cuerpo: html de secciones"""
     if len(title) > 62: title = title[:62].rsplit(" ", 1)[0].rstrip(" ,|-")
     if len(desc) > 158: desc = desc[:157].rsplit(" ", 1)[0].rstrip(" ,.;") + "…"
@@ -204,7 +213,7 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
     himg = ""
     if hero: himg = f'<img src="{hero[0]}" alt="{hero[1]}" width="1024" height="768" fetchpriority="high" decoding="async">'
     heroh = (f'<section class="hero" style="--bgi:{bgi}"><div class="w"><div><span class="bd">{esc(bd or NOMBRE)}</span><h1>{esc(h1)}</h1><p>{lead or esc(desc)}</p>'
-             f'<p><a class="btn" href="{wa(f"Hola, necesito servicio técnico {M[marca]['nombre']} en Panamá" if marca else "Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a> <a class="btn o" href="tel:+50769337976">Llamar {TEL}</a></p></div>{himg}</div></section>')
+             f'<p><a class="btn" href="{wa(f"Hola, necesito servicio técnico {M[marca]['nombre']} en Panamá" if marca else "Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a> <a class="btn o" href="{cta2[1] if cta2 else "tel:+50769337976"}">{cta2[0] if cta2 else "Llamar " + TEL}</a></p></div>{himg}</div></section>')
     tags = "".join(f'<meta name="google-site-verification" content="{g}">' for g in GSC) if path == "/" else ""
     h = (f'<!doctype html><html lang="es-PA"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title>'
          f'<meta name="description" content="{esc(desc)}"><link rel="canonical" href="{url}"><link rel="alternate" hreflang="es-PA" href="{url}"><meta name="robots" content="{"noindex,follow" if noindex else "index,follow,max-image-preview:large,max-snippet:-1"}">{tags}'
@@ -255,8 +264,8 @@ def cierre(m, path):
             + sec(f"Más sobre {N} en Panamá", f'<div class="g c3">{inter}</div>', alt=True)
             + sec("Guías y zonas", f'<div class="g c3">{guias}</div>')
             + sec("Enlaces externos útiles", externos))
-def sec(t, body, alt=False, lead=None):
-    return f'<section class="s{" alt" if alt else ""}"><div class="w"><h2>{t}</h2>' + (f'<p class="lead">{lead}</p>' if lead else "") + body + '</div></section>'
+def sec(t, body, alt=False, lead=None, id=None):
+    return f'<section class="s{" alt" if alt else ""}"{f" id={chr(34)}{id}{chr(34)}" if id else ""}><div class="w"><h2>{t}</h2>' + (f'<p class="lead">{lead}</p>' if lead else "") + body + '</div></section>'
 def rr(txt): return f'<div class="rr"><b>Respuesta rápida</b>{txt}</div>'
 def tabla(cab, filas):
     return '<table class="tb"><thead><tr>' + "".join(f"<th>{c}</th>" for c in cab) + '</tr></thead><tbody>' + "".join('<tr>' + "".join(f'<td data-l="{cab[i]}">{c}</td>' for i, c in enumerate(f)) + '</tr>' for f in filas) + '</tbody></table>'
@@ -283,29 +292,54 @@ def otras(m, actual):
     if d["codigos"]: items.insert(0, ("codigos-de-error", f"Códigos de error {nom(m)}"))
     return '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, s)}"><span class="t">{t}</span></a>' for s, t in items if s != actual) + "</div>"
 
+
+def stepper(n):
+    t = ["Elige tu equipo", "Elige lo que le pasa", "Pide la visita"]
+    return '<ol class="stp">' + "".join(f'<li{" class=on" if i + 1 == n else ""}>{x}</li>' for i, x in enumerate(t)) + '</ol>'
+def foto_equipo(m, e):
+    rx = re.compile(KW.get(e, "zzz")); g = re.compile(KW["_gente"])
+    c = [f for f in POOLS[m] if rx.search(f.name) and not g.search(f.name)]
+    if not c: return None
+    c.sort(key=lambda f: (USO[f], f.name)); f = c[0]; USO[f] += 1
+    return (copia(m, f), alt_de(m, f))
+EJ = {"neveras": "No enfría, hace ruido, gotea", "lavadoras": "No drena, no centrifuga, error", "secadoras": "No seca, no calienta", "aires": "No enfría, gotea, código", "cocinas": "No calienta, no enciende", "lavavajillas": "No drena, no lava bien", "centro-lavado": "Una unidad no responde", "batidoras": "Ruido, grasa, pierde fuerza", "microondas": "No calienta, hace chispas"}
+def tiles(m):
+    d = M[m]; N = nom(m); out = ""
+    for e in d["equipos"]:
+        f = foto_equipo(m, e)
+        im = f'<img loading="lazy" src="{f[0]}" alt="{f[1]}" width="400" height="300">' if f else EQ[e][2][:1].upper()
+        out += f'<a class="tile" href="{pathb(m, "reparacion-" + EQ[e][0])}"><span class="ti-img">{im}</span><b>{EQ[e][2].capitalize()} {N}</b><small>{EJ[e]}</small><span class="go">Elegir →</span></a>'
+    return f'<div class="tiles">{out}</div>'
+def sintomas_btn(m, e, lista):
+    return '<div class="symb">' + "".join(f'<a class="sy" href="{pathb(m, "falla-" + slug(EQ[e][1] + " " + a))}"><i>›</i><span><b>{esc(a)}</b><small>{esc(b[:88])}{"…" if len(b) > 88 else ""}</small></span></a>' for a, b, c in lista) + '</div>'
+def caja_ayuda(m):
+    N = nom(m)
+    return ('<div class="cta-box"><div class="card"><b class="t">Diagnóstico por síntoma</b><p>Usa el diagnóstico por síntoma: eliges tu equipo y lo que notas, y te mostramos la causa más probable.</p>'
+            f'<a class="btn s" href="{pathb(m, "diagnostico-por-sintoma")}">Abrir el diagnóstico</a></div>'
+            f'<div class="card"><b class="t">Hablar con una persona</b><p>Escríbenos por WhatsApp con la marca, el modelo y la falla. Respondemos y coordinamos la visita.</p><a class="btn s" href="{wa("Hola, necesito servicio técnico " + N + " en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a></div></div>')
+
 def build_marca(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]
     # --- hub
     hero = elegir(m, m + "hub", 1)
     teaser = "".join(f'<tr><td data-l="Equipo">{EQ[e][2].capitalize()}</td><td data-l="Falla frecuente">{esc(d["fallas"][e][0][0])}</td><td data-l="Causa probable">{esc(d["fallas"][e][0][1])}</td></tr>' for e in d["equipos"])
     mid = elegir(m, m + "hubmid", 1, d["equipos"][0])
-    cuerpo = (sec(f"Centro de Servicio Técnico {N} Panamá: reparamos tus equipos {N} en casa",
-                  rr(f"Reparamos {', '.join(EQ[e][2] for e in d['equipos'][:-1])} y {EQ[d['equipos'][-1]][2]} {N} a domicilio en Ciudad de Panamá, San Miguelito, Arraiján, La Chorrera y zonas cercanas. Escríbenos por WhatsApp con el modelo y la falla y coordinamos la visita.") + f"<p>{esc(d['origen'])}</p>")
-              + sec(f"Equipos {N} que atendemos", eq_links(m), alt=True)
-              + sec(f"Fallas más frecuentes en {N}", f'<table class="tb"><thead><tr><th>Equipo</th><th>Falla frecuente</th><th>Causa probable</th></tr></thead><tbody>{teaser}</tbody></table>')
-              + sec(f"Lo que más buscan sobre {N} en Panamá", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "falla-" + slug(EQ[e][1] + " " + f[0]))}"><span class="t">{esc(EQ[e][1].capitalize())} {N} {esc(bajar(f[0]).rstrip("."))}</span></a>' for e in d["equipos"] for f in d["fallas"][e][:2]) + f'</div><p><a href="{pathb(m, "fallas")}">Ver todas las fallas de {N}</a> · <a href="{pathb(m, "cobertura")}">Cobertura por zona</a></p>', alt=True)
-              + sec(f"Líneas y tecnologías {N} que conocemos", "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + (f'<div class="two" style="margin-top:18px"><p>{esc(d["tech"][d["equipos"][0]])}</p><img loading="lazy" src="{mid[0][0]}" alt="{mid[0][1]}" width="1024" height="768"></div>' if mid else ""), alt=True)
-              + sec(f"Mantenimiento recomendado para {N}", "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>")
-              + sec("Cómo trabajamos", PASOS, alt=True)
-              + sec(f"Todo sobre el servicio {N}", otras(m, ""), alt=True)
-              + sec(f"Preguntas frecuentes sobre {N} en Panamá", faq_html(d["faq"])))
+    top8 = [(e, f) for e in d["equipos"] for f in d["fallas"][e][:2]][:8]
+    sbtn = '<div class="symb">' + "".join(f'<a class="sy" href="{pathb(m, "falla-" + slug(EQ[e][1] + " " + f[0]))}"><i>›</i><span><b>{esc(EQ[e][1].capitalize())} {N}: {esc(bajar(f[0]).rstrip("."))}</b><small>{esc(f[1][:80])}{"…" if len(f[1]) > 80 else ""}</small></span></a>' for e, f in top8) + '</div>'
+    cuerpo = (sec(f"¿Qué equipo {N} quieres reparar?", stepper(1) + tiles(m), id="equipos", lead="Toca el equipo que tienes con falla. Te llevamos a sus fallas y a cómo pedir la visita.")
+              + sec("¿Necesitas ayuda para elegir?", caja_ayuda(m), alt=True)
+              + sec(f"Las fallas más buscadas de {N}", sbtn + f'<p style="margin-top:14px"><a href="{pathb(m, "fallas")}">Ver todas las fallas de {N}</a></p>')
+              + sec("Así funciona la visita", PASOS, alt=True)
+              + sec(f"Preguntas frecuentes sobre {N}", faq_html(d["faq"]))
+              + sec(f"Más información sobre {N}", otras(m, ""), alt=True)
+              + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
     path = "/" if m == "samsung" else base(m)
     t = f"Centro de Servicio Técnico {N} Panamá | A domicilio" if m != "general-electric" else f"Centro de Servicio Técnico {N} Panamá"
     ld = [faq_ld(d["faq"]), {"@type": "Service", "name": f"Servicio técnico {N} en Panamá", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá", "serviceType": f"Reparación de electrodomésticos {N}"}]
     pagina(path, t, f"Centro de servicio técnico {N} en Panamá: reparación a domicilio de {', '.join(EQ[e][2] for e in d['equipos'][:3])} y más. Diagnóstico en casa y atención por WhatsApp.",
            f"Centro de Servicio Técnico {N} Panamá", cuerpo, m, hero[0] if hero else None, [(f"Centro de Servicio Técnico {N} Panamá", base(m))], ld,
            bd=f"{N} · Panamá", prio="1.0" if m == "samsung" else "0.9",
-           lead=f"Reparación a domicilio de equipos {N} en Panamá. Diagnóstico en tu casa, explicación clara de la falla y atención por WhatsApp.")
+           lead=f"Reparamos tus equipos {N} en tu casa. Elige tu equipo abajo y te guiamos paso a paso.", cta2=("Elegir mi equipo ↓", "#equipos"))
     # --- por equipo
     for e in d["equipos"]:
         s, sing, pl = EQ[e]; fl = d["fallas"][e]
@@ -314,12 +348,15 @@ def build_marca(m):
         cod = d["codigos"].get("Lavadoras" if e in ("lavadoras", "centro-lavado") else "Refrigeradoras" if e == "neveras" else "_", [])
         sec_cod = sec(f"Códigos de error frecuentes en {pl} {N}", tabla(["Código", "Qué suele indicar"], [(f'<span class="cb">{c}</span>', esc(t)) for c, t in cod]) + f'<p><a href="{pathb(m, "codigos-de-error")}">Ver todos los códigos {N}</a></p>', alt=True) if cod else ""
         resp = rr(f"Si tu {sing} {N} " + bajar(fl[0][0]).rstrip(".") + f", lo más probable es: {bajar(fl[0][1])} Haremos la revisión en tu casa y te diremos el valor antes de reparar.")
-        faq_e = [(q, r) for q, r in d["faq"]][:3]
-        cuerpo = (sec(f"Reparación de {pl} {N} en Panamá", resp + f"<p>{esc(d['tech'][e])}</p>")
-                  + sec(f"Fallas de {pl} {N} que más vemos", tabla(["Lo que notas", "Causa probable", "Qué revisamos"], [(f"<b>{esc(a)}</b>", esc(b), esc(c)) for a, b, c in fl]), alt=True)
-                  + (sec(f"Antes de la visita: tu {sing} {N}", "" + (f'<div class="two" style="margin-top:20px"><div><h3>Antes de llamar</h3><p>{esc(d["etiqueta"].get(e, "Busca la etiqueta con el número de modelo y serie en el equipo."))}</p><p>Con una foto de esa etiqueta, el diagnóstico por WhatsApp es mucho más preciso.</p></div><img loading="lazy" src="{h2[0]}" alt="{h2[1]}" width="1024" height="768"></div>' if h2 else "")))
-                  + sec_cod
-                  + sec(f"Preguntas sobre {pl} {N}", faq_html(faq_e), alt=not bool(sec_cod))
+        faq_e = [(f"¿Por qué mi {sing} {N} {bajar(x[0]).rstrip('.')}?", f"{x[1]} {x[2]}") for x in fl[:3]] + [(q, r) for q, r in d["faq"] if re.search(sing.split()[0][:6], q + r, re.I)][:1]
+        anc = f'<div class="anc"><a href="#fallas">Elegir mi falla</a>' + ('<a href="#codigos">Códigos de error</a>' if cod else "") + f'<a href="#detalle">Causas y qué revisamos</a><a href="#preguntas">Preguntas</a><a href="{wa("Hola, necesito reparar mi " + sing + " " + N)}" target="_blank" rel="noopener">Pedir visita</a></div>'
+        tabla_det = f'<details><summary>Ver la tabla completa: lo que notas, causa probable y qué revisamos</summary>' + tabla(["Lo que notas", "Causa probable", "Qué revisamos"], [(f"<b>{esc(a_)}</b>", esc(b_), esc(c_)) for a_, b_, c_ in fl]) + '</details>'
+        cuerpo = (sec(f"¿Qué le pasa a tu {sing} {N}?", anc + stepper(2) + sintomas_btn(m, e, fl), id="fallas", lead="Toca lo que notas en tu equipo. Te mostramos la causa más probable y qué puedes hacer antes de llamar.")
+                  + sec("¿Necesitas ayuda para elegir?", caja_ayuda(m), alt=True)
+                  + sec(f"Cómo funciona tu {sing} {N}", resp + f"<p>{esc(d['tech'][e])}</p>" + tabla_det, id="detalle")
+                  + (sec(f"Antes de la visita: tu {sing} {N}", "" + (f'<div class="two" style="margin-top:8px"><div><h3>Ten a mano el modelo</h3><p>{esc(d["etiqueta"].get(e, "Busca la etiqueta con el número de modelo y serie en el equipo."))}</p><p>Con una foto de esa etiqueta, el diagnóstico por WhatsApp es mucho más preciso.</p></div><img loading="lazy" src="{h2[0]}" alt="{h2[1]}" width="1024" height="768"></div>' if h2 else ""), alt=True))
+                  + sec_cod.replace('<section class="s alt">', '<section class="s" id="codigos">', 1).replace('<section class="s">', '<section class="s" id="codigos">', 1)
+                  + sec(f"Preguntas sobre {pl} {N}", faq_html(faq_e), alt=bool(sec_cod), id="preguntas")
                   )
         pagina(pathb(m, "reparacion-" + s), f"Reparación de {pl} {N} en Panamá | Centro de Servicio", f"Reparación de {pl} {N} en Panamá a domicilio: fallas frecuentes, causas probables y qué revisamos. Diagnóstico en casa y atención por WhatsApp.",
                f"Reparación de {pl} {N} en Panamá", cuerpo, m, h, crumbs0 + [(f"Reparación de {pl}", pathb(m, "reparacion-" + s))],
@@ -419,7 +456,8 @@ def build_sintomas(m):
                (f"¿Qué revisa el técnico cuando mi {sing} {N_} {bajar(a).rstrip('.')}?", c),
                (f"¿Cuánto cuesta arreglar esto en una {sing} {N_}?", f"Depende de la pieza. En este caso la causa más probable es: {bajar(b)} Después del diagnóstico te damos el valor por escrito antes de reparar.")]
         busc = "".join(f'<span class="pill">{esc(v)}</span>' for v in variantes(N_, sing, a))
-        cuerpo = (sec(f"{sing.capitalize()} {N_} {bajar(a).rstrip('.')}", rr(f"{b} {hint}") + f"<h3>Causa más probable</h3><p>{esc(b)}</p><h3>Qué revisamos en tu casa</h3><p>{esc(c)}</p>")
+        navtop = f'<div class="anc"><a href="{pathb(m, "reparacion-" + EQ[e][0])}">← Otras fallas de {pl}</a><a href="{pathb(m, "fallas")}">Índice de fallas {N_}</a><a href="{wa("Hola, mi " + sing + " " + N_ + " presenta: " + a)}" target="_blank" rel="noopener">Pedir visita</a></div>' + stepper(3)
+        cuerpo = (sec(f"{sing.capitalize()} {N_} {bajar(a).rstrip('.')}", navtop + rr(f"{b} {hint}") + f"<h3>Causa más probable</h3><p>{esc(b)}</p><h3>Qué revisamos en tu casa</h3><p>{esc(c)}</p>")
                   + sec("Qué puedes hacer tú antes de llamar", f"<p>{esc(hint)}</p><p><b>Importante:</b> {esc(aviso)}</p>", alt=True)
                   + sec(f"Cómo funciona esta parte de tu {sing} {N_}", f"<p>{esc(oracion(d['tech'][e], k))}</p>" + (f'<img loading="lazy" src="{im[1][0]}" alt="{im[1][1]}" width="1024" height="768" style="border-radius:16px;margin-top:12px;max-width:min(560px,100%);height:auto">' if len(im) > 1 else ""))
                   + cod_html
@@ -428,7 +466,7 @@ def build_sintomas(m):
                   + sec("Cómo lo buscan en Google", f"<p>Estas son algunas formas en que la gente describe este problema:</p>{busc}", alt=True))
         pagina(pathb(m, "falla-" + sl), titulo, f"{sing.capitalize()} {N_} {bajar(a).rstrip('.')}: causa más probable, qué revisa el técnico y qué puedes hacer antes de llamar. Servicio a domicilio en Panamá.",
                h1, cuerpo, m, im[0] if im else None, crumbs0 + [(f"Reparación de {pl}", pathb(m, "reparacion-" + EQ[e][0])), (a[:45], pathb(m, "falla-" + sl))],
-               [faq_ld(faq), {"@type": "Service", "name": f"Reparación: {sing} {N_} {bajar(a).rstrip('.')}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá"}], bd=f"{N_} · {pl.capitalize()}", prio="0.7",
+               [faq_ld(faq), {"@type": "Service", "name": f"Reparación: {sing} {N_} {bajar(a).rstrip('.')}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá"}], bd=f"{N_} · {pl.capitalize()}", prio="0.7", noindex=(len(b) + len(c) < 60),
                lead=f"Causa probable, qué se revisa y qué puedes hacer antes de pedir la visita.")
     # índice de fallas
     grupos = ""
