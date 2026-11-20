@@ -140,7 +140,8 @@ def portada(t):
 NUEVAS = [("tecnico-explicando-diagnostico-con-tablet.webp", "Técnico explicando el diagnóstico a un cliente con una tablet en su sala"),
            ("asesora-atendiendo-cliente-en-mostrador.webp", "Asesora atendiendo a un cliente en el mostrador de servicio"),
            ("tecnico-saluda-al-cliente-en-su-casa.webp", "Técnico saludando a un cliente en la puerta de su casa antes de la visita"),
-           ("equipo-de-tecnicos-en-taller.webp", "Equipo de técnicos reunido en el taller de reparación")]
+           ("equipo-de-tecnicos-en-taller.webp", "Equipo de técnicos reunido en el taller de reparación"),
+           ("tecnico-y-asesora-en-taller-de-servicio.webp", "Técnico y asesora atendiendo a un cliente en el taller de servicio")]
 _dir_nuevas = pathlib.Path(__file__).resolve().parent / "st_img" / "panama"
 for _n, _a in NUEVAS:
     if (_dir_nuevas / _n).exists():
