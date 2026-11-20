@@ -24,17 +24,8 @@ for m in BRANDS_ORDER:
     if d["codigos"]: L.append(f"RewriteRule ^{m}/[^/]*(?:codigo|error)[^/]*\\.html$ {pb(m, 'codigos-de-error')} [R=301,L]")
     L.append(f"RewriteRule ^{m}/.*$ {hub(m)} [R=301,L]")
     L.append("")
-# páginas sin marca (equipo × barrio)
-ZR = [("san-miguelito", r"san-miguelito"), ("arraijan", r"arraijan"), ("la-chorrera", r"chorrera"), ("colon", r"colon"), ("tocumen-y-24-de-diciembre", r"tocumen|24-de-diciembre|pacora"), ("costa-del-este", r"costa-del-este|santa-maria"), ("panama-oeste", r"panama-oeste|veracruz|howard")]
+# páginas sin marca (equipo x barrio, guías, etc.) -> portada Samsung (la principal)
 L.append("# Páginas generales viejas")
-for z, rx in ZR: L.append(f"RewriteRule ^(?:servicio-tecnico|zona)[^/]*(?:{rx})[^/]*\\.html$ /zonas/{z}/ [R=301,L]")
-L.append("RewriteRule ^(?:servicio-tecnico|zona)[^/]*\\.html$ /zonas/ [R=301,L]")
-L.append("RewriteRule ^(?:guia|guias|blog)[^/]*\\.html$ /blog/ [R=301,L]")
-L.append("RewriteRule ^(?:privacidad|aviso-legal)[^/]*\\.html$ /privacidad/ [R=301,L]")
-L.append("RewriteRule ^terminos[^/]*\\.html$ /terminos/ [R=301,L]")
-L.append("RewriteRule ^(?:nosotros|quienes)[^/]*\\.html$ /nosotros/ [R=301,L]")
-L.append("RewriteRule ^mapa[^/]*\\.html$ /mapa-del-sitio/ [R=301,L]")
-for e, rx in EQRX: L.append(f"RewriteRule ^[^/]*(?:{rx})[^/]*\\.html$ / [R=301,L]")
 L.append("RewriteRule ^[^/]+\\.html$ / [R=301,L]")
 L += ["", "ErrorDocument 404 /404.html", "Options -Indexes", "<IfModule mod_expires.c>", "ExpiresActive On", "ExpiresByType image/webp \"access plus 1 year\"", "ExpiresByType text/css \"access plus 1 month\"", "</IfModule>"]
 (R / ".htaccess").write_text("\n".join(L) + "\n"); os.chmod(R / ".htaccess", 0o644)
