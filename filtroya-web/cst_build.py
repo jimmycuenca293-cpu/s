@@ -493,13 +493,13 @@ def build_galeria(m):
         o = ""
         for f in lst:
             USO[f] += 1; r = copia(m, f); w, h = _dim(f)
-            o += f'<figure class="gf"><img loading="lazy" src="{r}" alt="{alt_de(m, f)}" width="{w}" height="{h}"><figcaption>{alt_de(m, f)}</figcaption></figure>'
+            o += f'<figure class="gf"><img loading="lazy" src="{r}" alt="{alt_de(m, f)}" width="{w}" height="{h}"></figure>'
         return '<div class="fgrid">' + o + "</div>"
-    cuerpo = (sec(f"Equipos {N} que reparamos en Panamá", figs(prod), lead=f"Fotos de equipos {N} completos, sin recortar.")
-              + sec(f"Servicio técnico {N} a domicilio", figs(gente), alt=True, lead="Así es la atención y la visita a domicilio.")
+    cuerpo = (sec(f"Equipos {N} que reparamos en Panamá", figs(prod))
+              + sec(f"Servicio técnico {N} a domicilio", figs(gente), alt=True)
               + sec(f"¿Tienes un equipo {N} con falla?", f'<p><a class="btn" href="{wa("Hola, necesito servicio técnico " + N + " en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a></p>'))
     pagina(pathb(m, "galeria"), f"Galería de fotos {N} en Panamá | Equipos y servicio", f"Galería de fotos de equipos {N} y del servicio técnico a domicilio en Panamá: refrigeradoras, lavadoras, secadoras, cocinas, aires y más, mostrados completos.",
-           f"Galería de fotos {N}", cuerpo, m, None, crumbs0 + [("Galería", pathb(m, "galeria"))], bd=f"{N} · Galería", prio="0.5", lead=f"Todas las fotos de equipos {N} y del servicio técnico, mostradas completas.")
+           f"Galería de fotos {N}", cuerpo, m, None, crumbs0 + [("Galería", pathb(m, "galeria"))], bd=f"{N} · Galería", prio="0.5", lead=f"Equipos {N} y servicio técnico a domicilio.")
 
 def build_marca(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]
