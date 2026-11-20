@@ -623,5 +623,5 @@ function avisar_pago(array $p): void
         : 'Te llamamos al ' . h($p['tel']) . ' para acordar el día y la hora de la entrega' . ($p['entrega'] === 'instalacion' ? ' y la instalación' : '') . '.';
     enviar_correo($p['email'], "Recibimos tu pago — pedido {$p['ref']}",
         '<h2 style="margin:0 0 8px">¡Gracias por tu compra, ' . h(explode(' ', $p['nombre'])[0]) . '!</h2><p>Recibimos tu pago. ' . $que . '</p>' . tabla_pedido($p, false)
-        . '<p style="color:#5a6873;font-size:13px">¿Dudas? Responde este correo o escríbenos a ' . h($n['correo']) . ' (' . h($n['horario']) . ').<br>' . h($n['nombre']) . ' · ' . h($n['titular']) . ' · ' . h($n['documento']) . '</p>');
+        . '<p style="color:#5a6873;font-size:13px">¿Dudas? Responde este correo o escríbenos a ' . h($n['correo']) . ' (' . h($n['horario']) . ').<br>' . identificacion() . '</p>');
 }
