@@ -325,7 +325,7 @@ def cont_seo(p):
 
 
 # ---------------------------------------------------------------- formulario de pago contra entrega (llena los datos y arma el WhatsApp)
-_prods = {x["id"]: {"n": x["nombre"], "p": x["precio"], "r": (x["ref"] if x["ref"] != x["sku"] else "")} for x in PS if x["precio"]}
+_prods = {x["id"]: {"n": x["nombre"], "p": x["precio"], "u": x["url"], "r": (x["ref"] if x["ref"] != x["sku"] else "")} for x in PS if x["precio"]}
 _ciu = TOP_CIU + [c for c in CIUDADES if c not in TOP_CIU]
 PEDIDO_JS = """(function(){var P=%s,C=%s,WA='%s',K='rp_cliente',B='rp_borrador',m,cur,ok=false,F=['nom','tel','ciu','bar','dir','ind'];
 function bor(){try{return JSON.parse(localStorage.getItem(B)||'null')}catch(e){return null}}
@@ -354,7 +354,7 @@ function cerrar(){m.hidden=true;document.body.style.overflow='';if(ok){try{local
 function enviar(e){e.preventDefault();var v=function(k){return document.getElementById('pc-'+k).value.trim()},tel=v('tel').replace(/\\D/g,''),er=document.getElementById('pc-err');if(tel.length===12&&tel.indexOf('57')===0)tel=tel.slice(2);
 var msg=v('nom').length<3?'Escribe tu nombre completo.':!/^3\\d{9}$/.test(tel)?'Escribe un celular válido (10 dígitos que empiezan por 3).':v('ciu').length<3?'Escribe tu ciudad.':v('bar').length<2?'Escribe tu barrio.':v('dir').length<5?'Escribe tu dirección.':'';
 if(msg){er.textContent=msg;er.hidden=false;return}
-var n=qty(),pr=P[cur],tx='Hola, quiero pedir *contra entrega*:\\n• '+pr.n+(pr.r?' (ref. '+pr.r+')':'')+' x'+n+'\\nPrecio: '+cop(pr.p)+' c/u (envío gratis)\\nTotal a pagar al recibir: '+cop(pr.p*n)+'\\nPrecio fijo según la página web.\\nProducto: '+location.href.split('#')[0].split('?')[0]+'\\n\\nNombre: '+v('nom')+'\\nCelular: '+tel+'\\nCiudad: '+v('ciu')+'\\nBarrio: '+v('bar')+'\\nDirección: '+v('dir')+(v('ind')?'\\nIndicaciones: '+v('ind'):'');
+var n=qty(),pr=P[cur],tx='Hola, quiero pedir *contra entrega*:\\n• '+pr.n+(pr.r?' (ref. '+pr.r+')':'')+' x'+n+'\\nPrecio: '+cop(pr.p)+' c/u (envío gratis)\\nTotal a pagar al recibir: '+cop(pr.p*n)+'\\nPrecio fijo según la página web.\\nProducto: '+location.origin+'/'+pr.u+'\\n\\nNombre: '+v('nom')+'\\nCelular: '+tel+'\\nCiudad: '+v('ciu')+'\\nBarrio: '+v('bar')+'\\nDirección: '+v('dir')+(v('ind')?'\\nIndicaciones: '+v('ind'):'');
 try{localStorage.setItem(K,JSON.stringify({nom:v('nom'),tel:tel,ciu:v('ciu'),bar:v('bar'),dir:v('dir'),ind:v('ind')}))}catch(x){}
 try{window.dataLayer=window.dataLayer||[];dataLayer.push({event:'pedido_contraentrega_whatsapp',producto:cur,value:pr.p*n,currency:'COP'})}catch(x){}
 var u='https://wa.me/'+WA+'?text='+encodeURIComponent(tx);ok=true;var b=m.querySelector('.pc-b');b.innerHTML='<button type="button" class="pc-x" aria-label="Cerrar">×</button><div class="pc-ok"><div class="pc-ic">✔</div><h2>Tu pedido está listo</h2><p>Se abrió WhatsApp con todos tus datos. Solo toca <b>Enviar</b> en el chat para que lo recibamos.</p><a class="pc-s pc-a" href="'+u+'" target="_blank" rel="noopener">Abrir WhatsApp otra vez</a><button type="button" class="pc-c2" id="pc-cp">Copiar mi pedido</button><p class="pc-n">Si WhatsApp no se abrió, usa el botón verde o copia tu pedido y pégalo en el chat. Tus datos no se pierden hasta que cierres esta ventana.</p></div>';
