@@ -25,7 +25,7 @@ EXCLUIR = {  # carteles de «autorizado»/«oficial», Costa Rica, sellos de gar
  "banner-frigidaire-cocina", "recepcion-frigidaire-2", "tecnico-frigidaire-kitchen-2",
  "producto-lavadora-carga-superior-haceb", "producto-hornos-ge", "producto-lavadoras-ge", "producto-lavavajillas-ge", "producto-neveras-ge",
  "tecnico-lg-autorizado", "tecnico-lg-recepcion-2", "tecnico-lg-recepcion-4",
- "tecnico-autorizado-nevera", "tecnico-domicilio-furgon", "tecnico-reparando-secadora", "producto-aire-samsung-pared"}
+ "tecnico-mabe-diagnostico-lavadora-cliente", "tecnico-mabe-llegada-domicilio-cliente", "tecnico-whirlpool-diagnostico-lavadora-1", "tecnico-whirlpool-perfil", "tecnico-reparando-lavadora-samsung", "tecnico-reparando-refrigeradora-samsung-en-cocina", "tecnico-samsung-visita-a-domicilio-7", "tecnico-autorizado-nevera", "tecnico-domicilio-furgon", "tecnico-reparando-secadora", "producto-aire-samsung-pared"}
 def pool(m):
     d = SRC / m
     fs = [f for f in sorted(d.glob("*.webp")) if "logo" not in f.name and "autorizado" not in f.name and f.stem not in EXCLUIR] if d.exists() else []
@@ -114,7 +114,7 @@ section.s{padding:30px 0}section.s.alt{background:var(--w)}.lead{color:var(--m);
 .cta-box{display:grid;gap:12px}@media(min-width:700px){.cta-box{grid-template-columns:1fr 1fr}}.cta-box .card{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .sec-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.sec-h small{color:var(--m)}
 .upd{font-size:.85rem;color:var(--m);margin:6px 0 28px}
-.rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
+.pz{display:grid;gap:10px;margin:0}.pz dt{font-weight:800;color:var(--c)}.pz dd{margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid #e3eaf4}.rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
 .g{display:grid;gap:16px}@media(min-width:700px){.g.c2{grid-template-columns:1fr 1fr}.g.c3{grid-template-columns:repeat(3,1fr)}}@media(min-width:1000px){.g.c4{grid-template-columns:repeat(4,1fr)}}
 .card{background:var(--w);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}.card.l{text-decoration:none;color:inherit;display:block;transition:.15s}.card.l:hover{transform:translateY(-3px)}.card .t{font-weight:800;color:var(--c)}.card small{color:var(--m)}
 .tb{width:100%;border-collapse:collapse;background:var(--w);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}.tb th,.tb td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid #e8eef7;font-size:.95rem}.tb th{background:var(--soft);color:var(--c)}
@@ -372,19 +372,29 @@ def build_marca(m):
     # --- por equipo
     for e in d["equipos"]:
         s, sing, pl = EQ[e]; fl = d["fallas"][e]
-        imgs = elegir(m, m + e, 2, e)
-        h = imgs[0] if imgs else None; h2 = imgs[1] if len(imgs) > 1 else None
+        imgs = elegir(m, m + e, 1, e)
+        h = imgs[0] if imgs else None
+        gente = elegir(m, m + e + "gente", 1)
+        h2 = gente[0] if gente else None
         cod = d["codigos"].get("Lavadoras" if e in ("lavadoras", "centro-lavado") else "Refrigeradoras" if e == "neveras" else "_", [])
-        sec_cod = sec(f"Códigos de error frecuentes en {pl} {N}", tabla(["Código", "Qué suele indicar"], [(f'<span class="cb">{c}</span>', esc(t)) for c, t in cod]) + f'<p><a href="{pathb(m, "codigos-de-error")}">Ver todos los códigos {N}</a></p>', alt=True) if cod else ""
-        resp = rr(f"La falla más común en {pl} {N} es «{bajar(fl[0][0]).rstrip('.')}». Lo más probable: {bajar(fl[0][1])} Haremos la revisión en tu casa y te diremos el valor antes de reparar.")
-        faq_e = [(f"¿Qué pasa si {ART_EQ[e]} {sing} {N} presenta «{x[0].rstrip('.')}»?", f"{x[1]} {x[2]}") for x in fl[:3]] + [(q, r) for q, r in d["faq"] if re.search(sing.split()[0][:6], q + r, re.I)][:1]
-        anc = f'<div class="anc"><a href="#fallas">Elegir mi falla</a>' + ('<a href="#codigos">Códigos de error</a>' if cod else "") + f'<a href="#detalle">Causas y qué revisamos</a><a href="#preguntas">Preguntas</a><a href="{wa("Hola, necesito reparar mi " + sing + " " + N)}" target="_blank" rel="noopener">Pedir visita</a></div>'
-        tabla_det = f'<details><summary>Ver la tabla completa: lo que notas, causa probable y qué revisamos</summary>' + tabla(["Lo que notas", "Causa probable", "Qué revisamos"], [(f"<b>{esc(a_)}</b>", esc(b_), esc(c_)) for a_, b_, c_ in fl]) + '</details>'
+        sec_cod = sec(f"Códigos de error frecuentes en {pl} {N}", tabla(["Código", "Qué suele indicar"], [(f'<span class="cb">{c}</span>', esc(t)) for c, t in cod]) + f'<p><a href="{pathb(m, "codigos-de-error")}">Ver todos los códigos {N}</a></p>', id="codigos", alt=True, lead=f"Si la pantalla de tu {sing} {N} muestra un código, aquí está lo que suele indicar.") if cod else ""
+        raiz = sing.split()[0][:5].lower()
+        cuid = [x for x in d["mantenimiento"] if raiz in x.lower()]
+        cuid_html = ("<h3>Cuidados que alargan su vida</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in cuid[:3]) + "</ul>") if cuid else ""
+        anc = f'<div class="anc"><a href="#fallas">Elegir mi falla</a>' + ('<a href="#codigos">Códigos de error</a>' if cod else "") + f'<a href="#funciona">Cómo funciona</a><a href="#visita">Antes de la visita</a><a href="#preguntas">Preguntas</a><a href="{wa("Hola, necesito reparar mi " + sing + " " + N)}" target="_blank" rel="noopener">Pedir visita</a></div>'
+        modelo_txt = d["etiqueta"].get(e, "Busca la etiqueta con el número de modelo y serie en el equipo.")
+        faq_e = [(f"¿Dónde encuentro el modelo de mi {sing} {N}?", modelo_txt + " Con una foto de esa etiqueta el diagnóstico por WhatsApp es mucho más preciso."),
+                 (f"¿Cuál es la falla más común en {pl} {N}?", f"{cap(bajar(fl[0][0]).rstrip('.'))}. Lo más probable: {bajar(fl[0][1])}"),
+                 (f"¿Qué hago si mi {sing} {N} presenta «{bajar(fl[-1][0]).rstrip('.')}»?", f"{fl[-1][1]} {fl[-1][2]}")] + [(q, r) for q, r in d["faq"] if re.search(sing.split()[0][:6], q + r, re.I)][:1]
+        visita = (f'<div class="two"><div><h3>Ten a mano el modelo</h3><p>{esc(modelo_txt)}</p><p>Con una foto de esa etiqueta y de lo que muestra el equipo, el diagnóstico por WhatsApp es mucho más preciso.</p>'
+                  f'<h3 style="margin-top:14px">Qué pasa en la visita</h3><ol><li>Revisamos tu {sing} {N} en casa.</li><li>Te explicamos la causa y el valor por escrito.</li><li>Solo reparamos si tú lo apruebas.</li></ol>'
+                  f'<p><a class="btn" href="{wa("Hola, necesito reparar mi " + sing + " " + N)}" target="_blank" rel="noopener">Pedir la visita</a></p></div>'
+                  + (f'<img loading="lazy" src="{h2[0]}" alt="{h2[1]}" width="1024" height="768">' if h2 else "") + '</div>')
         cuerpo = (sec(f"¿Qué le pasa a tu {sing} {N}?", anc + stepper(2) + sintomas_btn(m, e, fl), id="fallas", lead="Toca lo que notas en tu equipo. Te mostramos la causa más probable y qué puedes hacer antes de llamar.")
-                  + sec(f"Cómo funciona tu {sing} {N}", resp + f"<p>{esc(d['tech'][e])}</p>" + tabla_det, id="detalle")
-                  + (sec(f"Antes de la visita: tu {sing} {N}", "" + (f'<div class="two" style="margin-top:8px"><div><h3>Ten a mano el modelo</h3><p>{esc(d["etiqueta"].get(e, "Busca la etiqueta con el número de modelo y serie en el equipo."))}</p><p>Con una foto de esa etiqueta, el diagnóstico por WhatsApp es mucho más preciso.</p></div><img loading="lazy" src="{h2[0]}" alt="{h2[1]}" width="1024" height="768"></div>' if h2 else ""), alt=True))
-                  + sec_cod.replace('<section class="s alt">', '<section class="s" id="codigos">', 1).replace('<section class="s">', '<section class="s" id="codigos">', 1)
-                  + sec(f"Preguntas sobre {pl} {N}", faq_html(faq_e), alt=bool(sec_cod), id="preguntas")
+                  + sec_cod
+                  + sec(f"Cómo funciona tu {sing} {N}", f"<p>{esc(d['tech'][e])}</p>" + cuid_html, id="funciona", alt=not bool(sec_cod))
+                  + sec(f"Antes de la visita: tu {sing} {N}", visita, id="visita", alt=bool(sec_cod))
+                  + sec(f"Preguntas sobre {pl} {N}", faq_html(faq_e), alt=not bool(sec_cod), id="preguntas")
                   )
         pagina(pathb(m, "reparacion-" + s), f"Reparación de {pl} {N} en Panamá | Centro de Servicio", f"Reparación de {pl} {N} en Panamá a domicilio: fallas frecuentes, causas probables y qué revisamos. Diagnóstico en casa y atención por WhatsApp.",
                f"Reparación de {pl} {N} en Panamá", cuerpo, m, h, crumbs0 + [(f"Reparación de {pl}", pathb(m, "reparacion-" + s))],
@@ -489,27 +499,32 @@ def build_sintomas(m):
         cod_html = ""
         if cod and re.search(r"c[oó]digo|error|pantalla|muestra|\bE\d|Er ", a, re.I):
             cod_html = sec(f"Códigos de {pl} {N_}", tabla(["Código", "Qué suele indicar"], [(f'<span class="cb">{x}</span>', esc(y)) for x, y in cod[:6]]) + f'<p><a href="{pathb(m, "codigos-de-error")}">Ver todos los códigos de error {N_}</a></p>', alt=True)
-        im = elegir(m, m + sl, 2, e)
+        im = elegir(m, m + sl, 1, e) + elegir(m, m + sl + "g", 1)
         nombre = cap(uni(sing, N_, a))
         titulo = nombre
         while len(titulo) > 62 and re.search(r"\s(o|y|,)\s", titulo): titulo = re.sub(r"\s+(?:o|y)\s+[^ ]*(?:\s+[^ ]+)*$", "", titulo, count=1) if re.search(r"\s(o|y)\s", titulo) else titulo
         if len(titulo) > 62: titulo = re.sub(r"(\s+(?:de|en|y|a|la|el|los|las|con|para|del|que|o|u|al|no|se))+$", "", titulo[:62].rsplit(" ", 1)[0].rstrip(" ,:;"))
         if len(titulo) <= 42: titulo += " | Causa y solución"
         q = f"«{a.rstrip('.')}»"
-        faq = [(f"¿Puedo seguir usando {art} {sing} {N_} si presenta {q}?", USAR[cod_]),
-               (f"¿Qué revisa el técnico cuando {art} {sing} {N_} presenta {q}?", c),
-               (f"¿Cuánto cuesta arreglar {q} en {art} {sing} {N_}?", f"Depende de la pieza. La causa más probable es: {bajar(b)} Después del diagnóstico te damos el valor por escrito antes de reparar.")]
-        busc = "".join(f'<span class="pill">{esc(v)}</span>' for v in variantes(N_, sing, a))
+        faq = [(f"¿Cuánto cuesta arreglar {q} en {art} {sing} {N_}?", f"Depende de la pieza. La causa más probable es: {bajar(b)} Después del diagnóstico te damos el valor por escrito antes de reparar."),
+               (f"¿Qué datos necesito para pedir la visita por {q}?", f"El modelo del equipo y una foto o descripción de lo que notas. {d['etiqueta'].get(e, 'Busca la etiqueta con el modelo y la serie en el equipo.')}")]
         navtop = f'<div class="anc"><a href="{pathb(m, "reparacion-" + EQ[e][0])}">← Otras fallas de {pl}</a><a href="{pathb(m, "fallas")}">Índice de fallas {N_}</a><a href="{wa("Hola, mi " + sing + " " + N_ + " presenta: " + a)}" target="_blank" rel="noopener">Pedir visita</a></div>'
-        resp = (f"<p><b>Qué puedes hacer tú:</b> {esc(probar)}</p><p><b>¿Llamar al técnico?</b> {esc(LLAMAR[cod_])}</p>")
+        paso = f"<p><b>Qué puedes hacer tú:</b> {esc(probar)}</p><p><b>¿Llamar al técnico?</b> {esc(LLAMAR[cod_])}</p>"
+        tec = f"<p>{esc(c)}</p>"
+        tec_html = f'<div class="two" style="align-items:start"><div>{tec}<p><a class="btn" href="{wa("Hola, mi " + sing + " " + N_ + " presenta: " + a)}" target="_blank" rel="noopener">Pedir la visita</a></p></div>' + (f'<img loading="lazy" src="{im[1][0]}" alt="{im[1][1]}" width="1024" height="768">' if len(im) > 1 else "") + '</div>'
+        piezas = []
+        for parte, rx in PARTES.get(e, []):
+            if re.search(rx, b + " " + c, re.I) and parte in PARTE_DESC: piezas.append((parte, PARTE_DESC[parte]))
+        piezas_html = sec(f"Las piezas que pueden estar fallando", "<p>Según lo que notas, estas son las piezas que revisamos primero y qué hace cada una:</p><dl class=\"pz\">" + "".join(f"<dt>{esc(p)}</dt><dd>{esc(t)}</dd>" for p, t in piezas[:4]) + "</dl>") if piezas else ""
         cuerpo = (sec(f"¿Qué le pasa a tu {sing} {N_}?", navtop + stepper(3) + rr(f"<b>{esc(cap(bajar(a).rstrip('.')))}.</b> Lo más probable: {esc(bajar(b))}"))
-                  + sec("Qué hacer, paso a paso", resp + f"<h3>Qué revisa el técnico en tu casa</h3><p>{esc(c)}</p>", alt=True)
-                  + sec(f"¿Puedo seguir usando mi {sing}?", f"<p>{esc(USAR[cod_])}</p>" + (f'<img loading="lazy" src="{im[1][0]}" alt="{im[1][1]}" width="1024" height="768" style="border-radius:16px;margin-top:12px;max-width:min(560px,100%);height:auto">' if len(im) > 1 else ""))
+                  + sec("Qué hacer, paso a paso", paso, alt=True)
+                  + sec(f"¿Puedo seguir usando mi {sing}?", f"<p>{esc(USAR[cod_])}</p>")
+                  + sec("Qué revisa el técnico", tec_html, alt=True)
+                  + piezas_html.replace('<section class="s">', '<section class="s">', 1)
                   + cod_html
-                  + sec(f"Otras fallas de {pl} {N_}", f'<div class="g c2">{hermanas_html}</div><p><a href="{pathb(m, "reparacion-" + EQ[e][0])}">Ver toda la reparación de {pl} {N_}</a></p>', alt=not bool(cod_html))
-                  + sec(f"Cómo distinguirla de otras fallas de {pl} {N_}", "<ul>" + "".join(f"<li>Si lo que notas es «{esc(bajar(x[2]).rstrip('.'))}», la causa suele ser distinta: {esc(bajar(x[3]))}</li>" for x in hermanas[:3]) + "</ul>", alt=bool(cod_html))
-                  + sec("Preguntas frecuentes", faq_html(faq))
-                  + sec("Cómo lo buscan en Google", f"<p>Estas son algunas formas en que la gente describe este problema:</p>{busc}", alt=True))
+                  + sec(f"Cómo distinguirla de otras fallas de {pl} {N_}", "<ul>" + "".join(f"<li>Si lo que notas es «{esc(bajar(x[2]).rstrip('.'))}», la causa suele ser distinta: {esc(bajar(x[3]))}</li>" for x in hermanas[:3]) + "</ul>", alt=not bool(cod_html))
+                  + sec(f"Otras fallas de {pl} {N_}", f'<div class="g c2">{hermanas_html}</div><p><a href="{pathb(m, "reparacion-" + EQ[e][0])}">Ver toda la reparación de {pl} {N_}</a></p>', alt=bool(cod_html))
+                  + sec("Preguntas frecuentes", faq_html(faq), alt=not bool(cod_html)))
         pagina(pathb(m, "falla-" + sl), titulo, f"{nombre}: causa más probable, qué puedes hacer tú, cuándo llamar al técnico y qué revisa en tu casa. Servicio a domicilio en Panamá.",
                nombre, cuerpo, m, im[0] if im else None, crumbs0 + [(f"Reparación de {pl}", pathb(m, "reparacion-" + EQ[e][0])), (a[:45], pathb(m, "falla-" + sl))],
                [faq_ld(faq), {"@type": "Service", "name": f"Reparación: {nombre}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá"}], bd=f"{N_} · {pl.capitalize()}", prio="0.7", noindex=(len(b) + len(c) < 40),
@@ -544,6 +559,56 @@ def build_guia(m):
            m, elegir(m, m + "guia", 1)[0], crumbs0 + [("Guía de cuidado", pathb(m, "guia-de-cuidado"))], [{"@type": "Article", "headline": f"Guía de cuidado de equipos {N}", "datePublished": HOY, "dateModified": HOY, "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@type": "Organization", "name": NOMBRE}}],
            bd=f"{N} · Guía", prio="0.6", lead=f"Mantenimiento y señales de alerta para tus equipos {N}.")
 
+PARTE_DESC = {
+ "Ventilador del evaporador": "Mueve el aire frío del congelador hacia el refrigerador. Si se traba o se escarcha, el congelador enfría pero el refrigerador queda tibio y se oye un zumbido.",
+ "Resistencia de deshielo": "Derrite la escarcha del evaporador cada cierto tiempo. Si falla, se forma hielo en el fondo y el aire deja de circular.",
+ "Sensor de temperatura": "Le dice a la placa qué tan frío o caliente está el equipo. Un sensor descalibrado hace que el equipo enfríe de más, de menos o muestre un código.",
+ "Placa electrónica o inverter": "Es el cerebro que controla compresor, ventiladores y deshielo. Los picos de voltaje suelen dañarla; el equipo deja de enfriar o muestra error sin hacer ruido.",
+ "Compresor": "Es el motor que hace circular el refrigerante. Si arranca y se apaga a cada rato, o no arranca, el equipo pierde frío poco a poco.",
+ "Relé de arranque": "Pieza pequeña que ayuda a arrancar el compresor. Cuando falla se oye un clic repetido y el compresor no arranca.",
+ "Filtro de agua": "Limpia el agua del dispensador y del hielo. Saturado, reduce el caudal o hace que el agua salga lenta o con mal sabor.",
+ "Electroválvula de agua": "Abre y cierra el paso del agua. Si falla o se tapa, el dispensador no sale agua o la lavadora no llena.",
+ "Empaque de la puerta": "Sella la puerta contra el cuerpo. Si está rígido o roto, entra aire caliente, se forma hielo y el compresor trabaja de más.",
+ "Termostato": "Corta y da corriente según la temperatura. Un termostato defectuoso hace que el equipo no enfríe o no pare nunca.",
+ "Bomba de drenaje": "Saca el agua del tambor o de la cuba. Si se tapa o se quema, el equipo se queda con agua o no avanza el ciclo.",
+ "Filtro de la bomba": "Atrapa monedas, pelusa y residuos antes de la bomba. Si se tapa, el agua no sale y aparece un error de drenaje.",
+ "Rodamientos del tambor": "Permiten que el tambor gire parejo. Desgastados, hacen un ruido metálico fuerte al centrifugar.",
+ "Amortiguadores": "Sujetan el tambor y absorben la vibración. Vencidos, la lavadora salta o golpea al centrifugar.",
+ "Electroválvula de entrada": "Deja entrar el agua a la lavadora. Si falla, la lavadora llena poco, no llena o sigue entrando agua.",
+ "Presostato (sensor de nivel)": "Mide el nivel de agua dentro de la tina. Con falla, la lavadora llena de más, de menos o marca error de nivel.",
+ "Cerradura de puerta": "Bloquea la puerta durante el ciclo. Si no cierra o no se libera, la lavadora no arranca o no abre al terminar.",
+ "Interruptor de tapa": "Detecta que la tapa está cerrada. Si falla, la lavadora no centrifuga o se detiene con la tapa cerrada.",
+ "Transmisión, embrague o correa": "Transmite el giro del motor al tambor o agitador. Desgastada, el agitador no se mueve aunque el motor suene.",
+ "Placa o tarjeta de control": "Ordena todo el ciclo de lavado. Dañada por humedad o voltaje, la lavadora se detiene, marca códigos o no responde.",
+ "Motor y sensor del motor": "Hace girar el tambor. El sensor controla su velocidad; si falla, el tambor gira lento, se detiene o marca error.",
+ "Resistencia": "Genera el calor de la secadora u horno. Quemada, el equipo gira o enciende pero no calienta.",
+ "Termostato y fusible térmico": "Protegen contra sobrecalentamiento. Si se disparan, la secadora se apaga sola o deja de calentar.",
+ "Correa y rodillos": "Hacen girar el tambor de la secadora. Gastados, el tambor no gira o suena al girar.",
+ "Sensor de humedad": "Detecta si la ropa ya está seca. Sucio o dañado, la secadora corta el ciclo antes de tiempo o seca de más.",
+ "Bomba de condensado": "Saca el agua que genera la secadora. Si falla, aparece un error de drenaje o de depósito lleno.",
+ "Filtro y ducto de pelusa": "Retienen la pelusa de la ropa. Tapados, la secadora tarda más, se calienta de más y se apaga sola.",
+ "Gas refrigerante": "Es lo que transporta el calor en el aire acondicionado. Si hay fuga, el equipo enciende pero enfría poco o nada.",
+ "Placa de la unidad exterior": "Controla el compresor y el ventilador exterior. Los picos de voltaje y las tormentas la dañan con frecuencia.",
+ "Drenaje y manguera": "Sacan el agua de condensación. Tapados, el agua gotea dentro de la casa.",
+ "Filtros y serpentín": "Limpian y enfrían el aire. Sucios, reducen el flujo, congelan el serpentín y el equipo enfría poco.",
+ "Resistencia del horno": "Calienta el horno. Quemada o con mal contacto, el horno no calienta o calienta de forma desigual.",
+ "Bujías de encendido": "Producen la chispa de los quemadores. Sucias o desgastadas, el quemador no enciende o tarda en encender.",
+ "Módulo de encendido": "Envía la chispa a las bujías. Con falla, ningún quemador enciende aunque salga gas.",
+ "Relé de la placa": "Interruptor que da corriente a una función. Con falla, una función no responde aunque el resto funcione.",
+ "Termostato y válvula": "Regulan el gas y la temperatura del horno. Con falla, el horno no mantiene la temperatura o no enciende.",
+ "Ventilador de convección": "Reparte el aire caliente dentro del horno. Con falla, el horno calienta mal o hace ruido.",
+ "Interruptor selector": "Elige la función del horno. Con desgaste, la función elegida no responde.",
+ "Bobina de inducción": "Calienta la olla por campo magnético. Con falla, la zona marca error o no calienta.",
+ "Brazos rociadores": "Reparten el agua sobre la vajilla. Tapados con sarro o residuos, lavan mal y dejan restos.",
+ "Filtro del fondo": "Retiene residuos de comida. Saturado, el lavavajillas no drena bien y huele.",
+ "Sensor de turbidez": "Mide qué tan sucia está el agua. Con falla, el programa se alarga o lava mal.",
+ "Sello de la puerta": "Evita que el agua salga. Deformado o sucio, gotea por la puerta.",
+ "Triturador": "Muele restos de comida pequeños. Atascado, el lavavajillas no drena.",
+ "Placa principal": "Controla ambos equipos del centro de lavado. Con falla, una o las dos unidades dejan de responder.",
+ "Cableado y conectores": "Comunican la placa con el motor y los sensores. Un conector flojo o corroído causa fallas intermitentes.",
+ "Resistencia de la secadora": "Calienta el aire de la secadora. Quemada, la secadora gira pero no calienta.",
+ "Motor": "Hace girar el tambor o el eje. Con falla, no gira, gira lento o se calienta de más.",
+}
 PARTES = {
  "neveras": [("Ventilador del evaporador", r"ventilador"), ("Resistencia de deshielo", r"deshielo|resistencia"), ("Sensor de temperatura", r"sensor"), ("Placa electrónica o inverter", r"placa|inverter|tarjeta|control"), ("Compresor", r"compresor"), ("Relé de arranque", r"relé|rele|protector"), ("Filtro de agua", r"filtro"), ("Electroválvula de agua", r"electrov"), ("Empaque de la puerta", r"empaque|sell"), ("Termostato", r"termostato")],
  "lavadoras": [("Bomba de drenaje", r"bomba"), ("Filtro de la bomba", r"filtro"), ("Rodamientos del tambor", r"rodamiento"), ("Amortiguadores", r"amortiguador|suspensi"), ("Electroválvula de entrada", r"electrov|válvula|valvula"), ("Presostato (sensor de nivel)", r"presostato|nivel"), ("Cerradura de puerta", r"cerradura"), ("Interruptor de tapa", r"interruptor|\btapa\b"), ("Transmisión, embrague o correa", r"transmisi|embrague|correa|acople"), ("Placa o tarjeta de control", r"placa|tarjeta|control"), ("Motor y sensor del motor", r"motor|hall")],
