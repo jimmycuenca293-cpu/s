@@ -28,7 +28,10 @@ EXCLUIR = {  # carteles de «autorizado»/«oficial», Costa Rica, sellos de gar
  "tecnico-mabe-diagnostico-lavadora-cliente", "tecnico-mabe-llegada-domicilio-cliente", "tecnico-whirlpool-diagnostico-lavadora-1", "tecnico-whirlpool-perfil", "tecnico-reparando-lavadora-samsung", "tecnico-reparando-refrigeradora-samsung-en-cocina", "tecnico-samsung-visita-a-domicilio-7", "tecnico-autorizado-nevera", "tecnico-domicilio-furgon", "tecnico-reparando-secadora", "producto-aire-samsung-pared"}
 def pool(m):
     d = SRC / m
-    fs = [f for f in sorted(d.glob("*.webp")) if "logo" not in f.name and "autorizado" not in f.name and f.stem not in EXCLUIR] if d.exists() else []
+    if CFG.get("sin_recorte"):   # Guayaquil: se usan TODAS las fotos de la marca (menos logos y miniaturas duplicadas)
+        fs = [f for f in sorted(d.glob("*.webp")) if "logo" not in f.name and not re.search(r"-(s|m|400)\.webp$", f.name)] if d.exists() else []
+    else:
+        fs = [f for f in sorted(d.glob("*.webp")) if "logo" not in f.name and "autorizado" not in f.name and f.stem not in EXCLUIR] if d.exists() else []
     extra = ROOT / "st_img" / "cst" / m
     if extra.exists(): fs += sorted(extra.glob("*.webp"))
     if m == "samsung":
@@ -36,7 +39,7 @@ def pool(m):
         for p in sorted(glob.glob("/tmp/pan_img_work/img/*.webp")):
             n = os.path.basename(p)
             if re.search(r"-(s|m|400)\.webp$", n) or "logo" in n or "oval" in n: continue
-            if re.match(r"(nevera|lavadora|secadora|lavavajillas|estufa|microondas|tecnico|horno|aire)", n): fs.append(pathlib.Path(p))
+            if re.match(r"(nevera|lavadora|secadora|lavavajillas|estufa|microondas|tecnico|horno|aire|asesora|equipo|servicio)" if CFG.get("sin_recorte") else r"(nevera|lavadora|secadora|lavavajillas|estufa|microondas|tecnico|horno|aire)", n): fs.append(pathlib.Path(p))
     # sin duplicados por contenido
     vis, out = set(), []
     for f in fs:
@@ -49,12 +52,12 @@ KW = {"neveras": r"nevera|refriger|french|side-by-side|family", "lavadoras": r"l
 import collections
 USO = collections.Counter()
 def copia(m, f):
-    n = re.sub(r"[^a-z0-9.-]", "-", f.name.lower())
+    n = re.sub(r"[^a-z0-9.-]", "-", f.name.lower().replace("autorizado", "servicio").replace("oficial", "servicio"))
     d = OUT / "img" / m; d.mkdir(parents=True, exist_ok=True)
     if not (d / n).exists(): shutil.copyfile(f, d / n)
     return f"/img/{m}/{n}"
 def alt_de(m, f, extra=""):
-    t = re.sub(r"\.webp$", "", f.name); t = re.sub(r"[-_]+", " ", t)
+    t = re.sub(r"\.webp$", "", f.name); t = re.sub(r"[-_]+", " ", t); t = re.sub(r"(?i)autorizad[oa]s?|oficial(es)?", "", t)
     t = re.sub(r"\b(\d+|producto|banner|cutout|ge|1|2|3|4)\b", "", t).strip()
     return esc((t[:1].upper() + t[1:] + f" · {M[m]['nombre']} Panamá").strip())
 def elegir(m, clave, cuantas=2, equipo=None):
@@ -128,6 +131,18 @@ footer{background:var(--hd);color:#cfd9ee;padding:34px 0 90px;font-size:.92rem}f
 .fb{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:8px;padding:8px 10px;background:#fff;box-shadow:0 -4px 20px rgba(0,0,0,.12)}.fb a{flex:1;text-align:center;padding:12px;border-radius:12px;font-weight:700;text-decoration:none;color:#fff;background:var(--c)}.fb a.wa{background:var(--a);color:var(--ab)}@media(min-width:900px){.fb{display:none}footer{padding-bottom:34px}}
 .wiz select{width:100%;padding:12px;border-radius:10px;border:1px solid #cfd9ee;font:inherit;margin:6px 0 12px}.res{display:none;background:#fff;border-left:5px solid var(--c);padding:16px;border-radius:12px;box-shadow:var(--sh)}
 """
+if CFG.get("sin_recorte"):
+    CSS += """
+.hero img{aspect-ratio:auto!important;object-fit:contain!important;width:auto!important;max-width:100%;max-height:480px;height:auto!important;margin:0 auto;background:#fff}
+.two img{aspect-ratio:auto!important;object-fit:contain!important;height:auto!important;max-height:520px;width:auto;max-width:100%;margin:0 auto}
+.gal{align-items:start}.gal img{aspect-ratio:auto!important;object-fit:contain!important;height:auto!important;background:#fff}
+.fgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));align-items:start}
+.fgrid figure,.gf{margin:0;background:#fff;border-radius:16px;padding:10px;box-shadow:var(--sh)}
+.fgrid img,.gf img{display:block;width:100%;height:auto;max-height:440px;object-fit:contain;border-radius:10px}
+.gf figcaption,.fgrid figcaption{font-size:.8rem;color:var(--m);margin-top:6px}
+.why{display:grid;gap:14px}@media(min-width:800px){.why{grid-template-columns:repeat(3,1fr)}}.why .card h3{color:var(--c)}
+.wab{display:flex;gap:10px;flex-wrap:wrap}.wab a{background:#1fa855;color:#fff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:999px}
+"""
 CSSV = hashlib.md5(CSS.encode()).hexdigest()[:10]
 JS_WIZ = """<script>(function(){var d=window.WIZ;if(!d)return;var e=document.getElementById('wq'),s=document.getElementById('ws'),r=document.getElementById('wr');
 function eq(){s.innerHTML='<option value="">Elige el síntoma…</option>';(d[e.value]||[]).forEach(function(x,i){var o=document.createElement('option');o.value=i;o.textContent=x[0];s.appendChild(o)});r.style.display='none'}
@@ -141,7 +156,7 @@ def chips(actual):
         d = M[actual]; b = base(actual)
         it = [("Inicio", b), ("Reparar mi equipo", b + "#equipos"), ("Fallas", pathb(actual, "fallas"))]
         if d["codigos"]: it.append(("Códigos de error", pathb(actual, "codigos-de-error")))
-        it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), ("Guías", pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))]
+        it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), (CFG.get("lbl_guias", "Guías"), pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))] + ([("Fotos", pathb(actual, "galeria"))] if CFG.get("sin_recorte") else [])
     else:
         it = [("Todas las marcas", "/marcas/")]
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
@@ -153,7 +168,7 @@ def pie(marca=None, lista_marcas=False):
         col2 = (f'<div><h3>Servicio {N}</h3><ul>' + (f'<li><a href="{pathb(marca, "codigos-de-error")}">Códigos de error</a></li>' if d["codigos"] else "") +
                 f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "repuestos")}">Repuestos</a></li><li><a href="{pathb(marca, "garantia")}">Garantía</a></li><li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "guias")}">Guías</a></li><li><a href="{pathb(marca, "glosario")}">Glosario</a></li></ul></div>')
         col3 = (f'<div><h3>Zonas</h3><ul><li><a href="{pathb(marca, "centro-de-servicio-cerca-de-mi")}">Cerca de mí</a></li><li><a href="{pathb(marca, "reparacion-a-domicilio")}">A domicilio</a></li>' + "".join(f'<li><a href="{pathb(marca, "servicio-tecnico-" + z)}">{v[0]}</a></li>' for z, v in list(ZONAS.items())[:5]) + '</ul></div>')
-        col4 = (f'<div><h3>{N} Panamá</h3><ul><li><a href="{pathb(marca, "telefono-servicio-tecnico")}">Teléfono y WhatsApp</a></li><li><a href="{pathb(marca, "quienes-somos")}">Quiénes somos</a></li><li><a href="{pathb(marca, "politica-de-privacidad")}">Política de privacidad</a></li><li><a href="{pathb(marca, "terminos-y-condiciones")}">Términos y condiciones</a></li></ul>{aviso}<p>{TEL}</p></div>')
+        col4 = (f'<div><h3>{N} Panamá</h3><ul><li><a href="{pathb(marca, "telefono-servicio-tecnico")}">Teléfono y WhatsApp</a></li><li><a href="{pathb(marca, "quienes-somos")}">Quiénes somos</a></li>{(chr(60) + "li><a href=" + chr(34) + pathb(marca, "galeria") + chr(34) + ">Galería de fotos</a></li>") if CFG.get("sin_recorte") else ""}<li><a href="{pathb(marca, "politica-de-privacidad")}">Política de privacidad</a></li><li><a href="{pathb(marca, "terminos-y-condiciones")}">Términos y condiciones</a></li></ul>{aviso}<p>{TEL}</p></div>')
         cols = col1 + col2 + col3 + col4
     elif lista_marcas:
         cols = ('<div><h3>Marcas</h3><ul>' + "".join(f'<li><a href="{"/" if m == "samsung" else "/" + m + "/"}">{M[m]["nombre"]} Panamá</a></li>' for m in BRANDS_ORDER) + f'</ul></div><div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>')
@@ -171,6 +186,12 @@ LB["knowsLanguage"] = "es"
 
 def decorar(marca, cuerpo, hero, path):
     """Añade fondos y fotos de la marca: héroe con foto de fondo, banda de contacto, fondos suaves y galería. Sin repetir imagen dentro de la página."""
+    if CFG.get("sin_recorte"):   # sin fotos de fondo ni galerías recortadas: las fotos se muestran completas en el cuerpo
+        banda = (f'<section class="band"><div class="w"><h2>Pide tu visita {nom(marca)} hoy</h2><p>Cuéntanos el modelo y la falla por WhatsApp y coordinamos el día y la franja en tu zona.</p>'
+                 f'<a class="btn" href="{wa("Hola, necesito servicio técnico " + nom(marca) + " en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a></div></section>')
+        i = cuerpo.find("</section>")
+        if i >= 0 and cuerpo.count("</section>") >= 3: cuerpo = cuerpo[:i + 10] + banda + cuerpo[i + 10:]
+        return cuerpo, "none"
     p = POOLS.get(marca) or []
     vistas = set(re.findall(r'/img/[^"\')\s]+', cuerpo)) | ({hero[0]} if hero else set())
     es_eq = ("/falla-" in path) or ("/reparacion-" in path)
@@ -216,6 +237,7 @@ def FAV(marca):
     return "data:image/svg+xml," + svg.replace("<", "%3C").replace(">", "%3E").replace("#", "%23").replace(" ", "%20").replace("'", "%27")
 def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld=None, bd=None, prio="0.7", extra_js="", lead=None, noindex=False, marcas_ok=False, cta2=None):
     """path: '/lg/reparacion-lavadoras/' ; cuerpo: html de secciones"""
+    title = LOC(title); desc = LOC(desc)
     if len(title) > 62:
         partes = title.split(" | ")
         while len(" | ".join(partes)) > 62 and len(partes) > 1: partes.pop()
@@ -360,6 +382,125 @@ def caja_ayuda(m):
             f'<a class="btn s" href="{pathb(m, "diagnostico-por-sintoma")}">Abrir el diagnóstico</a></div>'
             f'<div class="card"><b class="t">Hablar con una persona</b><p>Escríbenos por WhatsApp con la marca, el modelo y la falla. Respondemos y coordinamos la visita.</p><a class="btn s" href="{wa("Hola, necesito servicio técnico " + N + " en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a></div></div>')
 
+# ---------------------------------------------------------------- Guayaquil: contenido adicional por marca
+def faq10(m):
+    """Exactamente 10 preguntas frecuentes por marca, con respuestas propias de la marca."""
+    d = M[m]; N = nom(m); E = d["equipos"]; e0 = E[0]; e1 = E[1] if len(E) > 1 else E[0]; ciu = CFG["ciudad"]
+    cand = list(d["faq"]) + [
+        (f"¿Hacen servicio técnico {N} a domicilio en {ciu}?", f"Sí. Vamos a tu casa o apartamento en {CFG.get('zlista', ciu)} para diagnosticar y reparar tu equipo {N} sin que lo muevas."),
+        (f"¿Qué necesito para pedir la visita de un técnico {N}?", f"Ten a mano el modelo del equipo, lo que notas o el código que aparece, y tu barrio. {d['modelo_ej']}"),
+        (f"¿Reparan equipos {N} que ya no tienen garantía?", f"Sí. {d['garantia'].split('. ')[0]}. Si ya venció, revisamos el equipo, te explicamos la causa y el valor se confirma por escrito antes de empezar."),
+        (f"¿Qué equipos {N} atienden?", f"Atendemos {pls_(d)}. Lo que más vemos: {bajar(d['fallas'][e0][0][0]).rstrip('.')} en {EQ[e0][2]} y {bajar(d['fallas'][E[-1]][0][0]).rstrip('.')} en {EQ[E[-1]][2]}."),
+        (f"¿Dónde encuentro el modelo de mi {EQ[e0][1]} {N}?", cap(d["etiqueta"].get(e0, "En una etiqueta pegada al equipo")).rstrip(".") + ". Con una foto de esa etiqueta, el diagnóstico por WhatsApp es mucho más preciso."),
+        (f"¿Qué líneas de {N} atienden?", f"Atendemos líneas como {', '.join(d['lineas'][:5])}. Si tu modelo no aparece, escríbenos con la foto de la etiqueta y te confirmamos."),
+        (f"¿Qué mantenimiento recomiendan para equipos {N}?", " ".join(x.rstrip(".") + "." for x in d["mantenimiento"][:2]) + " Un mantenimiento preventivo anual evita la mayoría de averías."),
+        (f"¿Cuánto cuesta la reparación de un equipo {N}?", "Depende de la falla y de la pieza. Primero diagnosticamos y te damos el valor por escrito antes de reparar; solo reparamos si tú lo apruebas."),
+        (f"¿Qué hago si mi {EQ[e1][1]} {N} presenta «{bajar(d['fallas'][e1][0][0]).rstrip('.')}»?", f"{d['fallas'][e1][0][1]} {d['fallas'][e1][0][2]} Escríbenos por WhatsApp y te orientamos."),
+        (f"¿Cómo pido una visita para mi equipo {N} por WhatsApp?", f"Escribe al {TEL} con el equipo, el modelo y lo que notas. Coordinamos el día y la franja en tu zona."),
+        (f"¿Puedo seguir usando mi {EQ[e0][1]} {N} si presenta una falla?", "Depende de la causa. Si hay olor a quemado, chispas, olor a gas o agua cerca de enchufes, deja de usarlo y llama. En los demás casos, prueba lo indicado en nuestras páginas de fallas y, si el problema vuelve, pide la revisión."),
+    ]
+    if d["codigos"]: cand.insert(5, (f"¿Qué significa un código de error en mi equipo {N}?", "Los códigos indican qué parte detectó la falla (sensor, drenaje, comunicación, etc.). Mira la página de códigos de error de tu marca y, si persiste, pide la visita para medir el componente."))
+    vis, out = set(), []
+    for q, a in cand:
+        k = re.sub(r"\W+", "", q.lower())[:40]
+        if k in vis: continue
+        vis.add(k); out.append((q, a))
+    return out[:10]
+
+def por_que_elegirnos(m):
+    d = M[m]; N = nom(m); E = d["equipos"]; e0 = E[0]; e1 = E[1] if len(E) > 1 else E[0]; bi = BRANDS_ORDER.index(m)
+    items = [(f"Conocemos las líneas {N}", f"Trabajamos con {', '.join(d['lineas'][:3])} y otras líneas {N}, y sabemos qué piezas fallan más en cada una."),
+             (f"Sabemos qué falla más en {N}", f"En {EQ[e0][2]} {N} lo más frecuente es {bajar(d['fallas'][e0][0][0]).rstrip('.')}; en {EQ[e1][2]}, {bajar(d['fallas'][e1][0][0]).rstrip('.')}."),
+             (f"Identificamos tu modelo {N}", d["modelo_ej"].split(". ")[0].rstrip(".") + ". Con esa etiqueta confirmamos repuestos y procedimientos."),
+             ("Valor por escrito antes de reparar", "Te explicamos la causa y el valor antes de empezar. Solo reparamos si tú lo apruebas."),
+             ("Visita a domicilio", f"Vamos a tu casa en {CFG.get('zlista', CFG['ciudad'])}. No tienes que mover tu equipo."),
+             ("Atención por WhatsApp", f"Escríbenos al {TEL} con el modelo y lo que notas, y coordinamos la visita.")]
+    items = items[bi % 6:] + items[:bi % 6]
+    return '<div class="why">' + "".join(f'<div class="card"><h3>{esc(t)}</h3><p>{esc(x)}</p></div>' for t, x in items) + "</div>"
+
+def quienes_breve(m):
+    N = nom(m)
+    return (f'<p>Somos un servicio técnico independiente en {CFG["ciudad"]}, especializado en reparar y dar mantenimiento a equipos {N}: {pls_(M[m])}. '
+            f'Nos enfocamos en explicar con claridad qué falla, dar el valor por escrito antes de reparar y probar el equipo contigo al terminar.</p>'
+            f'<p><a href="{pathb(m, "quienes-somos")}">Conoce más sobre nosotros</a></p>')
+
+def wa_por_equipo(m):
+    d = M[m]; N = nom(m)
+    return ('<div class="wab">' + "".join(f'<a href="{wa("Hola, necesito servicio técnico para mi " + EQ[e][1] + " " + N + " en Panamá")}" target="_blank" rel="noopener">WhatsApp: {esc(EQ[e][1])} {esc(N)}</a>' for e in d["equipos"])
+            + f'<a href="{wa("Hola, necesito servicio técnico " + N + " en Panamá")}" target="_blank" rel="noopener">WhatsApp: otro equipo {esc(N)}</a></div>')
+
+_GYE = None
+def _gye():
+    global _GYE
+    if _GYE is None:
+        from datos_equipos1 import REFRIGERADORAS, LAVADORAS, SECADORAS, COCINAS
+        from datos_equipos2 import AIRES, LAVAVAJILLAS, MICROONDAS
+        _GYE = {"neveras": REFRIGERADORAS, "lavadoras": LAVADORAS, "centro-lavado": LAVADORAS, "secadoras": SECADORAS, "cocinas": COCINAS, "aires": AIRES, "lavavajillas": LAVAVAJILLAS, "microondas": MICROONDAS}
+    return _GYE
+BATIDORA = dict(
+    mant=dict(intro="Una batidora de pedestal bien cuidada dura muchos años. El mantenimiento se centra en la limpieza, la grasa de la caja de engranes y el estado de las escobillas del motor.",
+              tabla=[("Limpiar el tazón, el batidor y los accesorios", "Después de cada uso", "Evita residuos y óxido."), ("Limpiar la cabeza y las rejillas sin mojarlas", "Cada semana", "La humedad en el motor causa fallas."),
+                     ("Revisar la altura del batidor", "Cada 6 meses", "Si toca el fondo, desgasta el tazón y el batidor."), ("Revisar la grasa de la caja de engranes", "1 vez al año", "La grasa vieja o escasa produce ruido y pérdida de fuerza."),
+                     ("Revisar escobillas del motor", "Cada 1 o 2 años según uso", "Escobillas gastadas hacen que la batidora pierda potencia.")],
+              gye="En Guayaquil la humedad puede afectar el motor y las partes metálicas. Guarda la batidora seca y limpia, y evita lavar la cabeza con agua."),
+    inst=None)
+def bloque_mant_inst(m, e):
+    """Secciones de mantenimiento e instalación de un equipo de una marca (solo Guayaquil)."""
+    if not CFG.get("sin_recorte"): return ""
+    d = M[m]; N = nom(m); sing = EQ[e][1]; pl = EQ[e][2]; bi = BRANDS_ORDER.index(m)
+    g = BATIDORA if e == "batidoras" else {"mant": _gye()[e]["mant"], "inst": _gye()[e]["inst"]}
+    mt, ins = g["mant"], g["inst"]
+    filas = _rot(mt["tabla"], bi, 5) if len(mt["tabla"]) > 4 else mt["tabla"]
+    raiz = sing.split()[0][:5].lower()
+    propios = [x for x in d["mantenimiento"] if raiz in x.lower()]
+    tech = d["tech"][e].split(". ")[0].rstrip(".") + "."
+    mant = (sec(f"Mantenimiento de {pl} {N} en {CFG['ciudad']}", f"<p>{esc(mt['intro'])}</p><p>{esc(tech)} {esc(mt['gye'])}</p>"
+                + tabla(["Tarea", "Cada cuánto", "Por qué importa"], [(f"<b>{esc(a)}</b>", esc(b_), esc(c_)) for a, b_, c_ in filas])
+                + ("<h3 style='margin-top:18px'>Recomendado por el fabricante para tu línea</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in propios[:2]) + "</ul>" if propios else ""), id="mantenimiento"))
+    inst = ""
+    if ins:
+        antes = _rot(ins["antes"], bi, 3)
+        inst = sec(f"Instalación de {pl} {N} en {CFG['ciudad']}", f"<p>{esc(ins['intro'])}</p><p>{esc(ins['gye'])}</p><h3>Antes de instalar tu {esc(sing)} {esc(N)}</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in antes)
+                   + f"<li>Ten a mano el modelo: {esc(d['etiqueta'].get(e, 'está en una etiqueta pegada al equipo'))}.</li></ul><h3>Paso a paso</h3><ol>" + "".join(f"<li>{esc(x)}</li>" for x in ins["pasos"]) + "</ol>", alt=True, id="instalacion")
+    return mant + inst
+
+def fotos_eq(m, e, usadas):
+    """Fotos completas (sin recortar) del tipo de equipo, de esa marca, que aún no se usaron en la página."""
+    rx = re.compile(KW.get(e, "zzzz")); out = []
+    for f in POOLS[m]:
+        if rx.search(f.name) and copia(m, f) not in usadas: out.append(f)
+    out = sorted(out, key=lambda f: USO[f])[:3]
+    if not out: return ""
+    figs = ""
+    for f in out:
+        USO[f] += 1; r = copia(m, f); usadas.add(r)
+        w, h = _dim(f)
+        figs += f'<figure><img loading="lazy" src="{r}" alt="{alt_de(m, f)}" width="{w}" height="{h}"></figure>'
+    return sec(f"Fotos de {EQ[e][2]} {nom(m)}", f'<div class="fgrid">{figs}</div>', alt=True)
+_DIM = {}
+def _dim(f):
+    if f not in _DIM:
+        from PIL import Image
+        with Image.open(f) as im: _DIM[f] = im.size
+    return _DIM[f]
+
+def build_galeria(m):
+    if not CFG.get("sin_recorte"): return
+    N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]
+    rg = re.compile(KW["_gente"])
+    prod = [f for f in POOLS[m] if not rg.search(f.name)]; gente = [f for f in POOLS[m] if rg.search(f.name)]
+    def figs(lst):
+        o = ""
+        for f in lst:
+            USO[f] += 1; r = copia(m, f); w, h = _dim(f)
+            o += f'<figure class="gf"><img loading="lazy" src="{r}" alt="{alt_de(m, f)}" width="{w}" height="{h}"><figcaption>{alt_de(m, f)}</figcaption></figure>'
+        return '<div class="fgrid">' + o + "</div>"
+    cuerpo = (sec(f"Equipos {N} que reparamos en Panamá", figs(prod), lead=f"Fotos de equipos {N} completos, sin recortar.")
+              + sec(f"Servicio técnico {N} a domicilio", figs(gente), alt=True, lead="Así es la atención y la visita a domicilio.")
+              + sec(f"¿Tienes un equipo {N} con falla?", f'<p><a class="btn" href="{wa("Hola, necesito servicio técnico " + N + " en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a></p>'))
+    pagina(pathb(m, "galeria"), f"Galería de fotos {N} en Panamá | Equipos y servicio", f"Galería de fotos de equipos {N} y del servicio técnico a domicilio en Panamá: refrigeradoras, lavadoras, secadoras, cocinas, aires y más, mostrados completos.",
+           f"Galería de fotos {N}", cuerpo, m, None, crumbs0 + [("Galería", pathb(m, "galeria"))], bd=f"{N} · Galería", prio="0.5", lead=f"Todas las fotos de equipos {N} y del servicio técnico, mostradas completas.")
+
 def build_marca(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]
     # --- hub
@@ -371,13 +512,18 @@ def build_marca(m):
         (f"¿Qué necesito para pedir la visita de un técnico {N}?", f"Ten a mano el modelo del equipo, lo que notas o el código que aparece, y tu barrio. {d['modelo_ej']}"),
         (f"¿Reparan equipos {N} que ya no tienen garantía?", f"Sí. {d['garantia'].split('. ')[0]}. Si ya venció, revisamos el equipo, te explicamos la causa y el valor se confirma por escrito antes de empezar."),
         (f"¿Qué equipos {N} atienden?", f"Atendemos {pls_(d)}. Lo que más vemos: {bajar(d['fallas'][d['equipos'][0]][0][0]).rstrip('.')} en {EQ[d['equipos'][0]][2]} y {bajar(d['fallas'][d['equipos'][-1]][0][0]).rstrip('.')} en {EQ[d['equipos'][-1]][2]}.")]
+    if CFG.get("sin_recorte"): FAQ_H = faq10(m)
     sbtn = '<div class="symb">' + "".join(f'<a class="sy" href="{pathb(m, "falla-" + slug(EQ[e][1] + " " + f[0]))}"><i>›</i><span><b>{esc(EQ[e][1].capitalize())} {N}: {esc(bajar(f[0]).rstrip("."))}</b><small>{esc(f[1][:80])}{"…" if len(f[1]) > 80 else ""}</small></span></a>' for e, f in top8) + '</div>'
     cuerpo = (sec(f"¿Qué equipo {N} quieres reparar?", stepper(1) + tiles(m), id="equipos", lead="Toca el equipo que tienes con falla. Te llevamos a sus fallas y a cómo pedir la visita.")
               + sec("¿Necesitas ayuda para elegir?", caja_ayuda(m), alt=True)
               + sec(f"Las fallas más buscadas de {N}", sbtn + f'<p style="margin-top:14px"><a href="{pathb(m, "fallas")}">Ver todas las fallas de {N}</a></p>')
               + sec("Así funciona la visita", PASOS, alt=True)
+              + (sec(f"¿Por qué elegirnos para tu equipo {N}?", por_que_elegirnos(m)) if CFG.get("sin_recorte") else "")
+              + (sec(f"WhatsApp de servicio técnico {N}", "<p>Elige tu equipo y te abrimos WhatsApp con el mensaje listo para enviar.</p>" + wa_por_equipo(m), alt=True) if CFG.get("sin_recorte") else "")
               + sec(f"Preguntas frecuentes sobre {N}", faq_html(FAQ_H))
               + sec(f"Zonas de {CFG['ciudad']} donde atendemos equipos {N}", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {esc(CFG.get("zart", {}).get(z, v[0]))}</span></a>' for z, v in ZONAS.items()) + '</div>', alt=True)
+              + (sec(f"Quiénes somos", quienes_breve(m), alt=True) if CFG.get("sin_recorte") else "")
+              + (sec(f"Fotos de equipos {N}", f'<p><a href="{pathb(m, "galeria")}">Ver la galería completa de fotos {N}</a></p>') if CFG.get("sin_recorte") else "")
               + sec(f"Más información sobre {N}", otras(m, ""))
               + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
     path = "/" if m == "samsung" else base(m)
@@ -416,6 +562,8 @@ def build_marca(m):
                   + sec(f"Cómo funciona tu {sing} {N}", f"<p>{esc(d['tech'][e])}</p>" + cuid_html, id="funciona", alt=not bool(sec_cod))
                   + rc
                   + sec(f"Antes de la visita: tu {sing} {N}", visita, id="visita", alt=not bool(rc))
+                  + bloque_mant_inst(m, e)
+                  + (fotos_eq(m, e, set(re.findall(r"/img/[^\"')\\s]+", (h[0] if h else "")))) if CFG.get("sin_recorte") else "")
                   + sec(f"Preguntas sobre {pl} {N}", faq_html(faq_e), alt=not bool(sec_cod), id="preguntas")
                   + f"<!--REL:{e}-->")
         pagina(pathb(m, "reparacion-" + s), f"Reparación de {pl} {N} en Panamá | Centro de Servicio", f"Reparación de {pl} {N} en Panamá a domicilio: fallas frecuentes, causas probables y qué revisamos. Diagnóstico en casa y atención por WhatsApp.",
@@ -461,7 +609,7 @@ def build_marca(m):
            + sec(f"Qué decide el precio de reparar {ART_EQ[d['equipos'][0]]} {EQ[d['equipos'][0]][1]} {N}", f"<p>{esc(d['tech'][d['equipos'][0]])}</p><p>Si el repuesto está disponible en {CFG['pais']} o hay que pedirlo a {d['pais']}, el plazo y el valor cambian. En equipos con muchos años se compara reparar con reemplazar.</p>", alt=True),
            m, elegir(m, m + "cost", 1)[0], crumbs0 + [("Cuánto cuesta", pathb(m, "cuanto-cuesta-la-reparacion"))], bd=f"{N} · Costos", lead=f"De qué depende el costo de reparar cada equipo {N}.")
     # --- preguntas
-    PF = list(d["faq"]) + [(f"¿Qué pasa si {ART_EQ[e]} {EQ[e][1]} {N} presenta «{f[0].rstrip('.')}»?", f"{f[1]} {f[2]}") for e in d["equipos"] for f in d["fallas"][e][:2]] + [(f"¿Cómo pido una visita para mi equipo {N}?", "Escribe por WhatsApp con el modelo, la falla y tu zona. Coordinamos día y franja horaria.")]
+    PF = (faq10(m) if CFG.get("sin_recorte") else list(d["faq"])) + [(f"¿Qué pasa si {ART_EQ[e]} {EQ[e][1]} {N} presenta «{f[0].rstrip('.')}»?", f"{f[1]} {f[2]}") for e in d["equipos"] for f in d["fallas"][e][:2]] + [(f"¿Cómo pido una visita para mi equipo {N}?", "Escribe por WhatsApp con el modelo, la falla y tu zona. Coordinamos día y franja horaria.")]
     pagina(pathb(m, "preguntas-frecuentes"), f"Preguntas frecuentes sobre {N} en Panamá", f"Respuestas a las preguntas más comunes sobre servicio técnico {N} en Panamá: cobertura, tiempos, garantía y cómo pedir una visita.",
            f"Preguntas frecuentes sobre servicio técnico {N}",
            sec("Preguntas frecuentes", faq_html(PF)),
@@ -908,7 +1056,7 @@ def arts_marca(m):
     rxh = re.compile(r"placa|tarjeta|inverter|contacto|empaque|corros|comunicaci|moho|pantalla|conector|cableado", re.I)
     eh = [(e, [x for x in d["fallas"][e] if rxh.search(x[1] + " " + x[0])]) for e in E]
     eh = [(e, fs) for e, fs in eh if fs]
-    intro_h = ("En Panamá la humedad es alta casi todo el año y cerca del mar se suma el salitre." if CFG["costero"] else "En Cali el calor es constante y la humedad sube en las épocas de lluvia.")
+    intro_h = ("En Panamá la humedad es alta casi todo el año y cerca del mar se suma el salitre." if CFG["costero"] else f"En {CFG['ciudad']} el calor es constante y la humedad sube en las épocas de lluvia.")
     sec_h = [("Qué hace la humedad en tus equipos " + N, f"<p>{intro_h} Corroen contactos y placas, favorecen el moho en empaques y causan falsos contactos. En equipos {N} esto se nota sobre todo en {pls([e for e, _ in eh[:3]]) if eh else pls(E[:3])}.</p>")]
     for e, fs in eh[:5]:
         f = fs[0]
@@ -981,8 +1129,8 @@ def build_blog(m):
         cuerpo = sec(t, "".join(f"<h3>{esc(h)}</h3>{b if b.startswith('<') else '<p>' + esc(b) + '</p>'}" for h, b in bl)) 
         pagina(pathb(m, "guia-" + slg), t[:62], desc, t, cuerpo, m, elegir(m, m + slg, 1)[0], crumbs0 + [("Guías", pathb(m, "guias")), (t[:45], pathb(m, "guia-" + slg))],
                [{"@type": "Article", "headline": t, "description": desc, "datePublished": HOY, "dateModified": HOY, "author": {"@id": DOM + "/#negocio"}, "publisher": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"]}], bd=f"{N} · Guía", prio="0.6", lead=desc)
-    pagina(pathb(m, "guias"), f"Guías y consejos para equipos {N} en Panamá", f"Guías prácticas para equipos {N} en Panamá: humedad, voltaje, mantenimiento, olores, mudanza e instalación.", f"Guías y consejos para equipos {N}",
-           sec(f"Guías {N}", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "guia-" + s_)}"><span class="t">{esc(t_)}</span></a>' for s_, t_ in ART[m]) + '</div>') , m, elegir(m, m + "guias", 1)[0], crumbs0 + [("Guías", pathb(m, "guias"))], bd=f"{N} · Guías", prio="0.6", lead=f"Consejos concretos para cuidar tus equipos {N}.", noindex=True)
+    pagina(pathb(m, "guias"), (f"Blog de consejos para equipos {N} en Panamá" if CFG.get("lbl_guias") else f"Guías y consejos para equipos {N} en Panamá"), f"Blog de consejos y guías prácticas para equipos {N} en Panamá: humedad, voltaje, mantenimiento, reparar o cambiar y cuidado diario.", (f"Blog de consejos {N}" if CFG.get("lbl_guias") else f"Guías y consejos para equipos {N}"),
+           sec(f"Guías {N}", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "guia-" + s_)}"><span class="t">{esc(t_)}</span></a>' for s_, t_ in ART[m]) + '</div>') , m, elegir(m, m + "guias", 1)[0], crumbs0 + [("Guías", pathb(m, "guias"))], bd=f"{N} · Guías", prio="0.6", lead=f"Consejos concretos para cuidar tus equipos {N}.", noindex=not CFG.get("lbl_guias"))
 ART = {}
 GL_EQ = {"neveras": ["Compresor", "Inverter", "Evaporador", "Condensador", "No frost", "Resistencia de deshielo", "Termostato", "Gas refrigerante"], "lavadoras": ["Presostato", "Bomba de drenaje", "Rodamiento", "Amortiguador", "Electroválvula"], "secadoras": ["Termostato", "Condensador", "Relé"], "aires": ["Compresor", "Inverter", "Gas refrigerante", "Evaporador", "Condensador"], "cocinas": ["Bujía", "Termostato", "Relé"], "lavavajillas": ["Bomba de drenaje", "Electroválvula"], "microondas": ["Magnetrón"], "centro-lavado": ["Presostato", "Bomba de drenaje", "Relé"], "batidoras": ["Relé"]}
 def build_glosario(m):
@@ -1085,7 +1233,7 @@ if __name__ == "__main__":
     (OUT / "img" / "logos").mkdir(parents=True, exist_ok=True)
     for m in BRANDS_ORDER:
         for suf in ("", "-blanco"): shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}{suf}.png", OUT / "img" / "logos" / f"{m}{suf}.png")
-    for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
+    for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m); build_galeria(m)
     build_sitio(); tecnico(); relacionadas()
     for ff in OUT.rglob("index.html"):
         tt = ff.read_text(encoding="utf-8")

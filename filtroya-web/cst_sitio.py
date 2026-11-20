@@ -57,7 +57,49 @@ CALI = dict(
     zlista="el norte, el sur, el oeste, el oriente y el centro de Cali, y también en Jamundí, Yumbo y Palmira",
     zart={"norte-de-cali": "el norte de Cali", "sur-de-cali": "el sur de Cali", "oeste-de-cali": "el oeste de Cali", "oriente-de-cali": "el oriente de Cali", "centro-de-cali": "el centro de Cali"},
 )
-CFG = CALI if SITIO == "cali" else PANAMA
+
+# ----------------------------------------------------------------------------- GUAYAQUIL
+import sys as _sys, pathlib as _pl
+_sys.path.insert(0, str(_pl.Path(__file__).resolve().parent / "gye"))
+try:
+    from datos_sitio import ZONAS as _ZG
+except Exception:
+    _ZG = []
+ZONAS_GYE = {z["slug"]: (z["nombre"], z["barrios"][0].upper() + z["barrios"][1:], z["vivienda"].split(". ")[0] + ".") for z in _ZG}
+ZX_GYE = {
+    "norte-de-guayaquil": ("edificios de departamentos, conjuntos y casas amplias con varios aires acondicionados", "el ingreso por portería y el horario del ascensor de carga cuando el equipo es grande", "Urdesa, Kennedy, Alborada, Samanes, Sauces y Garzota"),
+    "ceibos-y-via-a-la-costa": ("casas grandes y urbanizaciones cerradas en zonas de lomas", "el registro previo en las urbanizaciones cerradas", "Los Ceibos, Colinas de los Ceibos y la Vía a la Costa"),
+    "sur-de-guayaquil": ("casas de uno y varios pisos y edificios más antiguos", "las calles angostas y el acceso en algunos sectores", "Guasmo, La Floresta y Barrio Cuba"),
+    "centro-de-guayaquil": ("edificios antiguos que mezclan vivienda, oficinas y comercio", "el tráfico y el poco estacionamiento del centro", "el Centro, la avenida 9 de Octubre, Boyacá y el Barrio Orellana"),
+    "samborondon-y-la-puntilla": ("urbanizaciones cerradas y torres de departamentos modernas", "el registro de ingreso del conjunto y de la torre", "La Puntilla, Entre Ríos y Samborondón"),
+    "daule-y-via-a-daule": ("urbanizaciones y casas familiares con patio y lavandería", "la distancia desde el centro y la franja horaria que se pida", "La Aurora, Pascuales y la Vía a Daule"),
+    "duran": ("viviendas amplias de uso familiar y comercios", "el tráfico del puente y la franja horaria", "el centro de Durán y los sectores cercanos al puente"),
+}
+CLIMA_GYE = {
+    "norte-de-guayaquil": "el uso casi permanente del aire acondicionado, el calor y la humedad altos y los picos de voltaje en tormentas",
+    "ceibos-y-via-a-la-costa": "el viento y el polvo que ensucian los condensadores y las tormentas eléctricas de la temporada de lluvias",
+    "sur-de-guayaquil": "la humedad alta y las instalaciones eléctricas de distintas épocas con muchos equipos en el mismo circuito",
+    "centro-de-guayaquil": "el calor intenso, los edificios con poca ventilación y el cableado antiguo de algunos inmuebles",
+    "samborondon-y-la-puntilla": "la cercanía al río, la humedad y la electrónica sensible de los equipos de gama alta",
+    "daule-y-via-a-daule": "el calor fuerte, las tormentas eléctricas y los apagones de la época de lluvias",
+    "duran": "el calor, la humedad y la corrosión de contactos y condensadores por la cercanía al río",
+}
+GUAYAQUIL = dict(
+    sitio="guayaquil", dom="https://servicio-tecnico-guayaquil.com", ciudad="Guayaquil", nombre="Servicio Técnico Guayaquil",
+    tel="+593 98 039 8179", telw="593980398179", locale="es-EC", cc="EC", region="Guayas", pais="Ecuador",
+    gsc=["gEedz31KKCKIhiH6gAv3MPCE4K0x9uEcJW4FHG_Acwc"],
+    ext_lg=("Página del fabricante: LG Ecuador", "https://www.lg.com/ec/"), ext_samsung=("Página del fabricante: Samsung Ecuador", "https://www.samsung.com/ec/"),
+    guia_humedad=("humedad-y-calor-en-equipos", "Humedad, calor y lluvias en equipos {N} en Guayaquil", "Cómo la humedad, el calor y las lluvias de Guayaquil afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas."),
+    costero=False, nev=("refrigeradoras", "refrigeradora", "refrigeradoras"),
+    zonas=ZONAS_GYE, zx=ZX_GYE, clima=CLIMA_GYE,
+    area=["Guayaquil", "Samborondón", "Daule", "Durán"], geo_region="EC-G",
+    zlista="el norte, el sur, el centro, Los Ceibos y la Vía a la Costa, Samborondón y La Puntilla, la Vía a Daule y Durán",
+    zart={"norte-de-guayaquil": "el norte de Guayaquil", "ceibos-y-via-a-la-costa": "Los Ceibos y la Vía a la Costa", "sur-de-guayaquil": "el sur de Guayaquil", "centro-de-guayaquil": "el centro de Guayaquil",
+          "samborondon-y-la-puntilla": "Samborondón y La Puntilla", "daule-y-via-a-daule": "Daule y la Vía a Daule", "duran": "Durán"},
+    ley_datos="Ley Orgánica de Protección de Datos Personales del Ecuador", ley_consumo="Ley Orgánica de Defensa del Consumidor del Ecuador",
+    sin_recorte=True, lbl_guias="Blog de consejos",
+)
+CFG = {"cali": CALI, "guayaquil": GUAYAQUIL}.get(SITIO, PANAMA)
 
 # ----------------------------------------------------------------------------- localización de datos (solo Cali)
 REEMP_CALI = [
@@ -68,7 +110,7 @@ REEMP_CALI = [
     ("En Panamá, el condensador exterior se ensucia con facilidad.", "El condensador exterior se ensucia con facilidad."),
     ("En equipos importados a Panamá, la cobertura local puede cambiar.", "Si el equipo fue comprado en otro país, la cobertura puede cambiar."),
     ("Haceb es una marca colombiana de electrodomésticos, muy extendida en Panamá en refrigeradoras, lavadoras, estufas y hornos de gas. Muchos equipos llegan por importación y comparten repuestos con modelos vendidos en Colombia.", "Haceb es una marca colombiana de electrodomésticos: neveras, lavadoras, secadoras, estufas, hornos de gas y aires acondicionados."),
-    ("disponibles en Panamá", "disponibles en Colombia"),
+    ("disponibles en Panamá", "disponibles en " + CFG["pais"]),
 ]
 def _vocab(t):
     t = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), t)
@@ -80,8 +122,8 @@ def _loc_str(t, clave=None):
     for a, b in REEMP_CALI: t = t.replace(a, b)
     if clave == "origen": t = _sentencias_sin_ciudad(t)
     t = t.replace("humedad y salitre", "humedad y calor").replace("la humedad y el salitre", "la humedad y el calor")
-    t = t.replace("en Panamá", "en Colombia").replace("Panamá", "Colombia")
-    return _vocab(t)
+    t = t.replace("en Panamá", "en " + CFG["pais"]).replace("Panamá", CFG["pais"])
+    return _vocab(t) if CFG["nev"][1] != "refrigeradora" else t
 def _deep(x, clave=None):
     if isinstance(x, str): return _loc_str(x, clave)
     if isinstance(x, dict): return {k: _deep(v, k) for k, v in x.items()}
@@ -98,14 +140,15 @@ def L(h):
     _rutas = []
     def _g(m): _rutas.append(m.group(0)); return "\x00%d\x00" % (len(_rutas) - 1)
     h = re.sub(r"/img/[^\"'\s)<>]+", _g, h)
+    ld = CFG.get("ley_datos", "Ley 1581 de 2012 de Colombia"); lc = CFG.get("ley_consumo", "Ley 1480 de 2011 (Estatuto del Consumidor) de Colombia")
     for a, b in [
-        ("Ley 81 de 2019 de Panamá", "Ley 1581 de 2012 de Colombia"), ("Ley 81 de 2019", "Ley 1581 de 2012"),
-        ("Ley 45 de 2007 de Panamá", "Ley 1480 de 2011 (Estatuto del Consumidor) de Colombia"),
-        ("conseguirse en Panamá", "conseguirse en Colombia"), ("Ciudad de Panamá", "Cali"), ("Provincia de Panamá", CFG["region"]),
-        ("es-PA", CFG["locale"]), ("es_PA", CFG["locale"].replace("-", "_")), ('"addressCountry": "PA"', '"addressCountry": "CO"'),
-        ("en Panamá", "en Cali"), ("de Panamá", "de Cali"), ("Panamá", "Cali"), ("Panam%C3%A1", "Cali"),
+        ("Ley 81 de 2019 de Panamá", ld), ("Ley 81 de 2019", ld),
+        ("Ley 45 de 2007 de Panamá", lc), ("conseguirse en Panamá", "conseguirse en " + CFG["pais"]), ("Ciudad de Panamá", CFG["ciudad"]), ("Provincia de Panamá", CFG["region"]),
+        ("es-PA", CFG["locale"]), ("es_PA", CFG["locale"].replace("-", "_")), ('"addressCountry": "PA"', '"addressCountry": "%s"' % CFG["cc"]),
+        ("en Panamá", "en " + CFG["ciudad"]), ("de Panamá", "de " + CFG["ciudad"]), ("Panamá", CFG["ciudad"]), ("Panam%C3%A1", CFG["ciudad"]),
     ]: h = h.replace(a, b)
-    h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)
+    if CFG["nev"][1] != "refrigeradora":
+        h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)
     h = h.replace("humedad y salitre", "humedad y calor").replace("Humedad y salitre", "Humedad y calor")
-    h = re.sub(r"(Cali) \| Cali\b", r"\1", h)
+    h = re.sub(r"(%s) \| %s\b" % (CFG["ciudad"], CFG["ciudad"]), r"\1", h)
     return re.sub(r"\x00(\d+)\x00", lambda m: _rutas[int(m.group(1))], h)
