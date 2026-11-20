@@ -27,6 +27,8 @@ EXCLUIR = {  # carteles de «autorizado»/«oficial», Costa Rica, sellos de gar
 def pool(m):
     d = SRC / m
     fs = [f for f in sorted(d.glob("*.webp")) if "logo" not in f.name and "autorizado" not in f.name and f.stem not in EXCLUIR] if d.exists() else []
+    extra = ROOT / "st_img" / "cst" / m
+    if extra.exists(): fs += sorted(extra.glob("*.webp"))
     if m == "samsung":
         for p in sorted((ROOT / "st_img" / "panama").glob("*.webp")): fs.append(p)
         for p in sorted(glob.glob("/tmp/pan_img_work/img/*.webp")):
