@@ -2,12 +2,17 @@
 """Política de privacidad, términos y condiciones, ampliación de «Quiénes somos» y un blog más grande para samsungpanamaserviciotecnico.com.
 Uso: python3 pa_contenido.py <carpeta_del_sitio>   (ejecutar ANTES de pa_diseno.py)"""
 import datetime, html, json, pathlib, re, sys
+from pa_cfg import CFG
 R = pathlib.Path(sys.argv[1])
-DOM = "https://samsungpanamaserviciotecnico.com"
+DOM = CFG["dom"]
 HOY = datetime.date.today().isoformat()
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
 FECHA = f"{datetime.date.today().day} de {MESES[datetime.date.today().month - 1]} de {datetime.date.today().year}"
-TEL, WAN, DIR, NOMBRE = "+507 6933-7976", "50769337976", "Vía España, Panamá, Provincia de Panamá", "Servicio Técnico Samsung Panamá"
+TEL, WAN, DIR, NOMBRE = CFG["tel"], CFG["wa"], CFG["dir"], CFG["nombre"]
+CIU, CORTO = CFG["ciudad"], CFG["corto"]
+def loc(x):
+    if CORTO == "Panamá" or not isinstance(x, str): return x.replace("110-120 V a 60 Hz", CFG["voltaje"]) if isinstance(x, str) else x
+    return x.replace("110-120 V a 60 Hz", CFG["voltaje"]).replace("Ciudad de Panamá", CIU).replace("República de Panamá", "República de Colombia").replace("Panamá", CORTO)
 esc = lambda s: html.escape(s, quote=True)
 txt = lambda s: re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s))).strip()
 P = lambda *x: "".join(f"<p>{a}</p>" for a in x)
@@ -39,7 +44,7 @@ def miga(nivel, items):
 def ld_base(ruta, titulo, desc, items):
     return [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, **({"item": f"{DOM}/{u}"} if u is not None else {})} for i, (n, u) in enumerate(items)]},
             {"@type": "WebPage", "@id": f"{DOM}/{ruta}", "name": titulo, "url": f"{DOM}/{ruta}", "inLanguage": "es-PA", "description": desc, "dateModified": HOY}]
-ORG = {"@type": "Organization", "name": NOMBRE, "url": DOM + "/", "telephone": "+50769337976", "logo": {"@type": "ImageObject", "url": DOM + "/img/samsung-oval.png"}}
+ORG = {"@type": "Organization", "name": NOMBRE, "url": DOM + "/", "telephone": CFG["tel_link"], "logo": {"@type": "ImageObject", "url": DOM + "/img/samsung-oval.png"}}
 HERO = lambda kick, h1, sub, extra="": f'<section class="pa-hero pa-hero-s"><div class="pa-w"><span class="pa-kick">{esc(kick)}</span><h1>{esc(h1)}</h1><p>{esc(sub)}</p>{extra}</div></section>'
 # ======================================================================= LEGALES
 def pagina_legal(ruta, titulo, h1, desc, secciones):
@@ -51,14 +56,14 @@ def pagina_legal(ruta, titulo, h1, desc, secciones):
     (R / ruta.rstrip("/")).mkdir(parents=True, exist_ok=True); (R / ruta.rstrip("/") / "index.html").write_text(d, encoding="utf-8")
 DATOS = f"<b>{NOMBRE}</b>, con dirección de atención en {DIR}, teléfono y WhatsApp {TEL}"
 pagina_legal("politica-de-privacidad/", f"Política de privacidad | {NOMBRE}", "Política de privacidad", f"Cómo {NOMBRE} recoge, usa y protege tus datos personales cuando pides una visita o nos escribes por WhatsApp. Derechos y contacto.", [
-    ("Quién es el responsable", P(f"El responsable del tratamiento de tus datos es {DATOS}. Este sitio es un servicio técnico independiente de electrodomésticos Samsung en Ciudad de Panamá y no es el canal oficial de Samsung Electronics.", "Esta política se redacta teniendo en cuenta la Ley 81 de 2019 sobre protección de datos personales de la República de Panamá y su reglamentación.")),
+    ("Quién es el responsable", P(f"El responsable del tratamiento de tus datos es {DATOS}. Este sitio es un servicio técnico independiente de electrodomésticos Samsung en " + CIU + " y no es el canal oficial de Samsung Electronics.", "Esta política se redacta teniendo en cuenta " + CFG["ley_datos"] + ".")),
     ("Qué datos recogemos", P("Solo pedimos lo necesario para coordinar tu servicio:") + UL(["Nombre y teléfono o WhatsApp.", "Barrio o dirección donde se hará la visita.", "Equipo, modelo, descripción de la falla y, si las envías, fotos del equipo o de su etiqueta.", "Los datos que escribas por voluntad propia en el formulario de solicitud de visita o en el chat de WhatsApp."]) + P("No pedimos datos bancarios en este sitio ni datos sensibles.")),
     ("Para qué usamos tus datos", UL(["Responder tu consulta y coordinar el día y la franja de la visita.", "Diagnosticar el equipo y confirmarte el valor antes de reparar.", "Dar seguimiento al servicio y atender reclamos o garantías del trabajo realizado.", "Mejorar la información de este sitio, sin identificarte personalmente."]) + P("No vendemos ni alquilamos tus datos, y no los usamos para publicidad de terceros.")),
     ("Base para tratar tus datos", P("Tratamos tus datos porque nos los entregas voluntariamente para solicitar un servicio, es decir, con tu consentimiento y para atender tu solicitud. Puedes retirarlo cuando quieras escribiéndonos.")),
     ("Con quién los compartimos", P("Solo con las personas que necesitan conocerlos para prestarte el servicio, como el técnico que hará la visita. Además, usamos proveedores que procesan datos por nuestra cuenta:") + UL(["WhatsApp (Meta Platforms), cuando nos escribes por ese canal. Se rige por sus propias condiciones.", "El proveedor de alojamiento del sitio web y del correo, donde se guardan las solicitudes del formulario.", "Google Maps, que se muestra incrustado en algunas páginas y puede instalar cookies propias."]) + P("También podemos entregar datos si una autoridad competente lo exige conforme a la ley.")),
     ("Cookies y medición", P("Este sitio no usa cookies de publicidad. Los mapas de Google incrustados pueden instalar cookies de Google al cargarse. Si en el futuro activamos una herramienta de analítica, actualizaremos esta política y lo informaremos.")),
     ("Cuánto tiempo los conservamos", P("Guardamos tus datos mientras sean necesarios para atender tu solicitud, el seguimiento del servicio y las obligaciones legales o de garantía. Luego los eliminamos o los dejamos anónimos.")),
-    ("Tus derechos", P("Tienes derecho a acceder a tus datos, rectificarlos, cancelarlos u oponerte a su tratamiento, y a pedir la portabilidad cuando corresponda. Para ejercerlos, escríbenos por WhatsApp al " + TEL + " indicando qué quieres hacer y con qué nombre y teléfono nos contactaste. Respondemos en un plazo razonable.", "Si crees que tus derechos no fueron atendidos, puedes acudir a la autoridad de protección de datos personales de Panamá (ANTAI).")),
+    ("Tus derechos", P("Tienes derecho a " + CFG["derechos"] + ". Para ejercerlos, escríbenos por WhatsApp al " + TEL + " indicando qué quieres hacer y con qué nombre y teléfono nos contactaste. Respondemos en un plazo razonable.", "Si crees que tus derechos no fueron atendidos, puedes acudir a " + CFG["autoridad_datos"] + ".")),
     ("Seguridad", P("Aplicamos medidas razonables para proteger tus datos, como limitar quién accede a ellos. Ninguna transmisión por internet es completamente segura, por lo que te recomendamos no enviar datos que no sean necesarios.")),
     ("Menores de edad", P("Nuestros servicios son para personas adultas que son dueñas o responsables del equipo. No recogemos datos de menores de forma intencional.")),
     ("Cambios a esta política", P(f"Podemos actualizar esta política. La fecha de la última actualización aparece arriba ({FECHA}). Te recomendamos revisarla de vez en cuando.")),
@@ -66,31 +71,34 @@ pagina_legal("politica-de-privacidad/", f"Política de privacidad | {NOMBRE}", "
 pagina_legal("terminos-y-condiciones/", f"Términos y condiciones | {NOMBRE}", "Términos y condiciones", f"Condiciones de uso del sitio y del servicio técnico a domicilio de {NOMBRE}: solicitud, diagnóstico, cotización, garantía y derechos del consumidor.", [
     ("Quiénes somos y aceptación", P(f"Estos términos regulan el uso de este sitio web y la contratación del servicio técnico de {DATOS}. Al usar el sitio o solicitar un servicio, aceptas estas condiciones.")),
     ("Servicio independiente y marcas", P("Somos un servicio técnico independiente que repara electrodomésticos Samsung. No pertenecemos a Samsung Electronics Co., Ltd., ni somos su canal oficial de soporte. Samsung y su logotipo son marcas de sus propietarios y se usan solo para indicar la marca del equipo que reparamos.")),
-    ("Qué servicio ofrecemos", P("Visita técnica a domicilio en Ciudad de Panamá y alrededores para diagnóstico, reparación y mantenimiento de refrigeradoras, lavadoras, secadoras, lavavajillas, estufas y hornos, y microondas. La disponibilidad depende del barrio, del equipo y del repuesto.")),
+    ("Qué servicio ofrecemos", P("Visita técnica a domicilio en " + CIU + " y alrededores para diagnóstico, reparación y mantenimiento de refrigeradoras, lavadoras, secadoras, lavavajillas, estufas y hornos, y microondas. La disponibilidad depende del barrio, del equipo y del repuesto.")),
     ("Cómo se solicita", OL(["Escríbenos por WhatsApp o llena el formulario con el equipo, el modelo, la falla y tu barrio.", "Coordinamos el día y una franja para la visita.", "El técnico revisa el equipo en tu domicilio y te explica la falla y las opciones.", "Antes de empezar, te confirma el valor de la reparación. Solo se repara si tú lo aceptas."])),
     ("Diagnóstico, cotización y aprobación", P("El valor del servicio depende del equipo, la falla, el repuesto y la zona, y se te informa antes de iniciar el trabajo. No se cambia ninguna pieza sin tu aprobación. Si decides no reparar, se te informa el costo del diagnóstico antes de la visita cuando corresponda.")),
     ("Repuestos, tiempos y garantía del trabajo", P("Los tiempos de reparación dependen de la disponibilidad del repuesto y se informan cuando se conocen. La garantía del trabajo y de las piezas instaladas se indica al momento de la cotización y se aplica a la falla reparada. No cubre daños por mal uso, golpes, líquidos, variaciones eléctricas ni manipulación posterior por terceros.")),
     ("Garantía de fábrica", P("La garantía de fábrica de tu equipo la gestiona Samsung o la tienda donde lo compraste. Si tu equipo está en garantía, revisa sus condiciones en el manual antes de que alguien lo intervenga: abrir o reparar un equipo por fuera del servicio de fábrica puede afectar esa garantía.")),
     ("Tus responsabilidades", UL(["Darnos información real sobre el equipo y la falla.", "Permitir el acceso seguro al equipo, desconectado y con espacio para trabajar.", "Respaldar o retirar lo que tengas dentro del equipo si corresponde (por ejemplo, alimentos o ropa).", "Estar presente o dejar a un adulto responsable durante la visita."])),
     ("Pagos", P("Las formas y el momento de pago se acuerdan al confirmar la cotización y antes de iniciar el trabajo. Te entregaremos constancia del servicio realizado.")),
-    ("Derechos del consumidor", P("Esto no limita los derechos que te reconoce la Ley 45 de 2007 sobre protección al consumidor. Puedes presentar quejas ante la Autoridad de Protección al Consumidor y Defensa de la Competencia (ACODECO).")),
+    ("Derechos del consumidor", P("Esto no limita los derechos que te reconoce " + CFG["ley_consumo"] + ". Puedes presentar quejas ante " + CFG["autoridad_consumo"] + ".")),
     ("Contenido del sitio", P("La información de este sitio es de orientación general y puede actualizarse. Las guías de fallas no sustituyen la revisión de un técnico, y no debes abrir equipos conectados a la corriente ni manipular instalaciones de gas por tu cuenta.")),
     ("Propiedad intelectual y enlaces", P("Los textos, imágenes y el diseño de este sitio son de sus autores y no pueden copiarse sin permiso. Si enlazamos a páginas de terceros, no controlamos su contenido.")),
-    ("Ley aplicable", P("Estos términos se rigen por las leyes de la República de Panamá.")),
+    ("Ley aplicable", P("Estos términos se rigen por " + CFG["ley_aplicable"] + ".")),
     ("Cambios y contacto", P(f"Podemos actualizar estos términos; la fecha de la última actualización es {FECHA}. Contacto: WhatsApp y teléfono {TEL}, {DIR}."))])
 # Quiénes somos: bloque de transparencia al final
 q = R / "quienes-somos" / "index.html"; tq = q.read_text(encoding="utf-8")
 if "Datos del negocio" not in tq:
     bloque = ('<section class="aq-sec chap"><div class="wrap"><h2>Datos del negocio y transparencia</h2>'
-              f'<div class="tbl-wrap"><table class="spec-table"><tr><td><b>Nombre</b></td><td>{NOMBRE}</td></tr><tr><td><b>Dirección de atención</b></td><td>{DIR}</td></tr><tr><td><b>Horario</b></td><td>Abierto las 24 horas</td></tr><tr><td><b>Teléfono y WhatsApp</b></td><td>{TEL}</td></tr><tr><td><b>Cobertura</b></td><td>Ciudad de Panamá y alrededores (50 barrios y corregimientos)</td></tr><tr><td><b>Tipo de servicio</b></td><td>Servicio técnico independiente de electrodomésticos Samsung, a domicilio</td></tr></table></div>'
+              f'<div class="tbl-wrap"><table class="spec-table"><tr><td><b>Nombre</b></td><td>{NOMBRE}</td></tr><tr><td><b>Dirección de atención</b></td><td>{DIR}</td></tr><tr><td><b>Horario</b></td><td>{CFG["horario"]}</td></tr><tr><td><b>Teléfono y WhatsApp</b></td><td>{TEL}</td></tr><tr><td><b>Cobertura</b></td><td>{CFG["cobertura"]}</td></tr><tr><td><b>Tipo de servicio</b></td><td>Servicio técnico independiente de electrodomésticos Samsung, a domicilio</td></tr></table></div>'
               '<p>Somos un servicio técnico independiente: no pertenecemos a Samsung ni somos su canal oficial. Reparamos equipos Samsung y te decimos el valor antes de empezar. Lee nuestros <a href="../terminos-y-condiciones/">términos y condiciones</a> y nuestra <a href="../politica-de-privacidad/">política de privacidad</a>.</p></div></section>')
     z = tq.find("<footer"); q.write_text(tq[:z] + bloque + tq[z:], encoding="utf-8")
 # ======================================================================= BLOG
-CATS = {"refri": "Refrigeradoras", "lava": "Lavadoras y secadoras", "cocina": "Cocina y seguridad", "clima": "Energía y clima en Panamá", "decide": "Decisiones y garantía"}
+CATS = {"refri": "Refrigeradoras" if CORTO == "Panamá" else "Neveras", "lava": "Lavadoras y secadoras", "cocina": "Cocina y seguridad", "clima": CFG["cats_clima"], "decide": "Decisiones y garantía"}
 ART = {}   # slug -> dict
 TT = {'codigos-de-error-lavadora-samsung': 'Códigos de error de lavadoras Samsung: 5E, 4E, UE, dE, LE', 'refrigeradora-samsung-con-escarcha-causas': 'Refrigeradora Samsung con escarcha: causas y qué revisar', 'modelo-samsung-donde-esta-y-que-significa': 'Dónde está el modelo de tu Samsung y qué significa', 'voltaje-y-proteccion-refrigeradora-panama': 'Voltaje en Panamá: cómo proteger tu refrigeradora', 'humedad-y-salitre-en-electrodomesticos-panama': 'Humedad y salitre en Panamá: cómo afectan tus equipos', 'como-se-cobra-una-reparacion-de-electrodomesticos': 'Cómo se cobra una reparación de electrodomésticos', 'garantia-de-fabrica-o-tecnico-independiente': 'Garantía de fábrica o técnico independiente: cuál elegir', 'lavadora-samsung-huele-mal-como-limpiarla': 'Lavadora Samsung con mal olor: causas y cómo limpiarla', 'lavavajillas-samsung-mantenimiento-y-fallas': 'Lavavajillas Samsung: mantenimiento y fallas comunes', 'estufa-y-horno-olor-a-gas-seguridad': 'Estufa y horno: qué hacer si hueles gas', 'microondas-samsung-no-calienta-que-hacer': 'Microondas Samsung que no calienta: causas y precauciones', 'senales-de-que-tu-refrigeradora-necesita-revision': '7 señales de que tu refrigeradora Samsung necesita revisión'}
 def art(slug, cat, titulo, desc, intro, secciones, faq, kw=""):
-    ART[slug] = dict(slug=slug, cat=cat, titulo=titulo, desc=desc, intro=intro, secciones=secciones, faq=faq, kw=kw)
+    if slug == "humedad-y-salitre-en-electrodomesticos-panama" and not CFG["humedad"]:
+        return
+    if CORTO != "Panamá": slug = slug.replace("-panama", "-" + CORTO.lower())
+    ART[slug] = dict(slug=slug, cat=cat, titulo=loc(titulo), desc=loc(desc), intro=loc(intro), secciones=[(loc(a), loc(b)) for a, b in secciones], faq=[(loc(a), loc(b)) for a, b in faq], kw=kw)
 art("codigos-de-error-lavadora-samsung", "lava", "Códigos de error de lavadoras Samsung: 5E, 4E, UE, dE, LE y más",
     "Qué significan los códigos 5E, 4E, UE, dE, LE y 3E en lavadoras Samsung, qué puedes revisar tú con seguridad y cuándo llamar a un técnico en Panamá.",
     "Cuando la lavadora Samsung muestra un código, te está diciendo qué sistema revisar. Esta guía traduce los más comunes y te dice qué puedes comprobar sin riesgo.",
@@ -207,7 +215,7 @@ for a in ART.values():
               f'<div class="pa-card"><h3>Sigue leyendo</h3>{"".join(tarjeta_rel(x, "../") for x in rel)}</div></aside></div></main>')
     art_ld = {"@type": "Article", "headline": a["titulo"], "description": a["desc"], "inLanguage": "es-PA", "datePublished": HOY, "dateModified": HOY, "wordCount": palabras, "author": ORG, "publisher": ORG, "mainEntityOfPage": f"{DOM}/{ruta}", "image": f"{DOM}/img/tecnico-samsung-saluda-en-la-puerta.webp", "articleSection": CATS[a["cat"]]}
     faq_ld = {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": r}} for q, r in a["faq"]]}
-    d = shell(T2, 2, ruta, TT.get(a["slug"], a["titulo"]), a["desc"], ld_base(ruta, a["titulo"], a["desc"], [("Inicio", ""), ("Blog", "blog/"), (a["titulo"], ruta)]) + [art_ld, faq_ld], body)
+    d = shell(T2, 2, ruta, loc(TT.get(a["slug"].replace("-" + CORTO.lower(), "-panama"), a["titulo"])), a["desc"], ld_base(ruta, a["titulo"], a["desc"], [("Inicio", ""), ("Blog", "blog/"), (a["titulo"], ruta)]) + [art_ld, faq_ld], body)
     (R / "blog" / a["slug"]).mkdir(parents=True, exist_ok=True); (R / "blog" / a["slug"] / "index.html").write_text(d, encoding="utf-8")
 # ---- hub del blog con todos los artículos (los nuevos y los que ya existían)
 VIEJOS = {"vida-util": "refri", "cuidado-clima": "clima", "corte-de-luz": "clima", "ahorro-energia": "clima", "errores-lavadora": "lava", "secadora-lluvias": "lava", "mantenimiento-anual": "decide", "mitos": "decide", "elegir-tecnico": "decide", "checklist-visita": "decide"}
@@ -222,12 +230,12 @@ for a in ART.values():
 card = lambda x: f'<a class="pa-bc" href="{x["slug"]}/"><span class="pa-cat">{esc(CATS[x["cat"]])}</span><b>{esc(x["titulo"])}</b><p>{esc(x["desc"])}</p><small>{x["mins"]} min de lectura</small></a>'
 dest = [t for t in todos if t["slug"] in ("codigos-de-error-lavadora-samsung", "refrigeradora-samsung-con-escarcha-causas", "garantia-de-fabrica-o-tecnico-independiente")]
 sec = "".join(f'<h2 class="pa-h2" style="margin-top:34px">{esc(n)}</h2><div class="pa-bg">{"".join(card(t) for t in todos if t["cat"] == k)}</div>' for k, n in CATS.items() if any(t["cat"] == k for t in todos))
-hub = (miga(1, [("Inicio", ""), ("Blog", None)]) + HERO("Blog técnico", "Blog de electrodomésticos Samsung en Panamá", f"{len(todos)} guías claras sobre fallas, mantenimiento, voltaje, clima y garantía, escritas por el equipo técnico.")
+hub = (miga(1, [("Inicio", ""), ("Blog", None)]) + HERO("Blog técnico", f"Blog de electrodomésticos Samsung en {CORTO}", f"{len(todos)} guías claras sobre fallas, mantenimiento, voltaje, clima y garantía, escritas por el equipo técnico.")
        + f'<main class="pa-art"><div class="pa-w"><h2 class="pa-h2">Lo más leído</h2><div class="pa-bg">{"".join(card(t) for t in dest)}</div>{sec}</div></main>')
-ldh = ld_base("blog/", "Blog de electrodomésticos Samsung en Panamá", "Guías sobre fallas, mantenimiento, voltaje, clima y garantía de electrodomésticos Samsung en Panamá.", [("Inicio", ""), ("Blog", "blog/")]) + [{"@type": "Blog", "name": f"Blog de {NOMBRE}", "url": f"{DOM}/blog/", "inLanguage": "es-PA", "publisher": ORG, "blogPost": [{"@type": "BlogPosting", "headline": t["titulo"], "url": f"{DOM}/blog/{t['slug']}/"} for t in todos]}]
-(R / "blog" / "index.html").write_text(shell(T1, 1, "blog/", "Blog de electrodomésticos Samsung en Panamá | Guías y consejos", f"{len(todos)} guías sobre fallas, mantenimiento, voltaje, clima y garantía de refrigeradoras, lavadoras, secadoras y más Samsung en Panamá.", ldh, hub.replace('href="', 'href="', 1)), encoding="utf-8")
+ldh = ld_base("blog/", f"Blog de electrodomésticos Samsung en {CORTO}", f"Guías sobre fallas, mantenimiento, voltaje, clima y garantía de electrodomésticos Samsung en {CORTO}.", [("Inicio", ""), ("Blog", "blog/")]) + [{"@type": "Blog", "name": f"Blog de {NOMBRE}", "url": f"{DOM}/blog/", "inLanguage": "es-PA", "publisher": ORG, "blogPost": [{"@type": "BlogPosting", "headline": t["titulo"], "url": f"{DOM}/blog/{t['slug']}/"} for t in todos]}]
+(R / "blog" / "index.html").write_text(shell(T1, 1, "blog/", f"Blog de electrodomésticos Samsung en {CORTO} | Guías y consejos", f"{len(todos)} guías sobre fallas, mantenimiento, voltaje, clima y garantía de {CATS['refri'].lower()}, lavadoras, secadoras y más Samsung en {CORTO}.", ldh, hub.replace('href="', 'href="', 1)), encoding="utf-8")
 # ---- sitemap
-sm = R / "sitemap-panama.xml"
+sm = next((x for x in sorted(R.glob("sitemap-*.xml")) if "imagenes" not in x.name), R / "sitemap.xml")
 if sm.exists():
     s = sm.read_text(encoding="utf-8")
     nuevas = ["politica-de-privacidad/", "terminos-y-condiciones/"] + [f"blog/{a['slug']}/" for a in ART.values()]

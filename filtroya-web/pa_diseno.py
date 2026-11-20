@@ -5,6 +5,7 @@ Uso: python3 pa_diseno.py <carpeta_del_sitio>
 - Quita la acción bajo cada imagen (los botones de WhatsApp de las tarjetas y los pies de foto) y la cinta de barrios.
 - Compacta las páginas interiores (menos espacio en blanco, imágenes con tamaño uniforme)."""
 import hashlib, html, pathlib, re, sys
+from pa_cfg import CFG
 R = pathlib.Path(sys.argv[1])
 esc = lambda s: html.escape(s, quote=True)
 txt = lambda s: re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s))).strip()
@@ -102,19 +103,20 @@ def portada(t):
     fall = re.findall(r'<a href="([^"]+)">([^<]+)</a>', sec("Fallas frecuentes"))
     grp = {}
     for h, x in fall:
-        nombre = re.sub(r"\s+en\s+Ciudad de Panamá\s*$", "", txt(x)); k = nombre.split()[0].capitalize()
-        k = {"Estufa": "Estufas y hornos", "Horno": "Estufas y hornos"}.get(k, k + "s" if not k.endswith("s") else k)
-        if k in ("Refrigeradoras", "Lavadoras", "Secadoras", "Lavavajillas", "Estufas y hornos", "Microondas"):
+        nombre = re.sub(r"\s+en\s+" + re.escape(CFG["ciudad"]) + r"\s*$", "", txt(x)); k = nombre.split()[0].capitalize()
+        k = CFG["eq_nombre_falla"].get(k, k + "s" if not k.endswith("s") else k)
+        if k in CFG["eq_clave"]:
             grp.setdefault(k, []).append((h, nombre))
     tabs = "".join(f'<button type="button" data-t="{n}" class="{"on" if n == 0 else ""}">{esc(k)}</button>' for n, k in enumerate(grp))
     paneles = "".join(f'<div class="pa-pn {"on" if n == 0 else ""}" data-p="{n}">' + "".join(f'<a href="{h}">{esc(x)}</a>' for h, x in v[:8]) + "</div>" for n, (k, v) in enumerate(grp.items()))
     datos = re.search(r'<table class="spec-table">(.*?)</table>', sec("Datos de"), re.S)
-    clima = "".join(f"<p>{txt(p)}</p>" for p in re.findall(r"<p>(.*?)</p>", sec("Ciudad de Panamá: clima"))[:2])
+    clima = "".join(f"<p>{txt(p)}</p>" for p in re.findall(r"<p>(.*?)</p>", sec(CFG["ciudad"] + ": clima"))[:2])
     mapa = re.search(r"<iframe.*?</iframe>", sec("Mapa"), re.S)
     faq = re.search(r'<div class="faq-num">(.*?)</div>', sec("Preguntas frecuentes"), re.S)
     rap = sec("Preguntas rápidas"); pares = re.findall(r"<h3>(.*?)</h3>\s*<p>(.*?)</p>", rap, re.S)
     faq_html = (faq.group(1).replace("<details open>", "<details>") if faq else "") + "".join(f"<details><summary>{txt(q)}</summary><p>{txt(a)}</p></details>" for q, a in pares)
     guias = "".join(f'<a href="{h}">{txt(x)}</a>' for h, x in re.findall(r'<a href="([^"]+)">([^<]+)</a>', sec("Guías y respuestas") + sec("Artículos del blog")))
+    guias += "".join(f'<a href="{h}">{esc(n)}</a>' for h, n in CFG["extras_links"])
     mas = "".join(f'<a href="{h}">{txt(x)}</a>' for h, x in re.findall(r'<a href="([^"]+)">([^<]+)</a>', sec("Más sobre electrodomésticos")) if not h.startswith("http"))
     fotos = "".join(f'<img src="img/{n}" alt="{esc(a)}" loading="lazy" decoding="async">' for n, a in NUEVAS if (R / "img" / n).exists())
     def lado(i, cuerpo):
@@ -124,7 +126,7 @@ def portada(t):
     nuevo = (f'<section class="pa-hero"><div class="pa-w pa-hg"><div><span class="pa-kick">Servicio técnico independiente · {esc(ciudad)}</span><h1>{esc(h1)}</h1><p>{esc(sub)}</p>'
              f'<div class="pa-btns"><a class="pa-b wa" href="{wa}" target="_blank" rel="noopener">Escribir por WhatsApp</a><a class="pa-b sol" href="{sol}">Solicitar visita</a></div>'
              '<ul class="pa-ck"><li>Visita a domicilio</li><li>Diagnóstico primero</li><li>Valor confirmado antes de reparar</li></ul></div>'
-             f'<figure class="pa-fig"><img src="{himg.group(1)}" alt="{esc(himg.group(2))}" width="1024" height="572" fetchpriority="high" decoding="async"><span class="pa-badge">WhatsApp<small>+{tel[:3]} {tel[3:7]}-{tel[7:]}</small></span></figure></div></section>'
+             f'<figure class="pa-fig"><img src="{himg.group(1)}" alt="{esc(himg.group(2))}" width="1024" height="572" fetchpriority="high" decoding="async"><span class="pa-badge">WhatsApp<small>{CFG["tel"]}</small></span></figure></div></section>'
              f'<section class="pa-s" style="padding-top:0"><div class="pa-w"><div class="pa-quick">{"".join(quick)}</div><h2 class="pa-h2" style="margin-top:34px">Pide tu visita en 4 pasos</h2><p class="pa-sub" style="margin-bottom:16px">Sin vueltas: de tu mensaje a la reparación.</p>' + PASOS4 + '</div></section>'
              f'<section class="pa-s"><div class="pa-w"><h2 class="pa-h2">Equipos Samsung que reparamos en {esc(ciudad)}</h2><p class="pa-sub">Elige tu electrodoméstico y mira las fallas que atendemos, qué revisa el técnico y cómo pedir la visita.</p><div class="pa-eq">{"".join(cards)}</div></div></section>'
              f'<section class="pa-s alt"><div class="pa-w"><h2 class="pa-h2">Cómo funciona</h2><p class="pa-sub">De tu mensaje de WhatsApp a la reparación, en cinco pasos.</p>{lado(0, '<ol class="pa-steps pa-v">' + pasos + '</ol>')}<div style="height:26px"></div>{lado(2, incluye)}</div></section>'
@@ -144,11 +146,11 @@ for _n, _a in NUEVAS:
     if (_dir_nuevas / _n).exists():
         (R / "img").mkdir(exist_ok=True); (R / "img" / _n).write_bytes((_dir_nuevas / _n).read_bytes())
 FAMILIAS = [("puerta", r"puerta|saluda|llegando|visita-a-domicilio-\\d"), ("recepcion", r"recepcion|asesora|atencion|orden-de-servicio"), ("rep-nevera", r"reparando-(nevera|refrigeradora)|revisando-(nevera|compresor)|revision-en-casa"), ("rep-lavadora", r"lavadora.*(tecnico|reparando|diagnosticando)|tecnico.*lavadora")]
-DIR = "Vía España, Panamá, Provincia de Panamá"
-TELV, WAN = "+507 6933-7976", "50769337976"
+DIR = CFG["dir"]
+TELV, WAN = CFG["tel"], CFG["wa"]
 LINEAS = [("bespoke-samsung", "Bespoke"), ("family-hub-samsung", "Family Hub"), ("ecobubble-samsung", "EcoBubble"), ("addwash-samsung", "AddWash")]
-EQUIPOS = [("refrigeradoras", "Refrigeradoras"), ("lavadoras", "Lavadoras"), ("secadoras", "Secadoras"), ("lavavajillas", "Lavavajillas"), ("estufas-y-hornos", "Estufas y hornos"), ("microondas", "Microondas")]
-MAPA = "https://www.google.com/maps?q=" + __import__("urllib.parse").parse.quote_plus("Servicio Técnico Samsung Panamá, " + DIR) + "&amp;output=embed"
+EQUIPOS = [(v, k) for k, v in CFG["eq_slug"].items()]
+MAPA = "https://www.google.com/maps?q=" + __import__("urllib.parse").parse.quote_plus(CFG["nombre"] + ", " + DIR) + "&amp;output=embed"
 def pref(f):
     return "../" * (len(f.relative_to(R).parts) - 1)
 def menu_lineas(p):
@@ -164,10 +166,10 @@ def franja(p):
 PASOS4 = ('<ol class="pa-4"><li>Escríbenos por WhatsApp<small>Equipo, modelo y falla.</small></li><li>Coordinamos la visita<small>Día y franja en tu barrio.</small></li><li>Diagnóstico en tu casa<small>Te confirmamos el valor antes de reparar.</small></li><li>Reparación y prueba<small>Solo si tú lo apruebas.</small></li></ol>')
 def fix_title(t):
     t = html.unescape(t).strip()
-    t = re.sub(r" en Ciudad(?: de)?$", "", t)                                        # sufijo cortado
-    m = re.search(r" en (?:Ciudad de )?Panamá$", t)
-    if m and "Panamá" in t[:m.start()]: t = t[:m.start()]                             # «…Panamá? en Ciudad de Panamá»
-    if len(t) > 66: t = t.replace("Ciudad de Panamá", "Panamá")
+    t = re.sub(r" en Ciudad(?: de)?$", "", t) if CFG["ciudad"].startswith("Ciudad") else t                                        # sufijo cortado
+    m = re.search(r" en (?:" + re.escape(CFG["ciudad"]) + "|" + re.escape(CFG["corto"]) + r")$", t)
+    if m and CFG["corto"] in t[:m.start()]: t = t[:m.start()]
+    if len(t) > 66: t = t.replace(CFG["ciudad"], CFG["corto"])
     if len(t) > 66: t = t[:66].rsplit(" ", 1)[0].rstrip(" ,:;·|-")
     return t
 cont = 0
@@ -186,7 +188,7 @@ for f in R.rglob("*.html"):
     if "Líneas Samsung" not in t and "</summary>" in t and 'class="aq-dd"><summary>Servicios' in t:
         t = re.sub(r'(<details class="aq-dd"><summary>Servicios</summary>.*?</details>)', lambda m: m.group(1) + menu_lineas(p_), t, count=1, flags=re.S)
     t = re.sub(r'(<iframe[^>]*src=")https://www\.google\.com/maps\?q=[^"]+(")', lambda m: m.group(1) + MAPA + m.group(2), t)
-    t = re.sub(r'title="Mapa de [^"]*"', 'title="Mapa: Servicio Técnico Samsung Panamá, ' + DIR + '"', t)
+    t = re.sub(r'title="Mapa de [^"]*"', 'title="Mapa: ' + CFG["nombre"] + ', ' + DIR + '"', t)
     if f != R / "index.html":
         vistas, n_img = set(), [0]
         def _fig(m):
