@@ -32,6 +32,16 @@ CSS = r"""
 .pa-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;list-style:none;margin:0;padding:0;counter-reset:q}.pa-4 li{counter-increment:q;background:#fff;border:1px solid #e1e7f3;border-radius:16px;padding:18px 18px 18px 64px;position:relative;font-weight:600;color:#14213d;font-size:.95rem;line-height:1.4}.pa-4 li::before{content:counter(q);position:absolute;left:16px;top:16px;width:36px;height:36px;border-radius:50%;background:#16a34a;color:#fff;display:grid;place-items:center;font-weight:800}.pa-4 small{display:block;color:#5b6478;font-weight:500;margin-top:4px}
 .aq-pop.lin .aq-chips a{white-space:nowrap}
 @media(max-width:900px){.pa-info .in,.pa-4{grid-template-columns:1fr 1fr}}@media(max-width:560px){.pa-info .in,.pa-4{grid-template-columns:1fr}}
+/* artículos, blog y legales */
+.pa-hero-s{padding:38px 0 44px}.pa-hero-s h1{font-size:clamp(1.7rem,3.4vw,2.5rem)!important}.pa-hero-s p{margin:0 0 6px}.pa-meta{font-size:.9rem!important;color:#bcd0ff!important;margin-top:12px!important}
+.pa-art{padding:34px 0 24px;background:#f4f7fc}.pa-cols{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:34px;align-items:start}
+.pa-prose{background:#fff;border:1px solid #e1e7f3;border-radius:20px;padding:34px 38px;color:#2a3a5c;line-height:1.7;font-size:1.02rem}.pa-prose h2{font:800 1.45rem/1.25 Inter,sans-serif;color:#0b1f4d;margin:34px 0 12px}.pa-prose h2:first-of-type{margin-top:8px}.pa-prose p{margin:0 0 14px}.pa-prose ul,.pa-prose ol{margin:0 0 16px;padding-left:22px}.pa-prose li{margin:0 0 8px}.pa-prose a{color:#1428a0;text-decoration:underline}
+.pa-lead{font-size:1.15rem!important;color:#0b1f4d;font-weight:500;line-height:1.6}.pa-toc{background:#f4f7fc;border:1px solid #e1e7f3;border-radius:14px;padding:16px 20px;margin:0 0 22px}.pa-toc b{display:block;margin-bottom:8px;color:#0b1f4d}.pa-toc ol{margin:0!important;padding-left:20px!important}.pa-toc li{margin:0 0 4px!important}.pa-toc a{text-decoration:none!important}
+.pa-aside{position:sticky;top:96px;display:grid;gap:16px}.pa-aside .pa-card{background:#fff;border:1px solid #e1e7f3;border-radius:18px;padding:20px}.pa-aside .pa-card h3{margin:0 0 8px;font:800 1.05rem Inter,sans-serif;color:#0b1f4d}.pa-aside .pa-card p{color:#3d4b6b;font-size:.92rem;margin:0 0 12px}
+.pa-rc{display:block;border-top:1px solid #eef1f8;padding:12px 0;text-decoration:none}.pa-rc:first-of-type{border-top:0}.pa-rc b{display:block;color:#0b1f4d;font-size:.95rem;line-height:1.35;margin:4px 0}.pa-rc small{color:#5b6478}.pa-cat{display:inline-block;background:#e8eeff;color:#1428a0;border-radius:999px;padding:3px 10px;font:700 .72rem Inter,sans-serif;text-transform:uppercase;letter-spacing:.04em}
+.pa-cta2{background:linear-gradient(135deg,#0b1f4d,#1428a0);color:#fff;border-radius:18px;padding:26px;margin-top:30px}.pa-cta2 h3{margin:0 0 6px;font:800 1.25rem Inter,sans-serif;color:#fff}.pa-cta2 p{color:#d6e0ff!important;margin:0 0 14px!important}
+.pa-bg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.pa-bc{display:flex;flex-direction:column;gap:8px;background:#fff;border:1px solid #e1e7f3;border-radius:18px;padding:20px;text-decoration:none;color:#14213d;transition:.2s}.pa-bc:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(11,31,77,.12)}.pa-bc b{font:800 1.05rem/1.3 Inter,sans-serif;color:#0b1f4d}.pa-bc p{margin:0;color:#4a5878;font-size:.9rem;line-height:1.5}.pa-bc small{margin-top:auto;color:#5b6478}
+@media(max-width:960px){.pa-cols{grid-template-columns:1fr}.pa-aside{position:static}.pa-bg{grid-template-columns:1fr 1fr}.pa-prose{padding:24px}}@media(max-width:600px){.pa-bg{grid-template-columns:1fr}}
 /* portada */
 .pa-sd{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center}.pa-sd figure{margin:0}.pa-sd img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:20px;box-shadow:0 14px 36px rgba(11,31,77,.16)}@media(max-width:860px){.pa-sd{grid-template-columns:1fr}.pa-sd figure{order:-1}}
 .pa-ph{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0}.pa-ph img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:16px;box-shadow:0 8px 22px rgba(11,31,77,.12)}@media(max-width:700px){.pa-ph{grid-template-columns:1fr 1fr}}
@@ -152,6 +162,14 @@ def franja(p):
             f'<div class="c"><i>💬</i><div><small>WhatsApp</small><a href="https://wa.me/{WAN}?text=Hola%2C%20necesito%20servicio%20t%C3%A9cnico%20Samsung" target="_blank" rel="noopener">{TELV}</a></div></div>'
             f'<div class="c"><i>📍</i><div><small>Dirección</small><a href="{p}ubicacion-y-horario/"><b>{DIR}</b></a></div></div></div></section>')
 PASOS4 = ('<ol class="pa-4"><li>Escríbenos por WhatsApp<small>Equipo, modelo y falla.</small></li><li>Coordinamos la visita<small>Día y franja en tu barrio.</small></li><li>Diagnóstico en tu casa<small>Te confirmamos el valor antes de reparar.</small></li><li>Reparación y prueba<small>Solo si tú lo apruebas.</small></li></ol>')
+def fix_title(t):
+    t = html.unescape(t).strip()
+    t = re.sub(r" en Ciudad(?: de)?$", "", t)                                        # sufijo cortado
+    m = re.search(r" en (?:Ciudad de )?Panamá$", t)
+    if m and "Panamá" in t[:m.start()]: t = t[:m.start()]                             # «…Panamá? en Ciudad de Panamá»
+    if len(t) > 66: t = t.replace("Ciudad de Panamá", "Panamá")
+    if len(t) > 66: t = t[:66].rsplit(" ", 1)[0].rstrip(" ,:;·|-")
+    return t
 cont = 0
 for f in R.rglob("*.html"):
     t = f.read_text(encoding="utf-8", errors="ignore")
@@ -160,6 +178,9 @@ for f in R.rglob("*.html"):
         t = portada(t)
     t = re.sub(r"<figcaption>.*?</figcaption>", "", t, flags=re.S)
     p_ = pref(f)
+    t = re.sub(r'(<li><a href=")((?:\.\./)*)(quienes-somos/">Quiénes somos</a></li>)', lambda m: m.group(0) + f'<li><a href="{m.group(2)}politica-de-privacidad/">Política de privacidad</a></li><li><a href="{m.group(2)}terminos-y-condiciones/">Términos y condiciones</a></li>' if "politica-de-privacidad" not in t else m.group(0), t, count=1)
+    t = re.sub(r"<title>(.*?)</title>", lambda m: "<title>" + html.escape(fix_title(m.group(1)), quote=False) + "</title>", t, count=1, flags=re.S)
+    t = re.sub(r'(<meta (?:property|name)="(?:og|twitter):title" content=")([^"]*)(")', lambda m: m.group(1) + html.escape(fix_title(m.group(2))) + m.group(3), t)
     if "pa-info" not in t and "<footer" in t:
         t = t.replace("<footer", franja(p_) + "<footer", 1)
     if "Líneas Samsung" not in t and "</summary>" in t and 'class="aq-dd"><summary>Servicios' in t:
