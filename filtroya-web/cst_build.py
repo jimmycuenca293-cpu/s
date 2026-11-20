@@ -14,6 +14,7 @@ HOY = "2026-11-20"
 esc = html.escape
 ROOT = pathlib.Path(__file__).resolve().parent
 paginas = []   # (url, prioridad, marca)
+TITULOS = {}
 
 # ---------------------------------------------------------------- imágenes
 EXCLUIR = {  # carteles de «autorizado»/«oficial», Costa Rica, sellos de garantía, fondos rotos o casi duplicadas (revisadas a mano)
@@ -236,9 +237,10 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
          f'<link rel="stylesheet" href="/assets/site.css?v=1"><style>body{{--c:{PAL.get(marca, DEF)[0]};--a:{PAL.get(marca, DEF)[1]};--ab:{PAL.get(marca, DEF)[2]};--bg:{PAL.get(marca, DEF)[3]};--soft:{PAL.get(marca, DEF)[4]};--hd:{PAL.get(marca, DEF)[5]}}}</style><script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>'
          f'<div class="top"><div class="w"><span>Atención a domicilio en Panamá · {TEL}</span><a href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div></div>'
          f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
-         + chips(marca) + heroh + bc + cuerpo + '<div class="w"><p class="upd">Actualizado el 20 de noviembre de 2026 · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div>' + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + pie(marca, marcas_ok) + extra_js + '</body></html>')
+         + chips(marca) + heroh + bc + cuerpo + ('<div class="w"><p class="upd">Actualizado el 20 de noviembre de 2026 · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div>' if not re.search(r'/(politica-de-privacidad|terminos-y-condiciones)/', path) else '') + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + pie(marca, marcas_ok) + extra_js + '</body></html>')
     f = OUT / path.lstrip("/") / "index.html" if path != "/" else OUT / "index.html"
     f.parent.mkdir(parents=True, exist_ok=True); f.write_text(h, encoding="utf-8")
+    TITULOS[path] = title
     if not noindex: paginas.append((path, prio, marca))
 
 EXT = {  # enlaces externos por marca: sitio oficial (solo informativo) y ACODECO para derechos del consumidor
@@ -292,7 +294,8 @@ def uni(sing, N, a):
     a2 = bajar(a).rstrip(".")
     return f"{sing} {N}: {a2}" if re.match(r"(el|la|los|las|un|una|unos|unas|ninguna|ningún|todas)\b", a2) else f"{sing} {N} {a2}"
 def bajar(t):
-    return t if (len(t) > 1 and t[1].isupper()) or t[:2] in ("OE", "IE", "UE") else t[0].lower() + t[1:]
+    # no bajar a minúscula si empieza con un código/sigla (OE, F5E1, UE, Er FF...)
+    return t if (len(t) > 1 and t[1].isupper()) or t[:2] in ("OE", "IE", "UE") or re.match(r"[A-Z]\d", t) or re.match(r"[A-Z]{1,3}[a-z]?\d", t) else t[0].lower() + t[1:]
 def base(m): return "/" if m == "samsung" else f"/{m}/"
 def pathb(m, s): return (f"/samsung/{s}/" if m == "samsung" else f"/{m}/{s}/")
 def nom(m): return M[m]["nombre"]
@@ -380,7 +383,7 @@ def build_marca(m):
                lead=f"Qué le pasa a tu {sing} {N}, por qué ocurre y cómo lo revisamos en tu casa en Panamá.")
     # --- códigos
     if d["codigos"]:
-        bloques = "".join(f'<h3>{g}</h3>' + tabla(["Código", "Qué suele indicar"], [(f'<span class="cb">{c}</span>', esc(t)) for c, t in L]) for g, L in d["codigos"].items())
+        bloques = "".join(f'<h3>{g}</h3>' + tabla(["Código", "Qué significa", "Qué hacer"], [(f'<span class="cb">{c}</span>', esc(t), esc(accion_cod(t))) for c, t in L]) for g, L in d["codigos"].items())
         pagina(pathb(m, "codigos-de-error"), f"Códigos de error {N}: qué significan | Panamá", f"Lista de códigos de error {N} más comunes en lavadoras y refrigeradoras, con qué suele indicar cada uno y cuándo llamar al técnico.",
                f"Códigos de error {N}: qué significa cada uno", sec(f"Códigos de error {N}", rr(f"Los códigos de error {N} indican qué sistema del equipo detectó el problema. Muchos se resuelven limpiando filtros o revisando llaves; si el código vuelve tras apagar y encender, hace falta una revisión.") + bloques + "<p><small>Esta lista es orientativa. El significado exacto puede variar según el modelo y el año; confirma siempre con el manual de tu equipo.</small></p>") + sec("Equipos", eq_links(m), alt=True),
                m, elegir(m, m + "cod", 1)[0] if POOLS[m] else None, crumbs0 + [("Códigos de error", pathb(m, "codigos-de-error"))], bd=f"{N} · Códigos", prio="0.8",
@@ -544,17 +547,19 @@ PARTES = {
  "microondas": [("Magnetrón", r"magnetr"), ("Diodo y capacitor", r"diodo|capacitor"), ("Fusible de alta tensión", r"fusible"), ("Placa guía de ondas", r"gu[ií]a")],
 }
 
+def accion_cod(t):
+    x = t.lower()
+    if re.search(r"no es falla|aviso|bloqueo de niños", x): return "No necesitas técnico: no es una falla."
+    if re.search(r"puerta|cerradura", x): return "Cierra bien la puerta y revisa el empaque; si el código sigue, llama."
+    if re.search(r"desbalance|\bcarga\b|espuma", x): return "Reacomoda la carga y prueba otra vez; si sigue, llama."
+    if re.search(r"motor|sensor|placa|control|comunic|calentador|ventilador|deshielo|compresor|presostato|exceso", x): return "Apaga y desconecta 5 minutos; si el código vuelve, llama: requiere técnico."
+    if re.search(r"filtro|llave|drena|agua|manguera|bomba|entrada|válvula", x): return "Revisa la llave de agua y los filtros; si el código vuelve, llama."
+    return "Apaga y desconecta 5 minutos; si el código vuelve, llama."
 def build_terminos(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]; E = d["equipos"]; bi = BRANDS_ORDER.index(m)
     wam = wa(f"Hola, necesito servicio técnico {N} en Panamá")
     nv = lambda t: "Alto" if re.search(r"placa|tarjeta|compresor|inverter|bobina|magnetr|transmisi|rodamiento|control", t.lower()) else ("Bajo" if re.search(r"filtro|limpi|ajuste|manguera|buj|empaque|sello|llave|carga|grasa", t.lower()) else "Medio")
     # ---- 1 TELÉFONO: por equipo -> qué notas / causa probable / qué puedes probar / ¿llamar?
-    def accion_cod(t):
-        x = t.lower()
-        if re.search(r"no es falla|aviso", x): return "No necesitas técnico: es un aviso."
-        if re.search(r"desbalance|carga|espuma|puerta", x): return "Reacomoda la carga o cierra bien la puerta y prueba otra vez; si sigue, llama."
-        if re.search(r"filtro|llave|drena|agua|manguera|bomba|entrada", x): return "Revisa llave de agua y filtros; si el código vuelve, llama."
-        return "Apaga y desconecta 5 minutos; si el código vuelve, llama: requiere revisión técnica."
     bloques = ""
     for e in E:
         filas = []
@@ -741,10 +746,13 @@ def arts_marca(m):
     A = []   # (slug, titulo, descripcion, [(h, html)])
     def lk(e): return f'<p><a href="{pathb(m, "reparacion-" + EQ[e][0])}">Ver reparación de {EQ[e][2]} {N}</a></p>'
     # 1 humedad y salitre
-    sec_h = [("Qué hace la humedad en tus equipos " + N, f"<p>En Panamá la humedad es alta casi todo el año y cerca del mar se suma el salitre. Corroen contactos y placas, favorecen el moho en empaques y causan falsos contactos. En equipos {N} se nota sobre todo en {pls(E[:3])}.</p>")]
-    for e in E[:5]:
-        f = d["fallas"][e][0]
-        sec_h.append((f"{EQ[e][2].capitalize()} {N} y la humedad", f"<p>{esc(_prim(d['tech'][e]))}</p><p><b>Falla que vemos:</b> {esc(f[0])}. <b>Causa probable:</b> {esc(bajar(f[1]))}</p>" + lk(e)))
+    rxh = re.compile(r"placa|tarjeta|inverter|contacto|empaque|corros|comunicaci|moho|pantalla|conector|cableado", re.I)
+    eh = [(e, [x for x in d["fallas"][e] if rxh.search(x[1] + " " + x[0])]) for e in E]
+    eh = [(e, fs) for e, fs in eh if fs]
+    sec_h = [("Qué hace la humedad en tus equipos " + N, f"<p>En Panamá la humedad es alta casi todo el año y cerca del mar se suma el salitre. Corroen contactos y placas, favorecen el moho en empaques y causan falsos contactos. En equipos {N} esto se nota sobre todo en {pls([e for e, _ in eh[:3]]) if eh else pls(E[:3])}.</p>")]
+    for e, fs in eh[:5]:
+        f = fs[0]
+        sec_h.append((f"{EQ[e][2].capitalize()} {N} y la humedad", f"<p><b>Falla que puede aparecer:</b> {esc(f[0].rstrip('.'))}. <b>Causa probable:</b> {esc(bajar(f[1]))}</p><p><b>Qué hace el técnico:</b> {esc(f[2])}</p>" + lk(e)))
     sec_h.append(("Qué puedes hacer", "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"][:4]) + "</ul>"))
     A.append((f"humedad-y-salitre-en-equipos-{m}", f"Humedad y salitre en equipos {N} en Panamá", f"Cómo la humedad y el salitre de Panamá afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas.", sec_h))
     # 2 voltaje y tormentas
@@ -754,7 +762,7 @@ def arts_marca(m):
         sv = [("Por qué importa el voltaje en equipos " + N, f"<p>Las tormentas eléctricas y los apagones generan picos de voltaje. En equipos {N}, los más sensibles son {pls(ev[:4])}, porque dependen de placas y sensores electrónicos.</p>")]
         for e in ev[:4]:
             f = next((x for x in d["fallas"][e] if rx.search(x[1] + x[0])), d["fallas"][e][0])
-            sv.append((f"{EQ[e][2].capitalize()} {N}", f"<p>{esc(_prim(d['tech'][e]))}</p><p><b>Falla ligada:</b> {esc(f[0])}. {esc(f[1])}</p>" + lk(e)))
+            sv.append((f"{EQ[e][2].capitalize()} {N}", f"<p><b>Falla que vemos:</b> {esc(f[0].rstrip('.'))}. <b>Causa probable:</b> {esc(bajar(f[1]))}</p><p><b>Qué hace el técnico:</b> {esc(f[2])}</p>" + lk(e)))
         sv.append(("Cómo protegerlos", "<p>Usa un protector de voltaje con retardo de reconexión en los equipos con compresor o placa electrónica, y pide revisar la instalación eléctrica si los picos son frecuentes.</p>"))
         A.append((f"voltaje-y-tormentas-equipos-{m}", f"Voltaje y tormentas: protege tus equipos {N}", f"Qué equipos {N} sufren más los picos de voltaje en Panamá y cómo proteger sus placas y compresores.", sv))
     # 3 reparar o cambiar
@@ -763,7 +771,7 @@ def arts_marca(m):
     altos = [(EQ[e][1], x[0]) for e in E for x in d["fallas"][e] if nv(x[1]) == "Alto"][:5]
     sr = [("Fallas de equipos " + N + " que suelen convenir reparar", "<ul>" + "".join(f"<li>{esc(a.capitalize())} {N}: {esc(bajar(b))}</li>" for a, b in bajos) + "</ul>"),
           ("Fallas que conviene evaluar con calma", "<ul>" + "".join(f"<li>{esc(a.capitalize())} {N}: {esc(bajar(b))}</li>" for a, b in altos) + "</ul>"),
-          (f"Qué pesa en un {EQ[E[0]][1]} {N}", f"<p>{esc(d['tech'][E[0]])}</p><p>{esc(d['garantia'])} {N} es una marca de {d['pais']}: filtros, bombas, sensores y empaques suelen conseguirse en Panamá; placas y compresores pueden requerir pedido.</p>")]
+          (f"Garantía y repuestos de {N}", f"<p>{esc(d['garantia'])}</p><p>{N} es una marca de {d['pais']}: filtros, bombas, sensores y empaques suelen conseguirse en Panamá; placas y compresores pueden requerir pedido, y eso alarga la reparación.</p>")]
     A.append((f"reparar-o-cambiar-equipos-{m}", f"¿Reparar o cambiar tu equipo {N}?", f"Cómo decidir si reparar o reemplazar un equipo {N}: fallas que valen la pena, costos relativos, garantía y repuestos.", sr))
     # 4 elegir servicio técnico
     st = [("Qué preguntar antes de contratar", f"<p>Para un equipo {N}, pregunta si el técnico conoce las líneas {', '.join(d['lineas'][:4])}, si trabaja con repuestos originales o compatibles y si entrega el valor por escrito después del diagnóstico.</p>"),
@@ -785,14 +793,22 @@ def arts_marca(m):
     A.append((f"mudanza-de-equipos-{m}", f"Mudanza de equipos {N}: cómo moverlos sin dañarlos", f"Cómo preparar y mover tus equipos {N} en una mudanza y cuándo volver a conectarlos.", sm))
     # 7 aire lluvioso
     if "aires" in E:
-        A.append((f"aire-acondicionado-{m}-epoca-lluviosa", f"Aire acondicionado {N} en época lluviosa", f"Qué revisar en tu aire acondicionado {N} antes y durante las lluvias en Panamá.", [("Qué cuidar", f"<p>{esc(d['tech']['aires'])}</p>"), ("Cada mes", "<p>Lava los filtros. Un filtro sucio reduce el aire frío y hace trabajar más al compresor.</p>"), ("Drenaje y unidad exterior", "<p>Mantén el drenaje despejado y la unidad exterior sin hojas ni polvo, protegida de la lluvia directa.</p>"), ("Fallas que vemos", "<ul>" + "".join(f"<li>{esc(x[0])}: {esc(bajar(x[1]).rstrip('.'))}. Se revisa: {esc(bajar(x[2]))}</li>" for x in d['fallas']['aires'][:4]) + "</ul>" + lk("aires")), (f"Datos de tu aire {N}", f"<p>{esc(d['etiqueta'].get('aires', 'La etiqueta está en el cuerpo del equipo.'))} {esc(d['modelo_ej'])}</p>")]))
+        A.append((f"aire-acondicionado-{m}-epoca-lluviosa", f"Aire acondicionado {N} en época lluviosa", f"Qué revisar en tu aire acondicionado {N} antes y durante las lluvias en Panamá.", [("Qué cuidar", f"<p>{esc(d['tech']['aires'])}</p>"), ("Cada mes", "<p>Lava los filtros. Un filtro sucio reduce el aire frío y hace trabajar más al compresor.</p>"), ("Drenaje y unidad exterior", "<p>Mantén el drenaje despejado y la unidad exterior sin hojas ni polvo, protegida de la lluvia directa.</p>"), ("Fallas que vemos", "<ul>" + "".join(f"<li>{esc(x[0])}: {esc(bajar(x[1]).rstrip('.'))}. Se revisa: {esc(bajar(x[2]))}</li>" for x in d['fallas']['aires'][:4]) + "</ul>" + lk("aires")), (f"Dónde está el modelo de tu aire {N}", f"<p>{esc(d['etiqueta'].get('aires', 'La etiqueta está en el cuerpo del equipo.'))}</p>")]))
     # 8 inverter / compresor
     if any("inverter" in d["tech"][e].lower() for e in E):
         ei = [e for e in E if "inverter" in d["tech"][e].lower()]
-        A.append((f"tecnologia-inverter-{m}", f"Tecnología inverter en equipos {N}: qué es y cómo cuidarla", f"Qué significa inverter en tus equipos {N}, qué ventajas da y por qué necesita protección de voltaje.", [("Qué es", "<p>Un compresor o motor inverter ajusta su velocidad según la necesidad, en lugar de encenderse y apagarse. Ahorra energía y hace menos ruido.</p>")] + [(f"{EQ[e][2].capitalize()} {N}", f"<p>{esc(d['tech'][e])}</p>" + lk(e)) for e in ei[:3]] + [(f"Líneas {N} con esta tecnología", f"<p>{', '.join(esc(x) for x in d['lineas'][:6])}. {esc(d['modelo_ej'])}</p>"), ("Fallas que vemos", "<ul>" + "".join(f"<li>{esc(EQ[e][1].capitalize())}: {esc(d['fallas'][e][0][0])}. {esc(d['fallas'][e][0][1])}</li>" for e in ei[:3]) + "</ul>")]))
+        rxi = re.compile(r"inverter|compresor|placa", re.I)
+        bl = [("Qué es", "<p>Un compresor o motor inverter ajusta su velocidad según la necesidad, en lugar de encenderse y apagarse. Ahorra energía y hace menos ruido.</p>")]
+        for e in ei[:3]:
+            f = next((x for x in d["fallas"][e] if rxi.search(x[0] + " " + x[1])), None)
+            bl.append((f"{EQ[e][2].capitalize()} {N} con tecnología inverter", f"<p>{esc(d['tech'][e])}</p>" + (f"<p><b>Falla ligada:</b> {esc(f[0].rstrip('.'))}. {esc(f[1])}</p>" if f else "") + lk(e)))
+        bl.append(("Cómo cuidarla", "<p>Usa un protector de voltaje con retardo de reconexión, deja ventilación libre y limpia el condensador.</p>"))
+        A.append((f"tecnologia-inverter-{m}", f"Tecnología inverter en equipos {N}: qué es y cómo cuidarla", f"Qué significa inverter en tus equipos {N}, qué ventajas da y por qué necesita protección de voltaje.", bl))
     # 9 apagón y nevera
     if "neveras" in E:
-        A.append((f"apagon-y-refrigeradora-{m}", f"Apagón y tu refrigeradora {N}: qué hacer", f"Qué hacer con los alimentos y con tu refrigeradora {N} durante y después de un apagón.", [("Durante el apagón", "<p>No abras la puerta sin necesidad: cerrada mantiene el frío unas horas, y el congelador lleno, más tiempo.</p>"), ("Al volver la luz", f"<p>Espera unos minutos antes de reconectar. Un compresor que arranca de golpe con un pico de voltaje puede dañar la placa. {esc(_prim(d['tech']['neveras']))}</p>"), ("Si algo falla después", "<ul>" + "".join(f"<li>{esc(x[0])}: {esc(bajar(x[1]))}</li>" for x in d['fallas']['neveras'][:3]) + "</ul>" + lk("neveras"))]))
+        rxa = re.compile(r"placa|inverter|compresor|pantalla|c[oó]digo|se apaga|arranca|reinicia|sensor|control", re.I)
+        fa = [x for x in d["fallas"]["neveras"] if rxa.search(x[0] + " " + x[1])]
+        A.append((f"apagon-y-refrigeradora-{m}", f"Apagón y tu refrigeradora {N}: qué hacer", f"Qué hacer con los alimentos y con tu refrigeradora {N} durante y después de un apagón.", [("Durante el apagón", "<p>No abras la puerta sin necesidad: cerrada mantiene el frío unas horas, y el congelador lleno, más tiempo.</p>"), ("Al volver la luz", "<p>Espera unos minutos antes de reconectar. Un compresor que arranca de golpe junto con un pico de voltaje puede dañar la placa electrónica.</p>"), ("Si algo falla después del apagón", "<ul>" + "".join(f"<li><b>{esc(x[0].rstrip('.'))}:</b> {esc(bajar(x[1]))}</li>" for x in fa[:3]) + "</ul>" + lk("neveras") if fa else "<p>Si la refrigeradora no enfría o muestra un código tras el apagón, desconéctala unos minutos y llama si persiste.</p>" + lk("neveras"))]))
     # 10 instalación
     si = [("Instalar equipos " + N + " nuevos", f"<p>Una buena instalación evita fallas en el primer año. Confirma el voltaje, nivela y deja ventilación.</p>")]
     for e in E[:5]: si.append((f"{EQ[e][2].capitalize()} {N}", f"<p><b>Dónde está el modelo:</b> {esc(d['etiqueta'].get(e, 'en el cuerpo del equipo'))}</p><p>{esc(_prim(d['tech'][e]))}</p>"))
@@ -800,9 +816,9 @@ def arts_marca(m):
     return A
 def build_blog(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]
-    A = [a for a in arts_marca(m) if not a[0].startswith(("olores", "como-elegir"))]; ART[m] = [(s, t) for s, t, _, _ in A]
+    A = [a for a in arts_marca(m) if not a[0].startswith(("olores", "como-elegir", "mudanza", "instalar", "apagon")) and not (a[0].startswith("tecnologia-inverter") and m in ("haceb", "frigidaire", "kitchenaid"))]; ART[m] = [(s, t) for s, t, _, _ in A]
     for slg, t, desc, bl in A:
-        cuerpo = sec(t, rr(esc(desc)) + "".join(f"<h3>{esc(h)}</h3>{b if b.startswith('<') else '<p>' + esc(b) + '</p>'}" for h, b in bl)) 
+        cuerpo = sec(t, "".join(f"<h3>{esc(h)}</h3>{b if b.startswith('<') else '<p>' + esc(b) + '</p>'}" for h, b in bl)) 
         pagina(pathb(m, "guia-" + slg), t[:62], desc, t, cuerpo, m, elegir(m, m + slg, 1)[0], crumbs0 + [("Guías", pathb(m, "guias")), (t[:45], pathb(m, "guia-" + slg))],
                [{"@type": "Article", "headline": t, "description": desc, "datePublished": HOY, "dateModified": HOY, "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@type": "Organization", "name": NOMBRE}}], bd=f"{N} · Guía", prio="0.6", lead=desc)
     pagina(pathb(m, "guias"), f"Guías y consejos para equipos {N} en Panamá", f"Guías prácticas para equipos {N} en Panamá: humedad, voltaje, mantenimiento, olores, mudanza e instalación.", f"Guías y consejos para equipos {N}",
@@ -852,7 +868,7 @@ def build_legal(m):
 def build_sitio():
     pagina("/marcas/", "Todas las marcas | Centro de Servicio Técnico Panamá", "Marcas de electrodomésticos que reparamos en Panamá. Cada marca tiene su propia sección con fallas, códigos y tecnologías específicas.", "Marcas que atendemos en Panamá",
            sec("Elige tu marca", '<div class="g c3">' + "".join(f'<a class="card l" href="{base(m)}" style="border-top:5px solid {PAL[m][0] if PAL[m][0] != "#2d2d2d" else PAL[m][1]}"><span class="t">Centro de Servicio Técnico {nom(m)} Panamá</span><br><small>{", ".join(EQ[e][2] for e in M[m]["equipos"])}</small></a>' for m in BRANDS_ORDER) + "</div>"), None, None, [("Inicio", "/"), ("Marcas", "/marcas/")], bd="Marcas", lead="Cada marca tiene su propia sección. Elige la tuya.", prio="0.8", marcas_ok=True)
-    todas = "".join(f'<h2><a href="{base(m)}">Centro de Servicio Técnico {nom(m)} Panamá</a></h2><ul>' + "".join(f'<li><a href="{p}">{esc(p)}</a></li>' for p, _, mm in paginas if mm == m) + "</ul>" for m in BRANDS_ORDER)
+    todas = "".join(f'<h2><a href="{base(m)}">Centro de Servicio Técnico {nom(m)} Panamá</a></h2><ul>' + "".join(f'<li><a href="{p}">{esc(TITULOS.get(p, p))}</a></li>' for p, _, mm in paginas if mm == m) + "</ul>" for m in BRANDS_ORDER)
     pagina("/mapa-del-sitio/", "Mapa del sitio | Centro de Servicio Técnico Panamá", "Todas las secciones del sitio: nueve marcas, zonas de cobertura, blog e información legal.", "Mapa del sitio", sec("Todas las páginas", todas), None, None, [("Inicio", "/"), ("Mapa del sitio", "/mapa-del-sitio/")], prio="0.2", marcas_ok=True)
     (OUT / "404.html").write_text(f'<!doctype html><html lang="es"><meta charset="utf-8"><title>Página no encontrada</title><meta name="robots" content="noindex"><body style="font-family:system-ui;padding:40px"><h1>Página no encontrada</h1><p><a href="/">Ir al inicio</a></p></body></html>', encoding="utf-8")
 

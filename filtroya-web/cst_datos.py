@@ -76,16 +76,16 @@ M["samsung"] = dict(
   "Lavadoras": [("4E / 4C", "No entra agua: llave cerrada, filtro de la entrada o electroválvula."), ("5E / 5C", "No drena: filtro de la bomba tapado o bomba."), ("UE / Ud", "Carga desbalanceada: la lavadora no puede centrifugar."), ("dE / dC", "Puerta mal cerrada o falla del sensor de puerta."), ("LE / LC", "Detectó agua de más o una fuga."), ("HE / HC", "Problema en el calentador o su sensor."), ("3E / 3C", "Motor o su sensor Hall."), ("SUD / SUDS", "Exceso de espuma: se usó demasiado detergente.")],
   "Refrigeradoras": [("22E / 21E", "Ventilador del congelador (evaporador), frecuentemente por hielo."), ("5E / 1E", "Sensor de temperatura del evaporador o del congelador."), ("84C / 85C", "Fallas de la placa de control o comunicación; se revisa con técnico."), ("Luz de filtro de agua", "No es falla: es el aviso de cambio de filtro cada seis meses.")],
  },
- mantenimiento=["Limpiar el filtro de la bomba de la lavadora cada dos o tres meses.", "Desmontar y limpiar el condensador de la secadora de bomba de calor cada 10 ciclos.", "Cambiar el filtro de agua de la refrigeradora cada seis meses; con agua dura, cada cuatro.", "Limpiar filtros del aire WindFree cada mes en uso diario.", "Usar protector de voltaje en aires y neveras con placa inverter."],
+ mantenimiento=["Limpiar el filtro de la bomba de la lavadora cada dos o tres meses.", "Desmontar y limpiar el condensador de la secadora de bomba de calor cada 10 ciclos.", "Cambiar el filtro de agua de la refrigeradora cada seis meses; con agua dura, cada cuatro.", "Limpiar filtros del aire WindFree cada mes en uso diario.", "Usar protector de voltaje en aires y refrigeradoras con placa inverter."],
  etiqueta={"neveras": "En el lado interior izquierdo del refrigerador, cerca de las repisas; en Family Hub, también en el menú de la pantalla.", "lavadoras": "En el borde interior de la puerta, o en la parte posterior del equipo.", "secadoras": "En el borde interior de la puerta.", "aires": "Sobre la unidad exterior, junto a las conexiones, y en la unidad interior bajo el panel frontal."},
  modelo_ej="Los modelos Samsung de refrigeradora empiezan por RF, RS, RT o RB; las lavadoras por WA, WW o WF; los aires por AR.",
  garantia="Los equipos Samsung nuevos suelen traer garantía de fábrica de un año en la mayoría del equipo y más años para el compresor Digital Inverter, según el modelo y el país de compra. Confirma el tiempo exacto en la factura o el certificado de tu equipo.",
- faq=[("¿Cómo sé si el error de mi lavadora Samsung es grave?", "Los códigos 4E, 5E y UE son los más comunes y casi siempre se resuelven limpiando filtros, revisando llaves o reacomodando la carga. Si el código vuelve tras apagar y encender el equipo, hace falta una revisión."), ("¿Reparan neveras Samsung Family Hub?", "Sí. Revisamos la parte de enfriamiento y la pantalla. Si la falla es de software de la pantalla, se orienta al usuario sobre actualización o restablecimiento de fábrica."), ("¿Atienden aires WindFree?", "Sí, incluyendo la limpieza de los microorificios del panel frontal, que se tapan con polvo y grasa de cocina.")],
+ faq=[("¿Cómo sé si el error de mi lavadora Samsung es grave?", "Los códigos 4E, 5E y UE son los más comunes y casi siempre se resuelven limpiando filtros, revisando llaves o reacomodando la carga. Si el código vuelve tras apagar y encender el equipo, hace falta una revisión."), ("¿Reparan refrigeradoras Samsung Family Hub?", "Sí. Revisamos la parte de enfriamiento y la pantalla. Si la falla es de software de la pantalla, se orienta al usuario sobre actualización o restablecimiento de fábrica."), ("¿Atienden aires WindFree?", "Sí, incluyendo la limpieza de los microorificios del panel frontal, que se tapan con polvo y grasa de cocina.")],
 )
 
 M["lg"] = dict(
  nombre="LG", color="#a50034", pais="Corea del Sur",
- origen="LG Electronics, de Corea del Sur, es la marca más reconocida por sus lavadoras de carga frontal y sus neveras con compresor lineal. En Panamá se ve mucho en apartamentos y en casas con lavandería interna.",
+ origen="LG Electronics, de Corea del Sur, es la marca más reconocida por sus lavadoras de carga frontal y sus refrigeradoras con compresor lineal. En Panamá se ve mucho en apartamentos y en casas con lavandería interna.",
  lineas=["InstaView", "Door-in-Door", "Smart Inverter", "Linear Compressor", "TurboWash", "TwinWash", "WashTower", "Dual Inverter", "Direct Drive"],
  equipos=["neveras", "lavadoras", "secadoras", "centro-lavado", "aires", "lavavajillas"],
  tech={
@@ -139,7 +139,7 @@ M["lg"] = dict(
  etiqueta={"neveras": "En el lado interior del refrigerador, en la pared izquierda o derecha, o detrás de la repisa inferior.", "lavadoras": "En la parte trasera o en el borde interior de la puerta.", "secadoras": "Borde interior de la puerta.", "aires": "En la unidad interior, bajo el panel frontal."},
  modelo_ej="Los números de modelo LG suelen empezar por GM, GR o LT en refrigeradoras, WM o WT en lavadoras y DLE o RH en secadoras.",
  garantia="LG ofrece garantía de fábrica estándar y, en algunos modelos, garantía extendida para el compresor inverter. El plazo depende del modelo y de la tienda donde lo compraste; conserva la factura.",
- faq=[("¿Qué significa OE en mi lavadora LG?", "Significa que la lavadora no logra sacar el agua. Casi siempre es el filtro de la bomba tapado; se limpia sin herramientas especiales."), ("¿Reparan WashTower?", "Sí. Diagnosticamos lavadora y secadora por separado y revisamos la comunicación entre ambas."), ("¿Las neveras con compresor lineal se reparan en casa?", "El diagnóstico sí. El cambio del compresor se coordina según el modelo y el estado del equipo.")],
+ faq=[("¿Qué significa OE en mi lavadora LG?", "Significa que la lavadora no logra sacar el agua. Casi siempre es el filtro de la bomba tapado; se limpia sin herramientas especiales."), ("¿Reparan WashTower?", "Sí. Diagnosticamos lavadora y secadora por separado y revisamos la comunicación entre ambas."), ("¿Las refrigeradoras con compresor lineal se reparan en casa?", "El diagnóstico sí. El cambio del compresor se coordina según el modelo y el estado del equipo.")],
 )
 
 M["whirlpool"] = dict(
@@ -317,7 +317,7 @@ M["electrolux"] = dict(
  codigos={"Lavadoras": [("E10", "La lavadora Electrolux no recibe agua suficiente: llave cerrada, mallas de entrada sucias o electroválvula."), ("E20", "El agua no sale: se revisa la manguera de desagüe, el filtro y la bomba de la lavadora."), ("E40", "El equipo no detecta la puerta cerrada: empaque, traba o interruptor de puerta."), ("E50", "Problema en el motor o en su sensor de giro."), ("E90", "Falla de comunicación entre la placa y el panel de control.")]},
  mantenimiento=["Limpiar el filtro de la bomba cada dos o tres meses.", "Limpiar los filtros de la secadora en cada uso.", "No obstruir las rejillas de ventilación de las placas.", "Usar regulador de voltaje en las refrigeradoras inverter."],
  etiqueta={"neveras": "Dentro del refrigerador, en el costado.", "lavadoras": "En el marco de la puerta o atrás.", "cocinas": "En el borde del horno, al abrir la puerta."},
- modelo_ej="Electrolux usa códigos como IT, IM o ERT en neveras y EWF en lavadoras.",
+ modelo_ej="Electrolux usa códigos como IT, IM o ERT en refrigeradoras y EWF en lavadoras.",
  garantia="Electrolux ofrece garantía de fábrica limitada y varía por país y modelo.",
  faq=[("¿Reparan placas de inducción Electrolux?", "Sí, revisando ventilador, bobina y sensores."), ("¿Qué es E20 en una lavadora Electrolux?", "Es un código de drenaje."), ("¿La refrigeradora inverter Electrolux se reinicia sola?", "Puede ser por picos de voltaje o por una falla del sensor; se revisa en casa.")],
 )
@@ -371,7 +371,7 @@ M["haceb"] = dict(
  lineas=["Neveras no frost", "Lavadoras carga superior", "Estufas a gas", "Hornos empotrables", "Aires acondicionados"],
  equipos=["neveras", "lavadoras", "secadoras", "cocinas", "aires"],
  tech={
-  "neveras": "Las neveras Haceb no frost usan un ciclo de deshielo electrónico. La falla más frecuente es el termostato o sensor de deshielo.",
+  "neveras": "Las refrigeradoras Haceb no frost usan un ciclo de deshielo electrónico. La falla más frecuente es el termostato o sensor de deshielo.",
   "lavadoras": "Las lavadoras Haceb de carga superior con agitador son de mecánica sencilla y fáciles de reparar. Las fallas son de correa, bomba y tarjeta.",
   "secadoras": "Las secadoras Haceb de carga frontal secan con aire caliente y un tambor giratorio. El filtro de pelusa y el ducto de salida son lo que más condiciona el rendimiento, y en equipos de gran capacidad como los de 12 kg la pelusa se acumula rápido.",
   "cocinas": "Las estufas y hornos Haceb funcionan a gas con encendido eléctrico. Las bujías y las válvulas son lo que más se cambia.",
@@ -402,7 +402,7 @@ M["haceb"] = dict(
   ],
  },
  codigos={},
- mantenimiento=["Limpiar los filtros del aire cada mes.", "Limpiar las bujías de la estufa cada tres meses.", "Descongelar y limpiar el compartimento de la nevera cada seis meses.", "Revisar la manguera del gas cada año.", "Limpiar el filtro de pelusa de la secadora en cada uso y revisar el ducto de salida cada año."],
+ mantenimiento=["Limpiar los filtros del aire cada mes.", "Limpiar las bujías de la estufa cada tres meses.", "Descongelar y limpiar el compartimento de la refrigeradora cada seis meses.", "Revisar la manguera del gas cada año.", "Limpiar el filtro de pelusa de la secadora en cada uso y revisar el ducto de salida cada año."],
  etiqueta={"neveras": "Dentro del refrigerador, en el costado.", "lavadoras": "En la parte trasera.", "secadoras": "En el borde interior de la puerta o en la parte trasera."},
  modelo_ej="Los modelos Haceb combinan letras y números según la línea del equipo.",
  garantia="Haceb ofrece garantía de fábrica limitada, variable por producto. En equipos importados a Panamá, la cobertura local puede cambiar.",
@@ -444,9 +444,9 @@ ZONAS = {
  "ciudad-de-panama": ("Ciudad de Panamá", "Casco Antiguo, San Francisco, Bella Vista, El Cangrejo, Obarrio, Marbella, Paitilla, Punta Pacífica, Costa del Este, Albrook, Clayton, Betania, Pueblo Nuevo, Río Abajo", "Mezcla de edificios altos con aire central y casas antiguas con instalaciones eléctricas viejas. En el Casco Antiguo, la humedad y el salitre afectan a los equipos."),
  "san-miguelito": ("San Miguelito", "Belisario Frías, Mateo Iturralde, Amelia Denis de Icaza, Omar Torrijos, Victoriano Lorenzo", "Zona densa de viviendas y apartamentos; las visitas suelen coordinarse por franjas horarias por el tráfico."),
  "arraijan": ("Arraiján", "Vista Alegre, Burunga, Veracruz, Howard, Nuevo Arraiján", "Cuenta con muchos proyectos residenciales nuevos, y muchos equipos están en garantía de fábrica."),
- "la-chorrera": ("La Chorrera", "Barrio Balboa, Barrio Colón, El Coco, Playa Leona", "Mezcla de casas y urbanizaciones; las visitas incluyen equipos de lavandería y neveras de mayor tamaño."),
- "costa-del-este": ("Costa del Este", "Costa del Este, Santa María, Panamá Pacífico", "Apartamentos modernos con aires de alta eficiencia, centros de lavado y neveras de gran tamaño."),
- "tocumen-y-24-de-diciembre": ("Tocumen y 24 de Diciembre", "Tocumen, 24 de Diciembre, Pacora, Las Mañanitas", "Zona del este con crecimiento de viviendas; las neveras y lavadoras son los equipos más atendidos."),
+ "la-chorrera": ("La Chorrera", "Barrio Balboa, Barrio Colón, El Coco, Playa Leona", "Mezcla de casas y urbanizaciones; las visitas incluyen equipos de lavandería y refrigeradoras de mayor tamaño."),
+ "costa-del-este": ("Costa del Este", "Costa del Este, Santa María, Panamá Pacífico", "Apartamentos modernos con aires de alta eficiencia, centros de lavado y refrigeradoras de gran tamaño."),
+ "tocumen-y-24-de-diciembre": ("Tocumen y 24 de Diciembre", "Tocumen, 24 de Diciembre, Pacora, Las Mañanitas", "Zona del este con crecimiento de viviendas; las refrigeradoras y lavadoras son los equipos más atendidos."),
  "panama-oeste": ("Panamá Oeste", "Panamá Pacífico, Howard, Veracruz, Vista Alegre, Arraiján", "Zona con mucho crecimiento reciente; muchos equipos todavía están en período de garantía."),
  "colon": ("Colón", "Colón ciudad, Cristóbal, Sabanitas, Margarita", "Clima costero con humedad y salitre; la corrosión es la causa más común de fallas en el condensador del aire acondicionado."),
 }
