@@ -105,8 +105,8 @@ foreach (correos_destino() as $dest) {
 echo json_encode(['ok' => true, 'ref' => $ref, 'correo' => $ok, 'form' => $forms], JSON_UNESCAPED_UNICODE);
 """, encoding="utf-8")
 cfg = (AQUI / "src" / "api" / "config.sample.php").read_text(encoding="utf-8")
-cfg = (cfg.replace("'dominio' => 'https://filtrosnevecones.com'", f"'dominio' => '{DOMINIO}'").replace("'nombre'    => 'Filtros Nevecones Colombia'", f"'nombre'    => '{NOMBRE}'").replace("'telefono'  => '310 714 7299'", f"'telefono'  => '{wa_vis('colombia')}'")
-       .replace("'whatsapp' => '3107147299'", f"'whatsapp' => '{WA_DEF}'").replace("'gtm' => 'GTM-5WSNHV66'", f"'gtm' => '{GTM}'").replace("w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4", TOKENS[0] if TOKENS else ""))
+cfg = (cfg.replace("'dominio' => 'https://filtrosnevecones.com'", f"'dominio' => '{DOMINIO}'").replace("'nombre'    => 'Filtros Nevecones Colombia'", f"'nombre'    => '{NOMBRE}'").replace("'telefono'  => '310 714 7299'", f"'telefono'  => '{(SOLO_CFG[SOLO].get('telefono_vis') if SOLO else '') or wa_vis('colombia')}'").replace("'direccion' => 'Dirección del negocio'", "'direccion' => '" + (SOLO_CFG[SOLO].get('direccion', 'Dirección del negocio') if SOLO else 'Dirección del negocio') + "'")
+       .replace("'whatsapp' => '3107147299'", f"'whatsapp' => '{(CONTACTOS.get(SOLO_PK, WA_DEF) if SOLO else WA_DEF)[len(PAISES[SOLO_PK]['wa_pref']) if SOLO else 0:]}'").replace("'gtm' => 'GTM-5WSNHV66'", f"'gtm' => '{GTM}'").replace("w-s2eiVewLzOHFjK7HAR9UUeqFoNMS14k_Gfrqt_ND4", TOKENS[0] if TOKENS else ""))
 if os.environ.get("CORREO_AVISOS"):
     cfg = cfg.replace("'correo_avisos'    => 'serviciotecnicoyrepuestoscali@gmail.com'", f"'correo_avisos'    => '{os.environ['CORREO_AVISOS']}'", 1)
 if os.environ.get("SMTP_CLAVE"):
