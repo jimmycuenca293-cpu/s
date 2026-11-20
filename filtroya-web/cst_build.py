@@ -114,7 +114,7 @@ section.s{padding:30px 0}section.s.alt{background:var(--w)}.lead{color:var(--m);
 .cta-box{display:grid;gap:12px}@media(min-width:700px){.cta-box{grid-template-columns:1fr 1fr}}.cta-box .card{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .sec-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.sec-h small{color:var(--m)}
 .upd{font-size:.85rem;color:var(--m);margin:6px 0 28px}
-.pz{display:grid;gap:10px;margin:0}.pz dt{font-weight:800;color:var(--c)}.pz dd{margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid #e3eaf4}.rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
+.pz{display:grid;gap:10px;margin:0}.pz dt{font-weight:800;color:var(--c)}.pz dd{margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid #e3eaf4}.lgo{display:block;height:34px;width:auto;max-width:130px;object-fit:contain}.hl{display:inline-block;background:#fff;border-radius:12px;padding:8px 14px;margin:0 0 12px;box-shadow:0 4px 16px rgba(0,0,0,.18)}.hl img{display:block;height:56px;width:auto;max-width:260px;object-fit:contain}@media(max-width:520px){.lgo{height:28px;max-width:96px}.logo span{font-size:.85rem}}.fl{display:inline-block;background:#fff;border-radius:12px;padding:10px 16px;margin:0 0 18px}.fl img{display:block;height:40px;width:auto;max-width:190px;object-fit:contain}.logo{display:flex;align-items:center;gap:10px}.logo span{display:block;line-height:1.15}.rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
 .g{display:grid;gap:16px}@media(min-width:700px){.g.c2{grid-template-columns:1fr 1fr}.g.c3{grid-template-columns:repeat(3,1fr)}}@media(min-width:1000px){.g.c4{grid-template-columns:repeat(4,1fr)}}
 .card{background:var(--w);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}.card.l{text-decoration:none;color:inherit;display:block;transition:.15s}.card.l:hover{transform:translateY(-3px)}.card .t{font-weight:800;color:var(--c)}.card small{color:var(--m)}
 .tb{width:100%;border-collapse:collapse;background:var(--w);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}.tb th,.tb td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid #e8eef7;font-size:.95rem}.tb th{background:var(--soft);color:var(--c)}
@@ -158,12 +158,12 @@ def pie(marca=None, lista_marcas=False):
         cols = ('<div><h3>Marcas</h3><ul>' + "".join(f'<li><a href="{"/" if m == "samsung" else "/" + m + "/"}">{M[m]["nombre"]} Panamá</a></li>' for m in BRANDS_ORDER) + f'</ul></div><div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>')
     else:
         cols = f'<div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>'
-    return ('<footer><div class="w"><div class="g c4">' + cols + '</div></div></footer>'
+    flogo = f'<span class="fl"><img src="/img/logos/{marca}.png" alt="Logo {nom(marca)}" width="190" height="48"></span>' if marca else ""
+    return ('<footer><div class="w">' + flogo + '<div class="g c4">' + cols + '</div></div></footer>'
             f'<div class="fb"><a href="tel:+{TELN}">Llamar</a><a class="wa" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div>')
 LB = {"@type": "ProfessionalService", "sameAs": [], "knowsAbout": ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, "priceRange": "$$",
       "areaServed": [{"@type": "City", "name": c} for c in (CFG.get("area") or ["Ciudad de Panamá", "San Miguelito", "Arraiján", "La Chorrera", "Colón"])],
-      "address": {"@type": "PostalAddress", "addressLocality": CFG["ciudad"], "addressRegion": CFG["region"], "addressCountry": CFG["cc"]},
-      "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}]}
+      "address": {"@type": "PostalAddress", "addressLocality": CFG["ciudad"], "addressRegion": CFG["region"], "addressCountry": CFG["cc"]}}
 if CFG.get("geo"): LB["geo"] = {"@type": "GeoCoordinates", "latitude": CFG["geo"][0], "longitude": CFG["geo"][1]}
 
 
@@ -227,7 +227,7 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
     if marca and not noindex: cuerpo, bgi = decorar(marca, cuerpo, hero, path)
     himg = ""
     if hero: himg = f'<img src="{hero[0]}" alt="{hero[1]}" width="1024" height="768" fetchpriority="high" decoding="async">'
-    heroh = (f'<section class="hero" style="--bgi:{bgi}"><div class="w"><div><span class="bd">{esc(bd or NOMBRE)}</span><h1>{esc(h1)}</h1><p>{lead or esc(desc)}</p>'
+    heroh = (f'<section class="hero" style="--bgi:{bgi}"><div class="w"><div>{f'<span class="hl"><img src="/img/logos/{marca}.png" alt="Logo {nom(marca)}" width="170" height="48"></span><br>' if marca else ""}<span class="bd">{esc(bd or NOMBRE)}</span><h1>{esc(h1)}</h1><p>{lead or esc(desc)}</p>'
              f'<p><a class="btn" href="{wa(f"Hola, necesito servicio técnico {M[marca]['nombre']} en Panamá" if marca else "Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a> <a class="btn o" href="{cta2[1] if cta2 else "tel:+" + TELN}">{cta2[0] if cta2 else "Llamar " + TEL}</a></p></div>{himg}</div></section>')
     tags = "".join(f'<meta name="google-site-verification" content="{g}">' for g in GSC) if path == "/" else ""
     h = (f'<!doctype html><html lang="es-PA"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title>'
@@ -237,7 +237,7 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
          f'<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%230b2a6f%27/%3E%3Cpath d=%27M18 44l10-24 8 16 10-20%27 stroke=%27%23fff%27 stroke-width=%278%27 fill=%27none%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">'
          f'<link rel="stylesheet" href="/assets/site.css?v=1"><style>body{{--c:{PAL.get(marca, DEF)[0]};--a:{PAL.get(marca, DEF)[1]};--ab:{PAL.get(marca, DEF)[2]};--bg:{PAL.get(marca, DEF)[3]};--soft:{PAL.get(marca, DEF)[4]};--hd:{PAL.get(marca, DEF)[5]}}}</style><script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>'
          f'<div class="top"><div class="w"><span>Atención a domicilio en Panamá · {TEL}</span><a href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div></div>'
-         f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
+         f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">{f'<img class="lgo" src="/img/logos/{marca}.png" alt="Logo {nom(marca)}" width="130" height="40">' if marca else ""}<span>Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></span></a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
          + chips(marca) + heroh + bc + cuerpo + ('<div class="w"><p class="upd">Actualizado el 20 de noviembre de 2026 · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div>' if not re.search(r'/(politica-de-privacidad|terminos-y-condiciones)/', path) else '') + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + pie(marca, marcas_ok) + extra_js + '</body></html>')
     h = LOC(h)
     f = OUT / path.lstrip("/") / "index.html" if path != "/" else OUT / "index.html"
@@ -381,7 +381,7 @@ def build_marca(m):
         raiz = sing.split()[0][:5].lower()
         cuid = [x for x in d["mantenimiento"] if raiz in x.lower()]
         cuid_html = ("<h3>Cuidados que alargan su vida</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in cuid[:3]) + "</ul>") if cuid else ""
-        anc = f'<div class="anc"><a href="#fallas">Elegir mi falla</a>' + ('<a href="#codigos">Códigos de error</a>' if cod else "") + f'<a href="#funciona">Cómo funciona</a><a href="#visita">Antes de la visita</a><a href="#preguntas">Preguntas</a><a href="{wa("Hola, necesito reparar mi " + sing + " " + N)}" target="_blank" rel="noopener">Pedir visita</a></div>'
+        anc = f'<div class="anc"><a href="#fallas">Elegir mi falla</a>' + ('<a href="#codigos">Códigos de error</a>' if cod else "") + f'<a href="#funciona">Cómo funciona</a><a href="#reparar-o-cambiar">¿Reparar o cambiar?</a><a href="#visita">Antes de la visita</a><a href="#preguntas">Preguntas</a><a href="{wa("Hola, necesito reparar mi " + sing + " " + N)}" target="_blank" rel="noopener">Pedir visita</a></div>'
         modelo_txt = d["etiqueta"].get(e, "Busca la etiqueta con el número de modelo y serie en el equipo.")
         faq_e = [(f"¿Dónde encuentro el modelo de mi {sing} {N}?", modelo_txt + " Con una foto de esa etiqueta el diagnóstico por WhatsApp es mucho más preciso."),
                  (f"¿Cuál es la falla más común en {pl} {N}?", f"{cap(bajar(fl[0][0]).rstrip('.'))}. Lo más probable: {bajar(fl[0][1])}"),
@@ -390,10 +390,13 @@ def build_marca(m):
                   f'<h3 style="margin-top:14px">Qué pasa en la visita</h3><ol><li>Revisamos tu {sing} {N} en casa.</li><li>Te explicamos la causa y el valor por escrito.</li><li>Solo reparamos si tú lo apruebas.</li></ol>'
                   f'<p><a class="btn" href="{wa("Hola, necesito reparar mi " + sing + " " + N)}" target="_blank" rel="noopener">Pedir la visita</a></p></div>'
                   + (f'<img loading="lazy" src="{h2[0]}" alt="{h2[1]}" width="1024" height="768">' if h2 else "") + '</div>')
+        vd = EQ_VIDA.get(e)
+        rc = sec(f"¿Reparar o cambiar tu {sing} {N}?", f"<p>Una {sing} dura en promedio <b>{vd[0]}</b> si se cuida bien. Antes de decidir, revisamos el equipo y te damos el valor por escrito; tú eliges.</p><div class=\"two\" style=\"align-items:start\"><div><h3>Casi siempre conviene reparar si…</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in vd[2]) + "</ul></div><div><h3>Conviene evaluar el cambio si…</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in vd[1]) + "</ul></div></div>", id="reparar-o-cambiar", alt=True) if vd else ""
         cuerpo = (sec(f"¿Qué le pasa a tu {sing} {N}?", anc + stepper(2) + sintomas_btn(m, e, fl), id="fallas", lead="Toca lo que notas en tu equipo. Te mostramos la causa más probable y qué puedes hacer antes de llamar.")
                   + sec_cod
                   + sec(f"Cómo funciona tu {sing} {N}", f"<p>{esc(d['tech'][e])}</p>" + cuid_html, id="funciona", alt=not bool(sec_cod))
-                  + sec(f"Antes de la visita: tu {sing} {N}", visita, id="visita", alt=bool(sec_cod))
+                  + rc
+                  + sec(f"Antes de la visita: tu {sing} {N}", visita, id="visita", alt=not bool(rc))
                   + sec(f"Preguntas sobre {pl} {N}", faq_html(faq_e), alt=not bool(sec_cod), id="preguntas")
                   )
         pagina(pathb(m, "reparacion-" + s), f"Reparación de {pl} {N} en Panamá | Centro de Servicio", f"Reparación de {pl} {N} en Panamá a domicilio: fallas frecuentes, causas probables y qué revisamos. Diagnóstico en casa y atención por WhatsApp.",
@@ -515,7 +518,7 @@ def build_sintomas(m):
         piezas = []
         for parte, rx in PARTES.get(e, []):
             if re.search(rx, b + " " + c, re.I) and parte in PARTE_DESC: piezas.append((parte, PARTE_DESC[parte]))
-        piezas_html = sec(f"Las piezas que pueden estar fallando", "<p>Según lo que notas, estas son las piezas que revisamos primero y qué hace cada una:</p><dl class=\"pz\">" + "".join(f"<dt>{esc(p)}</dt><dd>{esc(t)}</dd>" for p, t in piezas[:4]) + "</dl>") if piezas else ""
+        piezas_html = sec(f"Las piezas que pueden estar fallando", "<p>Según lo que notas, estas son las piezas que revisamos primero y qué hace cada una:</p><dl class=\"pz\">" + "".join(f"<dt>{esc(p)}</dt><dd>{esc(t)}<br><b>Cómo lo comprobamos:</b> {esc(PARTE_DIAG.get(p, ''))}</dd>" for p, t in piezas[:4]) + "</dl>") if piezas else ""
         cuerpo = (sec(f"¿Qué le pasa a tu {sing} {N_}?", navtop + stepper(3) + rr(f"<b>{esc(cap(bajar(a).rstrip('.')))}.</b> Lo más probable: {esc(bajar(b))}"))
                   + sec("Qué hacer, paso a paso", paso, alt=True)
                   + sec(f"¿Puedo seguir usando mi {sing}?", f"<p>{esc(USAR[cod_])}</p>")
@@ -559,6 +562,67 @@ def build_guia(m):
            m, elegir(m, m + "guia", 1)[0], crumbs0 + [("Guía de cuidado", pathb(m, "guia-de-cuidado"))], [{"@type": "Article", "headline": f"Guía de cuidado de equipos {N}", "datePublished": HOY, "dateModified": HOY, "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@type": "Organization", "name": NOMBRE}}],
            bd=f"{N} · Guía", prio="0.6", lead=f"Mantenimiento y señales de alerta para tus equipos {N}.")
 
+EQ_VIDA = {
+ "neveras": ("12 a 15 años", ["el compresor falla en un equipo con más de 12 años", "hay fugas de gas en el evaporador o el serpentín", "la reparación y el repuesto se acercan a la mitad del precio de una nueva"], ["falla un ventilador, un sensor, la resistencia de deshielo o el empaque", "la placa falla por un pico de voltaje y el equipo es relativamente nuevo"]),
+ "lavadoras": ("8 a 12 años", ["el tambor o la tina están rotos o con óxido pasado", "los rodamientos fallan junto con el sello en un equipo con muchos años", "la reparación supera la mitad del precio de una nueva"], ["falla la bomba, el filtro, la cerradura, el interruptor de tapa o la electroválvula", "la placa o el motor fallan en un equipo con pocos años"]),
+ "secadoras": ("10 a 13 años", ["el tambor está deformado o oxidado", "la placa y el motor fallan a la vez", "la reparación supera la mitad del precio de una nueva"], ["falla la resistencia, la correa, el termostato o el sensor de humedad", "el ducto de pelusa está tapado y el equipo se recalienta"]),
+ "aires": ("10 a 15 años", ["el compresor falla en un equipo con muchos años y gas antiguo", "el serpentín tiene varias fugas", "la placa exterior se daña seguido por mala instalación eléctrica"], ["falla la placa, un sensor o el ventilador", "hay una fuga localizable o falta limpieza y gas"]),
+ "cocinas": ("15 a 20 años", ["el horno tiene la cavidad oxidada o la puerta deformada", "la placa o la mesa de inducción está agrietada", "faltan repuestos del modelo"], ["falla un quemador, una bujía, el módulo de encendido o la resistencia", "el termostato o la válvula del horno no regula bien"]),
+ "lavavajillas": ("9 a 12 años", ["la tina tiene fugas o está oxidada", "la bomba y la placa fallan a la vez", "la reparación supera la mitad del precio de una nueva"], ["falla la bomba, el filtro, un brazo rociador o el sello de la puerta", "hay sarro o residuos que bloquean el paso del agua"]),
+ "centro-lavado": ("8 a 12 años", ["la placa principal y un motor fallan a la vez", "una de las dos unidades tiene daño estructural", "la reparación supera la mitad del precio de uno nuevo"], ["falla un conector, una resistencia o el interruptor de tapa", "una unidad funciona y la otra solo necesita un ajuste"]),
+ "microondas": ("7 a 10 años", ["el magnetrón falla y el equipo ya es antiguo", "la cavidad está oxidada o con chispas por daño en la pared interior", "el costo de la pieza se acerca al de uno nuevo"], ["falla el plato giratorio, el fusible o la cerradura de la puerta", "el panel o el fusible de alta tensión necesitan cambio"]),
+ "batidoras": ("más de 10 años con buen mantenimiento", ["el motor está quemado y el repuesto es difícil de conseguir", "la carcasa de engranes está rota", "hay daños por golpes o líquidos dentro del motor"], ["la grasa de la caja de engranes se secó o se escapó", "faltan escobillas o hay ruido de rechinado por desgaste normal"]),
+}
+PARTE_DIAG = {
+ "Ventilador del evaporador": "Abrimos el panel del congelador, giramos el aspa con la mano para ver si está trabada por hielo y medimos si el motor recibe corriente.",
+ "Resistencia de deshielo": "Medimos su continuidad con multímetro; una resistencia abierta no calienta y deja la escarcha pegada.",
+ "Sensor de temperatura": "Medimos su resistencia a temperatura ambiente y la comparamos con la tabla del fabricante.",
+ "Placa electrónica o inverter": "Medimos la tensión de entrada y la señal que envía al compresor y a los ventiladores; buscamos pistas quemadas o condensadores hinchados.",
+ "Compresor": "Medimos el bobinado y el consumo al arrancar; escuchamos si arranca, se calienta y se apaga por protección.",
+ "Relé de arranque": "Lo sacamos y lo agitamos para oír si hay piezas sueltas; probamos su continuidad y su respuesta al arrancar.",
+ "Filtro de agua": "Lo revisamos por fecha de cambio y medimos el caudal con y sin el filtro puesto.",
+ "Electroválvula de agua": "Medimos la tensión en la bobina cuando el equipo pide agua y comprobamos que la malla de entrada no esté tapada.",
+ "Empaque de la puerta": "Pasamos un papel entre la puerta y el empaque para ver dónde no sella y revisamos si está rígido o roto.",
+ "Termostato": "Lo medimos con el equipo frío y caliente para ver si corta y conecta a la temperatura correcta.",
+ "Bomba de drenaje": "Desmontamos la bomba, giramos el impulsor a mano y medimos el motor; buscamos objetos atascados.",
+ "Filtro de la bomba": "Lo desenroscamos con una bandeja debajo y buscamos monedas, pelusa o hebras que bloqueen el paso.",
+ "Rodamientos del tambor": "Giramos el tambor con la mano y sentimos juego o rugosidad; confirmamos con el ruido al centrifugar.",
+ "Amortiguadores": "Empujamos el tambor hacia abajo y lo soltamos; si rebota más de una vez, el amortiguador está vencido.",
+ "Electroválvula de entrada": "Medimos la tensión de la bobina al pedir agua y revisamos que la malla y la presión de la llave sean correctas.",
+ "Presostato (sensor de nivel)": "Soplamos suavemente por la manguera del presostato para oír el clic y medimos la continuidad según el nivel.",
+ "Cerradura de puerta": "Probamos el cierre y el enclavamiento de forma manual y medimos la bobina que bloquea la puerta.",
+ "Interruptor de tapa": "Medimos su continuidad con la tapa cerrada y abierta; también revisamos el actuador plástico de la tapa.",
+ "Transmisión, embrague o correa": "Quitamos la tapa inferior, giramos el eje a mano y revisamos desgaste de la correa, el acople o las zapatas del embrague.",
+ "Placa o tarjeta de control": "Revisamos pistas quemadas, humedad y conectores; medimos las salidas a motor, bomba y válvulas.",
+ "Motor y sensor del motor": "Medimos el bobinado y la señal del sensor de velocidad; verificamos que las escobillas, si las hay, no estén gastadas.",
+ "Resistencia": "Medimos su continuidad; una resistencia abierta o con tierra explica que el equipo no caliente.",
+ "Termostato y fusible térmico": "Medimos continuidad de ambos; un fusible abierto casi siempre indica sobrecalentamiento previo por ducto tapado.",
+ "Correa y rodillos": "Abrimos la secadora, giramos el tambor a mano y revisamos tensión y desgaste de correa y rodillos.",
+ "Sensor de humedad": "Limpiamos las barras del sensor y medimos su respuesta con la ropa húmeda.",
+ "Bomba de condensado": "Medimos el motor de la bomba y revisamos mangueras y depósito por obstrucciones.",
+ "Filtro y ducto de pelusa": "Limpiamos filtro y ducto y medimos el flujo de aire en la salida; un ducto tapado es una causa frecuente de apagado por temperatura.",
+ "Gas refrigerante": "Medimos presiones con manómetros y buscamos fugas en uniones y serpentines antes de recargar nada.",
+ "Placa de la unidad exterior": "Medimos la alimentación y las señales hacia compresor y ventilador; revisamos humedad y daños por picos de voltaje.",
+ "Drenaje y manguera": "Verificamos la pendiente de la manguera y soplamos el drenaje para ver si el agua fluye libre.",
+ "Filtros y serpentín": "Limpiamos filtros y revisamos el serpentín por suciedad o hielo; medimos la diferencia de temperatura del aire.",
+ "Resistencia del horno": "Medimos su continuidad y buscamos zonas quemadas o con mal contacto en los terminales.",
+ "Bujías de encendido": "Las limpiamos y comprobamos que la chispa salte de forma continua y cerca del quemador.",
+ "Módulo de encendido": "Medimos la alimentación al módulo y la salida hacia las bujías.",
+ "Relé de la placa": "Escuchamos si el relé hace clic y medimos la salida cuando debería dar corriente.",
+ "Termostato y válvula": "Probamos la temperatura real del horno con un termómetro y comprobamos que la válvula abra y cierre el gas.",
+ "Ventilador de convección": "Giramos el aspa a mano y medimos el motor; revisamos que nada roce dentro de la cavidad.",
+ "Interruptor selector": "Medimos continuidad en cada posición del selector.",
+ "Bobina de inducción": "Medimos la bobina y revisamos el ventilador que la enfría; verificamos que la olla sea apta.",
+ "Brazos rociadores": "Los retiramos, los lavamos y revisamos que cada orificio esté libre y que giren sin trabarse.",
+ "Filtro del fondo": "Lo sacamos y revisamos restos y sarro; también miramos la manguera de drenaje.",
+ "Sensor de turbidez": "Medimos su respuesta con agua limpia y sucia, y limpiamos la lente del sensor.",
+ "Sello de la puerta": "Revisamos deformaciones o suciedad en el sello y que la puerta cierre pareja.",
+ "Triturador": "Giramos la cuchilla a mano buscando huesos o restos duros que la bloqueen.",
+ "Placa principal": "Revisamos alimentación, pistas y conectores; medimos las salidas hacia cada unidad del centro de lavado.",
+ "Cableado y conectores": "Seguimos los cables entre placa, motor y sensores y buscamos conectores flojos, quemados o corroídos.",
+ "Resistencia de la secadora": "Medimos continuidad y comprobamos que el termostato y el fusible no estén abiertos.",
+ "Motor": "Medimos bobinado y consumo; revisamos que gire libre y que el condensador de arranque, si lo tiene, esté en buen estado.",
+}
 PARTE_DESC = {
  "Ventilador del evaporador": "Mueve el aire frío del congelador hacia el refrigerador. Si se traba o se escarcha, el congelador enfría pero el refrigerador queda tibio y se oye un zumbido.",
  "Resistencia de deshielo": "Derrite la escarcha del evaporador cada cierto tiempo. Si falla, se forma hielo en el fondo y el aire deja de circular.",
@@ -969,6 +1033,9 @@ if CFG.get("clima"): CLIMA = CFG["clima"]
 if __name__ == "__main__":
     if OUT.exists(): shutil.rmtree(OUT)
     OUT.mkdir(parents=True); (OUT / "assets").mkdir(); (OUT / "assets" / "site.css").write_text(CSS.replace("\n", " "), encoding="utf-8")
+    (OUT / "img" / "logos").mkdir(parents=True, exist_ok=True)
+    for m in BRANDS_ORDER:
+        shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}.png", OUT / "img" / "logos" / f"{m}.png")
     for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
     build_sitio(); tecnico()
     for r, ds, fs in os.walk(OUT):
