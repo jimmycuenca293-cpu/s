@@ -28,6 +28,8 @@ CSS = r"""
 .pa-grid .city-tags{margin:0}
 @media(max-width:860px){.pa-grid{grid-template-columns:1fr;padding:8px 16px 32px}.pa-grid>section.aq-sec{padding:18px!important}}
 /* portada */
+.pa-sd{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center}.pa-sd figure{margin:0}.pa-sd img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:20px;box-shadow:0 14px 36px rgba(11,31,77,.16)}@media(max-width:860px){.pa-sd{grid-template-columns:1fr}.pa-sd figure{order:-1}}
+.pa-ph{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0}.pa-ph img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:16px;box-shadow:0 8px 22px rgba(11,31,77,.12)}@media(max-width:700px){.pa-ph{grid-template-columns:1fr 1fr}}
 .pa-w{max-width:1180px;margin:0 auto;padding:0 20px}.pa-s{padding:56px 0}.pa-s.alt{background:#f4f7fc}.pa-h2{font:800 1.9rem/1.2 Inter,sans-serif;color:#0b1f4d;margin:0 0 8px;letter-spacing:-.02em}.pa-sub{color:#5b6478;margin:0 0 28px;max-width:70ch}
 .pa-hero{background:linear-gradient(135deg,#0b1f4d 0%,#1428a0 100%);color:#fff;padding:54px 0 64px}.pa-hg{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}.pa-hero h1{color:#fff!important;font:800 clamp(2rem,4.2vw,3.1rem)/1.1 Inter,sans-serif;margin:0 0 16px;letter-spacing:-.02em}.pa-hero p{color:#d6e0ff;font-size:1.1rem;line-height:1.55;margin:0 0 24px;max-width:56ch}
 .pa-kick{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 14px;font:700 .78rem Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
@@ -38,7 +40,7 @@ CSS = r"""
 .pa-trust{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0;padding:0;list-style:none}.pa-trust li{display:flex;gap:12px;align-items:center;font-weight:700;color:#0b1f4d;font-size:.95rem}.pa-trust i{width:44px;height:44px;border-radius:12px;background:#e8eeff;display:grid;place-items:center;font-style:normal;font-size:1.3rem;flex:none}
 .pa-eq{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.pa-c{display:flex;flex-direction:column;background:#fff;border:1px solid #e1e7f3;border-radius:20px;overflow:hidden;text-decoration:none;color:#14213d;transition:.2s}.pa-c:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(11,31,77,.14)}.pa-c .im{background:#fff;border-bottom:1px solid #eef1f8;aspect-ratio:4/3;display:grid;place-items:center}.pa-c img{width:72%;height:88%;object-fit:contain}.pa-c .bd{padding:18px 20px 20px}.pa-c h3{margin:0 0 6px;font:800 1.15rem Inter,sans-serif;color:#0b1f4d}.pa-c .ln{color:#5b6478;font-size:.88rem;line-height:1.4;margin:0 0 12px}.pa-c .go{margin-top:auto;font-weight:800;color:#1428a0;font-size:.92rem}
 .pa-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px;padding:0;list-style:none}.pa-tags li{background:#eef2ff;color:#1428a0;border-radius:999px;padding:4px 10px;font:600 .76rem Inter,sans-serif}
-.pa-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;counter-reset:s;list-style:none;margin:0;padding:0}.pa-steps li{counter-increment:s;background:#fff;border:1px solid #e1e7f3;border-radius:16px;padding:18px;font-size:.92rem;line-height:1.45;color:#2a3a5c}.pa-steps li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#1428a0;color:#fff;font-weight:800;margin-bottom:10px}
+.pa-steps.pa-v{grid-template-columns:1fr!important}.pa-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;counter-reset:s;list-style:none;margin:0;padding:0}.pa-steps li{counter-increment:s;background:#fff;border:1px solid #e1e7f3;border-radius:16px;padding:18px;font-size:.92rem;line-height:1.45;color:#2a3a5c}.pa-steps li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#1428a0;color:#fff;font-weight:800;margin-bottom:10px}
 .pa-two{display:grid;grid-template-columns:1fr 1fr;gap:20px}.pa-card{background:#fff;border:1px solid #e1e7f3;border-radius:18px;padding:22px}.pa-card h3{margin:0 0 12px;font:800 1.05rem Inter,sans-serif;color:#0b1f4d}.pa-card ul{margin:0;padding-left:18px;color:#2a3a5c;line-height:1.55}.pa-card li{margin:0 0 6px}.pa-card table{width:100%;border-collapse:collapse;font-size:.92rem}.pa-card td{padding:8px 0;border-bottom:1px solid #eef1f8;vertical-align:top}.pa-card td:first-child{color:#5b6478;width:42%}
 .pa-zon{display:flex;flex-wrap:wrap;gap:8px}.pa-zon a{background:#fff;border:1.5px solid #dbe3f4;border-radius:999px;padding:8px 14px;font:600 .88rem Inter,sans-serif;color:#0b1f4d;text-decoration:none}.pa-zon a:hover{border-color:#1428a0;color:#1428a0}
 .pa-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}.pa-tabs button{border:1.5px solid #cfd8ee;background:#fff;border-radius:999px;padding:9px 16px;font:700 .92rem Inter,sans-serif;color:#0b1f4d;cursor:pointer}.pa-tabs button.on{background:#1428a0;border-color:#1428a0;color:#fff}.pa-pn{display:none;grid-template-columns:repeat(2,1fr);gap:10px}.pa-pn.on{display:grid}.pa-pn a{background:#fff;border:1px solid #e1e7f3;border-radius:12px;padding:14px 16px;font-weight:600;color:#14213d;text-decoration:none}.pa-pn a:hover{border-color:#1428a0;color:#1428a0}
@@ -99,6 +101,10 @@ def portada(t):
     faq_html = (faq.group(1).replace("<details open>", "<details>") if faq else "") + "".join(f"<details><summary>{txt(q)}</summary><p>{txt(a)}</p></details>" for q, a in pares)
     guias = "".join(f'<a href="{h}">{txt(x)}</a>' for h, x in re.findall(r'<a href="([^"]+)">([^<]+)</a>', sec("Guías y respuestas") + sec("Artículos del blog")))
     mas = "".join(f'<a href="{h}">{txt(x)}</a>' for h, x in re.findall(r'<a href="([^"]+)">([^<]+)</a>', sec("Más sobre electrodomésticos")) if not h.startswith("http"))
+    fotos = "".join(f'<img src="img/{n}" alt="{esc(a)}" loading="lazy" decoding="async">' for n, a in NUEVAS if (R / "img" / n).exists())
+    def lado(i, cuerpo):
+        n, a = NUEVAS[i % len(NUEVAS)]
+        return f'<div class="pa-sd"><div>{cuerpo}</div><figure><img src="img/{n}" alt="{esc(a)}" loading="lazy" decoding="async"></figure></div>'
     ciudad = h1.replace("Servicio técnico Samsung en ", "")
     nuevo = (f'<section class="pa-hero"><div class="pa-w pa-hg"><div><span class="pa-kick">Servicio técnico independiente · {esc(ciudad)}</span><h1>{esc(h1)}</h1><p>{esc(sub)}</p>'
              f'<div class="pa-btns"><a class="pa-b wa" href="{wa}" target="_blank" rel="noopener">Escribir por WhatsApp</a><a class="pa-b sol" href="{sol}">Solicitar visita</a></div>'
@@ -106,14 +112,22 @@ def portada(t):
              f'<figure class="pa-fig"><img src="{himg.group(1)}" alt="{esc(himg.group(2))}" width="1024" height="572" fetchpriority="high" decoding="async"><span class="pa-badge">WhatsApp<small>+{tel[:3]} {tel[3:7]}-{tel[7:]}</small></span></figure></div></section>'
              f'<section class="pa-s" style="padding-top:0"><div class="pa-w"><div class="pa-quick">{"".join(quick)}</div></div></section>'
              f'<section class="pa-s"><div class="pa-w"><h2 class="pa-h2">Equipos Samsung que reparamos en {esc(ciudad)}</h2><p class="pa-sub">Elige tu electrodoméstico y mira las fallas que atendemos, qué revisa el técnico y cómo pedir la visita.</p><div class="pa-eq">{"".join(cards)}</div></div></section>'
-             f'<section class="pa-s alt"><div class="pa-w"><h2 class="pa-h2">Cómo funciona</h2><p class="pa-sub">De tu mensaje de WhatsApp a la reparación, en cinco pasos.</p><ol class="pa-steps">{pasos}</ol><div style="height:28px"></div>{incluye}</div></section>'
-             f'<section class="pa-s"><div class="pa-w"><h2 class="pa-h2">Zonas y barrios que atendemos</h2><p class="pa-sub">Toca tu barrio para ver el servicio en tu zona.</p><div class="pa-zon">{zon}</div></div></section>'
+             f'<section class="pa-s alt"><div class="pa-w"><h2 class="pa-h2">Cómo funciona</h2><p class="pa-sub">De tu mensaje de WhatsApp a la reparación, en cinco pasos.</p>{lado(0, '<ol class="pa-steps pa-v">' + pasos + '</ol>')}<div style="height:26px"></div>{lado(2, incluye)}</div></section>'
+             f'<section class="pa-s"><div class="pa-w"><h2 class="pa-h2">Zonas y barrios que atendemos</h2><p class="pa-sub">Toca tu barrio para ver el servicio en tu zona.</p>{lado(1, '<div class="pa-zon">' + zon + '</div>')}</div></section>'
              f'<section class="pa-s alt"><div class="pa-w"><h2 class="pa-h2">Fallas más consultadas</h2><p class="pa-sub">Elige el equipo y entra a la falla que describe tu problema.</p><div class="pa-tabs" id="pa-tabs">{tabs}</div>{paneles}</div></section>'
              f'<section class="pa-s"><div class="pa-w"><h2 class="pa-h2">{esc(ciudad)} y tus electrodomésticos</h2><div class="pa-two"><div class="pa-card"><h3>Datos que influyen</h3><table>{datos.group(1) if datos else ""}</table></div><div class="pa-card"><h3>Clima y electricidad</h3>{clima}</div></div><div class="pa-map" style="margin-top:20px">{mapa.group(0) if mapa else ""}</div></div></section>'
-             f'<section class="pa-s alt"><div class="pa-w"><h2 class="pa-h2">Preguntas frecuentes</h2><div class="pa-faq">{faq_html}</div></div></section>'
+             f'<section class="pa-s alt"><div class="pa-w"><h2 class="pa-h2">Preguntas frecuentes</h2>{lado(3, '<div class="pa-faq">' + faq_html + '</div>')}</div></section>'
              f'<section class="pa-s"><div class="pa-w"><div class="pa-cta"><div><h2>¿Tu Samsung falla? Escríbenos</h2><p>Cuéntanos el equipo, el modelo y la falla: coordinamos la visita en {esc(ciudad)}.</p></div><div class="pa-btns" style="margin:0"><a class="pa-b wa" href="{wa}" target="_blank" rel="noopener">WhatsApp</a><a class="pa-b line" href="tel:+{tel}">Llamar</a></div></div><div style="height:26px"></div><h3 style="margin:0 0 10px;font:800 1rem Inter,sans-serif;color:#0b1f4d">Sigue explorando</h3><div class="pa-links">{guias}{mas}</div></div></section>'
              '<script>(function(){var t=document.getElementById("pa-tabs");if(!t)return;t.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;[].forEach.call(t.children,function(x){x.classList.toggle("on",x===b)});[].forEach.call(document.querySelectorAll(".pa-pn"),function(p){p.classList.toggle("on",p.dataset.p===b.dataset.t)})})})();</script>')
     return t[:i] + nuevo + t[j:]
+NUEVAS = [("tecnico-explicando-diagnostico-con-tablet.webp", "Técnico explicando el diagnóstico a un cliente con una tablet en su sala"),
+           ("asesora-atendiendo-cliente-en-mostrador.webp", "Asesora atendiendo a un cliente en el mostrador de servicio"),
+           ("tecnico-saluda-al-cliente-en-su-casa.webp", "Técnico saludando a un cliente en la puerta de su casa antes de la visita"),
+           ("equipo-de-tecnicos-en-taller.webp", "Equipo de técnicos reunido en el taller de reparación")]
+_dir_nuevas = pathlib.Path(__file__).resolve().parent / "st_img" / "panama"
+for _n, _a in NUEVAS:
+    if (_dir_nuevas / _n).exists():
+        (R / "img").mkdir(exist_ok=True); (R / "img" / _n).write_bytes((_dir_nuevas / _n).read_bytes())
 FAMILIAS = [("puerta", r"puerta|saluda|llegando|visita-a-domicilio-\\d"), ("recepcion", r"recepcion|asesora|atencion|orden-de-servicio"), ("rep-nevera", r"reparando-(nevera|refrigeradora)|revisando-(nevera|compresor)|revision-en-casa"), ("rep-lavadora", r"lavadora.*(tecnico|reparando|diagnosticando)|tecnico.*lavadora")]
 cont = 0
 for f in R.rglob("*.html"):
@@ -129,7 +143,14 @@ for f in R.rglob("*.html"):
             if not src: return fig
             nombre = src.group(1).rsplit("/", 1)[-1]; base = re.sub(r"-(s|m|400)\.webp$", ".webp", nombre)
             fam = next((k for k, rx in FAMILIAS if re.search(rx, base)), base)
-            if fam in vistas or n_img[0] >= 4: return ""
+            if fam in vistas or n_img[0] >= 4:
+                if n_img[0] < 4:
+                    for nn, aa in sorted(NUEVAS, key=lambda x: hashlib.md5((str(f) + x[0]).encode()).hexdigest()):
+                        if nn not in vistas and (R / "img" / nn).exists():
+                            vistas.add(nn); n_img[0] += 1
+                            fig = re.sub(r'(<img[^>]*src=")[^"]+(")', lambda q: q.group(1) + ("../" * (len(f.relative_to(R).parts) - 1)) + "img/" + nn + q.group(2), fig, count=1)
+                            return re.sub(r'(<img[^>]*alt=")[^"]*(")', lambda q: q.group(1) + esc(aa) + q.group(2), fig, count=1)
+                return ""
             vistas.add(fam); n_img[0] += 1; return fig
         t = re.sub(r"<figure class=\"sec-img[^>]*>.*?</figure>", _fig, t, flags=re.S)
     if f != R / "index.html" and "pa-grid" not in t:
