@@ -87,9 +87,12 @@ img{max-width:100%;height:auto;display:block}a{color:var(--c)}h1,h2,h3{line-heig
 header.h{background:var(--w);position:sticky;top:0;z-index:20;box-shadow:0 1px 0 #e3eaf4}.h .w{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px}.logo{font-weight:800;color:var(--c);text-decoration:none;font-size:1.05rem;line-height:1.1}.logo small{display:block;font-weight:600;color:var(--m);font-size:.72rem}
 .btn{display:inline-block;background:var(--a);color:var(--ab);text-decoration:none;font-weight:700;padding:12px 20px;border-radius:999px;border:0;cursor:pointer}.btn.o{background:transparent;color:var(--c);border:2px solid var(--c)}.hero .btn.o{color:#fff;border-color:#fff}.btn.s{padding:8px 14px;font-size:.9rem}
 .chips{background:var(--w);border-bottom:1px solid #e3eaf4;overflow-x:auto;white-space:nowrap}.chips .w{display:flex;gap:8px;padding:8px 16px}.chips a{padding:7px 14px;border-radius:999px;background:var(--soft);text-decoration:none;font-weight:600;font-size:.9rem;color:var(--c)}.chips a.on{background:var(--c);color:#fff}
-.hero{background:linear-gradient(135deg,var(--c),var(--hd));color:#fff;padding:36px 0}.hero .w{display:grid;gap:24px;align-items:center}.hero p{opacity:.94;font-size:1.08rem}.hero .bd{display:inline-block;background:rgba(255,255,255,.14);padding:5px 12px;border-radius:999px;font-size:.85rem;font-weight:600;margin-bottom:12px}.hero img{border-radius:var(--r);box-shadow:0 14px 40px rgba(0,0,0,.35);width:100%;aspect-ratio:4/3;object-fit:cover}
+.hero{position:relative;background:var(--hd) var(--bgi,none) center/cover;color:#fff;padding:36px 0}.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--c),var(--hd));opacity:.9}.hero .w{position:relative;display:grid;gap:24px;align-items:center}.hero p{opacity:.94;font-size:1.08rem}.hero .bd{display:inline-block;background:rgba(255,255,255,.14);padding:5px 12px;border-radius:999px;font-size:.85rem;font-weight:600;margin-bottom:12px}.hero img{border-radius:var(--r);box-shadow:0 14px 40px rgba(0,0,0,.35);width:100%;aspect-ratio:4/3;object-fit:cover}
 @media(min-width:860px){.hero .w{grid-template-columns:1.1fr .9fr}}
 section.s{padding:30px 0}section.s.alt{background:var(--w)}.lead{color:var(--m);max-width:760px}
+.band{position:relative;padding:56px 0;color:#fff;background:var(--hd) var(--bgi,none) center/cover;text-align:center}.band:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--c),var(--hd));opacity:.82}.band .w{position:relative}.band h2{color:#fff}.band p{max-width:640px;margin:0 auto 18px}
+.ph{background:linear-gradient(rgba(255,255,255,.93),rgba(255,255,255,.93)),var(--bgi) center/cover!important}
+.gal{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.gal img{aspect-ratio:4/3;object-fit:cover;width:100%;border-radius:16px;box-shadow:var(--sh)}
 .rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
 .g{display:grid;gap:16px}@media(min-width:700px){.g.c2{grid-template-columns:1fr 1fr}.g.c3{grid-template-columns:repeat(3,1fr)}}@media(min-width:1000px){.g.c4{grid-template-columns:repeat(4,1fr)}}
 .card{background:var(--w);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}.card.l{text-decoration:none;color:inherit;display:block;transition:.15s}.card.l:hover{transform:translateY(-3px)}.card .t{font-weight:800;color:var(--c)}.card small{color:var(--m)}
@@ -120,19 +123,25 @@ def chips(actual):
     else:
         it = [("Inicio", "/"), ("Todas las marcas", "/marcas/"), ("Zonas", "/zonas/"), ("Blog", "/blog/"), ("Quiénes somos", "/nosotros/")]
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
-def pie(marca=None):
+def pie(marca=None, lista_marcas=False):
     zon = '<div><h3>Zonas</h3><ul>' + "".join(f'<li><a href="/zonas/{z}/">{v[0]}</a></li>' for z, v in ZONAS.items()) + '</ul></div>'
-    inf = ('<div><h3>Información</h3><ul><li><a href="/marcas/">Todas las marcas</a></li><li><a href="/nosotros/">Quiénes somos</a></li><li><a href="/blog/">Blog y guías</a></li><li><a href="/privacidad/">Política de privacidad</a></li><li><a href="/terminos/">Términos y condiciones</a></li><li><a href="/mapa-del-sitio/">Mapa del sitio</a></li></ul>'
-           '<p><small>Servicio técnico independiente. Los nombres de marcas pertenecen a sus propietarios y se usan solo para indicar los equipos que reparamos.</small></p></div>')
+    legal = '<li><a href="/nosotros/">Quiénes somos</a></li><li><a href="/blog/">Blog y guías</a></li><li><a href="/privacidad/">Política de privacidad</a></li><li><a href="/terminos/">Términos y condiciones</a></li>'
+    aviso = '<p><small>Servicio técnico independiente. Los nombres de marcas pertenecen a sus propietarios y se usan solo para indicar los equipos que reparamos.</small></p>'
     if marca:
         d = M[marca]; N = nom(marca)
-        col = (f'<div><h3>Centro de Servicio Técnico {N} Panamá</h3><ul>' + "".join(f'<li><a href="{pathb(marca, "reparacion-" + EQ[e][0])}">{EQ[e][2].capitalize()} {N}</a></li>' for e in d["equipos"]) +
+        col = (f'<div><h3>{N} Panamá</h3><ul>' + "".join(f'<li><a href="{pathb(marca, "reparacion-" + EQ[e][0])}">{EQ[e][2].capitalize()} {N}</a></li>' for e in d["equipos"]) +
                (f'<li><a href="{pathb(marca, "codigos-de-error")}">Códigos de error</a></li>' if d["codigos"] else "") +
                f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "cobertura")}">Cobertura por zona</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos y garantía</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li></ul></div>')
         izq = f'<div><h3>{NOMBRE}</h3><p>Servicio técnico {N} a domicilio en Panamá.</p><p>{TEL}<br>Atención por WhatsApp.</p></div>'
-    else:
+        inf = f'<div><h3>Información</h3><ul>{legal}</ul>{aviso}</div>'
+    elif lista_marcas:
         col = '<div><h3>Marcas</h3><ul>' + "".join(f'<li><a href="{"/" if m == "samsung" else "/" + m + "/"}">{M[m]["nombre"]} Panamá</a></li>' for m in BRANDS_ORDER) + '</ul></div>'
-        izq = f'<div><h3>{NOMBRE}</h3><p>Servicio técnico de electrodomésticos a domicilio en Panamá. Cada marca tiene su propia sección.</p><p>{TEL}<br>Atención por WhatsApp.</p></div>'
+        izq = f'<div><h3>{NOMBRE}</h3><p>Servicio técnico de electrodomésticos a domicilio en Panamá.</p><p>{TEL}<br>Atención por WhatsApp.</p></div>'
+        inf = f'<div><h3>Información</h3><ul>{legal}</ul>{aviso}</div>'
+    else:
+        col = '<div><h3>Marcas</h3><ul><li><a href="/marcas/">Ver todas las marcas</a></li></ul></div>'
+        izq = f'<div><h3>{NOMBRE}</h3><p>Servicio técnico de electrodomésticos a domicilio en Panamá.</p><p>{TEL}<br>Atención por WhatsApp.</p></div>'
+        inf = f'<div><h3>Información</h3><ul>{legal}</ul>{aviso}</div>'
     return ('<footer><div class="w"><div class="g c4">' + izq + col + zon + inf + '</div></div></footer>'
             f'<div class="fb"><a href="tel:+50769337976">Llamar</a><a class="wa" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div>')
 LB = {"@type": "ProfessionalService", "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+50769337976", "priceRange": "$$",
@@ -140,7 +149,44 @@ LB = {"@type": "ProfessionalService", "@id": DOM + "/#negocio", "name": NOMBRE, 
       "address": {"@type": "PostalAddress", "addressLocality": "Panamá", "addressRegion": "Provincia de Panamá", "addressCountry": "PA"},
       "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}]}
 
-def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld=None, bd=None, prio="0.7", extra_js="", lead=None, noindex=False):
+
+def decorar(marca, cuerpo, hero, path):
+    """Añade fondos y fotos de la marca: héroe con foto de fondo, banda de contacto, fondos suaves y galería. Sin repetir imagen dentro de la página."""
+    p = POOLS.get(marca) or []
+    vistas = set(re.findall(r'/img/[^"\')\s]+', cuerpo)) | ({hero[0]} if hero else set())
+    def libre(clave, n=1, gente=True):
+        h = lambda f: hashlib.md5((clave + f.name).encode()).hexdigest()
+        cand = [f for f in p if not any(copia_ruta(marca, f) == v for v in vistas)]
+        rx = re.compile(KW["_gente"])
+        cand = sorted(cand, key=lambda f: ((not rx.search(f.name)) if gente else bool(rx.search(f.name)), USO[f], h(f)))[:n]
+        out = []
+        for f in cand:
+            USO[f] += 1; r = copia(marca, f); vistas.add(r); out.append((r, alt_de(marca, f)))
+        return out
+    bg = libre(path + "hero")
+    bgi = f"url({bg[0][0]})" if bg else "none"
+    # banda de contacto tras la primera sección
+    b = libre(path + "banda")
+    banda = ""
+    if b:
+        banda = (f'<section class="band" style="--bgi:url({b[0][0]})"><div class="w"><h2>Pide tu visita {nom(marca)} hoy</h2><p>Cuéntanos el modelo y la falla por WhatsApp y coordinamos el día y la franja en tu zona.</p>'
+                 f'<a class="btn" href="{wa("Hola, necesito servicio técnico " + nom(marca) + " en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a></div></section>')
+    i = cuerpo.find("</section>")
+    if banda and i >= 0 and cuerpo.count("</section>") >= 3: cuerpo = cuerpo[:i + 10] + banda + cuerpo[i + 10:]
+    # fondos suaves en secciones alternas (hasta 2)
+    for k in range(2):
+        f2 = libre(path + f"ph{k}")
+        if not f2: break
+        cuerpo = cuerpo.replace('<section class="s alt">', f'<section class="s alt ph" style="--bgi:url({f2[0][0]})">', 1)
+    # galería final
+    g = libre(path + "gal", 4, gente=False)
+    if len(g) >= 2:
+        cuerpo += sec(f"Equipos y servicio {nom(marca)} en Panamá", '<div class="gal">' + "".join(f'<img loading="lazy" src="{u}" alt="{a}" width="1024" height="768">' for u, a in g) + '</div>')
+    return cuerpo, bgi
+def copia_ruta(m, f):
+    return f"/img/{m}/" + re.sub(r"[^a-z0-9.-]", "-", f.name.lower())
+
+def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld=None, bd=None, prio="0.7", extra_js="", lead=None, noindex=False, marcas_ok=False):
     """path: '/lg/reparacion-lavadoras/' ; cuerpo: html de secciones"""
     if len(title) > 62: title = title[:62].rsplit(" ", 1)[0].rstrip(" ,|-")
     if len(desc) > 158: desc = desc[:157].rsplit(" ", 1)[0].rstrip(" ,.;") + "…"
@@ -153,9 +199,11 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
     bc = ""
     if crumbs and len(crumbs) > 1:
         bc = '<div class="w bc">' + " › ".join((f'<a href="{u}">{esc(n)}</a>' if i < len(crumbs) - 1 else esc(n)) for i, (n, u) in enumerate(crumbs)) + "</div>"
+    bgi = "none"
+    if marca and not noindex: cuerpo, bgi = decorar(marca, cuerpo, hero, path)
     himg = ""
     if hero: himg = f'<img src="{hero[0]}" alt="{hero[1]}" width="1024" height="768" fetchpriority="high" decoding="async">'
-    heroh = (f'<section class="hero" style="--bc:{color}"><div class="w"><div><span class="bd">{esc(bd or NOMBRE)}</span><h1>{esc(h1)}</h1><p>{lead or esc(desc)}</p>'
+    heroh = (f'<section class="hero" style="--bgi:{bgi}"><div class="w"><div><span class="bd">{esc(bd or NOMBRE)}</span><h1>{esc(h1)}</h1><p>{lead or esc(desc)}</p>'
              f'<p><a class="btn" href="{wa(f"Hola, necesito servicio técnico {M[marca]['nombre']} en Panamá" if marca else "Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a> <a class="btn o" href="tel:+50769337976">Llamar {TEL}</a></p></div>{himg}</div></section>')
     tags = "".join(f'<meta name="google-site-verification" content="{g}">' for g in GSC) if path == "/" else ""
     h = (f'<!doctype html><html lang="es-PA"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title>'
@@ -165,8 +213,8 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
          f'<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%230b2a6f%27/%3E%3Cpath d=%27M18 44l10-24 8 16 10-20%27 stroke=%27%23fff%27 stroke-width=%278%27 fill=%27none%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">'
          f'<style>{CSS}</style><style>body{{--c:{PAL.get(marca, DEF)[0]};--a:{PAL.get(marca, DEF)[1]};--ab:{PAL.get(marca, DEF)[2]};--bg:{PAL.get(marca, DEF)[3]};--soft:{PAL.get(marca, DEF)[4]};--hd:{PAL.get(marca, DEF)[5]}}}</style><script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>'
          f'<div class="top"><div class="w"><span>Atención a domicilio en Panamá · {TEL}</span><a href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div></div>'
-         f'<header class="h"><div class="w"><a class="logo" href="/">Centro de Servicio Técnico<small>Panamá</small></a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
-         + chips(marca) + heroh + bc + cuerpo + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + pie(marca) + extra_js + '</body></html>')
+         f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
+         + chips(marca) + heroh + bc + cuerpo + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + pie(marca, marcas_ok) + extra_js + '</body></html>')
     f = OUT / path.lstrip("/") / "index.html" if path != "/" else OUT / "index.html"
     f.parent.mkdir(parents=True, exist_ok=True); f.write_text(h, encoding="utf-8")
     if not noindex: paginas.append((path, prio, marca))
@@ -424,7 +472,7 @@ def build_sitio():
     pagina("/zonas/", "Zonas de cobertura | Servicio técnico en Panamá", "Zonas de Panamá donde damos servicio técnico a domicilio: Ciudad de Panamá, San Miguelito, Arraiján, La Chorrera, Colón y más.", "Zonas de cobertura en Panamá",
            sec("Dónde atendemos", '<div class="g c3">' + "".join(f'<a class="card l" href="/zonas/{z}/"><span class="t">{v[0]}</span><br><small>{esc(v[1][:90])}…</small></a>' for z, v in ZONAS.items()) + "</div>"), None, None, [("Inicio", "/"), ("Zonas", "/zonas/")], prio="0.6")
     pagina("/marcas/", "Todas las marcas | Centro de Servicio Técnico Panamá", "Marcas de electrodomésticos que reparamos en Panamá. Cada marca tiene su propia sección con fallas, códigos y tecnologías específicas.", "Marcas que atendemos en Panamá",
-           sec("Elige tu marca", '<div class="g c3">' + "".join(f'<a class="card l" href="{base(m)}" style="border-top:5px solid {PAL[m][0] if PAL[m][0] != "#2d2d2d" else PAL[m][1]}"><span class="t">Centro de Servicio Técnico {nom(m)} Panamá</span><br><small>{", ".join(EQ[e][2] for e in M[m]["equipos"])}</small></a>' for m in BRANDS_ORDER) + "</div>"), None, None, [("Inicio", "/"), ("Marcas", "/marcas/")], bd="Marcas", lead="Cada marca tiene su propia sección. Elige la tuya.", prio="0.8")
+           sec("Elige tu marca", '<div class="g c3">' + "".join(f'<a class="card l" href="{base(m)}" style="border-top:5px solid {PAL[m][0] if PAL[m][0] != "#2d2d2d" else PAL[m][1]}"><span class="t">Centro de Servicio Técnico {nom(m)} Panamá</span><br><small>{", ".join(EQ[e][2] for e in M[m]["equipos"])}</small></a>' for m in BRANDS_ORDER) + "</div>"), None, None, [("Inicio", "/"), ("Marcas", "/marcas/")], bd="Marcas", lead="Cada marca tiene su propia sección. Elige la tuya.", prio="0.8", marcas_ok=True)
     pagina("/nosotros/", f"Quiénes somos | {NOMBRE}", "Quiénes somos: un servicio técnico independiente de electrodomésticos en Panamá, con secciones separadas por marca.", "Quiénes somos",
            sec("Un servicio técnico independiente en Panamá", "<p>Somos un servicio técnico de electrodomésticos que atiende a domicilio en Panamá. Reparamos refrigeradoras, lavadoras, secadoras, aires acondicionados, cocinas y lavavajillas de Samsung, LG, Whirlpool, Mabe, Frigidaire, Electrolux, General Electric, Haceb y KitchenAid.</p><p>Somos un servicio técnico independiente: no somos el fabricante de ninguna de estas marcas, y sus nombres se usan solo para indicar qué equipos reparamos. Cuando un equipo está en garantía de fábrica, te recomendamos acudir primero al vendedor.</p>")
            + sec("Cómo trabajamos", PASOS, alt=True) + sec("Contacto", f"<p>WhatsApp y teléfono: <a href=\"tel:+50769337976\">{TEL}</a>.</p>"), None, None, [("Inicio", "/"), ("Quiénes somos", "/nosotros/")], prio="0.5")
@@ -447,7 +495,7 @@ def build_sitio():
     pagina("/blog/", "Blog y guías de electrodomésticos en Panamá", "Guías prácticas para cuidar tus electrodomésticos en el clima de Panamá: humedad, voltaje, garantías, ahorro de energía e instalación.", "Blog y guías de electrodomésticos en Panamá",
            sec("Guías", '<div class="g c3">' + "".join(f'<a class="card l" href="/blog/{s}/"><span class="t">{esc(t)}</span><br><small>{esc(d)}</small></a>' for s, t, d, _ in arts) + "</div>"), None, None, [("Inicio", "/"), ("Blog", "/blog/")], prio="0.6")
     todas = "".join(f'<h2><a href="{base(m)}">Centro de Servicio Técnico {nom(m)} Panamá</a></h2><ul>' + "".join(f'<li><a href="{p}">{esc(p)}</a></li>' for p, _, mm in paginas if mm == m) + "</ul>" for m in BRANDS_ORDER)
-    pagina("/mapa-del-sitio/", "Mapa del sitio | Centro de Servicio Técnico Panamá", "Todas las secciones del sitio: nueve marcas, zonas de cobertura, blog e información legal.", "Mapa del sitio", sec("Todas las páginas", todas), None, None, [("Inicio", "/"), ("Mapa del sitio", "/mapa-del-sitio/")], prio="0.2")
+    pagina("/mapa-del-sitio/", "Mapa del sitio | Centro de Servicio Técnico Panamá", "Todas las secciones del sitio: nueve marcas, zonas de cobertura, blog e información legal.", "Mapa del sitio", sec("Todas las páginas", todas), None, None, [("Inicio", "/"), ("Mapa del sitio", "/mapa-del-sitio/")], prio="0.2", marcas_ok=True)
     (OUT / "404.html").write_text(f'<!doctype html><html lang="es"><meta charset="utf-8"><title>Página no encontrada</title><meta name="robots" content="noindex"><body style="font-family:system-ui;padding:40px"><h1>Página no encontrada</h1><p><a href="/">Ir al inicio</a></p></body></html>', encoding="utf-8")
 
 # ---------------------------------------------------------------- sitemaps, robots, llms
