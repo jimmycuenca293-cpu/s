@@ -6,3 +6,4 @@ sitios-ads/
 # Claves y pedidos: nunca al repositorio
 src/api/config.php
 tienda/.modelos/
+st_img/sr_cache/
