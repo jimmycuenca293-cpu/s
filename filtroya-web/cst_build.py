@@ -156,7 +156,7 @@ def chips(actual):
         d = M[actual]; b = base(actual)
         it = [("Inicio", b), ("Reparar mi equipo", b + "#equipos"), ("Fallas", pathb(actual, "fallas"))]
         if d["codigos"]: it.append(("Códigos de error", pathb(actual, "codigos-de-error")))
-        it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), (CFG.get("lbl_guias", "Guías"), pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))] + ([("Fotos", pathb(actual, "galeria"))] if CFG.get("sin_recorte") else [])
+        it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), (CFG.get("lbl_guias", "Guías"), pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))]
     else:
         it = [("Todas las marcas", "/marcas/")]
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
@@ -168,7 +168,7 @@ def pie(marca=None, lista_marcas=False):
         col2 = (f'<div><h3>Servicio {N}</h3><ul>' + (f'<li><a href="{pathb(marca, "codigos-de-error")}">Códigos de error</a></li>' if d["codigos"] else "") +
                 f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "repuestos")}">Repuestos</a></li><li><a href="{pathb(marca, "garantia")}">Garantía</a></li><li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "guias")}">Guías</a></li><li><a href="{pathb(marca, "glosario")}">Glosario</a></li></ul></div>')
         col3 = (f'<div><h3>Zonas</h3><ul><li><a href="{pathb(marca, "centro-de-servicio-cerca-de-mi")}">Cerca de mí</a></li><li><a href="{pathb(marca, "reparacion-a-domicilio")}">A domicilio</a></li>' + "".join(f'<li><a href="{pathb(marca, "servicio-tecnico-" + z)}">{v[0]}</a></li>' for z, v in list(ZONAS.items())[:5]) + '</ul></div>')
-        col4 = (f'<div><h3>{N} Panamá</h3><ul><li><a href="{pathb(marca, "telefono-servicio-tecnico")}">Teléfono y WhatsApp</a></li><li><a href="{pathb(marca, "quienes-somos")}">Quiénes somos</a></li>{(chr(60) + "li><a href=" + chr(34) + pathb(marca, "galeria") + chr(34) + ">Galería de fotos</a></li>") if CFG.get("sin_recorte") else ""}<li><a href="{pathb(marca, "politica-de-privacidad")}">Política de privacidad</a></li><li><a href="{pathb(marca, "terminos-y-condiciones")}">Términos y condiciones</a></li></ul>{aviso}<p>{TEL}</p></div>')
+        col4 = (f'<div><h3>{N} Panamá</h3><ul><li><a href="{pathb(marca, "telefono-servicio-tecnico")}">Teléfono y WhatsApp</a></li><li><a href="{pathb(marca, "quienes-somos")}">Quiénes somos</a></li><li><a href="{pathb(marca, "politica-de-privacidad")}">Política de privacidad</a></li><li><a href="{pathb(marca, "terminos-y-condiciones")}">Términos y condiciones</a></li></ul>{aviso}<p>{TEL}</p></div>')
         cols = col1 + col2 + col3 + col4
     elif lista_marcas:
         cols = ('<div><h3>Marcas</h3><ul>' + "".join(f'<li><a href="{"/" if m == "samsung" else "/" + m + "/"}">{M[m]["nombre"]} Panamá</a></li>' for m in BRANDS_ORDER) + f'</ul></div><div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>')
@@ -461,7 +461,7 @@ def bloque_mant_inst(m, e):
     if ins:
         antes = _rot(ins["antes"], bi, 3)
         inst = sec(f"Instalación de {pl} {N} en {CFG['ciudad']}", f"<p>{esc(ins['intro'])}</p><p>{esc(ins['gye'])}</p><h3>Antes de instalar tu {esc(sing)} {esc(N)}</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in antes)
-                   + f"<li>Ten a mano el modelo: {esc(d['etiqueta'].get(e, 'está en una etiqueta pegada al equipo'))}.</li></ul><h3>Paso a paso</h3><ol>" + "".join(f"<li>{esc(x)}</li>" for x in ins["pasos"]) + "</ol>", alt=True, id="instalacion")
+                   + f"<li>Ten a mano el modelo: {esc(d['etiqueta'].get(e, 'está en una etiqueta pegada al equipo').rstrip('.'))}.</li></ul><h3>Paso a paso</h3><ol>" + "".join(f"<li>{esc(x)}</li>" for x in ins["pasos"]) + "</ol>", alt=True, id="instalacion")
     return mant + inst
 
 def fotos_eq(m, e, usadas):
@@ -476,7 +476,7 @@ def fotos_eq(m, e, usadas):
         USO[f] += 1; r = copia(m, f); usadas.add(r)
         w, h = _dim(f)
         figs += f'<figure><img loading="lazy" src="{r}" alt="{alt_de(m, f)}" width="{w}" height="{h}"></figure>'
-    return sec(f"Fotos de {EQ[e][2]} {nom(m)}", f'<div class="fgrid">{figs}</div>', alt=True)
+    return f'<section class="s alt"><div class="w"><div class="fgrid">{figs}</div></div></section>'
 _DIM = {}
 def _dim(f):
     if f not in _DIM:
@@ -523,7 +523,6 @@ def build_marca(m):
               + sec(f"Preguntas frecuentes sobre {N}", faq_html(FAQ_H))
               + sec(f"Zonas de {CFG['ciudad']} donde atendemos equipos {N}", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {esc(CFG.get("zart", {}).get(z, v[0]))}</span></a>' for z, v in ZONAS.items()) + '</div>', alt=True)
               + (sec(f"Quiénes somos", quienes_breve(m), alt=True) if CFG.get("sin_recorte") else "")
-              + (sec(f"Fotos de equipos {N}", f'<p><a href="{pathb(m, "galeria")}">Ver la galería completa de fotos {N}</a></p>') if CFG.get("sin_recorte") else "")
               + sec(f"Más información sobre {N}", otras(m, ""))
               + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
     path = "/" if m == "samsung" else base(m)
@@ -563,7 +562,7 @@ def build_marca(m):
                   + rc
                   + sec(f"Antes de la visita: tu {sing} {N}", visita, id="visita", alt=not bool(rc))
                   + bloque_mant_inst(m, e)
-                  + (fotos_eq(m, e, set(re.findall(r"/img/[^\"')\\s]+", (h[0] if h else "")))) if CFG.get("sin_recorte") else "")
+                  + (fotos_eq(m, e, {x[0] for x in (h, h2) if x}) if CFG.get("sin_recorte") else "")
                   + sec(f"Preguntas sobre {pl} {N}", faq_html(faq_e), alt=not bool(sec_cod), id="preguntas")
                   + f"<!--REL:{e}-->")
         pagina(pathb(m, "reparacion-" + s), f"Reparación de {pl} {N} en Panamá | Centro de Servicio", f"Reparación de {pl} {N} en Panamá a domicilio: fallas frecuentes, causas probables y qué revisamos. Diagnóstico en casa y atención por WhatsApp.",
@@ -1199,6 +1198,45 @@ REL_GUIAS = {"neveras": ["voltaje-y-tormentas", "tecnologia-inverter", "humedad"
              "secadoras": ["voltaje-y-tormentas", "reparar-o-cambiar", "humedad"], "aires": ["aire-acondicionado", "tecnologia-inverter", "voltaje-y-tormentas", "humedad"],
              "cocinas": ["voltaje-y-tormentas", "reparar-o-cambiar", "humedad"], "lavavajillas": ["reparar-o-cambiar", "voltaje-y-tormentas", "humedad"],
              "centro-lavado": ["reparar-o-cambiar", "voltaje-y-tormentas", "humedad"], "microondas": ["reparar-o-cambiar", "voltaje-y-tormentas"], "batidoras": ["reparar-o-cambiar", "humedad"]}
+def repartir_fotos():
+    """Segunda pasada (Guayaquil): cada foto de la marca que aún no aparece en ninguna página se coloca, completa, en una franja de la página que le corresponde."""
+    if not CFG.get("sin_recorte"): return
+    for m in BRANDS_ORDER:
+        carp = OUT / ("samsung" if m == "samsung" else m)
+        paginas_m = [OUT / "index.html"] if m == "samsung" else [carp / "index.html"]
+        paginas_m += sorted(carp.glob("*/index.html"))
+        usadas = set()
+        for p in paginas_m: usadas |= set(re.findall(r"/img/%s/[^\"')\s]+" % m, p.read_text(encoding="utf-8")))
+        sobran = [f for f in POOLS[m] if copia(m, f) not in usadas]
+        if not sobran: continue
+        rg = re.compile(KW["_gente"]); por_eq = collections.defaultdict(list); resto = []
+        for f in sobran:
+            for e in M[m]["equipos"]:
+                if re.search(KW[e], f.name) and not rg.search(f.name): por_eq[e].append(f); break
+            else: resto.append(f)
+        def franja(fs):
+            figs = ""
+            for f in fs:
+                w, h = _dim(f); figs += f'<figure><img loading="lazy" src="{copia(m, f)}" alt="{alt_de(m, f)}" width="{w}" height="{h}"></figure>'
+            return f'<section class="s alt"><div class="w"><div class="fgrid">{figs}</div></div></section>'
+        def poner(p, fs):
+            t = p.read_text(encoding="utf-8")
+            if "<!--cierre-->" not in t: return False
+            p.write_text(t.replace("<!--cierre-->", franja(fs) + "<!--cierre-->", 1), encoding="utf-8"); return True
+        for e, fs in por_eq.items():
+            destinos = [carp / ("reparacion-" + EQ[e][0]) / "index.html"] + [x for x in sorted(carp.glob("falla-*/index.html")) if x.parent.name.startswith("falla-" + slug(EQ[e][1]))]
+            i = 0
+            for dpath in destinos:
+                if i >= len(fs): break
+                if poner(dpath, fs[i:i + 2]): i += 2
+            resto += fs[i:]
+        orden = [paginas_m[0]] + [carp / s / "index.html" for s in ("quienes-somos", "telefono-servicio-tecnico", "reparacion-a-domicilio", "garantia", "cuanto-cuesta-la-reparacion", "series-y-modelos", "repuestos", "centro-de-servicio-cerca-de-mi", "preguntas-frecuentes", "diagnostico-por-sintoma", "glosario")]
+        orden += sorted(carp.glob("guia-*/index.html")) + sorted(carp.glob("servicio-tecnico-*/index.html")) + sorted(carp.glob("falla-*/index.html"))
+        i = 0
+        for dpath in orden:
+            if i >= len(resto): break
+            if dpath.exists() and poner(dpath, resto[i:i + 2]): i += 2
+
 def relacionadas():
     """Segunda pasada: enlaza cada página de equipo con las guías de su marca que existen y le sirven."""
     for m in BRANDS_ORDER:
@@ -1233,8 +1271,8 @@ if __name__ == "__main__":
     (OUT / "img" / "logos").mkdir(parents=True, exist_ok=True)
     for m in BRANDS_ORDER:
         for suf in ("", "-blanco"): shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}{suf}.png", OUT / "img" / "logos" / f"{m}{suf}.png")
-    for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m); build_galeria(m)
-    build_sitio(); tecnico(); relacionadas()
+    for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
+    build_sitio(); tecnico(); relacionadas(); repartir_fotos()
     for ff in OUT.rglob("index.html"):
         tt = ff.read_text(encoding="utf-8")
         if "<!--REL" in tt: ff.write_text(re.sub(r"<!--RELF?:[a-z-]+-->", "", tt), encoding="utf-8")
