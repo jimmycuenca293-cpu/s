@@ -102,6 +102,7 @@ section.s{padding:30px 0}section.s.alt{background:var(--w)}.lead{color:var(--m);
 .anc{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.anc a{padding:8px 14px;background:var(--w);border-radius:999px;box-shadow:var(--sh);text-decoration:none;font-weight:600;font-size:.9rem}
 .cta-box{display:grid;gap:12px}@media(min-width:700px){.cta-box{grid-template-columns:1fr 1fr}}.cta-box .card{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .sec-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.sec-h small{color:var(--m)}
+.upd{font-size:.85rem;color:var(--m);margin:6px 0 28px}
 .rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
 .g{display:grid;gap:16px}@media(min-width:700px){.g.c2{grid-template-columns:1fr 1fr}.g.c3{grid-template-columns:repeat(3,1fr)}}@media(min-width:1000px){.g.c4{grid-template-columns:repeat(4,1fr)}}
 .card{background:var(--w);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}.card.l{text-decoration:none;color:inherit;display:block;transition:.15s}.card.l:hover{transform:translateY(-3px)}.card .t{font-weight:800;color:var(--c)}.card small{color:var(--m)}
@@ -134,13 +135,13 @@ def chips(actual):
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
 def pie(marca=None, lista_marcas=False):
     zon = '<div><h3>Zonas</h3><ul>' + "".join(f'<li><a href="/zonas/{z}/">{v[0]}</a></li>' for z, v in ZONAS.items()) + '</ul></div>'
-    legal = '<li><a href="/nosotros/">Quiénes somos</a></li><li><a href="/blog/">Blog y guías</a></li><li><a href="/privacidad/">Política de privacidad</a></li><li><a href="/terminos/">Términos y condiciones</a></li>'
+    legal = '<li><a href="/nosotros/">Quiénes somos</a></li><li><a href="/blog/">Blog y guías</a></li><li><a href="/glosario/">Glosario</a></li><li><a href="/privacidad/">Política de privacidad</a></li><li><a href="/terminos/">Términos y condiciones</a></li>'
     aviso = '<p><small>Servicio técnico independiente. Los nombres de marcas pertenecen a sus propietarios y se usan solo para indicar los equipos que reparamos.</small></p>'
     if marca:
         d = M[marca]; N = nom(marca)
         col = (f'<div><h3>{N} Panamá</h3><ul>' + "".join(f'<li><a href="{pathb(marca, "reparacion-" + EQ[e][0])}">{EQ[e][2].capitalize()} {N}</a></li>' for e in d["equipos"]) +
                (f'<li><a href="{pathb(marca, "codigos-de-error")}">Códigos de error</a></li>' if d["codigos"] else "") +
-               f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "cobertura")}">Cobertura por zona</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos y garantía</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li></ul></div>')
+               f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "guia-de-cuidado")}">Guía de cuidado</a></li><li><a href="{pathb(marca, "cobertura")}">Cobertura por zona</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos y garantía</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li></ul></div>')
         izq = f'<div><h3>{NOMBRE}</h3><p>Servicio técnico {N} a domicilio en Panamá.</p><p>{TEL}<br>Atención por WhatsApp.</p></div>'
         inf = f'<div><h3>Información</h3><ul>{legal}</ul>{aviso}</div>'
     elif lista_marcas:
@@ -153,7 +154,7 @@ def pie(marca=None, lista_marcas=False):
         inf = f'<div><h3>Información</h3><ul>{legal}</ul>{aviso}</div>'
     return ('<footer><div class="w"><div class="g c4">' + izq + col + zon + inf + '</div></div></footer>'
             f'<div class="fb"><a href="tel:+50769337976">Llamar</a><a class="wa" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div>')
-LB = {"@type": "ProfessionalService", "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+50769337976", "priceRange": "$$",
+LB = {"@type": "ProfessionalService", "sameAs": [], "knowsAbout": ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"], "inLanguage": "es-PA", "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+50769337976", "priceRange": "$$",
       "areaServed": [{"@type": "City", "name": "Ciudad de Panamá"}, {"@type": "AdministrativeArea", "name": "San Miguelito"}, {"@type": "City", "name": "Arraiján"}, {"@type": "City", "name": "La Chorrera"}, {"@type": "City", "name": "Colón"}],
       "address": {"@type": "PostalAddress", "addressLocality": "Panamá", "addressRegion": "Provincia de Panamá", "addressCountry": "PA"},
       "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}]}
@@ -216,14 +217,14 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
              f'<p><a class="btn" href="{wa(f"Hola, necesito servicio técnico {M[marca]['nombre']} en Panamá" if marca else "Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a> <a class="btn o" href="{cta2[1] if cta2 else "tel:+50769337976"}">{cta2[0] if cta2 else "Llamar " + TEL}</a></p></div>{himg}</div></section>')
     tags = "".join(f'<meta name="google-site-verification" content="{g}">' for g in GSC) if path == "/" else ""
     h = (f'<!doctype html><html lang="es-PA"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title>'
-         f'<meta name="description" content="{esc(desc)}"><link rel="canonical" href="{url}"><link rel="alternate" hreflang="es-PA" href="{url}"><meta name="robots" content="{"noindex,follow" if noindex else "index,follow,max-image-preview:large,max-snippet:-1"}">{tags}'
+         f'<meta name="description" content="{esc(desc)}"><link rel="canonical" href="{url}"><link rel="alternate" hreflang="es-PA" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="{PAL.get(marca, DEF)[0]}"><meta name="robots" content="{"noindex,follow" if noindex else "index,follow,max-image-preview:large,max-snippet:-1"}">{tags}'
          f'<meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:locale" content="es_PA">'
          + (f'<meta property="og:image" content="{DOM}{hero[0]}">' if hero else '') +
          f'<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%230b2a6f%27/%3E%3Cpath d=%27M18 44l10-24 8 16 10-20%27 stroke=%27%23fff%27 stroke-width=%278%27 fill=%27none%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">'
-         f'<style>{CSS}</style><style>body{{--c:{PAL.get(marca, DEF)[0]};--a:{PAL.get(marca, DEF)[1]};--ab:{PAL.get(marca, DEF)[2]};--bg:{PAL.get(marca, DEF)[3]};--soft:{PAL.get(marca, DEF)[4]};--hd:{PAL.get(marca, DEF)[5]}}}</style><script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>'
+         f'<link rel="stylesheet" href="/assets/site.css?v=1"><style>body{{--c:{PAL.get(marca, DEF)[0]};--a:{PAL.get(marca, DEF)[1]};--ab:{PAL.get(marca, DEF)[2]};--bg:{PAL.get(marca, DEF)[3]};--soft:{PAL.get(marca, DEF)[4]};--hd:{PAL.get(marca, DEF)[5]}}}</style><script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>'
          f'<div class="top"><div class="w"><span>Atención a domicilio en Panamá · {TEL}</span><a href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div></div>'
          f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
-         + chips(marca) + heroh + bc + cuerpo + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + pie(marca, marcas_ok) + extra_js + '</body></html>')
+         + chips(marca) + heroh + bc + cuerpo + '<div class="w"><p class="upd">Actualizado el 20 de noviembre de 2026 · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div>' + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + pie(marca, marcas_ok) + extra_js + '</body></html>')
     f = OUT / path.lstrip("/") / "index.html" if path != "/" else OUT / "index.html"
     f.parent.mkdir(parents=True, exist_ok=True); f.write_text(h, encoding="utf-8")
     if not noindex: paginas.append((path, prio, marca))
@@ -262,7 +263,7 @@ def cierre(m, path):
     chips_b = "".join(f'<a class="pill" href="{u}">{esc(t)}</a>' for t, u in busq)
     return (sec(f"Búsquedas relacionadas con {N} en Panamá", chips_b)
             + sec(f"Más sobre {N} en Panamá", f'<div class="g c3">{inter}</div>', alt=True)
-            + sec("Guías y zonas", f'<div class="g c3">{guias}</div>')
+            + sec("Guías y zonas", f'<div class="g c3">{guias}<a class="card l" href="/blog/calendario-de-mantenimiento-de-electrodomesticos/"><span class="t">Calendario de mantenimiento</span></a><a class="card l" href="/blog/reparar-o-cambiar-un-electrodomestico-regla-del-50/"><span class="t">¿Reparar o cambiar tu equipo?</span></a><a class="card l" href="/glosario/"><span class="t">Glosario de electrodomésticos</span></a></div>')
             + sec("Enlaces externos útiles", externos))
 def sec(t, body, alt=False, lead=None, id=None):
     return f'<section class="s{" alt" if alt else ""}"{f" id={chr(34)}{id}{chr(34)}" if id else ""}><div class="w"><h2>{t}</h2>' + (f'<p class="lead">{lead}</p>' if lead else "") + body + '</div></section>'
@@ -288,7 +289,7 @@ def eq_links(m):
         out.append(f'<a class="card l" href="{pathb(m, "reparacion-" + s)}"><span class="t">Reparación de {pl} {nom(m)}</span><br><small>{esc(d["fallas"][e][0][0])}</small></a>')
     return '<div class="g c3">' + "".join(out) + '</div>'
 def otras(m, actual):
-    d = M[m]; items = [("fallas", f"Fallas frecuentes de {nom(m)}"), ("cobertura", f"Cobertura {nom(m)} por zona"), ("series-y-modelos", f"Series y modelos {nom(m)}"), ("cuanto-cuesta-la-reparacion", "Cuánto cuesta y garantía"), ("preguntas-frecuentes", "Preguntas frecuentes"), ("diagnostico-por-sintoma", "Diagnóstico por síntoma")]
+    d = M[m]; items = [("guia-de-cuidado", f"Guía de cuidado {nom(m)}"), ("fallas", f"Fallas frecuentes de {nom(m)}"), ("cobertura", f"Cobertura {nom(m)} por zona"), ("series-y-modelos", f"Series y modelos {nom(m)}"), ("cuanto-cuesta-la-reparacion", "Cuánto cuesta y garantía"), ("preguntas-frecuentes", "Preguntas frecuentes"), ("diagnostico-por-sintoma", "Diagnóstico por síntoma")]
     if d["codigos"]: items.insert(0, ("codigos-de-error", f"Códigos de error {nom(m)}"))
     return '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, s)}"><span class="t">{t}</span></a>' for s, t in items if s != actual) + "</div>"
 
@@ -463,19 +464,35 @@ def build_sintomas(m):
                   + cod_html
                   + sec(f"Otras fallas de {pl} {N_}", f'<div class="g c2">{hermanas_html}</div><p><a href="{pathb(m, "reparacion-" + EQ[e][0])}">Ver toda la reparación de {pl} {N_}</a></p>', alt=not bool(cod_html))
                   + sec("Preguntas frecuentes", faq_html(faq))
+                  + sec(f"Datos útiles de tu {sing} {N_}", f"<ul><li><b>Modelo:</b> {esc(d['modelo_ej'])}</li>" + (f"<li><b>Dónde está la etiqueta:</b> {esc(d['etiqueta'][e])}</li>" if d['etiqueta'].get(e) else "") + f"<li><b>Líneas {N_}:</b> {', '.join(esc(x) for x in d['lineas'][:5])}.</li><li><b>Garantía:</b> {esc(d['garantia'].split('. ')[0])}.</li></ul>")
                   + sec("Cómo lo buscan en Google", f"<p>Estas son algunas formas en que la gente describe este problema:</p>{busc}", alt=True))
         pagina(pathb(m, "falla-" + sl), titulo, f"{sing.capitalize()} {N_} {bajar(a).rstrip('.')}: causa más probable, qué revisa el técnico y qué puedes hacer antes de llamar. Servicio a domicilio en Panamá.",
                h1, cuerpo, m, im[0] if im else None, crumbs0 + [(f"Reparación de {pl}", pathb(m, "reparacion-" + EQ[e][0])), (a[:45], pathb(m, "falla-" + sl))],
-               [faq_ld(faq), {"@type": "Service", "name": f"Reparación: {sing} {N_} {bajar(a).rstrip('.')}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá"}], bd=f"{N_} · {pl.capitalize()}", prio="0.7", noindex=(len(b) + len(c) < 60),
+               [faq_ld(faq), {"@type": "Service", "name": f"Reparación: {sing} {N_} {bajar(a).rstrip('.')}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá"}], bd=f"{N_} · {pl.capitalize()}", prio="0.7", noindex=(len(b) + len(c) < 40),
                lead=f"Causa probable, qué se revisa y qué puedes hacer antes de pedir la visita.")
     # índice de fallas
     grupos = ""
     for e in d["equipos"]:
         items = "".join(f'<a class="card l" href="{pathb(m, "falla-" + x[1])}"><span class="t">{esc(x[2])}</span><br><small>{esc(x[3][:90])}</small></a>' for x in L if x[0] == e)
         grupos += sec(f"Fallas de {EQ[e][2]} {N}", f'<div class="g c2">{items}</div>', alt=(d["equipos"].index(e) % 2 == 1))
+    il = {"@type": "ItemList", "name": f"Fallas frecuentes de {N}", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": DOM + pathb(m, "falla-" + x[1]), "name": f"{EQ[x[0]][1].capitalize()} {N} {bajar(x[2]).rstrip('.')}"} for i, x in enumerate(L)]}
     pagina(pathb(m, "fallas"), f"Fallas frecuentes de equipos {N} en Panamá", f"Todas las fallas frecuentes de equipos {N} en Panamá, con su causa probable: refrigeradoras, lavadoras y más. Elige tu síntoma.",
            f"Fallas frecuentes de equipos {N}", sec("Elige tu síntoma", rr(f"Aquí están las fallas que más vemos en equipos {N} en Panamá. Entra a la tuya para ver la causa más probable, qué puedes revisar y qué hace el técnico.")) + grupos, m,
-           elegir(m, m + "fallas", 1)[0] if POOLS[m] else None, crumbs0 + [("Fallas frecuentes", pathb(m, "fallas"))], bd=f"{N} · Fallas", prio="0.8", lead=f"Todas las fallas frecuentes de {N} en un solo lugar.")
+           elegir(m, m + "fallas", 1)[0] if POOLS[m] else None, crumbs0 + [("Fallas frecuentes", pathb(m, "fallas"))], [il], bd=f"{N} · Fallas", prio="0.8", lead=f"Todas las fallas frecuentes de {N} en un solo lugar.")
+
+def build_guia(m):
+    d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]
+    blq = ""
+    for k, e in enumerate(d["equipos"]):
+        sing = EQ[e][1]; pl = EQ[e][2]
+        rx = {"neveras": r"refriger|nevera|filtro de agua|condensador|empaque", "lavadoras": r"lavadora|bomba|puerta|empaque|manguera", "secadoras": r"secadora|ducto|pelusa|condensador", "aires": r"aire|windfree|filtro", "cocinas": r"estufa|bujía|bujia|horno|gas", "lavavajillas": r"lavavajillas", "centro-lavado": r"torre|centro|lavad|secad", "batidoras": r"batidora|grasa|engran", "microondas": r"microondas"}.get(e, "zzz")
+        tips = [x for x in d["mantenimiento"] if re.search(rx, x, re.I)] or d["mantenimiento"][:1]
+        et = d["etiqueta"].get(e)
+        blq += sec(f"Cuidado de tu {sing} {N}", f"<p>{esc(d['tech'][e])}</p><h3>Qué hacer</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in tips) + "</ul>" + (f"<h3>Dónde está la etiqueta del modelo</h3><p>{esc(et)}</p>" if et else "") + f'<p><a href="{pathb(m, "reparacion-" + EQ[e][0])}">Ver fallas de {pl} {N}</a></p>', alt=(k % 2 == 1))
+    pagina(pathb(m, "guia-de-cuidado"), f"Guía de cuidado de equipos {N} en Panamá", f"Cómo cuidar tus equipos {N} en el clima de Panamá: mantenimiento por equipo, dónde está la etiqueta del modelo y qué señales indican una falla.",
+           f"Guía de cuidado de equipos {N}", sec("Antes de que falle", rr(f"Esta guía reúne el mantenimiento recomendado para equipos {N} en Panamá: qué limpiar, cada cuánto y qué señales avisan que conviene llamar a un técnico.") + f"<p>{esc(d['modelo_ej'])}</p>") + blq,
+           m, elegir(m, m + "guia", 1)[0], crumbs0 + [("Guía de cuidado", pathb(m, "guia-de-cuidado"))], [{"@type": "Article", "headline": f"Guía de cuidado de equipos {N}", "datePublished": HOY, "dateModified": HOY, "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@type": "Organization", "name": NOMBRE}}],
+           bd=f"{N} · Guía", prio="0.6", lead=f"Mantenimiento y señales de alerta para tus equipos {N}.")
 
 CLIMA = {"ciudad-de-panama": "la humedad constante y el salitre en edificios cercanos a la bahía", "san-miguelito": "los picos de voltaje en sectores de alta densidad y los apagones intermitentes", "arraijan": "los voltajes irregulares en urbanizaciones nuevas y el polvo de obra",
          "la-chorrera": "el calor y el polvo en urbanizaciones en crecimiento", "costa-del-este": "los edificios altos con aires de alta eficiencia y alta humedad frente al mar", "tocumen-y-24-de-diciembre": "el calor intenso y los cortes de energía por tormentas",
@@ -500,6 +517,66 @@ def build_zonas_marca(m):
         items += f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {zn}</span><br><small>Con {N}, aquí pesan {CLIMA[z]}: {esc(EQ[e0][2])} y {esc(EQ[e1][2])} son lo más reportado.</small></a>'
     pagina(pathb(m, "cobertura"), f"Cobertura del servicio técnico {N} en Panamá", f"Zonas de Panamá donde damos servicio técnico a domicilio para equipos {N}: Ciudad de Panamá, San Miguelito, Arraiján, La Chorrera, Colón y más.",
            f"Cobertura del servicio técnico {N} en Panamá", sec("Dónde atendemos equipos " + N, rr(f"Visitamos nueve zonas de Panamá para reparar equipos {N}: {', '.join(EQ[e][2] for e in d['equipos'])}. Cada zona tiene su página con lo que más vemos allí en {N}.") + f'<div class="g c2">{items}</div>') + sec(f"Líneas {N} que atendemos", "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + f"<p>{esc(d['origen'])}</p>", alt=True), m, elegir(m, m + "cob", 1)[0], crumbs0 + [("Cobertura", pathb(m, "cobertura"))], bd=f"{N} · Cobertura", prio="0.7", lead=f"Zonas de Panamá con visita a domicilio para equipos {N}.", noindex=True)
+
+
+ARTS2 = [
+ ("reparar-o-cambiar-un-electrodomestico-regla-del-50", "¿Reparar o cambiar tu electrodoméstico? La regla del 50%", "Cómo decidir si conviene reparar o reemplazar un electrodoméstico según el costo, la edad y el tipo de falla.", [
+   ("La regla práctica", "Si la reparación cuesta más de la mitad de lo que vale un equipo nuevo parecido, suele convenir cambiarlo. Es una guía, no una ley: depende de la edad, del consumo y de si el repuesto se consigue."),
+   ("La edad importa", "Una refrigeradora o lavadora con más de diez años acumula desgaste en varias piezas. Arreglar una falla puede traer otra pronto. En equipos de tres a siete años casi siempre conviene reparar."),
+   ("Qué fallas suelen valer la pena", "Filtros, bombas, sensores, empaques, ventiladores y resistencias son reparaciones habituales y razonables. Una placa electrónica o un compresor cuestan más y piden comparar."),
+   ("Pregunta antes de aprobar", "Pide el diagnóstico por escrito, el valor de la pieza, la mano de obra y la garantía de la reparación. Con esos datos haces la cuenta tú mismo.")]),
+ ("que-es-un-compresor-inverter-y-por-que-importa", "Qué es un compresor inverter y por qué importa en Panamá", "Cómo funciona un compresor inverter, qué ventajas da en refrigeradoras y aires y por qué necesita protección de voltaje.", [
+   ("Cómo trabaja", "Un compresor tradicional se enciende y se apaga. Uno inverter ajusta su velocidad según la necesidad: va más despacio cuando la temperatura ya es la correcta y acelera cuando hace falta."),
+   ("Ventajas", "Menos ruido, temperatura más estable y menos consumo eléctrico, algo útil con el calor y la humedad de Panamá."),
+   ("El punto débil", "Un inverter usa una placa electrónica. Los picos de voltaje por tormentas o apagones dañan esa placa antes que el compresor mismo."),
+   ("Cómo cuidarlo", "Usa un protector de voltaje con retardo de reconexión, deja ventilación detrás del equipo y limpia el condensador cada seis meses.")]),
+ ("voltaje-en-panama-110-220-y-tus-electrodomesticos", "Voltaje en Panamá: 110, 220 y tus electrodomésticos", "Qué voltaje usan los electrodomésticos en Panamá, cómo leer la etiqueta y por qué no conviene usar adaptadores con equipos de compresor.", [
+   ("Qué voltaje hay en casa", "En Panamá la mayoría de las casas usan 120 voltios a 60 hertz en tomacorrientes comunes, y 240 voltios para equipos grandes como estufas eléctricas, secadoras y algunos aires."),
+   ("Cómo leer la etiqueta", "La etiqueta del equipo indica voltaje, frecuencia y consumo. Si dice 220 o 240 V y lo conectas a 120 V, no funcionará bien; al revés, puedes dañarlo."),
+   ("Equipos comprados fuera", "Un equipo traído de otro país puede usar otro voltaje o frecuencia. Confirma la etiqueta antes de conectarlo."),
+   ("Por qué no usar adaptadores", "Neveras, aires y lavadoras tienen compresor o motor sensibles. Un adaptador mal escogido sobrecalienta el cable y acorta la vida del equipo.")]),
+ ("mantenimiento-del-aire-acondicionado-en-epoca-lluviosa", "Mantenimiento del aire acondicionado en época lluviosa", "Qué revisar en tu aire acondicionado antes y durante las lluvias en Panamá: filtros, drenaje, unidad exterior y voltaje.", [
+   ("Filtros cada mes", "Con uso diario, lava los filtros cada mes. Un filtro sucio reduce el aire frío y hace trabajar más al compresor."),
+   ("Drenaje despejado", "La humedad alta genera más agua. Si el drenaje se tapa, el aire gotea dentro de la casa. Una limpieza anual evita ese problema."),
+   ("Unidad exterior", "Retira hojas y polvo, deja espacio alrededor y evita que el agua de lluvia caiga directo sobre la placa."),
+   ("Tormentas eléctricas", "Si hay tormenta fuerte, apaga y desconecta el aire cuando sea posible, o usa un protector de voltaje adecuado.")]),
+ ("electrodomesticos-mojados-por-inundacion-que-hacer", "Electrodomésticos mojados por una inundación: qué hacer", "Pasos seguros si tus electrodomésticos se mojaron: no enchufar, secar, revisar y cuándo llamar a un técnico.", [
+   ("Primero la seguridad", "Desconecta desde el breaker. No toques equipos conectados si el piso está mojado."),
+   ("No lo enciendas", "Aunque parezca seco, la humedad dentro de placas y motores puede causar un corto al encender."),
+   ("Qué puedes hacer", "Retira el agua visible, deja ventilar y evita usar secadores de calor intenso sobre las placas."),
+   ("Cuándo llamar", "Pide una revisión antes de volver a usar el equipo. Un técnico mide aislamiento y estado de placas y motores.")]),
+ ("como-elegir-un-servicio-tecnico-de-confianza", "Cómo elegir un servicio técnico de confianza", "Señales de un buen servicio técnico y alertas que debes evitar: diagnóstico, precio por escrito, garantía y repuestos.", [
+   ("Diagnóstico antes del precio", "Un buen técnico revisa el equipo y explica la causa antes de dar un valor."),
+   ("Precio por escrito", "Pide el valor de repuesto y mano de obra por escrito. Desconfía de cobros que cambian sin explicación."),
+   ("Garantía de la reparación", "La pieza y la mano de obra deben tener garantía por escrito y con plazo claro."),
+   ("Señales de alerta", "Pagos completos por adelantado, ninguna factura, piezas sin explicar o presión para aprobar rápido. Tus derechos como consumidor están protegidos en Panamá.")]),
+ ("calendario-de-mantenimiento-de-electrodomesticos", "Calendario de mantenimiento de electrodomésticos del hogar", "Qué revisar cada mes, cada seis meses y cada año en refrigeradora, lavadora, secadora, aire y cocina.", [
+   ("Cada mes", "Lava los filtros del aire acondicionado, limpia el filtro de pelusa de la secadora y revisa el empaque de la refrigeradora."),
+   ("Cada seis meses", "Limpia el condensador detrás o debajo de la refrigeradora, el filtro de la bomba de la lavadora y cambia el filtro de agua si tu refrigeradora lo tiene."),
+   ("Cada año", "Limpia el ducto de la secadora, revisa mangueras de la lavadora y lava el drenaje del aire acondicionado."),
+   ("Cada cinco años", "Cambia las mangueras de entrada de la lavadora y revisa las conexiones de gas de la cocina.")]),
+ ("como-proteger-tus-electrodomesticos-de-picos-de-voltaje", "Cómo proteger tus electrodomésticos de los picos de voltaje", "Diferencia entre regleta, supresor y protector de voltaje, y qué equipos necesitan protección en Panamá.", [
+   ("Regleta no es protector", "Una regleta común solo multiplica tomas. Un supresor de picos absorbe sobretensiones breves. Un protector de voltaje corta si el voltaje sube o baja demasiado."),
+   ("Qué equipos lo necesitan", "Refrigeradoras con compresor inverter, aires acondicionados, lavadoras de carga frontal y televisores."),
+   ("Retardo de reconexión", "Para equipos con compresor, elige uno con retardo de unos minutos al volver la luz."),
+   ("Tierra y breakers", "Un buen sistema de tierra y breakers adecuados completan la protección. Pide a un electricista revisar la instalación.")]),
+ ("olores-en-electrodomesticos-causas-y-soluciones", "Olores en electrodomésticos: causas y soluciones", "Por qué huele mal tu lavadora, refrigeradora o lavavajillas y cómo corregirlo con limpieza y ventilación.", [
+   ("Lavadora con olor a humedad", "Detergente acumulado y empaque húmedo favorecen el moho. Deja la puerta entreabierta tras cada uso y limpia el empaque."),
+   ("Refrigeradora con mal olor", "Alimentos olvidados o el drenaje del descongelado tapado. Limpia el interior y el desagüe."),
+   ("Lavavajillas con olor", "El filtro con restos de comida. Límpialo con regularidad y corre un ciclo caliente vacío."),
+   ("Si el olor es a quemado", "Apaga y desconecta el equipo. Puede ser una falla eléctrica o una pieza sobrecalentada.")]),
+ ("mudanza-de-electrodomesticos-como-moverlos-sin-danarlos", "Mudanza de electrodomésticos: cómo moverlos sin dañarlos", "Cómo preparar refrigeradora, lavadora y aire acondicionado para una mudanza y cuánto esperar antes de volver a conectarlos.", [
+   ("Refrigeradora", "Vacíala, descongélala y transpórtala en posición vertical. Al llegar, espera varias horas antes de enchufarla para que el aceite del compresor se asiente."),
+   ("Lavadora", "Retira mangueras, drena el agua y coloca los seguros de transporte si el equipo los trae."),
+   ("Aire acondicionado", "La desinstalación y recuperación del gas debe hacerla un técnico; no desconectes las tuberías por tu cuenta."),
+   ("Al instalar", "Nivela el equipo, revisa el voltaje y prueba un ciclo antes de cargar ropa o alimentos.")]),
+ ("humedad-en-casa-y-electrodomesticos-lo-que-debes-saber", "Humedad en casa y electrodomésticos: lo que debes saber", "Cómo la humedad de Panamá afecta placas, contactos y empaques, y qué hábitos reducen las fallas.", [
+   ("Qué hace la humedad", "Corroe contactos, favorece moho en empaques y puede causar falsos contactos en placas."),
+   ("Zonas más afectadas", "Cerca del mar, en sótanos o cuartos sin ventilación, y en áreas de lavado."),
+   ("Hábitos que ayudan", "Ventilar, mantener los equipos separados de la pared y limpiar condensadores y filtros con regularidad."),
+   ("Señales de alerta", "Códigos de error intermitentes, olores y manchas de óxido cerca de conexiones.")]),
+]
+GLOSARIO = [("Compresor", "Pieza que mueve el gas refrigerante en neveras y aires."), ("Inverter", "Tecnología que ajusta la velocidad del compresor o del motor para ahorrar energía."), ("Evaporador", "Serpentín donde el refrigerante absorbe calor y enfría el aire."), ("Condensador", "Serpentín donde el refrigerante libera calor; suele estar atrás o abajo de la refrigeradora."), ("No frost", "Sistema que evita la escarcha mediante ciclos de deshielo automático."), ("Resistencia de deshielo", "Elemento que derrite el hielo del evaporador."), ("Termostato", "Sensor que controla la temperatura."), ("Presostato", "Sensor de nivel de agua de la lavadora."), ("Bomba de drenaje", "Saca el agua de la lavadora o el lavavajillas."), ("Rodamiento", "Pieza que permite girar al tambor de la lavadora."), ("Amortiguador", "Reduce la vibración de la lavadora al centrifugar."), ("Electroválvula", "Válvula eléctrica que deja entrar el agua."), ("Magnetrón", "Pieza que genera las microondas en un microondas."), ("Placa de control", "Tarjeta electrónica que gobierna el equipo."), ("Relé", "Interruptor eléctrico que activa piezas como la resistencia."), ("Bujía", "Pieza que genera la chispa de encendido en estufas a gas."), ("Gas refrigerante", "Fluido que circula en el sistema de frío."), ("Protector de voltaje", "Dispositivo que corta la energía si el voltaje es peligroso."), ("Breaker", "Interruptor automático del tablero eléctrico."), ("Código de error", "Mensaje que muestra el equipo para indicar qué sistema detectó la falla.")]
 
 # ---------------------------------------------------------------- zonas, institucionales, blog
 def build_sitio():
@@ -526,10 +603,14 @@ def build_sitio():
         ("como-instalar-bien-un-electrodomestico-nuevo", "Cómo instalar bien un electrodoméstico nuevo", "Nivelación, voltaje, desagüe y ventilación: lo que evita fallas en el primer año.", [("Nivelación", "Una lavadora desnivelada vibra y desgasta rodamientos."), ("Voltaje y tomacorriente", "Verifica que el equipo sea compatible con 110 o 220 voltios."), ("Ventilación", "Deja espacio detrás y a los lados según el manual.")]),
         ("apagon-y-refrigeradora-que-hacer-con-los-alimentos", "Apagón y refrigeradora: qué hacer con los alimentos", "Cuánto aguanta una refrigeradora sin luz y cómo evitar daños al volver la electricidad.", [("Cuánto tiempo aguanta", "Cerrada, mantiene el frío unas horas; el congelador lleno, más tiempo."), ("Qué evitar", "No abrir la puerta sin necesidad."), ("Al volver la luz", "Espera unos minutos antes de reconectar un equipo con compresor para evitar daño por picos.")]),
     ]
+    arts = arts + ARTS2
     for slug, t, d, bloques in arts:
         cuerpo = sec(t, rr(esc(d)) + "".join(f"<h3>{esc(a)}</h3><p>{esc(b)}</p>" for a, b in bloques) + '<p>¿Necesitas ayuda con tu equipo? <a href="/">Escríbenos por WhatsApp</a> o elige tu marca arriba.</p>')
         pagina(f"/blog/{slug}/", t[:62], d, t, cuerpo, None, None, [("Inicio", "/"), ("Blog", "/blog/"), (t[:50], f"/blog/{slug}/")],
                [{"@type": "Article", "headline": t, "description": d, "datePublished": HOY, "dateModified": HOY, "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@type": "Organization", "name": NOMBRE}, "mainEntityOfPage": DOM + f"/blog/{slug}/"}], bd="Guía", prio="0.5")
+    pagina("/glosario/", "Glosario de electrodomésticos | Términos explicados", "Glosario de electrodomésticos con 20 términos explicados en simple: compresor, inverter, evaporador, presostato, relé, placa de control y más.", "Glosario de electrodomésticos",
+           sec("Términos que escuchas en una reparación", rr("Aquí tienes el significado de las palabras más comunes en el diagnóstico de un electrodoméstico.") + "".join(f"<details><summary>{esc(a)}</summary><p>{esc(b)}</p></details>" for a, b in GLOSARIO)), None, None, [("Inicio", "/"), ("Glosario", "/glosario/")],
+           [{"@type": "DefinedTermSet", "name": "Glosario de electrodomésticos", "hasDefinedTerm": [{"@type": "DefinedTerm", "name": a, "description": b} for a, b in GLOSARIO]}], bd="Glosario", prio="0.6")
     pagina("/blog/", "Blog y guías de electrodomésticos en Panamá", "Guías prácticas para cuidar tus electrodomésticos en el clima de Panamá: humedad, voltaje, garantías, ahorro de energía e instalación.", "Blog y guías de electrodomésticos en Panamá",
            sec("Guías", '<div class="g c3">' + "".join(f'<a class="card l" href="/blog/{s}/"><span class="t">{esc(t)}</span><br><small>{esc(d)}</small></a>' for s, t, d, _ in arts) + "</div>"), None, None, [("Inicio", "/"), ("Blog", "/blog/")], prio="0.6")
     todas = "".join(f'<h2><a href="{base(m)}">Centro de Servicio Técnico {nom(m)} Panamá</a></h2><ul>' + "".join(f'<li><a href="{p}">{esc(p)}</a></li>' for p, _, mm in paginas if mm == m) + "</ul>" for m in BRANDS_ORDER)
@@ -557,8 +638,8 @@ def tecnico():
 
 if __name__ == "__main__":
     if OUT.exists(): shutil.rmtree(OUT)
-    OUT.mkdir(parents=True)
-    for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m)
+    OUT.mkdir(parents=True); (OUT / "assets").mkdir(); (OUT / "assets" / "site.css").write_text(CSS.replace("\n", " "), encoding="utf-8")
+    for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m)
     build_sitio(); tecnico()
     for r, ds, fs in os.walk(OUT):
         os.chmod(r, 0o755)
