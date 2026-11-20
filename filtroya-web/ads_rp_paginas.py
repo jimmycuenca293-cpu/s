@@ -267,8 +267,8 @@ def cat_pie(c, eq, v):
 def filtros_html(eq):
     cs = EQUIPOS[eq]
     marcas = sorted({p["marca_eq"] for c in cs.values() for p in c if p["marca_eq"] != "Todas las marcas"})
-    return ('<div class="city-tags"><b>Tipo de pieza:</b> ' + "".join(f'<a href="{R_CAT(eq, c)}">{esc(c)} ({len(v)})</a>' for c, v in cs.items()) + "</div>"
-            + ('<div class="city-tags" style="margin-top:10px"><b>Marca:</b> ' + "".join(f'<a href="{R_EQM(eq, m)}">{esc(m)}</a>' for m in marcas) + "</div>" if marcas else ""))
+    return ('<div class="city-tags ct-row"><b>Tipo de pieza:</b> ' + "".join(f'<a href="{R_CAT(eq, c)}">{esc(c)} ({len(v)})</a>' for c, v in cs.items()) + "</div>"
+            + ('<div class="city-tags ct-row" style="margin-top:10px"><b>Marca:</b> ' + "".join(f'<a href="{R_EQM(eq, m)}">{esc(m)}</a>' for m in marcas) + "</div>" if marcas else ""))
 
 
 def pag_lista(nombre, titulo, desc, kw, h1, lista, extra="", miga=None, faq=(), pie=""):
@@ -463,7 +463,8 @@ NAV_CSS = """
 @media(max-width:820px){.hx h1{font-size:1.75rem!important;line-height:1.12!important}.hx-l p{font-size:.95rem!important;line-height:1.45}.hx-b{flex-direction:column;gap:10px}.hx-b a{text-align:center;width:100%;box-sizing:border-box}.hx-u{display:none}.hx{padding-top:24px!important}.breadcrumb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.aq-bar{flex-wrap:nowrap;justify-content:center;gap:14px}}
 @media(max-width:820px){.hero:not(.hero-prod) .sub{display:none}.hero:not(.hero-prod){padding:14px 0 64px!important}.hero:not(.hero-prod) h1{font-size:1.5rem!important;margin:0!important}.hero:not(.hero-prod) .kicker{display:none}.aq-sec{padding-top:22px!important;padding-bottom:22px!important}}
 @media(hover:none){.g2-lupa{font-size:0!important}.g2-lupa::after{content:'🔍 Toca para ampliar';font-size:.8rem}}
-@media(max-width:899px){.hero-prod .hero-grid>.g2{order:-1}.hero-prod .hero-grid{gap:18px}.hero-prod{padding-top:18px}}
+@media(max-width:899px){.hero-prod .g2{display:contents}.hero-prod .g2-main{order:-2}.hero-prod .hero-grid>div:first-child{order:-1}.hero-prod .g2-th{order:1}.hero-prod .g2-tip{order:2}.hero-prod .hero-grid{gap:16px}.hero-prod{padding-top:18px}}
+@media(max-width:820px){.ct-row{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;padding-bottom:6px}.ct-row::-webkit-scrollbar{display:none}.ct-row a,.ct-row b{white-space:nowrap;flex:0 0 auto}.ct-row b{align-self:center}}
 .nv-b,.nv-d{display:none}
 @media(max-width:820px){
 .aq-nav{display:none!important}.aq-wa{display:none!important}.aq-bar span:nth-child(2){display:none}
@@ -482,7 +483,7 @@ body.nv-on{padding-bottom:68px}
 .tk-sb{bottom:68px}.pc-rt{bottom:80px}.nv-t{bottom:140px!important}
 }
 .nv-t{position:fixed;left:12px;right:12px;bottom:24px;z-index:4200;max-width:420px;margin:0 auto;background:#0b1f4d;color:#fff;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;gap:12px;align-items:center;font:600 .92rem Inter,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);transform:translateY(160%);transition:transform .25s}.nv-t.on{transform:none}.nv-t a{color:#ffc21a;white-space:nowrap}
-.nv-o{display:flex;justify-content:space-between;align-items:center;margin:0 0 14px;font:600 .92rem Inter,sans-serif;color:#2a3a5c}.nv-o select{margin-left:8px;padding:9px 12px;border:1.5px solid #cfd8ee;border-radius:10px;font:500 .92rem Inter,sans-serif;background:#fff}
+.nv-o{display:flex;justify-content:space-between;align-items:center;margin:0 0 14px;font:600 .92rem Inter,sans-serif;color:#2a3a5c}.nv-o label{display:flex;align-items:center;white-space:nowrap}.nv-o span{white-space:nowrap}.nv-o select{margin-left:8px;padding:9px 12px;border:1.5px solid #cfd8ee;border-radius:10px;font:500 .92rem Inter,sans-serif;background:#fff}
 """
 (OUT / "tema.css").write_text((OUT / "tema.css").read_text(encoding="utf-8") + NAV_CSS, encoding="utf-8")
 (OUT / "nav.css").write_text(NAV_CSS, encoding="utf-8")
