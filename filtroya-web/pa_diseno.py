@@ -171,6 +171,7 @@ def fix_title(t):
     if m and CFG["corto"] in t[:m.start()]: t = t[:m.start()]
     if len(t) > 66: t = t.replace(CFG["ciudad"], CFG["corto"])
     if len(t) > 66: t = t[:66].rsplit(" ", 1)[0].rstrip(" ,:;·|-")
+    t = re.sub(r"(?:\s+(?:a|de|en|y|e|con|para|del|la|el|los|las))+$", "", t)
     return t
 cont = 0
 for f in R.rglob("*.html"):
@@ -179,7 +180,7 @@ for f in R.rglob("*.html"):
     if f == R / "index.html" and '<section class="hero st-split">' in t:
         t = portada(t)
     t = re.sub(r"<figcaption>.*?</figcaption>", "", t, flags=re.S)
-    if CFG["dom"].startswith("samsungpanama"):   # vocabulario local: refrigeradora (no «nevera»)
+    if "samsungpanama" in CFG["dom"]:   # vocabulario local: refrigeradora (no «nevera»)
         t = re.sub(r"(?<![-/\w])([Nn])evera(s?)(?![-/\w])", lambda m: ("R" if m.group(1) == "N" else "r") + "efrigeradora" + m.group(2), t)
     p_ = pref(f)
     t = re.sub(r'(<li><a href=")((?:\.\./)*)(quienes-somos/">Quiénes somos</a></li>)', lambda m: m.group(0) + f'<li><a href="{m.group(2)}politica-de-privacidad/">Política de privacidad</a></li><li><a href="{m.group(2)}terminos-y-condiciones/">Términos y condiciones</a></li>' if "politica-de-privacidad" not in t else m.group(0), t, count=1)
