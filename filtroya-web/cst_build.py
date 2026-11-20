@@ -114,7 +114,7 @@ section.s{padding:30px 0}section.s.alt{background:var(--w)}.lead{color:var(--m);
 .cta-box{display:grid;gap:12px}@media(min-width:700px){.cta-box{grid-template-columns:1fr 1fr}}.cta-box .card{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .sec-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.sec-h small{color:var(--m)}
 .upd{font-size:.85rem;color:var(--m);margin:6px 0 28px}
-.pz{display:grid;gap:10px;margin:0}.pz dt{font-weight:800;color:var(--c)}.pz dd{margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid #e3eaf4}.lgo{display:block;height:34px;width:auto;max-width:130px;object-fit:contain}.hl{display:inline-block;background:#fff;border-radius:12px;padding:8px 14px;margin:0 0 12px;box-shadow:0 4px 16px rgba(0,0,0,.18)}.hero .hl img{display:block;height:56px;width:auto;max-width:260px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none}@media(max-width:520px){.lgo{height:28px;max-width:96px}.logo span{font-size:.85rem}}.fl{display:inline-block;background:#fff;border-radius:12px;padding:10px 16px;margin:0 0 18px}.fl img{display:block;height:40px;width:auto;max-width:190px;object-fit:contain}.logo{display:flex;align-items:center;gap:10px}.logo span{display:block;line-height:1.15}.rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
+.pz{display:grid;gap:10px;margin:0}.pz dt{font-weight:800;color:var(--c)}.pz dd{margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid #e3eaf4}.lgo{display:block;height:34px;width:auto;max-width:130px;object-fit:contain}.hl{display:inline-block;margin:0 0 14px}.hero .hl img{display:block;height:56px;width:auto;max-width:260px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none}@media(max-width:520px){.lgo{height:28px;max-width:96px}.logo span{font-size:.85rem}}.fl{display:inline-block;margin:0 0 20px}.fl img{display:block;height:44px;width:auto;max-width:190px;object-fit:contain}.logo{display:flex;align-items:center;gap:10px}.logo span{display:block;line-height:1.15}.rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
 .g{display:grid;gap:16px}@media(min-width:700px){.g.c2{grid-template-columns:1fr 1fr}.g.c3{grid-template-columns:repeat(3,1fr)}}@media(min-width:1000px){.g.c4{grid-template-columns:repeat(4,1fr)}}
 .card{background:var(--w);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}.card.l{text-decoration:none;color:inherit;display:block;transition:.15s}.card.l:hover{transform:translateY(-3px)}.card .t{font-weight:800;color:var(--c)}.card small{color:var(--m)}
 .tb{width:100%;border-collapse:collapse;background:var(--w);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}.tb th,.tb td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid #e8eef7;font-size:.95rem}.tb th{background:var(--soft);color:var(--c)}
@@ -158,7 +158,7 @@ def pie(marca=None, lista_marcas=False):
         cols = ('<div><h3>Marcas</h3><ul>' + "".join(f'<li><a href="{"/" if m == "samsung" else "/" + m + "/"}">{M[m]["nombre"]} Panamá</a></li>' for m in BRANDS_ORDER) + f'</ul></div><div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>')
     else:
         cols = f'<div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>'
-    flogo = f'<span class="fl"><img src="/img/logos/{marca}.png" alt="Logo {nom(marca)}" width="190" height="48"></span>' if marca else ""
+    flogo = f'<span class="fl"><img src="/img/logos/{marca}-blanco.png" alt="Logo {nom(marca)}" width="190" height="48"></span>' if marca else ""
     return ('<footer><div class="w">' + flogo + '<div class="g c4">' + cols + '</div></div></footer>'
             f'<div class="fb"><a href="tel:+{TELN}">Llamar</a><a class="wa" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div>')
 LB = {"@type": "ProfessionalService", "sameAs": [], "knowsAbout": ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, "priceRange": "$$",
@@ -227,7 +227,7 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
     if marca and not noindex: cuerpo, bgi = decorar(marca, cuerpo, hero, path)
     himg = ""
     if hero: himg = f'<img src="{hero[0]}" alt="{hero[1]}" width="1024" height="768" fetchpriority="high" decoding="async">'
-    heroh = (f'<section class="hero" style="--bgi:{bgi}"><div class="w"><div>{f'<span class="hl"><img src="/img/logos/{marca}.png" alt="Logo {nom(marca)}" width="170" height="48"></span><br>' if marca else ""}<span class="bd">{esc(bd or NOMBRE)}</span><h1>{esc(h1)}</h1><p>{lead or esc(desc)}</p>'
+    heroh = (f'<section class="hero" style="--bgi:{bgi}"><div class="w"><div>{f'<span class="hl"><img src="/img/logos/{marca}-blanco.png" alt="Logo {nom(marca)}" width="170" height="48"></span><br>' if marca else ""}<span class="bd">{esc(bd or NOMBRE)}</span><h1>{esc(h1)}</h1><p>{lead or esc(desc)}</p>'
              f'<p><a class="btn" href="{wa(f"Hola, necesito servicio técnico {M[marca]['nombre']} en Panamá" if marca else "Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a> <a class="btn o" href="{cta2[1] if cta2 else "tel:+" + TELN}">{cta2[0] if cta2 else "Llamar " + TEL}</a></p></div>{himg}</div></section>')
     tags = "".join(f'<meta name="google-site-verification" content="{g}">' for g in GSC) if path == "/" else ""
     h = (f'<!doctype html><html lang="es-PA"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title>'
@@ -1035,7 +1035,7 @@ if __name__ == "__main__":
     OUT.mkdir(parents=True); (OUT / "assets").mkdir(); (OUT / "assets" / "site.css").write_text(CSS.replace("\n", " "), encoding="utf-8")
     (OUT / "img" / "logos").mkdir(parents=True, exist_ok=True)
     for m in BRANDS_ORDER:
-        shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}.png", OUT / "img" / "logos" / f"{m}.png")
+        for suf in ("", "-blanco"): shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}{suf}.png", OUT / "img" / "logos" / f"{m}{suf}.png")
     for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
     build_sitio(); tecnico()
     for r, ds, fs in os.walk(OUT):
