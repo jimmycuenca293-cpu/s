@@ -14,3 +14,5 @@ python3 st_cali_mejoras.py "$OUT"
 if [ -n "$IMGS" ] && [ -d "$IMGS" ]; then cp -f "$IMGS"/*.webp "$OUT/img/"; fi
 python3 pa_contenido.py "$OUT"
 python3 pa_diseno.py "$OUT"
+
+find "$OUT" -type d -exec chmod 755 {} +; find "$OUT" -type f -exec chmod 644 {} +
