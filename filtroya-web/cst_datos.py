@@ -314,7 +314,7 @@ M["electrolux"] = dict(
    ("Se apaga sola", "Termostato.", "Medimos el termostato."),
   ],
  },
- codigos={"Lavadoras": [("E10", "Problema de llenado de agua."), ("E20", "Problema de drenaje."), ("E40", "Puerta no cerrada o cerradura."), ("E50", "Problema del motor."), ("E90", "Falla de comunicación o control.")]},
+ codigos={"Lavadoras": [("E10", "La lavadora Electrolux no recibe agua suficiente: llave cerrada, mallas de entrada sucias o electroválvula."), ("E20", "El agua no sale: se revisa la manguera de desagüe, el filtro y la bomba de la lavadora."), ("E40", "El equipo no detecta la puerta cerrada: empaque, traba o interruptor de puerta."), ("E50", "Problema en el motor o en su sensor de giro."), ("E90", "Falla de comunicación entre la placa y el panel de control.")]},
  mantenimiento=["Limpiar el filtro de la bomba cada dos o tres meses.", "Limpiar los filtros de la secadora en cada uso.", "No obstruir las rejillas de ventilación de las placas.", "Usar regulador de voltaje en las refrigeradoras inverter."],
  etiqueta={"neveras": "Dentro del refrigerador, en el costado.", "lavadoras": "En el marco de la puerta o atrás.", "cocinas": "En el borde del horno, al abrir la puerta."},
  modelo_ej="Electrolux usa códigos como IT, IM o ERT en neveras y EWF en lavadoras.",
