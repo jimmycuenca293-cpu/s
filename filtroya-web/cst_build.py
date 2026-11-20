@@ -114,7 +114,7 @@ section.s{padding:30px 0}section.s.alt{background:var(--w)}.lead{color:var(--m);
 .cta-box{display:grid;gap:12px}@media(min-width:700px){.cta-box{grid-template-columns:1fr 1fr}}.cta-box .card{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .sec-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.sec-h small{color:var(--m)}
 .upd{font-size:.85rem;color:var(--m);margin:6px 0 28px}
-.pz{display:grid;gap:10px;margin:0}.pz dt{font-weight:800;color:var(--c)}.pz dd{margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid #e3eaf4}.lgo{display:block;height:34px;width:auto;max-width:130px;object-fit:contain}.hl{display:inline-block;margin:0 0 14px}.hero .hl img{display:block;height:56px;width:auto;max-width:260px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none}@media(max-width:520px){.lgo{height:28px;max-width:96px}.logo span{font-size:.85rem}}.fl{display:inline-block;margin:0 0 20px}.fl img{display:block;height:44px;width:auto;max-width:190px;object-fit:contain}.logo{display:flex;align-items:center;gap:10px}.logo span{display:block;line-height:1.15}.rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
+.pz{display:grid;gap:10px;margin:0}.pz dt{font-weight:800;color:var(--c)}.pz dd{margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid #e3eaf4}.lgo{display:block;height:34px;width:auto;max-width:130px;object-fit:contain}.hl{display:inline-block;margin:0 0 14px}.hero .hl img{display:block;height:56px;width:auto;max-width:260px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none}@media(max-width:520px){.lgo{height:28px;max-width:96px}.logo span{font-size:.85rem}}.fl{display:inline-block;margin:0 0 20px}.fl img{display:block;height:44px;width:auto;max-width:190px;object-fit:contain}.logo{display:flex;align-items:center;gap:10px}.logo span{display:block;line-height:1.15}.skip{position:absolute;left:-999px;top:0;background:#fff;color:#000;padding:10px 14px;z-index:99}.skip:focus{left:8px;top:8px}.rr{background:var(--soft);border-left:5px solid var(--a);padding:16px 18px;border-radius:12px;margin:0 0 18px}.rr b{display:block;margin-bottom:4px;color:var(--c)}
 .g{display:grid;gap:16px}@media(min-width:700px){.g.c2{grid-template-columns:1fr 1fr}.g.c3{grid-template-columns:repeat(3,1fr)}}@media(min-width:1000px){.g.c4{grid-template-columns:repeat(4,1fr)}}
 .card{background:var(--w);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}.card.l{text-decoration:none;color:inherit;display:block;transition:.15s}.card.l:hover{transform:translateY(-3px)}.card .t{font-weight:800;color:var(--c)}.card small{color:var(--m)}
 .tb{width:100%;border-collapse:collapse;background:var(--w);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}.tb th,.tb td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid #e8eef7;font-size:.95rem}.tb th{background:var(--soft);color:var(--c)}
@@ -162,10 +162,11 @@ def pie(marca=None, lista_marcas=False):
     flogo = f'<span class="fl"><img src="/img/logos/{marca}-blanco.png" alt="Logo {nom(marca)}" width="190" height="48" style="display:block;height:44px;width:auto;max-width:200px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none"></span>' if marca else ""
     return ('<footer><div class="w">' + flogo + '<div class="g c4">' + cols + '</div></div></footer>'
             f'<div class="fb"><a href="tel:+{TELN}">Llamar</a><a class="wa" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div>')
-LB = {"@type": "ProfessionalService", "sameAs": [], "knowsAbout": ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, "priceRange": "$$",
+LB = {"@type": "ProfessionalService", "knowsAbout": ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, 
       "areaServed": [{"@type": "City", "name": c} for c in (CFG.get("area") or ["Ciudad de Panamá", "San Miguelito", "Arraiján", "La Chorrera", "Colón"])],
       "address": {"@type": "PostalAddress", "addressLocality": CFG["ciudad"], "addressRegion": CFG["region"], "addressCountry": CFG["cc"]}}
-if CFG.get("geo"): LB["geo"] = {"@type": "GeoCoordinates", "latitude": CFG["geo"][0], "longitude": CFG["geo"][1]}
+LB["contactPoint"] = [{"@type": "ContactPoint", "telephone": "+" + TELN, "contactType": "customer service", "availableLanguage": ["es"], "areaServed": CFG["cc"]}]
+LB["knowsLanguage"] = "es"
 
 
 def decorar(marca, cuerpo, hero, path):
@@ -220,13 +221,24 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
         while len(" | ".join(partes)) > 62 and len(partes) > 1: partes.pop()
         title = " | ".join(partes)
         if len(title) > 62: title = re.sub(r"(\s+(?:de|en|y|a|la|el|los|las|con|para|del|que|o|u|al))+$", "", title[:62].rsplit(" ", 1)[0].rstrip(" ,|-:"))
+    if marca and len(title) < 38 and len(title) + 20 <= 62 and "Servicio técnico" not in title: title += " | Servicio técnico"
+    if len(desc) < 125 and len(desc) + 38 <= 158 and not noindex: desc = desc.rstrip(" ") + " Atención a domicilio y por WhatsApp."
     if len(desc) > 158: desc = desc[:157].rsplit(" ", 1)[0].rstrip(" ,.;") + "…"
     color = M[marca]["color"] if marca else "#0b2a6f"
     url = DOM + path
     graf = [LB]
+    graf.append({"@type": "WebSite", "@id": DOM + "/#sitio", "url": DOM + "/", "name": NOMBRE, "inLanguage": CFG["locale"], "publisher": {"@id": DOM + "/#negocio"}})
+    wp = {"@type": "CollectionPage" if re.search(r"/(fallas|guias|codigos-de-error|series-y-modelos)/$", path) else "WebPage", "@id": url + "#pagina", "url": url, "name": title, "description": desc,
+          "isPartOf": {"@id": DOM + "/#sitio"}, "about": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"], "dateModified": "2026-11-20", "datePublished": "2026-11-20"}
+    if hero: wp["primaryImageOfPage"] = {"@type": "ImageObject", "url": DOM + hero[0], "caption": hero[1], "width": 1024, "height": 768}
+    graf.append(wp)
     if crumbs:
         graf.append({"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": DOM + u} for i, (n, u) in enumerate(crumbs)]})
     graf += ld or []
+    for x in graf:
+        if x.get("@type") == "Article":
+            x["mainEntityOfPage"] = {"@id": url + "#pagina"}
+            if hero: x["image"] = [DOM + hero[0]]
     bc = ""
     if crumbs and len(crumbs) > 1:
         bc = '<div class="w bc">' + " › ".join((f'<a href="{u}">{esc(n)}</a>' if i < len(crumbs) - 1 else esc(n)) for i, (n, u) in enumerate(crumbs)) + "</div>"
@@ -239,13 +251,13 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
     tags = "".join(f'<meta name="google-site-verification" content="{g}">' for g in GSC) if path == "/" else ""
     h = (f'<!doctype html><html lang="es-PA"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title>'
          f'<meta name="description" content="{esc(desc)}"><link rel="canonical" href="{url}"><link rel="alternate" hreflang="es-PA" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}">{GEO_META}<meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="{PAL.get(marca, DEF)[0]}"><meta name="robots" content="{"noindex,follow" if noindex else "index,follow,max-image-preview:large,max-snippet:-1"}">{tags}'
-         f'<meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:locale" content="es_PA">'
-         + (f'<meta property="og:image" content="{DOM}{hero[0]}">' if hero else '') +
+         f'<meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:locale" content="es_PA"><meta property="og:site_name" content="{esc(NOMBRE)}"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta property="article:modified_time" content="2026-11-20">'
+         + (f'<meta property="og:image" content="{DOM}{hero[0]}"><meta property="og:image:alt" content="{esc(hero[1])}"><meta name="twitter:image" content="{DOM}{hero[0]}"><link rel="preload" as="image" href="{hero[0]}" fetchpriority="high">' if hero else '') +
          f'<link rel="icon" href="{FAV(marca)}">'
-         f'<link rel="stylesheet" href="/assets/site.css?v={CSSV}"><style>body{{--c:{PAL.get(marca, DEF)[0]};--a:{PAL.get(marca, DEF)[1]};--ab:{PAL.get(marca, DEF)[2]};--bg:{PAL.get(marca, DEF)[3]};--soft:{PAL.get(marca, DEF)[4]};--hd:{PAL.get(marca, DEF)[5]}}}</style><script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body>'
+         f'<link rel="stylesheet" href="/assets/site.css?v={CSSV}"><style>body{{--c:{PAL.get(marca, DEF)[0]};--a:{PAL.get(marca, DEF)[1]};--ab:{PAL.get(marca, DEF)[2]};--bg:{PAL.get(marca, DEF)[3]};--soft:{PAL.get(marca, DEF)[4]};--hd:{PAL.get(marca, DEF)[5]}}}</style><script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body><a class="skip" href="#contenido">Saltar al contenido</a>'
          f'<div class="top"><div class="w"><span>Atención a domicilio en Panamá · {TEL}</span><a href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div></div>'
          f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">{f'<img class="lgo" src="/img/logos/{marca}.png" alt="Logo {nom(marca)}" width="130" height="40" style="display:block;height:34px;width:auto;max-width:130px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none">' if marca else ""}<span>Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></span></a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
-         + chips(marca) + heroh + bc + cuerpo + ('<div class="w"><p class="upd">Actualizado el 20 de noviembre de 2026 · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div>' if not re.search(r'/(politica-de-privacidad|terminos-y-condiciones)/', path) else '') + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + pie(marca, marcas_ok) + extra_js + '</body></html>')
+         + chips(marca) + '<main id="contenido">' + heroh + bc + cuerpo + ('<div class="w"><p class="upd">Actualizado el 20 de noviembre de 2026 · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div>' if not re.search(r'/(politica-de-privacidad|terminos-y-condiciones)/', path) else '') + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + '</main>' + pie(marca, marcas_ok) + extra_js + '</body></html>')
     h = LOC(h)
     f = OUT / path.lstrip("/") / "index.html" if path != "/" else OUT / "index.html"
     f.parent.mkdir(parents=True, exist_ok=True); f.write_text(h, encoding="utf-8")
@@ -284,7 +296,7 @@ def cierre(m, path):
             + sec(f"Más sobre {N} en Panamá", f'<div class="g c3">{inter}</div>', alt=True)
             + sec(f"Guías de {N}", f'<div class="g c3">{guias}</div>')
             + sec(f"Enlace externo: {N}", externos))
-GEO_META = (f'<meta name="geo.region" content="{CFG["geo_region"]}"><meta name="geo.placename" content="{CFG["ciudad"]}"><meta name="geo.position" content="{CFG["geo"][0]};{CFG["geo"][1]}"><meta name="ICBM" content="{CFG["geo"][0]}, {CFG["geo"][1]}">' if CFG.get("geo_region") else "")
+GEO_META = (f'<meta name="geo.region" content="{CFG["geo_region"]}"><meta name="geo.placename" content="{CFG["ciudad"]}">' if CFG.get("geo_region") else "")
 def sec(t, body, alt=False, lead=None, id=None):
     return f'<section class="s{" alt" if alt else ""}"{f" id={chr(34)}{id}{chr(34)}" if id else ""}><div class="w"><h2>{t}</h2>' + (f'<p class="lead">{lead}</p>' if lead else "") + body + '</div></section>'
 def rr(txt): return f'<div class="rr"><b>Respuesta rápida</b>{txt}</div>'
@@ -405,7 +417,7 @@ def build_marca(m):
                   + rc
                   + sec(f"Antes de la visita: tu {sing} {N}", visita, id="visita", alt=not bool(rc))
                   + sec(f"Preguntas sobre {pl} {N}", faq_html(faq_e), alt=not bool(sec_cod), id="preguntas")
-                  )
+                  + f"<!--REL:{e}-->")
         pagina(pathb(m, "reparacion-" + s), f"Reparación de {pl} {N} en Panamá | Centro de Servicio", f"Reparación de {pl} {N} en Panamá a domicilio: fallas frecuentes, causas probables y qué revisamos. Diagnóstico en casa y atención por WhatsApp.",
                f"Reparación de {pl} {N} en Panamá", cuerpo, m, h, crumbs0 + [(f"Reparación de {pl}", pathb(m, "reparacion-" + s))],
                [faq_ld(faq_e), {"@type": "Service", "name": f"Reparación de {pl} {N}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá"}], bd=f"{N} · {pl.capitalize()}", prio="0.8",
@@ -534,7 +546,8 @@ def build_sintomas(m):
                   + cod_html
                   + sec(f"Cómo distinguirla de otras fallas de {pl} {N_}", "<ul>" + "".join(f"<li>Si lo que notas es «{esc(bajar(x[2]).rstrip('.'))}», la causa suele ser distinta: {esc(bajar(x[3]))}</li>" for x in hermanas[:3]) + "</ul>", alt=not bool(cod_html))
                   + sec(f"Otras fallas de {pl} {N_}", f'<div class="g c2">{hermanas_html}</div><p><a href="{pathb(m, "reparacion-" + EQ[e][0])}">Ver toda la reparación de {pl} {N_}</a></p>', alt=bool(cod_html))
-                  + sec("Preguntas frecuentes", faq_html(faq), alt=not bool(cod_html)))
+                  + sec("Preguntas frecuentes", faq_html(faq), alt=not bool(cod_html))
+                  + f"<!--RELF:{e}-->")
         pagina(pathb(m, "falla-" + sl), titulo, f"{nombre}: causa más probable, qué puedes hacer tú, cuándo llamar al técnico y qué revisa en tu casa. Servicio a domicilio en Panamá.",
                nombre, cuerpo, m, im[0] if im else None, crumbs0 + [(f"Reparación de {pl}", pathb(m, "reparacion-" + EQ[e][0])), (a[:45], pathb(m, "falla-" + sl))],
                [faq_ld(faq), {"@type": "Service", "name": f"Reparación: {nombre}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá"}], bd=f"{N_} · {pl.capitalize()}", prio="0.7", noindex=(len(b) + len(c) < 40),
@@ -566,7 +579,7 @@ def build_guia(m):
         blq += sec(f"Cuidado de tu {sing} {N}", "<h3>Hazlo tú</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in tips) + "</ul><h3>Señales de que conviene llamar</h3><ul>" + "".join(f"<li>{esc(a_)}: {esc(bajar(b_))}</li>" for a_, b_, c_ in alert) + f'</ul><p><a href="{pathb(m, "reparacion-" + EQ[e][0])}">Fallas de {pl} {N}</a></p>', alt=(k % 2 == 1))
     pagina(pathb(m, "guia-de-cuidado"), f"Guía de cuidado de equipos {N} en Panamá", f"Cómo cuidar tus equipos {N} en el clima de Panamá: tareas de mantenimiento por equipo y señales de que conviene llamar al técnico.",
            f"Guía de cuidado de equipos {N}", blq,
-           m, elegir(m, m + "guia", 1)[0], crumbs0 + [("Guía de cuidado", pathb(m, "guia-de-cuidado"))], [{"@type": "Article", "headline": f"Guía de cuidado de equipos {N}", "datePublished": HOY, "dateModified": HOY, "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@type": "Organization", "name": NOMBRE}}],
+           m, elegir(m, m + "guia", 1)[0], crumbs0 + [("Guía de cuidado", pathb(m, "guia-de-cuidado"))], [{"@type": "Article", "headline": f"Guía de cuidado de equipos {N}", "datePublished": HOY, "dateModified": HOY, "author": {"@id": DOM + "/#negocio"}, "publisher": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"]}],
            bd=f"{N} · Guía", prio="0.6", lead=f"Mantenimiento y señales de alerta para tus equipos {N}.")
 
 EQ_VIDA = {
@@ -715,7 +728,7 @@ def build_terminos(m):
         cd = ""
         for g, L in d["codigos"].items():
             if (g == "Lavadoras" and e in ("lavadoras", "centro-lavado")) or (g == "Refrigeradoras" and e == "neveras"):
-                cd = f"<h4>Si en la pantalla aparece un código</h4>" + tabla(["Código", "Qué significa", "Qué hacer"], [(f'<span class="cb">{c}</span>', esc(t_), esc(accion_cod(t_))) for c, t_ in L])
+                cd = f"<h3>Si en la pantalla aparece un código</h3>" + tabla(["Código", "Qué significa", "Qué hacer"], [(f'<span class="cb">{c}</span>', esc(t_), esc(accion_cod(t_))) for c, t_ in L])
         bloques += f"<details><summary><b>{EQ[e][2].capitalize()} {N}</b>: qué hacer según lo que notas</summary><p>{esc(_prim(d['tech'][e]))}</p>{tb}{cd}</details>"
     modelos = tabla(["Equipo", "Dónde está el número de modelo"], [(EQ[e][2].capitalize(), esc(cap(etq(d["etiqueta"].get(e, "en una etiqueta pegada al equipo"))) + ".")) for e in E])
     pagina(pathb(m, "telefono-servicio-tecnico"), f"Teléfono servicio técnico {N} Panamá: {TEL}", f"Teléfono y WhatsApp del servicio técnico {N} en Panamá: {TEL}. Qué probar tú según la falla de tu equipo {N} y cuándo llamar al técnico.", f"Teléfono del servicio técnico {N} en Panamá",
@@ -967,7 +980,7 @@ def build_blog(m):
     for slg, t, desc, bl in A:
         cuerpo = sec(t, "".join(f"<h3>{esc(h)}</h3>{b if b.startswith('<') else '<p>' + esc(b) + '</p>'}" for h, b in bl)) 
         pagina(pathb(m, "guia-" + slg), t[:62], desc, t, cuerpo, m, elegir(m, m + slg, 1)[0], crumbs0 + [("Guías", pathb(m, "guias")), (t[:45], pathb(m, "guia-" + slg))],
-               [{"@type": "Article", "headline": t, "description": desc, "datePublished": HOY, "dateModified": HOY, "author": {"@type": "Organization", "name": NOMBRE}, "publisher": {"@type": "Organization", "name": NOMBRE}}], bd=f"{N} · Guía", prio="0.6", lead=desc)
+               [{"@type": "Article", "headline": t, "description": desc, "datePublished": HOY, "dateModified": HOY, "author": {"@id": DOM + "/#negocio"}, "publisher": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"]}], bd=f"{N} · Guía", prio="0.6", lead=desc)
     pagina(pathb(m, "guias"), f"Guías y consejos para equipos {N} en Panamá", f"Guías prácticas para equipos {N} en Panamá: humedad, voltaje, mantenimiento, olores, mudanza e instalación.", f"Guías y consejos para equipos {N}",
            sec(f"Guías {N}", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "guia-" + s_)}"><span class="t">{esc(t_)}</span></a>' for s_, t_ in ART[m]) + '</div>') , m, elegir(m, m + "guias", 1)[0], crumbs0 + [("Guías", pathb(m, "guias"))], bd=f"{N} · Guías", prio="0.6", lead=f"Consejos concretos para cuidar tus equipos {N}.", noindex=True)
 ART = {}
@@ -1034,6 +1047,35 @@ def tecnico():
     L += ["", "## Contenido por marca", "Cada marca tiene su propio blog, glosario, zonas, repuestos y garantía dentro de su carpeta."]
     (OUT / "llms.txt").write_text("\n".join(L) + "\n")
 
+REL_GUIAS = {"neveras": ["voltaje-y-tormentas", "tecnologia-inverter", "humedad", "reparar-o-cambiar"], "lavadoras": ["humedad", "voltaje-y-tormentas", "tecnologia-inverter", "reparar-o-cambiar"],
+             "secadoras": ["voltaje-y-tormentas", "reparar-o-cambiar", "humedad"], "aires": ["aire-acondicionado", "tecnologia-inverter", "voltaje-y-tormentas", "humedad"],
+             "cocinas": ["voltaje-y-tormentas", "reparar-o-cambiar", "humedad"], "lavavajillas": ["reparar-o-cambiar", "voltaje-y-tormentas", "humedad"],
+             "centro-lavado": ["reparar-o-cambiar", "voltaje-y-tormentas", "humedad"], "microondas": ["reparar-o-cambiar", "voltaje-y-tormentas"], "batidoras": ["reparar-o-cambiar", "humedad"]}
+def relacionadas():
+    """Segunda pasada: enlaza cada página de equipo con las guías de su marca que existen y le sirven."""
+    for m in BRANDS_ORDER:
+        carp = OUT / ("samsung" if m == "samsung" else m)
+        guias = {p.name: p for p in carp.glob("guia-*") if (p / "index.html").exists()}
+        for e in M[m]["equipos"]:
+            f = carp / ("reparacion-" + EQ[e][0]) / "index.html"
+            if not f.exists(): continue
+            t = f.read_text(encoding="utf-8")
+            items = []
+            for clave in REL_GUIAS.get(e, []):
+                for nombre in guias:
+                    if clave in nombre and nombre != "guia-de-cuidado":
+                        h1 = re.search(r"<h1>(.*?)</h1>", (guias[nombre] / "index.html").read_text(encoding="utf-8"))
+                        if h1: items.append((pathb(m, nombre), h1.group(1))); break
+            if (carp / "guia-de-cuidado" / "index.html").exists(): items.append((pathb(m, "guia-de-cuidado"), f"Guía de cuidado {nom(m)}"))
+            items = items[:5]
+            bloque = (sec(f"Guías relacionadas con tu {EQ[e][1]} {nom(m)}", '<div class="g c2">' + "".join(f'<a class="card l" href="{u}"><span class="t">{n}</span></a>' for u, n in items) + "</div>", alt=True) if items else "")
+            f.write_text(t.replace(f"<!--REL:{e}-->", bloque), encoding="utf-8")
+            enl = items[:3]
+            blq = (sec(f"Guías útiles para tu {EQ[e][1]} {nom(m)}", '<div class="g c3">' + "".join(f'<a class="card l" href="{u}"><span class="t">{n}</span></a>' for u, n in enl) + "</div>", alt=True) if enl else "")
+            for ff in carp.glob("falla-*/index.html"):
+                tt = ff.read_text(encoding="utf-8")
+                if f"<!--RELF:{e}-->" in tt: ff.write_text(tt.replace(f"<!--RELF:{e}-->", blq), encoding="utf-8")
+
 if CFG.get("zx"): ZX = CFG["zx"]
 if CFG.get("clima"): CLIMA = CFG["clima"]
 
@@ -1044,7 +1086,10 @@ if __name__ == "__main__":
     for m in BRANDS_ORDER:
         for suf in ("", "-blanco"): shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}{suf}.png", OUT / "img" / "logos" / f"{m}{suf}.png")
     for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
-    build_sitio(); tecnico()
+    build_sitio(); tecnico(); relacionadas()
+    for ff in OUT.rglob("index.html"):
+        tt = ff.read_text(encoding="utf-8")
+        if "<!--REL" in tt: ff.write_text(re.sub(r"<!--RELF?:[a-z-]+-->", "", tt), encoding="utf-8")
     for r, ds, fs in os.walk(OUT):
         os.chmod(r, 0o755)
         for f in fs: os.chmod(os.path.join(r, f), 0o644)

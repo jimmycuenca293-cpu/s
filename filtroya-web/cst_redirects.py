@@ -29,6 +29,14 @@ for m in BRANDS_ORDER:
 # páginas sin marca (equipo x barrio, guías, etc.) -> portada Samsung (la principal)
 L.append("# Páginas generales viejas")
 L.append("RewriteRule ^[^/]+\\.html$ / [R=301,L]")
-L += ["", "ErrorDocument 404 /404.html", "Options -Indexes", "<IfModule mod_expires.c>", "ExpiresActive On", "ExpiresByType image/webp \"access plus 1 year\"", "ExpiresByType text/css \"access plus 1 month\"", "</IfModule>"]
+L += ["", "ErrorDocument 404 /404.html", "Options -Indexes",
+      "# Compresión", "<IfModule mod_deflate.c>", "AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json application/xml text/xml text/plain image/svg+xml", "</IfModule>",
+      "# Caché: imágenes largo plazo; HTML siempre se revalida para que los cambios se vean al subir", "<IfModule mod_expires.c>", "ExpiresActive On",
+      "ExpiresByType image/webp \"access plus 1 month\"", "ExpiresByType image/png \"access plus 1 month\"", "ExpiresByType text/css \"access plus 1 year\"", "ExpiresByType text/html \"access plus 0 seconds\"", "</IfModule>",
+      "<IfModule mod_headers.c>",
+      "<FilesMatch \"\\.(html)$\">", "Header set Cache-Control \"public, max-age=0, must-revalidate\"", "</FilesMatch>",
+      "<FilesMatch \"\\.css$\">", "Header set Cache-Control \"public, max-age=31536000, immutable\"", "</FilesMatch>", "<FilesMatch \"\\.(webp|png)$\">", "Header set Cache-Control \"public, max-age=2592000\"", "</FilesMatch>",
+      "Header always set X-Content-Type-Options \"nosniff\"", "Header always set Referrer-Policy \"strict-origin-when-cross-origin\"", "Header always set X-Frame-Options \"SAMEORIGIN\"",
+      "Header always set Permissions-Policy \"geolocation=(), microphone=(), camera=()\"", "</IfModule>"]
 (R / ".htaccess").write_text("\n".join(L) + "\n"); os.chmod(R / ".htaccess", 0o644)
 print(len(L), "líneas")
