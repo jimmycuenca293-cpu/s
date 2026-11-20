@@ -2,12 +2,14 @@
 """Genera .htaccess con redirecciones 301 de las URLs viejas a las nuevas. Uso: python3 cst_redirects.py <sitio_nuevo>"""
 import sys, os, re, pathlib
 from cst_datos import M, EQ, BRANDS_ORDER
+from cst_sitio import CFG, localizar
+M = localizar(M); EQ["neveras"] = CFG["nev"]
 R = pathlib.Path(sys.argv[1])
 def pb(m, s): return f"/samsung/{s}/" if m == "samsung" else f"/{m}/{s}/"
 def hub(m): return "/" if m == "samsung" else f"/{m}/"
-L = ["# Panamá: servidor Apache/LiteSpeed (Hostinger)", "RewriteEngine On",
-     "RewriteCond %{HTTPS} off", "RewriteRule ^ https://centrodeserviciotecnicopanama.com%{REQUEST_URI} [L,R=301]",
-     "RewriteCond %{HTTP_HOST} ^www\\. [NC]", "RewriteRule ^ https://centrodeserviciotecnicopanama.com%{REQUEST_URI} [L,R=301]", "",
+L = ["# " + CFG["ciudad"] + ": servidor Apache/LiteSpeed (Hostinger)", "RewriteEngine On",
+     "RewriteCond %{HTTPS} off", "RewriteRule ^ " + CFG["dom"] + "%{REQUEST_URI} [L,R=301]",
+     "RewriteCond %{HTTP_HOST} ^www\\. [NC]", "RewriteRule ^ " + CFG["dom"] + "%{REQUEST_URI} [L,R=301]", "",
      "# Páginas nuevas existentes: no redirigir", "RewriteCond %{REQUEST_FILENAME} -f [OR]", "RewriteCond %{REQUEST_FILENAME} -d", "RewriteRule ^ - [L]", "",
      "RewriteRule ^index\\.html$ / [R=301,L]", "RewriteRule ^samsung/?$ / [R=301,L]", "RewriteRule ^samsung/index\\.html$ / [R=301,L]", ""]
 EQRX = [("neveras", r"nevera|refriger"), ("lavadoras", r"lavadora"), ("secadoras", r"secadora"), ("aires", r"aire"), ("cocinas", r"cocina|estufa|horno"), ("lavavajillas", r"lavavajillas"), ("centro-lavado", r"centro-?s?-de-lavado|torre"), ("batidoras", r"batidora"), ("microondas", r"microondas")]
