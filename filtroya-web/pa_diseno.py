@@ -27,6 +27,11 @@ CSS = r"""
 .pa-grid>section.pa-full{grid-column:1/-1}
 .pa-grid .city-tags{margin:0}
 @media(max-width:860px){.pa-grid{grid-template-columns:1fr;padding:8px 16px 32px}.pa-grid>section.aq-sec{padding:18px!important}}
+/* contacto fijo, 4 pasos, menú de líneas */
+.pa-info{background:#0b1f4d;color:#fff;padding:28px 0}.pa-info .in{max-width:1180px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.pa-info div.c{display:flex;gap:12px;align-items:flex-start}.pa-info i{font-style:normal;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-size:1.2rem;flex:none}.pa-info small{display:block;color:#a9bbe8;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}.pa-info b,.pa-info a{color:#fff;font:700 1rem Inter,sans-serif;text-decoration:none}.pa-info a:hover{text-decoration:underline}
+.pa-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;list-style:none;margin:0;padding:0;counter-reset:q}.pa-4 li{counter-increment:q;background:#fff;border:1px solid #e1e7f3;border-radius:16px;padding:18px 18px 18px 64px;position:relative;font-weight:600;color:#14213d;font-size:.95rem;line-height:1.4}.pa-4 li::before{content:counter(q);position:absolute;left:16px;top:16px;width:36px;height:36px;border-radius:50%;background:#16a34a;color:#fff;display:grid;place-items:center;font-weight:800}.pa-4 small{display:block;color:#5b6478;font-weight:500;margin-top:4px}
+.aq-pop.lin .aq-chips a{white-space:nowrap}
+@media(max-width:900px){.pa-info .in,.pa-4{grid-template-columns:1fr 1fr}}@media(max-width:560px){.pa-info .in,.pa-4{grid-template-columns:1fr}}
 /* portada */
 .pa-sd{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center}.pa-sd figure{margin:0}.pa-sd img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:20px;box-shadow:0 14px 36px rgba(11,31,77,.16)}@media(max-width:860px){.pa-sd{grid-template-columns:1fr}.pa-sd figure{order:-1}}
 .pa-ph{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0}.pa-ph img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:16px;box-shadow:0 8px 22px rgba(11,31,77,.12)}@media(max-width:700px){.pa-ph{grid-template-columns:1fr 1fr}}
@@ -110,7 +115,7 @@ def portada(t):
              f'<div class="pa-btns"><a class="pa-b wa" href="{wa}" target="_blank" rel="noopener">Escribir por WhatsApp</a><a class="pa-b sol" href="{sol}">Solicitar visita</a></div>'
              '<ul class="pa-ck"><li>Visita a domicilio</li><li>Diagnóstico primero</li><li>Valor confirmado antes de reparar</li></ul></div>'
              f'<figure class="pa-fig"><img src="{himg.group(1)}" alt="{esc(himg.group(2))}" width="1024" height="572" fetchpriority="high" decoding="async"><span class="pa-badge">WhatsApp<small>+{tel[:3]} {tel[3:7]}-{tel[7:]}</small></span></figure></div></section>'
-             f'<section class="pa-s" style="padding-top:0"><div class="pa-w"><div class="pa-quick">{"".join(quick)}</div></div></section>'
+             f'<section class="pa-s" style="padding-top:0"><div class="pa-w"><div class="pa-quick">{"".join(quick)}</div><h2 class="pa-h2" style="margin-top:34px">Pide tu visita en 4 pasos</h2><p class="pa-sub" style="margin-bottom:16px">Sin vueltas: de tu mensaje a la reparación.</p>' + PASOS4 + '</div></section>'
              f'<section class="pa-s"><div class="pa-w"><h2 class="pa-h2">Equipos Samsung que reparamos en {esc(ciudad)}</h2><p class="pa-sub">Elige tu electrodoméstico y mira las fallas que atendemos, qué revisa el técnico y cómo pedir la visita.</p><div class="pa-eq">{"".join(cards)}</div></div></section>'
              f'<section class="pa-s alt"><div class="pa-w"><h2 class="pa-h2">Cómo funciona</h2><p class="pa-sub">De tu mensaje de WhatsApp a la reparación, en cinco pasos.</p>{lado(0, '<ol class="pa-steps pa-v">' + pasos + '</ol>')}<div style="height:26px"></div>{lado(2, incluye)}</div></section>'
              f'<section class="pa-s"><div class="pa-w"><h2 class="pa-h2">Zonas y barrios que atendemos</h2><p class="pa-sub">Toca tu barrio para ver el servicio en tu zona.</p>{lado(1, '<div class="pa-zon">' + zon + '</div>')}</div></section>'
@@ -129,6 +134,24 @@ for _n, _a in NUEVAS:
     if (_dir_nuevas / _n).exists():
         (R / "img").mkdir(exist_ok=True); (R / "img" / _n).write_bytes((_dir_nuevas / _n).read_bytes())
 FAMILIAS = [("puerta", r"puerta|saluda|llegando|visita-a-domicilio-\\d"), ("recepcion", r"recepcion|asesora|atencion|orden-de-servicio"), ("rep-nevera", r"reparando-(nevera|refrigeradora)|revisando-(nevera|compresor)|revision-en-casa"), ("rep-lavadora", r"lavadora.*(tecnico|reparando|diagnosticando)|tecnico.*lavadora")]
+DIR = "Vía España, Panamá, Provincia de Panamá"
+TELV, WAN = "+507 6933-7976", "50769337976"
+LINEAS = [("bespoke-samsung", "Bespoke"), ("family-hub-samsung", "Family Hub"), ("ecobubble-samsung", "EcoBubble"), ("addwash-samsung", "AddWash")]
+EQUIPOS = [("refrigeradoras", "Refrigeradoras"), ("lavadoras", "Lavadoras"), ("secadoras", "Secadoras"), ("lavavajillas", "Lavavajillas"), ("estufas-y-hornos", "Estufas y hornos"), ("microondas", "Microondas")]
+MAPA = "https://www.google.com/maps?q=" + __import__("urllib.parse").parse.quote_plus("Servicio Técnico Samsung Panamá, " + DIR) + "&amp;output=embed"
+def pref(f):
+    return "../" * (len(f.relative_to(R).parts) - 1)
+def menu_lineas(p):
+    ln = "".join(f'<a href="{p}{u}/">{n}</a>' for u, n in LINEAS if (R / u).exists())
+    eq = "".join(f'<a href="{p}{u}/">{n}</a>' for u, n in EQUIPOS if (R / u).exists())
+    return (f'<details class="aq-dd"><summary>Líneas Samsung</summary><div class="aq-pop lin"><div class="aq-wrap"><div><h5>Por línea</h5><div class="aq-chips">{ln}</div></div><div><h5>Por equipo</h5><div class="aq-chips">{eq}</div></div></div></div></details>')
+def franja(p):
+    return ('<section class="pa-info" aria-label="Datos de contacto"><div class="in">'
+            f'<div class="c"><i>🕒</i><div><small>Horario</small><b>Abierto las 24 horas</b></div></div>'
+            f'<div class="c"><i>📞</i><div><small>Teléfono</small><a href="tel:{TELV.replace(" ", "").replace("-", "")}">{TELV}</a></div></div>'
+            f'<div class="c"><i>💬</i><div><small>WhatsApp</small><a href="https://wa.me/{WAN}?text=Hola%2C%20necesito%20servicio%20t%C3%A9cnico%20Samsung" target="_blank" rel="noopener">{TELV}</a></div></div>'
+            f'<div class="c"><i>📍</i><div><small>Dirección</small><a href="{p}ubicacion-y-horario/"><b>{DIR}</b></a></div></div></div></section>')
+PASOS4 = ('<ol class="pa-4"><li>Escríbenos por WhatsApp<small>Equipo, modelo y falla.</small></li><li>Coordinamos la visita<small>Día y franja en tu barrio.</small></li><li>Diagnóstico en tu casa<small>Te confirmamos el valor antes de reparar.</small></li><li>Reparación y prueba<small>Solo si tú lo apruebas.</small></li></ol>')
 cont = 0
 for f in R.rglob("*.html"):
     t = f.read_text(encoding="utf-8", errors="ignore")
@@ -136,6 +159,13 @@ for f in R.rglob("*.html"):
     if f == R / "index.html" and '<section class="hero st-split">' in t:
         t = portada(t)
     t = re.sub(r"<figcaption>.*?</figcaption>", "", t, flags=re.S)
+    p_ = pref(f)
+    if "pa-info" not in t and "<footer" in t:
+        t = t.replace("<footer", franja(p_) + "<footer", 1)
+    if "Líneas Samsung" not in t and "</summary>" in t and 'class="aq-dd"><summary>Servicios' in t:
+        t = re.sub(r'(<details class="aq-dd"><summary>Servicios</summary>.*?</details>)', lambda m: m.group(1) + menu_lineas(p_), t, count=1, flags=re.S)
+    t = re.sub(r'(<iframe[^>]*src=")https://www\.google\.com/maps\?q=[^"]+(")', lambda m: m.group(1) + MAPA + m.group(2), t)
+    t = re.sub(r'title="Mapa de [^"]*"', 'title="Mapa: Servicio Técnico Samsung Panamá, ' + DIR + '"', t)
     if f != R / "index.html":
         vistas, n_img = set(), [0]
         def _fig(m):
