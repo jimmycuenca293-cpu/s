@@ -1,0 +1,91 @@
+# -*- coding: utf-8 -*-
+"""Datos generales de servicio-tecnico-guayaquil.com: sitio, zonas, páginas de búsqueda y guías."""
+
+SITE = dict(
+ dom="https://servicio-tecnico-guayaquil.com", nombre="Servicio Técnico Guayaquil", ciudad="Guayaquil", provincia="Guayas", pais="Ecuador", cc="EC",
+ tel="+593 98 039 8179", telw="593980398179", locale="es-EC", gsc="gEedz31KKCKIhiH6gAv3MPCE4K0x9uEcJW4FHG_Acwc",
+ areas=["Guayaquil", "Samborondón", "Daule", "Durán"], hoy="2026-11-20", hoy_txt="20 de noviembre de 2026",
+)
+
+MARCAS = ["Samsung", "LG", "Whirlpool", "Mabe", "Electrolux", "Frigidaire", "General Electric", "Haceb", "KitchenAid"]
+
+ZONAS = [
+ dict(slug="norte-de-guayaquil", nombre="Norte de Guayaquil", art="el norte de Guayaquil", barrios="Urdesa, Kennedy, Alborada, Samanes, Sauces, Garzota y Mapasingue",
+  vivienda="Es la zona de mayor concentración de edificios de departamentos, conjuntos y casas amplias de varios pisos. Hay muchos hogares con varios aires acondicionados, refrigeradoras de gran capacidad y lavadoras con secadora.",
+  clima="Calor y humedad altos todo el año, con aires acondicionados funcionando muchas horas, lo que exige mantenimiento frecuente de filtros, drenajes y unidades exteriores.",
+  acceso="Atendemos con cita previa. En edificios coordinamos el ingreso con portería y el horario de ascensor de carga cuando el equipo es grande.",
+  frecuente="mantenimiento de aires acondicionados, refrigeradoras side by side y centros de lavado", pedidos=["aires-acondicionados", "refrigeradoras", "lavadoras"]),
+ dict(slug="ceibos-y-via-a-la-costa", nombre="Los Ceibos y Vía a la Costa", art="Los Ceibos y la Vía a la Costa", barrios="Los Ceibos, Colinas de los Ceibos y las urbanizaciones de la Vía a la Costa",
+  vivienda="Predominan casas grandes y urbanizaciones cerradas, con cocinas amplias, hornos empotrados, aires y lavavajillas. Muchas viviendas están en lomas, con más viento y polvo.",
+  clima="Más viento y polvo que en el centro, lo que ensucia rápido los condensadores de las unidades exteriores. En temporada de lluvias, las tormentas eléctricas elevan el riesgo de picos de voltaje.",
+  acceso="Las urbanizaciones cerradas requieren registro previo; envíanos el nombre de la urbanización y la dirección para coordinar el ingreso.",
+  frecuente="instalación y mantenimiento de aires, hornos empotrados y lavavajillas", pedidos=["aires-acondicionados", "cocinas-y-hornos", "lavavajillas"]),
+ dict(slug="sur-de-guayaquil", nombre="Sur de Guayaquil", art="el sur de Guayaquil", barrios="Guasmo, La Floresta y Barrio Cuba",
+  vivienda="Hay casas de uno y varios pisos y edificios más antiguos, con instalaciones eléctricas de distintas épocas. La refrigeradora y la lavadora son los equipos que más se reparan.",
+  clima="Humedad alta y, en algunos sectores, instalaciones eléctricas antiguas que sufren con picos de voltaje y exceso de equipos conectados al mismo circuito.",
+  acceso="Atendemos con cita. Si hay calles angostas o acceso complicado, avísanos al pedir la visita para llegar sin demoras.",
+  frecuente="reparación de refrigeradoras y lavadoras", pedidos=["lavadoras", "refrigeradoras", "cocinas-y-hornos"]),
+ dict(slug="centro-de-guayaquil", nombre="Centro de Guayaquil", art="el centro de Guayaquil", barrios="el Centro, la avenida 9 de Octubre, Boyacá y el Barrio Orellana",
+  vivienda="Mezcla de vivienda, oficinas y comercio. Hay edificios antiguos con cableado viejo y poco espacio, donde conviene revisar la instalación antes de conectar equipos nuevos.",
+  clima="Calor intenso, mucha humedad y edificios con poca ventilación en cuartos de servicio, lo que fuerza a secadoras y aires.",
+  acceso="El tráfico y el estacionamiento limitado hacen que coordinemos horario con anticipación y que pidamos una persona que reciba al técnico.",
+  frecuente="mantenimiento de aires, refrigeradoras y revisión eléctrica", pedidos=["aires-acondicionados", "refrigeradoras", "microondas"]),
+ dict(slug="samborondon-y-la-puntilla", nombre="Samborondón y La Puntilla", art="Samborondón y La Puntilla", barrios="La Puntilla, Entre Ríos y Samborondón",
+  vivienda="Urbanizaciones cerradas y torres de departamentos modernas, con electrodomésticos de gama alta, hornos y cocinas de inducción, aires inverter y refrigeradoras grandes.",
+  clima="Cercanía al río y mucha humedad; los equipos con electrónica sensible agradecen la protección de voltaje y el mantenimiento anual.",
+  acceso="Las urbanizaciones y torres piden registro de ingreso; envíanos el nombre del conjunto, la torre y el apartamento al pedir la visita.",
+  frecuente="reparación de cocinas de inducción, aires inverter y refrigeradoras de gama alta", pedidos=["cocinas-y-hornos", "aires-acondicionados", "refrigeradoras"]),
+ dict(slug="daule-y-via-a-daule", nombre="Daule y Vía a Daule", art="Daule y la Vía a Daule", barrios="La Aurora, Pascuales y la Vía a Daule",
+  vivienda="Urbanizaciones y casas familiares con más metros de patio y lavandería. La lavadora, la secadora y la refrigeradora son de uso intensivo.",
+  clima="Calor fuerte y tormentas eléctricas en época de lluvias, con riesgo de picos de voltaje y apagones que dañan placas y compresores.",
+  acceso="Al estar más lejos del centro, coordinamos la franja horaria al pedir la visita para optimizar el recorrido.",
+  frecuente="lavadoras, secadoras y refrigeradoras de uso familiar", pedidos=["lavadoras", "secadoras", "refrigeradoras"]),
+ dict(slug="duran", nombre="Durán", art="Durán", barrios="el centro de Durán y los sectores cercanos al puente de la Unidad Nacional",
+  vivienda="Viviendas amplias de uso familiar y comercios, con electrodomésticos de uso diario y mucha exigencia de refrigeradoras y lavadoras.",
+  clima="Calor, humedad y cercanía al río; la corrosión en contactos y condensadores es más frecuente.",
+  acceso="Atendemos con cita previa, coordinando el horario por el tráfico del puente.",
+  frecuente="refrigeradoras, lavadoras y cocinas a gas", pedidos=["cocinas-y-hornos", "refrigeradoras", "lavadoras"]),
+]
+
+GUIAS = [
+ dict(slug="humedad-calor-y-salitre-en-guayaquil", titulo="Humedad, calor y lluvias: cómo afectan tus electrodomésticos en Guayaquil",
+  desc="Qué le hacen la humedad, el calor y las lluvias de Guayaquil a refrigeradoras, lavadoras, secadoras, aires y cocinas, y cómo prevenir las fallas.",
+  intro="Guayaquil combina calor, humedad alta y una temporada de lluvias intensa. Para los electrodomésticos eso significa más trabajo, más condensación y más corrosión. Entender qué pasa permite prevenir las fallas antes de que ocurran.",
+  secciones=[
+   ("Humedad: moho y corrosión", "La humedad se condensa en superficies frías y entra por las rendijas. En lavadoras genera moho en el sello y el dispensador; en refrigeradoras forma hielo si el empaque no sella; en placas electrónicas produce corrosión en pistas y conectores que luego provoca fallas intermitentes."),
+   ("Calor: más trabajo para los equipos", "Con temperaturas altas, el compresor de la refrigeradora y del aire trabaja más tiempo y se calienta. Un condensador sucio o una refrigeradora pegada a la pared empeoran la situación. El mantenimiento anual y la ventilación son la mejor defensa."),
+   ("Lluvias y tormentas eléctricas", "Durante la temporada de lluvias aumentan los picos de voltaje y los apagones. Las placas inverter, los compresores y las pantallas son los más sensibles. Un protector de voltaje y desconectar los equipos delicados durante tormentas evita muchas reparaciones."),
+   ("Cerca del río y el estero", "En zonas cercanas a ríos y esteros, la sal y la humedad del aire aceleran la corrosión en las unidades exteriores de aires y en los contactos de hornos y lavadoras. Conviene lavar el condensador con agua limpia y revisar soportes y tornillería."),
+   ("Qué hacer, en resumen", "Limpia condensadores y filtros con regularidad, deja respirar los equipos, no los conectes en cadena con regletas, usa protección de voltaje y programa un mantenimiento anual antes de los meses de más calor."),
+  ]),
+ dict(slug="picos-de-voltaje-y-apagones-protege-tus-equipos", titulo="Picos de voltaje y apagones: cómo proteger tus electrodomésticos",
+  desc="Qué daños causan los picos de voltaje y los apagones en refrigeradoras, aires, lavadoras e inducción, y cómo protegerlos con simples medidas.",
+  intro="Los picos de voltaje y los cortes de energía son una de las causas más comunes de reparaciones en electrodomésticos modernos, porque casi todos tienen una placa electrónica sensible. Estas son las medidas que más ayudan.",
+  secciones=[
+   ("Qué equipos sufren más", "Los equipos con placa inverter (aires y refrigeradoras), las cocinas de inducción, las lavadoras con pantalla y los microondas digitales. Los equipos de motor simple sufren menos, pero también pueden dañarse."),
+   ("Qué pasa cuando regresa la energía", "El mayor riesgo está en el momento en que la energía vuelve: puede llegar con un pico. Por eso conviene desconectar los equipos delicados durante cortes largos o tormentas y volver a conectarlos unos minutos después."),
+   ("Protectores y reguladores", "Un protector de voltaje con retardo de reconexión es la solución más económica para refrigeradoras y aires. Para equipos de alto valor se usan reguladores o supresores de picos. No uses regletas baratas para equipos de alto consumo."),
+   ("La instalación eléctrica importa", "Una toma sin conexión a tierra, cables delgados o varios equipos pesados en el mismo circuito generan fallas. Si el equipo se apaga o salta el breaker, no lo ignores: revisa la instalación."),
+   ("Cuándo llamar", "Si después de una tormenta un equipo no enciende, enciende pero no trabaja o muestra errores, no insistas en encenderlo muchas veces. Llámanos para medir la placa y la alimentación antes de que el daño crezca."),
+  ]),
+ dict(slug="reparar-o-cambiar-tu-electrodomestico", titulo="¿Reparar o cambiar tu electrodoméstico? Cómo decidir",
+  desc="Criterios para decidir si conviene reparar o reemplazar una refrigeradora, lavadora, secadora, aire, cocina, lavavajillas o microondas.",
+  intro="No todo electrodoméstico vale la pena repararlo, y no todo debe cambiarse. Estos criterios ayudan a decidir sin gastar de más ni botar un equipo que aún sirve.",
+  secciones=[
+   ("La regla de la mitad", "Si la reparación cuesta cerca de la mitad del precio de un equipo nuevo equivalente y el equipo ya tiene muchos años, conviene evaluar el cambio. Si cuesta mucho menos, casi siempre conviene reparar."),
+   ("Edad y vida útil promedio", "Refrigeradoras: 12 a 15 años. Lavadoras: 8 a 12. Secadoras: 10 a 13. Aires acondicionados: 10 a 15. Cocinas y hornos: 15 a 20. Lavavajillas: 9 a 12. Microondas: 7 a 10. Son promedios con buen mantenimiento."),
+   ("Qué conviene casi siempre reparar", "Fallas de piezas accesibles: ventiladores, sensores, resistencias, bombas, filtros, empaques, bujías, termostatos y muchas placas en equipos con pocos años."),
+   ("Qué conviene evaluar con calma", "Compresor dañado en un equipo muy antiguo, fugas múltiples en el serpentín, tambor o tina rotos, cavidades oxidadas o repuestos que ya no se consiguen."),
+   ("Cómo te ayudamos", "Revisamos el equipo, te explicamos la causa y te damos el valor por escrito antes de reparar. Si no conviene repararlo, te lo decimos."),
+  ]),
+ dict(slug="como-preparar-la-visita-del-tecnico", titulo="Cómo preparar la visita del técnico para que sea más rápida",
+  desc="Qué datos y qué espacio dejar listo antes de la visita de servicio técnico a domicilio para diagnosticar y reparar más rápido.",
+  intro="Una visita bien preparada ahorra tiempo y evita repetir viajes. Estas son las cosas que más ayudan a que el diagnóstico sea rápido y exacto.",
+  secciones=[
+   ("Ten a mano el modelo y la marca", "En la etiqueta del equipo aparece el modelo y el número de serie. Una foto de esa etiqueta nos permite saber qué repuestos y qué procedimientos aplican."),
+   ("Describe lo que notas", "Cuéntanos qué pasó, cuándo empezó y si ocurrió algo antes (tormenta, mudanza, corte de luz, cambio de filtro). Un video corto del problema ayuda mucho."),
+   ("Despeja el espacio", "Deja libre el acceso al equipo: mueve sillas, cajas y mantas. En refrigeradoras, saca los alimentos delicados a una nevera portátil."),
+   ("Confirma accesos", "En edificios y urbanizaciones, avisa en portería y coordina el ascensor de carga si el equipo es grande."),
+   ("Ten un adulto presente", "Es importante que alguien pueda aprobar la reparación después del diagnóstico y recibir las explicaciones."),
+  ]),
+]
