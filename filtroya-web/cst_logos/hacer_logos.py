@@ -7,8 +7,8 @@ AQUI = pathlib.Path(__file__).resolve().parent
 S = pathlib.Path("/home/user/s")
 SRC = {"samsung": S / "servicio-tecnico-samsung-panama/images/logo/samsung-marca.png", "lg": S / "servicio-tecnico-lg-panama/images/logo/lg-marca.png",
        "whirlpool": S / "servicio-tecnico-whirlpool-panama/images/logo/whirlpool-marca.png", "mabe": S / "mabe-quito/img/mabe-logo.png",
-       "electrolux": pathlib.Path("/tmp/cst_src/electrolux/logo-electrolux.webp"), "frigidaire": S / "servicio-tecnico-frigidaire-panama/images/logo/frigidaire-marca.png",
-       "general-electric": S / "servicio-tecnico-general-electric-panama/images/logo/general-electric-marca.png",
+       "electrolux": pathlib.Path("/tmp/cst_src/electrolux/logo-electrolux.webp"), "frigidaire": pathlib.Path("/tmp/claude-0/-home-user-s/7394aa38-735a-5cd1-af51-c01a7780d2eb/images/54.webp"),
+       "general-electric": pathlib.Path("/tmp/claude-0/-home-user-s/7394aa38-735a-5cd1-af51-c01a7780d2eb/images/53.png"),
        "haceb": pathlib.Path("/tmp/cst_src/haceb/logo-haceb.webp"), "kitchenaid": pathlib.Path("/tmp/cst_src/kitchenaid/logo-kitchenaid.webp")}
 def procesar(m, f):
     im = Image.open(f).convert("RGBA"); a = np.array(im).astype(np.float32)
@@ -44,4 +44,7 @@ def procesar(m, f):
         if bb: img = img.crop((max(bb[0] - 2, 0), max(bb[1] - 2, 0), min(bb[2] + 2, img.width), min(bb[3] + 2, img.height)))
         img.thumbnail((600, 200)); img.save(AQUI / f"{m}{nombre}.png", optimize=True)
 if __name__ == "__main__":
-    for m, f in SRC.items(): procesar(m, f); print("ok", m)
+    import sys
+    solo = sys.argv[1:] or list(SRC)
+    for m, f in SRC.items():
+        if m in solo: procesar(m, f); print("ok", m)
