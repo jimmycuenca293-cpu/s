@@ -5,7 +5,11 @@ import sys, os, re, json, html, shutil, pathlib, hashlib, glob
 from cst_datos import M, EQ, BRANDS_ORDER, ZONAS
 from cst_consejos import C as CONSEJOS, LLAMAR, USAR
 from cst_sitio import CFG, localizar, L as LOC
-M = localizar(M); CONSEJOS = localizar(CONSEJOS); EQ["neveras"] = CFG["nev"]
+if CFG.get("tv"):
+    import cst_tv as _TV
+    M, EQ, BRANDS_ORDER, CONSEJOS = _TV.M, _TV.EQ, _TV.BRANDS_ORDER, _TV.CONSEJOS
+M = localizar(M); CONSEJOS = localizar(CONSEJOS)
+if "neveras" in EQ: EQ["neveras"] = CFG["nev"]
 if CFG.get("zonas"): ZONAS = CFG["zonas"]
 
 OUT = pathlib.Path(sys.argv[1]); SRC = pathlib.Path(sys.argv[2] if len(sys.argv) > 2 else "/tmp/cst_src")
@@ -37,8 +41,8 @@ def pool(m):
     else:
         fs = [f for f in sorted(d.glob("*.webp")) if "logo" not in f.name and "autorizado" not in f.name and f.stem not in EXCLUIR] if d.exists() else []
     extra = ROOT / "st_img" / "cst" / m
-    if extra.exists(): fs += sorted(extra.glob("*.webp"))
-    if m == "samsung":
+    if extra.exists() and not CFG.get("tv"): fs += sorted(extra.glob("*.webp"))
+    if m == "samsung" and not CFG.get("tv"):
         for p in sorted((ROOT / "st_img" / "panama").glob("*.webp")): fs.append(p)
         for p in sorted(glob.glob("/tmp/pan_img_work/img/*.webp")):
             n = os.path.basename(p)
@@ -52,7 +56,7 @@ def pool(m):
     return out
 POOLS = {m: pool(m) for m in BRANDS_ORDER}
 KW = {"neveras": r"nevera|refriger|french|side-by-side|family", "lavadoras": r"lavadora", "secadoras": r"secadora", "aires": r"aire|windfree",
-      "cocinas": r"estufa|horno|cocina", "lavavajillas": r"lavavajillas", "centro-lavado": r"centro-lavado|torre|washtower", "batidoras": r"batidora", "microondas": r"microondas", "_gente": r"tecnico|asesora|recepcion|equipo|saluda|agente|secretaria"}
+      "cocinas": r"estufa|horno|cocina", "lavavajillas": r"lavavajillas", "centro-lavado": r"centro-lavado|torre|washtower", "batidoras": r"batidora", "microondas": r"microondas", "tv-led": r"televisor|\btv\b|pantalla", "tv-qled": r"televisor|\btv\b|pantalla", "tv-oled": r"televisor|\btv\b|pantalla", "_gente": r"tecnico|asesora|recepcion|equipo|saluda|agente|secretaria"}
 import collections
 USO = collections.Counter()
 def copia(m, f):
@@ -114,6 +118,10 @@ PAL = {  # c principal, a botón, ab texto botón, bg fondo, soft tono claro, hd
  "general-electric": ("#005eb8", "#00a3e0", "#fff", "#eef5fb", "#d7e8f6", "#003464"),
  "haceb": ("#00833e", "#f2b400", "#1a1a1a", "#eff8f2", "#d8eee0", "#004a22"),
  "kitchenaid": ("#9c1f2b", "#d4a24c", "#1a1a1a", "#fbf6f1", "#f3e5d6", "#4e0f16"),
+ "sony": ("#16161a", "#3b82f6", "#fff", "#f3f4f6", "#e5e7eb", "#0a0a0c"),
+ "tcl": ("#d71920", "#1a1a1a", "#fff", "#fbf3f3", "#f6dede", "#6b0a0e"),
+ "hisense": ("#00857f", "#00a19b", "#fff", "#eef8f8", "#d8eeed", "#00504d"),
+ "philips": ("#0b5ed7", "#0b5ed7", "#fff", "#eef4fd", "#dbe8fb", "#082f6b"),
 }
 DEF = ("#0b2a6f", "#16a34a", "#fff", "#f5f8fc", "#edf2fa", "#0a1b45")
 # ---------------------------------------------------------------- CSS / JS
@@ -201,7 +209,7 @@ def pie(marca=None, lista_marcas=False):
     flogo = f'<span class="fl"><img src="/img/logos/{marca}-blanco.png" alt="Logo {nom(marca)}" width="190" height="48" style="display:block;height:44px;width:auto;max-width:200px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none"></span>' if marca else ""
     return ('<footer><div class="w">' + flogo + '<div class="g c4">' + cols + '</div></div></footer>'
             f'<div class="fb"><a href="tel:+{TELN}">Llamar</a><a class="wa" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div>')
-LB = {"@type": "ProfessionalService", "knowsAbout": ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"] + [f"Servicio técnico {M[x]['nombre']}" for x in BRANDS_ORDER], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, 
+LB = {"@type": "ProfessionalService", "knowsAbout": (["Reparación de pantallas LED", "Reparación de pantallas QLED y Mini LED", "Reparación de pantallas OLED", "Instalación de pantallas"] if CFG.get("tv") else ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"]) + [f"Servicio técnico {M[x]['nombre']}" for x in BRANDS_ORDER], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, 
       "areaServed": [{"@type": "City", "name": c} for c in (CFG.get("area") or ["Ciudad de Panamá", "San Miguelito", "Arraiján", "La Chorrera", "Colón"])],
       "address": {"@type": "PostalAddress", "addressLocality": CFG["ciudad"], "addressRegion": CFG["region"], "addressCountry": CFG["cc"]}}
 LB["contactPoint"] = [{"@type": "ContactPoint", "telephone": "+" + TELN, "contactType": "customer service", "availableLanguage": ["es"], "areaServed": CFG["cc"]}]
@@ -320,6 +328,10 @@ EXT = {  # enlaces externos por marca: sitio oficial (solo informativo) y ACODEC
  "general-electric": ("Página del fabricante: GE Appliances", "https://www.geappliances.com/"),
  "haceb": ("Página del fabricante: Haceb", "https://www.haceb.com/"),
  "kitchenaid": ("Página del fabricante: KitchenAid", "https://www.kitchenaid.com/"),
+ "sony": ("Página del fabricante: Sony", "https://www.sony.com/"),
+ "tcl": ("Página del fabricante: TCL", "https://www.tcl.com/"),
+ "hisense": ("Página del fabricante: Hisense", "https://global.hisense.com/"),
+ "philips": ("Página del fabricante: Philips", "https://www.philips.com/"),
 }
 ACODECO = ("ACODECO: Autoridad de Protección al Consumidor de Panamá", "https://www.acodeco.gob.pa/")
 ASEP = ("ASEP: Autoridad Nacional de los Servicios Públicos (electricidad y voltaje)", "https://www.asep.gob.pa/")
@@ -351,7 +363,7 @@ def tabla(cab, filas):
 def faq_html(faqs): return "".join(f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in faqs)
 def faq_ld(faqs): return {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]}
 PASOS = ('<ol class="pasos"><li><b>Escríbenos</b>Cuéntanos marca, modelo y qué hace el equipo.</li><li><b>Coordinamos</b>Acordamos día y franja en tu zona.</li>'
-         '<li><b>Diagnóstico en casa</b>Revisamos el equipo y te explicamos la causa.</li><li><b>Reparación y prueba</b>Solo si tú apruebas el valor.</li></ol>')
+         '<li><b>Diagnóstico en casa</b>' + ("Revisamos la pantalla en tu casa y, si hace falta taller, coordinamos el retiro con cuidado." if CFG.get("tv") else "Revisamos el equipo y te explicamos la causa.") + '</li><li><b>Reparación y prueba</b>Solo si tú apruebas el valor.</li></ol>')
 
 def cap(t):
     return t[:1].upper() + t[1:]
@@ -390,12 +402,13 @@ def foto_equipo(m, e):
     if not c: return None
     c.sort(key=lambda f: (USO[f], f.name)); f = c[0]; USO[f] += 1
     return (copia(m, f), alt_de(m, f))
-EJ = {"neveras": "No enfría, hace ruido, gotea", "lavadoras": "No drena, no centrifuga, error", "secadoras": "No seca, no calienta", "aires": "No enfría, gotea, código", "cocinas": "No calienta, no enciende", "lavavajillas": "No drena, no lava bien", "centro-lavado": "Una unidad no responde", "batidoras": "Ruido, grasa, pierde fuerza", "microondas": "No calienta, hace chispas"}
+EJ = {"tv-led": "No enciende, sin imagen, líneas", "tv-qled": "Sombras, manchas, se apaga", "tv-oled": "Imagen marcada, bandas, no enciende", "neveras": "No enfría, hace ruido, gotea", "lavadoras": "No drena, no centrifuga, error", "secadoras": "No seca, no calienta", "aires": "No enfría, gotea, código", "cocinas": "No calienta, no enciende", "lavavajillas": "No drena, no lava bien", "centro-lavado": "Una unidad no responde", "batidoras": "Ruido, grasa, pierde fuerza", "microondas": "No calienta, hace chispas"}
 def tiles(m):
     d = M[m]; N = nom(m); out = ""
     for e in d["equipos"]:
-        f = foto_equipo(m, e)
-        im = f'<img loading="lazy" src="{f[0]}" alt="{f[1]}" width="400" height="300">' if f else EQ[e][2][:1].upper()
+        f = None if CFG.get("tv") else foto_equipo(m, e)
+        _ico = '<svg viewBox="0 0 120 90" width="140" height="105" role="img" aria-label="Pantalla"><rect x="6" y="6" width="108" height="64" rx="6" fill="none" stroke="var(--c)" stroke-width="5"/><rect x="14" y="14" width="92" height="48" rx="2" fill="var(--soft)"/><path d="M40 82h40M60 70v12" stroke="var(--c)" stroke-width="5" stroke-linecap="round"/></svg>'
+        im = f'<img loading="lazy" src="{f[0]}" alt="{f[1]}" width="400" height="300">' if f else (_ico if CFG.get("tv") else EQ[e][2][:1].upper())
         out += f'<a class="tile" href="{pathb(m, "reparacion-" + EQ[e][0])}"><span class="ti-img">{im}</span><b>{EQ[e][2].capitalize()} {N}</b><small>{EJ[e]}</small><span class="go">Elegir →</span></a>'
     return f'<div class="tiles">{out}</div>'
 def sintomas_btn(m, e, lista):
@@ -492,7 +505,7 @@ QUITO_MI = {
 QUITO_MI["centro-lavado"] = QUITO_MI["lavadoras"]
 def _gye_loc(t):
     """Adapta los textos de mantenimiento e instalación (escritos para Guayaquil) a la ciudad del sitio."""
-    if CFG["sitio"] == "guayaquil": return t
+    if CFG["sitio"] == "guayaquil" or CFG.get("tv"): return t
     mar = CFG.get("costero")
     for x, y in [("Si vives cerca del río o el estero, el aire con sal acelera la corrosión de los contactos", "Si vives cerca del mar, el aire con sal (salitre) acelera la corrosión de los contactos" if mar else "Si vives en una zona muy húmeda, la corrosión de los contactos avanza más rápido"),
                  ("si vives cerca del río o el estero, donde la sal del aire corroe más rápido", "si vives cerca del mar, donde la sal del aire corroe más rápido" if mar else "si vives en una zona muy húmeda, donde la corrosión avanza más rápido")]:
@@ -502,9 +515,12 @@ def bloque_mant_inst(m, e):
     """Secciones de mantenimiento e instalación de un equipo de una marca (solo Guayaquil)."""
     if not CFG.get("sin_recorte"): return ""
     d = M[m]; N = nom(m); sing = EQ[e][1]; pl = EQ[e][2]; bi = BRANDS_ORDER.index(m)
-    g = BATIDORA if e == "batidoras" else {"mant": _gye()[e]["mant"], "inst": _gye()[e]["inst"]}
+    if e.startswith("tv-"): g = _TV.MANT_INST[e]
+    else: g = BATIDORA if e == "batidoras" else {"mant": _gye()[e]["mant"], "inst": _gye()[e]["inst"]}
     mt, ins = g["mant"], g["inst"]
     ov = QUITO_MI.get(e, {}) if CFG["sitio"] == "quito" else {}
+    if CFG.get("tv"):
+        mt = {**mt}; ins = {**ins} if ins else ins
     mt = {**mt, "intro": ov.get("mant_intro") or _gye_loc(mt["intro"]), "gye": ov.get("mant_gye") or _gye_loc(mt["gye"])}
     if ins: ins = {**ins, "intro": ov.get("inst_intro") or _gye_loc(ins["intro"]), "gye": ov.get("inst_gye") or _gye_loc(ins["gye"])}
     filas = _rot(mt["tabla"], bi, 5) if len(mt["tabla"]) > 4 else mt["tabla"]
@@ -584,7 +600,7 @@ def build_marca(m):
               + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
     path = "/" if m == "samsung" else base(m)
     t = f"Centro de Servicio Técnico {N} Panamá | A domicilio" if m != "general-electric" else f"Centro de Servicio Técnico {N} Panamá"
-    ld = [faq_ld(FAQ_H), {"@type": "Service", "name": f"Servicio técnico {N} en Panamá", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá", "serviceType": f"Reparación de electrodomésticos {N}", "brand": {"@type": "Brand", "name": N, "sameAs": EXT[m][1]},
+    ld = [faq_ld(FAQ_H), {"@type": "Service", "name": f"Servicio técnico {N} en Panamá", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá", "serviceType": (f"Reparación de pantallas {N}" if CFG.get("tv") else f"Reparación de electrodomésticos {N}"), "brand": {"@type": "Brand", "name": N, "sameAs": EXT[m][1]},
           "hasOfferCatalog": {"@type": "OfferCatalog", "name": f"Servicios para equipos {N}", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Reparación de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0])}} for e in d["equipos"]]
               + ([{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Mantenimiento de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0]) + "#mantenimiento"}} for e in d["equipos"]]
                  + [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Instalación de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0]) + "#instalacion"}} for e in d["equipos"] if e != "batidoras"] if CFG.get("sin_recorte") else [])}}]
@@ -633,15 +649,15 @@ def build_marca(m):
         bloques = "".join(f'<h3>{g}</h3>' + tabla(["Código", "Qué significa", "Qué hacer"], [(f'<span class="cb">{c}</span>', esc(t), esc(accion_cod(t))) for c, t in L]) for g, L in d["codigos"].items())
         pagina(pathb(m, "codigos-de-error"), f"Códigos de error {N}: qué significan | Panamá", f"Lista de códigos de error {N} más comunes en lavadoras y refrigeradoras, con qué suele indicar cada uno y cuándo llamar al técnico.",
                f"Códigos de error {N}: qué significa cada uno", sec(f"Códigos de error {N}", rr(f"Los códigos de error {N} indican qué sistema del equipo detectó el problema. Muchos se resuelven limpiando filtros o revisando llaves; si el código vuelve tras apagar y encender, hace falta una revisión.") + bloques + "<p><small>Esta lista es orientativa. El significado exacto puede variar según el modelo y el año; confirma siempre con el manual de tu equipo.</small></p>") + sec("Equipos", eq_links(m), alt=True),
-               m, elegir(m, m + "cod", 1)[0] if POOLS[m] else None, crumbs0 + [("Códigos de error", pathb(m, "codigos-de-error"))], bd=f"{N} · Códigos", prio="0.8",
+               m, (elegir(m, m + "cod", 1) or [None])[0] if POOLS[m] else None, crumbs0 + [("Códigos de error", pathb(m, "codigos-de-error"))], bd=f"{N} · Códigos", prio="0.8",
                lead=f"Qué significan los códigos de error más frecuentes de {N} y qué hacer antes de llamar.")
     # --- series y modelos
     tb = "".join(f"<h3>{EQ[e][2].capitalize()} {N}</h3><p>{esc(d['tech'][e])}</p>" for e in d["equipos"])
     et = tabla(["Equipo", "Dónde está la etiqueta con el modelo"], [(EQ[e][2].capitalize(), esc(t)) for e, t in d["etiqueta"].items()])
     pagina(pathb(m, "series-y-modelos"), f"Series y modelos {N}: cómo identificar el tuyo", f"Líneas {N} más comunes en Panamá, cómo funciona cada tecnología y dónde encontrar el número de modelo de tu equipo.",
            f"Series, modelos y tecnologías {N}", sec(f"Líneas {N}", rr(f"{N} agrupa sus equipos en líneas como {', '.join(d['lineas'][:4])}. Conocer la tuya ayuda a pedir el repuesto correcto y a describir la falla con precisión.") + "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + f"<p>{esc(d['modelo_ej'])}</p>") + sec("Cómo funciona cada equipo", tb, alt=True) + sec("Dónde encontrar el número de modelo", et + "<p>Con una foto de esa etiqueta puedes escribirnos por WhatsApp y adelantamos el diagnóstico.</p>"),
-           m, elegir(m, m + "ser", 1)[0], crumbs0 + [("Series y modelos", pathb(m, "series-y-modelos"))], bd=f"{N} · Modelos", lead=f"Origen, líneas y tecnologías de {N}, y cómo leer la etiqueta del equipo.")
-    comp = {"samsung": "el compresor Digital Inverter y la placa inverter", "lg": "el compresor inverter o lineal y la placa inverter", "whirlpool": "el compresor, el control y la transmisión de la lavadora", "mabe": "el compresor y la transmisión de la lavadora", "frigidaire": "la tarjeta de control y el compresor", "electrolux": "la placa inverter y el compresor", "general-electric": "la tarjeta de control y el sistema del dispensador", "haceb": "el compresor y la tarjeta", "kitchenaid": "el motor y la caja de engranes"}[m]
+           m, (elegir(m, m + "ser", 1) or [None])[0], crumbs0 + [("Series y modelos", pathb(m, "series-y-modelos"))], bd=f"{N} · Modelos", lead=f"Origen, líneas y tecnologías de {N}, y cómo leer la etiqueta del equipo.")
+    comp = {"samsung": "el compresor Digital Inverter y la placa inverter", "lg": "el compresor inverter o lineal y la placa inverter", "whirlpool": "el compresor, el control y la transmisión de la lavadora", "mabe": "el compresor y la transmisión de la lavadora", "frigidaire": "la tarjeta de control y el compresor", "electrolux": "la placa inverter y el compresor", "general-electric": "la tarjeta de control y el sistema del dispensador", "haceb": "el compresor y la tarjeta", "kitchenaid": "el motor y la caja de engranes"}.get(m, "la fuente de poder, la placa principal y la retroiluminación")
     # --- cuánto cuesta
     def nivel(txt):
         t = txt.lower()
@@ -665,13 +681,13 @@ def build_marca(m):
            f"Cuánto cuesta reparar equipos {N} en Panamá",
            sec(f"Qué fallas de {N} cuestan más o menos, equipo por equipo", f"<p>El valor depende de la pieza que falló. Esta es la guía comparativa para equipos {N}; no son precios, el valor real se confirma después del diagnóstico y antes de reparar.</p>" + grp)
            + sec(f"Qué decide el precio de reparar {ART_EQ[d['equipos'][0]]} {EQ[d['equipos'][0]][1]} {N}", f"<p>{esc(d['tech'][d['equipos'][0]])}</p><p>Si el repuesto está disponible en {CFG['pais']} o hay que pedirlo a {d['pais']}, el plazo y el valor cambian. En equipos con muchos años se compara reparar con reemplazar.</p>", alt=True),
-           m, elegir(m, m + "cost", 1)[0], crumbs0 + [("Cuánto cuesta", pathb(m, "cuanto-cuesta-la-reparacion"))], bd=f"{N} · Costos", lead=f"De qué depende el costo de reparar cada equipo {N}.")
+           m, (elegir(m, m + "cost", 1) or [None])[0], crumbs0 + [("Cuánto cuesta", pathb(m, "cuanto-cuesta-la-reparacion"))], bd=f"{N} · Costos", lead=f"De qué depende el costo de reparar cada equipo {N}.")
     # --- preguntas
     PF = (faq10(m) if CFG.get("sin_recorte") else list(d["faq"])) + [(f"¿Qué pasa si {ART_EQ[e]} {EQ[e][1]} {N} presenta «{f[0].rstrip('.')}»?", f"{f[1]} {f[2]}") for e in d["equipos"] for f in d["fallas"][e][:2]] + [(f"¿Cómo pido una visita para mi equipo {N}?", "Escribe por WhatsApp con el modelo, la falla y tu zona. Coordinamos día y franja horaria.")]
     pagina(pathb(m, "preguntas-frecuentes"), f"Preguntas frecuentes sobre {N} en Panamá", f"Respuestas a las preguntas más comunes sobre servicio técnico {N} en Panamá: cobertura, tiempos, garantía y cómo pedir una visita.",
            f"Preguntas frecuentes sobre servicio técnico {N}",
            sec("Preguntas frecuentes", faq_html(PF)),
-           m, elegir(m, m + "faq", 1)[0], crumbs0 + [("Preguntas frecuentes", pathb(m, "preguntas-frecuentes"))], [faq_ld(PF)], bd=f"{N} · Preguntas", lead=f"Respuestas claras sobre el servicio técnico {N} en Panamá.", prio="0.6")
+           m, (elegir(m, m + "faq", 1) or [None])[0], crumbs0 + [("Preguntas frecuentes", pathb(m, "preguntas-frecuentes"))], [faq_ld(PF)], bd=f"{N} · Preguntas", lead=f"Respuestas claras sobre el servicio técnico {N} en Panamá.", prio="0.6")
     # --- diagnóstico
     wiz = {e: [[a, b, c] for a, b, c in d["fallas"][e]] for e in d["equipos"]}
     opts = "".join(f'<option value="{e}">{EQ[e][1]}</option>' for e in d["equipos"])
@@ -679,7 +695,7 @@ def build_marca(m):
     pagina(pathb(m, "diagnostico-por-sintoma"), f"Diagnóstico por síntoma {N}: qué le pasa a tu equipo", f"Elige tu equipo {N} y el síntoma que notas para ver la causa más probable y qué revisaría un técnico. Herramienta gratuita.",
            f"Diagnóstico por síntoma de equipos {N}",
            sec("¿Qué le pasa a tu equipo?", rr("Elige el equipo y lo que notas. Te mostramos la causa más probable según las fallas que vemos en equipos de esta marca en Panamá.") + f'<div class="wiz card"><label>Equipo</label><select id="wq">{opts}</select><label>Síntoma</label><select id="ws"></select><div class="res" id="wr"></div></div><p><small>Es una guía orientativa. La causa se confirma con pruebas en el equipo.</small></p>'),
-           m, elegir(m, m + "diag", 1)[0], crumbs0 + [("Diagnóstico por síntoma", pathb(m, "diagnostico-por-sintoma"))], bd=f"{N} · Diagnóstico", extra_js=js, noindex=True, lead=f"Herramienta gratuita para entender qué le pasa a tu equipo {N}.")
+           m, (elegir(m, m + "diag", 1) or [None])[0], crumbs0 + [("Diagnóstico por síntoma", pathb(m, "diagnostico-por-sintoma"))], bd=f"{N} · Diagnóstico", extra_js=js, noindex=True, lead=f"Herramienta gratuita para entender qué le pasa a tu equipo {N}.")
 
 
 import unicodedata
@@ -711,7 +727,7 @@ def cierre_sint(m, e, sl):
         for i, (a, b, c) in enumerate(d["fallas"][e2]):
             L.append((e2, slug(EQ[e2][1] + " " + a), a, b, c))
     SINT[m] = L
-ART_EQ = {"neveras": "una", "lavadoras": "una", "secadoras": "una", "aires": "un", "cocinas": "una", "lavavajillas": "un", "centro-lavado": "un", "batidoras": "una", "microondas": "un"}
+ART_EQ = {"tv-led": "una", "tv-qled": "una", "tv-oled": "una", "neveras": "una", "lavadoras": "una", "secadoras": "una", "aires": "un", "cocinas": "una", "lavavajillas": "un", "centro-lavado": "un", "batidoras": "una", "microondas": "un"}
 def build_sintomas(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]
     cierre_sint(m, None, None)
@@ -764,12 +780,17 @@ def build_sintomas(m):
         items = "".join(f'<a class="card l" href="{pathb(m, "falla-" + x[1])}"><span class="t">{esc(x[2])}</span><br><small>{esc(x[3][:90])}</small></a>' for x in L if x[0] == e)
         grupos += sec(f"Fallas de {EQ[e][2]} {N}", f'<div class="g c2">{items}</div>', alt=(d["equipos"].index(e) % 2 == 1))
     il = {"@type": "ItemList", "name": f"Fallas frecuentes de {N}", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": DOM + pathb(m, "falla-" + x[1]), "name": f"{EQ[x[0]][1].capitalize()} {N} {bajar(x[2]).rstrip('.')}"} for i, x in enumerate(L)]}
-    pagina(pathb(m, "fallas"), f"Fallas frecuentes de equipos {N} en Panamá", f"Todas las fallas frecuentes de equipos {N} en Panamá, con su causa probable: refrigeradoras, lavadoras y más. Elige tu síntoma.",
+    pagina(pathb(m, "fallas"), f"Fallas frecuentes de equipos {N} en Panamá", f"Todas las fallas frecuentes de equipos {N} en Panamá, con su causa probable: {junta(EQ[e][2] for e in d["equipos"])}. Elige tu síntoma.",
            f"Fallas frecuentes de equipos {N}", sec("Elige tu síntoma", rr(f"Aquí están las fallas que más vemos en equipos {N} en Panamá. Entra a la tuya para ver la causa más probable, qué puedes revisar y qué hace el técnico.")) + grupos, m,
-           elegir(m, m + "fallas", 1)[0] if POOLS[m] else None, crumbs0 + [("Fallas frecuentes", pathb(m, "fallas"))], [il], bd=f"{N} · Fallas", prio="0.8", lead=f"Todas las fallas frecuentes de {N} en un solo lugar.")
+           (elegir(m, m + "fallas", 1) or [None])[0] if POOLS[m] else None, crumbs0 + [("Fallas frecuentes", pathb(m, "fallas"))], [il], bd=f"{N} · Fallas", prio="0.8", lead=f"Todas las fallas frecuentes de {N} en un solo lugar.")
 
 def eq_de_consejo(t):
     x = t.lower()
+    if CFG.get("tv"):
+        if re.search(r"oled", x): return "tv-oled"
+        if re.search(r"qled|mini led|one connect|caja", x): return "tv-qled"
+        if re.search(r"pantalla|televisor|webos|tizen|google tv|vidaa|software|sistema|ventilaci|limpiar", x): return "tv-led"
+        return None
     for e, rx in (("lavavajillas", r"lavavajillas"), ("microondas", r"microondas"), ("batidoras", r"batidora"), ("centro-lavado", r"torre|centro de lavado"), ("secadoras", r"secadora"), ("lavadoras", r"lavadora"), ("neveras", r"refrigeradora|nevera|filtro de agua"), ("aires", r"\baire|windfree"), ("cocinas", r"estufa|horno|cocina|bujía|bujia")):
         if re.search(rx, x): return e
     return None
@@ -785,7 +806,7 @@ def build_guia(m):
         blq += sec(f"Cuidado de tu {sing} {N}", "<h3>Hazlo tú</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in tips) + "</ul><h3>Señales de que conviene llamar</h3><ul>" + "".join(f"<li>{esc(a_)}: {esc(bajar(b_))}</li>" for a_, b_, c_ in alert) + f'</ul><p><a href="{pathb(m, "reparacion-" + EQ[e][0])}">Fallas de {pl} {N}</a></p>', alt=(k % 2 == 1))
     pagina(pathb(m, "guia-de-cuidado"), f"Guía de cuidado de equipos {N} en Panamá", f"Cómo cuidar tus equipos {N} en el clima de Panamá: tareas de mantenimiento por equipo y señales de que conviene llamar al técnico.",
            f"Guía de cuidado de equipos {N}", blq,
-           m, elegir(m, m + "guia", 1)[0], crumbs0 + [("Guía de cuidado", pathb(m, "guia-de-cuidado"))], [{"@type": "Article", "headline": f"Guía de cuidado de equipos {N}", "datePublished": HOY, "dateModified": HOY, "author": {"@id": DOM + "/#negocio"}, "publisher": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"]}],
+           m, (elegir(m, m + "guia", 1) or [None])[0], crumbs0 + [("Guía de cuidado", pathb(m, "guia-de-cuidado"))], [{"@type": "Article", "headline": f"Guía de cuidado de equipos {N}", "datePublished": HOY, "dateModified": HOY, "author": {"@id": DOM + "/#negocio"}, "publisher": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"]}],
            bd=f"{N} · Guía", prio="0.6", lead=f"Mantenimiento y señales de alerta para tus equipos {N}.")
 
 EQ_VIDA = {
@@ -941,7 +962,7 @@ def build_terminos(m):
            sec(f"{TEL}: llama o escribe por WhatsApp", f"<p>Este es el teléfono y WhatsApp del servicio técnico {N} en Panamá. Atendemos con visita a domicilio para {pls_(d)}.</p>" + f'<p><a class="btn" href="{wam}" target="_blank" rel="noopener">Escribir por WhatsApp</a> <a class="btn o" href="tel:+{TELN}">Llamar {TEL}</a></p>')
            + sec(f"Antes de llamar: elige tu equipo {N}", "<p>Abre tu equipo y mira qué le pasa. Si la falla se puede resolver sin técnico, te lo decimos; si no, llámanos.</p>" + bloques, alt=True)
            + sec("Ten a mano el modelo", f"<p>{esc(d['modelo_ej'])}</p>" + modelos),
-           m, elegir(m, m + "tel", 1)[0], crumbs0 + [("Teléfono", pathb(m, "telefono-servicio-tecnico"))], bd=f"{N} · Contacto", prio="0.7", lead=f"Qué probar según la falla de tu equipo {N} y cuándo llamar.")
+           m, (elegir(m, m + "tel", 1) or [None])[0], crumbs0 + [("Teléfono", pathb(m, "telefono-servicio-tecnico"))], bd=f"{N} · Contacto", prio="0.7", lead=f"Qué probar según la falla de tu equipo {N} y cuándo llamar.")
     # ---- 2 CERCA DE MÍ: una línea por zona con la falla local y el equipo
     todas = [(e, f) for e in E for f in d["fallas"][e]]
     zl = ""
@@ -955,13 +976,13 @@ def build_terminos(m):
         zl += f'<li><a href="{pathb(m, "servicio-tecnico-" + z)}">{zn}</a> · {t}</li>'
     pagina(pathb(m, "centro-de-servicio-cerca-de-mi"), f"Centro de servicio {N} cerca de mí en Panamá", f"Centro de servicio {N} cerca de ti en Panamá: el técnico llega a tu casa. Zonas, sectores y qué equipos {N} atendemos en cada una.", f"Centro de servicio {N} cerca de mí en Panamá",
            sec(f"Dónde llega el técnico {N}", f"<p>Elige tu zona:</p><ul>{zl}</ul>"),
-           m, elegir(m, m + "cerca", 1)[0], crumbs0 + [("Cerca de mí", pathb(m, "centro-de-servicio-cerca-de-mi"))], bd=f"{N} · Cerca de mí", prio="0.7", lead=f"Zonas donde el técnico {N} llega a tu casa.")
+           m, (elegir(m, m + "cerca", 1) or [None])[0], crumbs0 + [("Cerca de mí", pathb(m, "centro-de-servicio-cerca-de-mi"))], bd=f"{N} · Cerca de mí", prio="0.7", lead=f"Zonas donde el técnico {N} llega a tu casa.")
     # ---- 3 A DOMICILIO: qué revisa el técnico en tu casa por equipo + qué dejar listo
     pas = "".join(f"<li><b>{EQ[e][2].capitalize()} {N}:</b> {esc(d['fallas'][e][0][2])} {esc(d['fallas'][e][1][2] if len(d['fallas'][e]) > 1 else '')} <i>Ten a mano el modelo, que está {esc(etq(d['etiqueta'].get(e, 'en la etiqueta del equipo')))}.</i></li>" for e in E)
     pagina(pathb(m, "reparacion-a-domicilio"), f"Reparación {N} a domicilio en Panamá", f"Cómo es la reparación a domicilio de equipos {N} en Panamá: qué revisa el técnico en tu casa en cada equipo y qué debes dejar listo.", f"Reparación {N} a domicilio en Panamá",
            sec(f"Qué pasa cuando el técnico {N} llega a tu casa", f"<p>En la visita se hace primero el diagnóstico del equipo {N} y recién entonces se da el valor. Esto es lo que se revisa según el equipo:</p><ul>{pas}</ul>")
            + sec("Antes de la visita", f"<p>Despeja el espacio alrededor del equipo, ten a mano el modelo ({esc(d['modelo_ej'])}) y la factura si el equipo aún puede tener garantía.</p>", alt=True),
-           m, elegir(m, m + "dom", 1)[0], crumbs0 + [("A domicilio", pathb(m, "reparacion-a-domicilio"))], bd=f"{N} · Domicilio", prio="0.7", lead=f"La visita técnica {N}, equipo por equipo.")
+           m, (elegir(m, m + "dom", 1) or [None])[0], crumbs0 + [("A domicilio", pathb(m, "reparacion-a-domicilio"))], bd=f"{N} · Domicilio", prio="0.7", lead=f"La visita técnica {N}, equipo por equipo.")
     # ---- 4 REPUESTOS: piezas reales que aparecen en las fallas de esta marca, por equipo
     pz = ""
     for e in E:
@@ -974,7 +995,7 @@ def build_terminos(m):
     pagina(pathb(m, "repuestos"), f"Repuestos {N} en Panamá", f"Repuestos para equipos {N} en Panamá: qué piezas se cambian en cada equipo, en qué falla y cuáles pueden pedirse por encargo.", f"Repuestos {N} en Panamá",
            sec(f"Piezas de equipos {N} que más se cambian", f"<p>{N} es una marca de {d['pais']}. Estas son las piezas que más vemos en sus equipos, y en qué falla se cambian:</p>" + pz)
            + sec("Originales o compatibles", f"<p>Usamos repuestos originales {N} cuando están disponibles; si no, compatibles de calidad, y te decimos cuál es cuál antes de que apruebes. Las placas y los compresores pueden requerir pedido; los filtros, bombas, sensores y empaques suelen conseguirse en Panamá.</p>", alt=True),
-           m, elegir(m, m + "rep", 1)[0], crumbs0 + [("Repuestos", pathb(m, "repuestos"))], bd=f"{N} · Repuestos", prio="0.7", lead=f"Piezas de equipos {N} y en qué falla se cambian.")
+           m, (elegir(m, m + "rep", 1) or [None])[0], crumbs0 + [("Repuestos", pathb(m, "repuestos"))], bd=f"{N} · Repuestos", prio="0.7", lead=f"Piezas de equipos {N} y en qué falla se cambian.")
     # ---- 5 GARANTÍA: qué suele cubrir y qué no, según las fallas de la marca
     cub = [(EQ[e][1], x[0]) for e in E for x in d["fallas"][e] if nv(x[1]) == "Alto"][:5]
     nocub = [(EQ[e][1], x[0]) for e in E for x in d["fallas"][e] if nv(x[1]) == "Bajo"][:5]
@@ -983,7 +1004,7 @@ def build_terminos(m):
            + sec("Fallas de componentes: suelen ser tema de garantía si el equipo es nuevo", "<ul>" + "".join(f"<li>{esc(a.capitalize())} {N}: {esc(bajar(b))}</li>" for a, b in cub) + "</ul>", alt=True)
            + sec("Fallas de mantenimiento: normalmente no las cubre", "<ul>" + "".join(f"<li>{esc(a.capitalize())} {N}: {esc(bajar(b))}</li>" for a, b in nocub) + "</ul>")
            + sec(f"Dónde encontrar los datos de garantía de tu {EQ[E[0]][1]} {N}", f"<p>{esc(d['modelo_ej'])} {esc(d['etiqueta'].get(E[0], ''))}</p><p>Líneas {N}: {', '.join(esc(x) for x in d['lineas'][:5])}.</p>", alt=True),
-           m, elegir(m, m + "gar2", 1)[0], crumbs0 + [("Garantía", pathb(m, "garantia"))], bd=f"{N} · Garantía", prio="0.7", lead=f"Qué cubre la garantía {N} y qué no.")
+           m, (elegir(m, m + "gar2", 1) or [None])[0], crumbs0 + [("Garantía", pathb(m, "garantia"))], bd=f"{N} · Garantía", prio="0.7", lead=f"Qué cubre la garantía {N} y qué no.")
 
 CLIMA = {"ciudad-de-panama": "la humedad constante y el salitre en edificios cercanos a la bahía", "san-miguelito": "los picos de voltaje en sectores de alta densidad y los apagones intermitentes", "arraijan": "los voltajes irregulares en urbanizaciones nuevas y el polvo de obra",
          "la-chorrera": "el calor y el polvo en urbanizaciones en crecimiento", "costa-del-este": "los edificios altos con aires de alta eficiencia y alta humedad frente al mar", "tocumen-y-24-de-diciembre": "el calor intenso y los cortes de energía por tormentas",
@@ -1008,11 +1029,11 @@ def build_zonas_marca(m):
                   + sec(f"Cómo funcionan {EQ[e0][2]}" + (f" y {EQ[e1][2]}" if e1 != e0 else "") + f" {N}", f"<p>{esc(oracion(d['tech'][e0], zi))}</p>" + (f"<p>{esc(oracion(d['tech'][e1], zi + 1))}</p>" if e1 != e0 else ""))
                   + sec(f"Modelos {N} en {za}", f"<p>{esc(d['modelo_ej'])}</p><p><b>Líneas frecuentes:</b> {', '.join(esc(x) for x in _rot(d['lineas'], zi, 4))}.</p>", alt=True))
         pagina(pathb(m, "servicio-tecnico-" + z), f"Servicio técnico {N} en {za} | Panamá", f"Servicio técnico {N} a domicilio en {za}, Panamá: qué fallas de equipos {N} se reportan allí, sectores que visitamos y cómo coordinar la visita.",
-               f"Servicio técnico {N} en {za}", cuerpo, m, elegir(m, m + z, 1)[0], crumbs0 + [("Cobertura", pathb(m, "cobertura")), (zn, pathb(m, "servicio-tecnico-" + z))],
+               f"Servicio técnico {N} en {za}", cuerpo, m, (elegir(m, m + z, 1) or [None])[0], crumbs0 + [("Cobertura", pathb(m, "cobertura")), (zn, pathb(m, "servicio-tecnico-" + z))],
                [{"@type": "Service", "name": f"Servicio técnico {N} en {za}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Place", "name": zn}}], bd=f"{N} · {za}", prio="0.7", lead=f"Equipos {N} en {za}: fallas frecuentes y visita a domicilio.")
         items += f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {za}</span><br><small>{esc(sect)}</small></a>'
     pagina(pathb(m, "cobertura"), f"Cobertura del servicio técnico {N} en Panamá", f"Zonas de Panamá donde damos servicio técnico a domicilio para equipos {N}.",
-           f"Cobertura del servicio técnico {N} en Panamá", sec("Dónde atendemos equipos " + N, f'<div class="g c2">{items}</div>'), m, elegir(m, m + "cob", 1)[0], crumbs0 + [("Cobertura", pathb(m, "cobertura"))], bd=f"{N} · Cobertura", prio="0.7", lead=f"Zonas de Panamá con visita a domicilio para equipos {N}.", noindex=True)
+           f"Cobertura del servicio técnico {N} en Panamá", sec("Dónde atendemos equipos " + N, f'<div class="g c2">{items}</div>'), m, (elegir(m, m + "cob", 1) or [None])[0], crumbs0 + [("Cobertura", pathb(m, "cobertura"))], bd=f"{N} · Cobertura", prio="0.7", lead=f"Zonas de Panamá con visita a domicilio para equipos {N}.", noindex=True)
 
 
 
@@ -1150,12 +1171,12 @@ def arts_marca(m):
     if eo:
         so = [("Olores en equipos " + N, f"<p>Un olor raro en un equipo {N} casi siempre tiene una causa simple: humedad, restos de comida o suciedad en filtros y drenajes. Si huele a quemado, apaga y desconecta de inmediato.</p>")]
         tx = {"lavadoras": "Moho en el empaque y detergente acumulado. Deja la puerta entreabierta tras cada uso y limpia el empaque.", "neveras": "Alimentos olvidados o el drenaje del descongelado tapado. Limpia el interior y el desagüe.", "lavavajillas": "Restos de comida en el filtro. Límpialo con regularidad y corre un ciclo caliente vacío.", "cocinas": "Grasa acumulada o restos en quemadores. Si huele a gas, cierra la llave y ventila: es una emergencia.", "microondas": "Restos de comida en el interior. Límpialo con un paño húmedo y vinagre diluido.", "batidoras": "Grasa vieja de la caja de engranes. Se limpia y se repone.", "secadoras": "Pelusa acumulada o ducto con humedad. Limpia filtro y ducto."}
-        for e in eo[:4]: so.append((f"{EQ[e][2].capitalize()} {N} con mal olor", f"<p>{esc(tx[e])}</p>" + lk(e)))
+        for e in eo[:4]: so.append((f"{EQ[e][2].capitalize()} {N} con mal olor", f"<p>{esc(tx.get(e, ""))}</p>" + lk(e)))
         A.append((f"olores-en-equipos-{m}", f"Olores en equipos {N}: causas y soluciones", f"Por qué huele mal tu {EQ[eo[0]][1]} {N} u otros equipos de la marca y cómo corregirlo.", so))
     # 6 mudanza
     sm = [("Mudar equipos " + N, f"<p>Antes de mover equipos {N} prepara cada uno según su tipo y evita conectarlo de inmediato al llegar.</p>")]
     mu = {"neveras": "Vacíala, descongélala y transpórtala en vertical. Espera varias horas antes de enchufarla.", "lavadoras": "Retira mangueras, drena el agua y coloca los seguros de transporte si los trae.", "secadoras": "Desconecta el ducto, limpia el filtro y asegura la puerta.", "aires": "La desinstalación y la recuperación del gas las hace un técnico; no desconectes las tuberías por tu cuenta.", "cocinas": "Cierra el gas, desconecta la manguera y retira parrillas sueltas.", "lavavajillas": "Drena el agua, retira mangueras y asegura los racks.", "centro-lavado": "Desarma la unión de la torre con ayuda de dos personas y asegura el tambor.", "batidoras": "Guarda el tazón y los batidores aparte y transporta la base en su caja.", "microondas": "Retira el plato giratorio y asegura la puerta."}
-    for k, e in enumerate(E[:6]): sm.append((f"{EQ[e][2].capitalize()} {N}", f"<p>{esc(oracion(d['tech'][e], k))}</p><p>{esc(mu[e])}</p><p><b>Etiqueta del modelo:</b> {esc(d['etiqueta'].get(e, 'en el cuerpo del equipo'))}</p><p><b>Lo primero que revisamos al instalarla:</b> {esc(bajar(d['fallas'][e][-1][0]).rstrip('.'))}: {esc(bajar(d['fallas'][e][-1][2]))}</p>"))
+    for k, e in enumerate(E[:6]): sm.append((f"{EQ[e][2].capitalize()} {N}", f"<p>{esc(oracion(d['tech'][e], k))}</p><p>{esc(mu.get(e, ""))}</p><p><b>Etiqueta del modelo:</b> {esc(d['etiqueta'].get(e, 'en el cuerpo del equipo'))}</p><p><b>Lo primero que revisamos al instalarla:</b> {esc(bajar(d['fallas'][e][-1][0]).rstrip('.'))}: {esc(bajar(d['fallas'][e][-1][2]))}</p>"))
     A.append((f"mudanza-de-equipos-{m}", f"Mudanza de equipos {N}: cómo moverlos sin dañarlos", f"Cómo preparar y mover tus equipos {N} en una mudanza y cuándo volver a conectarlos.", sm))
     # 7 aire lluvioso
     if "aires" in E:
@@ -1185,10 +1206,10 @@ def build_blog(m):
     A = [a for a in arts_marca(m) if not a[0].startswith(("olores", "como-elegir", "mudanza", "instalar", "apagon")) and not (a[0].startswith("tecnologia-inverter") and m in ("haceb", "frigidaire", "kitchenaid"))]; ART[m] = [(s, t) for s, t, _, _ in A]
     for slg, t, desc, bl in A:
         cuerpo = sec(t, "".join(f"<h3>{esc(h)}</h3>{b if b.startswith('<') else '<p>' + esc(b) + '</p>'}" for h, b in bl)) 
-        pagina(pathb(m, "guia-" + slg), t[:62], desc, t, cuerpo, m, elegir(m, m + slg, 1)[0], crumbs0 + [("Guías", pathb(m, "guias")), (t[:45], pathb(m, "guia-" + slg))],
+        pagina(pathb(m, "guia-" + slg), t[:62], desc, t, cuerpo, m, (elegir(m, m + slg, 1) or [None])[0], crumbs0 + [("Guías", pathb(m, "guias")), (t[:45], pathb(m, "guia-" + slg))],
                [{"@type": "Article", "headline": t, "description": desc, "datePublished": HOY, "dateModified": HOY, "author": {"@id": DOM + "/#negocio"}, "publisher": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"]}], bd=f"{N} · Guía", prio="0.6", lead=desc)
     pagina(pathb(m, "guias"), (f"Blog de consejos para equipos {N} en Panamá" if CFG.get("lbl_guias") else f"Guías y consejos para equipos {N} en Panamá"), f"Blog de consejos y guías prácticas para equipos {N} en Panamá: humedad, voltaje, mantenimiento, reparar o cambiar y cuidado diario.", (f"Blog de consejos {N}" if CFG.get("lbl_guias") else f"Guías y consejos para equipos {N}"),
-           sec(f"Guías {N}", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "guia-" + s_)}"><span class="t">{esc(t_)}</span></a>' for s_, t_ in ART[m]) + '</div>') , m, elegir(m, m + "guias", 1)[0], crumbs0 + [("Guías", pathb(m, "guias"))], bd=f"{N} · Guías", prio="0.6", lead=f"Consejos concretos para cuidar tus equipos {N}.", noindex=not CFG.get("lbl_guias"))
+           sec(f"Guías {N}", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "guia-" + s_)}"><span class="t">{esc(t_)}</span></a>' for s_, t_ in ART[m]) + '</div>') , m, (elegir(m, m + "guias", 1) or [None])[0], crumbs0 + [("Guías", pathb(m, "guias"))], bd=f"{N} · Guías", prio="0.6", lead=f"Consejos concretos para cuidar tus equipos {N}.", noindex=not CFG.get("lbl_guias"))
 ART = {}
 GL_EQ = {"neveras": ["Compresor", "Inverter", "Evaporador", "Condensador", "No frost", "Resistencia de deshielo", "Termostato", "Gas refrigerante"], "lavadoras": ["Presostato", "Bomba de drenaje", "Rodamiento", "Amortiguador", "Electroválvula"], "secadoras": ["Termostato", "Condensador", "Relé"], "aires": ["Compresor", "Inverter", "Gas refrigerante", "Evaporador", "Condensador"], "cocinas": ["Bujía", "Termostato", "Relé"], "lavavajillas": ["Bomba de drenaje", "Electroválvula"], "microondas": ["Magnetrón"], "centro-lavado": ["Presostato", "Bomba de drenaje", "Relé"], "batidoras": ["Relé"]}
 def build_glosario(m):
@@ -1213,7 +1234,7 @@ def build_glosario(m):
         cod = "".join(f"<h3>Códigos de error {N}: {g}</h3>" + tabla(["Código", "Qué suele indicar"], [(f'<span class="cb">{c}</span>', esc(t)) for c, t in L]) for g, L in d["codigos"].items())
     pagina(pathb(m, "glosario"), f"Glosario de equipos {N}: términos explicados", f"Glosario con los términos que escuchas al reparar equipos {N}: {', '.join(usados[:5])} y más, con ejemplos de la marca.", f"Glosario de equipos {N}",
            sec(f"Términos de reparación de equipos {N}", "".join(items) + "<h3 style='margin-top:18px'>Líneas " + N + "</h3>" + "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + cod),
-           m, elegir(m, m + "glos", 1)[0], crumbs0 + [("Glosario", pathb(m, "glosario"))], [{"@type": "DefinedTermSet", "name": f"Glosario {N}", "hasDefinedTerm": [{"@type": "DefinedTerm", "name": t, "description": gd.get(t, "")} for t in usados]}], bd=f"{N} · Glosario", prio="0.5", lead=f"Los términos técnicos de tus equipos {N}, con ejemplos de la marca.")
+           m, (elegir(m, m + "glos", 1) or [None])[0], crumbs0 + [("Glosario", pathb(m, "glosario"))], [{"@type": "DefinedTermSet", "name": f"Glosario {N}", "hasDefinedTerm": [{"@type": "DefinedTerm", "name": t, "description": gd.get(t, "")} for t in usados]}], bd=f"{N} · Glosario", prio="0.5", lead=f"Los términos técnicos de tus equipos {N}, con ejemplos de la marca.")
 def junta(xs):
     xs = list(xs)
     return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " y " + xs[-1]
@@ -1222,7 +1243,7 @@ def build_legal(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]
     pagina(pathb(m, "quienes-somos"), f"Quiénes somos | Servicio técnico {N} Panamá", f"Quiénes somos: servicio técnico independiente de equipos {N} a domicilio en Panamá.", f"Quiénes somos: servicio técnico {N} en Panamá",
            sec(f"Un servicio técnico independiente para equipos {N}", f"<p>Reparamos a domicilio en Panamá equipos {N}: {pls_(d)}. Somos un servicio técnico independiente: no somos el fabricante de {N}, y el nombre de la marca se usa solo para indicar qué equipos reparamos.</p><p>{esc(d['origen'])}</p>") + sec("Cómo trabajamos", PASOS, alt=True) + sec("Contacto", f"<p>WhatsApp y teléfono: <a href=\"tel:+{TELN}\">{TEL}</a>.</p>"),
-           m, elegir(m, m + "qs", 1)[0], crumbs0 + [("Quiénes somos", pathb(m, "quienes-somos"))], bd=f"{N} · Nosotros", prio="0.5", noindex=True, lead=f"Quiénes somos y cómo reparamos tus equipos {N}.")
+           m, (elegir(m, m + "qs", 1) or [None])[0], crumbs0 + [("Quiénes somos", pathb(m, "quienes-somos"))], bd=f"{N} · Nosotros", prio="0.5", noindex=True, lead=f"Quiénes somos y cómo reparamos tus equipos {N}.")
     pagina(pathb(m, "politica-de-privacidad"), f"Política de privacidad | {N} Panamá", f"Política de privacidad del servicio técnico {N} en Panamá: datos que recibimos, uso y tus derechos (Ley 81 de 2019).", f"Política de privacidad del servicio técnico {N}",
            sec("Datos personales", f"<p>Cuando nos escribes por WhatsApp o teléfono para reparar un equipo {N} recibimos tu nombre, número, zona y datos del equipo. Los usamos solo para coordinar la visita.</p><p>No vendemos tus datos. Puedes pedirnos que los corrijamos o eliminemos por el mismo número de contacto. Esta política se rige por la Ley 81 de 2019 de Panamá. Última actualización: noviembre de 2026.</p>"),
            m, None, crumbs0 + [("Privacidad", pathb(m, "politica-de-privacidad"))], bd=f"{N} · Legal", prio="0.3", noindex=True)
@@ -1251,7 +1272,7 @@ def tecnico():
     it = [x for x in paginas if x[2] is None]; (OUT / "sitemap-principal.xml").write_text(sm(it)); idx.append("sitemap-principal.xml")
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<sitemap><loc>{DOM}/{i}</loc><lastmod>{HOY}</lastmod></sitemap>" for i in idx) + "</sitemapindex>")
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {DOM}/sitemap.xml\n")
-    L = [f"# {NOMBRE}", f"> Servicio técnico independiente de electrodomésticos a domicilio en {CFG['ciudad']}. WhatsApp {TEL}.", "", "## Marcas"]
+    L = [f"# {NOMBRE}", f"> Servicio técnico independiente de {"pantallas" if CFG.get("tv") else "electrodomésticos"} a domicilio en {CFG['ciudad']}. WhatsApp {TEL}.", "", "## Marcas"]
     for m in BRANDS_ORDER: L.append(f"- [Centro de Servicio Técnico {nom(m)} {CFG['ciudad']}]({DOM}{base(m)}): {', '.join(EQ[e][2] for e in M[m]['equipos'])}.")
     L += ["", "## Contenido por marca", "Cada marca tiene su propio blog, glosario, zonas, repuestos y garantía dentro de su carpeta."]
     (OUT / "llms.txt").write_text("\n".join(L) + "\n")
@@ -1330,6 +1351,9 @@ def relacionadas():
                 tt = ff.read_text(encoding="utf-8")
                 if f"<!--RELF:{e}-->" in tt: ff.write_text(tt.replace(f"<!--RELF:{e}-->", blq), encoding="utf-8")
 
+if CFG.get("tv"):
+    PARTES.update(_TV.PARTES); PARTE_DESC.update(_TV.PARTE_DESC); PARTE_DIAG.update(_TV.PARTE_DIAG); EQ_VIDA.update(_TV.EQ_VIDA); GL_EQ.update(_TV.GL_EQ)
+    _gl = dict(GLOSARIO); _gl.update(dict(_TV.GLOSARIO_TV)); GLOSARIO = list(_gl.items()) if isinstance(GLOSARIO, list) else _gl
 if CFG.get("zx"): ZX = CFG["zx"]
 if CFG.get("clima"): CLIMA = CFG["clima"]
 

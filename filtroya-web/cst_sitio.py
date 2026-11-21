@@ -147,7 +147,51 @@ QUITO = dict(
     ley_datos="Ley Orgánica de Protección de Datos Personales del Ecuador", ley_consumo="Ley Orgánica de Defensa del Consumidor del Ecuador",
     sin_recorte=True, lbl_guias="Blog de consejos",
 )
-CFG = {"cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO}.get(SITIO, PANAMA)
+
+# ----------------------------------------------------------------------------- COSTA RICA (pantallas)
+ZONAS_CR = {
+    "san-jose": ("San José", "San José centro, Barrio Escalante, Sabana, Pavas, Hatillo y Desamparados", "Ciudad capital con edificios, apartamentos y casas antiguas y modernas."),
+    "escazu-y-santa-ana": ("Escazú y Santa Ana", "Escazú, San Rafael de Escazú, Santa Ana, Pozos y Lindora", "Condominios y casas de gama media y alta, con pantallas grandes y equipos de cine en casa."),
+    "heredia": ("Heredia", "Heredia centro, San Pablo, Santo Domingo, Belén y San Rafael", "Casas, condominios y barrios universitarios al norte del Valle Central."),
+    "alajuela": ("Alajuela", "Alajuela centro, San Antonio, La Guácima, Río Segundo y Atenas", "Viviendas familiares y condominios cerca del aeropuerto y del Valle Central."),
+    "cartago": ("Cartago", "Cartago centro, Paraíso, Tres Ríos y Oreamuno", "Casas y condominios en una zona fresca y húmeda del Valle Central."),
+    "curridabat-y-san-pedro": ("Curridabat y San Pedro", "Curridabat, San Pedro, Montes de Oca, Sabanilla y Zapote", "Barrios y condominios del este de San José, con mucha vivienda de estudiantes y familias."),
+    "liberia-y-guanacaste": ("Liberia y Guanacaste", "Liberia, Nicoya, Santa Cruz, Playas del Coco y Tamarindo", "Casas, hoteles y alquileres vacacionales en una zona cálida, con estación seca marcada."),
+}
+ZX_CR = {
+    "san-jose": ("edificios, apartamentos y casas de varias épocas", "el tráfico y el estacionamiento limitado del centro", "San José centro, Barrio Escalante, Sabana y Pavas"),
+    "escazu-y-santa-ana": ("condominios y casas con pantallas grandes y equipos de cine en casa", "el registro de ingreso del condominio y la distancia al coordinar la franja", "Escazú, Santa Ana, Pozos y Lindora"),
+    "heredia": ("casas, condominios y barrios universitarios", "el tráfico hacia el norte del Valle Central", "Heredia centro, San Pablo, Belén y Santo Domingo"),
+    "alajuela": ("viviendas familiares y condominios", "el tráfico de la autopista y la distancia al coordinar la franja", "Alajuela centro, San Antonio, La Guácima y Río Segundo"),
+    "cartago": ("casas y condominios en una zona fresca", "la distancia desde San José y el tráfico de la ruta a Cartago", "Cartago centro, Paraíso, Tres Ríos y Oreamuno"),
+    "curridabat-y-san-pedro": ("barrios y condominios del este de San José", "el tráfico de hora pico y el poco estacionamiento", "Curridabat, San Pedro, Sabanilla y Zapote"),
+    "liberia-y-guanacaste": ("casas, hoteles y alquileres vacacionales", "la distancia desde San José y la coordinación previa de la visita", "Liberia, Nicoya, Santa Cruz y las playas cercanas"),
+}
+CLIMA_CR = {
+    "san-jose": "las tormentas eléctricas de la temporada de lluvias, que traen picos de voltaje, y los cortes de energía ocasionales",
+    "escazu-y-santa-ana": "las tormentas eléctricas de la temporada de lluvias y la electrónica sensible de las pantallas grandes y los equipos de cine en casa",
+    "heredia": "las lluvias de la tarde, la humedad y los picos de voltaje en tormentas",
+    "alajuela": "el calor del Valle Central, las tormentas eléctricas y los picos de voltaje",
+    "cartago": "el clima fresco y húmedo, que favorece la condensación en la electrónica, y las tormentas de la temporada de lluvias",
+    "curridabat-y-san-pedro": "las tormentas eléctricas de la temporada de lluvias y el uso intensivo de las pantallas en viviendas de estudiantes y familias",
+    "liberia-y-guanacaste": "el calor intenso, la estación seca con polvo y las tormentas eléctricas con picos de voltaje de la temporada de lluvias",
+}
+COSTARICA = dict(
+    sitio="costarica", dom="https://servicio-tecnico-costa-rica.com", ciudad="Costa Rica", nombre="Servicio Técnico Costa Rica",
+    tel="+506 7005-5853", telw="50670055853", locale="es-CR", cc="CR", region="San José", pais="Costa Rica",
+    gsc=["XYsqhIDh94Jrxjg0dah9SUxAZTDy98U0yn3pNy_Sb7E"],
+    ext_lg=("Página del fabricante: LG Costa Rica", "https://www.lg.com/cr/"), ext_samsung=("Página del fabricante: Samsung Costa Rica", "https://www.samsung.com/cr/"),
+    guia_humedad=("humedad-calor-y-lluvias-en-pantallas", "Humedad, calor y lluvias en pantallas {N} en Costa Rica", "Cómo la humedad, el calor y la temporada de lluvias de Costa Rica afectan tus pantallas {N}: qué fallas provocan y cómo prevenirlas."),
+    intro_clima="En Costa Rica hay una estación seca y una temporada de lluvias con tormentas eléctricas casi diarias en muchas zonas, además de humedad alta en la costa y el Caribe.",
+    costero=False, nev=("refrigeradoras", "refrigeradora", "refrigeradoras"),
+    zonas=ZONAS_CR, zx=ZX_CR, clima=CLIMA_CR,
+    area=["San José", "Escazú", "Heredia", "Alajuela", "Cartago", "Liberia"], geo_region="CR-SJ",
+    zlista="San José, Escazú y Santa Ana, Heredia, Alajuela, Cartago, Curridabat y San Pedro, y Liberia y Guanacaste",
+    zart={"san-jose": "San José", "escazu-y-santa-ana": "Escazú y Santa Ana", "heredia": "Heredia", "alajuela": "Alajuela", "cartago": "Cartago", "curridabat-y-san-pedro": "Curridabat y San Pedro", "liberia-y-guanacaste": "Liberia y Guanacaste"},
+    ley_datos="Ley 8968 de Protección de la Persona frente al tratamiento de sus datos personales de Costa Rica", ley_consumo="Ley 7472 de Promoción de la Competencia y Defensa Efectiva del Consumidor de Costa Rica",
+    sin_recorte=True, lbl_guias="Blog de consejos", tv=True,
+)
+CFG = {"cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA}.get(SITIO, PANAMA)
 
 # ----------------------------------------------------------------------------- localización de datos (solo Cali)
 REEMP_CALI = [
@@ -197,6 +241,12 @@ def L(h):
         ("es-PA", CFG["locale"]), ("es_PA", CFG["locale"].replace("-", "_")), ('"addressCountry": "PA"', '"addressCountry": "%s"' % CFG["cc"]),
         ("en Panamá", "en " + CFG["ciudad"]), ("de Panamá", "de " + CFG["ciudad"]), ("Panamá", CFG["ciudad"]), ("Panam%C3%A1", CFG["ciudad"]),
     ]: h = h.replace(a, b)
+    if CFG.get("tv"):
+        h = re.sub(r"(?<=[ >«(])(led|qled|oled)\b", lambda m_: m_.group(1).upper(), h, flags=re.I)
+        h = h.replace("mini LED", "Mini LED").replace("Mini led", "Mini LED")
+        for x, y in [("filtros, bombas, sensores y empaques", "fuentes de poder, tiras de LED, puertos y cables"), ("Las placas y los compresores", "Los paneles y las placas"), ("las placas y los compresores", "los paneles y las placas"),
+                     ("placas y compresores", "placas y paneles"), ("en los equipos con compresor o placa electrónica", "en las pantallas"), ("en equipos con compresor o placa electrónica", "en las pantallas"), ("compresores", "paneles")]:
+            h = h.replace(x, y)
     if CFG["nev"][1] != "refrigeradora":
         h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)
     _cl = ("humedad y lluvias", "Humedad y lluvias") if CFG.get("frio") else ("humedad y calor", "Humedad y calor")
