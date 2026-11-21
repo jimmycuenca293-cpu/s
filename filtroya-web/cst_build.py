@@ -186,12 +186,6 @@ LB["knowsLanguage"] = "es"
 
 def decorar(marca, cuerpo, hero, path):
     """Añade fondos y fotos de la marca: héroe con foto de fondo, banda de contacto, fondos suaves y galería. Sin repetir imagen dentro de la página."""
-    if CFG.get("sin_recorte"):   # sin fotos de fondo ni galerías recortadas: las fotos se muestran completas en el cuerpo
-        banda = (f'<section class="band"><div class="w"><h2>Pide tu visita {nom(marca)} hoy</h2><p>Cuéntanos el modelo y la falla por WhatsApp y coordinamos el día y la franja en tu zona.</p>'
-                 f'<a class="btn" href="{wa("Hola, necesito servicio técnico " + nom(marca) + " en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a></div></section>')
-        i = cuerpo.find("</section>")
-        if i >= 0 and cuerpo.count("</section>") >= 3: cuerpo = cuerpo[:i + 10] + banda + cuerpo[i + 10:]
-        return cuerpo, "none"
     p = POOLS.get(marca) or []
     vistas = set(re.findall(r'/img/[^"\')\s]+', cuerpo)) | ({hero[0]} if hero else set())
     es_eq = ("/falla-" in path) or ("/reparacion-" in path)
@@ -223,7 +217,7 @@ def decorar(marca, cuerpo, hero, path):
     # galería final
     es_equipo = ("/falla-" in path) or ("/reparacion-" in path)
     g = libre(path + "gal", 4, gente=es_equipo)
-    if len(g) >= 2:
+    if len(g) >= 2 and not CFG.get("sin_recorte"):   # Guayaquil/Cali/Panamá nuevos: las fotos del contenido van completas en franjas, no en galería recortada
         cuerpo += sec((f"Nuestro servicio {nom(marca)} en Panamá" if es_equipo else f"Equipos y servicio {nom(marca)} en Panamá"), '<div class="gal">' + "".join(f'<img loading="lazy" src="{u}" alt="{a}" width="1024" height="768">' for u, a in g) + '</div>')
     return cuerpo, bgi
 def copia_ruta(m, f):
