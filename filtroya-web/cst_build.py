@@ -57,9 +57,29 @@ def copia(m, f):
     if not (d / n).exists(): shutil.copyfile(f, d / n)
     return f"/img/{m}/{n}"
 def alt_de(m, f, extra=""):
-    t = re.sub(r"\.webp$", "", f.name); t = re.sub(r"[-_]+", " ", t); t = re.sub(r"(?i)autorizad[oa]s?|oficial(es)?", "", t)
-    t = re.sub(r"\b(\d+|producto|banner|cutout|ge|1|2|3|4)\b", "", t).strip()
-    return esc(re.sub(r"\s+", " ", LOC((t[:1].upper() + t[1:] + f" · {M[m]['nombre']} Panamá").strip())))
+    """Texto alternativo descriptivo (SEO y accesibilidad): qué muestra la foto, de qué marca y en qué ciudad."""
+    n = f.name.lower(); N = M[m]["nombre"]; ciu = CFG["ciudad"]
+    eq = None
+    for rx, nombre in ((r"centro-lavado|torre|washtower", "Centro de lavado"), (r"lavavajillas", "Lavavajillas"), (r"microondas", "Microondas"), (r"secadora", "Secadora"), (r"lavadora", "Lavadora"),
+                       (r"aire|windfree", "Aire acondicionado"), (r"horno", "Horno empotrado"), (r"estufa|cocina|hornillas", "Cocina"), (r"nevera|refriger|family|french|side-by-side|top-freezer", "Refrigeradora"), (r"batidora", "Batidora de pedestal")):
+        if re.search(rx, n): eq = nombre; break
+    rasgos = [t for rx, t in ((r"side-by-side", "side by side"), (r"french", "french door"), (r"top-freezer|congelador-superior", "con congelador arriba"), (r"frontal", "de carga frontal"), (r"carga-superior", "de carga superior"),
+                              (r"inverter", "inverter"), (r"dispensador", "con dispensador"), (r"family|familyhub", "Family Hub"), (r"empotr", "empotrado"), (r"windfree", "WindFree"), (r"interior|abierta", "abierta por dentro")) if re.search(rx, n)]
+    _ok = {"Refrigeradora": {"side by side", "french door", "con congelador arriba", "inverter", "con dispensador", "Family Hub", "abierta por dentro"}, "Lavadora": {"de carga frontal", "de carga superior"}, "Secadora": {"de carga frontal", "de carga superior"},
+           "Centro de lavado": set(), "Aire acondicionado": {"inverter", "WindFree"}, "Cocina": set(), "Horno empotrado": {"empotrado"}, "Lavavajillas": set(), "Microondas": set(), "Batidora de pedestal": set()}
+    rasgos = [r_ for r_ in rasgos if r_ in _ok.get(eq, set())]
+    gente = re.search(r"tecnico|asesora|recep|agente|equipo-de|taller|secretaria|mostrador|cliente|servicio-centro|banner", n)
+    if gente:
+        if re.search(r"banner", n): t = f"Servicio técnico {N} a domicilio en {ciu}"
+        elif re.search(r"asesora|recep|mostrador|agente|secretaria|telefono|oficina", n): t = f"Asesora de atención al cliente de {N} coordinando una visita en {ciu}"
+        elif re.search(r"taller|equipo-de", n): t = f"Equipo de técnicos en el taller de servicio {N}"
+        elif re.search(r"saluda|llegada|llegando|puerta|furgon|domicilio-cliente|portada", n): t = f"Técnico {N} llegando a un domicilio en {ciu} para una visita de servicio"
+        elif re.search(r"tablet|explicando|entrega|orden", n): t = f"Técnico {N} explicando el diagnóstico a un cliente en {ciu}"
+        elif eq: t = f"Técnico {N} reparando {('una ' if eq in ('Refrigeradora','Lavadora','Secadora','Cocina') else 'un ')}{eq.lower()} en {ciu}"
+        else: t = f"Técnico {N} atendiendo a un cliente en {ciu}"
+    elif eq: t = f"{eq} {N} {' '.join(rasgos)} que reparamos en {ciu}".replace("  ", " ")
+    else: t = f"Equipos {N} en {ciu}"
+    return esc(re.sub(r"\s+", " ", t).strip())
 def elegir(m, clave, cuantas=2, equipo=None):
     p = POOLS[m]
     if equipo is None: equipo = "_gente"
@@ -177,7 +197,7 @@ def pie(marca=None, lista_marcas=False):
     flogo = f'<span class="fl"><img src="/img/logos/{marca}-blanco.png" alt="Logo {nom(marca)}" width="190" height="48" style="display:block;height:44px;width:auto;max-width:200px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none"></span>' if marca else ""
     return ('<footer><div class="w">' + flogo + '<div class="g c4">' + cols + '</div></div></footer>'
             f'<div class="fb"><a href="tel:+{TELN}">Llamar</a><a class="wa" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div>')
-LB = {"@type": "ProfessionalService", "knowsAbout": ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, 
+LB = {"@type": "ProfessionalService", "knowsAbout": ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"] + [f"Servicio técnico {M[x]['nombre']}" for x in BRANDS_ORDER], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, 
       "areaServed": [{"@type": "City", "name": c} for c in (CFG.get("area") or ["Ciudad de Panamá", "San Miguelito", "Arraiján", "La Chorrera", "Colón"])],
       "address": {"@type": "PostalAddress", "addressLocality": CFG["ciudad"], "addressRegion": CFG["region"], "addressCountry": CFG["cc"]}}
 LB["contactPoint"] = [{"@type": "ContactPoint", "telephone": "+" + TELN, "contactType": "customer service", "availableLanguage": ["es"], "areaServed": CFG["cc"]}]
@@ -559,8 +579,10 @@ def build_marca(m):
               + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
     path = "/" if m == "samsung" else base(m)
     t = f"Centro de Servicio Técnico {N} Panamá | A domicilio" if m != "general-electric" else f"Centro de Servicio Técnico {N} Panamá"
-    ld = [faq_ld(FAQ_H), {"@type": "Service", "name": f"Servicio técnico {N} en Panamá", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá", "serviceType": f"Reparación de electrodomésticos {N}", "brand": {"@type": "Brand", "name": N},
-          "hasOfferCatalog": {"@type": "OfferCatalog", "name": f"Servicios para equipos {N}", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Reparación de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0])}} for e in d["equipos"]]}}]
+    ld = [faq_ld(FAQ_H), {"@type": "Service", "name": f"Servicio técnico {N} en Panamá", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá", "serviceType": f"Reparación de electrodomésticos {N}", "brand": {"@type": "Brand", "name": N, "sameAs": EXT[m][1]},
+          "hasOfferCatalog": {"@type": "OfferCatalog", "name": f"Servicios para equipos {N}", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Reparación de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0])}} for e in d["equipos"]]
+              + ([{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Mantenimiento de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0]) + "#mantenimiento"}} for e in d["equipos"]]
+                 + [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Instalación de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0]) + "#instalacion"}} for e in d["equipos"] if e != "batidoras"] if CFG.get("sin_recorte") else [])}}]
     pagina(path, t, f"Centro de servicio técnico {N} en Panamá: reparación a domicilio de {', '.join(EQ[e][2] for e in d['equipos'][:3])} y más. Diagnóstico en casa y atención por WhatsApp.",
            f"Centro de Servicio Técnico {N} Panamá", cuerpo, m, hero[0] if hero else None, [(f"Centro de Servicio Técnico {N} Panamá", base(m))], ld,
            bd=f"{N} · Panamá", prio="1.0" if m == "samsung" else "0.9",
