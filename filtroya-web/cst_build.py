@@ -443,6 +443,28 @@ BATIDORA = dict(
                      ("Revisar escobillas del motor", "Cada 1 o 2 años según uso", "Escobillas gastadas hacen que la batidora pierda potencia.")],
               gye="En Guayaquil la humedad puede afectar el motor y las partes metálicas. Guarda la batidora seca y limpia, y evita lavar la cabeza con agua."),
     inst=None)
+QUITO_MI = {
+ "neveras": dict(mant_intro="El mantenimiento preventivo de una refrigeradora es sencillo y evita la mayoría de averías caras. En Quito el clima fresco ayuda al equipo, pero el polvo de los meses secos y los picos de voltaje de la temporada de lluvias afectan el condensador y la placa.",
+                 mant_gye="En Quito conviene limpiar el condensador al terminar los meses secos, cuando más polvo se acumula, y revisar la protección de voltaje antes de la temporada de lluvias. El aire seco de altura reseca los empaques de las puertas, así que revísalos con regularidad.",
+                 inst_gye="En edificios de Quito con ascensor pequeño o escaleras angostas, conviene medir antes. En casas antiguas del Centro Histórico, revisa que los tomacorrientes tengan conexión a tierra antes de conectar la refrigeradora, porque el equipo no debe trabajar sin ella."),
+ "lavadoras": dict(mant_intro="El mantenimiento preventivo de la lavadora evita bombas tapadas, malos olores y averías. En Quito, donde se lava mucha ropa gruesa y se seca dentro de casa, conviene cuidar el filtro, el sello y el desagüe.",
+                    mant_gye="En Quito la ropa de abrigo, las cobijas y la pelusa tapan el filtro de la bomba más rápido. Si el agua de tu zona deja sedimentos, limpia las mallas de las mangueras de entrada con más frecuencia.",
+                    inst_gye="En departamentos de Quito es común que el desagüe de la lavadora comparta tubería con el lavamanos o el piso. Hay que revisar que la tubería tenga capacidad y ventilación, o la lavadora se quedará con agua o hará ruido de gorgoteo."),
+ "secadoras": dict(mant_intro="Una secadora bien mantenida seca más rápido, gasta menos energía y evita riesgos de incendio por pelusa acumulada, que es la causa más seria de accidentes con secadoras. En Quito, con días frescos y lluviosos, es el equipo que más ayuda a secar la ropa, por eso se usa tanto.",
+                    mant_gye="En Quito la ropa gruesa y las cobijas generan mucha pelusa: limpia el filtro después de cada ciclo y el ducto una vez al año. Si tu cuarto de lavado no tiene salida directa al exterior, revisa con más frecuencia el escape.",
+                    inst_gye="En edificios de Quito es común que no exista salida de ducto: en ese caso conviene una secadora de condensación o de bomba de calor, o definir una salida segura al exterior antes de comprar."),
+ "cocinas": dict(mant_intro="El mantenimiento de una cocina y un horno es sobre todo limpieza y seguridad: quemadores limpios, conexión de gas en buen estado y componentes eléctricos secos.",
+                  mant_gye="En Quito, por la altura, la llama de los quemadores a gas necesita una mezcla de aire bien ajustada: si ves llama amarilla o con puntas rojas, pide revisar el quemador. Las cocinas de inducción, muy comunes en la ciudad, agradecen un protector de voltaje durante la temporada de lluvias.",
+                  inst_gye="En edificios de Quito con gas centralizado o con cilindro en el balcón, la ruta de la manguera y la ventilación del cilindro son parte de la instalación segura. Para cocinas de inducción, verifica la capacidad del circuito: muchas requieren 220 V."),
+ "aires": dict(mant_intro="El mantenimiento de un aire acondicionado incluye limpiar filtros, evaporador, condensador y drenaje, además de medir presiones. En Quito el clima fresco hace que el aire se use menos que en la costa, pero el mantenimiento anual igual evita olores, goteos y fallas por picos de voltaje.",
+                mant_gye="En Quito el aire acondicionado se usa menos horas que en la costa, pero el polvo de los meses secos y las tormentas de la temporada de lluvias afectan filtros, unidad exterior y placa. Programa el mantenimiento antes de la temporada de uso más intenso y revisa la protección de voltaje.",
+                inst_gye="En Quito conviene instalar con protección contra picos de voltaje y revisar que la estructura de la unidad exterior soporte el viento y la radiación solar. En fachadas de edificios, hay que respetar las normas de la administración y usar soportes resistentes a la corrosión."),
+ "lavavajillas": dict(mant_gye="El agua de la ciudad puede dejar sarro con el tiempo. Si notas manchas blancas en vasos y platos, ajusta la sal regeneradora y el abrillantador y haz limpieza periódica.",
+                       inst_gye="En departamentos de Quito, el espacio bajo el fregadero suele ser pequeño. Conviene planificar la salida del desagüe y la llave de paso antes de comprar."),
+ "microondas": dict(mant_gye="Los picos de voltaje de la temporada de lluvias afectan la electrónica de los microondas, por eso es importante dejar espacio de ventilación y evitar enchufarlos junto a otros equipos de alto consumo."),
+ "batidoras": dict(mant_gye="En Quito el aire seco de altura ayuda a conservar las partes metálicas, pero guarda la batidora limpia y seca y evita lavar la cabeza con agua."),
+}
+QUITO_MI["centro-lavado"] = QUITO_MI["lavadoras"]
 def _gye_loc(t):
     """Adapta los textos de mantenimiento e instalación (escritos para Guayaquil) a la ciudad del sitio."""
     if CFG["sitio"] == "guayaquil": return t
@@ -457,8 +479,9 @@ def bloque_mant_inst(m, e):
     d = M[m]; N = nom(m); sing = EQ[e][1]; pl = EQ[e][2]; bi = BRANDS_ORDER.index(m)
     g = BATIDORA if e == "batidoras" else {"mant": _gye()[e]["mant"], "inst": _gye()[e]["inst"]}
     mt, ins = g["mant"], g["inst"]
-    mt = {**mt, "intro": _gye_loc(mt["intro"]), "gye": _gye_loc(mt["gye"])}
-    if ins: ins = {**ins, "intro": _gye_loc(ins["intro"]), "gye": _gye_loc(ins["gye"])}
+    ov = QUITO_MI.get(e, {}) if CFG["sitio"] == "quito" else {}
+    mt = {**mt, "intro": ov.get("mant_intro") or _gye_loc(mt["intro"]), "gye": ov.get("mant_gye") or _gye_loc(mt["gye"])}
+    if ins: ins = {**ins, "intro": ov.get("inst_intro") or _gye_loc(ins["intro"]), "gye": ov.get("inst_gye") or _gye_loc(ins["gye"])}
     filas = _rot(mt["tabla"], bi, 5) if len(mt["tabla"]) > 4 else mt["tabla"]
     raiz = sing.split()[0][:5].lower()
     propios = [x for x in d["mantenimiento"] if raiz in x.lower()]
@@ -1064,8 +1087,8 @@ def arts_marca(m):
     rxh = re.compile(r"placa|tarjeta|inverter|contacto|empaque|corros|comunicaci|moho|pantalla|conector|cableado", re.I)
     eh = [(e, [x for x in d["fallas"][e] if rxh.search(x[1] + " " + x[0])]) for e in E]
     eh = [(e, fs) for e, fs in eh if fs]
-    intro_h = ("En Panamá la humedad es alta casi todo el año y cerca del mar se suma el salitre." if CFG["costero"] else f"En {CFG['ciudad']} el calor es constante y la humedad sube en las épocas de lluvia.")
-    sec_h = [("Qué hace la humedad en tus equipos " + N, f"<p>{intro_h} Corroen contactos y placas, favorecen el moho en empaques y causan falsos contactos. En equipos {N} esto se nota sobre todo en {pls([e for e, _ in eh[:3]]) if eh else pls(E[:3])}.</p>")]
+    intro_h = CFG.get("intro_clima") or ("En Panamá la humedad es alta casi todo el año y cerca del mar se suma el salitre." if CFG["costero"] else f"En {CFG['ciudad']} el calor es constante y la humedad sube en las épocas de lluvia.")
+    sec_h = [(("Qué hacen la altura y la humedad en tus equipos " if CFG.get("frio") else "Qué hace la humedad en tus equipos ") + N, f"<p>{intro_h} La humedad corroe contactos y placas, favorece el moho en empaques y causa falsos contactos. En equipos {N} esto se nota sobre todo en {pls([e for e, _ in eh[:3]]) if eh else pls(E[:3])}.</p>")]
     for e, fs in eh[:5]:
         f = fs[0]
         sec_h.append((f"{EQ[e][2].capitalize()} {N} y la humedad", f"<p><b>Falla que puede aparecer:</b> {esc(f[0].rstrip('.'))}. <b>Causa probable:</b> {esc(bajar(f[1]))}</p><p><b>Qué hace el técnico:</b> {esc(f[2])}</p>" + lk(e)))

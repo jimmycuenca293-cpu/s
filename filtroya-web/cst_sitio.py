@@ -102,7 +102,52 @@ GUAYAQUIL = dict(
     ley_datos="Ley Orgánica de Protección de Datos Personales del Ecuador", ley_consumo="Ley Orgánica de Defensa del Consumidor del Ecuador",
     sin_recorte=True, lbl_guias="Blog de consejos",
 )
-CFG = {"cali": CALI, "guayaquil": GUAYAQUIL}.get(SITIO, PANAMA)
+
+# ----------------------------------------------------------------------------- QUITO
+ZONAS_QUITO = {
+    "norte-de-quito": ("Norte de Quito", "La Carolina, Iñaquito, El Batán, Quito Tennis, Jipijapa, Cotocollao y Carcelén", "Edificios de departamentos, casas y conjuntos de estratos medios y altos."),
+    "centro-norte-de-quito": ("Centro norte de Quito", "La Mariscal, González Suárez, La Floresta, Guápulo y Bellavista", "Edificios de departamentos y casas antiguas en barrios muy céntricos."),
+    "centro-historico-de-quito": ("Centro Histórico de Quito", "el Centro Histórico, San Marcos, San Juan y La Loma", "Casas y edificios antiguos que mezclan vivienda y comercio."),
+    "sur-de-quito": ("Sur de Quito", "Quitumbe, Chillogallo, La Magdalena, Solanda, Villaflora y Chimbacalle", "Barrios muy poblados con casas de varios pisos y mucho uso diario de electrodomésticos."),
+    "valle-de-los-chillos": ("Valle de Los Chillos", "San Rafael, Sangolquí, Conocoto y Amaguaña", "Conjuntos residenciales y casas amplias al oriente de la ciudad."),
+    "cumbaya-y-tumbaco": ("Cumbayá y Tumbaco", "Cumbayá, Lumbisí, Tumbaco, Puembo y Pifo", "Urbanizaciones y casas con jardín, con equipos de gama media y alta."),
+    "calderon-y-pomasqui": ("Calderón y Pomasqui", "Calderón, Carapungo, Pomasqui y San Antonio de Pichincha", "Barrios y urbanizaciones del norte, con casas familiares de uso intensivo."),
+}
+ZX_QUITO = {
+    "norte-de-quito": ("edificios de departamentos y casas de estratos medios y altos", "el ingreso por portería y el horario del ascensor de carga cuando el equipo es grande", "La Carolina, Iñaquito, El Batán y Cotocollao"),
+    "centro-norte-de-quito": ("edificios de departamentos y casas antiguas en calles estrechas", "el tráfico y el poco estacionamiento de la zona", "La Mariscal, González Suárez, La Floresta y Guápulo"),
+    "centro-historico-de-quito": ("casas y edificios antiguos de varios pisos, muchos sin ascensor", "las calles empinadas y de acceso restringido para vehículos", "el Centro Histórico, San Marcos y San Juan"),
+    "sur-de-quito": ("casas de varios pisos y barrios muy poblados", "la distancia desde el norte y el tráfico de hora pico", "Quitumbe, Chillogallo, Solanda y Villaflora"),
+    "valle-de-los-chillos": ("conjuntos residenciales y casas amplias", "el tráfico de la autopista y el registro de ingreso de cada conjunto", "San Rafael, Sangolquí y Conocoto"),
+    "cumbaya-y-tumbaco": ("urbanizaciones y casas con jardín", "el registro de ingreso de cada urbanización y la distancia al coordinar la franja", "Cumbayá, Tumbaco y Puembo"),
+    "calderon-y-pomasqui": ("barrios familiares y urbanizaciones del norte", "la distancia desde el centro y el tráfico de la vía Panamericana", "Calderón, Carapungo y Pomasqui"),
+}
+CLIMA_QUITO = {
+    "norte-de-quito": "la altura, el clima fresco y las lluvias de la tarde, que traen tormentas eléctricas y picos de voltaje",
+    "centro-norte-de-quito": "la altura, los cambios de temperatura entre el día y la noche y los cortes de energía en la temporada de lluvias",
+    "centro-historico-de-quito": "el cableado antiguo de muchos inmuebles y la humedad de las casas de piedra y adobe",
+    "sur-de-quito": "el uso intensivo de los electrodomésticos, el polvo de los meses secos y los picos de voltaje en tormentas",
+    "valle-de-los-chillos": "el clima más templado que el centro, el polvo de los meses secos y las tormentas de la temporada de lluvias",
+    "cumbaya-y-tumbaco": "el clima templado y seco, el polvo y las tormentas eléctricas de la temporada de lluvias",
+    "calderon-y-pomasqui": "el viento y el polvo de los meses secos y las tormentas con granizo de la temporada de lluvias",
+}
+QUITO = dict(
+    sitio="quito", dom="https://servicio-tecnico-quito.com", ciudad="Quito", nombre="Servicio Técnico Quito",
+    tel="+593 98 039 8179", telw="593980398179", locale="es-EC", cc="EC", region="Pichincha", pais="Ecuador",
+    gsc=["44WKxBkABsUarAnT8SfL6pqLT-POtaKN39b-lDkuhUI"],
+    ext_lg=("Página del fabricante: LG Ecuador", "https://www.lg.com/ec/"), ext_samsung=("Página del fabricante: Samsung Ecuador", "https://www.samsung.com/ec/"),
+    guia_humedad=("altura-frio-y-lluvias-en-equipos", "Altura, frío y lluvias en equipos {N} en Quito", "Cómo la altura, los cambios de temperatura y la temporada de lluvias de Quito afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas."),
+    intro_clima="Quito está a unos 2.850 metros de altura, con clima fresco y una temporada de lluvias con tormentas eléctricas y granizo. No hay calor húmedo, pero la humedad de las lluvias y la condensación por los cambios de temperatura entre el día y la noche también afectan a los equipos.",
+    costero=False, frio=True, nev=("refrigeradoras", "refrigeradora", "refrigeradoras"),
+    zonas=ZONAS_QUITO, zx=ZX_QUITO, clima=CLIMA_QUITO,
+    area=["Quito", "Cumbayá", "Sangolquí", "Calderón"], geo_region="EC-P",
+    zlista="el norte, el centro norte, el Centro Histórico, el sur, el Valle de Los Chillos, Cumbayá y Tumbaco, y Calderón y Pomasqui",
+    zart={"norte-de-quito": "el norte de Quito", "centro-norte-de-quito": "el centro norte de Quito", "centro-historico-de-quito": "el Centro Histórico de Quito", "sur-de-quito": "el sur de Quito",
+          "valle-de-los-chillos": "el Valle de Los Chillos", "cumbaya-y-tumbaco": "Cumbayá y Tumbaco", "calderon-y-pomasqui": "Calderón y Pomasqui"},
+    ley_datos="Ley Orgánica de Protección de Datos Personales del Ecuador", ley_consumo="Ley Orgánica de Defensa del Consumidor del Ecuador",
+    sin_recorte=True, lbl_guias="Blog de consejos",
+)
+CFG = {"cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO}.get(SITIO, PANAMA)
 
 # ----------------------------------------------------------------------------- localización de datos (solo Cali)
 REEMP_CALI = [
@@ -124,7 +169,9 @@ def _sentencias_sin_ciudad(t):
 def _loc_str(t, clave=None):
     for a, b in REEMP_CALI: t = t.replace(a, b)
     if clave == "origen": t = _sentencias_sin_ciudad(t)
-    t = t.replace("humedad y salitre", "humedad y calor").replace("la humedad y el salitre", "la humedad y el calor")
+    _cl = "humedad y lluvias" if CFG.get("frio") else "humedad y calor"
+    t = t.replace("humedad y salitre", _cl).replace("la humedad y el salitre", "la " + _cl)
+    if CFG.get("frio"): t = t.replace("en el trópico", "en la ciudad")
     t = t.replace("en Panamá", "en " + CFG["pais"]).replace("Panamá", CFG["pais"])
     return _vocab(t) if CFG["nev"][1] != "refrigeradora" else t
 def _deep(x, clave=None):
@@ -152,6 +199,7 @@ def L(h):
     ]: h = h.replace(a, b)
     if CFG["nev"][1] != "refrigeradora":
         h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)
-    h = h.replace("humedad y salitre", "humedad y calor").replace("Humedad y salitre", "Humedad y calor")
+    _cl = ("humedad y lluvias", "Humedad y lluvias") if CFG.get("frio") else ("humedad y calor", "Humedad y calor")
+    h = h.replace("humedad y salitre", _cl[0]).replace("Humedad y salitre", _cl[1])
     h = re.sub(r"(%s) \| %s\b" % (CFG["ciudad"], CFG["ciudad"]), r"\1", h)
     return re.sub(r"\x00(\d+)\x00", lambda m: _rutas[int(m.group(1))], h)
