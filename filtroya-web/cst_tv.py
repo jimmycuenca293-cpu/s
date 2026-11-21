@@ -2,7 +2,7 @@
 """Datos de pantallas (televisores) para servicio-tecnico-costa-rica.com.
 Mismo formato que cst_datos (M, EQ, BRANDS_ORDER) para reutilizar el generador de marcas."""
 
-BRANDS_ORDER = ["samsung", "lg", "sony", "tcl", "hisense", "philips"]
+BRANDS_ORDER = ["samsung", "lg", "sony"]
 EQ = {
     "tv-led": ("pantallas-led", "pantalla LED", "pantallas LED"),
     "tv-qled": ("pantallas-qled", "pantalla QLED", "pantallas QLED y Mini LED"),
@@ -63,76 +63,43 @@ ARQ = {
 MARCAS = {
  "samsung": dict(nombre="Samsung", color="#1428a0", pais="Corea del Sur", sistema="Tizen",
   origen="Samsung Electronics es una empresa surcoreana. Sus pantallas usan el sistema Tizen y las líneas Crystal UHD, QLED y Neo QLED.",
-  lineas=["Crystal UHD", "QLED", "Neo QLED", "Neo QLED 8K", "The Frame", "The Serif"], equipos=["tv-led", "tv-qled"],
+  lineas=["Crystal UHD", "QLED", "Neo QLED", "Neo QLED 8K", "OLED (QD-OLED)", "The Frame"], equipos=["tv-led", "tv-qled", "tv-oled"],
   tech={"tv-led": "Las pantallas Samsung Crystal UHD usan retroiluminación LED, el sistema Tizen y el procesador Crystal. Las fallas más comunes son la fuente de poder, la retroiluminación y la placa principal.",
-        "tv-qled": "Las QLED y Neo QLED de Samsung añaden puntos cuánticos y, en los modelos altos, una caja One Connect externa que concentra las conexiones. Una falla en esa caja o en su cable puede dejar la pantalla sin señal."},
-  etiqueta={"tv-led": "En la etiqueta de la parte trasera y en el menú Configuración > Soporte > Acerca de este TV.", "tv-qled": "En la etiqueta trasera y en el menú Configuración > Soporte > Acerca de este TV."},
+        "tv-qled": "Las QLED y Neo QLED de Samsung añaden puntos cuánticos y, en los modelos altos, una caja One Connect externa que concentra las conexiones. Una falla en esa caja o en su cable puede dejar la pantalla sin señal.",
+        "tv-oled": "Las pantallas OLED de Samsung (QD-OLED) combinan píxeles que emiten luz propia con puntos cuánticos. No tienen retroiluminación, así que las fallas típicas son retención de imagen, bandas de color, fuente de poder y placa principal."},
+  etiqueta={"tv-led": "En la etiqueta de la parte trasera y en el menú Configuración > Soporte > Acerca de este TV.", "tv-qled": "En la etiqueta trasera y en el menú Configuración > Soporte > Acerca de este TV.", "tv-oled": "En la etiqueta trasera y en el menú Configuración > Soporte > Acerca de este TV."},
   modelo_ej="Los modelos Samsung empiezan por UN (Crystal UHD) o QN (QLED), por ejemplo UN55CU7000 o QN65Q60C. Están en la etiqueta trasera y en el menú Soporte de la pantalla.",
-  garantia="Samsung ofrece garantía de fábrica en sus pantallas; su duración y condiciones dependen del modelo y del país de compra.",
+  garantia="Samsung ofrece garantía de fábrica en sus pantallas; su duración y condiciones dependen del modelo y del país de compra",
   mant=["Actualizar el software Tizen cuando la pantalla lo indique.", "Usar un protector de voltaje, sobre todo en la temporada de lluvias.", "No presionar la pantalla ni apoyar objetos sobre ella.", "En modelos con caja One Connect, mantener la caja ventilada y los cables firmes."],
   faq=[("¿Qué significa la luz roja que parpadea en mi pantalla Samsung?", "Indica que la pantalla está en espera o en protección. Si parpadea repetidamente al intentar encender, suele relacionarse con la fuente de poder o la placa principal."),
        ("¿Reparan Neo QLED y The Frame?", "Sí, incluyendo la caja One Connect y la retroiluminación por zonas."),
        ("¿La retroiluminación de una pantalla Samsung se puede reparar?", "Sí. Se reemplazan o reparan las tiras de LED y su driver; en pantallas grandes es una reparación frecuente.")]),
  "lg": dict(nombre="LG", color="#a50034", pais="Corea del Sur", sistema="webOS",
   origen="LG Electronics es una empresa surcoreana y una de las pioneras en pantallas OLED. Sus televisores usan el sistema webOS.",
-  lineas=["OLED evo", "OLED", "QNED", "NanoCell", "UHD", "StanbyME"], equipos=["tv-led", "tv-oled"],
+  lineas=["OLED evo", "OLED", "QNED", "NanoCell", "UHD", "StanbyME"], equipos=["tv-led", "tv-qled", "tv-oled"],
   tech={"tv-led": "Las pantallas LG UHD y NanoCell usan retroiluminación LED y el sistema webOS. Las fallas más comunes son la fuente de poder, la retroiluminación y la conexión Wi-Fi.",
+        "tv-qled": "Las QNED de LG combinan retroiluminación Mini LED con puntos cuánticos y NanoCell. Las fallas típicas son zonas oscuras por la atenuación local, manchas de luz y fuente de poder.",
         "tv-oled": "Las OLED de LG emiten luz propia en cada píxel y no tienen retroiluminación. Por eso las fallas típicas son retención de imagen, bandas de color, fuente de poder y placa principal."},
-  etiqueta={"tv-led": "En la etiqueta de la parte trasera y en el menú Todos los ajustes > Soporte > Información del TV.", "tv-oled": "En la etiqueta trasera y en el menú Todos los ajustes > Soporte > Información del TV."},
+  etiqueta={"tv-led": "En la etiqueta de la parte trasera y en el menú Todos los ajustes > Soporte > Información del TV.", "tv-qled": "En la etiqueta trasera y en el menú Todos los ajustes > Soporte > Información del TV.", "tv-oled": "En la etiqueta trasera y en el menú Todos los ajustes > Soporte > Información del TV."},
   modelo_ej="Los modelos LG empiezan por OLED, por el tamaño y una referencia, por ejemplo OLED55C3PSA o 50UR8750PSA. Están en la etiqueta trasera y en el menú Soporte.",
-  garantia="LG ofrece garantía de fábrica en sus pantallas; su duración y condiciones dependen del modelo y del país de compra.",
+  garantia="LG ofrece garantía de fábrica en sus pantallas; su duración y condiciones dependen del modelo y del país de compra",
   mant=["Actualizar webOS cuando la pantalla lo indique.", "En OLED, evitar imágenes fijas con brillo alto durante muchas horas y dejar que la pantalla haga su ciclo de compensación en espera.", "Usar un protector de voltaje, sobre todo en la temporada de lluvias.", "Limpiar la pantalla con un paño de microfibra seco, sin productos con alcohol."],
   faq=[("¿Qué es la retención de imagen en una OLED LG?", "Es una marca tenue que queda por mostrar una imagen fija mucho tiempo. A veces mejora con el ciclo de compensación de píxeles; si es permanente, se evalúa el panel."),
        ("¿Reparan OLED evo y QNED?", "Sí. Revisamos fuente de poder, placa principal, cintas del panel y, en QNED, la retroiluminación."),
        ("¿Mi pantalla LG no conecta al Wi-Fi, qué reviso?", "Reinicia el router, revisa la fecha y hora de la pantalla y actualiza webOS. Si sigue, puede ser el módulo Wi-Fi.")]),
  "sony": dict(nombre="Sony", color="#16161a", pais="Japón", sistema="Google TV",
   origen="Sony es una empresa japonesa de electrónica. Sus pantallas Bravia usan Google TV y los procesadores Cognitive Processor XR en los modelos altos.",
-  lineas=["Bravia XR OLED", "Bravia XR Mini LED", "Bravia XR LED", "Bravia 4K LED", "Serie X80", "Serie X90"], equipos=["tv-led", "tv-oled"],
+  lineas=["Bravia XR OLED", "Bravia XR Mini LED", "Bravia XR LED", "Bravia 4K LED", "Serie X80", "Serie X90"], equipos=["tv-led", "tv-qled", "tv-oled"],
   tech={"tv-led": "Las pantallas Sony Bravia LED usan Google TV y el procesador de imagen de la marca. Las fallas más comunes son la fuente de poder, la retroiluminación y los puertos HDMI.",
+        "tv-qled": "Las Bravia XR Mini LED de Sony usan retroiluminación Mini LED con atenuación local y el procesador Cognitive Processor XR. Las fallas típicas son zonas oscuras, halos y fuente de poder.",
         "tv-oled": "Las Bravia XR OLED de Sony emiten luz propia en cada píxel. Las fallas típicas son retención de imagen, bandas de color, fuente de poder y protección térmica."},
-  etiqueta={"tv-led": "En la etiqueta de la parte trasera y en el menú Configuración > Acerca de.", "tv-oled": "En la etiqueta trasera y en el menú Configuración > Acerca de."},
+  etiqueta={"tv-led": "En la etiqueta de la parte trasera y en el menú Configuración > Acerca de.", "tv-qled": "En la etiqueta trasera y en el menú Configuración > Acerca de.", "tv-oled": "En la etiqueta trasera y en el menú Configuración > Acerca de."},
   modelo_ej="Los modelos Sony empiezan por KD, XR o K, por ejemplo KD-55X80K o XR-65A80J. Están en la etiqueta trasera y en el menú Configuración > Acerca de.",
-  garantia="Sony ofrece garantía de fábrica en sus pantallas; su duración y condiciones dependen del modelo y del país de compra.",
+  garantia="Sony ofrece garantía de fábrica en sus pantallas; su duración y condiciones dependen del modelo y del país de compra",
   mant=["Actualizar el software de Google TV cuando la pantalla lo indique.", "Dejar espacio de ventilación detrás y a los lados de la pantalla.", "Usar un protector de voltaje, sobre todo en la temporada de lluvias.", "No usar productos de limpieza con alcohol ni amoníaco sobre la pantalla."],
   faq=[("¿Reparan las Bravia XR OLED?", "Sí. Revisamos fuente de poder, placa principal, cintas del panel y protección térmica."),
        ("¿Por qué mi pantalla Sony se reinicia sola?", "Suele ser firmware, memoria de la placa principal o una fuente de poder inestable. Actualizar el software y descartar la fuente resuelve la mayoría de los casos."),
        ("¿Qué hago si el HDMI de mi Sony no detecta la consola?", "Prueba otro cable y otro puerto, y apaga y enciende ambos equipos. Si sigue, puede ser el puerto HDMI.")]),
- "tcl": dict(nombre="TCL", color="#d71920", pais="China", sistema="Google TV o Roku TV",
-  origen="TCL es una empresa china de electrónica de consumo. Sus pantallas usan Google TV o Roku TV según el modelo.",
-  lineas=["Serie P (4K)", "Serie C (QLED)", "Serie C Mini LED", "Serie S (HD/Full HD)", "Serie QLED", "Mini LED"], equipos=["tv-led", "tv-qled"],
-  tech={"tv-led": "Las pantallas TCL LED usan Google TV o Roku TV según el modelo. Las fallas más comunes son la fuente de poder, la retroiluminación y la placa principal.",
-        "tv-qled": "Las QLED y Mini LED de TCL usan puntos cuánticos y retroiluminación por zonas. Las fallas típicas son zonas oscuras, manchas de luz y fuente de poder."},
-  etiqueta={"tv-led": "En la etiqueta de la parte trasera y en el menú Configuración > Sistema > Acerca de.", "tv-qled": "En la etiqueta trasera y en el menú Configuración > Sistema > Acerca de."},
-  modelo_ej="Los modelos TCL llevan el tamaño y una referencia, por ejemplo 55P635 o 65C645. Están en la etiqueta trasera y en el menú Configuración > Sistema > Acerca de.",
-  garantia="TCL ofrece garantía de fábrica en sus pantallas; su duración y condiciones dependen del modelo y del país de compra.",
-  mant=["Actualizar el sistema de la pantalla cuando lo indique.", "Usar un protector de voltaje, sobre todo en la temporada de lluvias.", "Dejar ventilación libre detrás y a los lados.", "Limpiar con microfibra seca, sin presionar el panel."],
-  faq=[("¿Reparan pantallas TCL Mini LED?", "Sí. Revisamos la retroiluminación por zonas, su driver y la fuente de poder."),
-       ("¿Mi TCL enciende pero no tiene imagen, ¿qué puede ser?", "Si hay sonido pero imagen muy oscura, casi siempre es la retroiluminación. Acerca una linterna a la pantalla para confirmarlo."),
-       ("¿Atienden pantallas TCL con Roku TV?", "Sí, tanto Google TV como Roku TV: el sistema no cambia la reparación de fuente, placa o retroiluminación.")]),
- "hisense": dict(nombre="Hisense", color="#00a19b", pais="China", sistema="VIDAA o Google TV",
-  origen="Hisense es una empresa china de electrónica de consumo. Sus televisores usan VIDAA o Google TV según el modelo.",
-  lineas=["Serie A (4K)", "Serie U (ULED)", "Serie QD (QLED)", "Mini LED", "Serie A6", "Serie U7"], equipos=["tv-led", "tv-qled"],
-  tech={"tv-led": "Las pantallas Hisense LED usan VIDAA o Google TV según el modelo. Las fallas más comunes son la fuente de poder, la retroiluminación y la conexión a internet.",
-        "tv-qled": "Las ULED, QLED y Mini LED de Hisense usan puntos cuánticos y atenuación local. Las fallas típicas son zonas oscuras, parpadeo de brillo y fuente de poder."},
-  etiqueta={"tv-led": "En la etiqueta de la parte trasera y en el menú Configuración > Sistema > Información.", "tv-qled": "En la etiqueta trasera y en el menú Configuración > Sistema > Información."},
-  modelo_ej="Los modelos Hisense llevan el tamaño y una referencia, por ejemplo 55A6H o 65U7H. Están en la etiqueta trasera y en el menú Configuración > Sistema > Información.",
-  garantia="Hisense ofrece garantía de fábrica en sus pantallas; su duración y condiciones dependen del modelo y del país de compra.",
-  mant=["Actualizar el sistema VIDAA o Google TV cuando la pantalla lo indique.", "Usar un protector de voltaje, sobre todo en la temporada de lluvias.", "Dejar espacio de ventilación detrás de la pantalla.", "Limpiar con microfibra seca, sin productos con alcohol."],
-  faq=[("¿Reparan pantallas Hisense ULED y QLED?", "Sí. Revisamos la retroiluminación por zonas, la fuente de poder y la placa principal."),
-       ("¿Por qué mi Hisense parpadea el brillo?", "Suele ser el sensor de luz ambiente, el modo HDR o un driver de LED inestable. Desactivar el brillo automático ayuda a distinguirlo."),
-       ("¿Mi Hisense no conecta al Wi-Fi, qué reviso?", "Reinicia el router, revisa la fecha y hora de la pantalla y actualiza el sistema. Si sigue, puede ser el módulo Wi-Fi.")]),
- "philips": dict(nombre="Philips", color="#0b5ed7", pais="Países Bajos", sistema="Google TV o Titan OS",
-  origen="Philips es una marca de pantallas fabricadas por TP Vision. Sus televisores usan Google TV o Titan OS según el modelo y varias líneas incluyen Ambilight.",
-  lineas=["Ambilight", "The One", "OLED", "Serie PUD 4K", "Serie PUT", "Mini LED"], equipos=["tv-led", "tv-oled"],
-  tech={"tv-led": "Las pantallas Philips LED, muchas con Ambilight, usan Google TV o Titan OS según el modelo. Las fallas más comunes son la fuente de poder, la retroiluminación y las luces Ambilight.",
-        "tv-oled": "Las Philips OLED emiten luz propia en cada píxel. Las fallas típicas son retención de imagen, bandas de color, fuente de poder y protección térmica."},
-  etiqueta={"tv-led": "En la etiqueta de la parte trasera y en el menú Configuración > Acerca de.", "tv-oled": "En la etiqueta trasera y en el menú Configuración > Acerca de."},
-  modelo_ej="Los modelos Philips llevan el tamaño y una referencia, por ejemplo 50PUD7906 o 55OLED708. Están en la etiqueta trasera y en el menú Configuración > Acerca de.",
-  garantia="Philips ofrece garantía de fábrica en sus pantallas; su duración y condiciones dependen del modelo y del país de compra.",
-  mant=["Actualizar el sistema de la pantalla cuando lo indique.", "Dejar ventilación libre detrás y a los lados, sobre todo en modelos con Ambilight.", "Usar un protector de voltaje, sobre todo en la temporada de lluvias.", "Limpiar con microfibra seca, sin presionar el panel."],
-  faq=[("¿Reparan pantallas Philips con Ambilight?", "Sí. Revisamos también las tiras de luz Ambilight y su controlador."),
-       ("¿Qué pasa si mi Philips OLED muestra una imagen marcada?", "Puede ser retención de imagen. Se ejecuta el ciclo de compensación y se evalúa si la marca es permanente."),
-       ("¿Mi Philips se queda en el logo, ¿qué es?", "Suele ser firmware o memoria de la placa principal. Actualizar el firmware o repararla resuelve la mayoría de los casos.")]),
 }
 
 def _armar():
@@ -140,7 +107,7 @@ def _armar():
     for bi, (m, b) in enumerate(MARCAS.items()):
         fallas = {}
         for e in b["equipos"]:
-            arq = ARQ[e]; n = 5 if e == "tv-led" else 4
+            arq = ARQ[e]; n = len(arq)
             orden = arq[bi % len(arq):] + arq[:bi % len(arq)]
             sel = orden[:n]
             fallas[e] = [[s, c, r] for s, c, r, _p, _cod in sel]
@@ -206,3 +173,51 @@ MANT_INST = {
  "tv-oled": dict(mant=dict(intro="Las pantallas OLED no tienen retroiluminación: cada píxel emite su luz. Cuidar el brillo con imágenes fijas y dejar que la pantalla ejecute su ciclo de compensación protege el panel.", tabla=_MANT_COMUN + [("Dejar que la pantalla haga el ciclo de compensación", "Cuando lo pida, con la pantalla en espera", "Compensa el desgaste de los píxeles y reduce la retención de imagen.")], senales=["Logos o menús que quedan marcados.", "Bandas o líneas de color.", "Puntos negros o zonas sin imagen.", "Avisos de temperatura."], gye="En Costa Rica el calor y la humedad aceleran el desgaste de la electrónica. Evita dejar la OLED encendida con una imagen fija durante horas y usa un protector de voltaje."),
                 inst=dict(intro="Las OLED son muy delgadas y delicadas: se instalan sosteniéndolas por el marco, sin presionar el panel, y con una ubicación que evite el sol directo y el exceso de brillo en imágenes fijas.", gye="Al instalar una OLED en Costa Rica, elige una pared sin sol directo y deja ventilación libre atrás; el calor acumulado acorta la vida del panel.", **_INST_COMUN)),
 }
+
+
+# Descripción de cada línea de pantallas (una página por línea): tipo de pantalla, qué es y qué suele fallar
+LINEAS_DET = {
+ "samsung": {
+  "Crystal UHD": ("tv-led", "Es la gama LED 4K de Samsung: retroiluminación LED, el procesador Crystal 4K y el sistema Tizen. Es la línea que más se ve en los hogares, por eso concentra muchas reparaciones de fuente de poder, retroiluminación y conexión Wi-Fi.", "En las Crystal UHD con retroiluminación en el borde, una tira de LED dañada oscurece la imagen por zonas y suele pedir cambio de la tira completa."),
+  "QLED": ("tv-qled", "Añade una capa de puntos cuánticos sobre una base LED para lograr más brillo y color. Sigue necesitando retroiluminación, así que sus fallas se parecen a las de una LED.", "Una zona oscura fija en una QLED casi siempre es retroiluminación o su driver, no el panel."),
+  "Neo QLED": ("tv-qled", "Usa retroiluminación Mini LED con atenuación local muy fina y, en la mayoría de los modelos, una caja One Connect externa que concentra las conexiones.", "Si una Neo QLED no recibe señal o se apaga sola, además de la pantalla se revisan la caja One Connect y el cable que la une."),
+  "Neo QLED 8K": ("tv-qled", "Es la versión de resolución 8K de la Neo QLED: más zonas de atenuación y más procesamiento. Suele ser una pantalla grande y de gama alta.", "En pantallas grandes la retroiluminación tiene muchas zonas; una falla parcial se ve como halos o manchas y puede resolverse por módulos."),
+  "OLED (QD-OLED)": ("tv-oled", "Combina píxeles que emiten luz propia con puntos cuánticos. No tiene retroiluminación, por lo que no sufre sombras de LED, pero sí retención de imagen si se abusa de imágenes fijas.", "Una marca tenue de un logo o de un menú puede mejorar con el ciclo de compensación de píxeles; si es permanente se evalúa el panel."),
+  "The Frame": ("tv-qled", "Es una pantalla diseñada como un cuadro, con marco y modo arte. Suele colgarse pegada a la pared y usar una caja de conexiones externa con cable fino.", "En una The Frame el acceso al cableado es delicado: una falla de señal puede ser el cable, la caja o el soporte, y se diagnostica con la pantalla montada."),
+ },
+ "lg": {
+  "OLED evo": ("tv-oled", "Es la gama OLED de LG con panel más brillante y el procesador α. Cada píxel emite su luz, por eso los negros son profundos y no hay retroiluminación.", "La falla típica de una OLED evo es la retención de imagen o una banda de color; el golpe al panel no tiene reparación sencilla."),
+  "OLED": ("tv-oled", "Es la gama OLED de acceso de LG: mismo principio de píxeles que emiten luz propia y el sistema webOS.", "Una OLED que no enciende suele ser fuente de poder o placa principal, no el panel."),
+  "QNED": ("tv-qled", "Combina retroiluminación Mini LED con puntos cuánticos y la tecnología NanoCell de LG, para más brillo y color que una LED común.", "Las zonas oscuras o los halos en una QNED apuntan a la atenuación local o a una zona de Mini LED."),
+  "NanoCell": ("tv-led", "Es una LED con una capa NanoCell que filtra los colores para mejorar la pureza. Usa retroiluminación LED y webOS.", "Como en toda LED, la falla más común es la fuente de poder o la retroiluminación."),
+  "UHD": ("tv-led", "Es la gama LED 4K de acceso de LG con webOS y el procesador de la marca. Es muy popular por su precio.", "En una UHD de LG, una pantalla que enciende con sonido pero sin imagen suele ser retroiluminación."),
+  "StanbyME": ("tv-led", "Es una pantalla táctil portátil de LG montada sobre ruedas, pensada para moverla por la casa.", "Por moverse con frecuencia, en una StanbyME conviene revisar el cable de corriente, la batería interna y los puertos."),
+ },
+ "sony": {
+  "Bravia XR OLED": ("tv-oled", "Es la gama OLED de Sony con el procesador Cognitive Processor XR y Google TV. Cada píxel emite su luz propia.", "En una Bravia XR OLED, un aviso de temperatura o un apagado repentino apunta a la ventilación o a la protección térmica."),
+  "Bravia XR Mini LED": ("tv-qled", "Usa retroiluminación Mini LED con atenuación local y el procesador XR de Sony, para mucho brillo y contraste.", "Las zonas oscuras o los halos en una Mini LED de Sony indican una zona de retroiluminación o su driver."),
+  "Bravia XR LED": ("tv-led", "Es la gama LED con retroiluminación de matriz completa y procesador XR de Sony, con Google TV.", "En una XR LED, si hay sonido pero imagen oscura, se revisan primero las tiras de LED y su driver."),
+  "Bravia 4K LED": ("tv-led", "Es la gama LED 4K de acceso de Sony con Google TV.", "En una Bravia 4K, un reinicio en bucle suele ser firmware, memoria de la placa principal o una fuente inestable."),
+  "Serie X80": ("tv-led", "Es una serie LED 4K de Sony muy extendida, con modelos de varios tamaños y Google TV.", "Una X80 que no enciende y tiene la luz de espera parpadeando casi siempre pide revisar la fuente de poder."),
+  "Serie X90": ("tv-led", "Es una serie LED de gama alta de Sony con mejor atenuación y procesamiento que la X80.", "En una X90, las zonas oscuras fijas apuntan a la retroiluminación; las intermitentes, al driver o al firmware."),
+ },
+}
+
+# Contenido de instalación y mantenimiento propio de cada marca (páginas dedicadas)
+SERV_MARCA = {
+ "samsung": dict(
+  inst=["Si tu pantalla trae caja One Connect, la instalamos en un lugar ventilado y dejamos el cable fino ordenado y sin dobleces.", "Para The Frame, el soporte de pared pegado al muro y la ruta oculta del cable son parte de la instalación.", "Configuramos el sistema Tizen, la cuenta de Samsung y las aplicaciones que uses."],
+  mant=[("Revisar la caja One Connect y su cable", "Cada 6 meses", "Un cable flojo o la caja sin ventilación puede dejar la pantalla sin señal."), ("Actualizar Tizen", "Cuando la pantalla lo indique", "Corrige fallas de Wi-Fi, aplicaciones y reinicios.")]),
+ "lg": dict(
+  inst=["Las OLED son muy delgadas: las sostenemos por el marco, nunca por el panel, y usamos un soporte de pared compatible con su peso.", "Configuramos webOS, la cuenta de LG y los ajustes de imagen para que el brillo no desgaste el panel OLED.", "Si pides un montaje a ras de pared, verificamos que los cables y los puertos queden accesibles."],
+  mant=[("Dejar que la OLED haga su ciclo de compensación", "Cuando lo pida, con la pantalla en espera", "Compensa el desgaste de los píxeles y reduce la retención de imagen."), ("Actualizar webOS", "Cuando la pantalla lo indique", "Corrige fallas de Wi-Fi, aplicaciones y reinicios.")]),
+ "sony": dict(
+  inst=["Las Bravia con patas tipo caballete necesitan un mueble del ancho correcto: lo medimos antes de colocarla.", "Configuramos Google TV, la cuenta de Google y los ajustes de imagen del procesador XR.", "En modelos con matriz completa de retroiluminación, dejamos ventilación libre detrás para evitar sobrecalentamiento."],
+  mant=[("Revisar los puertos HDMI y la salida de audio digital", "Cada 6 meses", "Los puertos flojos causan pérdida de imagen y sonido con consolas y barras."), ("Actualizar el software de Google TV", "Cuando la pantalla lo indique", "Corrige fallas de Wi-Fi, aplicaciones y reinicios.")]),
+}
+SOPORTES = [("Soporte fijo", "Deja la pantalla pegada a la pared. Es el más delgado y el más estable, pero no permite ajustar el ángulo ni acceder fácil a los puertos."),
+            ("Soporte inclinable", "Permite inclinar la pantalla hacia abajo o hacia arriba. Sirve cuando se coloca alta o para evitar reflejos."),
+            ("Soporte articulado", "Permite girar y separar la pantalla de la pared. Es útil en esquinas, salas grandes y para llegar a los puertos."),
+            ("Mueble o patas", "Se apoya sobre un mueble. Hay que verificar el ancho del mueble, que aguante el peso y que deje ventilación libre.")]
+LIMPIEZA = ["Apaga la pantalla y desconéctala de la corriente.", "Espera unos minutos a que se enfríe.", "Pasa un paño de microfibra seco con movimientos suaves, de arriba hacia abajo y sin presionar.", "Si hay una mancha, humedece apenas el paño con agua; nunca rocíes líquido sobre la pantalla.", "No uses alcohol, amoníaco ni limpiavidrios, porque dañan las capas de la pantalla.", "Seca con otro paño y espera a que no quede humedad antes de volver a conectar."]
+NO_HACER = ["No presiones la pantalla con los dedos ni apoyes objetos sobre ella.", "No cubras las rejillas de ventilación ni la pegues a la pared sin espacio.", "No uses extensiones ni regletas compartidas con equipos de alto consumo.", "No abras la pantalla: tiene partes con voltaje alto aunque esté desconectada."]

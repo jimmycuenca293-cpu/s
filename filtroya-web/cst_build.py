@@ -188,7 +188,7 @@ def chips(actual):
         d = M[actual]; b = base(actual)
         it = [("Inicio", b), ("Reparar mi equipo", b + "#equipos"), ("Fallas", pathb(actual, "fallas"))]
         if d["codigos"]: it.append(("Códigos de error", pathb(actual, "codigos-de-error")))
-        it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), (CFG.get("lbl_guias", "Guías"), pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))]
+        it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), *([("Instalación", pathb(actual, "instalacion-de-pantallas")), ("Mantenimiento", pathb(actual, "mantenimiento-de-pantallas"))] if CFG.get("tv") else []), (CFG.get("lbl_guias", "Guías"), pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))]
     else:
         it = [("Todas las marcas", "/marcas/")]
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
@@ -198,7 +198,7 @@ def pie(marca=None, lista_marcas=False):
         d = M[marca]; N = nom(marca)
         col1 = (f'<div><h3>Equipos {N}</h3><ul>' + "".join(f'<li><a href="{pathb(marca, "reparacion-" + EQ[e][0])}">{EQ[e][2].capitalize()} {N}</a></li>' for e in d["equipos"]) + '</ul></div>')
         col2 = (f'<div><h3>Servicio {N}</h3><ul>' + (f'<li><a href="{pathb(marca, "codigos-de-error")}">Códigos de error</a></li>' if d["codigos"] else "") +
-                f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "repuestos")}">Repuestos</a></li><li><a href="{pathb(marca, "garantia")}">Garantía</a></li><li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "guias")}">{CFG.get("lbl_guias", "Guías")}</a></li><li><a href="{pathb(marca, "glosario")}">Glosario</a></li></ul></div>')
+                f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "repuestos")}">Repuestos</a></li><li><a href="{pathb(marca, "garantia")}">Garantía</a></li>{(f'<li><a href="{pathb(marca, "instalacion-de-pantallas")}">Instalación</a></li><li><a href="{pathb(marca, "mantenimiento-de-pantallas")}">Mantenimiento</a></li>' if CFG.get("tv") else "")}<li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "guias")}">{CFG.get("lbl_guias", "Guías")}</a></li><li><a href="{pathb(marca, "glosario")}">Glosario</a></li></ul></div>')
         col3 = (f'<div><h3>Zonas</h3><ul><li><a href="{pathb(marca, "centro-de-servicio-cerca-de-mi")}">Cerca de mí</a></li><li><a href="{pathb(marca, "reparacion-a-domicilio")}">A domicilio</a></li>' + "".join(f'<li><a href="{pathb(marca, "servicio-tecnico-" + z)}">{v[0]}</a></li>' for z, v in list(ZONAS.items())[:5]) + '</ul></div>')
         col4 = (f'<div><h3>{N} Panamá</h3><ul><li><a href="{pathb(marca, "telefono-servicio-tecnico")}">Teléfono y WhatsApp</a></li><li><a href="{pathb(marca, "quienes-somos")}">Quiénes somos</a></li><li><a href="{pathb(marca, "politica-de-privacidad")}">Política de privacidad</a></li><li><a href="{pathb(marca, "terminos-y-condiciones")}">Términos y condiciones</a></li></ul>{aviso}<p>{TEL}</p></div>')
         cols = col1 + col2 + col3 + col4
@@ -574,6 +574,64 @@ def build_galeria(m):
     pagina(pathb(m, "galeria"), f"Galería de fotos {N} en Panamá | Equipos y servicio", f"Galería de fotos de equipos {N} y del servicio técnico a domicilio en Panamá: refrigeradoras, lavadoras, secadoras, cocinas, aires y más, mostrados completos.",
            f"Galería de fotos {N}", cuerpo, m, None, crumbs0 + [("Galería", pathb(m, "galeria"))], bd=f"{N} · Galería", prio="0.5", lead=f"Equipos {N} y servicio técnico a domicilio.")
 
+def build_tv_extra(m):
+    """Páginas propias de pantallas: una por cada línea de la marca, más instalación y mantenimiento de pantallas {marca}."""
+    d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]; ciu = CFG["ciudad"]
+    lineas_url = {}
+    for ln, (tipo, desc, nota) in _TV.LINEAS_DET[m].items():
+        sl = "pantallas-" + slug(N + " " + ln); lineas_url[ln] = pathb(m, sl)
+        fl = d["fallas"][tipo][:4]
+        lista = "".join(f'<li><a href="{pathb(m, "falla-" + slug(EQ[tipo][1] + " " + f[0]))}"><b>{esc(cap(f[0].strip().rstrip(".")))}</b></a>: {esc(bajar(f[1]))} <i>Qué revisamos:</i> {esc(bajar(f[2]))}</li>' for f in fl)
+        faq = [(f"¿Reparan pantallas {N} {ln} en {ciu}?", f"Sí. Revisamos fuente de poder, placa principal, retroiluminación o panel según el tipo de pantalla, y te damos el valor por escrito antes de reparar."),
+               (f"¿Qué suele fallar en una {N} {ln}?", f"{nota} Las demás fallas frecuentes de este tipo de pantalla están en la lista de arriba."),
+               (f"¿Cómo sé qué modelo de {N} {ln} tengo?", f"{cap(d['etiqueta'].get(tipo, 'En la etiqueta trasera.').rstrip('.'))}. {d['modelo_ej']}")]
+        cuerpo = (sec(f"Qué es una pantalla {N} {ln}", f"<p>{esc(desc)}</p><p><b>Tipo de pantalla:</b> {esc(EQ[tipo][2])}. {esc(d['tech'][tipo])}</p><p>{esc(nota)}</p>")
+                  + sec(f"Fallas frecuentes en pantallas {N} {ln}", f"<ul>{lista}</ul><p><a href=\"{pathb(m, 'reparacion-' + EQ[tipo][0])}\">Ver toda la reparación de {EQ[tipo][2]} {N}</a></p>", alt=True)
+                  + sec(f"Cómo identificar tu modelo {ln}", f"<p>{esc(d['modelo_ej'])}</p><p><b>Dónde está la etiqueta:</b> {esc(d['etiqueta'].get(tipo, 'En la etiqueta trasera.'))}</p><p>Con una foto de esa etiqueta y de lo que notas, el diagnóstico por WhatsApp es mucho más preciso.</p>")
+                  + sec(f"Servicios para tu pantalla {N} {ln}", f'<div class="g c3"><a class="card l" href="{pathb(m, "reparacion-" + EQ[tipo][0])}"><span class="t">Reparación</span>Fallas, causas y qué revisamos.</a><a class="card l" href="{pathb(m, "instalacion-de-pantallas")}"><span class="t">Instalación</span>Montaje en pared o mueble y configuración.</a><a class="card l" href="{pathb(m, "mantenimiento-de-pantallas")}"><span class="t">Mantenimiento</span>Cuidados que alargan la vida de tu pantalla.</a></div>', alt=True)
+                  + sec(f"Preguntas sobre las pantallas {N} {ln}", faq_html(faq))
+                  + sec(f"Otras líneas {N}", "".join(f'<a class="pill" href="{pathb(m, "pantallas-" + slug(N + " " + x))}">{esc(x)}</a>' for x in _TV.LINEAS_DET[m] if x != ln) + f'<p><a href="{pathb(m, "series-y-modelos")}">Ver series y modelos {N}</a> · <a href="{pathb(m, "fallas")}">Fallas frecuentes</a></p>', alt=True))
+        pagina(pathb(m, sl), f"Reparación de pantallas {N} {ln} en {ciu}", f"Reparación de pantallas {N} {ln} en {ciu}: fallas frecuentes, qué revisamos, cómo identificar tu modelo y cómo pedir la visita a domicilio.",
+               f"Reparación de pantallas {N} {ln}", cuerpo, m, (elegir(m, m + sl, 1) or [None])[0], crumbs0 + [(f"{N} {ln}", pathb(m, sl))],
+               [faq_ld(faq), {"@type": "Service", "name": f"Reparación de pantallas {N} {ln}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Country", "name": ciu}, "brand": {"@type": "Brand", "name": N}}],
+               bd=f"{N} · {ln}", prio="0.8", lead=f"Fallas, modelos y servicio a domicilio para tu pantalla {N} {ln}.")
+    _LINEAS_URL[m] = lineas_url
+    ex = _TV.SERV_MARCA[m]; E = d["equipos"]
+    # ---- instalación
+    antes = _TV._INST_COMUN["antes"]
+    cuerpo = (sec(f"Instalación de pantallas {N} en {ciu}", f"<p>Instalamos pantallas {N} ({', '.join(d['lineas'][:4])} y más) en tu casa u oficina en {ciu}: montaje en pared o sobre mueble, conexión de cables, sintonización de canales y configuración de imagen y sonido.</p><p>{esc(_TV.MANT_INST[E[0]]['inst']['gye'])}</p>")
+              + sec("Tipos de soporte", "<dl class=\"pz\">" + "".join(f"<dt>{esc(a_)}</dt><dd>{esc(b_)}</dd>" for a_, b_ in _TV.SOPORTES) + "</dl><p>El soporte correcto depende del tamaño y del peso de la pantalla y del patrón de agujeros de la parte trasera (VESA), que cambia según el modelo; por ejemplo 200×200, 300×300, 400×400 o 600×400 mm.</p>", alt=True)
+              + sec(f"Qué necesitamos saber de tu {N}", "<ul><li>El modelo exacto y el tamaño en pulgadas.</li><li>Si va en pared (de concreto, de bloque o de gypsum) o sobre un mueble.</li><li>A qué altura quieres el centro de la pantalla.</li><li>Qué dispositivos conectarás: decodificador, consola, barra de sonido o computadora.</li></ul>")
+              + sec(f"Qué debes tener listo antes de instalar tu {N}", "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in antes) + "</ul>", alt=True)
+              + sec(f"Particularidades de las pantallas {N}", "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in ex["inst"]) + "</ul>")
+              + sec("Paso a paso de la instalación", "<ol>" + "".join(f"<li>{esc(x)}</li>" for x in _TV._INST_COMUN["pasos"]) + "</ol>", alt=True)
+              + sec("Errores comunes que evitamos", "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in _TV._INST_COMUN["errores"]) + "</ul>")
+              + sec("Preguntas sobre la instalación", faq_html([(f"¿Instalan pantallas {N} en pared de gypsum?", "Sí, pero el soporte debe anclarse a la estructura firme y no solo al panel de yeso. Lo verificamos antes de colgar la pantalla."),
+                                                                (f"¿Qué soporte necesita mi pantalla {N}?", "Depende del tamaño, el peso y el patrón VESA de tu modelo. Mándanos el modelo por WhatsApp y te indicamos cuál usar."),
+                                                                (f"¿Pueden dejar los cables de mi {N} ocultos?", "Sí, cuando la pared y la obra lo permiten. Se define antes de instalar, porque cambia la ruta del cable."),
+                                                                (f"¿Sintonizan los canales de mi pantalla {N}?", "Sí. En Costa Rica la televisión digital usa ISDB-Tb; configuramos la región y buscamos los canales con la antena o el decodificador que uses.")]), alt=True))
+    pagina(pathb(m, "instalacion-de-pantallas"), f"Instalación de pantallas {N} en {ciu} | Soporte de pared", f"Instalación de pantallas {N} en {ciu}: soporte de pared o mueble, cableado, sintonización de canales y configuración de imagen y sonido a domicilio.",
+           f"Instalación de pantallas {N} en {ciu}", cuerpo, m, (elegir(m, m + "inst", 1) or [None])[0], crumbs0 + [("Instalación de pantallas", pathb(m, "instalacion-de-pantallas"))],
+           [{"@type": "Service", "name": f"Instalación de pantallas {N}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Country", "name": ciu}, "brand": {"@type": "Brand", "name": N}}],
+           bd=f"{N} · Instalación", prio="0.8", lead=f"Montaje, cableado y configuración de tu pantalla {N} en {ciu}.")
+    # ---- mantenimiento
+    _prop = ex["mant"]; _ext = [r for r in _TV._MANT_COMUN if not (r[0].startswith("Actualizar") and any(x[0].startswith("Actualizar") for x in _prop)) and not (("HDMI" in r[0] or "cables" in r[0]) and any(("HDMI" in x[0] or "cables" in x[0]) for x in _prop))]
+    filas = [(f"<b>{esc(a_)}</b>", esc(b_), esc(c_)) for a_, b_, c_ in (_prop + _ext)]
+    cuerpo = (sec(f"Mantenimiento de pantallas {N} en {ciu}", f"<p>Una pantalla {N} bien cuidada dura muchos años. El mantenimiento se reduce a limpiarla bien, dejarla respirar, protegerla de los picos de voltaje y mantener actualizado su sistema.</p><p>{esc(_TV.MANT_INST[E[0]]['mant']['gye'])}</p>")
+              + sec("Plan de mantenimiento recomendado", tabla(["Tarea", "Cada cuánto", "Por qué importa"], filas), alt=True)
+              + sec("Cómo limpiar la pantalla paso a paso", "<ol>" + "".join(f"<li>{esc(x)}</li>" for x in _TV.LIMPIEZA) + "</ol>")
+              + sec(f"Qué no hacer con tu pantalla {N}", "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in _TV.NO_HACER) + "</ul>", alt=True)
+              + sec("Señales de que necesita revisión", "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in _TV.MANT_INST[E[0]]["mant"]["senales"] + _TV.MANT_INST[E[-1]]["mant"]["senales"][:2]) + "</ul><p>Si notas alguna, no esperes a que falle del todo: pide la revisión.</p>")
+              + sec("Preguntas sobre el mantenimiento", faq_html([(f"¿Cada cuánto debo limpiar mi pantalla {N}?", "La superficie, cada semana con microfibra seca. La ventilación y los cables, cada seis meses."),
+                                                                  (f"¿Es necesario actualizar el sistema de mi {N}?", "Sí. Las actualizaciones corrigen fallas de Wi-Fi, aplicaciones y reinicios, y conviene instalarlas cuando la pantalla las indique."),
+                                                                  (f"¿Sirve un protector de voltaje para mi pantalla {N}?", "Sí. Los picos de voltaje de las tormentas dañan la fuente de poder y la placa principal; un protector con retardo de reconexión es la medida más económica."),
+                                                                  (f"¿Hacen mantenimiento aunque mi {N} funcione bien?", "Sí. Revisamos ventilación, cables, puertos y software, y te decimos si algo empieza a fallar antes de que deje de funcionar.")]), alt=True))
+    pagina(pathb(m, "mantenimiento-de-pantallas"), f"Mantenimiento de pantallas {N} en {ciu} | Cuidados", f"Mantenimiento de pantallas {N} en {ciu}: plan, limpieza correcta, qué no hacer y señales de que tu pantalla necesita revisión.",
+           f"Mantenimiento de pantallas {N} en {ciu}", cuerpo, m, (elegir(m, m + "mant", 1) or [None])[0], crumbs0 + [("Mantenimiento de pantallas", pathb(m, "mantenimiento-de-pantallas"))],
+           [{"@type": "Service", "name": f"Mantenimiento de pantallas {N}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Country", "name": ciu}, "brand": {"@type": "Brand", "name": N}}],
+           bd=f"{N} · Mantenimiento", prio="0.8", lead=f"Cuida tu pantalla {N}: limpieza correcta, ventilación y protección contra picos de voltaje.")
+_LINEAS_URL = {}
+
 def build_marca(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]
     # --- hub
@@ -597,7 +655,7 @@ def build_marca(m):
               + sec(f"Zonas de {CFG['ciudad']} donde atendemos equipos {N}", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {esc(CFG.get("zart", {}).get(z, v[0]))}</span></a>' for z, v in ZONAS.items()) + '</div>', alt=True)
               + (sec(f"Quiénes somos", quienes_breve(m), alt=True) if CFG.get("sin_recorte") else "")
               + sec(f"Más información sobre {N}", otras(m, ""))
-              + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
+              + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join((f'<a class="pill" href="{pathb(m, "pantallas-" + slug(N + " " + x))}">{esc(x)}</a>' if CFG.get("tv") else f'<span class="pill">{esc(x)}</span>') for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
     path = "/" if m == "samsung" else base(m)
     t = f"Centro de Servicio Técnico {N} Panamá | A domicilio" if m != "general-electric" else f"Centro de Servicio Técnico {N} Panamá"
     ld = [faq_ld(FAQ_H), {"@type": "Service", "name": f"Servicio técnico {N} en Panamá", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá", "serviceType": (f"Reparación de pantallas {N}" if CFG.get("tv") else f"Reparación de electrodomésticos {N}"), "brand": {"@type": "Brand", "name": N, "sameAs": EXT[m][1]},
@@ -701,7 +759,9 @@ def build_marca(m):
 import unicodedata
 def slug(t):
     t = unicodedata.normalize("NFKD", t.lower()).encode("ascii", "ignore").decode()
-    return re.sub(r"[^a-z0-9]+", "-", t).strip("-")[:70]
+    s = re.sub(r"[^a-z0-9]+", "-", t).strip("-")
+    if len(s) > 70 and CFG.get("tv"): s = s[:70].rsplit("-", 1)[0]
+    return s[:70]
 def consejo(sint, causa):
     t = (sint + " " + causa).lower()
     if re.search(r"quemado|chispa|humo|gas\b|fuga de gas", t): return ("Apaga el equipo, desconéctalo y no lo vuelvas a usar hasta que lo revise un técnico. Si huele a gas, cierra la llave del gas y ventila el lugar.", "Esta falla puede ser peligrosa: no la pruebes de nuevo.")
@@ -744,7 +804,7 @@ def build_sintomas(m):
         if cod and re.search(r"c[oó]digo|error|pantalla|muestra|\bE\d|Er ", a, re.I):
             cod_html = sec(f"Códigos de {pl} {N_}", tabla(["Código", "Qué suele indicar"], [(f'<span class="cb">{x}</span>', esc(y)) for x, y in cod[:6]]) + f'<p><a href="{pathb(m, "codigos-de-error")}">Ver todos los códigos de error {N_}</a></p>', alt=True)
         im = elegir(m, m + sl, 1, e) + elegir(m, m + sl + "g", 1)
-        nombre = cap(uni(sing, N_, a))
+        nombre = (f"{cap(sing)} {N_}: {bajar(a).rstrip('.')}" if CFG.get("tv") else cap(uni(sing, N_, a)))
         titulo = nombre
         while len(titulo) > 62 and re.search(r"\s(o|y|,)\s", titulo): titulo = re.sub(r"\s+(?:o|y)\s+[^ ]*(?:\s+[^ ]+)*$", "", titulo, count=1) if re.search(r"\s(o|y)\s", titulo) else titulo
         if len(titulo) > 62: titulo = re.sub(r"(\s+(?:de|en|y|a|la|el|los|las|con|para|del|que|o|u|al|no|se))+$", "", titulo[:62].rsplit(" ", 1)[0].rstrip(" ,:;"))
@@ -1269,7 +1329,8 @@ def tecnico():
     idx = []
     for m in BRANDS_ORDER:
         it = [x for x in paginas if x[2] == m]; (OUT / f"sitemap-{m}.xml").write_text(sm(it)); idx.append(f"sitemap-{m}.xml")
-    it = [x for x in paginas if x[2] is None]; (OUT / "sitemap-principal.xml").write_text(sm(it)); idx.append("sitemap-principal.xml")
+    it = [x for x in paginas if x[2] is None]
+    if it: (OUT / "sitemap-principal.xml").write_text(sm(it)); idx.append("sitemap-principal.xml")
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<sitemap><loc>{DOM}/{i}</loc><lastmod>{HOY}</lastmod></sitemap>" for i in idx) + "</sitemapindex>")
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {DOM}/sitemap.xml\n")
     L = [f"# {NOMBRE}", f"> Servicio técnico independiente de {"pantallas" if CFG.get("tv") else "electrodomésticos"} a domicilio en {CFG['ciudad']}. WhatsApp {TEL}.", "", "## Marcas"]
@@ -1364,6 +1425,8 @@ if __name__ == "__main__":
     for m in BRANDS_ORDER:
         for suf in ("", "-blanco"): shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}{suf}.png", OUT / "img" / "logos" / f"{m}{suf}.png")
     for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
+    if CFG.get('tv'):
+        for m in BRANDS_ORDER: build_tv_extra(m)
     build_sitio(); relacionadas(); repartir_fotos()
     for ff in OUT.rglob("index.html"):
         tt = ff.read_text(encoding="utf-8")
