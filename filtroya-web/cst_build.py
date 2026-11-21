@@ -10,7 +10,11 @@ if CFG.get("zonas"): ZONAS = CFG["zonas"]
 
 OUT = pathlib.Path(sys.argv[1]); SRC = pathlib.Path(sys.argv[2] if len(sys.argv) > 2 else "/tmp/cst_src")
 DOM = CFG["dom"]; NOMBRE = CFG["nombre"]; TEL = CFG["tel"]; TELN = CFG["telw"]; GSC = CFG["gsc"]
-HOY = "2026-11-20"
+import datetime as _dt
+_MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+_hoy = _dt.date.today()
+HOY = _hoy.isoformat()
+HOY_TXT = f"{_hoy.day} de {_MESES[_hoy.month - 1]} de {_hoy.year}"
 esc = html.escape
 ROOT = pathlib.Path(__file__).resolve().parent
 paginas = []   # (url, prioridad, marca)
@@ -265,12 +269,13 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
             if len((acum + " " + o).strip()) <= 158: acum = (acum + " " + o).strip()
             else: break
         desc = acum if len(acum) >= 70 else desc[:157].rsplit(" ", 1)[0].rstrip(" ,.;:") + "."
+    if len(desc) < 100 and len(desc) + 38 <= 158 and not noindex: desc = desc.rstrip(" ") + " Atención a domicilio y por WhatsApp."
     color = M[marca]["color"] if marca else "#0b2a6f"
     url = DOM + path
     graf = [LB]
     graf.append({"@type": "WebSite", "@id": DOM + "/#sitio", "url": DOM + "/", "name": NOMBRE, "inLanguage": CFG["locale"], "publisher": {"@id": DOM + "/#negocio"}})
     wp = {"@type": "CollectionPage" if re.search(r"/(fallas|guias|codigos-de-error|series-y-modelos)/$", path) else "WebPage", "@id": url + "#pagina", "url": url, "name": title, "description": desc,
-          "isPartOf": {"@id": DOM + "/#sitio"}, "about": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"], "dateModified": "2026-11-20", "datePublished": "2026-11-20"}
+          "isPartOf": {"@id": DOM + "/#sitio"}, "about": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"], "dateModified": HOY, "datePublished": HOY}
     if hero: wp["primaryImageOfPage"] = {"@type": "ImageObject", "url": DOM + hero[0], "caption": hero[1], "width": 1024, "height": 768}
     graf.append(wp)
     if crumbs:
@@ -292,13 +297,13 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
     tags = "".join(f'<meta name="google-site-verification" content="{g}">' for g in GSC) if path == "/" else ""
     h = (f'<!doctype html><html lang="es-PA"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title>'
          f'<meta name="description" content="{esc(desc)}"><link rel="canonical" href="{url}"><link rel="alternate" hreflang="es-PA" href="{url}"><link rel="alternate" hreflang="x-default" href="{url}">{GEO_META}<meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="{PAL.get(marca, DEF)[0]}"><meta name="robots" content="{"noindex,follow" if noindex else "index,follow,max-image-preview:large,max-snippet:-1"}">{tags}'
-         f'<meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:locale" content="es_PA"><meta property="og:site_name" content="{esc(NOMBRE)}"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta property="article:modified_time" content="2026-11-20">'
+         f'<meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:locale" content="es_PA"><meta property="og:site_name" content="{esc(NOMBRE)}"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta property="article:modified_time" content="{HOY}">'
          + (f'<meta property="og:image" content="{DOM}{hero[0]}"><meta property="og:image:alt" content="{esc(hero[1])}"><meta name="twitter:image" content="{DOM}{hero[0]}"><link rel="preload" as="image" href="{hero[0]}" fetchpriority="high">' if hero else '') +
          f'<link rel="icon" href="{FAV(marca)}">'
          f'<link rel="stylesheet" href="/assets/site.css?v={CSSV}"><style>body{{--c:{PAL.get(marca, DEF)[0]};--a:{PAL.get(marca, DEF)[1]};--ab:{PAL.get(marca, DEF)[2]};--bg:{PAL.get(marca, DEF)[3]};--soft:{PAL.get(marca, DEF)[4]};--hd:{PAL.get(marca, DEF)[5]}}}</style><script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body><a class="skip" href="#contenido">Saltar al contenido</a>'
          f'<div class="top"><div class="w"><span>Atención a domicilio en Panamá · {TEL}</span><a href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div></div>'
          f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">{f'<img class="lgo" src="/img/logos/{marca}.png" alt="Logo {nom(marca)}" width="130" height="40" style="display:block;height:34px;width:auto;max-width:130px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none">' if marca else ""}<span>Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></span></a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
-         + chips(marca) + '<main id="contenido">' + heroh + bc + cuerpo + ('<div class="w"><p class="upd">Actualizado el 20 de noviembre de 2026 · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div>' if not re.search(r'/(politica-de-privacidad|terminos-y-condiciones)/', path) else '') + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + '</main>' + pie(marca, marcas_ok) + extra_js + '</body></html>')
+         + chips(marca) + '<main id="contenido">' + heroh + bc + cuerpo + ('<div class="w"><p class="upd">Actualizado el ' + HOY_TXT + ' · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div>' if not re.search(r'/(politica-de-privacidad|terminos-y-condiciones)/', path) else '') + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + '</main>' + pie(marca, marcas_ok) + extra_js + '</body></html>')
     h = LOC(h)
     f = OUT / path.lstrip("/") / "index.html" if path != "/" else OUT / "index.html"
     f.parent.mkdir(parents=True, exist_ok=True); f.write_text(h, encoding="utf-8")
@@ -1235,7 +1240,10 @@ def tecnico():
         def im(p):
             f = (OUT / p.lstrip("/") / "index.html") if p != "/" else OUT / "index.html"
             t = f.read_text(encoding="utf-8") if f.exists() else ""
-            return "".join(f"<image:image><image:loc>{DOM}{u}</image:loc></image:image>" for u in dict.fromkeys(re.findall(r'<img[^>]*src="(/img/[^"]+)"', t)))
+            salida = {}
+            for m_ in re.finditer(r'<img[^>]*?src="(/img/(?!logos/)[^"]+)"[^>]*?alt="([^"]*)"', t): salida.setdefault(m_.group(1), m_.group(2))
+            for u in re.findall(r'url\((/img/[^)]+)\)', t): salida.setdefault(u, "")
+            return "".join(f"<image:image><image:loc>{DOM}{u}</image:loc>" + (f"<image:caption>{a_}</image:caption>" if a_ else "") + "</image:image>" for u, a_ in salida.items())
         return '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + "".join(f"<url><loc>{DOM}{p}</loc><lastmod>{HOY}</lastmod><priority>{pr}</priority>{im(p)}</url>" for p, pr, _ in items) + "</urlset>"
     idx = []
     for m in BRANDS_ORDER:
@@ -1332,10 +1340,11 @@ if __name__ == "__main__":
     for m in BRANDS_ORDER:
         for suf in ("", "-blanco"): shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}{suf}.png", OUT / "img" / "logos" / f"{m}{suf}.png")
     for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
-    build_sitio(); tecnico(); relacionadas(); repartir_fotos()
+    build_sitio(); relacionadas(); repartir_fotos()
     for ff in OUT.rglob("index.html"):
         tt = ff.read_text(encoding="utf-8")
         if "<!--REL" in tt: ff.write_text(re.sub(r"<!--RELF?:[a-z-]+-->", "", tt), encoding="utf-8")
+    tecnico()
     for r, ds, fs in os.walk(OUT):
         os.chmod(r, 0o755)
         for f in fs: os.chmod(os.path.join(r, f), 0o644)
