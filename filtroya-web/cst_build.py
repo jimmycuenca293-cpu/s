@@ -449,12 +449,22 @@ BATIDORA = dict(
                      ("Revisar escobillas del motor", "Cada 1 o 2 años según uso", "Escobillas gastadas hacen que la batidora pierda potencia.")],
               gye="En Guayaquil la humedad puede afectar el motor y las partes metálicas. Guarda la batidora seca y limpia, y evita lavar la cabeza con agua."),
     inst=None)
+def _gye_loc(t):
+    """Adapta los textos de mantenimiento e instalación (escritos para Guayaquil) a la ciudad del sitio."""
+    if CFG["sitio"] == "guayaquil": return t
+    mar = CFG.get("costero")
+    for x, y in [("Si vives cerca del río o el estero, el aire con sal acelera la corrosión de los contactos", "Si vives cerca del mar, el aire con sal (salitre) acelera la corrosión de los contactos" if mar else "Si vives en una zona muy húmeda, la corrosión de los contactos avanza más rápido"),
+                 ("si vives cerca del río o el estero, donde la sal del aire corroe más rápido", "si vives cerca del mar, donde la sal del aire corroe más rápido" if mar else "si vives en una zona muy húmeda, donde la corrosión avanza más rápido")]:
+        t = t.replace(x, y)
+    return t.replace("Guayaquil", CFG["ciudad"])
 def bloque_mant_inst(m, e):
     """Secciones de mantenimiento e instalación de un equipo de una marca (solo Guayaquil)."""
     if not CFG.get("sin_recorte"): return ""
     d = M[m]; N = nom(m); sing = EQ[e][1]; pl = EQ[e][2]; bi = BRANDS_ORDER.index(m)
     g = BATIDORA if e == "batidoras" else {"mant": _gye()[e]["mant"], "inst": _gye()[e]["inst"]}
     mt, ins = g["mant"], g["inst"]
+    mt = {**mt, "intro": _gye_loc(mt["intro"]), "gye": _gye_loc(mt["gye"])}
+    if ins: ins = {**ins, "intro": _gye_loc(ins["intro"]), "gye": _gye_loc(ins["gye"])}
     filas = _rot(mt["tabla"], bi, 5) if len(mt["tabla"]) > 4 else mt["tabla"]
     raiz = sing.split()[0][:5].lower()
     propios = [x for x in d["mantenimiento"] if raiz in x.lower()]

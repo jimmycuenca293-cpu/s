@@ -12,6 +12,8 @@ PANAMA = dict(
     ext_lg=("Página del fabricante: LG Panamá", "https://www.lg.com/pa/"), ext_samsung=("Página del fabricante: Samsung (América Latina)", "https://www.samsung.com/latin/"),
     guia_humedad=("humedad-y-salitre-en-equipos", "Humedad y salitre en equipos {N} en Panamá", "Cómo la humedad y el salitre de Panamá afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas."),
     costero=True, nev=("refrigeradoras", "refrigeradora", "refrigeradoras"),
+    zlista="la ciudad de Panamá, San Miguelito, Arraiján, La Chorrera, Costa del Este, Tocumen, Panamá Oeste y Colón",
+    sin_recorte=True, lbl_guias="Blog de consejos",
 )
 
 # ----------------------------------------------------------------------------- CALI
@@ -55,6 +57,7 @@ CALI = dict(
     zonas=ZONAS_CALI, zx=ZX_CALI, clima=CLIMA_CALI,
     area=["Cali", "Jamundí", "Yumbo", "Palmira"], geo=(3.4516, -76.5320), geo_region="CO-VAC",
     zlista="el norte, el sur, el oeste, el oriente y el centro de Cali, y también en Jamundí, Yumbo y Palmira",
+    sin_recorte=True, lbl_guias="Blog de consejos",
     zart={"norte-de-cali": "el norte de Cali", "sur-de-cali": "el sur de Cali", "oeste-de-cali": "el oeste de Cali", "oriente-de-cali": "el oriente de Cali", "centro-de-cali": "el centro de Cali"},
 )
 
