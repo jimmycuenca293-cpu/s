@@ -8,6 +8,20 @@ from cst_sitio import CFG, localizar, L as LOC
 if CFG.get("tv"):
     import cst_tv as _TV
     M, EQ, BRANDS_ORDER, CONSEJOS = _TV.M, _TV.EQ, _TV.BRANDS_ORDER, _TV.CONSEJOS
+TVX = bool(CFG.get("tv") or CFG.get("mix"))
+if CFG.get("mix"):   # electrodomésticos + pantallas: Samsung y LG con ambos; Sony solo pantallas
+    import copy, cst_tv as _TV
+    M = copy.deepcopy(M); EQ = dict(EQ); EQ.update(_TV.EQ); CONSEJOS = dict(CONSEJOS); CONSEJOS.update(_TV.CONSEJOS)
+    for _m, _t in _TV.M.items():
+        if _m in M:
+            _a = M[_m]
+            _a["equipos"] = _a["equipos"] + _t["equipos"]
+            for _k in ("tech", "fallas", "codigos", "etiqueta"): _a[_k] = {**_a[_k], **_t[_k]}
+            _a["lineas"] = _a["lineas"] + [x for x in _t["lineas"] if x not in _a["lineas"]]
+            _a["origen"] = _a["origen"].rstrip() + " También atendemos sus pantallas (" + ", ".join(list(_TV.LINEAS_DET[_m])[:4]) + " y más)."
+        else: M[_m] = _t
+    BRANDS_ORDER = list(BRANDS_ORDER) + [x for x in _TV.BRANDS_ORDER if x not in BRANDS_ORDER]
+def _tvb(m): return bool(CFG.get("tv") or (CFG.get("mix") and any(e.startswith("tv-") for e in M[m]["equipos"])))
 M = localizar(M); CONSEJOS = localizar(CONSEJOS)
 if "neveras" in EQ: EQ["neveras"] = CFG["nev"]
 if CFG.get("zonas"): ZONAS = CFG["zonas"]
@@ -188,7 +202,7 @@ def chips(actual):
         d = M[actual]; b = base(actual)
         it = [("Inicio", b), ("Reparar mi equipo", b + "#equipos"), ("Fallas", pathb(actual, "fallas"))]
         if d["codigos"]: it.append(("Códigos de error", pathb(actual, "codigos-de-error")))
-        it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), *([("Instalación", pathb(actual, "instalacion-de-pantallas")), ("Mantenimiento", pathb(actual, "mantenimiento-de-pantallas"))] if CFG.get("tv") else []), (CFG.get("lbl_guias", "Guías"), pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))]
+        it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), *([("Instalación", pathb(actual, "instalacion-de-pantallas")), ("Mantenimiento", pathb(actual, "mantenimiento-de-pantallas"))] if _tvb(actual) else []), (CFG.get("lbl_guias", "Guías"), pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))]
     else:
         it = [("Todas las marcas", "/marcas/")]
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
@@ -198,7 +212,7 @@ def pie(marca=None, lista_marcas=False):
         d = M[marca]; N = nom(marca)
         col1 = (f'<div><h3>Equipos {N}</h3><ul>' + "".join(f'<li><a href="{pathb(marca, "reparacion-" + EQ[e][0])}">{EQ[e][2].capitalize()} {N}</a></li>' for e in d["equipos"]) + '</ul></div>')
         col2 = (f'<div><h3>Servicio {N}</h3><ul>' + (f'<li><a href="{pathb(marca, "codigos-de-error")}">Códigos de error</a></li>' if d["codigos"] else "") +
-                f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "repuestos")}">Repuestos</a></li><li><a href="{pathb(marca, "garantia")}">Garantía</a></li>{(f'<li><a href="{pathb(marca, "instalacion-de-pantallas")}">Instalación</a></li><li><a href="{pathb(marca, "mantenimiento-de-pantallas")}">Mantenimiento</a></li>' if CFG.get("tv") else "")}<li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "guias")}">{CFG.get("lbl_guias", "Guías")}</a></li><li><a href="{pathb(marca, "glosario")}">Glosario</a></li></ul></div>')
+                f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "repuestos")}">Repuestos</a></li><li><a href="{pathb(marca, "garantia")}">Garantía</a></li>{(f'<li><a href="{pathb(marca, "instalacion-de-pantallas")}">Instalación de pantallas</a></li><li><a href="{pathb(marca, "mantenimiento-de-pantallas")}">Mantenimiento de pantallas</a></li>' if _tvb(marca) else "")}<li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "guias")}">{CFG.get("lbl_guias", "Guías")}</a></li><li><a href="{pathb(marca, "glosario")}">Glosario</a></li></ul></div>')
         col3 = (f'<div><h3>Zonas</h3><ul><li><a href="{pathb(marca, "centro-de-servicio-cerca-de-mi")}">Cerca de mí</a></li><li><a href="{pathb(marca, "reparacion-a-domicilio")}">A domicilio</a></li>' + "".join(f'<li><a href="{pathb(marca, "servicio-tecnico-" + z)}">{v[0]}</a></li>' for z, v in list(ZONAS.items())[:5]) + '</ul></div>')
         col4 = (f'<div><h3>{N} Panamá</h3><ul><li><a href="{pathb(marca, "telefono-servicio-tecnico")}">Teléfono y WhatsApp</a></li><li><a href="{pathb(marca, "quienes-somos")}">Quiénes somos</a></li><li><a href="{pathb(marca, "politica-de-privacidad")}">Política de privacidad</a></li><li><a href="{pathb(marca, "terminos-y-condiciones")}">Términos y condiciones</a></li></ul>{aviso}<p>{TEL}</p></div>')
         cols = col1 + col2 + col3 + col4
@@ -209,7 +223,7 @@ def pie(marca=None, lista_marcas=False):
     flogo = f'<span class="fl"><img src="/img/logos/{marca}-blanco.png" alt="Logo {nom(marca)}" width="190" height="48" style="display:block;height:44px;width:auto;max-width:200px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none"></span>' if marca else ""
     return ('<footer><div class="w">' + flogo + '<div class="g c4">' + cols + '</div></div></footer>'
             f'<div class="fb"><a href="tel:+{TELN}">Llamar</a><a class="wa" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div>')
-LB = {"@type": "ProfessionalService", "knowsAbout": (["Reparación de pantallas LED", "Reparación de pantallas QLED y Mini LED", "Reparación de pantallas OLED", "Instalación de pantallas"] if CFG.get("tv") else ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"]) + [f"Servicio técnico {M[x]['nombre']}" for x in BRANDS_ORDER], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, 
+LB = {"@type": "ProfessionalService", "knowsAbout": (["Reparación de pantallas LED", "Reparación de pantallas QLED y Mini LED", "Reparación de pantallas OLED", "Instalación de pantallas"] if CFG.get("tv") else ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"] + (["Reparación de pantallas y televisores"] if CFG.get("mix") else [])) + [f"Servicio técnico {M[x]['nombre']}" for x in BRANDS_ORDER], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, 
       "areaServed": [{"@type": "City", "name": c} for c in (CFG.get("area") or ["Ciudad de Panamá", "San Miguelito", "Arraiján", "La Chorrera", "Colón"])],
       "address": {"@type": "PostalAddress", "addressLocality": CFG["ciudad"], "addressRegion": CFG["region"], "addressCountry": CFG["cc"]}}
 LB["contactPoint"] = [{"@type": "ContactPoint", "telephone": "+" + TELN, "contactType": "customer service", "availableLanguage": ["es"], "areaServed": CFG["cc"]}]
@@ -363,7 +377,7 @@ def tabla(cab, filas):
 def faq_html(faqs): return "".join(f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in faqs)
 def faq_ld(faqs): return {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]}
 PASOS = ('<ol class="pasos"><li><b>Escríbenos</b>Cuéntanos marca, modelo y qué hace el equipo.</li><li><b>Coordinamos</b>Acordamos día y franja en tu zona.</li>'
-         '<li><b>Diagnóstico en casa</b>' + ("Revisamos la pantalla en tu casa y, si hace falta taller, coordinamos el retiro con cuidado." if CFG.get("tv") else "Revisamos el equipo y te explicamos la causa.") + '</li><li><b>Reparación y prueba</b>Solo si tú apruebas el valor.</li></ol>')
+         '<li><b>Diagnóstico en casa</b>' + ("Revisamos la pantalla en tu casa y, si hace falta taller, coordinamos el retiro con cuidado." if CFG.get("tv") else "Revisamos el equipo en tu casa, te explicamos la causa y, si hace falta taller, coordinamos el retiro con cuidado." if CFG.get("mix") else "Revisamos el equipo y te explicamos la causa.") + '</li><li><b>Reparación y prueba</b>Solo si tú apruebas el valor.</li></ol>')
 
 def cap(t):
     return t[:1].upper() + t[1:]
@@ -406,9 +420,9 @@ EJ = {"tv-led": "No enciende, sin imagen, líneas", "tv-qled": "Sombras, manchas
 def tiles(m):
     d = M[m]; N = nom(m); out = ""
     for e in d["equipos"]:
-        f = None if CFG.get("tv") else foto_equipo(m, e)
+        f = None if (CFG.get("tv") or e.startswith("tv-")) else foto_equipo(m, e)
         _ico = '<svg viewBox="0 0 120 90" width="140" height="105" role="img" aria-label="Pantalla"><rect x="6" y="6" width="108" height="64" rx="6" fill="none" stroke="var(--c)" stroke-width="5"/><rect x="14" y="14" width="92" height="48" rx="2" fill="var(--soft)"/><path d="M40 82h40M60 70v12" stroke="var(--c)" stroke-width="5" stroke-linecap="round"/></svg>'
-        im = f'<img loading="lazy" src="{f[0]}" alt="{f[1]}" width="400" height="300">' if f else (_ico if CFG.get("tv") else EQ[e][2][:1].upper())
+        im = f'<img loading="lazy" src="{f[0]}" alt="{f[1]}" width="400" height="300">' if f else (_ico if (CFG.get("tv") or e.startswith("tv-")) else EQ[e][2][:1].upper())
         out += f'<a class="tile" href="{pathb(m, "reparacion-" + EQ[e][0])}"><span class="ti-img">{im}</span><b>{EQ[e][2].capitalize()} {N}</b><small>{EJ[e]}</small><span class="go">Elegir →</span></a>'
     return f'<div class="tiles">{out}</div>'
 def sintomas_btn(m, e, lista):
@@ -577,7 +591,7 @@ def build_galeria(m):
 def build_tv_extra(m):
     """Páginas propias de pantallas: una por cada línea de la marca, más instalación y mantenimiento de pantallas {marca}."""
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]; ciu = CFG["ciudad"]
-    lineas_url = {}
+    lineas_url = {}; TE = [e for e in d["equipos"] if e.startswith("tv-")]; TL = list(_TV.LINEAS_DET[m])
     for ln, (tipo, desc, nota) in _TV.LINEAS_DET[m].items():
         sl = "pantallas-" + slug(N + " " + ln); lineas_url[ln] = pathb(m, sl)
         fl = d["fallas"][tipo][:4]
@@ -596,10 +610,10 @@ def build_tv_extra(m):
                [faq_ld(faq), {"@type": "Service", "name": f"Reparación de pantallas {N} {ln}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Country", "name": ciu}, "brand": {"@type": "Brand", "name": N}}],
                bd=f"{N} · {ln}", prio="0.8", lead=f"Fallas, modelos y servicio a domicilio para tu pantalla {N} {ln}.")
     _LINEAS_URL[m] = lineas_url
-    ex = _TV.SERV_MARCA[m]; E = d["equipos"]
+    ex = _TV.SERV_MARCA[m]; E = TE
     # ---- instalación
     antes = _TV._INST_COMUN["antes"]
-    cuerpo = (sec(f"Instalación de pantallas {N} en {ciu}", f"<p>Instalamos pantallas {N} ({', '.join(d['lineas'][:4])} y más) en tu casa u oficina en {ciu}: montaje en pared o sobre mueble, conexión de cables, sintonización de canales y configuración de imagen y sonido.</p><p>{esc(_TV.MANT_INST[E[0]]['inst']['gye'])}</p>")
+    cuerpo = (sec(f"Instalación de pantallas {N} en {ciu}", f"<p>Instalamos pantallas {N} ({', '.join(TL[:4])} y más) en tu casa u oficina en {ciu}: montaje en pared o sobre mueble, conexión de cables, sintonización de canales y configuración de imagen y sonido.</p><p>{esc(_TV.MANT_INST[E[0]]['inst']['gye'])}</p>")
               + sec("Tipos de soporte", "<dl class=\"pz\">" + "".join(f"<dt>{esc(a_)}</dt><dd>{esc(b_)}</dd>" for a_, b_ in _TV.SOPORTES) + "</dl><p>El soporte correcto depende del tamaño y del peso de la pantalla y del patrón de agujeros de la parte trasera (VESA), que cambia según el modelo; por ejemplo 200×200, 300×300, 400×400 o 600×400 mm.</p>", alt=True)
               + sec(f"Qué necesitamos saber de tu {N}", "<ul><li>El modelo exacto y el tamaño en pulgadas.</li><li>Si va en pared (de concreto, de bloque o de gypsum) o sobre un mueble.</li><li>A qué altura quieres el centro de la pantalla.</li><li>Qué dispositivos conectarás: decodificador, consola, barra de sonido o computadora.</li></ul>")
               + sec(f"Qué debes tener listo antes de instalar tu {N}", "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in antes) + "</ul>", alt=True)
@@ -655,7 +669,7 @@ def build_marca(m):
               + sec(f"Zonas de {CFG['ciudad']} donde atendemos equipos {N}", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {esc(CFG.get("zart", {}).get(z, v[0]))}</span></a>' for z, v in ZONAS.items()) + '</div>', alt=True)
               + (sec(f"Quiénes somos", quienes_breve(m), alt=True) if CFG.get("sin_recorte") else "")
               + sec(f"Más información sobre {N}", otras(m, ""))
-              + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join((f'<a class="pill" href="{pathb(m, "pantallas-" + slug(N + " " + x))}">{esc(x)}</a>' if CFG.get("tv") else f'<span class="pill">{esc(x)}</span>') for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
+              + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join((f'<a class="pill" href="{pathb(m, "pantallas-" + slug(N + " " + x))}">{esc(x)}</a>' if (CFG.get("tv") or (CFG.get("mix") and _tvb(m) and x in _TV.LINEAS_DET.get(m, {}))) else f'<span class="pill">{esc(x)}</span>') for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
     path = "/" if m == "samsung" else base(m)
     t = f"Centro de Servicio Técnico {N} Panamá | A domicilio" if m != "general-electric" else f"Centro de Servicio Técnico {N} Panamá"
     ld = [faq_ld(FAQ_H), {"@type": "Service", "name": f"Servicio técnico {N} en Panamá", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá", "serviceType": (f"Reparación de pantallas {N}" if CFG.get("tv") else f"Reparación de electrodomésticos {N}"), "brand": {"@type": "Brand", "name": N, "sameAs": EXT[m][1]},
@@ -760,7 +774,7 @@ import unicodedata
 def slug(t):
     t = unicodedata.normalize("NFKD", t.lower()).encode("ascii", "ignore").decode()
     s = re.sub(r"[^a-z0-9]+", "-", t).strip("-")
-    if len(s) > 70 and CFG.get("tv"): s = s[:70].rsplit("-", 1)[0]
+    if len(s) > 70 and TVX: s = s[:70].rsplit("-", 1)[0]
     return s[:70]
 def consejo(sint, causa):
     t = (sint + " " + causa).lower()
@@ -804,7 +818,7 @@ def build_sintomas(m):
         if cod and re.search(r"c[oó]digo|error|pantalla|muestra|\bE\d|Er ", a, re.I):
             cod_html = sec(f"Códigos de {pl} {N_}", tabla(["Código", "Qué suele indicar"], [(f'<span class="cb">{x}</span>', esc(y)) for x, y in cod[:6]]) + f'<p><a href="{pathb(m, "codigos-de-error")}">Ver todos los códigos de error {N_}</a></p>', alt=True)
         im = elegir(m, m + sl, 1, e) + elegir(m, m + sl + "g", 1)
-        nombre = (f"{cap(sing)} {N_}: {bajar(a).rstrip('.')}" if CFG.get("tv") else cap(uni(sing, N_, a)))
+        nombre = (f"{cap(sing)} {N_}: {bajar(a).rstrip('.')}" if (CFG.get("tv") or e.startswith("tv-")) else cap(uni(sing, N_, a)))
         titulo = nombre
         while len(titulo) > 62 and re.search(r"\s(o|y|,)\s", titulo): titulo = re.sub(r"\s+(?:o|y)\s+[^ ]*(?:\s+[^ ]+)*$", "", titulo, count=1) if re.search(r"\s(o|y)\s", titulo) else titulo
         if len(titulo) > 62: titulo = re.sub(r"(\s+(?:de|en|y|a|la|el|los|las|con|para|del|que|o|u|al|no|se))+$", "", titulo[:62].rsplit(" ", 1)[0].rstrip(" ,:;"))
@@ -846,11 +860,13 @@ def build_sintomas(m):
 
 def eq_de_consejo(t):
     x = t.lower()
-    if CFG.get("tv"):
+    if CFG.get("mix") and not re.search(r"pantalla|televisor|oled|qled|webos|tizen|google tv", x):
+        pass
+    elif CFG.get("tv") or CFG.get("mix"):
         if re.search(r"oled", x): return "tv-oled"
         if re.search(r"qled|mini led|one connect|caja", x): return "tv-qled"
-        if re.search(r"pantalla|televisor|webos|tizen|google tv|vidaa|software|sistema|ventilaci|limpiar", x): return "tv-led"
-        return None
+        if re.search(r"pantalla|televisor|webos|tizen|google tv|vidaa" if CFG.get("mix") else r"pantalla|televisor|webos|tizen|google tv|vidaa|software|sistema|ventilaci|limpiar", x): return "tv-led"
+        if CFG.get("tv"): return None
     for e, rx in (("lavavajillas", r"lavavajillas"), ("microondas", r"microondas"), ("batidoras", r"batidora"), ("centro-lavado", r"torre|centro de lavado"), ("secadoras", r"secadora"), ("lavadoras", r"lavadora"), ("neveras", r"refrigeradora|nevera|filtro de agua"), ("aires", r"\baire|windfree"), ("cocinas", r"estufa|horno|cocina|bujía|bujia")):
         if re.search(rx, x): return e
     return None
@@ -1333,7 +1349,7 @@ def tecnico():
     if it: (OUT / "sitemap-principal.xml").write_text(sm(it)); idx.append("sitemap-principal.xml")
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<sitemap><loc>{DOM}/{i}</loc><lastmod>{HOY}</lastmod></sitemap>" for i in idx) + "</sitemapindex>")
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {DOM}/sitemap.xml\n")
-    L = [f"# {NOMBRE}", f"> Servicio técnico independiente de {"pantallas" if CFG.get("tv") else "electrodomésticos"} a domicilio en {CFG['ciudad']}. WhatsApp {TEL}.", "", "## Marcas"]
+    L = [f"# {NOMBRE}", f"> Servicio técnico independiente de {"pantallas" if CFG.get("tv") else "electrodomésticos y pantallas" if CFG.get("mix") else "electrodomésticos"} a domicilio en {CFG['ciudad']}. WhatsApp {TEL}.", "", "## Marcas"]
     for m in BRANDS_ORDER: L.append(f"- [Centro de Servicio Técnico {nom(m)} {CFG['ciudad']}]({DOM}{base(m)}): {', '.join(EQ[e][2] for e in M[m]['equipos'])}.")
     L += ["", "## Contenido por marca", "Cada marca tiene su propio blog, glosario, zonas, repuestos y garantía dentro de su carpeta."]
     (OUT / "llms.txt").write_text("\n".join(L) + "\n")
@@ -1412,7 +1428,7 @@ def relacionadas():
                 tt = ff.read_text(encoding="utf-8")
                 if f"<!--RELF:{e}-->" in tt: ff.write_text(tt.replace(f"<!--RELF:{e}-->", blq), encoding="utf-8")
 
-if CFG.get("tv"):
+if TVX:
     PARTES.update(_TV.PARTES); PARTE_DESC.update(_TV.PARTE_DESC); PARTE_DIAG.update(_TV.PARTE_DIAG); EQ_VIDA.update(_TV.EQ_VIDA); GL_EQ.update(_TV.GL_EQ)
     _gl = dict(GLOSARIO); _gl.update(dict(_TV.GLOSARIO_TV)); GLOSARIO = list(_gl.items()) if isinstance(GLOSARIO, list) else _gl
 if CFG.get("zx"): ZX = CFG["zx"]
@@ -1425,8 +1441,9 @@ if __name__ == "__main__":
     for m in BRANDS_ORDER:
         for suf in ("", "-blanco"): shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}{suf}.png", OUT / "img" / "logos" / f"{m}{suf}.png")
     for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
-    if CFG.get('tv'):
-        for m in BRANDS_ORDER: build_tv_extra(m)
+    if TVX:
+        for m in BRANDS_ORDER:
+            if _tvb(m): build_tv_extra(m)
     build_sitio(); relacionadas(); repartir_fotos()
     for ff in OUT.rglob("index.html"):
         tt = ff.read_text(encoding="utf-8")

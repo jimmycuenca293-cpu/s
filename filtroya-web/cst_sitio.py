@@ -181,7 +181,7 @@ COSTARICA = dict(
     tel="+506 7005-5853", telw="50670055853", locale="es-CR", cc="CR", region="San José", pais="Costa Rica",
     gsc=["XYsqhIDh94Jrxjg0dah9SUxAZTDy98U0yn3pNy_Sb7E"],
     ext_lg=("Página del fabricante: LG Costa Rica", "https://www.lg.com/cr/"), ext_samsung=("Página del fabricante: Samsung Costa Rica", "https://www.samsung.com/cr/"),
-    guia_humedad=("humedad-calor-y-lluvias-en-pantallas", "Humedad, calor y lluvias en pantallas {N} en Costa Rica", "Cómo la humedad, el calor y la temporada de lluvias de Costa Rica afectan tus pantallas {N}: qué fallas provocan y cómo prevenirlas."),
+    guia_humedad=("humedad-calor-y-lluvias-en-equipos", "Humedad, calor y lluvias en tus equipos {N} en Costa Rica", "Cómo la humedad, el calor y la temporada de lluvias de Costa Rica afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas."),
     intro_clima="En Costa Rica hay una estación seca y una temporada de lluvias con tormentas eléctricas casi diarias en muchas zonas, además de humedad alta en la costa y el Caribe.",
     costero=False, nev=("refrigeradoras", "refrigeradora", "refrigeradoras"),
     zonas=ZONAS_CR, zx=ZX_CR, clima=CLIMA_CR,
@@ -189,7 +189,7 @@ COSTARICA = dict(
     zlista="San José, Escazú y Santa Ana, Heredia, Alajuela, Cartago, Curridabat y San Pedro, y Liberia y Guanacaste",
     zart={"san-jose": "San José", "escazu-y-santa-ana": "Escazú y Santa Ana", "heredia": "Heredia", "alajuela": "Alajuela", "cartago": "Cartago", "curridabat-y-san-pedro": "Curridabat y San Pedro", "liberia-y-guanacaste": "Liberia y Guanacaste"},
     ley_datos="Ley 8968 de Protección de la Persona frente al tratamiento de sus datos personales de Costa Rica", ley_consumo="Ley 7472 de Promoción de la Competencia y Defensa Efectiva del Consumidor de Costa Rica",
-    sin_recorte=True, lbl_guias="Blog de consejos", tv=True,
+    sin_recorte=True, lbl_guias="Blog de consejos", mix=True,
 )
 CFG = {"cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA}.get(SITIO, PANAMA)
 
@@ -241,9 +241,11 @@ def L(h):
         ("es-PA", CFG["locale"]), ("es_PA", CFG["locale"].replace("-", "_")), ('"addressCountry": "PA"', '"addressCountry": "%s"' % CFG["cc"]),
         ("en Panamá", "en " + CFG["ciudad"]), ("de Panamá", "de " + CFG["ciudad"]), ("Panamá", CFG["ciudad"]), ("Panam%C3%A1", CFG["ciudad"]),
     ]: h = h.replace(a, b)
-    if CFG.get("tv"):
+    _tvp = CFG.get("tv") or (CFG.get("mix") and re.search(r'rel="canonical" href="[^"]*/(sony/|[^"/]*pantalla[^"/]*/|pantallas-[^"/]*/|[^"/]*-de-pantallas/)', h))
+    if CFG.get("tv") or CFG.get("mix"):
         h = re.sub(r"(?<=[ >«(])(led|qled|oled)\b", lambda m_: m_.group(1).upper(), h, flags=re.I)
         h = h.replace("mini LED", "Mini LED").replace("Mini led", "Mini LED")
+    if _tvp:
         for x, y in [("filtros, bombas, sensores y empaques", "fuentes de poder, tiras de LED, puertos y cables"), ("Las placas y los compresores", "Los paneles y las placas"), ("las placas y los compresores", "los paneles y las placas"),
                      ("placas y compresores", "placas y paneles"), ("en los equipos con compresor o placa electrónica", "en las pantallas"), ("en equipos con compresor o placa electrónica", "en las pantallas"), ("compresores", "paneles")]:
             h = h.replace(x, y)
