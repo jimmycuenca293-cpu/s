@@ -59,7 +59,7 @@ def copia(m, f):
 def alt_de(m, f, extra=""):
     t = re.sub(r"\.webp$", "", f.name); t = re.sub(r"[-_]+", " ", t); t = re.sub(r"(?i)autorizad[oa]s?|oficial(es)?", "", t)
     t = re.sub(r"\b(\d+|producto|banner|cutout|ge|1|2|3|4)\b", "", t).strip()
-    return esc((t[:1].upper() + t[1:] + f" · {M[m]['nombre']} Panamá").strip())
+    return esc(re.sub(r"\s+", " ", LOC((t[:1].upper() + t[1:] + f" · {M[m]['nombre']} Panamá").strip())))
 def elegir(m, clave, cuantas=2, equipo=None):
     p = POOLS[m]
     if equipo is None: equipo = "_gente"
@@ -166,7 +166,7 @@ def pie(marca=None, lista_marcas=False):
         d = M[marca]; N = nom(marca)
         col1 = (f'<div><h3>Equipos {N}</h3><ul>' + "".join(f'<li><a href="{pathb(marca, "reparacion-" + EQ[e][0])}">{EQ[e][2].capitalize()} {N}</a></li>' for e in d["equipos"]) + '</ul></div>')
         col2 = (f'<div><h3>Servicio {N}</h3><ul>' + (f'<li><a href="{pathb(marca, "codigos-de-error")}">Códigos de error</a></li>' if d["codigos"] else "") +
-                f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "repuestos")}">Repuestos</a></li><li><a href="{pathb(marca, "garantia")}">Garantía</a></li><li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "guias")}">Guías</a></li><li><a href="{pathb(marca, "glosario")}">Glosario</a></li></ul></div>')
+                f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "repuestos")}">Repuestos</a></li><li><a href="{pathb(marca, "garantia")}">Garantía</a></li><li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "guias")}">{CFG.get("lbl_guias", "Guías")}</a></li><li><a href="{pathb(marca, "glosario")}">Glosario</a></li></ul></div>')
         col3 = (f'<div><h3>Zonas</h3><ul><li><a href="{pathb(marca, "centro-de-servicio-cerca-de-mi")}">Cerca de mí</a></li><li><a href="{pathb(marca, "reparacion-a-domicilio")}">A domicilio</a></li>' + "".join(f'<li><a href="{pathb(marca, "servicio-tecnico-" + z)}">{v[0]}</a></li>' for z, v in list(ZONAS.items())[:5]) + '</ul></div>')
         col4 = (f'<div><h3>{N} Panamá</h3><ul><li><a href="{pathb(marca, "telefono-servicio-tecnico")}">Teléfono y WhatsApp</a></li><li><a href="{pathb(marca, "quienes-somos")}">Quiénes somos</a></li><li><a href="{pathb(marca, "politica-de-privacidad")}">Política de privacidad</a></li><li><a href="{pathb(marca, "terminos-y-condiciones")}">Términos y condiciones</a></li></ul>{aviso}<p>{TEL}</p></div>')
         cols = col1 + col2 + col3 + col4
@@ -245,7 +245,12 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
         if len(title) > 62: title = re.sub(r"(\s+(?:de|en|y|a|la|el|los|las|con|para|del|que|o|u|al))+$", "", title[:62].rsplit(" ", 1)[0].rstrip(" ,|-:"))
     if marca and len(title) < 38 and len(title) + 20 <= 62 and "Servicio técnico" not in title: title += " | Servicio técnico"
     if len(desc) < 125 and len(desc) + 38 <= 158 and not noindex: desc = desc.rstrip(" ") + " Atención a domicilio y por WhatsApp."
-    if len(desc) > 158: desc = desc[:157].rsplit(" ", 1)[0].rstrip(" ,.;") + "…"
+    if len(desc) > 158:
+        oraciones = re.split(r"(?<=\.)\s+", desc); acum = ""
+        for o in oraciones:
+            if len((acum + " " + o).strip()) <= 158: acum = (acum + " " + o).strip()
+            else: break
+        desc = acum if len(acum) >= 70 else desc[:157].rsplit(" ", 1)[0].rstrip(" ,.;:") + "."
     color = M[marca]["color"] if marca else "#0b2a6f"
     url = DOM + path
     graf = [LB]
@@ -390,7 +395,7 @@ def faq10(m):
         (f"¿Hacen servicio técnico {N} a domicilio en {ciu}?", f"Sí. Vamos a tu casa o apartamento en {CFG.get('zlista', ciu)} para diagnosticar y reparar tu equipo {N} sin que lo muevas."),
         (f"¿Qué necesito para pedir la visita de un técnico {N}?", f"Ten a mano el modelo del equipo, lo que notas o el código que aparece, y tu barrio. {d['modelo_ej']}"),
         (f"¿Reparan equipos {N} que ya no tienen garantía?", f"Sí. {d['garantia'].split('. ')[0]}. Si ya venció, revisamos el equipo, te explicamos la causa y el valor se confirma por escrito antes de empezar."),
-        (f"¿Qué equipos {N} atienden?", f"Atendemos {pls_(d)}. Lo que más vemos: {bajar(d['fallas'][e0][0][0]).rstrip('.')} en {EQ[e0][2]} y {bajar(d['fallas'][E[-1]][0][0]).rstrip('.')} en {EQ[E[-1]][2]}."),
+        (f"¿Qué equipos {N} atienden?", f"Atendemos {pls_(d)}. Entre las fallas que más atendemos están «{bajar(d['fallas'][e0][0][0]).rstrip('.')}» en {EQ[e0][2]} y «{bajar(d['fallas'][E[-1]][0][0]).rstrip('.')}» en {EQ[E[-1]][2]}."),
         (f"¿Dónde encuentro el modelo de mi {EQ[e0][1]} {N}?", cap(d["etiqueta"].get(e0, "En una etiqueta pegada al equipo")).rstrip(".") + ". Con una foto de esa etiqueta, el diagnóstico por WhatsApp es mucho más preciso."),
         (f"¿Qué líneas de {N} atienden?", f"Atendemos líneas como {', '.join(d['lineas'][:5])}. Si tu modelo no aparece, escríbenos con la foto de la etiqueta y te confirmamos."),
         (f"¿Qué mantenimiento recomiendan para equipos {N}?", " ".join(x.rstrip(".") + "." for x in d["mantenimiento"][:2]) + " Un mantenimiento preventivo anual evita la mayoría de averías."),
@@ -470,7 +475,7 @@ def fotos_eq(m, e, usadas):
     for f in POOLS[m]:
         if rx.search(f.name) and copia(m, f) not in usadas: out.append(f)
     out = sorted(out, key=lambda f: USO[f])[:3]
-    if not out: return ""
+    if len(out) < 2: return ""
     figs = ""
     for f in out:
         USO[f] += 1; r = copia(m, f); usadas.add(r)
@@ -1221,21 +1226,27 @@ def repartir_fotos():
             return f'<section class="s alt"><div class="w"><div class="fgrid">{figs}</div></div></section>'
         def poner(p, fs):
             t = p.read_text(encoding="utf-8")
-            if "<!--cierre-->" not in t: return False
-            p.write_text(t.replace("<!--cierre-->", franja(fs) + "<!--cierre-->", 1), encoding="utf-8"); return True
+            ancla = '<div class="w"><p class="upd">' if '<div class="w"><p class="upd">' in t else "<!--cierre-->"
+            if ancla not in t: return False
+            p.write_text(t.replace(ancla, franja(fs) + ancla, 1), encoding="utf-8"); return True
+        def lotes(lst):
+            out = [lst[i:i + 3] for i in range(0, len(lst), 3)]
+            if len(out) > 1 and len(out[-1]) == 1: out[-2] += out.pop()
+            return out
         for e, fs in por_eq.items():
             destinos = [carp / ("reparacion-" + EQ[e][0]) / "index.html"] + [x for x in sorted(carp.glob("falla-*/index.html")) if x.parent.name.startswith("falla-" + slug(EQ[e][1]))]
-            i = 0
-            for dpath in destinos:
-                if i >= len(fs): break
-                if poner(dpath, fs[i:i + 2]): i += 2
-            resto += fs[i:]
+            ls = lotes(fs) if len(fs) > 1 else []
+            if len(fs) == 1: resto += fs
+            for lote, dpath in zip(ls, destinos):
+                if not poner(dpath, lote): resto += lote
+            resto += [f for l in ls[len(destinos):] for f in l]
         orden = [paginas_m[0]] + [carp / s / "index.html" for s in ("quienes-somos", "telefono-servicio-tecnico", "reparacion-a-domicilio", "garantia", "cuanto-cuesta-la-reparacion", "series-y-modelos", "repuestos", "centro-de-servicio-cerca-de-mi", "preguntas-frecuentes", "diagnostico-por-sintoma", "glosario")]
         orden += sorted(carp.glob("guia-*/index.html")) + sorted(carp.glob("servicio-tecnico-*/index.html")) + sorted(carp.glob("falla-*/index.html"))
-        i = 0
+        pend = lotes(resto) if len(resto) > 1 else ([resto] if resto else [])
+        k = 0
         for dpath in orden:
-            if i >= len(resto): break
-            if dpath.exists() and poner(dpath, resto[i:i + 2]): i += 2
+            if k >= len(pend): break
+            if dpath.exists() and poner(dpath, pend[k]): k += 1
 
 def relacionadas():
     """Segunda pasada: enlaza cada página de equipo con las guías de su marca que existen y le sirven."""
