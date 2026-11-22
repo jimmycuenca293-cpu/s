@@ -82,7 +82,7 @@ def alt_de(m, f, extra=""):
     """Texto alternativo descriptivo (SEO y accesibilidad): qué muestra la foto, de qué marca y en qué ciudad."""
     n = f.name.lower(); N = M[m]["nombre"]; ciu = CFG["ciudad"]
     eq = None
-    for rx, nombre in ((r"centro-lavado|torre|washtower", "Centro de lavado"), (r"lavavajillas", "Lavavajillas"), (r"microondas", "Microondas"), (r"secadora", "Secadora"), (r"lavadora", "Lavadora"),
+    for rx, nombre in ((r"televisor|pantalla", "Televisor"), (r"centro-lavado|torre|washtower", "Centro de lavado"), (r"lavavajillas", "Lavavajillas"), (r"microondas", "Microondas"), (r"secadora", "Secadora"), (r"lavadora", "Lavadora"),
                        (r"aire|windfree", "Aire acondicionado"), (r"horno", "Horno empotrado"), (r"estufa|cocina|hornillas", "Cocina"), (r"nevera|refriger|family|french|side-by-side|top-freezer", "Refrigeradora"), (r"batidora", "Batidora de pedestal")):
         if re.search(rx, n): eq = nombre; break
     rasgos = [t for rx, t in ((r"side-by-side", "side by side"), (r"french", "french door"), (r"top-freezer|congelador-superior", "con congelador arriba"), (r"frontal", "de carga frontal"), (r"carga-superior", "de carga superior"),
