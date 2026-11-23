@@ -297,7 +297,7 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
             else: break
         desc = acum if len(acum) >= 70 else desc[:157].rsplit(" ", 1)[0].rstrip(" ,.;:") + "."
     if len(desc) < 100 and len(desc) + 38 <= 158 and not noindex: desc = desc.rstrip(" ") + " Atención a domicilio y por WhatsApp."
-    if marca in TVFOTO and re.search(r"/(reparacion-pantallas-|pantallas-|falla-pantalla-|instalacion-de-pantallas|mantenimiento-de-pantallas)", path) and not re.search(r"/(guia|servicio-tecnico|cuanto|garantia)", path):
+    if marca in TVFOTO and re.search(r"/(reparacion-de-pantallas|reparacion-pantallas-|pantallas-|falla-pantalla-|instalacion-de-pantallas|mantenimiento-de-pantallas)", path) and not re.search(r"/(guia|servicio-tecnico|cuanto|garantia)", path):
         _p = TVFOTO[marca]; hero = (copia(marca, _p), alt_de(marca, _p))
     color = M[marca]["color"] if marca else "#0b2a6f"
     url = DOM + path
