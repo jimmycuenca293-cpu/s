@@ -216,8 +216,8 @@ CLIMA_BGA = {z: _CL_BGA for z in ZONAS_BGA}
 CLIMA_BGA["floridablanca"] = "las tormentas eléctricas de las temporadas de lluvias y los picos de voltaje que traen"
 BUCARAMANGA = dict(
     sitio="bucaramanga", dom="https://servicio-tecnico-bucaramanga.com", ciudad="Bucaramanga", nombre="Servicio Técnico Bucaramanga",
-    tel="+57 305 479 6329", telw="573054796329", locale="es-CO", cc="CO", region="Santander", pais="Colombia",
-    gsc=[],
+    tel="+57 301 381 0242", telw="573013810242", locale="es-CO", cc="CO", region="Santander", pais="Colombia",
+    gsc=["Bn9udg0R2-tB4qWIHDJth3iYw_pKtm8zwVX9vb_cFB0"],
     ext_lg=("Página del fabricante: LG Colombia", "https://www.lg.com/co/"), ext_samsung=("Página del fabricante: Samsung Colombia", "https://www.samsung.com/co/"),
     guia_humedad=("humedad-y-lluvias-en-equipos", "Humedad y lluvias en equipos {N} en Bucaramanga", "Cómo la humedad, las lluvias y las tormentas eléctricas de Bucaramanga afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas."),
     intro_clima="Bucaramanga tiene un clima templado, con dos temporadas de lluvias al año y tormentas eléctricas que traen picos de voltaje.",

@@ -184,6 +184,7 @@ footer{background:var(--hd);color:#cfd9ee;padding:34px 0 90px;font-size:.92rem}f
 """
 if CFG.get("sin_recorte"):
     CSS += """
+.toc{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px 0 4px}.toc b{font-size:.9rem;margin-right:6px}.toc a{font-size:.88rem;padding:6px 12px;border-radius:999px;background:var(--soft,#eef2f8);color:inherit;text-decoration:none}.toc a:hover{text-decoration:underline}
 .hero img{aspect-ratio:auto!important;object-fit:contain!important;width:auto!important;max-width:100%;max-height:480px;height:auto!important;margin:0 auto;background:#fff}
 .two img{aspect-ratio:auto!important;object-fit:contain!important;height:auto!important;max-height:520px;width:auto;max-width:100%;margin:0 auto}
 .gal{align-items:start}.gal img{aspect-ratio:auto!important;object-fit:contain!important;height:auto!important;background:#fff}
@@ -280,6 +281,12 @@ def FAV(marca):
     fs = 34 if len(ini) == 1 else 26
     svg = f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='{c}'/><text x='32' y='{32 + fs * 0.36:.0f}' font-family='Arial,sans-serif' font-weight='700' font-size='{fs}' fill='white' text-anchor='middle'>{ini}</text></svg>"
     return "data:image/svg+xml," + svg.replace("<", "%3C").replace(">", "%3E").replace("#", "%23").replace(" ", "%20").replace("'", "%27")
+def _idsec2(m_, usados, items):
+    cls, tt = m_.group(1), m_.group(4)
+    ident = m_.group(3) or slug(re.sub(r"<[^>]+>", "", tt))[:40] or "seccion"
+    while ident in usados: ident += "-b"
+    usados.add(ident); items.append((ident, tt))
+    return f'<section class="{cls}" id="{ident}"><div class="w"><h2>{tt}</h2>'
 def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld=None, bd=None, prio="0.7", extra_js="", lead=None, noindex=False, marcas_ok=False, cta2=None):
     """path: '/lg/reparacion-lavadoras/' ; cuerpo: html de secciones"""
     title = LOC(title); desc = LOC(desc)
@@ -314,9 +321,18 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
         if x.get("@type") == "Article":
             x["mainEntityOfPage"] = {"@id": url + "#pagina"}
             if hero: x["image"] = [DOM + hero[0]]
+        if CFG.get("seo_plus") and x.get("@type") == "Service" and CFG.get("area") and not (isinstance(x.get("areaServed"), dict) and x["areaServed"].get("@type") == "Place"):
+            x["areaServed"] = [{"@type": "City", "name": c_} for c_ in CFG["area"]]
     bc = ""
     if crumbs and len(crumbs) > 1:
         bc = '<div class="w bc">' + " › ".join((f'<a href="{u}">{esc(n)}</a>' if i < len(crumbs) - 1 else esc(n)) for i, (n, u) in enumerate(crumbs)) + "</div>"
+    if CFG.get("seo_plus") and path != "/" and 'class="anc"' not in cuerpo:
+        _hs = re.findall(r'<section class="s(?: alt)?"(?: id="([^"]*)")?><div class="w"><h2>(.*?)</h2>', cuerpo)
+        if len(_hs) >= 4:
+            _usados = set(); _items = []
+            cuerpo = re.sub(r'<section class="(s(?: alt)?)"( id="([^"]*)")?><div class="w"><h2>(.*?)</h2>', lambda m_: _idsec2(m_, _usados, _items), cuerpo)
+            toc = '<nav class="toc w" aria-label="En esta página"><b>En esta página</b>' + "".join(f'<a href="#{i}">{t}</a>' for i, t in _items[:12]) + '</nav>'
+            cuerpo = toc + cuerpo
     bgi = "none"
     if marca and not noindex: cuerpo, bgi = decorar(marca, cuerpo, hero, path)
     himg = ""
@@ -368,6 +384,9 @@ def cierre(m, path):
     inter = "".join(f'<a class="card l" href="{u}"><span class="t">{esc(t)}</span></a>' for u, t in sel)
     guias = "".join(f'<a class="card l" href="{pathb(m, "guia-" + sl)}"><span class="t">{esc(t_)}</span></a>' for sl, t_ in ART.get(m, [])[:3]) + f'<a class="card l" href="{pathb(m, "guias")}"><span class="t">Todas las guías {N}</span></a><a class="card l" href="{pathb(m, "glosario")}"><span class="t">Glosario {N}</span></a><a class="card l" href="{pathb(m, "cobertura")}"><span class="t">Zonas donde atendemos {N}</span></a>'
     busq = [(f"servicio técnico {N} Panamá", base(m)), (f"teléfono servicio técnico {N} Panamá", pathb(m, "telefono-servicio-tecnico")), (f"centro de servicio {N} cerca de mí", pathb(m, "centro-de-servicio-cerca-de-mi")), (f"reparación {N} a domicilio", pathb(m, "reparacion-a-domicilio")), (f"repuestos {N} Panamá", pathb(m, "repuestos")), (f"códigos de error {N}", pathb(m, "codigos-de-error") if d["codigos"] else pathb(m, "fallas")), (f"mantenimiento {N}", pathb(m, "guia-de-cuidado")), (f"garantía {N} Panamá", pathb(m, "garantia"))]
+    if CFG.get("seo_plus"):
+        busq += [(f"reparación de {EQ[e][2]} {N} {CFG['ciudad']}", pathb(m, "reparacion-" + EQ[e][0])) for e in d["equipos"]]
+        busq += [(f"servicio técnico {N} en {zv[0]}", pathb(m, "servicio-tecnico-" + z)) for z, zv in ZONAS.items()]
     chips_b = "".join(f'<a class="pill" href="{u}">{esc(t)}</a>' for t, u in busq)
     nm, url = EXT[m]
     externos = f'<ul><li><a href="{url}" target="_blank" rel="noopener">{nm}</a> <small>(abre en otra pestaña; sitio del fabricante, no es nuestro)</small></li></ul>'
@@ -738,6 +757,7 @@ def build_marca(m):
                   + sec(f"Antes de la visita: tu {sing} {N}", visita, id="visita", alt=not bool(rc))
                   + bloque_mant_inst(m, e)
                   + (fotos_eq(m, e, {x[0] for x in (h, h2) if x}) if CFG.get("sin_recorte") else "")
+                  + (sec(f"Dónde reparamos {pl} {N} en {CFG['ciudad']}", "<p>" + "".join(f'<a class="pill" href="{pathb(m, "servicio-tecnico-" + z)}">{esc(cap(pl))} {N} en {esc(zv[0])}</a>' for z, zv in ZONAS.items()) + "</p>", alt=not bool(rc)) if CFG.get("seo_plus") else "")
                   + sec(f"Preguntas sobre {pl} {N}", faq_html(faq_e), alt=not bool(sec_cod), id="preguntas")
                   + f"<!--REL:{e}-->")
         pagina(pathb(m, "reparacion-" + s), f"Reparación de {pl} {N} en Panamá | Centro de Servicio", f"Reparación de {pl} {N} en Panamá a domicilio: fallas frecuentes, causas probables y qué revisamos. Diagnóstico en casa y atención por WhatsApp.",
@@ -1138,6 +1158,7 @@ def build_zonas_marca(m):
                     (f"¿Qué equipos {N} atienden en {za}?", f"Atendemos {junta(EQ[e][2] for e in E)} de la marca {N}. Si tu equipo no está en la lista, escríbenos con el modelo y la falla."),
                     (f"¿Cómo pido la visita de servicio técnico {N} en {za}?", f"Escríbenos por WhatsApp con la marca, el modelo, lo que le pasa al equipo y tu sector en {za}. Te confirmamos el día y la franja."),
                     (f"¿Cuánto cuesta reparar un equipo {N} en {za}?", "El valor depende del equipo y de la falla. Se confirma por escrito después del diagnóstico y solo se repara si tú lo apruebas.")]
+            cuerpo += sec(f"Equipos {N} que reparamos en {za}", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "reparacion-" + EQ[e][0])}"><span class="t">Reparación de {esc(EQ[e][2])} {N} en {esc(zn)}</span></a>' for e in E) + '</div>', alt=True)
             cuerpo += sec(f"Preguntas frecuentes sobre el servicio técnico {N} en {za}", faq_html(zfaq))
         pagina(pathb(m, "servicio-tecnico-" + z), f"Servicio técnico {N} en {za} | Panamá", f"Servicio técnico {N} a domicilio en {za}, Panamá: qué fallas de equipos {N} se reportan allí, sectores que visitamos y cómo coordinar la visita.",
                f"Servicio técnico {N} en {za}", cuerpo, m, (elegir(m, m + z, 1) or [None])[0], crumbs0 + [("Cobertura", pathb(m, "cobertura")), (zn, pathb(m, "servicio-tecnico-" + z))],
