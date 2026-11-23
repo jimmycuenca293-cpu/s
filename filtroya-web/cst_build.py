@@ -632,6 +632,7 @@ def build_tv_extra(m):
     cuerpo = (sec(f"Reparación de pantallas {N} en {ciu}", f"<p>Reparamos pantallas {N} en tu casa u oficina en {ciu}. Elige el tipo de pantalla que tienes y te mostramos sus fallas, la causa más probable y qué revisamos en la visita.</p>")
               + sec("Elige tu tipo de pantalla", f'<div class="g c3">{_cards}</div>', alt=True)
               + sec(f"Líneas {N} que atendemos", f"<p>{_lp}</p>")
+              + sec(f"Fallas frecuentes en pantallas {N}", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "falla-" + x[1])}"><span class="t">{esc(cap(EQ[x[0]][1]))} {N}: {esc(bajar(x[2]).rstrip("."))}</span></a>' for x in SINT[m] if x[0].startswith("tv-")) + '</div>', alt=True)
               + sec("Servicios para tu pantalla", f'<div class="g c3"><a class="card l" href="{pathb(m, "instalacion-de-pantallas")}"><span class="t">Instalación</span>Montaje en pared o mueble y configuración.</a><a class="card l" href="{pathb(m, "mantenimiento-de-pantallas")}"><span class="t">Mantenimiento</span>Cuidados que alargan la vida de tu pantalla.</a><a class="card l" href="{pathb(m, "diagnostico-por-sintoma")}"><span class="t">Diagnóstico por síntoma</span>Elige lo que notas y ve la causa más probable.</a></div>', alt=True))
     pagina(pathb(m, "reparacion-de-pantallas"), f"Reparación de pantallas {N} en {ciu} | LED, QLED y OLED", f"Reparación de pantallas {N} en {ciu}: LED, QLED y OLED. Fallas frecuentes, líneas, instalación, mantenimiento y visita a domicilio.",
            f"Reparación de pantallas {N} en {ciu}", cuerpo, m, (elegir(m, m + "pantallas", 1) or [None])[0], crumbs0 + [("Reparación de pantallas", pathb(m, "reparacion-de-pantallas"))],
@@ -653,7 +654,7 @@ def build_tv_extra(m):
                                                                 (f"¿Sintonizan los canales de mi pantalla {N}?", "Sí. En Costa Rica la televisión digital usa ISDB-Tb; configuramos la región y buscamos los canales con la antena o el decodificador que uses.")]), alt=True))
     pagina(pathb(m, "instalacion-de-pantallas"), f"Instalación de pantallas {N} en {ciu} | Soporte de pared", f"Instalación de pantallas {N} en {ciu}: soporte de pared o mueble, cableado, sintonización de canales y configuración de imagen y sonido a domicilio.",
            f"Instalación de pantallas {N} en {ciu}", cuerpo, m, (elegir(m, m + "inst", 1) or [None])[0], crumbs0 + [("Instalación de pantallas", pathb(m, "instalacion-de-pantallas"))],
-           [{"@type": "Service", "name": f"Instalación de pantallas {N}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Country", "name": ciu}, "brand": {"@type": "Brand", "name": N}}],
+           [{"@type": "Service", "name": f"Instalación de pantallas {N}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Country", "name": ciu}, "brand": {"@type": "Brand", "name": N}}] + ([{"@type": "HowTo", "name": f"Cómo se instala una pantalla {N}", "step": [{"@type": "HowToStep", "position": i + 1, "text": x} for i, x in enumerate(_TV._INST_COMUN["pasos"])]}] if CFG.get("seo_plus") else []),
            bd=f"{N} · Instalación", prio="0.8", lead=f"Montaje, cableado y configuración de tu pantalla {N} en {ciu}.")
     # ---- mantenimiento
     _prop = ex["mant"]; _ext = [r for r in _TV._MANT_COMUN if not (r[0].startswith("Actualizar") and any(x[0].startswith("Actualizar") for x in _prop)) and not (("HDMI" in r[0] or "cables" in r[0]) and any(("HDMI" in x[0] or "cables" in x[0]) for x in _prop))]
@@ -669,7 +670,7 @@ def build_tv_extra(m):
                                                                   (f"¿Hacen mantenimiento aunque mi {N} funcione bien?", "Sí. Revisamos ventilación, cables, puertos y software, y te decimos si algo empieza a fallar antes de que deje de funcionar.")]), alt=True))
     pagina(pathb(m, "mantenimiento-de-pantallas"), f"Mantenimiento de pantallas {N} en {ciu} | Cuidados", f"Mantenimiento de pantallas {N} en {ciu}: plan, limpieza correcta, qué no hacer y señales de que tu pantalla necesita revisión.",
            f"Mantenimiento de pantallas {N} en {ciu}", cuerpo, m, (elegir(m, m + "mant", 1) or [None])[0], crumbs0 + [("Mantenimiento de pantallas", pathb(m, "mantenimiento-de-pantallas"))],
-           [{"@type": "Service", "name": f"Mantenimiento de pantallas {N}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Country", "name": ciu}, "brand": {"@type": "Brand", "name": N}}],
+           [{"@type": "Service", "name": f"Mantenimiento de pantallas {N}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Country", "name": ciu}, "brand": {"@type": "Brand", "name": N}}] + ([{"@type": "HowTo", "name": f"Cómo limpiar una pantalla {N}", "step": [{"@type": "HowToStep", "position": i + 1, "text": x} for i, x in enumerate(_TV.LIMPIEZA)]}] if CFG.get("seo_plus") else []),
            bd=f"{N} · Mantenimiento", prio="0.8", lead=f"Cuida tu pantalla {N}: limpieza correcta, ventilación y protección contra picos de voltaje.")
 _LINEAS_URL = {}
 
@@ -1131,9 +1132,16 @@ def build_zonas_marca(m):
                   + sec(f"Fallas de {N} que más se reportan en {za}", f"<ul>{det}</ul>", alt=True)
                   + sec(f"Cómo funcionan {EQ[e0][2]}" + (f" y {EQ[e1][2]}" if e1 != e0 else "") + f" {N}", f"<p>{esc(oracion(d['tech'][e0], zi))}</p>" + (f"<p>{esc(oracion(d['tech'][e1], zi + 1))}</p>" if e1 != e0 else ""))
                   + sec(f"Modelos {N} en {za}", f"<p>{esc(d['modelo_ej'])}</p><p><b>Líneas frecuentes:</b> {', '.join(esc(x) for x in _rot(d['lineas'], zi, 4))}.</p>", alt=True))
+        zfaq = []
+        if CFG.get("seo_plus"):
+            zfaq = [(f"¿Hacen visitas a domicilio de servicio técnico {N} en {za}?", f"Sí. Atendemos sectores como {sect}. La franja se coordina por WhatsApp teniendo en cuenta {acc}."),
+                    (f"¿Qué equipos {N} atienden en {za}?", f"Atendemos {junta(EQ[e][2] for e in E)} de la marca {N}. Si tu equipo no está en la lista, escríbenos con el modelo y la falla."),
+                    (f"¿Cómo pido la visita de servicio técnico {N} en {za}?", f"Escríbenos por WhatsApp con la marca, el modelo, lo que le pasa al equipo y tu sector en {za}. Te confirmamos el día y la franja."),
+                    (f"¿Cuánto cuesta reparar un equipo {N} en {za}?", "El valor depende del equipo y de la falla. Se confirma por escrito después del diagnóstico y solo se repara si tú lo apruebas.")]
+            cuerpo += sec(f"Preguntas frecuentes sobre el servicio técnico {N} en {za}", faq_html(zfaq))
         pagina(pathb(m, "servicio-tecnico-" + z), f"Servicio técnico {N} en {za} | Panamá", f"Servicio técnico {N} a domicilio en {za}, Panamá: qué fallas de equipos {N} se reportan allí, sectores que visitamos y cómo coordinar la visita.",
                f"Servicio técnico {N} en {za}", cuerpo, m, (elegir(m, m + z, 1) or [None])[0], crumbs0 + [("Cobertura", pathb(m, "cobertura")), (zn, pathb(m, "servicio-tecnico-" + z))],
-               [{"@type": "Service", "name": f"Servicio técnico {N} en {za}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Place", "name": zn}}], bd=f"{N} · {za}", prio="0.7", lead=f"Equipos {N} en {za}: fallas frecuentes y visita a domicilio.")
+               [{"@type": "Service", "name": f"Servicio técnico {N} en {za}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Place", "name": zn}}] + ([faq_ld(zfaq)] if zfaq else []), bd=f"{N} · {za}", prio="0.7", lead=f"Equipos {N} en {za}: fallas frecuentes y visita a domicilio.")
         items += f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {za}</span><br><small>{esc(sect)}</small></a>'
     pagina(pathb(m, "cobertura"), f"Cobertura del servicio técnico {N} en Panamá", f"Zonas de Panamá donde damos servicio técnico a domicilio para equipos {N}.",
            f"Cobertura del servicio técnico {N} en Panamá", sec("Dónde atendemos equipos " + N, f'<div class="g c2">{items}</div>'), m, (elegir(m, m + "cob", 1) or [None])[0], crumbs0 + [("Cobertura", pathb(m, "cobertura"))], bd=f"{N} · Cobertura", prio="0.7", lead=f"Zonas de Panamá con visita a domicilio para equipos {N}.", noindex=True)
@@ -1455,6 +1463,24 @@ def relacionadas():
                 tt = ff.read_text(encoding="utf-8")
                 if f"<!--RELF:{e}-->" in tt: ff.write_text(tt.replace(f"<!--RELF:{e}-->", blq), encoding="utf-8")
 
+def dimensiones_img():
+    """Pone width/height reales a cada <img> local (evita saltos de diseño y mejora Core Web Vitals)."""
+    from PIL import Image
+    cache = {}
+    def dim(u):
+        if u not in cache:
+            try: cache[u] = Image.open(OUT / u.lstrip("/")).size
+            except Exception: cache[u] = None
+        return cache[u]
+    def fx(m):
+        tag = m.group(0); s = re.search(r'src="(/img/[^"]+)"', tag)
+        d = dim(s.group(1)) if s else None
+        if not d: return tag
+        tag = re.sub(r'\s(width|height)="[^"]*"', "", tag)
+        return tag[:-1].rstrip("/ ") + f' width="{d[0]}" height="{d[1]}">'
+    for ff in OUT.rglob("index.html"):
+        t = ff.read_text(encoding="utf-8"); n = re.sub(r"<img\b[^>]*>", fx, t)
+        if n != t: ff.write_text(n, encoding="utf-8")
 if TVX:
     PARTES.update(_TV.PARTES); PARTE_DESC.update(_TV.PARTE_DESC); PARTE_DIAG.update(_TV.PARTE_DIAG); EQ_VIDA.update(_TV.EQ_VIDA); GL_EQ.update(_TV.GL_EQ)
     _gl = dict(GLOSARIO); _gl.update(dict(_TV.GLOSARIO_TV)); GLOSARIO = list(_gl.items()) if isinstance(GLOSARIO, list) else _gl
@@ -1475,6 +1501,7 @@ if __name__ == "__main__":
     for ff in OUT.rglob("index.html"):
         tt = ff.read_text(encoding="utf-8")
         if "<!--REL" in tt: ff.write_text(re.sub(r"<!--RELF?:[a-z-]+-->", "", tt), encoding="utf-8")
+    if CFG.get("seo_plus"): dimensiones_img()
     tecnico()
     for r, ds, fs in os.walk(OUT):
         os.chmod(r, 0o755)

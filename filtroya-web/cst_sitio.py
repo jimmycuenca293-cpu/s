@@ -189,7 +189,7 @@ COSTARICA = dict(
     zlista="San José, Escazú y Santa Ana, Heredia, Alajuela, Cartago, Curridabat y San Pedro, y Liberia y Guanacaste",
     zart={"san-jose": "San José", "escazu-y-santa-ana": "Escazú y Santa Ana", "heredia": "Heredia", "alajuela": "Alajuela", "cartago": "Cartago", "curridabat-y-san-pedro": "Curridabat y San Pedro", "liberia-y-guanacaste": "Liberia y Guanacaste"},
     ley_datos="Ley 8968 de Protección de la Persona frente al tratamiento de sus datos personales de Costa Rica", ley_consumo="Ley 7472 de Promoción de la Competencia y Defensa Efectiva del Consumidor de Costa Rica",
-    sin_recorte=True, lbl_guias="Blog de consejos", mix=True,
+    sin_recorte=True, lbl_guias="Blog de consejos", mix=True, seo_plus=True,
 )
 CFG = {"cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA}.get(SITIO, PANAMA)
 
