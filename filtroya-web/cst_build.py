@@ -290,6 +290,7 @@ def _idsec2(m_, usados, items):
 def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld=None, bd=None, prio="0.7", extra_js="", lead=None, noindex=False, marcas_ok=False, cta2=None):
     """path: '/lg/reparacion-lavadoras/' ; cuerpo: html de secciones"""
     title = LOC(title); desc = LOC(desc)
+    if CFG.get("seo_plus") and path != "/" and CFG["ciudad"] not in title and len(title) + 3 + len(CFG["ciudad"]) <= 62: title += " | " + CFG["ciudad"]
     if len(title) > 62:
         partes = title.split(" | ")
         while len(" | ".join(partes)) > 62 and len(partes) > 1: partes.pop()
@@ -870,7 +871,7 @@ def build_sintomas(m):
         titulo = nombre
         while len(titulo) > 62 and re.search(r"\s(o|y|,)\s", titulo): titulo = re.sub(r"\s+(?:o|y)\s+[^ ]*(?:\s+[^ ]+)*$", "", titulo, count=1) if re.search(r"\s(o|y)\s", titulo) else titulo
         if len(titulo) > 62: titulo = re.sub(r"(\s+(?:de|en|y|a|la|el|los|las|con|para|del|que|o|u|al|no|se))+$", "", titulo[:62].rsplit(" ", 1)[0].rstrip(" ,:;"))
-        if len(titulo) <= 42: titulo += " | Causa y solución"
+        if len(titulo) <= 42: titulo += (" | " + CFG["ciudad"]) if CFG.get("seo_plus") else " | Causa y solución"
         q = f"«{a.rstrip('.')}»"
         faq = [(f"¿Cuánto cuesta arreglar {q} en {art} {sing} {N_}?", f"Depende de la pieza. La causa más probable es: {bajar(b)} Después del diagnóstico te damos el valor por escrito antes de reparar."),
                (f"¿Qué datos necesito para pedir la visita por {q}?", f"El modelo del equipo y una foto o descripción de lo que notas. {d['etiqueta'].get(e, 'Busca la etiqueta con el modelo y la serie en el equipo.')}")]
@@ -1341,7 +1342,7 @@ def build_blog(m):
         pagina(pathb(m, "guia-" + slg), t[:62], desc, t, cuerpo, m, (elegir(m, m + slg, 1) or [None])[0], crumbs0 + [("Guías", pathb(m, "guias")), (t[:45], pathb(m, "guia-" + slg))],
                [{"@type": "Article", "headline": t, "description": desc, "datePublished": HOY, "dateModified": HOY, "author": {"@id": DOM + "/#negocio"}, "publisher": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"]}], bd=f"{N} · Guía", prio="0.6", lead=desc)
     pagina(pathb(m, "guias"), (f"Blog de consejos para equipos {N} en Panamá" if CFG.get("lbl_guias") else f"Guías y consejos para equipos {N} en Panamá"), f"Blog de consejos y guías prácticas para equipos {N} en Panamá: humedad, voltaje, mantenimiento, reparar o cambiar y cuidado diario.", (f"Blog de consejos {N}" if CFG.get("lbl_guias") else f"Guías y consejos para equipos {N}"),
-           sec(f"Guías {N}", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "guia-" + s_)}"><span class="t">{esc(t_)}</span></a>' for s_, t_ in ART[m]) + '</div>') , m, (elegir(m, m + "guias", 1) or [None])[0], crumbs0 + [("Guías", pathb(m, "guias"))], bd=f"{N} · Guías", prio="0.6", lead=f"Consejos concretos para cuidar tus equipos {N}.", noindex=not CFG.get("lbl_guias"))
+           ((sec(f"Consejos para cuidar tus equipos {N}", f"<p>Reunimos guías prácticas para quienes tienen equipos {N} en {CFG['ciudad']}: cómo afectan la humedad, las lluvias y los picos de voltaje a {junta(EQ[e][2] for e in M[m]['equipos'])}, qué mantenimiento conviene y cuándo decidir entre reparar o cambiar.</p><p>Cada guía explica el problema con palabras simples, qué puedes revisar tú sin riesgo y en qué momento es mejor pedir la visita de un técnico.</p>") if CFG.get("seo_plus") else "") + sec(f"Guías {N}", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "guia-" + s_)}"><span class="t">{esc(t_)}</span></a>' for s_, t_ in ART[m]) + '</div>', alt=bool(CFG.get("seo_plus")))) , m, (elegir(m, m + "guias", 1) or [None])[0], crumbs0 + [("Guías", pathb(m, "guias"))], bd=f"{N} · Guías", prio="0.6", lead=f"Consejos concretos para cuidar tus equipos {N}.", noindex=not CFG.get("lbl_guias"))
 ART = {}
 GL_EQ = {"neveras": ["Compresor", "Inverter", "Evaporador", "Condensador", "No frost", "Resistencia de deshielo", "Termostato", "Gas refrigerante"], "lavadoras": ["Presostato", "Bomba de drenaje", "Rodamiento", "Amortiguador", "Electroválvula"], "secadoras": ["Termostato", "Condensador", "Relé"], "aires": ["Compresor", "Inverter", "Gas refrigerante", "Evaporador", "Condensador"], "cocinas": ["Bujía", "Termostato", "Relé"], "lavavajillas": ["Bomba de drenaje", "Electroválvula"], "microondas": ["Magnetrón"], "centro-lavado": ["Presostato", "Bomba de drenaje", "Relé"], "batidoras": ["Relé"]}
 def build_glosario(m):
@@ -1498,7 +1499,15 @@ def dimensiones_img():
         d = dim(s.group(1)) if s else None
         if not d: return tag
         tag = re.sub(r'\s(width|height)="[^"]*"', "", tag)
-        return tag[:-1].rstrip("/ ") + f' width="{d[0]}" height="{d[1]}">'
+        extra = ""
+        if d[0] >= 900 and s.group(1).endswith(".webp") and "srcset=" not in tag:
+            u = s.group(1); pq = OUT / u.lstrip("/"); sp = pq.with_name(pq.stem + "-w640.webp")
+            if not sp.exists():
+                try:
+                    im_ = Image.open(pq).convert("RGB"); im_.thumbnail((640, 640 * 4)); im_.save(sp, "WEBP", quality=82)
+                except Exception: sp = None
+            if sp and sp.exists(): extra = f' srcset="{u[:-5]}-w640.webp 640w, {u} {d[0]}w" sizes="(max-width: 700px) 92vw, 520px"'
+        return tag[:-1].rstrip("/ ") + f' width="{d[0]}" height="{d[1]}"{extra}>'
     for ff in OUT.rglob("index.html"):
         t = ff.read_text(encoding="utf-8"); n = re.sub(r"<img\b[^>]*>", fx, t)
         if n != t: ff.write_text(n, encoding="utf-8")
