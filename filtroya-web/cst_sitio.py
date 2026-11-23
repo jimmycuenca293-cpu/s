@@ -191,7 +191,44 @@ COSTARICA = dict(
     ley_datos="Ley 8968 de Protección de la Persona frente al tratamiento de sus datos personales de Costa Rica", ley_consumo="Ley 7472 de Promoción de la Competencia y Defensa Efectiva del Consumidor de Costa Rica",
     sin_recorte=True, lbl_guias="Blog de consejos", mix=True, seo_plus=True,
 )
-CFG = {"cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA}.get(SITIO, PANAMA)
+
+# ----------------------------------------------------------------------------- BUCARAMANGA (electrodomésticos)
+ZONAS_BGA = {
+    "cabecera-y-sotomayor": ("Cabecera y Sotomayor", "Cabecera del Llano, Sotomayor, Alarcón, Mejoras Públicas", "Edificios altos y apartamentos modernos, con equipos de gama media y alta y mucho uso diario."),
+    "centro-de-bucaramanga": ("Centro de Bucaramanga", "Centro, García Rovira, San Francisco, La Concordia", "Edificios antiguos que mezclan vivienda y comercio, con instalaciones eléctricas de distintas épocas."),
+    "norte-de-bucaramanga": ("Norte de Bucaramanga", "Kennedy, La Joya, Mutis", "Barrios residenciales muy poblados, con casas de varios pisos y equipos de uso familiar."),
+    "provenza-y-real-de-minas": ("Provenza y Real de Minas", "Provenza, Real de Minas", "Conjuntos y edificios residenciales en el sur de la ciudad, con acceso controlado."),
+    "floridablanca": ("Floridablanca", "Floridablanca centro, Cañaveral, Zapamanga, Bellavista", "Conjuntos residenciales y casas en el área metropolitana, con distancias mayores desde el centro de Bucaramanga."),
+    "giron": ("Girón", "Girón centro histórico, Ciudad Valencia, El Poblado", "Casas tradicionales del centro histórico y conjuntos nuevos hacia el occidente."),
+    "piedecuesta": ("Piedecuesta", "Piedecuesta centro, Guatiguará", "Casas y conjuntos campestres al sur del área metropolitana, con distancias mayores."),
+}
+ZX_BGA = {
+    "cabecera-y-sotomayor": ("edificios altos y apartamentos modernos", "los controles de acceso de los edificios y las calles con pendiente", "Cabecera del Llano, Sotomayor y Alarcón"),
+    "centro-de-bucaramanga": ("edificios antiguos que mezclan vivienda y comercio", "el tráfico y los pocos parqueaderos del centro", "el Centro, García Rovira y San Francisco"),
+    "norte-de-bucaramanga": ("viviendas muy pobladas, con varios pisos", "las calles con pendiente y el tráfico de hora pico", "Kennedy, La Joya y Mutis"),
+    "provenza-y-real-de-minas": ("conjuntos y edificios residenciales", "los controles de acceso de los conjuntos", "Provenza y Real de Minas"),
+    "floridablanca": ("conjuntos residenciales y casas", "la distancia desde Bucaramanga y el tráfico de la autopista", "Floridablanca centro, Cañaveral y Zapamanga"),
+    "giron": ("casas tradicionales y conjuntos nuevos", "la distancia desde Bucaramanga al pedir la franja", "el centro histórico de Girón y Ciudad Valencia"),
+    "piedecuesta": ("casas y conjuntos campestres", "la distancia desde Bucaramanga y el tráfico de la vía a Piedecuesta", "Piedecuesta centro y Guatiguará"),
+}
+_CL_BGA = "las dos temporadas de lluvias del año, con tormentas eléctricas y picos de voltaje, y las calles con pendiente que dificultan el acceso con equipos pesados"
+CLIMA_BGA = {z: _CL_BGA for z in ZONAS_BGA}
+CLIMA_BGA["floridablanca"] = "las tormentas eléctricas de las temporadas de lluvias y los picos de voltaje que traen"
+BUCARAMANGA = dict(
+    sitio="bucaramanga", dom="https://servicio-tecnico-bucaramanga.com", ciudad="Bucaramanga", nombre="Servicio Técnico Bucaramanga",
+    tel="+57 305 479 6329", telw="573054796329", locale="es-CO", cc="CO", region="Santander", pais="Colombia",
+    gsc=[],
+    ext_lg=("Página del fabricante: LG Colombia", "https://www.lg.com/co/"), ext_samsung=("Página del fabricante: Samsung Colombia", "https://www.samsung.com/co/"),
+    guia_humedad=("humedad-y-lluvias-en-equipos", "Humedad y lluvias en equipos {N} en Bucaramanga", "Cómo la humedad, las lluvias y las tormentas eléctricas de Bucaramanga afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas."),
+    intro_clima="Bucaramanga tiene un clima templado, con dos temporadas de lluvias al año y tormentas eléctricas que traen picos de voltaje.",
+    costero=False, nev=("neveras", "nevera", "neveras"),
+    zonas=ZONAS_BGA, zx=ZX_BGA, clima=CLIMA_BGA,
+    area=["Bucaramanga", "Floridablanca", "Girón", "Piedecuesta"], geo=(7.1254, -73.1198), geo_region="CO-SAN",
+    zlista="Cabecera y Sotomayor, el centro, el norte, Provenza y Real de Minas, y también en Floridablanca, Girón y Piedecuesta",
+    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True,
+    zart={"cabecera-y-sotomayor": "Cabecera y Sotomayor", "centro-de-bucaramanga": "el centro de Bucaramanga", "norte-de-bucaramanga": "el norte de Bucaramanga", "provenza-y-real-de-minas": "Provenza y Real de Minas", "floridablanca": "Floridablanca", "giron": "Girón", "piedecuesta": "Piedecuesta"},
+)
+CFG = {"cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
 
 # ----------------------------------------------------------------------------- localización de datos (solo Cali)
 REEMP_CALI = [
@@ -213,9 +250,9 @@ def _sentencias_sin_ciudad(t):
 def _loc_str(t, clave=None):
     for a, b in REEMP_CALI: t = t.replace(a, b)
     if clave == "origen": t = _sentencias_sin_ciudad(t)
-    _cl = "humedad y lluvias" if CFG.get("frio") else "humedad y calor"
+    _cl = "humedad y lluvias" if (CFG.get("frio") or CFG.get("sin_tropico")) else "humedad y calor"
     t = t.replace("humedad y salitre", _cl).replace("la humedad y el salitre", "la " + _cl)
-    if CFG.get("frio"): t = t.replace("en el trópico", "en la ciudad")
+    if CFG.get("frio") or CFG.get("sin_tropico"): t = t.replace("en el trópico", "en la ciudad")
     t = t.replace("en Panamá", "en " + CFG["pais"]).replace("Panamá", CFG["pais"])
     return _vocab(t) if CFG["nev"][1] != "refrigeradora" else t
 def _deep(x, clave=None):
@@ -251,7 +288,7 @@ def L(h):
             h = h.replace(x, y)
     if CFG["nev"][1] != "refrigeradora":
         h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)
-    _cl = ("humedad y lluvias", "Humedad y lluvias") if CFG.get("frio") else ("humedad y calor", "Humedad y calor")
+    _cl = ("humedad y lluvias", "Humedad y lluvias") if (CFG.get("frio") or CFG.get("sin_tropico")) else ("humedad y calor", "Humedad y calor")
     h = h.replace("humedad y salitre", _cl[0]).replace("Humedad y salitre", _cl[1])
     h = re.sub(r"(%s) \| %s\b" % (CFG["ciudad"], CFG["ciudad"]), r"\1", h)
     return re.sub(r"\x00(\d+)\x00", lambda m: _rutas[int(m.group(1))], h)
