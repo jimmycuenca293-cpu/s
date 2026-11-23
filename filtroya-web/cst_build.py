@@ -69,6 +69,11 @@ def pool(m):
         if h not in vis: vis.add(h); out.append(f)
     return out
 POOLS = {m: pool(m) for m in BRANDS_ORDER}
+TVFOTO = {}   # fotos de televisores (nombre «televisor-…»): solo para páginas de pantallas, no para el reparto general
+for _m in BRANDS_ORDER:
+    _tv = [f for f in POOLS[_m] if f.name.startswith("televisor")]
+    if _tv: TVFOTO[_m] = _tv[0]; POOLS[_m] = [f for f in POOLS[_m] if f not in _tv]
+def _tvtipo(f): return "qled" if "qled" in f.name else "oled" if "oled" in f.name else "led"
 KW = {"neveras": r"nevera|refriger|french|side-by-side|family", "lavadoras": r"lavadora", "secadoras": r"secadora", "aires": r"aire|windfree",
       "cocinas": r"estufa|horno|cocina", "lavavajillas": r"lavavajillas", "centro-lavado": r"centro-lavado|torre|washtower", "batidoras": r"batidora", "microondas": r"microondas", "tv-led": r"televisor|\btv\b|pantalla", "tv-qled": r"televisor|\btv\b|pantalla", "tv-oled": r"televisor|\btv\b|pantalla", "_gente": r"tecnico|asesora|recepcion|equipo|saluda|agente|secretaria"}
 import collections
@@ -292,6 +297,9 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
             else: break
         desc = acum if len(acum) >= 70 else desc[:157].rsplit(" ", 1)[0].rstrip(" ,.;:") + "."
     if len(desc) < 100 and len(desc) + 38 <= 158 and not noindex: desc = desc.rstrip(" ") + " Atención a domicilio y por WhatsApp."
+    if marca in TVFOTO and re.search(r"/(reparacion-pantallas-|pantallas-|falla-pantalla-|instalacion-de-pantallas|mantenimiento-de-pantallas)", path) and not re.search(r"/(guia|servicio-tecnico|cuanto|garantia)", path):
+        _p = TVFOTO[marca]; _t = re.search(r"(?<![a-z])(qled|oled|led)(?![a-z])", path.replace("mini-led", "led"))
+        if not _t or _t.group(1) == _tvtipo(_p): hero = (copia(marca, _p), alt_de(marca, _p))
     color = M[marca]["color"] if marca else "#0b2a6f"
     url = DOM + path
     graf = [LB]
@@ -420,7 +428,9 @@ EJ = {"tv-led": "No enciende, sin imagen, líneas", "tv-qled": "Sombras, manchas
 def tiles(m):
     d = M[m]; N = nom(m); out = ""
     for e in d["equipos"]:
-        f = None if (CFG.get("tv") or e.startswith("tv-")) else foto_equipo(m, e)
+        if e.startswith("tv-"):
+            _p = TVFOTO.get(m); f = (copia(m, _p), alt_de(m, _p)) if _p and e == "tv-" + _tvtipo(_p) else None
+        else: f = None if CFG.get("tv") else foto_equipo(m, e)
         _ico = '<svg viewBox="0 0 120 90" width="140" height="105" role="img" aria-label="Pantalla"><rect x="6" y="6" width="108" height="64" rx="6" fill="none" stroke="var(--c)" stroke-width="5"/><rect x="14" y="14" width="92" height="48" rx="2" fill="var(--soft)"/><path d="M40 82h40M60 70v12" stroke="var(--c)" stroke-width="5" stroke-linecap="round"/></svg>'
         im = f'<img loading="lazy" src="{f[0]}" alt="{f[1]}" width="400" height="300">' if f else (_ico if (CFG.get("tv") or e.startswith("tv-")) else EQ[e][2][:1].upper())
         out += f'<a class="tile" href="{pathb(m, "reparacion-" + EQ[e][0])}"><span class="ti-img">{im}</span><b>{EQ[e][2].capitalize()} {N}</b><small>{EJ[e]}</small><span class="go">Elegir →</span></a>'
