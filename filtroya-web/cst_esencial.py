@@ -53,7 +53,7 @@ def esencial(path, m, X):
 
     if slug == "diagnostico-por-sintoma":
         out.append(sec(f"Cómo usar el diagnóstico de equipos {N}", _lista([
-            "Elige el equipo (nevera, lavadora, secadora…) en el primer campo.",
+            f"Elige el equipo ({', '.join(EQ[x][1] for x in _eqs(d)[:3])}…) en el primer campo.",
             "Elige lo que notas: un ruido, un código en pantalla, una fuga, un olor.",
             "Compara la causa más probable con lo que ves en tu equipo y revisa lo que puedes comprobar sin riesgo.",
             "Si el síntoma sigue, escríbenos con el modelo y la foto de la etiqueta para coordinar la visita.",
@@ -90,13 +90,13 @@ def esencial(path, m, X):
         ])))
         faqs = [
             ("¿Cómo sé si mi barrio está cubierto?", f"Escríbenos tu barrio y el equipo por WhatsApp o llama al {tel}. Confirmamos si podemos atenderte y coordinamos día y franja."),
-            (f"¿Atienden equipos {N} fuera de Bucaramanga?", f"Sí, en el área metropolitana: {X['zlista']}. En las zonas más lejanas la franja se coordina con más anticipación."),
+            (f"¿Atienden equipos {N} en todo el área metropolitana?", f"Sí, en el área metropolitana: {X['zlista']}. En las zonas más lejanas la franja se coordina con más anticipación."),
             ("¿Cómo agendo la visita?", "Por WhatsApp o por teléfono. Te preguntamos marca, modelo y qué hace el equipo, y acordamos el día y la franja."),
         ]
 
     elif slug == "guias":
         out.append(sec(f"Cuidados esenciales para equipos {N}", _lista([esc(x) for x in d.get("mantenimiento", [])[:6]]), lead=f"Hábitos simples que alargan la vida de tus equipos {N} y evitan visitas innecesarias."))
-        out.append(sec(f"Qué cambia con el clima de {ciu}", f"<p>{esc(X['intro_clima'])}</p><p>Las tormentas eléctricas pueden provocar picos de voltaje que dañan placas electrónicas. Un protector de voltaje adecuado y desconectar los equipos más sensibles durante tormentas fuertes reduce ese riesgo. La humedad y las lluvias favorecen el moho en empaques de lavadoras y la condensación en aires acondicionados.</p>", alt=True))
+        out.append(sec(f"Qué cambia con el clima de {ciu}", f"<p>{esc(X['intro_clima'])}</p><p>{esc(X.get("clima_extra") or "Las tormentas eléctricas pueden provocar picos de voltaje que dañan placas electrónicas. Un protector de voltaje adecuado y desconectar los equipos más sensibles durante tormentas fuertes reduce ese riesgo. La humedad y las lluvias favorecen el moho en empaques de lavadoras y la condensación en aires acondicionados.")}</p>", alt=True))
         out.append(sec("Cuándo conviene dejar de probar y llamar al técnico", _lista([
             "El equipo huele a quemado, hace chispas o saltó el breaker.",
             "Hay agua cerca de la parte eléctrica o debajo del equipo y no encuentras el origen.",

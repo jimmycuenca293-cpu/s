@@ -6,6 +6,7 @@ from cst_datos import M, EQ, BRANDS_ORDER, ZONAS
 from cst_consejos import C as CONSEJOS, LLAMAR, USAR
 from cst_sitio import CFG, localizar, L as LOC
 import cst_esencial as _ESE
+import cst_chile as _CHL
 if CFG.get("tv"):
     import cst_tv as _TV
     M, EQ, BRANDS_ORDER, CONSEJOS = _TV.M, _TV.EQ, _TV.BRANDS_ORDER, _TV.CONSEJOS
@@ -26,6 +27,13 @@ def _tvb(m): return bool(CFG.get("tv") or (CFG.get("mix") and any(e.startswith("
 M = localizar(M); CONSEJOS = localizar(CONSEJOS)
 if "neveras" in EQ: EQ["neveras"] = CFG["nev"]
 if CFG.get("zonas"): ZONAS = CFG["zonas"]
+ZD = {k: ZONAS[k] for k in CFG.get("zonas_destacadas", list(ZONAS)) if k in ZONAS}   # zonas que se muestran en tarjetas y listas cortas
+def _zrot(path, n=9):
+    """Si hay muchas zonas, en cada página se enlaza un subconjunto distinto (las principales + algunas rotando)."""
+    if len(ZONAS) <= 14: return list(ZONAS.items())
+    base = list(ZD.items())[:3]; usados = {k for k, _ in base}
+    resto = sorted((it for it in ZONAS.items() if it[0] not in usados), key=lambda it: hashlib.md5((path + it[0]).encode()).hexdigest())
+    return base + resto[:n - 3]
 
 OUT = pathlib.Path(sys.argv[1]); SRC = pathlib.Path(sys.argv[2] if len(sys.argv) > 2 else "/tmp/cst_src")
 DOM = CFG["dom"]; NOMBRE = CFG["nombre"]; TEL = CFG["tel"]; TELN = CFG["telw"]; GSC = CFG["gsc"]
@@ -220,7 +228,7 @@ def pie(marca=None, lista_marcas=False):
         col1 = (f'<div><h3>Equipos {N}</h3><ul>' + "".join(f'<li><a href="{pathb(marca, "reparacion-" + EQ[e][0])}">{EQ[e][2].capitalize()} {N}</a></li>' for e in d["equipos"]) + '</ul></div>')
         col2 = (f'<div><h3>Servicio {N}</h3><ul>' + (f'<li><a href="{pathb(marca, "codigos-de-error")}">Códigos de error</a></li>' if d["codigos"] else "") +
                 f'<li><a href="{pathb(marca, "fallas")}">Fallas frecuentes</a></li><li><a href="{pathb(marca, "repuestos")}">Repuestos</a></li><li><a href="{pathb(marca, "garantia")}">Garantía</a></li>{(f'<li><a href="{pathb(marca, "reparacion-de-pantallas")}">Reparación de pantallas</a></li><li><a href="{pathb(marca, "instalacion-de-pantallas")}">Instalación de pantallas</a></li><li><a href="{pathb(marca, "mantenimiento-de-pantallas")}">Mantenimiento de pantallas</a></li>' if _tvb(marca) else "")}<li><a href="{pathb(marca, "cuanto-cuesta-la-reparacion")}">Costos</a></li><li><a href="{pathb(marca, "diagnostico-por-sintoma")}">Diagnóstico por síntoma</a></li><li><a href="{pathb(marca, "series-y-modelos")}">Series y modelos</a></li><li><a href="{pathb(marca, "guias")}">{CFG.get("lbl_guias", "Guías")}</a></li><li><a href="{pathb(marca, "glosario")}">Glosario</a></li></ul></div>')
-        col3 = (f'<div><h3>Zonas</h3><ul><li><a href="{pathb(marca, "centro-de-servicio-cerca-de-mi")}">Cerca de mí</a></li><li><a href="{pathb(marca, "reparacion-a-domicilio")}">A domicilio</a></li>' + "".join(f'<li><a href="{pathb(marca, "servicio-tecnico-" + z)}">{v[0]}</a></li>' for z, v in list(ZONAS.items())[:5]) + '</ul></div>')
+        col3 = (f'<div><h3>Zonas</h3><ul><li><a href="{pathb(marca, "centro-de-servicio-cerca-de-mi")}">Cerca de mí</a></li><li><a href="{pathb(marca, "reparacion-a-domicilio")}">A domicilio</a></li>' + "".join(f'<li><a href="{pathb(marca, "servicio-tecnico-" + z)}">{v[0]}</a></li>' for z, v in list(ZD.items())[:5]) + '</ul></div>')
         col4 = (f'<div><h3>{N} Panamá</h3><ul><li><a href="{pathb(marca, "telefono-servicio-tecnico")}">Teléfono y WhatsApp</a></li><li><a href="{pathb(marca, "quienes-somos")}">Quiénes somos</a></li><li><a href="{pathb(marca, "politica-de-privacidad")}">Política de privacidad</a></li><li><a href="{pathb(marca, "terminos-y-condiciones")}">Términos y condiciones</a></li></ul>{aviso}<p>{TEL}</p></div>')
         cols = col1 + col2 + col3 + col4
     elif lista_marcas:
@@ -292,7 +300,7 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
     """path: '/lg/reparacion-lavadoras/' ; cuerpo: html de secciones"""
     title = LOC(title); desc = LOC(desc)
     if CFG.get("esencial") and marca:
-        _eh, _ef = _ESE.esencial(path, marca, dict(sec=sec, faq_html=faq_html, cap=cap, esc=esc, pathb=pathb, junta=junta, M=M, EQ=EQ, ZONAS=ZONAS, ciudad=CFG["ciudad"], tel=CFG["tel"], zx=CFG.get("zx", {}), zlista=CFG.get("zlista", ""), intro_clima=CFG.get("intro_clima", ""), base_slug=lambda m_: m_))
+        _eh, _ef = _ESE.esencial(path, marca, dict(sec=sec, faq_html=faq_html, cap=cap, esc=esc, pathb=pathb, junta=junta, M=M, EQ=EQ, ZONAS=ZD, ciudad=CFG["ciudad"], tel=CFG["tel"], zx=CFG.get("zx", {}), zlista=CFG.get("zlista", ""), intro_clima=CFG.get("intro_clima", ""), clima_extra=CFG.get("clima_extra", ""), base_slug=lambda m_: m_))
         if _eh:
             cuerpo = cuerpo + _eh
             if _ef and not any(isinstance(x, dict) and x.get("@type") == "FAQPage" for x in (ld or [])): ld = (ld or []) + [faq_ld(_ef)]
@@ -393,7 +401,7 @@ def cierre(m, path):
     busq = [(f"servicio técnico {N} Panamá", base(m)), (f"teléfono servicio técnico {N} Panamá", pathb(m, "telefono-servicio-tecnico")), (f"centro de servicio {N} cerca de mí", pathb(m, "centro-de-servicio-cerca-de-mi")), (f"reparación {N} a domicilio", pathb(m, "reparacion-a-domicilio")), (f"repuestos {N} Panamá", pathb(m, "repuestos")), (f"códigos de error {N}", pathb(m, "codigos-de-error") if d["codigos"] else pathb(m, "fallas")), (f"mantenimiento {N}", pathb(m, "guia-de-cuidado")), (f"garantía {N} Panamá", pathb(m, "garantia"))]
     if CFG.get("seo_plus"):
         busq += [(f"reparación de {EQ[e][2]} {N} {CFG['ciudad']}", pathb(m, "reparacion-" + EQ[e][0])) for e in d["equipos"]]
-        busq += [(f"servicio técnico {N} en {zv[0]}", pathb(m, "servicio-tecnico-" + z)) for z, zv in ZONAS.items()]
+        busq += [(f"servicio técnico {N} en {zv[0]}", pathb(m, "servicio-tecnico-" + z)) for z, zv in _zrot(path)]
     chips_b = "".join(f'<a class="pill" href="{u}">{esc(t)}</a>' for t, u in busq)
     nm, url = EXT[m]
     externos = f'<ul><li><a href="{url}" target="_blank" rel="noopener">{nm}</a> <small>(abre en otra pestaña; sitio del fabricante, no es nuestro)</small></li></ul>'
@@ -559,6 +567,26 @@ QUITO_MI = {
  "batidoras": dict(mant_gye="En Quito el aire seco de altura ayuda a conservar las partes metálicas, pero guarda la batidora limpia y seca y evita lavar la cabeza con agua."),
 }
 QUITO_MI["centro-lavado"] = QUITO_MI["lavadoras"]
+CHILE_MI = {
+ "neveras": dict(mant_gye="En Santiago el polvo en suspensión se acumula rápido en el condensador y detrás del equipo: conviene limpiarlo al terminar la primavera, antes del verano caluroso. Si hay un corte de luz por temporal, no abras la puerta más de lo necesario y espera unos minutos antes de volver a conectar cuando regrese el suministro.",
+                 inst_gye="En edificios de Santiago con ascensor pequeño o escaleras angostas, conviene medir antes. Si el departamento tiene enchufes antiguos sin conexión a tierra, hay que corregirlo antes de conectar un refrigerador, porque el equipo no debe trabajar sin tierra."),
+ "lavadoras": dict(mant_gye="Dejar la puerta abierta después de cada lavado y usar la cantidad correcta de detergente evita el moho en el sello de goma de las lavadoras de carga frontal. Si el agua de tu casa deja sarro, limpia las mallas de entrada con más frecuencia.",
+                   inst_gye="En departamentos de Santiago es común que el desagüe de la lavadora comparta tubería con el lavamanos o el piso. Hay que revisar que la tubería tenga capacidad y ventilación, o la lavadora se quedará con agua o hará ruido de gorgoteo."),
+ "secadoras": dict(mant_gye="En los inviernos fríos y con lluvias de Santiago se seca más ropa en secadora y el filtro y el ducto se llenan de pelusa más rápido. Si tu cuarto de lavado no tiene salida directa al exterior, revisa el escape con más frecuencia.",
+                   inst_gye="En departamentos de Santiago es común que no exista salida de ducto: en ese caso conviene una secadora de condensación o de bomba de calor, o definir una salida segura al exterior antes de comprar."),
+ "cocinas": dict(mant_gye="La grasa y el uso frecuente afectan quemadores y contactos de los hornos, y las variaciones de voltaje al volver la luz tras un corte dañan la electrónica de las placas de inducción. Una buena ventilación y un protector de voltaje alargan su vida.",
+                 inst_gye="En departamentos de Santiago con gas de red, gas licuado en cilindro o gas centralizado, la ruta de la manguera, la ventilación y la instalación hecha por un instalador autorizado por la SEC son parte de la instalación segura. Si la cocina va empotrada en un mueble de madera, hay que verificar la distancia a las paredes."),
+ "aires": dict(mant_gye="En Santiago el aire acondicionado se usa sobre todo en los veranos secos y calurosos y, en algunos equipos, también como calefacción. Programa el mantenimiento antes de que empiece el calor y limpia los filtros con frecuencia, porque el polvo en suspensión los tapa rápido.",
+               inst_gye="En Santiago conviene instalar con protección contra variaciones de voltaje y revisar que la estructura de la unidad exterior soporte el viento y el peso del equipo. En fachadas de edificios hay que respetar el reglamento de copropiedad y las normas de la administración."),
+ "lavavajillas": dict(mant_gye="El agua de algunas zonas de Santiago puede dejar sarro con el tiempo. Si notas manchas blancas en vasos y platos, ajusta la sal regeneradora y el abrillantador y haz limpieza periódica.",
+                      inst_gye="En departamentos de Santiago el espacio bajo el lavaplatos suele ser pequeño. Conviene planificar la salida del desagüe y la llave de paso antes de comprar."),
+ "microondas": dict(mant_gye="Las variaciones de voltaje al volver la luz tras un corte afectan la electrónica de los microondas, por eso es importante dejar espacio de ventilación y evitar enchufarlos junto a otros equipos de alto consumo."),
+ "batidoras": dict(mant_gye="En Santiago el aire seco ayuda a conservar las partes metálicas, pero guarda la batidora limpia y seca y evita lavar la cabeza con agua."),
+}
+CHILE_MI["neveras"]["mant_intro"] = "El mantenimiento preventivo de un refrigerador es sencillo y evita la mayoría de averías caras. En Santiago, donde el polvo en suspensión y el calor del verano obligan al compresor a trabajar más, conviene limpiar el condensador con regularidad."
+CHILE_MI["lavadoras"]["mant_intro"] = "El mantenimiento preventivo de la lavadora evita bombas tapadas, malos olores y averías. La ropa húmeda y el jabón acumulado generan moho en el sello y en el tambor, sobre todo si la puerta queda cerrada."
+CHILE_MI["aires"]["mant_intro"] = "El mantenimiento de un aire acondicionado incluye limpiar filtros, evaporador, condensador y drenaje, además de medir presiones. Es lo que más alarga la vida del equipo, sobre todo en los veranos secos y calurosos de Santiago."
+CHILE_MI["centro-lavado"] = CHILE_MI["lavadoras"]
 def _gye_loc(t):
     """Adapta los textos de mantenimiento e instalación (escritos para Guayaquil) a la ciudad del sitio."""
     if CFG["sitio"] == "guayaquil" or CFG.get("tv"): return t
@@ -574,12 +602,13 @@ def bloque_mant_inst(m, e):
     if e.startswith("tv-"): g = _TV.MANT_INST[e]
     else: g = BATIDORA if e == "batidoras" else {"mant": _gye()[e]["mant"], "inst": _gye()[e]["inst"]}
     mt, ins = g["mant"], g["inst"]
-    ov = QUITO_MI.get(e, {}) if CFG["sitio"] == "quito" else {}
+    ov = QUITO_MI.get(e, {}) if CFG["sitio"] == "quito" else (CHILE_MI.get(e, {}) if CFG["sitio"] == "chile" else {})
     if CFG.get("tv"):
         mt = {**mt}; ins = {**ins} if ins else ins
     mt = {**mt, "intro": ov.get("mant_intro") or _gye_loc(mt["intro"]), "gye": ov.get("mant_gye") or _gye_loc(mt["gye"])}
     if ins: ins = {**ins, "intro": ov.get("inst_intro") or _gye_loc(ins["intro"]), "gye": ov.get("inst_gye") or _gye_loc(ins["gye"])}
     filas = _rot(mt["tabla"], bi, 5) if len(mt["tabla"]) > 4 else mt["tabla"]
+    if CFG["sitio"] == "chile": filas = [(a_, b_.replace("Antes de temporada de lluvias", "Antes del invierno"), c_) for a_, b_, c_ in filas]
     raiz = sing.split()[0][:5].lower()
     propios = [x for x in d["mantenimiento"] if raiz in x.lower()]
     tech = d["tech"][e].split(". ")[0].rstrip(".") + "."
@@ -720,7 +749,7 @@ def build_marca(m):
               + (sec(f"¿Por qué elegirnos para tu equipo {N}?", por_que_elegirnos(m)) if CFG.get("sin_recorte") else "")
               + (sec(f"WhatsApp de servicio técnico {N}", "<p>Elige tu equipo y te abrimos WhatsApp con el mensaje listo para enviar.</p>" + wa_por_equipo(m), alt=True) if CFG.get("sin_recorte") else "")
               + sec(f"Preguntas frecuentes sobre {N}", faq_html(FAQ_H))
-              + sec(f"Zonas de {CFG['ciudad']} donde atendemos equipos {N}", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {esc(CFG.get("zart", {}).get(z, v[0]))}</span></a>' for z, v in ZONAS.items()) + '</div>', alt=True)
+              + sec(f"Zonas de {CFG['ciudad']} donde atendemos equipos {N}", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {esc(CFG.get("zart", {}).get(z, v[0]))}</span></a>' for z, v in ZD.items()) + (f'<a class="card l" href="{pathb(m, "cobertura")}"><span class="t">Ver todas las comunas donde atendemos {N}</span></a>' if len(ZD) < len(ZONAS) else "") + '</div>', alt=True)
               + (sec(f"Quiénes somos", quienes_breve(m), alt=True) if CFG.get("sin_recorte") else "")
               + sec(f"Más información sobre {N}", otras(m, ""))
               + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join((f'<a class="pill" href="{pathb(m, "pantallas-" + slug(N + " " + x))}">{esc(x)}</a>' if (CFG.get("tv") or (CFG.get("mix") and _tvb(m) and x in _TV.LINEAS_DET.get(m, {}))) else f'<span class="pill">{esc(x)}</span>') for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
@@ -764,7 +793,7 @@ def build_marca(m):
                   + sec(f"Antes de la visita: tu {sing} {N}", visita, id="visita", alt=not bool(rc))
                   + bloque_mant_inst(m, e)
                   + (fotos_eq(m, e, {x[0] for x in (h, h2) if x}) if CFG.get("sin_recorte") else "")
-                  + (sec(f"Dónde reparamos {pl} {N} en {CFG['ciudad']}", "<p>" + "".join(f'<a class="pill" href="{pathb(m, "servicio-tecnico-" + z)}">{esc(cap(pl))} {N} en {esc(zv[0])}</a>' for z, zv in ZONAS.items()) + "</p>", alt=not bool(rc)) if CFG.get("seo_plus") else "")
+                  + (sec(f"Dónde reparamos {pl} {N} en {CFG['ciudad']}", "<p>" + "".join(f'<a class="pill" href="{pathb(m, "servicio-tecnico-" + z)}">{esc(cap(pl))} {N} en {esc(zv[0])}</a>' for z, zv in ZD.items()) + "</p>", alt=not bool(rc)) if CFG.get("seo_plus") else "")
                   + sec(f"Preguntas sobre {pl} {N}", faq_html(faq_e), alt=not bool(sec_cod), id="preguntas")
                   + f"<!--REL:{e}-->")
         pagina(pathb(m, "reparacion-" + s), f"Reparación de {pl} {N} en Panamá | Centro de Servicio", f"Reparación de {pl} {N} en Panamá a domicilio: fallas frecuentes, causas probables y qué revisamos. Diagnóstico en casa y atención por WhatsApp.",
@@ -857,6 +886,7 @@ def cierre_sint(m, e, sl):
             L.append((e2, slug(EQ[e2][1] + " " + a), a, b, c))
     SINT[m] = L
 ART_EQ = {"tv-led": "una", "tv-qled": "una", "tv-oled": "una", "neveras": "una", "lavadoras": "una", "secadoras": "una", "aires": "un", "cocinas": "una", "lavavajillas": "un", "centro-lavado": "un", "batidoras": "una", "microondas": "un"}
+if CFG["nev"][1] == "refrigerador": ART_EQ["neveras"] = "un"
 def build_sintomas(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]
     cierre_sint(m, None, None)
@@ -1097,7 +1127,7 @@ def build_terminos(m):
     # ---- 2 CERCA DE MÍ: una línea por zona con la falla local y el equipo
     todas = [(e, f) for e in E for f in d["fallas"][e]]
     zl = ""
-    for zi, (z, (zn, barrios, rasgo)) in enumerate(ZONAS.items()):
+    for zi, (z, (zn, barrios, rasgo)) in enumerate(ZD.items()):
         (e, f), (e2, f2) = distintos(todas, bi * 2 + zi * 3 + 1, 2)
         v = (bi + 2 * zi) % 4
         if v == 0: t = f"para equipos {N} se atienden {EQ[e][2]} («{esc(bajar(f[0]).rstrip('.'))}») y {EQ[e2][2]} («{esc(bajar(f2[0]).rstrip('.'))}»). Sectores: {ZX[z][2]}."
@@ -1106,7 +1136,7 @@ def build_terminos(m):
         else: t = f"sectores como {ZX[z][2]}. Para {N}, lo habitual es {EQ[e][1]} con «{esc(bajar(f[0]).rstrip('.'))}» o {EQ[e2][1]} con «{esc(bajar(f2[0]).rstrip('.'))}»."
         zl += f'<li><a href="{pathb(m, "servicio-tecnico-" + z)}">{zn}</a> · {t}</li>'
     pagina(pathb(m, "centro-de-servicio-cerca-de-mi"), f"Centro de servicio {N} cerca de mí en Panamá", f"Centro de servicio {N} cerca de ti en Panamá: el técnico llega a tu casa. Zonas, sectores y qué equipos {N} atendemos en cada una.", f"Centro de servicio {N} cerca de mí en Panamá",
-           sec(f"Dónde llega el técnico {N}", f"<p>Elige tu zona:</p><ul>{zl}</ul>"),
+           sec(f"Dónde llega el técnico {N}", f"<p>Elige tu zona:</p><ul>{zl}</ul>" + (f'<p>Atendemos todas las comunas: <a href="{pathb(m, "cobertura")}">ver la cobertura completa</a>.</p>' if len(ZD) < len(ZONAS) else "")),
            m, (elegir(m, m + "cerca", 1) or [None])[0], crumbs0 + [("Cerca de mí", pathb(m, "centro-de-servicio-cerca-de-mi"))], bd=f"{N} · Cerca de mí", prio="0.7", lead=f"Zonas donde el técnico {N} llega a tu casa.")
     # ---- 3 A DOMICILIO: qué revisa el técnico en tu casa por equipo + qué dejar listo
     pas = "".join(f"<li><b>{EQ[e][2].capitalize()} {N}:</b> {esc(d['fallas'][e][0][2])} {esc(d['fallas'][e][1][2] if len(d['fallas'][e]) > 1 else '')} <i>Ten a mano el modelo, que está {esc(etq(d['etiqueta'].get(e, 'en la etiqueta del equipo')))}.</i></li>" for e in E)
@@ -1140,6 +1170,11 @@ def build_terminos(m):
 CLIMA = {"ciudad-de-panama": "la humedad constante y el salitre en edificios cercanos a la bahía", "san-miguelito": "los picos de voltaje en sectores de alta densidad y los apagones intermitentes", "arraijan": "los voltajes irregulares en urbanizaciones nuevas y el polvo de obra",
          "la-chorrera": "el calor y el polvo en urbanizaciones en crecimiento", "costa-del-este": "los edificios altos con aires de alta eficiencia y alta humedad frente al mar", "tocumen-y-24-de-diciembre": "el calor intenso y los cortes de energía por tormentas",
          "panama-oeste": "las urbanizaciones nuevas con equipos aún en garantía y el calor", "colon": "el salitre costero y la corrosión de condensadores y placas"}
+def _hz(h, zn):
+    """Pone la comuna/zona en el texto alternativo de la foto principal (SEO local)."""
+    if not h or not CFG.get("busquedas"): return h
+    al = h[1]
+    return (h[0], al.replace("en " + CFG["ciudad"], "en " + zn) if ("en " + CFG["ciudad"]) in al else al + " en " + zn)
 def build_zonas_marca(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]; E = d["equipos"]
     bi = BRANDS_ORDER.index(m)
@@ -1152,7 +1187,7 @@ def build_zonas_marca(m):
         fl = distintos(todas, bi * 3 + zi * 2, 3)
         det = "".join(f"<li><b>{esc(EQ[e][1].capitalize())} {N}:</b> {esc(f[0])}. {esc(f[1])} {esc(f[2])}</li>" for e, f in fl)
         e0 = fl[0][0]; e1 = fl[1][0] if fl[1][0] != fl[0][0] else fl[-1][0]
-        if var == 0: intro = f"En {za} predominan {viv}. Para quienes tienen equipos {N} aquí, lo que más condiciona la visita es {acc}. Atendemos sectores como {sect}."
+        if var == 0: intro = f"En {za} predominan {viv}. Para quienes tienen equipos {N} aquí, lo que más pesa al coordinar la visita: {acc}. Atendemos sectores como {sect}."
         elif var == 1: intro = f"{cap(za)} se caracteriza por {viv}; al coordinar el servicio técnico {N} hay que contar con {acc}. Entre los sectores que visitamos están {sect}."
         else: intro = f"Cuando un equipo {N} falla en {za} ({sect}), la visita tiene en cuenta {acc}. La zona combina {viv}."
         cuerpo = (sec(f"Servicio técnico {N} en {za}", f"<p>{esc(intro)}</p><p>{esc(CLIMA[z].capitalize())} influyen en cómo envejecen los equipos de esta zona.</p>")
@@ -1168,7 +1203,7 @@ def build_zonas_marca(m):
             cuerpo += sec(f"Equipos {N} que reparamos en {za}", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "reparacion-" + EQ[e][0])}"><span class="t">Reparación de {esc(EQ[e][2])} {N} en {esc(zn)}</span></a>' for e in E) + '</div>', alt=True)
             cuerpo += sec(f"Preguntas frecuentes sobre el servicio técnico {N} en {za}", faq_html(zfaq))
         pagina(pathb(m, "servicio-tecnico-" + z), f"Servicio técnico {N} en {za} | Panamá", f"Servicio técnico {N} a domicilio en {za}, Panamá: qué fallas de equipos {N} se reportan allí, sectores que visitamos y cómo coordinar la visita.",
-               f"Servicio técnico {N} en {za}", cuerpo, m, (elegir(m, m + z, 1) or [None])[0], crumbs0 + [("Cobertura", pathb(m, "cobertura")), (zn, pathb(m, "servicio-tecnico-" + z))],
+               f"Servicio técnico {N} en {za}", cuerpo, m, _hz((elegir(m, m + z, 1) or [None])[0], zn), crumbs0 + [("Cobertura", pathb(m, "cobertura")), (zn, pathb(m, "servicio-tecnico-" + z))],
                [{"@type": "Service", "name": f"Servicio técnico {N} en {za}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Place", "name": zn}}] + ([faq_ld(zfaq)] if zfaq else []), bd=f"{N} · {za}", prio="0.7", lead=f"Equipos {N} en {za}: fallas frecuentes y visita a domicilio.")
         items += f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {za}</span><br><small>{esc(sect)}</small></a>'
     pagina(pathb(m, "cobertura"), f"Cobertura del servicio técnico {N} en Panamá", f"Zonas de Panamá donde damos servicio técnico a domicilio para equipos {N}.",
@@ -1275,22 +1310,24 @@ def arts_marca(m):
     eh = [(e, [x for x in d["fallas"][e] if rxh.search(x[1] + " " + x[0])]) for e in E]
     eh = [(e, fs) for e, fs in eh if fs]
     intro_h = CFG.get("intro_clima") or ("En Panamá la humedad es alta casi todo el año y cerca del mar se suma el salitre." if CFG["costero"] else f"En {CFG['ciudad']} el calor es constante y la humedad sube en las épocas de lluvia.")
-    sec_h = [(("Qué hacen la altura y la humedad en tus equipos " if CFG.get("frio") else "Qué hace la humedad en tus equipos ") + N, f"<p>{intro_h} La humedad corroe contactos y placas, favorece el moho en empaques y causa falsos contactos. En equipos {N} esto se nota sobre todo en {pls([e for e, _ in eh[:3]]) if eh else pls(E[:3])}.</p>")]
+    ca = CFG.get("clima_art") or {}
+    sec_h = [((ca.get("h2") or ("Qué hacen la altura y la humedad en tus equipos " if CFG.get("frio") else "Qué hace la humedad en tus equipos ")) + N, f"<p>{intro_h} {ca.get('texto') or 'La humedad corroe contactos y placas, favorece el moho en empaques y causa falsos contactos.'} En equipos {N} esto se nota sobre todo en {pls([e for e, _ in eh[:3]]) if eh else pls(E[:3])}.</p>")]
     for e, fs in eh[:5]:
         f = fs[0]
-        sec_h.append((f"{EQ[e][2].capitalize()} {N} y la humedad", f"<p><b>Falla que puede aparecer:</b> {esc(f[0].rstrip('.'))}. <b>Causa probable:</b> {esc(bajar(f[1]))}</p><p><b>Qué hace el técnico:</b> {esc(f[2])}</p>" + lk(e)))
+        sec_h.append((f"{EQ[e][2].capitalize()} {N} y {ca.get('etq', 'la humedad')}", f"<p><b>Falla que puede aparecer:</b> {esc(f[0].rstrip('.'))}. <b>Causa probable:</b> {esc(bajar(f[1]))}</p><p><b>Qué hace el técnico:</b> {esc(f[2])}</p>" + lk(e)))
     sec_h.append(("Qué puedes hacer", "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"][:4]) + "</ul>"))
     A.append((f"{CFG['guia_humedad'][0]}-{m}", CFG["guia_humedad"][1].format(N=N), CFG["guia_humedad"][2].format(N=N), sec_h))
     # 2 voltaje y tormentas
     rx = re.compile(r"placa|inverter|tarjeta|control|electr|sensor|pantalla", re.I)
     ev = [e for e in E if rx.search(d["tech"][e] + " ".join(x[1] for x in d["fallas"][e]))]
     if ev:
-        sv = [("Por qué importa el voltaje en equipos " + N, f"<p>Las tormentas eléctricas y los apagones generan picos de voltaje. En equipos {N}, los más sensibles son {pls(ev[:4])}, porque dependen de placas y sensores electrónicos.</p>")]
+        va = CFG.get("volt_art") or {}
+        sv = [((va.get("h2") or "Por qué importa el voltaje en equipos ") + N, "<p>" + (va["texto"].format(N=N, eq=pls(ev[:4])) if va else f"Las tormentas eléctricas y los apagones generan picos de voltaje. En equipos {N}, los más sensibles son {pls(ev[:4])}, porque dependen de placas y sensores electrónicos.") + "</p>")]
         for e in ev[:4]:
             f = next((x for x in d["fallas"][e] if rx.search(x[1] + x[0])), d["fallas"][e][0])
             sv.append((f"{EQ[e][2].capitalize()} {N}", f"<p><b>Falla que vemos:</b> {esc(f[0].rstrip('.'))}. <b>Causa probable:</b> {esc(bajar(f[1]))}</p><p><b>Qué hace el técnico:</b> {esc(f[2])}</p>" + lk(e)))
         sv.append(("Cómo protegerlos", "<p>Usa un protector de voltaje con retardo de reconexión en los equipos con compresor o placa electrónica, y pide revisar la instalación eléctrica si los picos son frecuentes.</p>"))
-        A.append((f"voltaje-y-tormentas-equipos-{m}", f"Voltaje y tormentas: protege tus equipos {N}", f"Qué equipos {N} sufren más los picos de voltaje en Panamá y cómo proteger sus placas y compresores.", sv))
+        A.append((f"voltaje-y-tormentas-equipos-{m}", (va.get("titulo") or "Voltaje y tormentas: protege tus equipos {N}").format(N=N), (va.get("desc") or "Qué equipos {N} sufren más los picos de voltaje en Panamá y cómo proteger sus placas y compresores.").format(N=N), sv))
     # 3 reparar o cambiar
     nv = lambda t: "Alto" if re.search(r"placa|tarjeta|compresor|inverter|bobina|magnetr|transmisi|rodamiento|control", t.lower()) else ("Bajo" if re.search(r"filtro|limpi|ajuste|manguera|buj|empaque|sello|llave|carga|grasa", t.lower()) else "Medio")
     bajos = [(EQ[e][1], x[0]) for e in E for x in d["fallas"][e] if nv(x[1]) == "Bajo"][:5]
@@ -1319,7 +1356,8 @@ def arts_marca(m):
     A.append((f"mudanza-de-equipos-{m}", f"Mudanza de equipos {N}: cómo moverlos sin dañarlos", f"Cómo preparar y mover tus equipos {N} en una mudanza y cuándo volver a conectarlos.", sm))
     # 7 aire lluvioso
     if "aires" in E:
-        A.append((f"aire-acondicionado-{m}-epoca-lluviosa", f"Aire acondicionado {N} en época lluviosa", f"Qué revisar en tu aire acondicionado {N} antes y durante las lluvias en Panamá.", [("Qué cuidar", f"<p>{esc(d['tech']['aires'])}</p>"), ("Cada mes", "<p>Lava los filtros. Un filtro sucio reduce el aire frío y hace trabajar más al compresor.</p>"), ("Drenaje y unidad exterior", "<p>Mantén el drenaje despejado y la unidad exterior sin hojas ni polvo, protegida de la lluvia directa.</p>"), ("Fallas que vemos", "<ul>" + "".join(f"<li>{esc(x[0])}: {esc(bajar(x[1]).rstrip('.'))}. Se revisa: {esc(bajar(x[2]))}</li>" for x in d['fallas']['aires'][:4]) + "</ul>" + lk("aires")), (f"Dónde está el modelo de tu aire {N}", f"<p>{esc(d['etiqueta'].get('aires', 'La etiqueta está en el cuerpo del equipo.'))}</p>")]))
+        aa = CFG.get("aire_art") or {}
+        A.append(((aa.get("slug") or "aire-acondicionado-{m}-epoca-lluviosa").format(m=m), (aa.get("titulo") or "Aire acondicionado {N} en época lluviosa").format(N=N), (aa.get("desc") or "Qué revisar en tu aire acondicionado {N} antes y durante las lluvias en Panamá.").format(N=N), [("Qué cuidar", f"<p>{esc(d['tech']['aires'])}</p>"), ("Cada mes", "<p>Lava los filtros. Un filtro sucio reduce el aire frío y hace trabajar más al compresor.</p>"), ("Drenaje y unidad exterior", "<p>Mantén el drenaje despejado y la unidad exterior sin hojas ni polvo" + ("." if aa else ", protegida de la lluvia directa.") + "</p>"), ("Fallas que vemos", "<ul>" + "".join(f"<li>{esc(x[0])}: {esc(bajar(x[1]).rstrip('.'))}. Se revisa: {esc(bajar(x[2]))}</li>" for x in d['fallas']['aires'][:4]) + "</ul>" + lk("aires")), (f"Dónde está el modelo de tu aire {N}", f"<p>{esc(d['etiqueta'].get('aires', 'La etiqueta está en el cuerpo del equipo.'))}</p>")]))
     # 8 inverter / compresor
     if any("inverter" in d["tech"][e].lower() for e in E):
         ei = [e for e in E if "inverter" in d["tech"][e].lower()]
@@ -1348,7 +1386,7 @@ def build_blog(m):
         pagina(pathb(m, "guia-" + slg), t[:62], desc, t, cuerpo, m, (elegir(m, m + slg, 1) or [None])[0], crumbs0 + [("Guías", pathb(m, "guias")), (t[:45], pathb(m, "guia-" + slg))],
                [{"@type": "Article", "headline": t, "description": desc, "datePublished": HOY, "dateModified": HOY, "author": {"@id": DOM + "/#negocio"}, "publisher": {"@id": DOM + "/#negocio"}, "inLanguage": CFG["locale"]}], bd=f"{N} · Guía", prio="0.6", lead=desc)
     pagina(pathb(m, "guias"), (f"Blog de consejos para equipos {N} en Panamá" if CFG.get("lbl_guias") else f"Guías y consejos para equipos {N} en Panamá"), f"Blog de consejos y guías prácticas para equipos {N} en Panamá: humedad, voltaje, mantenimiento, reparar o cambiar y cuidado diario.", (f"Blog de consejos {N}" if CFG.get("lbl_guias") else f"Guías y consejos para equipos {N}"),
-           ((sec(f"Consejos para cuidar tus equipos {N}", f"<p>Reunimos guías prácticas para quienes tienen equipos {N} en {CFG['ciudad']}: cómo afectan la humedad, las lluvias y los picos de voltaje a {junta(EQ[e][2] for e in M[m]['equipos'])}, qué mantenimiento conviene y cuándo decidir entre reparar o cambiar.</p><p>Cada guía explica el problema con palabras simples, qué puedes revisar tú sin riesgo y en qué momento es mejor pedir la visita de un técnico.</p>") if CFG.get("seo_plus") else "") + sec(f"Guías {N}", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "guia-" + s_)}"><span class="t">{esc(t_)}</span></a>' for s_, t_ in ART[m]) + '</div>', alt=bool(CFG.get("seo_plus")))) , m, (elegir(m, m + "guias", 1) or [None])[0], crumbs0 + [("Guías", pathb(m, "guias"))], bd=f"{N} · Guías", prio="0.6", lead=f"Consejos concretos para cuidar tus equipos {N}.", noindex=not CFG.get("lbl_guias"))
+           ((sec(f"Consejos para cuidar tus equipos {N}", f"<p>Reunimos guías prácticas para quienes tienen equipos {N} en {CFG['ciudad']}: cómo afectan {CFG.get('guias_clima', 'la humedad, las lluvias y los picos de voltaje')} a {junta(EQ[e][2] for e in M[m]['equipos'])}, qué mantenimiento conviene y cuándo decidir entre reparar o cambiar.</p><p>Cada guía explica el problema con palabras simples, qué puedes revisar tú sin riesgo y en qué momento es mejor pedir la visita de un técnico.</p>") if CFG.get("seo_plus") else "") + sec(f"Guías {N}", '<div class="g c2">' + "".join(f'<a class="card l" href="{pathb(m, "guia-" + s_)}"><span class="t">{esc(t_)}</span></a>' for s_, t_ in ART[m]) + '</div>', alt=bool(CFG.get("seo_plus")))) , m, (elegir(m, m + "guias", 1) or [None])[0], crumbs0 + [("Guías", pathb(m, "guias"))], bd=f"{N} · Guías", prio="0.6", lead=f"Consejos concretos para cuidar tus equipos {N}.", noindex=not CFG.get("lbl_guias"))
 ART = {}
 GL_EQ = {"neveras": ["Compresor", "Inverter", "Evaporador", "Condensador", "No frost", "Resistencia de deshielo", "Termostato", "Gas refrigerante"], "lavadoras": ["Presostato", "Bomba de drenaje", "Rodamiento", "Amortiguador", "Electroválvula"], "secadoras": ["Termostato", "Condensador", "Relé"], "aires": ["Compresor", "Inverter", "Gas refrigerante", "Evaporador", "Condensador"], "cocinas": ["Bujía", "Termostato", "Relé"], "lavavajillas": ["Bomba de drenaje", "Electroválvula"], "microondas": ["Magnetrón"], "centro-lavado": ["Presostato", "Bomba de drenaje", "Relé"], "batidoras": ["Relé"]}
 def build_glosario(m):
@@ -1529,7 +1567,7 @@ if __name__ == "__main__":
     (OUT / "img" / "logos").mkdir(parents=True, exist_ok=True)
     for m in BRANDS_ORDER:
         for suf in ("", "-blanco"): shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}{suf}.png", OUT / "img" / "logos" / f"{m}{suf}.png")
-    for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
+    for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); (CFG.get("busquedas") and _CHL.build_busquedas(globals(), m)); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
     if TVX:
         for m in BRANDS_ORDER:
             if _tvb(m): build_tv_extra(m)

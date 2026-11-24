@@ -228,7 +228,32 @@ BUCARAMANGA = dict(
     sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True,
     zart={"cabecera-y-sotomayor": "Cabecera y Sotomayor", "centro-de-bucaramanga": "el centro de Bucaramanga", "norte-de-bucaramanga": "el norte de Bucaramanga", "provenza-y-real-de-minas": "Provenza y Real de Minas", "floridablanca": "Floridablanca", "giron": "Girón", "piedecuesta": "Piedecuesta"},
 )
-CFG = {"cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
+
+# ----------------------------------------------------------------------------- CHILE (Santiago, todas las comunas)
+from cst_chile_datos import ZONAS_CL, ZX_CL, CLIMA_CL, DESTACADAS as DEST_CL
+_TEL_CL = os.environ.get("CST_TEL", "+56 9 0000 0000")
+CHILE = dict(
+    sitio="chile", dom="https://serviciotecnicoautorizadochile.cl", ciudad="Santiago", nombre="Servicio Técnico Santiago",
+    tel=_TEL_CL, telw=re.sub(r"\D", "", _TEL_CL), locale="es-CL", cc="CL", region="Región Metropolitana", pais="Chile",
+    gsc=[x for x in os.environ.get("CST_GSC", "").split(",") if x],
+    ext_lg=("Página del fabricante: LG Chile", "https://www.lg.com/cl/"), ext_samsung=("Página del fabricante: Samsung Chile", "https://www.samsung.com/cl/"),
+    guia_humedad=("polvo-calor-y-frio-en-equipos", "Polvo, calor y frío en equipos {N} en Santiago", "Cómo el polvo, los veranos calurosos y los inviernos fríos de Santiago afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas."),
+    clima_art=dict(h2="Qué hacen el polvo y los cambios de temperatura en tus equipos ", etq="el polvo y el calor",
+                   texto="El polvo en suspensión tapa filtros, condensadores y rejillas; el calor del verano exige más a compresores y motores; y el frío del invierno endurece empaques y mangueras."),
+    volt_art=dict(h2="Por qué importa el voltaje en equipos ", titulo="Cortes de luz y voltaje: protege tus equipos {N}", desc="Qué equipos {N} sufren más con los cortes de luz y las variaciones de voltaje en Santiago y cómo proteger sus placas y compresores.",
+                  texto="Los temporales de invierno y los cortes de suministro pueden generar variaciones y picos de voltaje al volver la luz. En equipos {N}, los más sensibles son {eq}, porque dependen de placas y sensores electrónicos."),
+    aire_art=dict(slug="aire-acondicionado-{m}-verano", titulo="Aire acondicionado {N} en verano: qué revisar", desc="Qué revisar en tu aire acondicionado {N} antes y durante el verano caluroso de Santiago."),
+    intro_clima="Santiago tiene clima mediterráneo: veranos secos y calurosos, inviernos fríos con lluvias, polvo en suspensión y cortes de luz durante los temporales.",
+    clima_extra="Los temporales de invierno pueden provocar cortes de luz y variaciones de voltaje al volver el suministro, que dañan placas electrónicas. Un protector de voltaje adecuado y desconectar los equipos más sensibles durante temporales fuertes reduce ese riesgo. El polvo en suspensión tapa filtros y condensadores, y los veranos secos y calurosos exigen más a refrigeradores y aires acondicionados.",
+    clima_txt=("polvo y cambios de temperatura", "Polvo y cambios de temperatura"), guias_clima="el polvo, el calor del verano, el frío del invierno y los cortes de luz con sus picos de voltaje",
+    ley_datos="Ley N° 19.628 sobre protección de la vida privada de Chile", ley_consumo="Ley N° 19.496 sobre protección de los derechos de los consumidores de Chile",
+    costero=False, nev=("refrigeradores", "refrigerador", "refrigeradores"),
+    zonas=ZONAS_CL, zx=ZX_CL, clima=CLIMA_CL, zonas_destacadas=DEST_CL,
+    area=[ZONAS_CL[z][0] for z in DEST_CL], geo=(-33.4489, -70.6693), geo_region="CL-RM",
+    zlista="Las Condes, Providencia, Ñuñoa, Santiago Centro, Maipú, La Florida, Puente Alto, Vitacura y el resto de las comunas del Gran Santiago",
+    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True,
+)
+CFG = {"chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
 
 # ----------------------------------------------------------------------------- localización de datos (solo Cali)
 REEMP_CALI = [
@@ -241,7 +266,27 @@ REEMP_CALI = [
     ("Haceb es una marca colombiana de electrodomésticos, muy extendida en Panamá en refrigeradoras, lavadoras, estufas y hornos de gas. Muchos equipos llegan por importación y comparten repuestos con modelos vendidos en Colombia.", "Haceb es una marca colombiana de electrodomésticos: neveras, lavadoras, secadoras, estufas, hornos de gas y aires acondicionados."),
     ("disponibles en Panamá", "disponibles en " + CFG["pais"]),
 ]
+_ART_S = {"la": "el", "La": "El", "una": "un", "Una": "Un", "esta": "este", "Esta": "Este", "esa": "ese", "Esa": "Ese", "otra": "otro", "Otra": "Otro", "toda": "todo", "Toda": "Todo", "alguna": "algún", "Alguna": "Algún", "ninguna": "ningún", "Ninguna": "Ningún"}
+_ART_P = {"las": "los", "Las": "Los", "unas": "unos", "Unas": "Unos", "estas": "estos", "Estas": "Estos", "esas": "esos", "Esas": "Esos", "otras": "otros", "Otras": "Otros", "todas": "todos", "Todas": "Todos"}
+_ADJ = {"nueva": "nuevo", "vieja": "viejo", "antigua": "antiguo", "descompuesta": "descompuesto", "dañada": "dañado", "sucia": "sucio", "llena": "lleno", "vacía": "vacío", "apagada": "apagado", "tapada": "tapado", "congelada": "congelado", "misma": "mismo", "sola": "solo", "propia": "propio", "completa": "completo", "pequeña": "pequeño", "grande": "grande", "conectada": "conectado", "desconectada": "desconectado", "enchufada": "enchufado", "desenchufada": "desenchufado", "bloqueada": "bloqueado", "afectada": "afectado", "instalada": "instalado", "nivelada": "nivelado", "limpia": "limpio", "cerrada": "cerrado", "abierta": "abierto", "lista": "listo", "encendida": "encendido", "usada": "usado", "reparada": "reparado", "revisada": "revisado", "sellada": "sellado"}
+def _refri(t):
+    """Chile: «refrigerador» (masculino) en lugar de «refrigeradora» o «nevera»; ajusta artículos y adjetivos cercanos."""
+    if t in ("neveras", "nevera"): return t   # claves internas de equipo
+    t = re.sub(r"\b([Nn])evera(s?)\b", lambda m: ("R" if m.group(1) == "N" else "r") + "efrigeradora" + m.group(2), t)
+    t = re.sub(r"\b(de|a)\s+la\s+refrigeradora", lambda m: ("del" if m.group(1) == "de" else "al") + " refrigerador", t)
+    t = re.sub(r"\b(De|A)\s+la\s+refrigeradora", lambda m: ("Del" if m.group(1) == "De" else "Al") + " refrigerador", t)
+    t = re.sub(r"\b(las|unas|esas|estas|otras|todas|Las|Unas|Esas|Estas|Otras|Todas)(\s+(?:mismas|demás|propias))?\s+refrigeradoras\b", lambda m: _ART_P[m.group(1)] + ((" " + {"mismas": "mismos", "demás": "demás", "propias": "propios"}[m.group(2).strip()]) if m.group(2) else "") + " refrigeradores", t)
+    t = re.sub(r"\b(la|una|esta|esa|otra|toda|alguna|ninguna|La|Una|Esta|Esa|Otra|Toda|Alguna|Ninguna)(\s+(?:misma|nueva|vieja|antigua|propia|sola))?\s+refrigeradora\b", lambda m: _ART_S[m.group(1)] + ((" " + _ADJ[m.group(2).strip()]) if m.group(2) else "") + " refrigerador", t)
+    t = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: m.group(1) + "efrigerador" + ("es" if m.group(2) else ""), t)
+    def _adj(m):
+        pl = m.group(1).endswith("es"); base = _ADJ[m.group(3)]; ps = m.group(4) == "s"
+        if base == "grande": return m.group(0) if not (pl or ps) else m.group(1) + m.group(2) + "grandes"
+        out = base if not (pl or ps) else (base + "s" if base[-1] in "oa" else base + "es")
+        return m.group(1) + m.group(2) + out
+    t = re.sub(r"\b([Rr]efrigerador(?:es)?)(\s+)(" + "|".join(sorted(_ADJ, key=len, reverse=True)) + r")(s?)\b", _adj, t)
+    return t
 def _vocab(t):
+    if CFG["nev"][1] == "refrigerador": return _refri(t)
     t = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), t)
     return t
 def _sentencias_sin_ciudad(t):
@@ -250,7 +295,7 @@ def _sentencias_sin_ciudad(t):
 def _loc_str(t, clave=None):
     for a, b in REEMP_CALI: t = t.replace(a, b)
     if clave == "origen": t = _sentencias_sin_ciudad(t)
-    _cl = "humedad y lluvias" if (CFG.get("frio") or CFG.get("sin_tropico")) else "humedad y calor"
+    _cl = (CFG["clima_txt"][0] if CFG.get("clima_txt") else "humedad y lluvias") if (CFG.get("frio") or CFG.get("sin_tropico")) else "humedad y calor"
     t = t.replace("humedad y salitre", _cl).replace("la humedad y el salitre", "la " + _cl)
     if CFG.get("frio") or CFG.get("sin_tropico"): t = t.replace("en el trópico", "en la ciudad")
     t = t.replace("en Panamá", "en " + CFG["pais"]).replace("Panamá", CFG["pais"])
@@ -286,9 +331,10 @@ def L(h):
         for x, y in [("filtros, bombas, sensores y empaques", "fuentes de poder, tiras de LED, puertos y cables"), ("Las placas y los compresores", "Los paneles y las placas"), ("las placas y los compresores", "los paneles y las placas"),
                      ("placas y compresores", "placas y paneles"), ("en los equipos con compresor o placa electrónica", "en las pantallas"), ("en equipos con compresor o placa electrónica", "en las pantallas"), ("compresores", "paneles")]:
             h = h.replace(x, y)
-    if CFG["nev"][1] != "refrigeradora":
+    if CFG["nev"][1] == "refrigerador": h = _refri(h)
+    elif CFG["nev"][1] != "refrigeradora":
         h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)
-    _cl = ("humedad y lluvias", "Humedad y lluvias") if (CFG.get("frio") or CFG.get("sin_tropico")) else ("humedad y calor", "Humedad y calor")
+    _cl = (CFG.get("clima_txt") or ("humedad y lluvias", "Humedad y lluvias")) if (CFG.get("frio") or CFG.get("sin_tropico")) else ("humedad y calor", "Humedad y calor")
     h = h.replace("humedad y salitre", _cl[0]).replace("Humedad y salitre", _cl[1])
     h = re.sub(r"(%s) \| %s\b" % (CFG["ciudad"], CFG["ciudad"]), r"\1", h)
     return re.sub(r"\x00(\d+)\x00", lambda m: _rutas[int(m.group(1))], h)
