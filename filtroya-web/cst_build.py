@@ -5,6 +5,7 @@ import sys, os, re, json, html, shutil, pathlib, hashlib, glob
 from cst_datos import M, EQ, BRANDS_ORDER, ZONAS
 from cst_consejos import C as CONSEJOS, LLAMAR, USAR
 from cst_sitio import CFG, localizar, L as LOC
+import cst_esencial as _ESE
 if CFG.get("tv"):
     import cst_tv as _TV
     M, EQ, BRANDS_ORDER, CONSEJOS = _TV.M, _TV.EQ, _TV.BRANDS_ORDER, _TV.CONSEJOS
@@ -290,6 +291,11 @@ def _idsec2(m_, usados, items):
 def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld=None, bd=None, prio="0.7", extra_js="", lead=None, noindex=False, marcas_ok=False, cta2=None):
     """path: '/lg/reparacion-lavadoras/' ; cuerpo: html de secciones"""
     title = LOC(title); desc = LOC(desc)
+    if CFG.get("esencial") and marca:
+        _eh, _ef = _ESE.esencial(path, marca, dict(sec=sec, faq_html=faq_html, cap=cap, esc=esc, pathb=pathb, junta=junta, M=M, EQ=EQ, ZONAS=ZONAS, ciudad=CFG["ciudad"], tel=CFG["tel"], zx=CFG.get("zx", {}), zlista=CFG.get("zlista", ""), intro_clima=CFG.get("intro_clima", ""), base_slug=lambda m_: m_))
+        if _eh:
+            cuerpo = cuerpo + _eh
+            if _ef and not any(isinstance(x, dict) and x.get("@type") == "FAQPage" for x in (ld or [])): ld = (ld or []) + [faq_ld(_ef)]
     if CFG.get("seo_plus") and path != "/" and CFG["ciudad"] not in title and len(title) + 3 + len(CFG["ciudad"]) <= 62: title += " | " + CFG["ciudad"]
     if len(title) > 62:
         partes = title.split(" | ")

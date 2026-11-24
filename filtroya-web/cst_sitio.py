@@ -225,7 +225,7 @@ BUCARAMANGA = dict(
     zonas=ZONAS_BGA, zx=ZX_BGA, clima=CLIMA_BGA,
     area=["Bucaramanga", "Floridablanca", "Girón", "Piedecuesta"], geo=(7.1254, -73.1198), geo_region="CO-SAN",
     zlista="Cabecera y Sotomayor, el centro, el norte, Provenza y Real de Minas, y también en Floridablanca, Girón y Piedecuesta",
-    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True,
+    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True,
     zart={"cabecera-y-sotomayor": "Cabecera y Sotomayor", "centro-de-bucaramanga": "el centro de Bucaramanga", "norte-de-bucaramanga": "el norte de Bucaramanga", "provenza-y-real-de-minas": "Provenza y Real de Minas", "floridablanca": "Floridablanca", "giron": "Girón", "piedecuesta": "Piedecuesta"},
 )
 CFG = {"cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
