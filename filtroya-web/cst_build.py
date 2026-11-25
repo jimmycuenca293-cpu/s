@@ -119,7 +119,7 @@ def alt_de(m, f, extra=""):
         else: t = f"Técnico {N} atendiendo a un cliente en {ciu}"
     elif eq: t = f"{eq} {N} {' '.join(rasgos)} que reparamos en {ciu}".replace("  ", " ")
     else: t = f"Equipos {N} en {ciu}"
-    return esc(re.sub(r"\s+", " ", t).strip())
+    return esc(re.sub(r"\s+", " ", LOC(t)).strip())
 def elegir(m, clave, cuantas=2, equipo=None):
     p = POOLS[m]
     if equipo is None: equipo = "_gente"
@@ -1471,6 +1471,63 @@ REL_GUIAS = {"neveras": ["voltaje-y-tormentas", "tecnologia-inverter", "humedad"
              "secadoras": ["voltaje-y-tormentas", "reparar-o-cambiar", "humedad"], "aires": ["aire-acondicionado", "tecnologia-inverter", "voltaje-y-tormentas", "humedad"],
              "cocinas": ["voltaje-y-tormentas", "reparar-o-cambiar", "humedad"], "lavavajillas": ["reparar-o-cambiar", "voltaje-y-tormentas", "humedad"],
              "centro-lavado": ["reparar-o-cambiar", "voltaje-y-tormentas", "humedad"], "microondas": ["reparar-o-cambiar", "voltaje-y-tormentas"], "batidoras": ["reparar-o-cambiar", "humedad"]}
+def fotos_extra():
+    """Chile: intercala 2 o 3 fotos reales de la marca dentro de las secciones de cada página (sin repetir foto en la misma página;
+    en páginas de un equipo solo fotos de ese equipo o de personas de servicio). El alt lleva marca y comuna."""
+    if not CFG.get("busquedas"): return
+    rg = re.compile(KW["_gente"]); zs = sorted(ZONAS, key=len, reverse=True)
+    sin = ("politica-de-privacidad", "terminos-y-condiciones", "diagnostico-por-sintoma")
+    for m in BRANDS_ORDER:
+        pl = POOLS.get(m) or []
+        if not pl: continue
+        carp = OUT / m
+        files = ([OUT / "index.html"] if m == "samsung" else [carp / "index.html"]) + sorted((OUT / m).glob("*/index.html"))
+        for p in files:
+            s = p.parent.name if p.parent != OUT and p.parent.name != m else ""
+            if s in sin: continue
+            t = p.read_text(encoding="utf-8")
+            if "<main" not in t: continue
+            usadas = set(re.findall(r"/img/%s/[^\"')\s]+" % m, t))
+            e = next((x for x in M[m]["equipos"] if s.startswith("reparacion-" + EQ[x][0]) or s.startswith("falla-" + slug(EQ[x][1]))), None)
+            cand = [f for f in pl if copia_ruta(m, f) not in usadas and (not e or re.search(KW[e], f.name) or rg.search(f.name))]
+            if not cand: continue
+            hh = lambda f: hashlib.md5((str(p) + f.name).encode()).hexdigest()
+            cand = sorted(cand, key=lambda f: (USO[f], hh(f)))[:3]
+            zn = next((ZONAS[z][0] for z in zs if s == "servicio-tecnico-" + z or s.endswith("-" + z)), None)
+            sec_ = next((v[0] for k_, v in (CFG.get("sectores") or {}).items() if s == "servicio-tecnico-" + k_), None)
+            lug = zn or (cap(sec_) if sec_ else None)
+            figs = []
+            for f in cand:
+                USO[f] += 1; w, h = _dim(f); al = alt_de(m, f)
+                if lug: al = al.replace("en " + CFG["ciudad"], "en " + lug) if ("en " + CFG["ciudad"]) in al else al + " en " + lug
+                figs.append(f'<figure><img loading="lazy" src="{copia(m, f)}" alt="{al}" width="{w}" height="{h}"><figcaption>{al}</figcaption></figure>')
+            mi = t.find("<main"); mf = t.find("</main>")
+            cuerpo = t[mi:mf]; partes = cuerpo.split("</section>")
+            n = len(partes) - 1
+            if n < 2: continue
+            def franja(fs): return '<section class="s"><div class="w"><div class="fgrid">' + "".join(fs) + '</div></div></section>'
+            pos = sorted({min(1, n - 1), min(max(4, n // 2), n - 1)}) if len(figs) > 2 else [min(1, n - 1)]
+            trozos = [figs[:2], figs[2:]] if len(pos) > 1 else [figs]
+            ins = {pp: franja(fs) for pp, fs in zip(pos, trozos) if fs}
+            nuevo = ""
+            for k_, parte in enumerate(partes):
+                nuevo += parte
+                if k_ < n: nuevo += "</section>" + ins.get(k_, "")
+            p.write_text(t[:mi] + nuevo + t[mf:], encoding="utf-8")
+def quitar_fotos_repetidas():
+    """Chile: si una foto aparece dos veces en una página, se quita la copia que está en una franja de fotos (y la franja si queda vacía)."""
+    if not CFG.get("busquedas"): return
+    for p in OUT.rglob("index.html"):
+        t = p.read_text(encoding="utf-8")
+        if "<main" not in t: continue
+        mi, mf = t.find("<main"), t.find("</main>"); c = t[mi:mf]; ch = False
+        for fg in list(re.finditer(r"<figure><img[^>]*src=\"([^\"]+)\"[^>]*>(?:<figcaption>.*?</figcaption>)?</figure>", c)):
+            src = fg.group(1)
+            if c.count(f'src="{src}"') > 1 and fg.group(0) in c:
+                c = c.replace(fg.group(0), "", 1); ch = True
+        if ch:
+            c = re.sub(r'<section class="s(?: alt)?"><div class="w"><div class="fgrid"></div></div></section>', "", c)
+            p.write_text(t[:mi] + c + t[mf:], encoding="utf-8")
 def repartir_fotos():
     """Segunda pasada (Guayaquil): cada foto de la marca que aún no aparece en ninguna página se coloca, completa, en una franja de la página que le corresponde."""
     if not CFG.get("sin_recorte"): return
@@ -1583,7 +1640,7 @@ if __name__ == "__main__":
     if TVX:
         for m in BRANDS_ORDER:
             if _tvb(m): build_tv_extra(m)
-    build_sitio(); relacionadas(); repartir_fotos()
+    build_sitio(); relacionadas(); repartir_fotos(); fotos_extra(); quitar_fotos_repetidas()
     for ff in OUT.rglob("index.html"):
         tt = ff.read_text(encoding="utf-8")
         if "<!--REL" in tt: ff.write_text(re.sub(r"<!--RELF?:[a-z-]+-->", "", tt), encoding="utf-8")
