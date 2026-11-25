@@ -117,8 +117,9 @@ def alt_de(m, f, extra=""):
         elif re.search(r"tablet|explicando|entrega|orden", n): t = f"Técnico {N} explicando el diagnóstico a un cliente en {ciu}"
         elif eq: t = f"Técnico {N} reparando {('una ' if eq in ('Refrigeradora','Lavadora','Secadora','Cocina') else 'un ')}{eq.lower()} en {ciu}"
         else: t = f"Técnico {N} atendiendo a un cliente en {ciu}"
-    elif eq: t = f"{eq} {N} {' '.join(rasgos)} que reparamos en {ciu}".replace("  ", " ").replace(" abierta por dentro", " abierto por dentro" if CFG["nev"][1] == "refrigerador" and eq == "Refrigeradora" else " abierta por dentro")
+    elif eq: t = (f"Servicio técnico de {eq.lower()} {N} {' '.join(rasgos)} en {ciu}" if CFG.get("busquedas") else f"{eq} {N} {' '.join(rasgos)} que reparamos en {ciu}").replace("  ", " ").replace(" abierta por dentro", " abierto por dentro" if CFG["nev"][1] == "refrigerador" and eq == "Refrigeradora" else " abierta por dentro")
     else: t = f"Equipos {N} en {ciu}"
+    if CFG.get("busquedas") and gente and not t.startswith("Servicio técnico"): t += f": servicio técnico {N} a domicilio" + ("" if f"en {ciu}" in t else f" en {ciu}")
     return esc(re.sub(r"\s+", " ", LOC(t)).strip())
 def elegir(m, clave, cuantas=2, equipo=None, para=None):
     p = POOLS[m]
@@ -1512,7 +1513,7 @@ def fotos_extra():
             for f in cand:
                 USO[f] += 1; w, h = _dim(f); al = alt_de(m, f)
                 if lug: al = al.replace("en " + CFG["ciudad"], "en " + lug) if ("en " + CFG["ciudad"]) in al else al + " en " + lug
-                figs.append(f'<figure><img loading="lazy" src="{copia(m, f)}" alt="{al}" width="{w}" height="{h}"><figcaption>{al}</figcaption></figure>')
+                figs.append(f'<figure><img loading="lazy" src="{copia(m, f)}" alt="{al}" width="{w}" height="{h}"></figure>')
             mi = t.find("<main"); mf = t.find("</main>")
             cuerpo = t[mi:mf]; partes = cuerpo.split("</section>")
             n = len(partes) - 1
