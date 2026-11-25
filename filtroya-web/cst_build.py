@@ -87,7 +87,7 @@ for _m in BRANDS_ORDER:
     _tv = [f for f in POOLS[_m] if f.name.startswith("televisor")]
     if _tv: TVFOTO[_m] = _tv[0]; POOLS[_m] = [f for f in POOLS[_m] if f not in _tv]
 def _tvtipo(f): return "qled" if "qled" in f.name else "oled" if "oled" in f.name else "led"
-KW = {"neveras": r"nevera|refriger|french|side-by-side|family", "lavadoras": r"lavadora", "secadoras": r"secadora", "aires": r"aire|windfree",
+KW = {"neveras": r"nevera|refriger|french|side-by-side|family", "lavadoras": r"lavadora", "secadoras": r"secadora", "aires": r"(?<!frigid)aire|windfree",
       "cocinas": r"estufa|horno|cocina", "lavavajillas": r"lavavajillas", "centro-lavado": r"centro-lavado|torre|washtower", "batidoras": r"batidora", "microondas": r"microondas", "tv-led": r"televisor|\btv\b|pantalla", "tv-qled": r"televisor|\btv\b|pantalla", "tv-oled": r"televisor|\btv\b|pantalla", "_gente": r"tecnico|asesora|recepcion|equipo|saluda|agente|secretaria"}
 import collections
 USO = collections.Counter()
@@ -101,7 +101,7 @@ def alt_de(m, f, extra=""):
     n = f.name.lower(); N = M[m]["nombre"]; ciu = CFG["ciudad"]
     eq = None
     for rx, nombre in ((r"televisor|pantalla", "Televisor"), (r"centro-lavado|torre|washtower", "Centro de lavado"), (r"lavavajillas", "Lavavajillas"), (r"microondas", "Microondas"), (r"secadora", "Secadora"), (r"lavadora", "Lavadora"),
-                       (r"aire|windfree", "Aire acondicionado"), (r"horno", "Horno empotrado"), (r"estufa|cocina|hornillas", "Cocina"), (r"nevera|refriger|family|french|side-by-side|top-freezer", "Refrigeradora"), (r"batidora", "Batidora de pedestal")):
+                       (r"(?<!frigid)aire|windfree", "Aire acondicionado"), (r"horno", "Horno empotrado"), (r"estufa|cocina|hornillas", "Cocina"), (r"nevera|refriger|family|french|side-by-side|top-freezer", "Refrigeradora"), (r"batidora", "Batidora de pedestal")):
         if re.search(rx, n): eq = nombre; break
     rasgos = [t for rx, t in ((r"side-by-side", "side by side"), (r"french", "french door"), (r"top-freezer|congelador-superior", "con congelador arriba"), (r"frontal", "de carga frontal"), (r"carga-superior", "de carga superior"),
                               (r"inverter", "inverter"), (r"dispensador", "con dispensador"), (r"family|familyhub", "Family Hub"), (r"empotr", "empotrado"), (r"windfree", "WindFree"), (r"interior|abierta", "abierta por dentro")) if re.search(rx, n)]
@@ -117,11 +117,12 @@ def alt_de(m, f, extra=""):
         elif re.search(r"tablet|explicando|entrega|orden", n): t = f"Técnico {N} explicando el diagnóstico a un cliente en {ciu}"
         elif eq: t = f"Técnico {N} reparando {('una ' if eq in ('Refrigeradora','Lavadora','Secadora','Cocina') else 'un ')}{eq.lower()} en {ciu}"
         else: t = f"Técnico {N} atendiendo a un cliente en {ciu}"
-    elif eq: t = f"{eq} {N} {' '.join(rasgos)} que reparamos en {ciu}".replace("  ", " ")
+    elif eq: t = f"{eq} {N} {' '.join(rasgos)} que reparamos en {ciu}".replace("  ", " ").replace(" abierta por dentro", " abierto por dentro" if CFG["nev"][1] == "refrigerador" and eq == "Refrigeradora" else " abierta por dentro")
     else: t = f"Equipos {N} en {ciu}"
     return esc(re.sub(r"\s+", " ", LOC(t)).strip())
-def elegir(m, clave, cuantas=2, equipo=None):
+def elegir(m, clave, cuantas=2, equipo=None, para=None):
     p = POOLS[m]
+    if para: p = [f for f in p if not _otro_eq(f, para)]   # páginas de un equipo: nunca la foto de otro equipo
     if equipo is None: equipo = "_gente"
     if not p: return []
     cand = []
@@ -130,9 +131,9 @@ def elegir(m, clave, cuantas=2, equipo=None):
     if equipo in KW and equipo != "_gente":
         # una página de un equipo solo muestra fotos de ESE equipo o de personas; nunca de otro electrodoméstico
         gente = re.compile(KW["_gente"])
-        rest = [f for f in p if f not in cand and gente.search(f.name)]
+        rest = [f for f in p if f not in cand and gente.search(f.name) and not _otro_eq(f, equipo)]
         orden = sorted(cand, key=lambda f: (USO[f], h(f))) + sorted(rest, key=lambda f: (USO[f], h(f)))
-        if not orden: orden = sorted(p, key=lambda f: (USO[f], h(f)))
+        if not orden: orden = sorted([f for f in p if not _otro_eq(f, equipo)], key=lambda f: (USO[f], h(f)))
     else:
         rest = [f for f in p if f not in cand]
         orden = sorted(cand, key=lambda f: (USO[f], h(f))) + sorted(rest, key=lambda f: (USO[f], h(f)))
@@ -250,6 +251,16 @@ LB["contactPoint"] = [{"@type": "ContactPoint", "telephone": "+" + TELN, "contac
 LB["knowsLanguage"] = "es"
 
 
+def _eq_de_path(m, path):
+    """Equipo al que pertenece una página (reparacion-... o falla-...), o None."""
+    s = path.strip("/").split("/")[-1]
+    return next((x for x in M[m]["equipos"] if s.startswith("reparacion-" + EQ[x][0]) or s.startswith("falla-" + slug(EQ[x][1]))), None)
+def _otro_eq(f, e):
+    """True si la foto muestra otro equipo distinto de `e` (por su nombre de archivo)."""
+    if not e or not CFG.get("busquedas") or e not in KW: return False
+    n = f.name.lower()
+    for b_ in BRANDS_ORDER: n = n.replace(b_, "")      # «frigidaire» contiene «aire»: se quita el nombre de la marca antes de comparar
+    return (not re.search(KW[e], n)) and any(re.search(KW[k], n) for k in KW if k not in (e, "_gente") and not k.startswith("tv-"))
 def decorar(marca, cuerpo, hero, path):
     """Añade fondos y fotos de la marca: héroe con foto de fondo, banda de contacto, fondos suaves y galería. Sin repetir imagen dentro de la página."""
     p = POOLS.get(marca) or []
@@ -259,7 +270,7 @@ def decorar(marca, cuerpo, hero, path):
         h = lambda f: hashlib.md5((clave + f.name).encode()).hexdigest()
         cand = [f for f in p if not any(copia_ruta(marca, f) == v for v in vistas)]
         rx = re.compile(KW["_gente"])
-        if es_eq: cand = [f for f in cand if rx.search(f.name)]   # en páginas de un equipo, solo fotos de personas/servicio (nunca de otro electrodoméstico)
+        if es_eq: cand = [f for f in cand if rx.search(f.name) and not _otro_eq(f, _eq_de_path(marca, path))]   # en páginas de un equipo, solo fotos de personas/servicio (nunca de otro electrodoméstico)
         cand = sorted(cand, key=lambda f: ((not rx.search(f.name)) if gente else bool(rx.search(f.name)), USO[f], h(f)))[:n]
         out = []
         for f in cand:
@@ -776,7 +787,7 @@ def build_marca(m):
         s, sing, pl = EQ[e]; fl = d["fallas"][e]
         imgs = elegir(m, m + e, 1, e)
         h = imgs[0] if imgs else None
-        gente = elegir(m, m + e + "gente", 1)
+        gente = elegir(m, m + e + "gente", 1, None, e)
         h2 = gente[0] if gente else None
         cod = d["codigos"].get("Lavadoras" if e in ("lavadoras", "centro-lavado") else "Refrigeradoras" if e == "neveras" else "_", [])
         sec_cod = sec(f"Códigos de error frecuentes en {pl} {N}", tabla(["Código", "Qué suele indicar"], [(f'<span class="cb">{c}</span>', esc(t)) for c, t in cod]) + f'<p><a href="{pathb(m, "codigos-de-error")}">Ver todos los códigos {N}</a></p>', id="codigos", alt=True, lead=f"Si la pantalla de tu {sing} {N} muestra un código, aquí está lo que suele indicar.") if cod else ""
@@ -910,7 +921,7 @@ def build_sintomas(m):
         cod_html = ""
         if cod and re.search(r"c[oó]digo|error|pantalla|muestra|\bE\d|Er ", a, re.I):
             cod_html = sec(f"Códigos de {pl} {N_}", tabla(["Código", "Qué suele indicar"], [(f'<span class="cb">{x}</span>', esc(y)) for x, y in cod[:6]]) + f'<p><a href="{pathb(m, "codigos-de-error")}">Ver todos los códigos de error {N_}</a></p>', alt=True)
-        im = elegir(m, m + sl, 1, e) + elegir(m, m + sl + "g", 1)
+        im = elegir(m, m + sl, 1, e) + elegir(m, m + sl + "g", 1, None, e)
         nombre = (f"{cap(sing)} {N_}: {bajar(a).rstrip('.')}" if (CFG.get("tv") or e.startswith("tv-")) else cap(uni(sing, N_, a)))
         titulo = nombre
         while len(titulo) > 62 and re.search(r"\s(o|y|,)\s", titulo): titulo = re.sub(r"\s+(?:o|y)\s+[^ ]*(?:\s+[^ ]+)*$", "", titulo, count=1) if re.search(r"\s(o|y)\s", titulo) else titulo
@@ -1489,7 +1500,7 @@ def fotos_extra():
             if "<main" not in t: continue
             usadas = set(re.findall(r"/img/%s/[^\"')\s]+" % m, t))
             e = next((x for x in M[m]["equipos"] if s.startswith("reparacion-" + EQ[x][0]) or s.startswith("falla-" + slug(EQ[x][1]))), None)
-            cand = [f for f in pl if copia_ruta(m, f) not in usadas and (not e or re.search(KW[e], f.name) or rg.search(f.name))]
+            cand = [f for f in pl if copia_ruta(m, f) not in usadas and (not e or re.search(KW[e], f.name) or rg.search(f.name)) and not _otro_eq(f, e)]
             if not cand: continue
             hh = lambda f: hashlib.md5((str(p) + f.name).encode()).hexdigest()
             cand = sorted(cand, key=lambda f: (USO[f], hh(f)))[:3]
@@ -1571,6 +1582,7 @@ def repartir_fotos():
         k = 0
         for dpath in orden:
             if k >= len(pend): break
+            if CFG.get("busquedas") and any(_otro_eq(f, _eq_de_path(m, dpath.parent.name)) for f in pend[k]): continue   # nunca la foto de otro equipo en una página de equipo
             if dpath.exists() and poner(dpath, pend[k]): k += 1
 
 def relacionadas():
