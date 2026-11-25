@@ -201,6 +201,8 @@ footer{background:var(--hd);color:#cfd9ee;padding:34px 0 90px;font-size:.92rem}f
 """
 if CFG.get("sin_recorte"):
     CSS += """
+.lk3{display:grid;gap:22px;grid-template-columns:repeat(3,1fr)}.lk3 h3{margin:0 0 8px;font-size:1.02rem;color:var(--c)}.lk3 ul,.ext{list-style:none;margin:0;padding:0;display:grid;gap:7px}.lk3 a{text-decoration:none}.lk3 a:hover{text-decoration:underline}.ext li{display:grid;gap:1px;padding:10px 14px;background:#fff;border-radius:12px;box-shadow:var(--sh)}.ext a{font-weight:600}.ext span{font-size:.88rem;color:var(--m)}@media(max-width:820px){.lk3{grid-template-columns:1fr}}
+.trust{padding:0;background:#fff;border-bottom:1px solid var(--soft,#e5eaf2)}.trust .tr{list-style:none;margin:0;padding:18px 0;display:grid;gap:14px;grid-template-columns:repeat(4,1fr)}.trust .tr li{display:grid;align-content:start;gap:2px;padding-left:30px;position:relative}.trust .tr li::before{content:"";position:absolute;left:0;top:3px;width:20px;height:20px;border-radius:50%;background:var(--c);opacity:.9}.trust .tr li::after{content:"";position:absolute;left:7px;top:7px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}.trust .tr b{font-size:.98rem}.trust .tr span{font-size:.86rem;color:var(--m)}@media(max-width:820px){.trust .tr{grid-template-columns:1fr 1fr;gap:12px}}@media(max-width:480px){.trust .tr{grid-template-columns:1fr}}
 .toc{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px 0 4px}.toc b{font-size:.9rem;margin-right:6px}.toc a{font-size:.88rem;padding:6px 12px;border-radius:999px;background:var(--soft,#eef2f8);color:inherit;text-decoration:none}.toc a:hover{text-decoration:underline}
 .hero img{aspect-ratio:auto!important;object-fit:contain!important;width:auto!important;max-width:100%;max-height:480px;height:auto!important;margin:0 auto;background:#fff}
 .two img{aspect-ratio:auto!important;object-fit:contain!important;height:auto!important;max-height:520px;width:auto;max-width:100%;margin:0 auto}
@@ -287,6 +289,7 @@ def decorar(marca, cuerpo, hero, path):
         banda = (f'<section class="band" style="--bgi:url({b[0][0]})"><div class="w"><h2>Pide tu visita {nom(marca)} hoy</h2><p>Cuéntanos el modelo y la falla por WhatsApp y coordinamos el día y la franja en tu zona.</p>'
                  f'<a class="btn" href="{wa("Hola, necesito servicio técnico " + nom(marca) + " en Panamá")}" target="_blank" rel="noopener">Escribir por WhatsApp</a></div></section>')
     i = cuerpo.find("</section>")
+    if i >= 0 and cuerpo.lstrip().startswith('<section class="trust"'): i = cuerpo.find("</section>", i + 10)   # tras la franja de confianza va primero el selector de equipos
     if banda and i >= 0 and cuerpo.count("</section>") >= 3: cuerpo = cuerpo[:i + 10] + banda + cuerpo[i + 10:]
     # fondos suaves en secciones alternas (hasta 2)
     for k in range(2):
@@ -308,6 +311,27 @@ def FAV(marca):
     fs = 34 if len(ini) == 1 else 26
     svg = f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='{c}'/><text x='32' y='{32 + fs * 0.36:.0f}' font-family='Arial,sans-serif' font-weight='700' font-size='{fs}' fill='white' text-anchor='middle'>{ini}</text></svg>"
     return "data:image/svg+xml," + svg.replace("<", "%3C").replace(">", "%3E").replace("#", "%23").replace(" ", "%20").replace("'", "%27")
+_ORDEN_HOME = [r"¿Qué equipo .+ quieres reparar", r"Así funciona la visita", r"Sobre los equipos", r"Las fallas más buscadas", r"Servicio técnico .+ en Santiago de Chile",
+                r"Zonas de Santiago donde atendemos", r"¿Por qué elegirnos", r"¿Necesitas ayuda para elegir", r"Preguntas frecuentes", r"Quiénes somos", r"Más información sobre"]
+def _pro(path, m, cuerpo):
+    """Orden profesional de la portada de cada marca (solo Chile): franja de confianza, flujo lógico y sin bloques repetidos."""
+    es_home = path == "/" or path == "/" + m + "/"
+    if not es_home: return cuerpo
+    N = nom(m); bl = re.findall(r"<section\b.*?</section>", cuerpo, flags=re.S)
+    if not bl: return cuerpo
+    tit = lambda x: re.sub(r"<[^>]+>", "", (re.search(r"<h2>(.*?)</h2>", x, re.S) or [None, ""])[1])
+    bl = [x for x in bl if not re.search(r"WhatsApp de servicio técnico", tit(x)) and tit(x) != f"Más información sobre {N}"]
+    def pri(x):
+        t = tit(x)
+        for i, rx in enumerate(_ORDEN_HOME):
+            if re.search(rx, t): return i
+        return len(_ORDEN_HOME)
+    bl = sorted(bl, key=pri)           # sorted es estable: lo que no está en la lista conserva su orden
+    bl = [x.replace(f"<h2>Sobre los equipos {N}</h2>", f"<h2>Especialistas en equipos {N}</h2>").replace(f"<h2>Las fallas más buscadas de {N}</h2>", f"<h2>Fallas frecuentes en equipos {N}</h2>") for x in bl]
+    bl = [re.sub(r'<section class="s(?: alt)?"', '<section class="s%s"' % (" alt" if i % 2 else ""), x, count=1) for i, x in enumerate(bl)]
+    conf = (f'<section class="trust"><div class="w"><ul class="tr"><li><b>Visita a domicilio</b><span>El técnico {N} llega a tu casa</span></li><li><b>Diagnóstico primero</b><span>Te explicamos la causa antes del valor</span></li>'
+            f'<li><b>Tú apruebas</b><span>Solo se repara con tu autorización</span></li><li><b>52 comunas</b><span>Toda la Región Metropolitana</span></li></ul></div></section>')
+    return conf + "".join(bl)
 def _idsec2(m_, usados, items):
     cls, tt = m_.group(1), m_.group(4)
     ident = m_.group(3) or slug(re.sub(r"<[^>]+>", "", tt))[:40] or "seccion"
@@ -359,7 +383,8 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
     bc = ""
     if crumbs and len(crumbs) > 1:
         bc = '<div class="w bc">' + " › ".join((f'<a href="{u}">{esc(n)}</a>' if i < len(crumbs) - 1 else esc(n)) for i, (n, u) in enumerate(crumbs)) + "</div>"
-    if CFG.get("seo_plus") and path != "/" and 'class="anc"' not in cuerpo:
+    if CFG.get("pro_layout") and marca: cuerpo = _pro(path, marca, cuerpo)
+    if CFG.get("seo_plus") and path != "/" and 'class="anc"' not in cuerpo and not CFG.get("sin_toc"):
         _hs = re.findall(r'<section class="s(?: alt)?"(?: id="([^"]*)")?><div class="w"><h2>(.*?)</h2>', cuerpo)
         if len(_hs) >= 4:
             _usados = set(); _items = []
@@ -405,6 +430,26 @@ EXT = {  # enlaces externos por marca: sitio oficial (solo informativo) y ACODEC
 }
 ACODECO = ("ACODECO: Autoridad de Protección al Consumidor de Panamá", "https://www.acodeco.gob.pa/")
 ASEP = ("ASEP: Autoridad Nacional de los Servicios Públicos (electricidad y voltaje)", "https://www.asep.gob.pa/")
+def _enlaces_pro(m, path, chips_b, nm, url):
+    """Chile: bloque final ordenado en tres partes: enlaces internos por tema, recursos oficiales externos y búsquedas relacionadas."""
+    d = M[m]; N = nom(m); E = [e for e in d["equipos"] if not e.startswith("tv-")]
+    L_ = lambda u, t: f'<li><a href="{u}">{esc(t)}</a></li>'
+    c1 = "".join(L_(pathb(m, "reparacion-" + EQ[e][0]), f"Reparación de {EQ[e][2]} {N}") for e in E) + L_(pathb(m, "fallas"), f"Fallas frecuentes de equipos {N}") + L_(pathb(m, "diagnostico-por-sintoma"), "Diagnóstico por síntoma")
+    c2 = L_(pathb(m, "cobertura"), f"Todas las comunas donde atendemos {N}") + "".join(L_(pathb(m, "servicio-tecnico-" + s_), f"Servicio técnico {N} en {v_[0]}") for s_, v_ in CFG["sectores"].items())
+    ayuda = [("servicio-tecnico-autorizado-o-independiente", "Servicio técnico autorizado o independiente"), ("que-incluye-la-visita-tecnica", "Qué incluye la visita técnica"), ("cuanto-demora-una-reparacion", "Cuánto demora una reparación"),
+             ("tecnico-a-domicilio-urgente", "Técnico a domicilio urgente"), ("repuestos-originales-o-alternativos", "Repuestos originales o alternativos"), ("reparacion-fuera-de-garantia", "Reparación con garantía vencida"),
+             ("mantenimiento-preventivo", "Mantenimiento preventivo"), ("fallas-en-verano", "Fallas en verano"), ("fallas-en-invierno", "Fallas en invierno"), ("garantia", "Garantía de equipos " + N),
+             ("cuanto-cuesta-la-reparacion", "Cuánto cuesta reparar"), ("preguntas-frecuentes", "Preguntas frecuentes"), ("guias", "Guías y consejos"), ("quienes-somos", "Quiénes somos")]
+    ayuda = [(pathb(m, s_), t_) for s_, t_ in ayuda if pathb(m, s_) != path]
+    k = int(hashlib.md5(path.encode()).hexdigest(), 16) % len(ayuda); ayuda = (ayuda[k:] + ayuda[:k])[:8]
+    c3 = "".join(L_(u, t) for u, t in ayuda)
+    interno = sec(f"Más información sobre el servicio técnico {N}", f'<div class="lk3"><div><h3>Equipos y fallas</h3><ul>{c1}</ul></div><div><h3>Dónde atendemos</h3><ul>{c2}</ul></div><div><h3>Ayuda y consejos</h3><ul>{c3}</ul></div></div>', alt=True)
+    ext = [("Servicio Nacional del Consumidor (SERNAC)", "https://www.sernac.cl/", "Tus derechos como consumidor y cómo hacer un reclamo."),
+           ("Ley N° 19.496 sobre protección de los derechos de los consumidores", "https://www.bcn.cl/leychile/navegar?i=61438", "Texto de la ley en la Biblioteca del Congreso Nacional."),
+           ("Superintendencia de Electricidad y Combustibles (SEC)", "https://www.sec.cl/", "Instalaciones de gas y electricidad: qué debe hacer un instalador autorizado.")]
+    if nm: ext.append((nm, url, f"Información general de la marca {N}."))
+    externo = sec("Recursos oficiales y sitios de interés", "<ul class=\"ext\">" + "".join(f'<li><a href="{u}" target="_blank" rel="noopener">{esc(n)}</a><span>{esc(dsc)}</span></li>' for n, u, dsc in ext) + "</ul><p><small>Se abren en otra pestaña. Son sitios externos que no son nuestros; los enlazamos solo como información.</small></p>")
+    return interno + externo + sec(f"Búsquedas relacionadas con {N} en {CFG['ciudad']}", chips_b)
 def cierre(m, path):
     d = M[m]; N = nom(m)
     pags = [(pathb(m, "reparacion-" + EQ[e][0]), f"Reparación de {EQ[e][2]} {N}") for e in d["equipos"]]
@@ -426,6 +471,7 @@ def cierre(m, path):
     chips_b = "".join(f'<a class="pill" href="{u}">{esc(t)}</a>' for t, u in busq)
     nm, url = EXT.get(m, (None, None))
     externos = f'<ul><li><a href="{url}" target="_blank" rel="noopener">{nm}</a> <small>(abre en otra pestaña; sitio del fabricante, no es nuestro)</small></li></ul>'
+    if CFG.get("pro_layout"): return _enlaces_pro(m, path, chips_b, nm, url)
     return (sec(f"Búsquedas relacionadas con {N} en Panamá", chips_b)
             + sec(f"Más sobre {N} en Panamá", f'<div class="g c3">{inter}</div>', alt=True)
             + sec(f"Guías de {N}", f'<div class="g c3">{guias}</div>')
@@ -783,7 +829,7 @@ def build_marca(m):
     pagina(path, t, f"Centro de servicio técnico {N} en Panamá: reparación a domicilio de {', '.join(EQ[e][2] for e in d['equipos'][:3])} y más. Diagnóstico en casa y atención por WhatsApp.",
            f"Centro de Servicio Técnico {N} Panamá", cuerpo, m, hero[0] if hero else None, [(f"Centro de Servicio Técnico {N} Panamá", base(m))], ld,
            bd=f"{N} · Panamá", prio="1.0" if m == "samsung" else "0.9",
-           lead=f"Reparamos tus equipos {N} en tu casa. Elige tu equipo abajo y te guiamos paso a paso.", cta2=("Elegir mi equipo ↓", "#equipos"))
+           lead=(f"Servicio técnico a domicilio de {junta(EQ[e][2] for e in d['equipos'])} {N} en las 52 comunas de la Región Metropolitana. Diagnóstico en tu casa y valor antes de reparar." if CFG.get("pro_layout") else f"Reparamos tus equipos {N} en tu casa. Elige tu equipo abajo y te guiamos paso a paso."), cta2=("Elegir mi equipo ↓", "#equipos"))
     # --- por equipo
     for e in d["equipos"]:
         s, sing, pl = EQ[e]; fl = d["fallas"][e]
@@ -1229,7 +1275,7 @@ def build_zonas_marca(m):
             cuerpo += sec(f"Preguntas frecuentes sobre el servicio técnico {N} en {za}", faq_html(zfaq))
         pagina(pathb(m, "servicio-tecnico-" + z), f"Servicio técnico {N} en {za} | Panamá", f"Servicio técnico {N} a domicilio en {za}, Panamá: qué fallas de equipos {N} se reportan allí, sectores que visitamos y cómo coordinar la visita.",
                f"Servicio técnico {N} en {za}", cuerpo, m, _hz((elegir(m, m + z, 1) or [None])[0], zn), crumbs0 + [("Cobertura", pathb(m, "cobertura")), (zn, pathb(m, "servicio-tecnico-" + z))],
-               [{"@type": "Service", "name": f"Servicio técnico {N} en {za}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Place", "name": zn}}] + ([faq_ld(zfaq)] if zfaq else []), bd=f"{N} · {za}", prio="0.7", lead=f"Equipos {N} en {za}: fallas frecuentes y visita a domicilio.")
+               [{"@type": "Service", "name": f"Servicio técnico {N} en {za}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Place", "name": zn}}] + ([faq_ld(zfaq)] if zfaq else []), bd=f"{N} · {za}", prio="0.7", lead=(f"Servicio técnico a domicilio de equipos {N} en {za}: diagnóstico en tu casa y valor antes de reparar." if CFG.get("pro_layout") else f"Equipos {N} en {za}: fallas frecuentes y visita a domicilio."))
         items += f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {za}</span><br><small>{esc(sect)}</small></a>'
     pagina(pathb(m, "cobertura"), f"Cobertura del servicio técnico {N} en Panamá", f"Zonas de Panamá donde damos servicio técnico a domicilio para equipos {N}.",
            f"Cobertura del servicio técnico {N} en Panamá", sec("Dónde atendemos equipos " + N, f'<div class="g c2">{items}</div>'), m, (elegir(m, m + "cob", 1) or [None])[0], crumbs0 + [("Cobertura", pathb(m, "cobertura"))], bd=f"{N} · Cobertura", prio="0.7", lead=f"Zonas de Panamá con visita a domicilio para equipos {N}.", noindex=not CFG.get("busquedas"))
@@ -1519,7 +1565,8 @@ def fotos_extra():
             n = len(partes) - 1
             if n < 2: continue
             def franja(fs): return '<section class="s"><div class="w"><div class="fgrid">' + "".join(fs) + '</div></div></section>'
-            pos = sorted({min(1, n - 1), min(max(4, n // 2), n - 1)}) if len(figs) > 2 else [min(1, n - 1)]
+            base_ = 2 if (len(partes) > 1 and 'class="trust"' in partes[1]) else 1   # en la portada, después del selector de equipos
+            pos = sorted({min(base_, n - 1), min(max(base_ + 3, n // 2), n - 1)}) if len(figs) > 2 else [min(base_, n - 1)]
             trozos = [figs[:2], figs[2:]] if len(pos) > 1 else [figs]
             ins = {pp: franja(fs) for pp, fs in zip(pos, trozos) if fs}
             nuevo = ""

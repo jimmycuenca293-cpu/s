@@ -251,7 +251,7 @@ CHILE = dict(
     zonas=ZONAS_CL, zx=ZX_CL, clima=CLIMA_CL, zonas_destacadas=DEST_CL, sectores=SECTORES_CL, sector_de=SECTOR_DE, comunas_eq=COMUNAS_EQ,
     area=[ZONAS_CL[z][0] for z in DEST_CL], geo=(-33.4489, -70.6693), geo_region="CL-RM",
     zlista="Las Condes, Providencia, Ñuñoa, Santiago Centro, Maipú, La Florida, Puente Alto, Vitacura y el resto de las comunas del Gran Santiago",
-    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, marcas_extra=True,
+    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, marcas_extra=True, sin_toc=True, pro_layout=True,
 )
 CFG = {"chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
 
@@ -336,5 +336,9 @@ def L(h):
         h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)
     _cl = (CFG.get("clima_txt") or ("humedad y lluvias", "Humedad y lluvias")) if (CFG.get("frio") or CFG.get("sin_tropico")) else ("humedad y calor", "Humedad y calor")
     h = h.replace("humedad y salitre", _cl[0]).replace("Humedad y salitre", _cl[1])
+    if CFG.get("pro_layout"):   # «Servicio técnico {marca} en Santiago» en lugar de «Centro de Servicio Técnico»
+        h = re.sub(r"Centro de Servicio Técnico ([^<>|›\"]+?) %s" % CFG["ciudad"], r"Servicio Técnico \1 en %s" % CFG["ciudad"], h)
+        h = re.sub(r"Centro de servicio técnico ([^<>|›\"]+?) en %s" % CFG["ciudad"], r"Servicio técnico \1 en %s" % CFG["ciudad"], h)
+        h = h.replace("Centro de Servicio Técnico", "Servicio Técnico").replace(" | Centro de Servicio", " | Servicio técnico")
     h = re.sub(r"(%s) \| %s\b" % (CFG["ciudad"], CFG["ciudad"]), r"\1", h)
     return re.sub(r"\x00(\d+)\x00", lambda m: _rutas[int(m.group(1))], h)

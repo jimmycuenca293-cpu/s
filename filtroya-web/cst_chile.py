@@ -62,7 +62,7 @@ def build_busquedas(g, m):
                    f"Reparación de {pl} {N} en {zn}", bloques, m, g["_hz"]((elegir(m, m + e + z, 1, e) or [None])[0], zn),
                    crumbs0 + [("Cobertura", pathb(m, "cobertura")), (f"Reparación de {pl} en {zn}", pathb(m, f"reparacion-{EQ[e][0]}-{z}"))],
                    [{"@type": "Service", "name": f"Reparación de {pl} {N} en {zn}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Place", "name": zn}, "brand": {"@type": "Brand", "name": N}}, faq_ld(faq)],
-                   bd=f"{N} · {zn}", prio="0.6", lead=f"{cap(pl)} {N} en {zn}: fallas frecuentes y visita a domicilio.")
+                   bd=f"{N} · {zn}", prio="0.6", lead=f"Servicio técnico a domicilio de {pl} {N} en {zn}: diagnóstico en tu casa y valor antes de reparar.")
 
     # ------------------------------------------------------------------ B) intenciones de búsqueda
     nombre_ext, url_ext = EXT.get(m, (None, None))
