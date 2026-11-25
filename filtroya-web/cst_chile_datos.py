@@ -122,3 +122,18 @@ ZX_CL = {s: (v, a, t) for s, n, b, r, v, a, t, c in _D}
 CLIMA_CL = {s: c for s, n, b, r, v, a, t, c in _D}
 DESTACADAS = ["las-condes", "providencia", "nunoa", "santiago-centro", "maipu", "la-florida", "puente-alto", "vitacura", "san-miguel", "penalolen", "lo-barnechea", "la-reina"]
 assert len(_D) == 52, len(_D)
+
+# Sectores de Santiago: página de resumen por marca y enlaces entre comunas cercanas.
+# slug: (nombre en frase, descripción, [comunas])
+SECTORES_CL = {
+ "oriente-de-santiago": ("el oriente de Santiago", "Providencia, Las Condes, Vitacura, Lo Barnechea, La Reina y Ñuñoa: edificios altos, casas amplias y condominios al pie de la cordillera, con equipos de gama media y alta y mucho uso del aire acondicionado en verano.", ["providencia", "las-condes", "vitacura", "lo-barnechea", "la-reina", "nunoa"]),
+ "centro-de-santiago": ("el centro de Santiago", "Santiago Centro, Independencia, Recoleta, Estación Central y Quinta Normal: muchos edificios nuevos de departamentos pequeños junto a casonas y comercio, con conserjerías y estacionamientos limitados.", ["santiago-centro", "independencia", "recoleta", "estacion-central", "quinta-normal"]),
+ "norte-de-santiago": ("el norte de Santiago", "Huechuraba, Conchalí, Renca, Quilicura, Colina, Lampa y Tiltil: casas, condominios nuevos, parcelas y zonas industriales, con distancias mayores hacia Chicureo, Lampa y Tiltil.", ["huechuraba", "conchali", "renca", "quilicura", "colina", "lampa", "tiltil"]),
+ "poniente-de-santiago": ("el poniente de Santiago", "Maipú, Cerrillos, Pudahuel, Lo Prado, Cerro Navia y las comunas del poniente de la región, desde Padre Hurtado y Peñaflor hasta Melipilla: casas, condominios y parcelas, con distancias mayores a medida que se sale de la ciudad.", ["maipu", "cerrillos", "pudahuel", "lo-prado", "cerro-navia", "padre-hurtado", "penaflor", "talagante", "el-monte", "isla-de-maipo", "melipilla", "curacavi", "maria-pinto", "alhue", "san-pedro"]),
+ "sur-de-santiago": ("el sur de Santiago", "San Miguel, San Joaquín, La Cisterna, San Ramón, La Granja, Lo Espejo, Pedro Aguirre Cerda, El Bosque, La Pintana, San Bernardo y las comunas del sur de la región: casas y poblaciones tradicionales, edificios nuevos y condominios, con el tráfico de la Gran Avenida y la Ruta 5 Sur.", ["san-miguel", "san-joaquin", "la-cisterna", "san-ramon", "la-granja", "lo-espejo", "pedro-aguirre-cerda", "el-bosque", "la-pintana", "san-bernardo", "calera-de-tango", "buin", "paine"]),
+ "sur-oriente-de-santiago": ("el sur oriente de Santiago", "La Florida, Puente Alto, Peñalolén, Macul y la precordillera hasta Pirque y San José de Maipo: comunas muy pobladas de casas y condominios, con calles con pendiente y distancias mayores hacia el Cajón del Maipo.", ["la-florida", "puente-alto", "penalolen", "macul", "pirque", "san-jose-de-maipo"]),
+}
+assert sorted(z for v in SECTORES_CL.values() for z in v[2]) == sorted(ZONAS_CL), set(ZONAS_CL) ^ {z for v in SECTORES_CL.values() for z in v[2]}
+SECTOR_DE = {z: s for s, v in SECTORES_CL.items() for z in v[2]}
+# comunas con página de reparación por equipo (las más buscadas)
+COMUNAS_EQ = DESTACADAS + ["estacion-central", "independencia", "recoleta", "macul", "san-bernardo", "quilicura", "huechuraba", "colina"]

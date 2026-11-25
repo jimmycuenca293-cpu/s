@@ -300,7 +300,7 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
     """path: '/lg/reparacion-lavadoras/' ; cuerpo: html de secciones"""
     title = LOC(title); desc = LOC(desc)
     if CFG.get("esencial") and marca:
-        _eh, _ef = _ESE.esencial(path, marca, dict(sec=sec, faq_html=faq_html, cap=cap, esc=esc, pathb=pathb, junta=junta, M=M, EQ=EQ, ZONAS=ZD, ciudad=CFG["ciudad"], tel=CFG["tel"], zx=CFG.get("zx", {}), zlista=CFG.get("zlista", ""), intro_clima=CFG.get("intro_clima", ""), clima_extra=CFG.get("clima_extra", ""), base_slug=lambda m_: m_))
+        _eh, _ef = _ESE.esencial(path, marca, dict(sec=sec, faq_html=faq_html, cap=cap, esc=esc, pathb=pathb, junta=junta, M=M, EQ=EQ, ZONAS=ZD, ciudad=CFG["ciudad"], tel=CFG["tel"], zx=CFG.get("zx", {}), zlista=CFG.get("zlista", ""), intro_clima=CFG.get("intro_clima", ""), clima_extra=CFG.get("clima_extra", ""), sectores=CFG.get("sectores"), base_slug=lambda m_: m_))
         if _eh:
             cuerpo = cuerpo + _eh
             if _ef and not any(isinstance(x, dict) and x.get("@type") == "FAQPage" for x in (ld or [])): ld = (ld or []) + [faq_ld(_ef)]
@@ -392,6 +392,9 @@ def cierre(m, path):
     pags = [(pathb(m, "reparacion-" + EQ[e][0]), f"Reparación de {EQ[e][2]} {N}") for e in d["equipos"]]
     if d["codigos"]: pags.append((pathb(m, "codigos-de-error"), f"Códigos de error {N}"))
     pags += [(pathb(m, "series-y-modelos"), f"Series y modelos {N}"), (pathb(m, "cuanto-cuesta-la-reparacion"), f"Cuánto cuesta y qué garantía tiene {N}"), (pathb(m, "preguntas-frecuentes"), f"Preguntas frecuentes {N}"), (pathb(m, "diagnostico-por-sintoma"), f"Diagnóstico por síntoma {N}")]
+    if CFG.get("busquedas"):
+        pags += [(pathb(m, s_), f"{t_} {N}") for s_, t_ in (("servicio-tecnico-autorizado-o-independiente", "Servicio técnico autorizado o independiente:"), ("tecnico-a-domicilio-urgente", "Técnico a domicilio urgente:"), ("mantenimiento-preventivo", "Mantenimiento preventivo:"), ("reparacion-fuera-de-garantia", "Reparación con garantía vencida:"), ("que-incluye-la-visita-tecnica", "Qué incluye la visita técnica:"), ("cuanto-demora-una-reparacion", "Cuánto demora una reparación:"), ("repuestos-originales-o-alternativos", "Repuestos originales o alternativos:"), ("instalacion-de-equipos", "Instalación de equipos:"), ("fallas-en-verano", "Fallas en verano:"), ("fallas-en-invierno", "Fallas en invierno:"))]
+        pags += [(pathb(m, "servicio-tecnico-" + s_), f"Servicio técnico {N} en {v_[0]}") for s_, v_ in CFG["sectores"].items()]
     pags = [(u, t) for u, t in pags if u != path]
     # los 6 más cercanos por posición, rotando según la página para repartir enlaces
     k = int(hashlib.md5(path.encode()).hexdigest(), 16) % max(1, len(pags))
@@ -1200,14 +1203,18 @@ def build_zonas_marca(m):
                     (f"¿Qué equipos {N} atienden en {za}?", f"Atendemos {junta(EQ[e][2] for e in E)} de la marca {N}. Si tu equipo no está en la lista, escríbenos con el modelo y la falla."),
                     (f"¿Cómo pido la visita de servicio técnico {N} en {za}?", f"Escríbenos por WhatsApp con la marca, el modelo, lo que le pasa al equipo y tu sector en {za}. Te confirmamos el día y la franja."),
                     (f"¿Cuánto cuesta reparar un equipo {N} en {za}?", "El valor depende del equipo y de la falla. Se confirma por escrito después del diagnóstico y solo se repara si tú lo apruebas.")]
-            cuerpo += sec(f"Equipos {N} que reparamos en {za}", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "reparacion-" + EQ[e][0])}"><span class="t">Reparación de {esc(EQ[e][2])} {N} en {esc(zn)}</span></a>' for e in E) + '</div>', alt=True)
+            cuerpo += sec(f"Equipos {N} que reparamos en {za}", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "reparacion-" + EQ[e][0] + ("-" + z if z in CFG.get("comunas_eq", ()) and d["fallas"].get(e) and not e.startswith("tv-") else ""))}"><span class="t">Reparación de {esc(EQ[e][2])} {N} en {esc(zn)}</span></a>' for e in E) + '</div>', alt=True)
+            if CFG.get("sectores") and z in CFG["sector_de"]:
+                _sl = CFG["sector_de"][z]; _vec = [c for c in CFG["sectores"][_sl][2] if c != z]
+                _vec = (_vec[zi % len(_vec):] + _vec[:zi % len(_vec)])[:8] if _vec else []
+                cuerpo += sec(f"Servicio técnico {N} cerca de {za}", "<p>" + "".join(f'<a class="pill" href="{pathb(m, "servicio-tecnico-" + c)}">Servicio técnico {N} en {esc(ZONAS[c][0])}</a>' for c in _vec) + f'</p><p><a href="{pathb(m, "servicio-tecnico-" + _sl)}">Servicio técnico {N} en {esc(CFG["sectores"][_sl][0])}</a> · <a href="{pathb(m, "cobertura")}">Todas las comunas</a></p>')
             cuerpo += sec(f"Preguntas frecuentes sobre el servicio técnico {N} en {za}", faq_html(zfaq))
         pagina(pathb(m, "servicio-tecnico-" + z), f"Servicio técnico {N} en {za} | Panamá", f"Servicio técnico {N} a domicilio en {za}, Panamá: qué fallas de equipos {N} se reportan allí, sectores que visitamos y cómo coordinar la visita.",
                f"Servicio técnico {N} en {za}", cuerpo, m, _hz((elegir(m, m + z, 1) or [None])[0], zn), crumbs0 + [("Cobertura", pathb(m, "cobertura")), (zn, pathb(m, "servicio-tecnico-" + z))],
                [{"@type": "Service", "name": f"Servicio técnico {N} en {za}", "provider": {"@id": DOM + "/#negocio"}, "areaServed": {"@type": "Place", "name": zn}}] + ([faq_ld(zfaq)] if zfaq else []), bd=f"{N} · {za}", prio="0.7", lead=f"Equipos {N} en {za}: fallas frecuentes y visita a domicilio.")
         items += f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + z)}"><span class="t">Servicio técnico {N} en {za}</span><br><small>{esc(sect)}</small></a>'
     pagina(pathb(m, "cobertura"), f"Cobertura del servicio técnico {N} en Panamá", f"Zonas de Panamá donde damos servicio técnico a domicilio para equipos {N}.",
-           f"Cobertura del servicio técnico {N} en Panamá", sec("Dónde atendemos equipos " + N, f'<div class="g c2">{items}</div>'), m, (elegir(m, m + "cob", 1) or [None])[0], crumbs0 + [("Cobertura", pathb(m, "cobertura"))], bd=f"{N} · Cobertura", prio="0.7", lead=f"Zonas de Panamá con visita a domicilio para equipos {N}.", noindex=True)
+           f"Cobertura del servicio técnico {N} en Panamá", sec("Dónde atendemos equipos " + N, f'<div class="g c2">{items}</div>'), m, (elegir(m, m + "cob", 1) or [None])[0], crumbs0 + [("Cobertura", pathb(m, "cobertura"))], bd=f"{N} · Cobertura", prio="0.7", lead=f"Zonas de Panamá con visita a domicilio para equipos {N}.", noindex=not CFG.get("busquedas"))
 
 
 
@@ -1567,7 +1574,7 @@ if __name__ == "__main__":
     (OUT / "img" / "logos").mkdir(parents=True, exist_ok=True)
     for m in BRANDS_ORDER:
         for suf in ("", "-blanco"): shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}{suf}.png", OUT / "img" / "logos" / f"{m}{suf}.png")
-    for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); (CFG.get("busquedas") and _CHL.build_busquedas(globals(), m)); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
+    for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); (CFG.get("busquedas") and (_CHL.build_busquedas(globals(), m), _CHL.build_extra(globals(), m))); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
     if TVX:
         for m in BRANDS_ORDER:
             if _tvb(m): build_tv_extra(m)

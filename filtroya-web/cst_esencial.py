@@ -51,7 +51,12 @@ def esencial(path, m, X):
     fallas = d.get("fallas", {}); eti = d.get("etiqueta", {}); tech = d.get("tech", {})
     out = []; faqs = []
 
-    if slug == "diagnostico-por-sintoma":
+    secs_ = X.get("sectores") or {}
+    if secs_ and (path == "/" or partes == [m]):
+        cards = "".join(f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + sl)}"><span class="t">Servicio técnico {N} en {esc(v[0])}</span></a>' for sl, v in secs_.items())
+        pills = "".join(f'<a class="pill" href="{pathb(m, "servicio-tecnico-" + z)}">{esc(v[0])}</a>' for z, v in X["ZONAS"].items())
+        out.append(sec(f"Servicio técnico {N} en Santiago de Chile y toda la Región Metropolitana", f"<p>Reparamos equipos {N} a domicilio en Santiago de Chile: {junta(eqn(e) for e in d['equipos'])}. Atendemos las 52 comunas de la Región Metropolitana, agrupadas por sector para que encuentres rápido tu zona.</p><div class=\"g c3\">{cards}</div><h3>Comunas principales</h3><p>{pills}</p><p><a href=\"{pathb(m, 'cobertura')}\">Ver las 52 comunas donde atendemos {N}</a></p>"))
+    elif slug == "diagnostico-por-sintoma":
         out.append(sec(f"Cómo usar el diagnóstico de equipos {N}", _lista([
             f"Elige el equipo ({', '.join(EQ[x][1] for x in _eqs(d)[:3])}…) en el primer campo.",
             "Elige lo que notas: un ruido, un código en pantalla, una fuga, un olor.",
@@ -75,6 +80,7 @@ def esencial(path, m, X):
 
     elif slug == "cobertura":
         zx = X["zx"]; zonas = X["ZONAS"]
+        if secs_: out.append(sec(f"Servicio técnico {N} por sector de Santiago", '<div class="g c3">' + "".join(f'<a class="card l" href="{pathb(m, "servicio-tecnico-" + sl)}"><span class="t">Servicio técnico {N} en {esc(v[0])}</span></a>' for sl, v in secs_.items()) + "</div>"))
         bl = ""
         for z, zv in zonas.items():
             t = zx.get(z)

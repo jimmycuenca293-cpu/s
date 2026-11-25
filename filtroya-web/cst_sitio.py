@@ -230,8 +230,8 @@ BUCARAMANGA = dict(
 )
 
 # ----------------------------------------------------------------------------- CHILE (Santiago, todas las comunas)
-from cst_chile_datos import ZONAS_CL, ZX_CL, CLIMA_CL, DESTACADAS as DEST_CL
-_TEL_CL = os.environ.get("CST_TEL", "+56 9 0000 0000")
+from cst_chile_datos import ZONAS_CL, ZX_CL, CLIMA_CL, DESTACADAS as DEST_CL, SECTORES_CL, SECTOR_DE, COMUNAS_EQ
+_TEL_CL = os.environ.get("CST_TEL", "+56 9 8317 6106")
 CHILE = dict(
     sitio="chile", dom="https://serviciotecnicoautorizadochile.cl", ciudad="Santiago", nombre="Servicio Técnico Santiago",
     tel=_TEL_CL, telw=re.sub(r"\D", "", _TEL_CL), locale="es-CL", cc="CL", region="Región Metropolitana", pais="Chile",
@@ -248,7 +248,7 @@ CHILE = dict(
     clima_txt=("polvo y cambios de temperatura", "Polvo y cambios de temperatura"), guias_clima="el polvo, el calor del verano, el frío del invierno y los cortes de luz con sus picos de voltaje",
     ley_datos="Ley N° 19.628 sobre protección de la vida privada de Chile", ley_consumo="Ley N° 19.496 sobre protección de los derechos de los consumidores de Chile",
     costero=False, nev=("refrigeradores", "refrigerador", "refrigeradores"),
-    zonas=ZONAS_CL, zx=ZX_CL, clima=CLIMA_CL, zonas_destacadas=DEST_CL,
+    zonas=ZONAS_CL, zx=ZX_CL, clima=CLIMA_CL, zonas_destacadas=DEST_CL, sectores=SECTORES_CL, sector_de=SECTOR_DE, comunas_eq=COMUNAS_EQ,
     area=[ZONAS_CL[z][0] for z in DEST_CL], geo=(-33.4489, -70.6693), geo_region="CL-RM",
     zlista="Las Condes, Providencia, Ñuñoa, Santiago Centro, Maipú, La Florida, Puente Alto, Vitacura y el resto de las comunas del Gran Santiago",
     sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True,
