@@ -251,7 +251,7 @@ CHILE = dict(
     zonas=ZONAS_CL, zx=ZX_CL, clima=CLIMA_CL, zonas_destacadas=DEST_CL, sectores=SECTORES_CL, sector_de=SECTOR_DE, comunas_eq=COMUNAS_EQ,
     area=[ZONAS_CL[z][0] for z in DEST_CL], geo=(-33.4489, -70.6693), geo_region="CL-RM",
     zlista="Las Condes, Providencia, Ñuñoa, Santiago Centro, Maipú, La Florida, Puente Alto, Vitacura y el resto de las comunas del Gran Santiago",
-    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True,
+    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, marcas_extra=True,
 )
 CFG = {"chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
 

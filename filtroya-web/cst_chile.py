@@ -64,8 +64,8 @@ def build_busquedas(g, m):
                    bd=f"{N} · {zn}", prio="0.6", lead=f"{cap(pl)} {N} en {zn}: fallas frecuentes y visita a domicilio.")
 
     # ------------------------------------------------------------------ B) intenciones de búsqueda
-    nombre_ext, url_ext = EXT[m]
-    ext = f'<ul><li><a href="{url_ext}" target="_blank" rel="noopener">{nombre_ext}</a> <small>(abre en otra pestaña; sitio del fabricante, no es nuestro)</small></li></ul>'
+    nombre_ext, url_ext = EXT.get(m, (None, None))
+    ext = f'<ul><li><a href="{url_ext}" target="_blank" rel="noopener">{nombre_ext}</a> <small>(abre en otra pestaña; sitio del fabricante, no es nuestro)</small></li></ul>' if nombre_ext else ""
     # B1 autorizado o independiente
     faq1 = [(f"¿Son el servicio técnico autorizado de {N}?", f"No. Somos un servicio técnico independiente: no pertenecemos a {N} ni estamos designados por la marca. Reparamos equipos {N} de forma particular."),
             ("¿Qué hago si mi equipo está en garantía de fábrica?", "Contacta primero a la marca o a la tienda donde lo compraste: ellos indican dónde se atiende la garantía. Si tienes dudas sobre si una reparación particular puede afectarla, consúltalo antes."),
@@ -78,7 +78,7 @@ def build_busquedas(g, m):
                   ("No recuerdas si hay garantía", "Busca la factura y la tarjeta de garantía: ahí están la fecha de compra y las condiciones.")]), alt=True)
               + sec("Cómo saber si tu equipo aún tiene garantía", lista(["Busca la factura o boleta de compra: indica la fecha y la tienda.", "Revisa la tarjeta de garantía o el manual: señalan el plazo y qué cubre.", "Ubica el modelo y la serie en la etiqueta del equipo.", f"{esc(d['garantia'])}", "En Chile, la Ley N° 19.496 sobre protección de los derechos de los consumidores contempla una garantía legal para productos nuevos; consulta en el SERNAC los plazos y condiciones vigentes."]))
               + sec("Qué preguntar antes de contratar a cualquier técnico", lista(["¿Hace un diagnóstico antes de dar un valor?", "¿Entrega el valor de la pieza y de la mano de obra por escrito?", "¿Te explica la causa en palabras simples?", "¿Qué pasa si decides no reparar?"]), alt=True)
-              + sec(f"Dónde consultar a la marca {N}", ext)
+              + (sec(f"Dónde consultar a la marca {N}", ext) if ext else "")
               + sec("Preguntas frecuentes", faq_html(faq1), alt=True))
     pagina(pathb(m, "servicio-tecnico-autorizado-o-independiente"), f"Servicio técnico autorizado o independiente: {N}", f"Diferencias entre un servicio técnico autorizado y uno independiente para equipos {N} en {ciu}: garantía, cuándo conviene cada uno y qué preguntar.",
            f"Servicio técnico autorizado o independiente para tu {N}", cuerpo, m, (elegir(m, m + "aut", 1) or [None])[0], crumbs0 + [("Autorizado o independiente", pathb(m, "servicio-tecnico-autorizado-o-independiente"))], [faq_ld(faq1)],
