@@ -25,9 +25,9 @@ if CFG.get("mix"):   # electrodomésticos + pantallas: Samsung y LG con ambos; S
     BRANDS_ORDER = list(BRANDS_ORDER) + [x for x in _TV.BRANDS_ORDER if x not in BRANDS_ORDER]
 def _tvb(m): return bool(CFG.get("tv") or (CFG.get("mix") and any(e.startswith("tv-") for e in M[m]["equipos"])))
 if CFG.get("marcas_extra"):      # marcas locales de un solo sitio (Fensa en Chile)
-    import cst_fensa as _FEN
-    M = dict(M); M["fensa"] = _FEN.M_FENSA; BRANDS_ORDER = list(BRANDS_ORDER) + ["fensa"]
-    CONSEJOS = dict(CONSEJOS); CONSEJOS.update(_FEN.CONSEJOS_FENSA)
+    import cst_fensa as _FEN, cst_midea as _MID
+    M = dict(M); M["fensa"] = _FEN.M_FENSA; M["midea"] = _MID.M_MIDEA; BRANDS_ORDER = list(BRANDS_ORDER) + ["fensa", "midea"]
+    CONSEJOS = dict(CONSEJOS); CONSEJOS.update(_FEN.CONSEJOS_FENSA); CONSEJOS.update(_MID.CONSEJOS_MIDEA)
 M = localizar(M); CONSEJOS = localizar(CONSEJOS)
 if "neveras" in EQ: EQ["neveras"] = CFG["nev"]
 if CFG.get("zonas"): ZONAS = CFG["zonas"]
@@ -151,6 +151,7 @@ PAL = {  # c principal, a botón, ab texto botón, bg fondo, soft tono claro, hd
  "general-electric": ("#005eb8", "#00a3e0", "#fff", "#eef5fb", "#d7e8f6", "#003464"),
  "haceb": ("#00833e", "#f2b400", "#1a1a1a", "#eff8f2", "#d8eee0", "#004a22"),
  "fensa": ("#2f566e", "#3f87b0", "#fff", "#eef4f7", "#d8e6ee", "#1c3342"),
+ "midea": ("#0a5ea0", "#1f9bdc", "#fff", "#eef6fb", "#d5e9f6", "#06335a"),
  "kitchenaid": ("#9c1f2b", "#d4a24c", "#1a1a1a", "#fbf6f1", "#f3e5d6", "#4e0f16"),
  "sony": ("#16161a", "#3b82f6", "#fff", "#f3f4f6", "#e5e7eb", "#0a0a0c"),
  "tcl": ("#d71920", "#1a1a1a", "#fff", "#fbf3f3", "#f6dede", "#6b0a0e"),
@@ -302,7 +303,7 @@ def copia_ruta(m, f):
 
 def FAV(marca):
     c = PAL.get(marca, DEF)[0] if marca else DEF[0]
-    ini = {"samsung": "S", "lg": "LG", "whirlpool": "W", "mabe": "m", "frigidaire": "F", "electrolux": "E", "general-electric": "GE", "haceb": "H", "kitchenaid": "K", "fensa": "Fe"}.get(marca, "CS")
+    ini = {"samsung": "S", "lg": "LG", "whirlpool": "W", "mabe": "m", "frigidaire": "F", "electrolux": "E", "general-electric": "GE", "haceb": "H", "kitchenaid": "K", "fensa": "Fe", "midea": "Mi"}.get(marca, "CS")
     fs = 34 if len(ini) == 1 else 26
     svg = f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='{c}'/><text x='32' y='{32 + fs * 0.36:.0f}' font-family='Arial,sans-serif' font-weight='700' font-size='{fs}' fill='white' text-anchor='middle'>{ini}</text></svg>"
     return "data:image/svg+xml," + svg.replace("<", "%3C").replace(">", "%3E").replace("#", "%23").replace(" ", "%20").replace("'", "%27")
@@ -832,7 +833,7 @@ def build_marca(m):
     pagina(pathb(m, "series-y-modelos"), f"Series y modelos {N}: cómo identificar el tuyo", f"Líneas {N} más comunes en Panamá, cómo funciona cada tecnología y dónde encontrar el número de modelo de tu equipo.",
            f"Series, modelos y tecnologías {N}", sec(f"Líneas {N}", rr(f"{N} agrupa sus equipos en líneas como {', '.join(d['lineas'][:4])}. Conocer la tuya ayuda a pedir el repuesto correcto y a describir la falla con precisión.") + "".join(f'<span class="pill">{esc(x)}</span>' for x in d["lineas"]) + f"<p>{esc(d['modelo_ej'])}</p>") + sec("Cómo funciona cada equipo", tb, alt=True) + sec("Dónde encontrar el número de modelo", et + "<p>Con una foto de esa etiqueta puedes escribirnos por WhatsApp y adelantamos el diagnóstico.</p>"),
            m, (elegir(m, m + "ser", 1) or [None])[0], crumbs0 + [("Series y modelos", pathb(m, "series-y-modelos"))], bd=f"{N} · Modelos", lead=f"Origen, líneas y tecnologías de {N}, y cómo leer la etiqueta del equipo.")
-    comp = {"samsung": "el compresor Digital Inverter y la placa inverter", "lg": "el compresor inverter o lineal y la placa inverter", "whirlpool": "el compresor, el control y la transmisión de la lavadora", "mabe": "el compresor y la transmisión de la lavadora", "frigidaire": "la tarjeta de control y el compresor", "electrolux": "la placa inverter y el compresor", "general-electric": "la tarjeta de control y el sistema del dispensador", "haceb": "el compresor y la tarjeta", "fensa": "el compresor y los controles", "kitchenaid": "el motor y la caja de engranes"}.get(m, "la fuente de poder, la placa principal y la retroiluminación")
+    comp = {"samsung": "el compresor Digital Inverter y la placa inverter", "lg": "el compresor inverter o lineal y la placa inverter", "whirlpool": "el compresor, el control y la transmisión de la lavadora", "mabe": "el compresor y la transmisión de la lavadora", "frigidaire": "la tarjeta de control y el compresor", "electrolux": "la placa inverter y el compresor", "general-electric": "la tarjeta de control y el sistema del dispensador", "haceb": "el compresor y la tarjeta", "fensa": "el compresor y los controles", "midea": "el compresor y los controles", "kitchenaid": "el motor y la caja de engranes"}.get(m, "la fuente de poder, la placa principal y la retroiluminación")
     # --- cuánto cuesta
     def nivel(txt):
         t = txt.lower()

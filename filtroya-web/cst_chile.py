@@ -27,6 +27,7 @@ def build_busquedas(g, m):
     comunas = [z for z in CFG.get("comunas_eq", CFG.get("zonas_destacadas", [])) if z in ZONAS]
     for ei, e in enumerate(E):
         sing, pl = EQ[e][1], EQ[e][2]
+        art = g["ART_EQ"].get(e, "un"); del_ = "del" if art == "un" else "de la"   # género del equipo (una lavadora, un refrigerador)
         fl = d["fallas"].get(e) or []
         if not fl: continue
         for zi, z in enumerate(comunas):
@@ -41,10 +42,10 @@ def build_busquedas(g, m):
             cod = codigos_de(e)
             bloques = sec(f"Reparación de {pl} {N} en {zn}", f"<p>{esc(intro)}</p><p>{esc(CLIMA[z].capitalize())} influyen en cómo envejecen los equipos de esta comuna.</p>")
             bloques += sec(f"Fallas de {pl} {N} que más vemos", det, alt=True)
-            bloques += sec(f"Cómo funciona un {sing} {N}", f"<p>{esc(oracion(d['tech'][e], zi + ei))}</p>")
+            bloques += sec(f"Cómo funciona {art} {sing} {N}", f"<p>{esc(oracion(d['tech'][e], zi + ei))}</p>")
             if cod: bloques += sec(f"Códigos de error de {pl} {N}", g["tabla"](["Código", "Qué suele indicar"], [(f"<b>{esc(c)}</b>", esc(t)) for c, t in cod[:5]]), alt=True)
             et = d.get("etiqueta", {}).get(e)
-            bloques += sec(f"Antes de la visita en {zn}", lista([f"Ten a mano el modelo del {sing} {N}: {esc(minus(et))}" if et else f"Ten a mano el modelo de tu {sing} {N}.", "Anota el código o mensaje que muestra y desde cuándo ocurre la falla.", "Despeja el espacio alrededor del equipo y avisa en conserjería o portería si hay control de acceso."]))
+            bloques += sec(f"Antes de la visita en {zn}", lista([f"Ten a mano el modelo {del_} {sing} {N}: {esc(minus(et))}" if et else f"Ten a mano el modelo de tu {sing} {N}.", "Anota el código o mensaje que muestra y desde cuándo ocurre la falla.", "Despeja el espacio alrededor del equipo y avisa en conserjería o portería si hay control de acceso."]))
             sd = CFG.get("sector_de", {}); sv = [zz for zz in CFG.get("sectores", {}).get(sd.get(z), ("", "", []))[2] if zz in comunas and zz != z]
             otras = [zz for zz in comunas if zz != z and zz not in sv]
             r = sv[:4] + [otras[(zi * 3 + i) % len(otras)] for i in range(6 - len(sv[:4]))]
@@ -53,8 +54,8 @@ def build_busquedas(g, m):
             enlaces = f'<p><a href="{pathb(m, "servicio-tecnico-" + z)}">Servicio técnico {N} en {esc(zn)}</a> · <a href="{pathb(m, "reparacion-" + EQ[e][0])}">Reparación de {pl} {N}</a> · <a href="{pathb(m, "cobertura")}">Todas las comunas</a></p>'
             bloques += sec(f"Reparación de {pl} {N} en otras comunas", f"<p>{pills}</p>" + (f"<h3>Otros equipos {N} en {esc(zn)}</h3><p>{oe}</p>" if oe else "") + enlaces, alt=True)
             faq = [(f"¿Reparan {pl} {N} a domicilio en {zn}?", f"Sí. Atendemos sectores como {sect}. Escríbenos con el modelo y lo que hace el equipo y coordinamos día y franja."),
-                   (f"¿Qué fallas son frecuentes en un {sing} {N}?", f"Entre las que más vemos: {'; '.join(esc(minus(f[0].rstrip('.'))) for f in sel[:3])}."),
-                   (f"¿Cuánto cuesta reparar un {sing} {N} en {zn}?", "El valor depende de la falla y de la pieza. Se confirma después del diagnóstico y solo se repara si tú lo apruebas.")]
+                   (f"¿Qué fallas son frecuentes en {art} {sing} {N}?", f"Entre las que más vemos: {'; '.join(esc(minus(f[0].rstrip('.'))) for f in sel[:3])}."),
+                   (f"¿Cuánto cuesta reparar {art} {sing} {N} en {zn}?", "El valor depende de la falla y de la pieza. Se confirma después del diagnóstico y solo se repara si tú lo apruebas.")]
             bloques += sec(f"Preguntas frecuentes: {pl} {N} en {zn}", faq_html(faq))
             title = next((t_ for t_ in (f"Reparación de {pl} {N} en {zn}", f"Reparar {pl} {N} en {zn}", f"{cap(pl)} {N} en {zn}") if len(t_) <= 62), f"{cap(pl)} {N} en {zn}"[:62])
             pagina(pathb(m, f"reparacion-{EQ[e][0]}-{z}"), title, f"Reparación de {pl} {N} a domicilio en {zn}, {ciu}: fallas frecuentes, códigos de error, sectores que visitamos y cómo coordinar la visita.",
