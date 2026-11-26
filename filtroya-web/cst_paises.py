@@ -172,7 +172,7 @@ def build_cfg(key, tel, solo_wa=True):
     for slug, nombre, sect, tipo in D["zonas"]:
         viv, corta, acc = TIPOS[tipo]
         zonas[slug] = (nombre, sect, viv); zx[slug] = (corta, acc, sect)
-        clima[slug] = (f"{c['calor']} y los picos de voltaje de las tormentas eléctricas al volver la luz" if tipo != "ext" else f"las variaciones de voltaje en redes más largas, el polvo de los caminos y las tormentas eléctricas de {c['lluvia']}")
+        clima[slug] = (f"{c['calor']}, sumados a los picos de voltaje de las tormentas eléctricas al volver la luz," if tipo != "ext" else f"las variaciones de voltaje en redes más largas, el polvo de los caminos y las tormentas eléctricas de {c['lluvia']}")
     orden = [z[0] for z in D["zonas"]]
     sectores = D["sectores"]
     assert sorted(z for v in sectores.values() for z in v[2]) == sorted(orden), set(orden) ^ {z for v in sectores.values() for z in v[2]}
