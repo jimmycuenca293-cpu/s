@@ -291,7 +291,8 @@ GUATEMALA = dict(
            ("En invierno hay temporales, cortes de luz y variaciones de voltaje al volver el suministro, y se usa más la secadora.", "En invierno, la temporada de lluvias de mayo a octubre, hay tormentas eléctricas, apagones y variaciones de voltaje al volver la luz, y se usa más la secadora."),
            ("el verano de Santiago", "el verano de Ciudad de Guatemala"), ("el invierno de Santiago", "el invierno de Ciudad de Guatemala"),
            ("Santiago de Chile", "Ciudad de Guatemala"), ("la Región Metropolitana", "el área metropolitana"), ("Región Metropolitana", "área metropolitana"), ("de Santiago", "de Ciudad de Guatemala"), ("para Santiago", "para Ciudad de Guatemala"), ("en Santiago", "en Ciudad de Guatemala")],
-    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True,
+    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True, midea_mundial=True,
+    excluir_fotos={"tecnico-midea-llegada-puerta-furgon"},   # la placa y el paisaje de esa foto son de Chile
 )
 CFG = {"guatemala": GUATEMALA, "chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
 

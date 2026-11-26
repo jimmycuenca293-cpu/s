@@ -28,6 +28,10 @@ if CFG.get("marcas_extra"):      # marcas locales de un solo sitio (Fensa en Chi
     import cst_fensa as _FEN, cst_midea as _MID
     M = dict(M); M["fensa"] = _FEN.M_FENSA; M["midea"] = _MID.M_MIDEA; BRANDS_ORDER = list(BRANDS_ORDER) + ["fensa", "midea"]
     CONSEJOS = dict(CONSEJOS); CONSEJOS.update(_FEN.CONSEJOS_FENSA); CONSEJOS.update(_MID.CONSEJOS_MIDEA)
+if CFG.get("midea_mundial"):     # Midea como marca internacional (Guatemala)
+    import cst_midea_gt as _MGT
+    M = dict(M); M["midea"] = _MGT.M_MIDEA; BRANDS_ORDER = list(BRANDS_ORDER) + ["midea"]
+    CONSEJOS = dict(CONSEJOS); CONSEJOS.update(_MGT.CONSEJOS_MIDEA)
 M = localizar(M); CONSEJOS = localizar(CONSEJOS)
 if "neveras" in EQ: EQ["neveras"] = CFG["nev"]
 if CFG.get("zonas"): ZONAS = CFG["zonas"]
@@ -66,9 +70,10 @@ def pool(m):
     if CFG.get("sin_recorte"):   # Guayaquil: se usan TODAS las fotos de la marca (menos logos y miniaturas duplicadas)
         fs = [f for f in sorted(d.glob("*.webp")) if "logo" not in f.name and not re.search(r"-(s|m|400)\.webp$", f.name)] if d.exists() else []
     else:
-        fs = [f for f in sorted(d.glob("*.webp")) if "logo" not in f.name and "autorizado" not in f.name and f.stem not in EXCLUIR] if d.exists() else []
+        fs = [f for f in sorted(d.glob("*.webp")) if "logo" not in f.name and "autorizado" not in f.name and f.stem not in EXCLUIR and f.stem not in CFG.get("excluir_fotos", ())] if d.exists() else []
     extra = ROOT / "st_img" / "cst" / m
     if extra.exists() and not CFG.get("tv"): fs += sorted(extra.glob("*.webp"))
+    fs = [f for f in fs if f.stem not in CFG.get("excluir_fotos", ())]
     if m == "samsung" and not CFG.get("tv"):
         for p in sorted((ROOT / "st_img" / "panama").glob("*.webp")): fs.append(p)
         for p in sorted(glob.glob("/tmp/pan_img_work/img/*.webp")):
