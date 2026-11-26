@@ -108,6 +108,7 @@ def copia(m, f):
 def alt_de(m, f, extra=""):
     """Texto alternativo descriptivo (SEO y accesibilidad): qué muestra la foto, de qué marca y en qué ciudad."""
     n = f.name.lower(); N = M[m]["nombre"]; ciu = CFG["ciudad"]
+    if CFG.get("intl") and CFG["pais"] not in ciu: ciu = f"{ciu}, {CFG['pais']}"      # palabras clave del país y de la ciudad
     eq = None
     for rx, nombre in ((r"televisor|pantalla", "Televisor"), (r"centro-lavado|torre|washtower", "Centro de lavado"), (r"lavavajillas", "Lavavajillas"), (r"microondas", "Microondas"), (r"secadora", "Secadora"), (r"lavadora", "Lavadora"),
                        (r"(?<!frigid)aire|windfree", "Aire acondicionado"), (r"horno", "Horno empotrado"), (r"estufa|cocina|hornillas", "Cocina"), (r"nevera|refriger|family|french|side-by-side|top-freezer", "Refrigeradora"), (r"batidora", "Batidora de pedestal")):
@@ -245,6 +246,11 @@ def chips(actual):
         from cst_sitio import DOM_INTL
         it = [x for x in it if x[0] != "Repuestos"] + [("Otros países", DOM_INTL + "/paises/")]
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
+def _logo_alt(marca):
+    """Alt del logo: en el sitio internacional lleva ciudad y país."""
+    a = f"Logo {nom(marca)}"
+    if CFG.get("intl"): a += f": servicio técnico en {CFG['ciudad']}" + (f", {CFG['pais']}" if CFG["pais"] != CFG["ciudad"] else "")
+    return a
 def pie(marca=None, lista_marcas=False):
     aviso = '<p><small>Servicio técnico independiente. Los nombres de marcas pertenecen a sus propietarios y se usan solo para indicar los equipos que reparamos.</small></p>'
     if marca:
@@ -259,7 +265,7 @@ def pie(marca=None, lista_marcas=False):
         cols = ('<div><h3>Marcas</h3><ul>' + "".join(f'<li><a href="{"/" if m == ROOTM else "/" + m + "/"}">{M[m]["nombre"]} Panamá</a></li>' for m in BRANDS_ORDER) + f'</ul></div><div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>')
     else:
         cols = f'<div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>'
-    flogo = f'<span class="fl"><img src="/img/logos/{marca}-blanco.png" alt="Logo {nom(marca)}" width="190" height="48" style="display:block;height:44px;width:auto;max-width:200px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none"></span>' if marca else ""
+    flogo = f'<span class="fl"><img src="/img/logos/{marca}-blanco.png" alt="{_logo_alt(marca)}" width="190" height="48" style="display:block;height:44px;width:auto;max-width:200px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none"></span>' if marca else ""
     return ('<footer><div class="w">' + flogo + '<div class="g c4">' + cols + '</div></div></footer>'
             f'<div class="fb"><a href="tel:+{TELN}">Llamar</a><a class="wa" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div>')
 LB = {"@type": "ProfessionalService", "knowsAbout": (["Reparación de pantallas LED", "Reparación de pantallas QLED y Mini LED", "Reparación de pantallas OLED", "Instalación de pantallas"] if CFG.get("tv") else ["Reparación de refrigeradoras", "Reparación de lavadoras", "Reparación de secadoras", "Aires acondicionados", "Cocinas y hornos"] + (["Reparación de pantallas y televisores"] if CFG.get("mix") else [])) + [f"Servicio técnico {M[x]['nombre']}" for x in BRANDS_ORDER], "inLanguage": CFG["locale"], "@id": DOM + "/#negocio", "name": NOMBRE, "url": DOM + "/", "telephone": "+" + TELN, 
@@ -426,7 +432,7 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
          f'<link rel="icon" href="{FAV(marca)}">'
          f'<link rel="stylesheet" href="/assets/site.css?v={CSSV}"><style>body{{--c:{PAL.get(marca, DEF)[0]};--a:{PAL.get(marca, DEF)[1]};--ab:{PAL.get(marca, DEF)[2]};--bg:{PAL.get(marca, DEF)[3]};--soft:{PAL.get(marca, DEF)[4]};--hd:{PAL.get(marca, DEF)[5]}}}</style><script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body><a class="skip" href="#contenido">Saltar al contenido</a>'
          f'<div class="top"><div class="w"><span>{(chr(60) + "img class=" + chr(34) + "flag" + chr(34) + " src=" + chr(34) + CFG["bandera"] + chr(34) + " alt=" + chr(34) + "Bandera de " + CFG["pais"] + chr(34) + " width=" + chr(34) + "24" + chr(34) + " height=" + chr(34) + "16" + chr(34) + ">") if CFG.get("bandera") else ""}Atención a domicilio en Panamá · {TEL}</span><a href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div></div>'
-         f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">{f'<img class="lgo" src="/img/logos/{marca}.png" alt="Logo {nom(marca)}" width="130" height="40" style="display:block;height:34px;width:auto;max-width:130px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none">' if marca else ""}<span>Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></span>{(chr(60) + "img class=" + chr(34) + "flag" + chr(34) + " src=" + chr(34) + CFG["bandera"] + chr(34) + " alt=" + chr(34) + "Bandera de " + CFG["pais"] + chr(34) + " width=" + chr(34) + "33" + chr(34) + " height=" + chr(34) + "22" + chr(34) + ">") if CFG.get("bandera") else ""}</a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
+         f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">{f'<img class="lgo" src="/img/logos/{marca}.png" alt="{_logo_alt(marca)}" width="130" height="40" style="display:block;height:34px;width:auto;max-width:130px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none">' if marca else ""}<span>Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></span>{(chr(60) + "img class=" + chr(34) + "flag" + chr(34) + " src=" + chr(34) + CFG["bandera"] + chr(34) + " alt=" + chr(34) + "Bandera de " + CFG["pais"] + chr(34) + " width=" + chr(34) + "33" + chr(34) + " height=" + chr(34) + "22" + chr(34) + ">") if CFG.get("bandera") else ""}</a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
          + chips(marca) + '<main id="contenido">' + heroh + bc + cuerpo + ('<div class="w"><p class="upd">Actualizado el ' + HOY_TXT + ' · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div>' if not re.search(r'/(politica-de-privacidad|terminos-y-condiciones)/', path) else '') + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + '</main>' + pie(marca, marcas_ok) + extra_js + '</body></html>')
     h = LOC(h)
     f = OUT / path.lstrip("/") / "index.html" if path != "/" else OUT / "index.html"
@@ -1274,11 +1280,15 @@ def build_terminos(m):
 CLIMA = {"ciudad-de-panama": "la humedad constante y el salitre en edificios cercanos a la bahía", "san-miguelito": "los picos de voltaje en sectores de alta densidad y los apagones intermitentes", "arraijan": "los voltajes irregulares en urbanizaciones nuevas y el polvo de obra",
          "la-chorrera": "el calor y el polvo en urbanizaciones en crecimiento", "costa-del-este": "los edificios altos con aires de alta eficiencia y alta humedad frente al mar", "tocumen-y-24-de-diciembre": "el calor intenso y los cortes de energía por tormentas",
          "panama-oeste": "las urbanizaciones nuevas con equipos aún en garantía y el calor", "colon": "el salitre costero y la corrosión de condensadores y placas"}
+def _alt_en(al, lug):
+    """Pone la zona en el alt: en el sitio internacional conserva ciudad y país («en El Poblado, Medellín, Colombia»)."""
+    c = CFG["ciudad"]
+    if ("en " + c) in al: return al.replace("en " + c, "en " + lug + (", " + c if CFG.get("intl") and lug != c else ""), 1)
+    return al + " en " + lug
 def _hz(h, zn):
     """Pone la comuna/zona en el texto alternativo de la foto principal (SEO local)."""
     if not h or not CFG.get("busquedas"): return h
-    al = h[1]
-    return (h[0], al.replace("en " + CFG["ciudad"], "en " + zn) if ("en " + CFG["ciudad"]) in al else al + " en " + zn)
+    return (h[0], _alt_en(h[1], zn))
 def build_zonas_marca(m):
     d = M[m]; N = nom(m); crumbs0 = [(f"Centro de Servicio Técnico {N} Panamá", base(m))]; E = d["equipos"]
     bi = BRANDS_ORDER.index(m)
@@ -1600,14 +1610,18 @@ def fotos_extra():
             cand = [f for f in pl if copia_ruta(m, f) not in usadas and (not e or re.search(KW[e], f.name) or rg.search(f.name)) and not _otro_eq(f, e)]
             if not cand: continue
             hh = lambda f: hashlib.md5((str(p) + f.name).encode()).hexdigest()
-            cand = sorted(cand, key=lambda f: (USO[f], hh(f)))[:3]
+            _pri = CFG.get("fotos_prioridad", ())
+            if _pri:
+                pr_ = sorted([f for f in cand if f.stem in _pri], key=lambda f: (USO[f], hh(f))); ot_ = sorted([f for f in cand if f.stem not in _pri], key=lambda f: (USO[f], hh(f)))
+                cand = (pr_[:2] + ot_[:1] + pr_[2:] + ot_[1:])[:3]
+            else: cand = sorted(cand, key=lambda f: (USO[f], hh(f)))[:3]
             zn = next((ZONAS[z][0] for z in zs if s == "servicio-tecnico-" + z or s.endswith("-" + z)), None)
             sec_ = next((v[0] for k_, v in (CFG.get("sectores") or {}).items() if s == "servicio-tecnico-" + k_), None)
             lug = zn or (cap(sec_) if sec_ else None)
             figs = []
             for f in cand:
                 USO[f] += 1; w, h = _dim(f); al = alt_de(m, f)
-                if lug: al = al.replace("en " + CFG["ciudad"], "en " + lug) if ("en " + CFG["ciudad"]) in al else al + " en " + lug
+                if lug: al = _alt_en(al, lug)
                 figs.append(f'<figure><img loading="lazy" src="{copia(m, f)}" alt="{al}" width="{w}" height="{h}"></figure>')
             mi = t.find("<main"); mf = t.find("</main>")
             cuerpo = t[mi:mf]; partes = cuerpo.split("</section>")
