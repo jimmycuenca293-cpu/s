@@ -34,6 +34,8 @@ if CFG.get("midea_mundial"):     # Midea como marca internacional (Guatemala)
     M = dict(M); M["midea"] = _MGT.M_MIDEA; BRANDS_ORDER = list(BRANDS_ORDER) + ["midea"]
     CONSEJOS = dict(CONSEJOS); CONSEJOS.update(_MGT.CONSEJOS_MIDEA)
     M["midea"] = dict(M["midea"], origen=M["midea"]["origen"].replace("Guatemala", CFG["pais"]), garantia=CFG.get("midea_garantia", M["midea"]["garantia"]))
+if CFG.get("solo_marca"):          # sitio de una sola marca (Frigidaire internacional)
+    BRANDS_ORDER = [CFG["solo_marca"]]; M = {CFG["solo_marca"]: M[CFG["solo_marca"]]}
 M = localizar(M); CONSEJOS = localizar(CONSEJOS)
 if "neveras" in EQ: EQ["neveras"] = CFG["nev"]
 if CFG.get("zonas"): ZONAS = CFG["zonas"]
@@ -237,6 +239,9 @@ def chips(actual):
         it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), *([("Pantallas", pathb(actual, "reparacion-de-pantallas")), ("Instalación", pathb(actual, "instalacion-de-pantallas")), ("Mantenimiento", pathb(actual, "mantenimiento-de-pantallas"))] if _tvb(actual) else []), (CFG.get("lbl_guias", "Guías"), pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))]
     else:
         it = ([("Zonas", "/zonas/"), ("Equipos", "/equipos/")] if CFG.get("hubs_locales") else []) + [("Todas las marcas", "/marcas/")]
+    if CFG.get("prefijo"):
+        from cst_sitio import DOM_INTL
+        it = [x for x in it if x[0] != "Repuestos"] + [("Otros países", DOM_INTL + "/")]
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
 def pie(marca=None, lista_marcas=False):
     aviso = '<p><small>Servicio técnico independiente. Los nombres de marcas pertenecen a sus propietarios y se usan solo para indicar los equipos que reparamos.</small></p>'
@@ -249,7 +254,7 @@ def pie(marca=None, lista_marcas=False):
         col4 = (f'<div><h3>{N} Panamá</h3><ul><li><a href="{pathb(marca, "telefono-servicio-tecnico")}">Teléfono y WhatsApp</a></li><li><a href="{pathb(marca, "quienes-somos")}">Quiénes somos</a></li><li><a href="{pathb(marca, "politica-de-privacidad")}">Política de privacidad</a></li><li><a href="{pathb(marca, "terminos-y-condiciones")}">Términos y condiciones</a></li></ul>{aviso}<p>{TEL}</p></div>')
         cols = col1 + col2 + col3 + col4
     elif lista_marcas:
-        cols = ('<div><h3>Marcas</h3><ul>' + "".join(f'<li><a href="{"/" if m == "samsung" else "/" + m + "/"}">{M[m]["nombre"]} Panamá</a></li>' for m in BRANDS_ORDER) + f'</ul></div><div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>')
+        cols = ('<div><h3>Marcas</h3><ul>' + "".join(f'<li><a href="{"/" if m == ROOTM else "/" + m + "/"}">{M[m]["nombre"]} Panamá</a></li>' for m in BRANDS_ORDER) + f'</ul></div><div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>')
     else:
         cols = f'<div><h3>{NOMBRE}</h3><p>{TEL}</p>{aviso}</div>'
     flogo = f'<span class="fl"><img src="/img/logos/{marca}-blanco.png" alt="Logo {nom(marca)}" width="190" height="48" style="display:block;height:44px;width:auto;max-width:200px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none"></span>' if marca else ""
@@ -354,14 +359,16 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
         if _eh:
             cuerpo = cuerpo + _eh
             if _ef and not any(isinstance(x, dict) and x.get("@type") == "FAQPage" for x in (ld or [])): ld = (ld or []) + [faq_ld(_ef)]
-    if CFG.get("seo_plus") and path != "/" and CFG["ciudad"] not in title and len(title) + 3 + len(CFG["ciudad"]) <= 62: title += " | " + CFG["ciudad"]
-    if len(title) > 62 and CFG.get("ciudad_corta"): title = title.replace(CFG["ciudad"], CFG["ciudad_corta"])
-    if len(title) > 62:
+    _TM = CFG.get("titulo_max", 62)
+    if CFG.get("seo_plus") and path != "/" and CFG["ciudad"] not in title and len(title) + 3 + len(CFG["ciudad"]) <= _TM: title += " | " + CFG["ciudad"]
+    elif CFG.get("seo_plus") and path != "/" and CFG.get("ciudad_corta") and CFG["ciudad"] not in title and CFG["ciudad_corta"] not in title and len(title) + 3 + len(CFG["ciudad_corta"]) <= _TM: title += " | " + CFG["ciudad_corta"]
+    if len(title) > _TM and CFG.get("ciudad_corta"): title = title.replace(CFG["ciudad"], CFG["ciudad_corta"])
+    if len(title) > _TM:
         partes = title.split(" | ")
-        while len(" | ".join(partes)) > 62 and len(partes) > 1: partes.pop()
+        while len(" | ".join(partes)) > _TM and len(partes) > 1: partes.pop()
         title = " | ".join(partes)
-        if len(title) > 62: title = re.sub(r"(\s+(?:de|en|y|a|la|el|los|las|con|para|del|que|o|u|al))+$", "", title[:62].rsplit(" ", 1)[0].rstrip(" ,|-:"))
-    if marca and len(title) < 38 and len(title) + 20 <= 62 and "Servicio técnico" not in title: title += " | Servicio técnico"
+        if len(title) > _TM: title = re.sub(r"(\s+(?:de|en|y|a|la|el|los|las|con|para|del|que|o|u|al))+$", "", title[:_TM].rsplit(" ", 1)[0].rstrip(" ,|-:"))
+    if marca and len(title) < 38 and len(title) + 20 <= _TM and "Servicio técnico" not in title: title += " | Servicio técnico"
     if len(desc) < 125 and len(desc) + 38 <= 158 and not noindex: desc = desc.rstrip(" ") + " Atención a domicilio y por WhatsApp."
     if len(desc) > 158:
         oraciones = re.split(r"(?<=\.)\s+", desc); acum = ""
@@ -459,7 +466,14 @@ def _enlaces_pro(m, path, chips_b, nm, url):
            ("Superintendencia de Electricidad y Combustibles (SEC)", "https://www.sec.cl/", "Instalaciones de gas y electricidad: qué debe hacer un instalador autorizado.")])
     if nm: ext.append((nm, url, f"Información general de la marca {N}."))
     externo = sec("Recursos oficiales y sitios de interés", "<ul class=\"ext\">" + "".join(f'<li><a href="{u}" target="_blank" rel="noopener">{esc(n)}</a><span>{esc(dsc)}</span></li>' for n, u, dsc in ext) + "</ul><p><small>Se abren en otra pestaña. Son sitios externos que no son nuestros; los enlazamos solo como información.</small></p>")
-    return interno + externo + sec(f"Búsquedas relacionadas con {N} en {CFG['ciudad']}", chips_b)
+    otros = ""
+    if CFG.get("prefijo"):
+        from cst_sitio import INTL_PAISES, DOM_INTL
+        _pre = CFG["prefijo"]
+        _hermanas = [(cn, cr) for pn, r, cc, cs in INTL_PAISES for cn, cr in cs if _pre.startswith(r.rstrip("/")) and cr.rstrip("/") != _pre]
+        _otros = [(pn, r) for pn, r, cc, cs in INTL_PAISES if not _pre.startswith(r.rstrip("/"))]
+        otros = sec(f"Servicio técnico {N} en otros países", "<p>" + "".join(f'<a class="pill" href="{DOM_INTL}{r}">Servicio técnico {N} en {esc(cn).replace(chr(225), "&#225;")}</a>' for cn, r in _hermanas) + "".join(f'<a class="pill" href="{DOM_INTL}{r}">Servicio técnico {N} en {esc(pn).replace(chr(225), "&#225;")}</a>' for pn, r in _otros) + f'</p><p><a href="{DOM_INTL}/">Servicio técnico {N} en Latinoamérica: todos los países</a></p>', alt=True)
+    return interno + externo + otros + sec(f"Búsquedas relacionadas con {N} en {CFG['ciudad']}", chips_b)
 def cierre(m, path):
     d = M[m]; N = nom(m)
     pags = [(pathb(m, "reparacion-" + EQ[e][0]), f"Reparación de {EQ[e][2]} {N}") for e in d["equipos"]]
@@ -508,7 +522,8 @@ def uni(sing, N, a):
 def bajar(t):
     # no bajar a minúscula si empieza con un código/sigla (OE, F5E1, UE, Er FF...)
     return t if (len(t) > 1 and t[1].isupper()) or t[:2] in ("OE", "IE", "UE") or re.match(r"[A-Z]\d", t) or re.match(r"[A-Z]{1,3}[a-z]?\d", t) else t[0].lower() + t[1:]
-def base(m): return "/" if m == "samsung" else f"/{m}/"
+ROOTM = CFG.get("solo_marca", "samsung")   # marca cuya portada es la raíz del sitio
+def base(m): return "/" if m == ROOTM else f"/{m}/"
 def pathb(m, s): return (f"/samsung/{s}/" if m == "samsung" else f"/{m}/{s}/")
 def nom(m): return M[m]["nombre"]
 
@@ -666,7 +681,7 @@ CHILE_MI["aires"]["mant_intro"] = "El mantenimiento de un aire acondicionado inc
 CHILE_MI["centro-lavado"] = CHILE_MI["lavadoras"]
 from cst_guatemala_mi import GT_MI as _GT_MI
 from cst_salvador_mi import SV_MI as _SV_MI
-MI_LOC = _GT_MI if CFG["sitio"] == "guatemala" else (_SV_MI if CFG["sitio"] == "elsalvador" else CHILE_MI)
+MI_LOC = CFG.get("mi") or (_GT_MI if CFG["sitio"] == "guatemala" else (_SV_MI if CFG["sitio"] == "elsalvador" else CHILE_MI))
 def _gye_loc(t):
     """Adapta los textos de mantenimiento e instalación (escritos para Guayaquil) a la ciudad del sitio."""
     if CFG["sitio"] == "guayaquil" or CFG.get("tv"): return t
@@ -682,7 +697,7 @@ def bloque_mant_inst(m, e):
     if e.startswith("tv-"): g = _TV.MANT_INST[e]
     else: g = BATIDORA if e == "batidoras" else {"mant": _gye()[e]["mant"], "inst": _gye()[e]["inst"]}
     mt, ins = g["mant"], g["inst"]
-    ov = QUITO_MI.get(e, {}) if CFG["sitio"] == "quito" else (MI_LOC.get(e, {}) if CFG["sitio"] in ("chile", "guatemala", "elsalvador") else {})
+    ov = QUITO_MI.get(e, {}) if CFG["sitio"] == "quito" else (MI_LOC.get(e, {}) if CFG["sitio"] in ("chile", "guatemala", "elsalvador") or CFG.get("mi") else {})
     if CFG.get("tv"):
         mt = {**mt}; ins = {**ins} if ins else ins
     mt = {**mt, "intro": ov.get("mant_intro") or _gye_loc(mt["intro"]), "gye": ov.get("mant_gye") or _gye_loc(mt["gye"])}
@@ -833,7 +848,7 @@ def build_marca(m):
               + (sec(f"Quiénes somos", quienes_breve(m), alt=True) if CFG.get("sin_recorte") else "")
               + sec(f"Más información sobre {N}", otras(m, ""))
               + sec(f"Sobre los equipos {N}", f"<p>{esc(d['origen'])}</p><p><b>Líneas que atendemos:</b></p>" + "".join((f'<a class="pill" href="{pathb(m, "pantallas-" + slug(N + " " + x))}">{esc(x)}</a>' if (CFG.get("tv") or (CFG.get("mix") and _tvb(m) and x in _TV.LINEAS_DET.get(m, {}))) else f'<span class="pill">{esc(x)}</span>') for x in d["lineas"]) + "<h3 style='margin-top:18px'>Mantenimiento recomendado</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in d["mantenimiento"]) + "</ul>"))
-    path = "/" if m == "samsung" else base(m)
+    path = base(m)
     t = f"Centro de Servicio Técnico {N} Panamá | A domicilio" if m != "general-electric" else f"Centro de Servicio Técnico {N} Panamá"
     ld = [faq_ld(FAQ_H), {"@type": "Service", "name": f"Servicio técnico {N} en Panamá", "provider": {"@id": DOM + "/#negocio"}, "areaServed": "Panamá", "serviceType": (f"Reparación de pantallas {N}" if CFG.get("tv") else f"Reparación de electrodomésticos {N}"), "brand": {"@type": "Brand", "name": N, **({"sameAs": EXT[m][1]} if m in EXT else {})},
           "hasOfferCatalog": {"@type": "OfferCatalog", "name": f"Servicios para equipos {N}", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Reparación de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0])}} for e in d["equipos"]]
@@ -841,7 +856,7 @@ def build_marca(m):
                  + [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Instalación de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0]) + "#instalacion"}} for e in d["equipos"] if e != "batidoras"] if CFG.get("sin_recorte") else [])}}]
     pagina(path, t, f"Centro de servicio técnico {N} en Panamá: reparación a domicilio de {', '.join(EQ[e][2] for e in d['equipos'][:3])} y más. Diagnóstico en casa y atención por WhatsApp.",
            f"Centro de Servicio Técnico {N} Panamá", cuerpo, m, hero[0] if hero else None, [(f"Centro de Servicio Técnico {N} Panamá", base(m))], ld,
-           bd=f"{N} · Panamá", prio="1.0" if m == "samsung" else "0.9",
+           bd=f"{N} · Panamá", prio="1.0" if m == ROOTM else "0.9",
            lead=(f"Servicio técnico a domicilio de {junta(EQ[e][2] for e in d['equipos'])} {N} en {CFG.get("lead_cob", "las 52 comunas de la Región Metropolitana")}. Diagnóstico en tu casa y valor antes de reparar." if CFG.get("pro_layout") else f"Reparamos tus equipos {N} en tu casa. Elige tu equipo abajo y te guiamos paso a paso."), cta2=("Elegir mi equipo ↓", "#equipos"))
     # --- por equipo
     for e in d["equipos"]:
@@ -1558,7 +1573,7 @@ def fotos_extra():
         pl = POOLS.get(m) or []
         if not pl: continue
         carp = OUT / m
-        files = ([OUT / "index.html"] if m == "samsung" else [carp / "index.html"]) + sorted((OUT / m).glob("*/index.html"))
+        files = ([OUT / "index.html"] if m == ROOTM else [carp / "index.html"]) + sorted((OUT / m).glob("*/index.html"))
         for p in files:
             s = p.parent.name if p.parent != OUT and p.parent.name != m else ""
             if s in sin: continue
@@ -1611,7 +1626,7 @@ def repartir_fotos():
     if not CFG.get("sin_recorte"): return
     for m in BRANDS_ORDER:
         carp = OUT / ("samsung" if m == "samsung" else m)
-        paginas_m = [OUT / "index.html"] if m == "samsung" else [carp / "index.html"]
+        paginas_m = [OUT / "index.html"] if m == ROOTM else [carp / "index.html"]
         paginas_m += sorted(carp.glob("*/index.html"))
         usadas = set()
         for p in paginas_m: usadas |= set(re.findall(r"/img/%s/[^\"')\s]+" % m, p.read_text(encoding="utf-8")))
@@ -1680,20 +1695,20 @@ def relacionadas():
 def dimensiones_img():
     """Pone width/height reales a cada <img> local (evita saltos de diseño y mejora Core Web Vitals)."""
     from PIL import Image
-    cache = {}
+    cache = {}; _PRE = CFG.get("prefijo", "")
     def dim(u):
         if u not in cache:
-            try: cache[u] = Image.open(OUT / u.lstrip("/")).size
+            try: cache[u] = Image.open(OUT / u[len(_PRE):].lstrip("/")).size
             except Exception: cache[u] = None
         return cache[u]
     def fx(m):
-        tag = m.group(0); s = re.search(r'src="(/img/[^"]+)"', tag)
+        tag = m.group(0); s = re.search(r'src="(' + re.escape(_PRE) + r'/img/[^"]+)"', tag)
         d = dim(s.group(1)) if s else None
         if not d: return tag
         tag = re.sub(r'\s(width|height)="[^"]*"', "", tag)
         extra = ""
         if d[0] >= 900 and s.group(1).endswith(".webp") and "srcset=" not in tag:
-            u = s.group(1); pq = OUT / u.lstrip("/"); sp = pq.with_name(pq.stem + "-w640.webp")
+            u = s.group(1); pq = OUT / u[len(_PRE):].lstrip("/"); sp = pq.with_name(pq.stem + "-w640.webp")
             if not sp.exists():
                 try:
                     im_ = Image.open(pq).convert("RGB"); im_.thumbnail((640, 640 * 4)); im_.save(sp, "WEBP", quality=82)
@@ -1724,6 +1739,14 @@ if __name__ == "__main__":
     for ff in OUT.rglob("index.html"):
         tt = ff.read_text(encoding="utf-8")
         if "<!--REL" in tt: ff.write_text(re.sub(r"<!--RELF?:[a-z-]+-->", "", tt), encoding="utf-8")
+    if CFG.get("prefijo"):      # las fotos que se insertan después de armar cada página también llevan el prefijo /país/
+        _pr = CFG["prefijo"]; _neg = re.escape(_pr.strip("/"))
+        for ff in OUT.rglob("index.html"):
+            tt = ff.read_text(encoding="utf-8")
+            n_ = re.sub(r'(\b(?:href|src|action|poster)=")/(?!/|%s/)' % _neg, lambda m: m.group(1) + _pr + "/", tt)
+            n_ = re.sub(r'(\b(?:srcset|imagesrcset)=")([^"]*)"', lambda m: m.group(1) + re.sub(r"(^|,\s*)/(?!/|%s/)" % _neg, lambda k: k.group(1) + _pr + "/", m.group(2)) + '"', n_)
+            n_ = re.sub(r"url\(/(?!%s/)" % _neg, "url(" + _pr + "/", n_)
+            if n_ != tt: ff.write_text(n_, encoding="utf-8")
     if CFG.get("seo_plus"): dimensiones_img()
     tecnico()
     for r, ds, fs in os.walk(OUT):

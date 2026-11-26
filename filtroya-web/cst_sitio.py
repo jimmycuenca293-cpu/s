@@ -281,7 +281,7 @@ GUATEMALA = dict(
     zonas=ZONAS_GT, zx=ZX_GT, clima=CLIMA_GT, zonas_destacadas=DEST_GT, sectores=SECTORES_GT, sector_de=SECTOR_DE_GT, comunas_eq=COMUNAS_EQ_GT,
     area=[ZONAS_GT[z][0] for z in DEST_GT], geo=(14.6349, -90.5069), geo_region="GT-GU",
     zlista="la Zona 10, la Zona 14, la Zona 15, la Zona 16, la Zona 1, Mixco, Villa Nueva, Santa Catarina Pinula y el resto de zonas y municipios del área metropolitana",
-    reemp=[("Atendemos las 52 comunas de la Región Metropolitana", "Atendemos las 22 zonas y los 13 municipios del área metropolitana"),
+    reemp=[("Ver las 52 comunas donde atendemos", "Ver las 35 zonas y municipios donde atendemos"), ("Atendemos las 52 comunas de la Región Metropolitana", "Atendemos las 22 zonas y los 13 municipios del área metropolitana"),
            ("en Santiago de Chile y toda la Región Metropolitana", "en Ciudad de Guatemala y todo el área metropolitana"),
            ("En Chile las viviendas usan 220 V.", "En Guatemala los tomacorrientes comunes son de 120 V y algunos equipos grandes usan 240 V."),
            ("¿Qué voltaje se usa en Chile?", "¿Qué voltaje se usa en Guatemala?"),
@@ -299,7 +299,7 @@ GUATEMALA = dict(
 # ----------------------------------------------------------------------------- EL SALVADOR (San Salvador y su área metropolitana)
 _TEL_SV = os.environ.get("CST_TEL", "+507 6933 7976")
 ELSALVADOR = dict(
-    sitio="elsalvador", dom="https://servicio-tecnico-el-salvador.click", ciudad="San Salvador", ciudad_larga="San Salvador", nombre="Servicio Técnico El Salvador",
+    sitio="elsalvador", dom="https://servicio-tecnico-el-salvador.click", ciudad="San Salvador", ciudad_larga="San Salvador", ciudad_corta="San Salvador", nombre="Servicio Técnico El Salvador",
     tel=_TEL_SV, telw=re.sub(r"\D", "", _TEL_SV), solo_wa=True, locale="es-SV", cc="SV", region="San Salvador", pais="El Salvador",
     gsc=["FBiUaqioA2Q-IcONfz6wzie3iYO-P1Wl4W3WErVkUsQ"] + [x for x in os.environ.get("CST_GSC", "").split(",") if x],
     ext_lg=("Página del fabricante: LG El Salvador", "https://www.lg.com/sv/"), ext_samsung=("Página del fabricante: Samsung Latinoamérica", "https://www.samsung.com/latin/"),
@@ -322,7 +322,7 @@ ELSALVADOR = dict(
     zonas=ZONAS_SV, zx=ZX_SV, clima=CLIMA_SV, zonas_destacadas=DEST_SV, sectores=SECTORES_SV, sector_de=SECTOR_DE_SV, comunas_eq=COMUNAS_EQ_SV,
     area=[ZONAS_SV[z][0] for z in DEST_SV], geo=(13.6929, -89.2182), geo_region="SV-SS",
     zlista="la Colonia Escalón, San Benito, Santa Tecla, Antiguo Cuscatlán, Soyapango, Mejicanos, Apopa y el resto de colonias y municipios del Área Metropolitana",
-    reemp=[("Atendemos las 52 comunas de la Región Metropolitana", "Atendemos las 32 colonias y municipios del Área Metropolitana de San Salvador"),
+    reemp=[("Ver las 52 comunas donde atendemos", "Ver las 32 colonias y municipios donde atendemos"), ("Atendemos las 52 comunas de la Región Metropolitana", "Atendemos las 32 colonias y municipios del Área Metropolitana de San Salvador"),
            ("en Santiago de Chile y toda la Región Metropolitana", "en San Salvador y todo el Área Metropolitana"),
            ("En Chile las viviendas usan 220 V.", "En El Salvador los tomacorrientes comunes son de 120 V y algunos equipos grandes usan 240 V."),
            ("¿Qué voltaje se usa en Chile?", "¿Qué voltaje se usa en El Salvador?"),
@@ -336,7 +336,21 @@ ELSALVADOR = dict(
     sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True, midea_mundial=True, hubs_locales=True,
     excluir_fotos={"tecnico-midea-llegada-puerta-furgon"},
 )
-CFG = {"elsalvador": ELSALVADOR, "guatemala": GUATEMALA, "chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
+from cst_paises import build_cfg as _bcfg
+_TEL_I = os.environ.get("CST_TEL", "+507 6933 7976")
+_NUEVAS = {"i_" + k: _bcfg(k, _TEL_I) for k in ("panama", "costarica", "bogota", "cali", "quito", "guayaquil")}
+CFG = {**_NUEVAS, "elsalvador": ELSALVADOR, "guatemala": GUATEMALA, "chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
+
+# ----------------------------------------------------------------------------- INTERNACIONAL: Frigidaire en varios países (serviciotecnicofrigidaire.com)
+INTL = {"i_panama": ("panama", ""), "i_cali": ("colombia", "cali"), "i_bogota": ("colombia", "bogota"), "i_quito": ("ecuador", "quito"), "i_guayaquil": ("ecuador", "guayaquil"),
+        "i_costarica": ("costa-rica", ""), "chile": ("chile", ""), "guatemala": ("guatemala", ""), "elsalvador": ("el-salvador", "")}
+DOM_INTL = "https://serviciotecnicofrigidaire.com"
+# países publicados en el sitio internacional: (nombre, ruta, ciudad principal). Se usa para el enlazado entre países y la portada.
+INTL_PAISES = [("Panamá", "/panama/", "Panamá", []), ("Costa Rica", "/costa-rica/", "San José", []), ("Guatemala", "/guatemala/", "Ciudad de Guatemala", []), ("El Salvador", "/el-salvador/", "San Salvador", []),
+               ("Colombia", "/colombia/", "Bogotá y Cali", [("Bogotá", "/colombia/bogota/"), ("Cali", "/colombia/cali/")]), ("Ecuador", "/ecuador/", "Quito y Guayaquil", [("Quito", "/ecuador/quito/"), ("Guayaquil", "/ecuador/guayaquil/")]), ("Chile", "/chile/", "Santiago", [])]
+if os.environ.get("CST_INTL"):
+    _p, _c = INTL[SITIO]; _pre = "/" + _p + ("/" + _c if _c else "")
+    CFG = dict(CFG, dom=DOM_INTL + _pre, prefijo=_pre, solo_marca="frigidaire", nombre=f"Servicio Técnico Frigidaire {CFG['ciudad']}", hubs_locales=False, midea_mundial=False, marcas_extra=False, titulo_max=70, excluir_fotos=set(CFG.get("excluir_fotos", ())) | {"banner-frigidaire-cocina"})
 
 # ----------------------------------------------------------------------------- localización de datos (solo Cali)
 REEMP_CALI = [
@@ -416,6 +430,7 @@ def _loc_str(t, clave=None):
     if CFG.get("frio") or CFG.get("sin_tropico"): t = t.replace("en el trópico", "en la ciudad")
     t = t.replace("en Panamá", "en " + CFG["pais"]).replace("Panamá", CFG["pais"])
     if CFG["sitio"] in ("guatemala", "elsalvador"): t = _gt_vocab(t)
+    for _a, _b in (CFG.get("vocab") or ()): t = re.sub(_a, _b, t)
     return _vocab(t) if CFG["nev"][1] != "refrigeradora" else t
 def _deep(x, clave=None):
     if isinstance(x, str): return _loc_str(x, clave)
@@ -456,6 +471,7 @@ def L(h):
                      (r"Teléfono del servicio técnico", "WhatsApp del servicio técnico"), (r"el teléfono y WhatsApp", "el WhatsApp"), (r">Teléfono<", ">WhatsApp<"), (r"› Teléfono", "› WhatsApp"), (r'"name": "Teléfono"', '"name": "WhatsApp"')]:
             h = re.sub(a, b, h)
     if CFG["sitio"] in ("guatemala", "elsalvador"): h = _gt_vocab(h)
+    for _a, _b in (CFG.get("vocab") or ()): h = re.sub(_a, _b, h)
     if CFG["nev"][1] == "refrigerador": h = _chile_vocab(_refri(h))
     elif CFG["nev"][1] != "refrigeradora":
         h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)
@@ -467,4 +483,10 @@ def L(h):
         h = h.replace("Centro de Servicio Técnico", "Servicio Técnico").replace(" | Centro de Servicio", " | Servicio técnico")
     h = re.sub(r"(%s) \| %s\b" % (CFG["ciudad"], CFG["ciudad"]), r"\1", h)
     h = re.sub(r"(?<=[a-záéíóúñ])\.\.(?=[\s<])", ".", h)
-    return re.sub(r"\x00(\d+)\x00", lambda m: _rutas[int(m.group(1))], h)
+    h = re.sub(r"\x00(\d+)\x00", lambda m: _rutas[int(m.group(1))], h)
+    _pre = CFG.get("prefijo")
+    if _pre:     # cada ciudad vive en /país/ciudad/: se antepone el prefijo a todos los enlaces internos
+        h = re.sub(r'(\b(?:href|src|action|poster)=")/(?!/)', lambda m: m.group(1) + _pre + "/", h)
+        h = re.sub(r'(\b(?:srcset|imagesrcset)=")([^"]*)"', lambda m: m.group(1) + re.sub(r"(^|,\s*)/(?!/)", lambda k: k.group(1) + _pre + "/", m.group(2)) + '"', h)
+        h = h.replace("url(/", "url(" + _pre + "/")
+    return h
