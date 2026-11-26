@@ -339,17 +339,17 @@ ELSALVADOR = dict(
 from cst_paises import build_cfg as _bcfg
 _TEL_I = os.environ.get("CST_TEL", "+507 6933 7976")
 # WhatsApp de cada país (los mismos que ya usan los sitios de cada país); Guatemala y El Salvador usan el de Panamá y solo WhatsApp
-_TELS_I = {"panama": "+507 6933 7976", "costarica": "+506 7005 5753", "bogota": "+57 301 381 0242", "cali": "+57 301 381 0242", "quito": "+593 98 039 8179", "guayaquil": "+593 98 039 8179"}
-_NUEVAS = {"i_" + k: _bcfg(k, os.environ.get("CST_TEL") or _TELS_I[k], solo_wa=False) for k in ("panama", "costarica", "bogota", "cali", "quito", "guayaquil")}
+_TELS_I = {"panama": "+507 6933 7976", "costarica": "+506 7005 5753", "bogota": "+57 301 381 0242", "cali": "+57 301 381 0242", **{k: "+57 301 381 0242" for k in ("bucaramanga", "cartagena", "barranquilla", "valledupar", "ibague", "manizales", "medellin", "santamarta")}, "quito": "+593 98 039 8179", "guayaquil": "+593 98 039 8179"}
+_NUEVAS = {"i_" + k: _bcfg(k, os.environ.get("CST_TEL") or _TELS_I[k], solo_wa=False) for k in ("panama", "costarica", "bogota", "cali", "quito", "guayaquil", "bucaramanga", "cartagena", "barranquilla", "valledupar", "ibague", "manizales", "medellin", "santamarta")}
 CFG = {**_NUEVAS, "elsalvador": ELSALVADOR, "guatemala": GUATEMALA, "chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
 
 # ----------------------------------------------------------------------------- INTERNACIONAL: Frigidaire en varios países (serviciotecnicofrigidaire.com)
-INTL = {"i_panama": ("", ""), "i_cali": ("colombia", "cali"), "i_bogota": ("colombia", "bogota"), "i_quito": ("ecuador", "quito"), "i_guayaquil": ("ecuador", "guayaquil"),
+INTL = {"i_panama": ("", ""), "i_cali": ("colombia", "cali"), "i_bogota": ("colombia", "bogota"), "i_bucaramanga": ("colombia", "bucaramanga"), "i_cartagena": ("colombia", "cartagena"), "i_barranquilla": ("colombia", "barranquilla"), "i_valledupar": ("colombia", "valledupar"), "i_ibague": ("colombia", "ibague"), "i_manizales": ("colombia", "manizales"), "i_medellin": ("colombia", "medellin"), "i_santamarta": ("colombia", "santa-marta"), "i_quito": ("ecuador", "quito"), "i_guayaquil": ("ecuador", "guayaquil"),
         "i_costarica": ("costa-rica", ""), "chile": ("chile", ""), "guatemala": ("guatemala", ""), "elsalvador": ("el-salvador", "")}
 DOM_INTL = "https://serviciotecnicofrigidaire.com"
 # países publicados en el sitio internacional: (nombre, ruta, ciudad principal). Se usa para el enlazado entre países y la portada.
 INTL_PAISES = [("Panamá", "/", "Panamá", [], "pa"), ("Costa Rica", "/costa-rica/", "San José", [], "cr"), ("Guatemala", "/guatemala/", "Ciudad de Guatemala", [], "gt"), ("El Salvador", "/el-salvador/", "San Salvador", [], "sv"),
-               ("Colombia", "/colombia/", "Bogotá y Cali", [("Bogotá", "/colombia/bogota/"), ("Cali", "/colombia/cali/")], "co"), ("Ecuador", "/ecuador/", "Quito y Guayaquil", [("Quito", "/ecuador/quito/"), ("Guayaquil", "/ecuador/guayaquil/")], "ec"), ("Chile", "/chile/", "Santiago", [], "cl")]
+               ("Colombia", "/colombia/", "Bogotá, Medellín, Cali y más", [("Bogotá", "/colombia/bogota/"), ("Medellín", "/colombia/medellin/"), ("Cali", "/colombia/cali/"), ("Barranquilla", "/colombia/barranquilla/"), ("Cartagena", "/colombia/cartagena/"), ("Bucaramanga", "/colombia/bucaramanga/"), ("Santa Marta", "/colombia/santa-marta/"), ("Valledupar", "/colombia/valledupar/"), ("Ibagué", "/colombia/ibague/"), ("Manizales", "/colombia/manizales/")], "co"), ("Ecuador", "/ecuador/", "Quito y Guayaquil", [("Quito", "/ecuador/quito/"), ("Guayaquil", "/ecuador/guayaquil/")], "ec"), ("Chile", "/chile/", "Santiago", [], "cl")]
 if os.environ.get("CST_INTL"):
     _p, _c = INTL[SITIO]; _pre = ("/" + _p + ("/" + _c if _c else "")) if _p else ""
     CFG = dict(CFG, dom=DOM_INTL + _pre, prefijo=_pre, intl=True, bandera="/img/flags/" + CFG["cc"].lower() + ".svg", pais_nombre=CFG["pais"], solo_marca="frigidaire", nombre=f"Servicio Técnico Frigidaire {CFG['ciudad']}", hubs_locales=False, midea_mundial=False, marcas_extra=False, titulo_max=70, excluir_fotos=set(CFG.get("excluir_fotos", ())) | {"banner-frigidaire-cocina"})

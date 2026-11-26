@@ -202,8 +202,8 @@ def build_cfg(key, tel, solo_wa=True):
         aire_art=dict(slug="aire-acondicionado-{m}-calor", titulo="Aire acondicionado {N}: qué revisar", desc=f"Qué revisar en tu aire acondicionado {{N}} antes y durante los meses más calurosos en {ciudad}."),
         intro_clima=c["intro_clima"],
         clima_extra=f"Las tormentas eléctricas pueden provocar apagones y variaciones de voltaje al volver el suministro, que dañan placas electrónicas. Un protector de voltaje adecuado y desconectar los equipos más sensibles durante tormentas fuertes reduce ese riesgo. {c['calor'].capitalize()} exigen más a refrigeradores y aires acondicionados, y la humedad favorece el moho en lavadoras y sellos.",
-        clima_txt=("clima y tormentas", "Clima y tormentas"), guias_clima=f"{c['calor']} y los apagones con sus picos de voltaje",
-        ley_datos=c["ley_datos"], ley_consumo=c["ley_consumo"], costero=False,
+        clima_txt=c.get("clima_txt", ("clima y tormentas", "Clima y tormentas")), guias_clima=f"{c['calor']} y los apagones con sus picos de voltaje",
+        ley_datos=c["ley_datos"], ley_consumo=c["ley_consumo"], costero=c.get("costero", False),
         nev=("refrigeradoras", "refrigeradora", "refrigeradoras") if c["nev"] == "refrigeradora" else ("neveras", "nevera", "neveras"),
         zonas=zonas, zx=zx, clima=clima, zonas_destacadas=orden[:12], sectores=sectores, sector_de=sector_de, comunas_eq=orden[:28],
         area=[zonas[z][0] for z in orden[:12]], geo=c["geo"], geo_region=c["geo_region"], zlista=", ".join(zonas[z][0] for z in orden[:8]) + " y el resto de zonas y municipios",
@@ -227,3 +227,9 @@ def mi_para(c):
     out["lavadoras"]["mant_gye"] = out["lavadoras"]["mant_gye"].replace("con el calor y la humedad", f"con {c['calor']}")
     out["centro-lavado"] = out["lavadoras"]
     return out
+
+
+# ciudades principales de Colombia (además de Bogotá y Cali): se arman a partir de la configuración de Cali
+from cst_colombia import DATOS_COL
+for _k, (_D, _e) in DATOS_COL.items():
+    C[_k] = dict(C["cali"], DATOS=_D, **_e)

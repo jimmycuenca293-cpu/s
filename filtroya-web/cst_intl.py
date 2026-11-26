@@ -8,13 +8,14 @@ OUT = pathlib.Path(sys.argv[1]); GSC = [x for x in (sys.argv[2] if len(sys.argv)
 DOM = "https://serviciotecnicofrigidaire.com"
 HOY = datetime.date.today().isoformat()
 esc = html.escape
+jn = lambda xs: ", ".join(xs[:-1]) + (" y " if len(xs) > 1 else "") + xs[-1]
 # país: (slug, nombre, locale, ciudades[(slug, nombre, resumen)], descripción corta). Una sola ciudad -> la portada del país es la ciudad.
 PAISES = [   # (carpeta, nombre, locale, ciudades[(carpeta, nombre, resumen)], equipos, código de bandera). Panamá es la portada del dominio (raíz).
     ("panama", "Panamá", "es-PA", [("", "Panamá", "29 zonas y municipios de Ciudad de Panamá y su área metropolitana")], "refrigeradoras, lavadoras, secadoras, estufas y centros de lavado", "pa"),
     ("costa-rica", "Costa Rica", "es-CR", [("", "San José", "39 zonas y cantones de la Gran Área Metropolitana")], "refrigeradoras, lavadoras, secadoras, cocinas y centros de lavado", "cr"),
     ("guatemala", "Guatemala", "es-GT", [("", "Ciudad de Guatemala", "22 zonas y 13 municipios del área metropolitana")], "refrigeradoras, lavadoras, secadoras, estufas y centros de lavado", "gt"),
     ("el-salvador", "El Salvador", "es-SV", [("", "San Salvador", "32 colonias y municipios del Área Metropolitana")], "refrigeradoras, lavadoras, secadoras, cocinas y centros de lavado", "sv"),
-    ("colombia", "Colombia", "es-CO", [("bogota", "Bogotá", "26 localidades y municipios de la Sabana"), ("cali", "Cali", "barrios de Cali y municipios vecinos como Jamundí y Yumbo")], "neveras, lavadoras, secadoras, estufas y centros de lavado", "co"),
+    ("colombia", "Colombia", "es-CO", [("bogota", "Bogotá", "26 localidades y municipios de la Sabana"), ("medellin", "Medellín", "22 barrios y municipios del Valle de Aburrá y Rionegro"), ("cali", "Cali", "25 barrios y municipios vecinos como Jamundí y Yumbo"), ("barranquilla", "Barranquilla", "18 barrios y municipios del área metropolitana"), ("cartagena", "Cartagena", "19 barrios, Bocagrande y Turbaco"), ("bucaramanga", "Bucaramanga", "22 zonas de Bucaramanga, Floridablanca, Girón y Piedecuesta"), ("santa-marta", "Santa Marta", "12 zonas de Santa Marta, El Rodadero y Ciénaga"), ("valledupar", "Valledupar", "24 barrios y corregimientos"), ("ibague", "Ibagué", "22 barrios de Ibagué"), ("manizales", "Manizales", "13 barrios de Manizales, Villamaría y Chinchiná")], "neveras, lavadoras, secadoras, estufas y centros de lavado", "co"),
     ("ecuador", "Ecuador", "es-EC", [("quito", "Quito", "sectores de Quito y sus valles"), ("guayaquil", "Guayaquil", "ciudadelas de Guayaquil, Samborondón y Daule")], "refrigeradoras, lavadoras, secadoras, cocinas y centros de lavado", "ec"),
     ("chile", "Chile", "es-CL", [("", "Santiago", "las 52 comunas de la Región Metropolitana")], "refrigeradores, lavadoras, secadoras, cocinas y centros de lavado", "cl"),
 ]
@@ -70,7 +71,7 @@ faq = [("¿En qué países dan servicio técnico para Frigidaire?", f"Atendemos 
        ("¿Son servicio técnico oficial de Frigidaire?", "No. Somos un servicio técnico independiente: no somos el fabricante ni un servicio oficial, y la garantía de fábrica la define el fabricante o el vendedor."),
        ("¿Cómo pido una visita?", "Entra a la página de tu país, elige tu ciudad y escríbenos por WhatsApp con el modelo, la falla y tu zona. Coordinamos el día y la franja."),
        ("¿Reparan equipos Frigidaire comprados en otro país?", "Sí, siempre que podamos identificar el modelo en la etiqueta. Algunas piezas pueden requerir pedido y eso alarga la reparación; te lo informamos antes de empezar.")]
-cards = "".join(f'<a class="card l" href="{URLP[p[0]]}"><span class="t">{fl(p[0], 33, 22)}Servicio técnico Frigidaire en {esc(p[1])}</span><br><small>' + esc((f"{p[3][0][1]}: {p[3][0][2]}" if len(p[3]) == 1 else " y ".join(c[1] for c in p[3]))) + '</small></a>' for p in PAISES)
+cards = "".join(f'<a class="card l" href="{URLP[p[0]]}"><span class="t">{fl(p[0], 33, 22)}Servicio técnico Frigidaire en {esc(p[1])}</span><br><small>' + esc((f"{p[3][0][1]}: {p[3][0][2]}" if len(p[3]) == 1 else jn([c[1] for c in p[3]]))) + '</small></a>' for p in PAISES)
 eqs = ["Refrigeradoras (incluidas las de panel Inverter)", "Lavadoras de carga frontal y superior", "Secadoras", "Estufas y hornos", "Centros de lavado"]
 cuerpo = (sec("Elige tu país", f'<div class="g c3">{cards}</div>', id="paises")
           + sec("Servicio técnico independiente para equipos Frigidaire", "<p>Frigidaire es una marca de electrodomésticos de origen estadounidense, hoy parte del grupo Electrolux, con refrigeradoras, lavadoras, secadoras, estufas y centros de lavado. "
@@ -87,15 +88,15 @@ pagina("/paises/", "Servicio técnico Frigidaire en Latinoamérica | Por país",
 for p in PAISES:
     if len(p[3]) < 2: continue
     nombres = [c[1] for c in p[3]]
-    faq_p = [(f"¿En qué ciudades de {p[1]} dan servicio técnico para Frigidaire?", f"Atendemos equipos Frigidaire a domicilio en {' y '.join(nombres)}. Elige tu ciudad para ver las zonas y los equipos que reparamos."),
+    faq_p = [(f"¿En qué ciudades de {p[1]} dan servicio técnico para Frigidaire?", f"Atendemos equipos Frigidaire a domicilio en {jn(nombres)}. Elige tu ciudad para ver las zonas y los equipos que reparamos."),
              ("¿Cómo pido una visita?", "Entra a la página de tu ciudad y escríbenos por WhatsApp con el modelo, la falla y tu zona. Coordinamos el día y la franja."),
              ("¿Son servicio técnico oficial de Frigidaire?", "No. Somos un servicio técnico independiente: no somos el fabricante ni un servicio oficial, y la garantía de fábrica la define el fabricante o el vendedor.")]
     cards_p = "".join(f'<a class="card l" href="/{p[0]}/{c[0]}/"><span class="t">{fl(p[0], 24, 16)}Servicio técnico Frigidaire en {esc(c[1])}</span><br><small>{esc(c[2])}</small></a>' for c in p[3])
     cuerpo_p = (sec(f"Ciudades de {p[1]} donde atendemos", f'<div class="g c3">{cards_p}</div>')
-                + sec(f"Servicio técnico independiente para equipos Frigidaire en {p[1]}", f"<p>Reparamos {esc(p[4])} Frigidaire a domicilio en {esc(' y '.join(nombres))}. El técnico va a tu casa, revisa el equipo, te explica la causa y te da el valor antes de reparar.</p>", alt=True)
+                + sec(f"Servicio técnico independiente para equipos Frigidaire en {p[1]}", f"<p>Reparamos {esc(p[4])} Frigidaire a domicilio en {esc(jn(nombres))}. El técnico va a tu casa, revisa el equipo, te explica la causa y te da el valor antes de reparar.</p>", alt=True)
                 + sec("Preguntas frecuentes", faq_html(faq_p)))
-    pagina(f"/{p[0]}/", f"Servicio técnico Frigidaire en {p[1]} | {' y '.join(nombres)}", f"Servicio técnico independiente a domicilio para equipos Frigidaire en {' y '.join(nombres)}, {p[1]}. Elige tu ciudad y coordina la visita por WhatsApp.",
-           f"Servicio técnico Frigidaire en {p[1]}", f"Reparación a domicilio de {esc(p[4])} Frigidaire en {esc(' y '.join(nombres))}.", cuerpo_p, [("Frigidaire Latinoamérica", "/paises/"), (p[1], f"/{p[0]}/")],
+    pagina(f"/{p[0]}/", f"Servicio técnico Frigidaire en {p[1]} | {jn(nombres[:3])}", f"Servicio técnico independiente a domicilio para equipos Frigidaire en {jn(nombres)}, {p[1]}. Elige tu ciudad y coordina la visita por WhatsApp.",
+           f"Servicio técnico Frigidaire en {p[1]}", f"Reparación a domicilio de {esc(p[4])} Frigidaire en {esc(jn(nombres))}.", cuerpo_p, [("Frigidaire Latinoamérica", "/paises/"), (p[1], f"/{p[0]}/")],
            [faq_ld(faq_p)], hreflangs=hreflangs, prio="0.9")
 
 # ---------------------------------------------------------------- hreflang en la portada de cada país (alternativas entre países)

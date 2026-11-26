@@ -159,7 +159,7 @@ def build_extra(g, m):
                (f"¿Qué equipos {N} reparan en {frase}?", f"Atendemos {junta(EQ[e][2] for e in E)} de la marca {N}."),
                ("¿Cómo coordino la visita?", f"Por WhatsApp o llamando al {tel}: indícanos la comuna, el equipo y lo que hace. Acordamos día y franja teniendo en cuenta el acceso del edificio o condominio.")]
         cuerpo = (sec(f"Servicio técnico {N} en {frase}", f"<p>Atendemos equipos {N} a domicilio en {esc(frase)}. {esc(desc)}</p><p>{esc(climas.capitalize())} influyen en cómo envejecen los equipos de este sector.</p>")
-                  + sec(f"Comunas {frase.replace('el ', 'del ', 1)} donde atendemos {N}", f'<div class="g c3">{cards}</div>', alt=True)
+                  + sec(f"Comunas {re.sub(r"^(el|la|los|las) ", lambda m_: {"el": "del", "la": "de la", "los": "de los", "las": "de las"}[m_.group(1)] + " ", frase, count=1)} donde atendemos {N}", f'<div class="g c3">{cards}</div>', alt=True)
                   + sec(f"Equipos {N} que reparamos en {frase}", f"<p>{eqp}</p>" + (f"<h3>Reparación por comuna</h3><p>{eqc}</p>" if eqc else ""))
                   + sec(f"Fallas de {N} que más se reportan en {frase}", det, alt=True)
                   + sec("Otros sectores de Santiago", f"<p>{otros}</p><p><a href=\"{pathb(m, 'cobertura')}\">Ver todas las comunas</a></p>")
