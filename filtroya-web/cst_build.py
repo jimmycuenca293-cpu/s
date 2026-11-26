@@ -242,9 +242,7 @@ def chips(actual):
         it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), *([("Pantallas", pathb(actual, "reparacion-de-pantallas")), ("Instalación", pathb(actual, "instalacion-de-pantallas")), ("Mantenimiento", pathb(actual, "mantenimiento-de-pantallas"))] if _tvb(actual) else []), (CFG.get("lbl_guias", "Guías"), pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))]
     else:
         it = ([("Zonas", "/zonas/"), ("Equipos", "/equipos/")] if CFG.get("hubs_locales") else []) + [("Todas las marcas", "/marcas/")]
-    if CFG.get("intl"):
-        from cst_sitio import DOM_INTL
-        it = [x for x in it if x[0] != "Repuestos"] + [("Otros países", DOM_INTL + "/paises/")]
+    if CFG.get("intl"): it = [x for x in it if x[0] != "Repuestos"]
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
 def _logo_alt(marca):
     """Alt del logo: en el sitio internacional lleva ciudad y país."""
@@ -478,16 +476,13 @@ def _enlaces_pro(m, path, chips_b, nm, url):
     if nm: ext.append((nm, url, f"Información general de la marca {N}."))
     externo = sec("Recursos oficiales y sitios de interés", "<ul class=\"ext\">" + "".join(f'<li><a href="{u}" target="_blank" rel="noopener">{esc(n)}</a><span>{esc(dsc)}</span></li>' for n, u, dsc in ext) + "</ul><p><small>Se abren en otra pestaña. Son sitios externos que no son nuestros; los enlazamos solo como información.</small></p>")
     otros = ""
-    if CFG.get("intl"):
+    if CFG.get("intl"):      # solo ciudades del mismo país; nunca enlaces a otros países
         from cst_sitio import INTL_PAISES, DOM_INTL
         _pre = CFG["prefijo"]
         _en = lambda rp: _pre == rp or _pre.startswith(rp + "/")
-        _ac = lambda x: esc(x).replace(chr(225), "&#225;")
-        _fl = lambda cc, pn: f'<img class="flag" src="/img/flags/{cc}.svg" alt="Bandera de {_ac(pn)}" width="21" height="14"> '
-        _hermanas = [(cn, cr, cc, pn) for pn, r, ci, cs, cc in INTL_PAISES for cn, cr in cs if _en(r.rstrip("/")) and cr.rstrip("/") != _pre]
-        _otros = [(pn, r, cc, pn) for pn, r, ci, cs, cc in INTL_PAISES if not _en(r.rstrip("/"))]
-        _ac = lambda x: esc(x).replace(chr(225), "&#225;")
-        otros = sec(f"Servicio técnico {N} en otros países", "<p>" + "".join(f'<a class="pill" href="{DOM_INTL}{r}">{_fl(cc, pn)}Servicio técnico {N} en {_ac(cn)}</a>' for cn, r, cc, pn in _hermanas) + "".join(f'<a class="pill" href="{DOM_INTL}{r}">{_fl(cc, pn)}Servicio técnico {N} en {_ac(pn)}</a>' for pn, r, cc, _x in _otros) + f'</p><p><a href="{DOM_INTL}/paises/">Servicio técnico {N} en Latinoamérica: todos los países</a></p>', alt=True)
+        _hermanas = [(cn, cr) for pn, r, ci, cs, cc in INTL_PAISES for cn, cr in cs if _en(r.rstrip("/")) and cr.rstrip("/") != _pre]
+        if _hermanas:
+            otros = sec(f"Servicio técnico {N} en otras ciudades de {CFG['pais']}", "<p>" + "".join(f'<a class="pill" href="{DOM_INTL}{cr}">Servicio técnico {N} en {esc(cn)}</a>' for cn, cr in _hermanas) + "</p>", alt=True)
     return interno + externo + otros + sec(f"Búsquedas relacionadas con {N} en {CFG['ciudad']}", chips_b)
 def cierre(m, path):
     d = M[m]; N = nom(m)
