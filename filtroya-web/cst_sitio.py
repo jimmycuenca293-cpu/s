@@ -301,7 +301,7 @@ _TEL_SV = os.environ.get("CST_TEL", "+507 6933 7976")
 ELSALVADOR = dict(
     sitio="elsalvador", dom="https://servicio-tecnico-el-salvador.click", ciudad="San Salvador", ciudad_larga="San Salvador", nombre="Servicio Técnico El Salvador",
     tel=_TEL_SV, telw=re.sub(r"\D", "", _TEL_SV), solo_wa=True, locale="es-SV", cc="SV", region="San Salvador", pais="El Salvador",
-    gsc=[x for x in os.environ.get("CST_GSC", "").split(",") if x],
+    gsc=["FBiUaqioA2Q-IcONfz6wzie3iYO-P1Wl4W3WErVkUsQ"] + [x for x in os.environ.get("CST_GSC", "").split(",") if x],
     ext_lg=("Página del fabricante: LG El Salvador", "https://www.lg.com/sv/"), ext_samsung=("Página del fabricante: Samsung Latinoamérica", "https://www.samsung.com/latin/"),
     ext_oficiales=[("Defensoría del Consumidor", "https://www.defensoria.gob.sv/", "Tus derechos como consumidor y cómo presentar un reclamo."),
                    ("Superintendencia General de Electricidad y Telecomunicaciones (SIGET)", "https://www.siget.gob.sv/", "Información sobre el servicio eléctrico, voltaje y calidad de la energía."),
