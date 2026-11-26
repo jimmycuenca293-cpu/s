@@ -338,7 +338,9 @@ ELSALVADOR = dict(
 )
 from cst_paises import build_cfg as _bcfg
 _TEL_I = os.environ.get("CST_TEL", "+507 6933 7976")
-_NUEVAS = {"i_" + k: _bcfg(k, _TEL_I) for k in ("panama", "costarica", "bogota", "cali", "quito", "guayaquil")}
+# WhatsApp de cada país (los mismos que ya usan los sitios de cada país); Guatemala y El Salvador usan el de Panamá y solo WhatsApp
+_TELS_I = {"panama": "+507 6933 7976", "costarica": "+506 7005 5753", "bogota": "+57 301 381 0242", "cali": "+57 301 381 0242", "quito": "+593 98 039 8179", "guayaquil": "+593 98 039 8179"}
+_NUEVAS = {"i_" + k: _bcfg(k, os.environ.get("CST_TEL") or _TELS_I[k], solo_wa=False) for k in ("panama", "costarica", "bogota", "cali", "quito", "guayaquil")}
 CFG = {**_NUEVAS, "elsalvador": ELSALVADOR, "guatemala": GUATEMALA, "chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
 
 # ----------------------------------------------------------------------------- INTERNACIONAL: Frigidaire en varios países (serviciotecnicofrigidaire.com)
