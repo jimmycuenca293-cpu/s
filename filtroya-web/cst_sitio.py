@@ -276,7 +276,7 @@ GUATEMALA = dict(
     intro_clima="Ciudad de Guatemala tiene un clima templado de altura, con una temporada de lluvias de mayo a octubre (el invierno), tormentas eléctricas con picos de voltaje y una temporada seca, más cálida y con polvo.",
     clima_extra="Las tormentas eléctricas del invierno pueden provocar apagones y variaciones de voltaje al volver el suministro, que dañan placas electrónicas. Un protector de voltaje adecuado y desconectar los equipos más sensibles durante tormentas fuertes reduce ese riesgo. La humedad favorece el moho en lavadoras y sellos, y el polvo de la temporada seca tapa filtros y condensadores.",
     clima_txt=("humedad y tormentas", "Humedad y tormentas"), guias_clima="la humedad, las lluvias del invierno, el polvo de la temporada seca y los apagones con sus picos de voltaje",
-    ley_datos="la legislación de Guatemala aplicable a la protección de datos personales", ley_consumo="la Ley de Protección al Consumidor y Usuario de Guatemala (Decreto 006-2003)",
+    ley_datos="legislación de Guatemala aplicable a la protección de datos personales", ley_consumo="Ley de Protección al Consumidor y Usuario de Guatemala (Decreto 006-2003)",
     costero=False, nev=("refrigeradoras", "refrigeradora", "refrigeradoras"),
     zonas=ZONAS_GT, zx=ZX_GT, clima=CLIMA_GT, zonas_destacadas=DEST_GT, sectores=SECTORES_GT, sector_de=SECTOR_DE_GT, comunas_eq=COMUNAS_EQ_GT,
     area=[ZONAS_GT[z][0] for z in DEST_GT], geo=(14.6349, -90.5069), geo_region="GT-GU",
@@ -292,7 +292,7 @@ GUATEMALA = dict(
            ("En invierno hay temporales, cortes de luz y variaciones de voltaje al volver el suministro, y se usa más la secadora.", "En invierno, la temporada de lluvias de mayo a octubre, hay tormentas eléctricas, apagones y variaciones de voltaje al volver la luz, y se usa más la secadora."),
            ("el verano de Santiago", "el verano de Ciudad de Guatemala"), ("el invierno de Santiago", "el invierno de Ciudad de Guatemala"),
            ("Santiago de Chile", "Ciudad de Guatemala"), ("la Región Metropolitana", "el área metropolitana"), ("Región Metropolitana", "área metropolitana"), ("de Santiago", "de Ciudad de Guatemala"), ("para Santiago", "para Ciudad de Guatemala"), ("en Santiago", "en Ciudad de Guatemala")],
-    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True, midea_mundial=True,
+    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True, midea_mundial=True, hubs_locales=True,
     excluir_fotos={"tecnico-midea-llegada-puerta-furgon"},   # la placa y el paisaje de esa foto son de Chile
 )
 
@@ -316,7 +316,7 @@ ELSALVADOR = dict(
     intro_clima="San Salvador tiene un clima cálido casi todo el año, con una temporada seca de noviembre a abril (el verano) y una temporada de lluvias de mayo a octubre (el invierno), con tormentas eléctricas y picos de voltaje.",
     clima_extra="Las tormentas eléctricas de la temporada de lluvias pueden provocar apagones y variaciones de voltaje al volver el suministro, que dañan placas electrónicas. Un protector de voltaje adecuado y desconectar los equipos más sensibles durante tormentas fuertes reduce ese riesgo. El calor casi constante exige más a refrigeradoras y aires acondicionados, y la humedad favorece el moho en lavadoras y sellos.",
     clima_txt=("calor y tormentas", "Calor y tormentas"), guias_clima="el calor, la humedad de la temporada de lluvias y los apagones con sus picos de voltaje",
-    ley_datos="la legislación de El Salvador aplicable a la protección de datos personales", ley_consumo="la Ley de Protección al Consumidor de El Salvador",
+    ley_datos="legislación de El Salvador aplicable a la protección de datos personales", ley_consumo="Ley de Protección al Consumidor de El Salvador",
     midea_garantia="La garantía de fábrica depende del modelo y de la tienda donde compraste el equipo; conserva la factura y revisa la tarjeta de garantía. En El Salvador, la Ley de Protección al Consumidor protege además tus derechos como consumidor.",
     costero=False, nev=("refrigeradoras", "refrigeradora", "refrigeradoras"),
     zonas=ZONAS_SV, zx=ZX_SV, clima=CLIMA_SV, zonas_destacadas=DEST_SV, sectores=SECTORES_SV, sector_de=SECTOR_DE_SV, comunas_eq=COMUNAS_EQ_SV,
@@ -333,7 +333,7 @@ ELSALVADOR = dict(
            ("En invierno hay temporales, cortes de luz y variaciones de voltaje al volver el suministro, y se usa más la secadora.", "En invierno, la temporada de lluvias de mayo a octubre, hay tormentas eléctricas, apagones y variaciones de voltaje al volver la luz, y se usa más la secadora."),
            ("el verano de Santiago", "el verano de San Salvador"), ("el invierno de Santiago", "el invierno de San Salvador"),
            ("Santiago de Chile", "San Salvador"), ("la Región Metropolitana", "el Área Metropolitana"), ("Región Metropolitana", "Área Metropolitana"), ("de Santiago", "de San Salvador"), ("para Santiago", "para San Salvador"), ("en Santiago", "en San Salvador")],
-    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True, midea_mundial=True,
+    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True, midea_mundial=True, hubs_locales=True,
     excluir_fotos={"tecnico-midea-llegada-puerta-furgon"},
 )
 CFG = {"elsalvador": ELSALVADOR, "guatemala": GUATEMALA, "chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
@@ -466,4 +466,5 @@ def L(h):
         h = re.sub(r"Centro de servicio técnico ([^<>|›\"]+?) en %s" % CFG["ciudad"], r"Servicio técnico \1 en %s" % CFG["ciudad"], h)
         h = h.replace("Centro de Servicio Técnico", "Servicio Técnico").replace(" | Centro de Servicio", " | Servicio técnico")
     h = re.sub(r"(%s) \| %s\b" % (CFG["ciudad"], CFG["ciudad"]), r"\1", h)
+    h = re.sub(r"(?<=[a-záéíóúñ])\.\.(?=[\s<])", ".", h)
     return re.sub(r"\x00(\d+)\x00", lambda m: _rutas[int(m.group(1))], h)
