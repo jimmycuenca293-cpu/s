@@ -205,7 +205,7 @@ details{background:var(--w);border-radius:12px;padding:14px 16px;margin-bottom:1
 .pill{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--c);font-weight:600;font-size:.85rem;margin:3px 4px 3px 0}.cb{font-weight:800;font-family:ui-monospace,monospace;color:#b42318}
 .bc{font-size:.85rem;color:var(--m);padding:12px 16px}
 .rr{background:var(--w);border-left:4px solid var(--c);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh)}.rr p{margin:0}
-@media(max-width:480px){.logo .flag{height:15px;margin-left:2px}.h .btn{white-space:nowrap;padding:8px 12px;font-size:.85rem}.logo span small{font-size:.7rem}}
+@media(max-width:480px){.h .w{gap:8px}.logo{min-width:0;gap:6px}.logo .lgo{max-width:104px!important;height:auto!important}.logo span{min-width:0;font-size:.9rem}.logo .flag{height:15px;margin-left:2px}.h .btn{white-space:nowrap;padding:8px 12px;font-size:.85rem}.logo span small{font-size:.7rem}}
 .flag{display:inline-block!important;height:16px;width:auto!important;max-width:none!important;border-radius:2px;vertical-align:-3px;margin-right:6px;box-shadow:0 0 0 1px rgba(0,0,0,.18)}.pill .flag,.card .flag{height:14px;vertical-align:-2px}.logo .flag{height:22px;margin:0 0 0 8px;vertical-align:middle;align-self:center}.bc a{color:var(--m)}
 .two{display:grid;gap:22px;align-items:center}@media(min-width:860px){.two{grid-template-columns:1fr 1fr}}.two img{border-radius:var(--r);box-shadow:var(--sh);width:100%;aspect-ratio:4/3;object-fit:cover}
 footer{background:var(--hd);color:#cfd9ee;padding:34px 0 90px;font-size:.92rem}footer a{color:#fff}footer .g{gap:22px}footer h3{color:#fff}footer ul{list-style:none;padding:0;margin:0}footer li{margin:5px 0}
