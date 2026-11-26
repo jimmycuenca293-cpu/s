@@ -342,11 +342,11 @@ _NUEVAS = {"i_" + k: _bcfg(k, _TEL_I) for k in ("panama", "costarica", "bogota",
 CFG = {**_NUEVAS, "elsalvador": ELSALVADOR, "guatemala": GUATEMALA, "chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
 
 # ----------------------------------------------------------------------------- INTERNACIONAL: Frigidaire en varios países (serviciotecnicofrigidaire.com)
-INTL = {"i_panama": ("panama", ""), "i_cali": ("colombia", "cali"), "i_bogota": ("colombia", "bogota"), "i_quito": ("ecuador", "quito"), "i_guayaquil": ("ecuador", "guayaquil"),
-        "i_costarica": ("", ""), "chile": ("chile", ""), "guatemala": ("guatemala", ""), "elsalvador": ("el-salvador", "")}
+INTL = {"i_panama": ("", ""), "i_cali": ("colombia", "cali"), "i_bogota": ("colombia", "bogota"), "i_quito": ("ecuador", "quito"), "i_guayaquil": ("ecuador", "guayaquil"),
+        "i_costarica": ("costa-rica", ""), "chile": ("chile", ""), "guatemala": ("guatemala", ""), "elsalvador": ("el-salvador", "")}
 DOM_INTL = "https://serviciotecnicofrigidaire.com"
 # países publicados en el sitio internacional: (nombre, ruta, ciudad principal). Se usa para el enlazado entre países y la portada.
-INTL_PAISES = [("Costa Rica", "/", "San José", [], "cr"), ("Panamá", "/panama/", "Panamá", [], "pa"), ("Guatemala", "/guatemala/", "Ciudad de Guatemala", [], "gt"), ("El Salvador", "/el-salvador/", "San Salvador", [], "sv"),
+INTL_PAISES = [("Panamá", "/", "Panamá", [], "pa"), ("Costa Rica", "/costa-rica/", "San José", [], "cr"), ("Guatemala", "/guatemala/", "Ciudad de Guatemala", [], "gt"), ("El Salvador", "/el-salvador/", "San Salvador", [], "sv"),
                ("Colombia", "/colombia/", "Bogotá y Cali", [("Bogotá", "/colombia/bogota/"), ("Cali", "/colombia/cali/")], "co"), ("Ecuador", "/ecuador/", "Quito y Guayaquil", [("Quito", "/ecuador/quito/"), ("Guayaquil", "/ecuador/guayaquil/")], "ec"), ("Chile", "/chile/", "Santiago", [], "cl")]
 if os.environ.get("CST_INTL"):
     _p, _c = INTL[SITIO]; _pre = ("/" + _p + ("/" + _c if _c else "")) if _p else ""

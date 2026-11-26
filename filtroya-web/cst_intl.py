@@ -9,16 +9,16 @@ DOM = "https://serviciotecnicofrigidaire.com"
 HOY = datetime.date.today().isoformat()
 esc = html.escape
 # país: (slug, nombre, locale, ciudades[(slug, nombre, resumen)], descripción corta). Una sola ciudad -> la portada del país es la ciudad.
-PAISES = [   # (carpeta, nombre, locale, ciudades[(carpeta, nombre, resumen)], equipos, código de bandera). Costa Rica es la portada del dominio (raíz).
-    ("costa-rica", "Costa Rica", "es-CR", [("", "San José", "39 zonas y cantones de la Gran Área Metropolitana")], "refrigeradoras, lavadoras, secadoras, cocinas y centros de lavado", "cr"),
+PAISES = [   # (carpeta, nombre, locale, ciudades[(carpeta, nombre, resumen)], equipos, código de bandera). Panamá es la portada del dominio (raíz).
     ("panama", "Panamá", "es-PA", [("", "Panamá", "29 zonas y municipios de Ciudad de Panamá y su área metropolitana")], "refrigeradoras, lavadoras, secadoras, estufas y centros de lavado", "pa"),
+    ("costa-rica", "Costa Rica", "es-CR", [("", "San José", "39 zonas y cantones de la Gran Área Metropolitana")], "refrigeradoras, lavadoras, secadoras, cocinas y centros de lavado", "cr"),
     ("guatemala", "Guatemala", "es-GT", [("", "Ciudad de Guatemala", "22 zonas y 13 municipios del área metropolitana")], "refrigeradoras, lavadoras, secadoras, estufas y centros de lavado", "gt"),
     ("el-salvador", "El Salvador", "es-SV", [("", "San Salvador", "32 colonias y municipios del Área Metropolitana")], "refrigeradoras, lavadoras, secadoras, cocinas y centros de lavado", "sv"),
     ("colombia", "Colombia", "es-CO", [("bogota", "Bogotá", "26 localidades y municipios de la Sabana"), ("cali", "Cali", "barrios de Cali y municipios vecinos como Jamundí y Yumbo")], "neveras, lavadoras, secadoras, estufas y centros de lavado", "co"),
     ("ecuador", "Ecuador", "es-EC", [("quito", "Quito", "sectores de Quito y sus valles"), ("guayaquil", "Guayaquil", "ciudadelas de Guayaquil, Samborondón y Daule")], "refrigeradoras, lavadoras, secadoras, cocinas y centros de lavado", "ec"),
     ("chile", "Chile", "es-CL", [("", "Santiago", "las 52 comunas de la Región Metropolitana")], "refrigeradores, lavadoras, secadoras, cocinas y centros de lavado", "cl"),
 ]
-CR = "costa-rica"          # vive en la raíz del dominio
+CR = "panama"          # vive en la raíz del dominio (portada del sitio)
 def DIRP(p, c=""): return OUT if p[0] == CR else (OUT / p[0] / c[0] if c else OUT / p[0])
 def RUTA(p): return "/" if p[0] == CR else f"/{p[0]}/"
 PAISES = [p for p in PAISES if all((DIRP(p, c) / "index.html").exists() for c in p[3])]
@@ -79,7 +79,7 @@ cuerpo = (sec("Elige tu país", f'<div class="g c3">{cards}</div>', id="paises")
           + sec("Cómo funciona la visita", "<ol><li><b>Elige tu país y tu ciudad</b> y escríbenos por WhatsApp con el modelo y lo que hace el equipo.</li><li><b>Coordinamos</b> el día y la franja en tu zona.</li><li><b>Diagnóstico en tu casa</b>: revisamos el equipo y te explicamos la causa.</li><li><b>Solo si tú lo apruebas</b> se repara, con el valor por escrito antes de empezar.</li></ol>")
           + sec("Preguntas frecuentes", faq_html(faq), alt=True))
 pagina("/paises/", "Servicio técnico Frigidaire en Latinoamérica | Por país", f"Servicio técnico independiente a domicilio para equipos Frigidaire en {', '.join(p[1] for p in PAISES)}. Elige tu país y coordina la visita por WhatsApp.",
-       "Servicio técnico Frigidaire en Latinoamérica", "Reparación a domicilio de refrigeradoras, lavadoras, secadoras, estufas y centros de lavado Frigidaire. Elige tu país.", cuerpo, [("Frigidaire Costa Rica", "/"), ("Países", "/paises/")],
+       "Servicio técnico Frigidaire en Latinoamérica", "Reparación a domicilio de refrigeradoras, lavadoras, secadoras, estufas y centros de lavado Frigidaire. Elige tu país.", cuerpo, [("Frigidaire Panamá", "/"), ("Países", "/paises/")],
        [faq_ld(faq), {"@type": "ItemList", "name": "Países donde atendemos equipos Frigidaire", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": p[1], "url": DOM + URLP[p[0]]} for i, p in enumerate(PAISES)]}],
        hreflangs=None, prio="0.9")
 
