@@ -36,18 +36,23 @@ PANAMA = dict(
 )
 COSTA_RICA = dict(
     zonas=[("escazu", "Escazú", "Escazú centro, San Rafael y Guachipelín", "alta"), ("santa-ana", "Santa Ana", "Santa Ana centro, Lindora y Pozos", "alta"), ("curridabat", "Curridabat", "Curridabat y Granadilla", "alta"),
-           ("sabana", "Sabana", "La Sabana, Rohrmoser y Nunciatura", "alta"), ("rohrmoser", "Rohrmoser", "Rohrmoser", "alta"), ("barrio-escalante", "Barrio Escalante", "Barrio Escalante, Los Yoses y Paseo Colón", "alta"),
+           ("sabana", "Sabana", "La Sabana, Sabana Norte y Nunciatura", "alta"), ("rohrmoser", "Rohrmoser", "Rohrmoser", "alta"), ("barrio-escalante", "Barrio Escalante", "Barrio Escalante y Barrio Amón", "alta"),
            ("san-pedro", "San Pedro", "San Pedro y Montes de Oca", "media"), ("moravia", "Moravia", "Moravia y San Vicente", "media"), ("tibas", "Tibás", "Tibás y Llorente", "media"),
            ("goicoechea", "Goicoechea", "Guadalupe y Ciudad Hacienda", "media"), ("coronado", "Coronado", "Coronado y San Antonio", "res"), ("pavas", "Pavas", "Pavas y Rohrmoser Oeste", "pop"),
            ("desamparados", "Desamparados", "Desamparados centro y San Antonio", "pop"), ("alajuelita", "Alajuelita", "Alajuelita centro", "pop"), ("hatillo", "Hatillo", "Hatillo", "pop"),
-           ("la-uruca", "La Uruca", "La Uruca", "pop"), ("san-jose-centro", "San José Centro", "Centro de San José, Barrio Amón y Barrio Otoya", "hist"), ("zapote", "Zapote", "Zapote y San Francisco de Dos Ríos", "media"),
-           ("heredia", "Heredia", "Heredia centro, Ulloa y Lagunilla", "media"), ("belen", "Belén", "San Antonio de Belén y La Ribera", "res"), ("alajuela", "Alajuela", "Alajuela centro y La Guácima", "ext"),
-           ("cartago", "Cartago", "Cartago centro y Paraíso", "ext"), ("san-rafael-de-heredia", "San Rafael de Heredia", "San Rafael de Heredia", "res"), ("santo-domingo", "Santo Domingo", "Santo Domingo de Heredia", "res")],
-    sectores={"centro-de-san-jose": ("el centro de San José", "San José Centro, Barrio Escalante, Sabana, Rohrmoser, La Uruca y Hatillo: oficinas, edificios y barrios tradicionales, con poco parqueo.", ["san-jose-centro", "barrio-escalante", "sabana", "rohrmoser", "la-uruca", "hatillo", "pavas"]),
-              "oeste-de-san-jose": ("el oeste de San José", "Escazú, Santa Ana y Belén: residenciales de gama alta, condominios y zonas empresariales, con controles de acceso.", ["escazu", "santa-ana", "belen"]),
-              "este-de-san-jose": ("el este de San José", "Curridabat, San Pedro, Moravia, Zapote, Goicoechea, Coronado y Tibás: barrios de clase media, universidades y residenciales.", ["curridabat", "san-pedro", "moravia", "zapote", "goicoechea", "coronado", "tibas"]),
+           ("la-uruca", "La Uruca", "La Uruca", "pop"), ("san-jose-centro", "San José Centro", "Centro de San José, Barrio Otoya y Plaza de la Cultura", "hist"), ("zapote", "Zapote", "Zapote", "media"),
+           ("heredia", "Heredia", "Heredia centro, Ulloa y Lagunilla", "media"), ("belen", "Belén", "San Antonio de Belén y La Ribera", "res"), ("alajuela", "Alajuela", "Alajuela centro", "ext"),
+           ("cartago", "Cartago", "Cartago centro", "ext"), ("san-rafael-de-heredia", "San Rafael de Heredia", "San Rafael de Heredia", "res"), ("santo-domingo", "Santo Domingo", "Santo Domingo de Heredia", "res"),
+           ("los-yoses", "Los Yoses", "Los Yoses y la Rotonda de la Hispanidad", "alta"), ("paseo-colon", "Paseo Colón", "Paseo Colón y Sabana Sur", "alta"), ("tres-rios", "Tres Ríos", "Tres Ríos de Cartago", "res"),
+           ("la-union", "La Unión", "La Unión y Concepción", "res"), ("barva", "Barva", "Barva de Heredia", "ext"), ("san-pablo-de-heredia", "San Pablo de Heredia", "San Pablo de Heredia", "res"),
+           ("san-antonio-de-escazu", "San Antonio de Escazú", "San Antonio de Escazú", "res"), ("guachipelin", "Guachipelín", "Guachipelín de Escazú", "alta"), ("lindora", "Lindora", "Lindora y Pozos de Santa Ana", "alta"),
+           ("piedades-de-santa-ana", "Piedades de Santa Ana", "Piedades de Santa Ana", "res"), ("la-guacima", "La Guácima", "La Guácima de Alajuela", "res"), ("ciudad-colon", "Ciudad Colón", "Ciudad Colón de Mora", "ext"),
+           ("san-francisco-de-dos-rios", "San Francisco de Dos Ríos", "San Francisco de Dos Ríos", "media"), ("rio-segundo", "Río Segundo", "Río Segundo de Alajuela", "ext"), ("paraiso", "Paraíso", "Paraíso de Cartago", "ext")],
+    sectores={"centro-de-san-jose": ("el centro de San José", "San José Centro, Barrio Escalante, Paseo Colón, Sabana, Rohrmoser, La Uruca, Hatillo y Pavas: oficinas, edificios y barrios tradicionales, con poco parqueo.", ["san-jose-centro", "barrio-escalante", "paseo-colon", "sabana", "rohrmoser", "la-uruca", "hatillo", "pavas"]),
+              "oeste-de-san-jose": ("el oeste de San José", "Escazú, Santa Ana, Belén y Ciudad Colón: residenciales de gama alta, condominios y zonas empresariales, con controles de acceso.", ["escazu", "san-antonio-de-escazu", "guachipelin", "santa-ana", "lindora", "piedades-de-santa-ana", "belen", "ciudad-colon"]),
+              "este-de-san-jose": ("el este de San José", "Curridabat, San Pedro, Los Yoses, Moravia, Zapote, Goicoechea, Coronado, Tibás, Tres Ríos y La Unión: barrios de clase media, universidades y residenciales.", ["curridabat", "san-pedro", "los-yoses", "moravia", "zapote", "san-francisco-de-dos-rios", "goicoechea", "coronado", "tibas", "tres-rios", "la-union"]),
               "sur-de-san-jose": ("el sur de San José", "Desamparados y Alajuelita: barrios populosos con calles con pendiente.", ["desamparados", "alajuelita"]),
-              "gran-area-metropolitana": ("la Gran Área Metropolitana", "Heredia, Santo Domingo, San Rafael de Heredia, Alajuela y Cartago: ciudades vecinas con distancias mayores desde San José.", ["heredia", "san-rafael-de-heredia", "santo-domingo", "alajuela", "cartago"])},
+              "gran-area-metropolitana": ("la Gran Área Metropolitana", "Heredia, Barva, San Pablo, Santo Domingo, San Rafael de Heredia, Alajuela, La Guácima, Río Segundo, Cartago y Paraíso: ciudades vecinas con distancias mayores desde San José.", ["heredia", "barva", "san-pablo-de-heredia", "santo-domingo", "san-rafael-de-heredia", "alajuela", "la-guacima", "rio-segundo", "cartago", "paraiso"])},
 )
 BOGOTA = dict(
     zonas=[("chico", "El Chicó", "El Chicó, Zona T y Parque 93", "alta"), ("usaquen", "Usaquén", "Usaquén centro, Santa Bárbara y Cedritos", "alta"), ("chapinero", "Chapinero", "Chapinero Alto, Rosales y Zona G", "alta"),
@@ -121,8 +126,8 @@ C = {
                 nev="refrigeradora", gas="gas LP en cilindro", cond="condominios", marcas_sector="Escazú, Santa Ana, Curridabat, Sabana, Heredia y Alajuela",
                 intro_clima="San José tiene un clima templado de altura, con una temporada seca de diciembre a abril (el verano) y una temporada de lluvias de mayo a noviembre (el invierno), con tormentas eléctricas y picos de voltaje.",
                 verano="El verano, la temporada seca de diciembre a abril, trae más polvo y calor en algunos meses, y los equipos de frío trabajan más.", invierno="En invierno, la temporada de lluvias de mayo a noviembre, hay tormentas eléctricas, apagones y variaciones de voltaje al volver la luz, y se usa más la secadora.",
-                calor="la humedad y las lluvias casi diarias de mayo a noviembre", lluvia="la temporada de lluvias de mayo a noviembre", volt="120 V", volt2="240 V", ley_datos="Ley 8968 de protección de la persona frente al tratamiento de sus datos personales", ley_consumo="Ley 7472 de promoción de la competencia y defensa efectiva del consumidor", bomberos="Bomberos (911)",
-                ext=[("Ministerio de Economía, Industria y Comercio (MEIC): defensa del consumidor", "https://www.meic.go.cr/", "Tus derechos como consumidor y cómo presentar un reclamo."), ("Autoridad Reguladora de los Servicios Públicos (ARESEP)", "https://aresep.go.cr/", "Información sobre el servicio eléctrico y la calidad de la energía.")],
+                calor="la humedad y las lluvias casi diarias de mayo a noviembre", lluvia="la temporada de lluvias de mayo a noviembre", volt="120 V", volt2="240 V", ley_datos="Ley 8968 de protección de la persona frente al tratamiento de sus datos personales", ley_consumo="Ley 7472 de promoción de la competencia y defensa efectiva del consumidor", bomberos="Bomberos (118)",
+                ext=[("Ministerio de Economía, Industria y Comercio (MEIC): defensa del consumidor", "https://www.meic.go.cr/", "Tus derechos como consumidor y cómo presentar un reclamo."), ("Autoridad Reguladora de los Servicios Públicos (ARESEP)", "https://aresep.go.cr/", "Información sobre el servicio eléctrico y la calidad de la energía."), ("Instituto Costarricense de Electricidad (ICE)", "https://www.grupoice.com/", "Información del servicio eléctrico y recomendaciones ante apagones.")],
                 ext_lg="https://www.lg.com/cr/", vocab=[(r"\bcomunas\b", "zonas"), (r"\bcomuna\b", "zona"), (r"\bboleta\b", "factura"), (r"\bconserjería\b", "garita"), (r"\bporterías\b", "garitas"), (r"\bportería\b", "garita"), (r"\bdepartamentos\b", "apartamentos"), (r"\bdepartamento\b", "apartamento"), (r"\bestacionamientos\b", "parqueos"), (r"\bestacionamiento\b", "parqueo"), (r"\bpropano\b", "LP")]),
  "bogota": dict(DATOS=BOGOTA, ciudad="Bogotá", ciudad_corta="Bogotá", slug="colombia/bogota", cc="CO", locale="es-CO", region="Bogotá D.C.", pais="Colombia", geo=(4.7110, -74.0721), geo_region="CO-DC",
                 nev="nevera", gas="gas natural domiciliario o gas propano en cilindro (pipeta)", cond="conjuntos residenciales", marcas_sector="El Chicó, Usaquén, Chapinero, Suba, Cedritos, Kennedy y Chía",
@@ -154,6 +159,10 @@ C = {
                 ext_lg="https://www.lg.com/ec/", vocab=None),
 }
 C["cali"]["vocab"] = C["bogota"]["vocab"]; C["guayaquil"]["vocab"] = C["quito"]["vocab"]
+for _k, _v in C.items():     # variantes con mayúscula inicial
+    if _v["vocab"] is not None: _v["vocab"] = list(_v["vocab"]) + [(r"\bComunas\b", "Zonas"), (r"\bComuna\b", "Zona"), (r"\bEstacionamientos\b", "Parqueos" if _k in ("costarica",) else "Estacionamientos")]
+    else: _v["vocab"] = []
+
 
 
 def build_cfg(key, tel, solo_wa=True):
@@ -196,7 +205,7 @@ def build_cfg(key, tel, solo_wa=True):
         clima_txt=("clima y tormentas", "Clima y tormentas"), guias_clima=f"{c['calor']} y los apagones con sus picos de voltaje",
         ley_datos=c["ley_datos"], ley_consumo=c["ley_consumo"], costero=False,
         nev=("refrigeradoras", "refrigeradora", "refrigeradoras") if c["nev"] == "refrigeradora" else ("neveras", "nevera", "neveras"),
-        zonas=zonas, zx=zx, clima=clima, zonas_destacadas=orden[:12], sectores=sectores, sector_de=sector_de, comunas_eq=orden[:20],
+        zonas=zonas, zx=zx, clima=clima, zonas_destacadas=orden[:12], sectores=sectores, sector_de=sector_de, comunas_eq=orden[:28],
         area=[zonas[z][0] for z in orden[:12]], geo=c["geo"], geo_region=c["geo_region"], zlista=", ".join(zonas[z][0] for z in orden[:8]) + " y el resto de zonas y municipios",
         reemp=reemp, vocab=c["vocab"], sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True,
         mi=mi_para(c))

@@ -343,14 +343,14 @@ CFG = {**_NUEVAS, "elsalvador": ELSALVADOR, "guatemala": GUATEMALA, "chile": CHI
 
 # ----------------------------------------------------------------------------- INTERNACIONAL: Frigidaire en varios países (serviciotecnicofrigidaire.com)
 INTL = {"i_panama": ("panama", ""), "i_cali": ("colombia", "cali"), "i_bogota": ("colombia", "bogota"), "i_quito": ("ecuador", "quito"), "i_guayaquil": ("ecuador", "guayaquil"),
-        "i_costarica": ("costa-rica", ""), "chile": ("chile", ""), "guatemala": ("guatemala", ""), "elsalvador": ("el-salvador", "")}
+        "i_costarica": ("", ""), "chile": ("chile", ""), "guatemala": ("guatemala", ""), "elsalvador": ("el-salvador", "")}
 DOM_INTL = "https://serviciotecnicofrigidaire.com"
 # países publicados en el sitio internacional: (nombre, ruta, ciudad principal). Se usa para el enlazado entre países y la portada.
-INTL_PAISES = [("Panamá", "/panama/", "Panamá", []), ("Costa Rica", "/costa-rica/", "San José", []), ("Guatemala", "/guatemala/", "Ciudad de Guatemala", []), ("El Salvador", "/el-salvador/", "San Salvador", []),
-               ("Colombia", "/colombia/", "Bogotá y Cali", [("Bogotá", "/colombia/bogota/"), ("Cali", "/colombia/cali/")]), ("Ecuador", "/ecuador/", "Quito y Guayaquil", [("Quito", "/ecuador/quito/"), ("Guayaquil", "/ecuador/guayaquil/")]), ("Chile", "/chile/", "Santiago", [])]
+INTL_PAISES = [("Costa Rica", "/", "San José", [], "cr"), ("Panamá", "/panama/", "Panamá", [], "pa"), ("Guatemala", "/guatemala/", "Ciudad de Guatemala", [], "gt"), ("El Salvador", "/el-salvador/", "San Salvador", [], "sv"),
+               ("Colombia", "/colombia/", "Bogotá y Cali", [("Bogotá", "/colombia/bogota/"), ("Cali", "/colombia/cali/")], "co"), ("Ecuador", "/ecuador/", "Quito y Guayaquil", [("Quito", "/ecuador/quito/"), ("Guayaquil", "/ecuador/guayaquil/")], "ec"), ("Chile", "/chile/", "Santiago", [], "cl")]
 if os.environ.get("CST_INTL"):
-    _p, _c = INTL[SITIO]; _pre = "/" + _p + ("/" + _c if _c else "")
-    CFG = dict(CFG, dom=DOM_INTL + _pre, prefijo=_pre, solo_marca="frigidaire", nombre=f"Servicio Técnico Frigidaire {CFG['ciudad']}", hubs_locales=False, midea_mundial=False, marcas_extra=False, titulo_max=70, excluir_fotos=set(CFG.get("excluir_fotos", ())) | {"banner-frigidaire-cocina"})
+    _p, _c = INTL[SITIO]; _pre = ("/" + _p + ("/" + _c if _c else "")) if _p else ""
+    CFG = dict(CFG, dom=DOM_INTL + _pre, prefijo=_pre, intl=True, bandera="/img/flags/" + CFG["cc"].lower() + ".svg", pais_nombre=CFG["pais"], solo_marca="frigidaire", nombre=f"Servicio Técnico Frigidaire {CFG['ciudad']}", hubs_locales=False, midea_mundial=False, marcas_extra=False, titulo_max=70, excluir_fotos=set(CFG.get("excluir_fotos", ())) | {"banner-frigidaire-cocina"})
 
 # ----------------------------------------------------------------------------- localización de datos (solo Cali)
 REEMP_CALI = [

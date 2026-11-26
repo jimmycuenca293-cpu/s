@@ -202,7 +202,9 @@ section.s{padding:30px 0}section.s.alt{background:var(--w)}.lead{color:var(--m);
 .pasos{counter-reset:p;list-style:none;padding:0;margin:0;display:grid;gap:12px}@media(min-width:800px){.pasos{grid-template-columns:repeat(4,1fr)}}.pasos li{counter-increment:p;background:var(--w);padding:16px 16px 16px 58px;border-radius:var(--r);position:relative;box-shadow:var(--sh)}.pasos li:before{content:counter(p);position:absolute;left:14px;top:14px;width:32px;height:32px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-weight:800}.pasos b{display:block}
 details{background:var(--w);border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--sh)}summary{cursor:pointer;font-weight:700}details[open] summary{margin-bottom:8px}
 .pill{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--c);font-weight:600;font-size:.85rem;margin:3px 4px 3px 0}.cb{font-weight:800;font-family:ui-monospace,monospace;color:#b42318}
-.bc{font-size:.85rem;color:var(--m);padding:12px 16px}.bc a{color:var(--m)}
+.bc{font-size:.85rem;color:var(--m);padding:12px 16px}
+.rr{background:var(--w);border-left:4px solid var(--c);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh)}.rr p{margin:0}
+.flag{display:inline-block!important;height:16px;width:auto!important;max-width:none!important;border-radius:2px;vertical-align:-3px;margin-right:6px;box-shadow:0 0 0 1px rgba(0,0,0,.18)}.pill .flag,.card .flag{height:14px;vertical-align:-2px}.logo .flag{height:22px;margin:0 0 0 8px;vertical-align:middle;align-self:center}.bc a{color:var(--m)}
 .two{display:grid;gap:22px;align-items:center}@media(min-width:860px){.two{grid-template-columns:1fr 1fr}}.two img{border-radius:var(--r);box-shadow:var(--sh);width:100%;aspect-ratio:4/3;object-fit:cover}
 footer{background:var(--hd);color:#cfd9ee;padding:34px 0 90px;font-size:.92rem}footer a{color:#fff}footer .g{gap:22px}footer h3{color:#fff}footer ul{list-style:none;padding:0;margin:0}footer li{margin:5px 0}
 .fb{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:8px;padding:8px 10px;background:#fff;box-shadow:0 -4px 20px rgba(0,0,0,.12)}.fb a{flex:1;text-align:center;padding:12px;border-radius:12px;font-weight:700;text-decoration:none;color:#fff;background:var(--c)}.fb a.wa{background:var(--a);color:var(--ab)}@media(min-width:900px){.fb{display:none}footer{padding-bottom:34px}}
@@ -239,9 +241,9 @@ def chips(actual):
         it += [("Repuestos", pathb(actual, "repuestos")), ("Garantía", pathb(actual, "garantia")), ("Diagnóstico", pathb(actual, "diagnostico-por-sintoma")), *([("Pantallas", pathb(actual, "reparacion-de-pantallas")), ("Instalación", pathb(actual, "instalacion-de-pantallas")), ("Mantenimiento", pathb(actual, "mantenimiento-de-pantallas"))] if _tvb(actual) else []), (CFG.get("lbl_guias", "Guías"), pathb(actual, "guias")), ("Zonas", pathb(actual, "cobertura")), ("Teléfono", pathb(actual, "telefono-servicio-tecnico"))]
     else:
         it = ([("Zonas", "/zonas/"), ("Equipos", "/equipos/")] if CFG.get("hubs_locales") else []) + [("Todas las marcas", "/marcas/")]
-    if CFG.get("prefijo"):
+    if CFG.get("intl"):
         from cst_sitio import DOM_INTL
-        it = [x for x in it if x[0] != "Repuestos"] + [("Otros países", DOM_INTL + "/")]
+        it = [x for x in it if x[0] != "Repuestos"] + [("Otros países", DOM_INTL + "/paises/")]
     return '<nav class="chips" aria-label="Menú"><div class="w">' + "".join(f'<a href="{u}">{esc(t)}</a>' for t, u in it) + '</div></nav>'
 def pie(marca=None, lista_marcas=False):
     aviso = '<p><small>Servicio técnico independiente. Los nombres de marcas pertenecen a sus propietarios y se usan solo para indicar los equipos que reparamos.</small></p>'
@@ -344,6 +346,9 @@ def _pro(path, m, cuerpo):
     bl = [re.sub(r'<section class="s(?: alt)?"', '<section class="s%s"' % (" alt" if i % 2 else ""), x, count=1) for i, x in enumerate(bl)]
     conf = (f'<section class="trust"><div class="w"><ul class="tr"><li><b>Visita a domicilio</b><span>El técnico {N} llega a tu casa</span></li><li><b>Diagnóstico primero</b><span>Te explicamos la causa antes del valor</span></li>'
             f'<li><b>Tú apruebas</b><span>Solo se repara con tu autorización</span></li><li><b>{CFG.get("trust_zonas", ("52 comunas", "Toda la Región Metropolitana"))[0]}</b><span>{CFG.get("trust_zonas", ("52 comunas", "Toda la Región Metropolitana"))[1]}</span></li></ul></div></section>')
+    if CFG.get("intl") and path == base(m):
+        _d = M[m]
+        conf += sec(f"Respuesta rápida: servicio técnico {N} en {CFG['ciudad']}", f'<div class="rr"><p><b>¿Dónde y qué reparan?</b> Reparamos {esc(junta(EQ[e][2] for e in _d["equipos"]))} {esc(N)} a domicilio en {esc(CFG["ciudad"])} y su área metropolitana ({esc(CFG.get("zlista", ""))}). El técnico revisa el equipo en tu casa, te explica la causa y te da el valor antes de reparar; solo se repara si tú lo apruebas. Somos un servicio técnico independiente. Para pedir la visita, escríbenos por WhatsApp con el modelo, la falla y tu zona.</p></div>')
     return conf + "".join(bl)
 def _idsec2(m_, usados, items):
     cls, tt = m_.group(1), m_.group(4)
@@ -420,8 +425,8 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
          + (f'<meta property="og:image" content="{DOM}{hero[0]}"><meta property="og:image:alt" content="{esc(hero[1])}"><meta name="twitter:image" content="{DOM}{hero[0]}"><link rel="preload" as="image" href="{hero[0]}" fetchpriority="high">' if hero else '') +
          f'<link rel="icon" href="{FAV(marca)}">'
          f'<link rel="stylesheet" href="/assets/site.css?v={CSSV}"><style>body{{--c:{PAL.get(marca, DEF)[0]};--a:{PAL.get(marca, DEF)[1]};--ab:{PAL.get(marca, DEF)[2]};--bg:{PAL.get(marca, DEF)[3]};--soft:{PAL.get(marca, DEF)[4]};--hd:{PAL.get(marca, DEF)[5]}}}</style><script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body><a class="skip" href="#contenido">Saltar al contenido</a>'
-         f'<div class="top"><div class="w"><span>Atención a domicilio en Panamá · {TEL}</span><a href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div></div>'
-         f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">{f'<img class="lgo" src="/img/logos/{marca}.png" alt="Logo {nom(marca)}" width="130" height="40" style="display:block;height:34px;width:auto;max-width:130px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none">' if marca else ""}<span>Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></span></a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
+         f'<div class="top"><div class="w"><span>{(chr(60) + "img class=" + chr(34) + "flag" + chr(34) + " src=" + chr(34) + CFG["bandera"] + chr(34) + " alt=" + chr(34) + "Bandera de " + CFG["pais"] + chr(34) + " width=" + chr(34) + "24" + chr(34) + " height=" + chr(34) + "16" + chr(34) + ">") if CFG.get("bandera") else ""}Atención a domicilio en Panamá · {TEL}</span><a href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">WhatsApp</a></div></div>'
+         f'<header class="h"><div class="w"><a class="logo" href="{base(marca) if marca else "/"}">{f'<img class="lgo" src="/img/logos/{marca}.png" alt="Logo {nom(marca)}" width="130" height="40" style="display:block;height:34px;width:auto;max-width:130px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none">' if marca else ""}<span>Centro de Servicio Técnico<small>{nom(marca) + " Panamá" if marca else "Panamá"}</small></span>{(chr(60) + "img class=" + chr(34) + "flag" + chr(34) + " src=" + chr(34) + CFG["bandera"] + chr(34) + " alt=" + chr(34) + "Bandera de " + CFG["pais"] + chr(34) + " width=" + chr(34) + "33" + chr(34) + " height=" + chr(34) + "22" + chr(34) + ">") if CFG.get("bandera") else ""}</a><a class="btn s" href="{wa("Hola, necesito servicio técnico en Panamá")}" target="_blank" rel="noopener">Pedir visita</a></div></header>'
          + chips(marca) + '<main id="contenido">' + heroh + bc + cuerpo + ('<div class="w"><p class="upd">Actualizado el ' + HOY_TXT + ' · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div>' if not re.search(r'/(politica-de-privacidad|terminos-y-condiciones)/', path) else '') + ('<!--cierre-->' + cierre(marca, path) + '<!--/cierre-->' if marca else '') + '</main>' + pie(marca, marcas_ok) + extra_js + '</body></html>')
     h = LOC(h)
     f = OUT / path.lstrip("/") / "index.html" if path != "/" else OUT / "index.html"
@@ -467,12 +472,16 @@ def _enlaces_pro(m, path, chips_b, nm, url):
     if nm: ext.append((nm, url, f"Información general de la marca {N}."))
     externo = sec("Recursos oficiales y sitios de interés", "<ul class=\"ext\">" + "".join(f'<li><a href="{u}" target="_blank" rel="noopener">{esc(n)}</a><span>{esc(dsc)}</span></li>' for n, u, dsc in ext) + "</ul><p><small>Se abren en otra pestaña. Son sitios externos que no son nuestros; los enlazamos solo como información.</small></p>")
     otros = ""
-    if CFG.get("prefijo"):
+    if CFG.get("intl"):
         from cst_sitio import INTL_PAISES, DOM_INTL
         _pre = CFG["prefijo"]
-        _hermanas = [(cn, cr) for pn, r, cc, cs in INTL_PAISES for cn, cr in cs if _pre.startswith(r.rstrip("/")) and cr.rstrip("/") != _pre]
-        _otros = [(pn, r) for pn, r, cc, cs in INTL_PAISES if not _pre.startswith(r.rstrip("/"))]
-        otros = sec(f"Servicio técnico {N} en otros países", "<p>" + "".join(f'<a class="pill" href="{DOM_INTL}{r}">Servicio técnico {N} en {esc(cn).replace(chr(225), "&#225;")}</a>' for cn, r in _hermanas) + "".join(f'<a class="pill" href="{DOM_INTL}{r}">Servicio técnico {N} en {esc(pn).replace(chr(225), "&#225;")}</a>' for pn, r in _otros) + f'</p><p><a href="{DOM_INTL}/">Servicio técnico {N} en Latinoamérica: todos los países</a></p>', alt=True)
+        _en = lambda rp: _pre == rp or _pre.startswith(rp + "/")
+        _ac = lambda x: esc(x).replace(chr(225), "&#225;")
+        _fl = lambda cc, pn: f'<img class="flag" src="/img/flags/{cc}.svg" alt="Bandera de {_ac(pn)}" width="21" height="14"> '
+        _hermanas = [(cn, cr, cc, pn) for pn, r, ci, cs, cc in INTL_PAISES for cn, cr in cs if _en(r.rstrip("/")) and cr.rstrip("/") != _pre]
+        _otros = [(pn, r, cc, pn) for pn, r, ci, cs, cc in INTL_PAISES if not _en(r.rstrip("/"))]
+        _ac = lambda x: esc(x).replace(chr(225), "&#225;")
+        otros = sec(f"Servicio técnico {N} en otros países", "<p>" + "".join(f'<a class="pill" href="{DOM_INTL}{r}">{_fl(cc, pn)}Servicio técnico {N} en {_ac(cn)}</a>' for cn, r, cc, pn in _hermanas) + "".join(f'<a class="pill" href="{DOM_INTL}{r}">{_fl(cc, pn)}Servicio técnico {N} en {_ac(pn)}</a>' for pn, r, cc, _x in _otros) + f'</p><p><a href="{DOM_INTL}/paises/">Servicio técnico {N} en Latinoamérica: todos los países</a></p>', alt=True)
     return interno + externo + otros + sec(f"Búsquedas relacionadas con {N} en {CFG['ciudad']}", chips_b)
 def cierre(m, path):
     d = M[m]; N = nom(m)
@@ -1285,7 +1294,8 @@ def build_zonas_marca(m):
         if var == 0: intro = f"En {za} predominan {viv}. Para quienes tienen equipos {N} aquí, lo que más pesa al coordinar la visita: {acc}. Atendemos sectores como {sect}."
         elif var == 1: intro = f"{cap(za)} se caracteriza por {viv}; al coordinar el servicio técnico {N} hay que contar con {acc}. Entre los sectores que visitamos están {sect}."
         else: intro = f"Cuando un equipo {N} falla en {za} ({sect}), la visita tiene en cuenta {acc}. La zona combina {viv}."
-        cuerpo = (sec(f"Servicio técnico {N} en {za}", f"<p>{esc(intro)}</p><p>{esc(CLIMA[z].capitalize())} influyen en cómo envejecen los equipos de esta zona.</p>")
+        _rr = (sec(f"Respuesta rápida: servicio técnico {N} en {za}", f'<div class="rr"><p><b>¿Reparan equipos {N} en {esc(za)}?</b> Sí, a domicilio. Atendemos {esc(junta(EQ[e][2] for e in E))} {esc(N)} en {esc(za)} ({esc(sect)}). El técnico revisa el equipo en tu casa, te explica la causa y te da el valor antes de reparar; solo se repara si tú lo apruebas. Para pedir la visita, escríbenos por WhatsApp con la marca, el modelo, lo que hace el equipo y tu sector.</p></div>') if CFG.get("intl") else "")
+        cuerpo = (_rr + sec(f"Servicio técnico {N} en {za}", f"<p>{esc(intro)}</p><p>{esc(CLIMA[z].capitalize())} influyen en cómo envejecen los equipos de esta zona.</p>")
                   + sec(f"Fallas de {N} que más se reportan en {za}", f"<ul>{det}</ul>", alt=True)
                   + sec(f"Cómo funcionan {EQ[e0][2]}" + (f" y {EQ[e1][2]}" if e1 != e0 else "") + f" {N}", f"<p>{esc(oracion(d['tech'][e0], zi))}</p>" + (f"<p>{esc(oracion(d['tech'][e1], zi + 1))}</p>" if e1 != e0 else ""))
                   + sec(f"Modelos {N} en {za}", f"<p>{esc(d['modelo_ej'])}</p><p><b>Líneas frecuentes:</b> {', '.join(esc(x) for x in _rot(d['lineas'], zi, 4))}.</p>", alt=True))
@@ -1301,6 +1311,12 @@ def build_zonas_marca(m):
                 _vec = (_vec[zi % len(_vec):] + _vec[:zi % len(_vec)])[:8] if _vec else []
                 cuerpo += sec(f"Servicio técnico {N} cerca de {za}", "<p>" + "".join(f'<a class="pill" href="{pathb(m, "servicio-tecnico-" + c)}">Servicio técnico {N} en {esc(ZONAS[c][0])}</a>' for c in _vec) + f'</p><p><a href="{pathb(m, "servicio-tecnico-" + _sl)}">Servicio técnico {N} en {esc(CFG["sectores"][_sl][0])}</a> · <a href="{pathb(m, "cobertura")}">Todas las comunas</a></p>')
             if CFG.get("hubs_locales"): cuerpo += sec(f"Otras marcas en {za}", f'<p><a href="/zonas/{z}/">Servicio técnico de todas las marcas en {esc(zn)}</a> · <a href="/zonas/">Todas las zonas</a> · <a href="/marcas/">Todas las marcas</a></p>', alt=True)
+            if CFG.get("intl"):
+                _sd = CFG["sectores"][CFG["sector_de"][z]][0] if CFG.get("sectores") and z in CFG.get("sector_de", {}) else ""
+                cuerpo += sec(f"Datos de {za} para tu visita", tabla(["Dato", "Detalle"], [("Zona", esc(zn)), ("Sectores que visitamos", esc(sect)), ("Tipo de vivienda", esc(viv)), ("Qué tener en cuenta al coordinar", esc(acc)), ("Zona de la ciudad", esc(_sd or CFG["ciudad"])), ("Clima y su efecto en los equipos", esc(CLIMA[z].capitalize())), ("Cómo pedir la visita", "WhatsApp con marca, modelo y falla")]), alt=True)
+                zfaq += [(f"¿Qué hago si mi equipo {N} falla después de una tormenta o un apagón en {za}?", f"Desconéctalo, espera unos minutos y no lo reinicies varias veces seguidas: los picos de voltaje dañan las placas. {CLIMA[z].capitalize()} influyen en cómo envejecen los equipos de esta zona. Escríbenos y lo revisamos a domicilio."),
+                         (f"¿Cómo me preparo para la visita del técnico en {za}?", f"Ten a mano el modelo (está en la etiqueta del equipo), anota cuándo empezó la falla y despeja el espacio alrededor del equipo. Avisa si hay {acc} para coordinar la entrada."),
+                         (f"¿Atienden equipos {N} comprados en otro país en {za}?", "Sí, siempre que podamos identificar el modelo en la etiqueta. Algunas piezas pueden requerir pedido y eso alarga la reparación; te lo informamos antes de empezar.")]
             cuerpo += sec(f"Preguntas frecuentes sobre el servicio técnico {N} en {za}", faq_html(zfaq))
         pagina(pathb(m, "servicio-tecnico-" + z), f"Servicio técnico {N} en {za} | Panamá", f"Servicio técnico {N} a domicilio en {za}, Panamá: qué fallas de equipos {N} se reportan allí, sectores que visitamos y cómo coordinar la visita.",
                f"Servicio técnico {N} en {za}", cuerpo, m, _hz((elegir(m, m + z, 1) or [None])[0], zn), crumbs0 + [("Cobertura", pathb(m, "cobertura")), (zn, pathb(m, "servicio-tecnico-" + z))],
@@ -1728,6 +1744,9 @@ if __name__ == "__main__":
     if OUT.exists(): shutil.rmtree(OUT)
     OUT.mkdir(parents=True); (OUT / "assets").mkdir(); (OUT / "assets" / "site.css").write_text(CSS.replace("\n", " "), encoding="utf-8")
     (OUT / "img" / "logos").mkdir(parents=True, exist_ok=True)
+    if CFG.get("bandera"):
+        (OUT / "img" / "flags").mkdir(parents=True, exist_ok=True)
+        for f_ in (pathlib.Path(__file__).parent / "cst_flags").glob("*.svg"): shutil.copy(f_, OUT / "img" / "flags" / f_.name)
     for m in BRANDS_ORDER:
         for suf in ("", "-blanco"): shutil.copy(pathlib.Path(__file__).parent / "cst_logos" / f"{m}{suf}.png", OUT / "img" / "logos" / f"{m}{suf}.png")
     for m in BRANDS_ORDER: build_marca(m); build_sintomas(m); build_zonas_marca(m); (CFG.get("busquedas") and (_CHL.build_busquedas(globals(), m), _CHL.build_extra(globals(), m))); build_guia(m); build_blog(m); build_glosario(m); build_legal(m); build_terminos(m)
