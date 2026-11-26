@@ -230,6 +230,7 @@ BUCARAMANGA = dict(
 )
 
 # ----------------------------------------------------------------------------- CHILE (Santiago, todas las comunas)
+from cst_guatemala_datos import ZONAS_GT, ZX_GT, CLIMA_GT, DESTACADAS as DEST_GT, SECTORES_GT, SECTOR_DE as SECTOR_DE_GT, COMUNAS_EQ as COMUNAS_EQ_GT
 from cst_chile_datos import ZONAS_CL, ZX_CL, CLIMA_CL, DESTACADAS as DEST_CL, SECTORES_CL, SECTOR_DE, COMUNAS_EQ
 _TEL_CL = os.environ.get("CST_TEL", "+56 9 8317 6106")
 CHILE = dict(
@@ -253,7 +254,46 @@ CHILE = dict(
     zlista="Las Condes, Providencia, Ñuñoa, Santiago Centro, Maipú, La Florida, Puente Alto, Vitacura y el resto de las comunas del Gran Santiago",
     sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, marcas_extra=True, sin_toc=True, pro_layout=True,
 )
-CFG = {"chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
+
+# ----------------------------------------------------------------------------- GUATEMALA (Ciudad de Guatemala: 22 zonas y 13 municipios)
+_TEL_GT = os.environ.get("CST_TEL", "+507 6933 7976")
+GUATEMALA = dict(
+    sitio="guatemala", dom="https://serviciotecnicoenguatemala.com", ciudad="Ciudad de Guatemala", ciudad_larga="Ciudad de Guatemala", ciudad_corta="Guatemala", nombre="Servicio Técnico Guatemala",
+    tel=_TEL_GT, telw=re.sub(r"\D", "", _TEL_GT), solo_wa=True, locale="es-GT", cc="GT", region="Guatemala", pais="Guatemala",
+    gsc=["p4P1snVj3YSOzkdDNu_Lap6xX8qGKzu3Y3ENL-3y4Vk"] + [x for x in os.environ.get("CST_GSC", "").split(",") if x],
+    ext_lg=("Página del fabricante: LG Guatemala", "https://www.lg.com/gt/"), ext_samsung=("Página del fabricante: Samsung Latinoamérica", "https://www.samsung.com/latin/"),
+    ext_oficiales=[("Dirección de Atención y Asistencia al Consumidor (DIACO)", "https://www.diaco.gob.gt/", "Tus derechos como consumidor y cómo presentar una queja."),
+                   ("Comisión Nacional de Energía Eléctrica (CNEE)", "https://www.cnee.gob.gt/", "Información sobre el servicio eléctrico, voltaje y calidad de la energía."),
+                   ("Ministerio de Energía y Minas (MEM)", "https://www.mem.gob.gt/", "Información oficial sobre el gas propano y la energía.")],
+    trust_zonas=("22 zonas y 13 municipios", "Toda el área metropolitana"), lead_cob="las 22 zonas de la Ciudad de Guatemala y los municipios vecinos",
+    guia_humedad=("humedad-y-tormentas-en-equipos", "Humedad y tormentas en equipos {N} en Ciudad de Guatemala", "Cómo la humedad, las lluvias y las tormentas eléctricas del invierno en Ciudad de Guatemala afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas."),
+    clima_art=dict(h2="Qué hacen la humedad y las tormentas en tus equipos ", etq="la humedad y las tormentas",
+                   texto="La humedad del invierno favorece el moho y la corrosión en contactos y sellos; las tormentas eléctricas provocan apagones y picos de voltaje que dañan placas; y el polvo del verano tapa filtros, condensadores y rejillas."),
+    volt_art=dict(h2="Por qué importa el voltaje en equipos ", titulo="Apagones y voltaje: protege tus equipos {N}", desc="Qué equipos {N} sufren más con los apagones y las variaciones de voltaje en Ciudad de Guatemala y cómo proteger sus placas y compresores.",
+                  texto="Las tormentas eléctricas del invierno y los apagones pueden generar variaciones y picos de voltaje al volver la luz. En equipos {N}, los más sensibles son {eq}, porque dependen de placas y sensores electrónicos."),
+    aire_art=dict(slug="aire-acondicionado-{m}-calor", titulo="Aire acondicionado {N} en los meses cálidos: qué revisar", desc="Qué revisar en tu aire acondicionado {N} antes y durante los meses más cálidos en Ciudad de Guatemala."),
+    intro_clima="Ciudad de Guatemala tiene un clima templado de altura, con una temporada de lluvias de mayo a octubre (el invierno), tormentas eléctricas con picos de voltaje y una temporada seca, más cálida y con polvo.",
+    clima_extra="Las tormentas eléctricas del invierno pueden provocar apagones y variaciones de voltaje al volver el suministro, que dañan placas electrónicas. Un protector de voltaje adecuado y desconectar los equipos más sensibles durante tormentas fuertes reduce ese riesgo. La humedad favorece el moho en lavadoras y sellos, y el polvo de la temporada seca tapa filtros y condensadores.",
+    clima_txt=("humedad y tormentas", "Humedad y tormentas"), guias_clima="la humedad, las lluvias del invierno, el polvo de la temporada seca y los apagones con sus picos de voltaje",
+    ley_datos="la legislación de Guatemala aplicable a la protección de datos personales", ley_consumo="la Ley de Protección al Consumidor y Usuario de Guatemala (Decreto 006-2003)",
+    costero=False, nev=("refrigeradoras", "refrigeradora", "refrigeradoras"),
+    zonas=ZONAS_GT, zx=ZX_GT, clima=CLIMA_GT, zonas_destacadas=DEST_GT, sectores=SECTORES_GT, sector_de=SECTOR_DE_GT, comunas_eq=COMUNAS_EQ_GT,
+    area=[ZONAS_GT[z][0] for z in DEST_GT], geo=(14.6349, -90.5069), geo_region="GT-GU",
+    zlista="la Zona 10, la Zona 14, la Zona 15, la Zona 16, la Zona 1, Mixco, Villa Nueva, Santa Catarina Pinula y el resto de zonas y municipios del área metropolitana",
+    reemp=[("Atendemos las 52 comunas de la Región Metropolitana", "Atendemos las 22 zonas y los 13 municipios del área metropolitana"),
+           ("en Santiago de Chile y toda la Región Metropolitana", "en Ciudad de Guatemala y todo el área metropolitana"),
+           ("En Chile las viviendas usan 220 V.", "En Guatemala los tomacorrientes comunes son de 120 V y algunos equipos grandes usan 240 V."),
+           ("¿Qué voltaje se usa en Chile?", "¿Qué voltaje se usa en Guatemala?"),
+           ("En Chile, la Ley N° 19.496 sobre protección de los derechos de los consumidores contempla una garantía legal para productos nuevos; consulta en el SERNAC los plazos y condiciones vigentes.", "En Guatemala, la Ley de Protección al Consumidor y Usuario (Decreto 006-2003) protege tus derechos como consumidor; consulta en la DIACO los plazos y condiciones vigentes."),
+           ("En Chile, la Ley N° 19.496 contempla además una garantía legal para productos nuevos.", "En Guatemala, la Ley de Protección al Consumidor y Usuario (Decreto 006-2003) protege además tus derechos como consumidor."),
+           ("su representante en Chile", "su representante en Guatemala"), ("Bomberos (132)", "Bomberos (122 o 123)"),
+           ("Los veranos de Santiago son secos y calurosos, y los equipos de frío trabajan más.", "El verano, la temporada seca de noviembre a abril, trae más calor y polvo, y los equipos de frío trabajan más."),
+           ("En invierno hay temporales, cortes de luz y variaciones de voltaje al volver el suministro, y se usa más la secadora.", "En invierno, la temporada de lluvias de mayo a octubre, hay tormentas eléctricas, apagones y variaciones de voltaje al volver la luz, y se usa más la secadora."),
+           ("el verano de Santiago", "el verano de Ciudad de Guatemala"), ("el invierno de Santiago", "el invierno de Ciudad de Guatemala"),
+           ("Santiago de Chile", "Ciudad de Guatemala"), ("la Región Metropolitana", "el área metropolitana"), ("Región Metropolitana", "área metropolitana"), ("de Santiago", "de Ciudad de Guatemala"), ("para Santiago", "para Ciudad de Guatemala"), ("en Santiago", "en Ciudad de Guatemala")],
+    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True,
+)
+CFG = {"guatemala": GUATEMALA, "chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
 
 # ----------------------------------------------------------------------------- localización de datos (solo Cali)
 REEMP_CALI = [
@@ -308,6 +348,20 @@ def _vocab(t):
 def _sentencias_sin_ciudad(t):
     ps = re.split(r"(?<=[.])\s+", t.strip())
     return " ".join(p for p in ps if "Panamá" not in p)
+_GT_PAIRS = [(r"\bcomunas\b", "zonas"), (r"\bComunas\b", "Zonas"), (r"\bcomuna\b", "zona"), (r"\bComuna\b", "Zona"),
+             (r"\bestacionamientos\b", "parqueos"), (r"\bEstacionamientos\b", "Parqueos"), (r"\bestacionamiento\b", "parqueo"), (r"\bEstacionamiento\b", "Parqueo"),
+             (r"\bconserjerías\b", "garitas"), (r"\bconserjería\b", "garita"), (r"\bporterías\b", "garitas"), (r"\bportería\b", "garita"),
+             (r"\bboletas\b", "facturas"), (r"\bboleta o factura\b", "factura"), (r"\bboleta\b", "factura"),
+             (r"\bdepartamentos\b", "apartamentos"), (r"\bDepartamentos\b", "Apartamentos"), (r"\bdepartamento\b", "apartamento"),
+             (r"\benchufes\b", "tomacorrientes"), (r"\benchufe\b", "tomacorriente"), (r"\bEnchufe\b", "Tomacorriente"),
+             (r"\blavaplatos\b", "lavatrastos"), (r"\bgas licuado\b", "gas propano"), (r"\bGas licuado\b", "Gas propano"),
+             (r"\bel valor de la pieza\b", "el precio de la pieza"), (r"\bvalor de la pieza\b", "precio de la pieza"), (r"\bel valor antes de reparar\b", "la cotización antes de reparar"), (r"\bvalor antes de reparar\b", "cotización antes de reparar"), (r"\bantes del valor\b", "antes del precio"), (r"\bel valor y\b", "el precio y"), (r"\bel valor cambian\b", "el precio cambian"),
+             (r"\bvalor por escrito\b", "cotización por escrito"), (r"\bel valor de la visita\b", "el costo de la visita"), (r"\bsupermercado\b", "supermercado")]
+def _gt_vocab(t):
+    """Guatemala: zona (no comuna), parqueo, garita, factura, apartamento, tomacorriente, lavatrastos, gas propano, cotización."""
+    t = re.sub(r"\b([Nn])evera(s?)\b", lambda m: ("R" if m.group(1) == "N" else "r") + "efrigeradora" + m.group(2), t) if t not in ("neveras", "nevera") else t
+    for a, b in _GT_PAIRS: t = re.sub(a, b, t)
+    return t
 def _loc_str(t, clave=None):
     for a, b in REEMP_CALI: t = t.replace(a, b)
     if clave == "origen": t = _sentencias_sin_ciudad(t)
@@ -315,6 +369,7 @@ def _loc_str(t, clave=None):
     t = t.replace("humedad y salitre", _cl).replace("la humedad y el salitre", "la " + _cl)
     if CFG.get("frio") or CFG.get("sin_tropico"): t = t.replace("en el trópico", "en la ciudad")
     t = t.replace("en Panamá", "en " + CFG["pais"]).replace("Panamá", CFG["pais"])
+    if CFG["sitio"] == "guatemala": t = _gt_vocab(t)
     return _vocab(t) if CFG["nev"][1] != "refrigeradora" else t
 def _deep(x, clave=None):
     if isinstance(x, str): return _loc_str(x, clave)
@@ -333,6 +388,7 @@ def L(h):
     def _g(m): _rutas.append(m.group(0)); return "\x00%d\x00" % (len(_rutas) - 1)
     h = re.sub(r"/img/[^\"'\s)<>]+", _g, h)
     ld = CFG.get("ley_datos", "Ley 1581 de 2012 de Colombia"); lc = CFG.get("ley_consumo", "Ley 1480 de 2011 (Estatuto del Consumidor) de Colombia")
+    for a, b in CFG.get("reemp", ()): h = h.replace(a, b)
     for a, b in [
         ("Ley 81 de 2019 de Panamá", ld), ("Ley 81 de 2019", ld),
         ("Ley 45 de 2007 de Panamá", lc), ("conseguirse en Panamá", "conseguirse en " + CFG["pais"]), ("Ciudad de Panamá", CFG["ciudad"]), ("Provincia de Panamá", CFG["region"]),
@@ -347,6 +403,13 @@ def L(h):
         for x, y in [("filtros, bombas, sensores y empaques", "fuentes de poder, tiras de LED, puertos y cables"), ("Las placas y los compresores", "Los paneles y las placas"), ("las placas y los compresores", "los paneles y las placas"),
                      ("placas y compresores", "placas y paneles"), ("en los equipos con compresor o placa electrónica", "en las pantallas"), ("en equipos con compresor o placa electrónica", "en las pantallas"), ("compresores", "paneles")]:
             h = h.replace(x, y)
+    if CFG.get("solo_wa"):   # el número es solo de WhatsApp: sin botones de llamada ni frases de «llama al…»
+        h = re.sub(r'<a [^>]*href="tel:[^"]*"[^>]*>[^<]*</a>\s*', "", h)
+        for a, b in [(r"WhatsApp o llama(?:ndo)? al ", "WhatsApp al "), (r"llama al técnico", "escribe al técnico"), (r"llama(?=[.:])", "escríbenos"), (r" o llama(?:ndo)? al ", " al WhatsApp "), (r"WhatsApp o al ", "WhatsApp al "), (r"llama o escribe por WhatsApp", "escribe por WhatsApp"),
+                     (r"Teléfono servicio técnico", "WhatsApp servicio técnico"), (r"teléfono servicio técnico", "WhatsApp servicio técnico"), (r"Teléfono y WhatsApp", "WhatsApp"), (r"teléfono y WhatsApp", "WhatsApp"),
+                     (r"Teléfono del servicio técnico", "WhatsApp del servicio técnico"), (r"el teléfono y WhatsApp", "el WhatsApp"), (r">Teléfono<", ">WhatsApp<"), (r"› Teléfono", "› WhatsApp"), (r'"name": "Teléfono"', '"name": "WhatsApp"')]:
+            h = re.sub(a, b, h)
+    if CFG["sitio"] == "guatemala": h = _gt_vocab(h)
     if CFG["nev"][1] == "refrigerador": h = _chile_vocab(_refri(h))
     elif CFG["nev"][1] != "refrigeradora":
         h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)

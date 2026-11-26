@@ -311,8 +311,8 @@ def FAV(marca):
     fs = 34 if len(ini) == 1 else 26
     svg = f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='{c}'/><text x='32' y='{32 + fs * 0.36:.0f}' font-family='Arial,sans-serif' font-weight='700' font-size='{fs}' fill='white' text-anchor='middle'>{ini}</text></svg>"
     return "data:image/svg+xml," + svg.replace("<", "%3C").replace(">", "%3E").replace("#", "%23").replace(" ", "%20").replace("'", "%27")
-_ORDEN_HOME = [r"¿Qué equipo .+ quieres reparar", r"Así funciona la visita", r"Sobre los equipos", r"Las fallas más buscadas", r"Servicio técnico .+ en Santiago de Chile",
-                r"Zonas de Santiago donde atendemos", r"¿Por qué elegirnos", r"¿Necesitas ayuda para elegir", r"Preguntas frecuentes", r"Quiénes somos", r"Más información sobre"]
+_ORDEN_HOME = [r"¿Qué equipo .+ quieres reparar", r"Así funciona la visita", r"Sobre los equipos", r"Las fallas más buscadas", r"Servicio técnico .+ en " + re.escape(CFG.get("ciudad_larga", "Santiago de Chile")),
+                r"Zonas de " + re.escape(CFG["ciudad"]) + " donde atendemos", r"¿Por qué elegirnos", r"¿Necesitas ayuda para elegir", r"Preguntas frecuentes", r"Quiénes somos", r"Más información sobre"]
 def _pro(path, m, cuerpo):
     """Orden profesional de la portada de cada marca (solo Chile): franja de confianza, flujo lógico y sin bloques repetidos."""
     es_home = path == "/" or path == "/" + m + "/"
@@ -330,7 +330,7 @@ def _pro(path, m, cuerpo):
     bl = [x.replace(f"<h2>Sobre los equipos {N}</h2>", f"<h2>Especialistas en equipos {N}</h2>").replace(f"<h2>Las fallas más buscadas de {N}</h2>", f"<h2>Fallas frecuentes en equipos {N}</h2>") for x in bl]
     bl = [re.sub(r'<section class="s(?: alt)?"', '<section class="s%s"' % (" alt" if i % 2 else ""), x, count=1) for i, x in enumerate(bl)]
     conf = (f'<section class="trust"><div class="w"><ul class="tr"><li><b>Visita a domicilio</b><span>El técnico {N} llega a tu casa</span></li><li><b>Diagnóstico primero</b><span>Te explicamos la causa antes del valor</span></li>'
-            f'<li><b>Tú apruebas</b><span>Solo se repara con tu autorización</span></li><li><b>52 comunas</b><span>Toda la Región Metropolitana</span></li></ul></div></section>')
+            f'<li><b>Tú apruebas</b><span>Solo se repara con tu autorización</span></li><li><b>{CFG.get("trust_zonas", ("52 comunas", "Toda la Región Metropolitana"))[0]}</b><span>{CFG.get("trust_zonas", ("52 comunas", "Toda la Región Metropolitana"))[1]}</span></li></ul></div></section>')
     return conf + "".join(bl)
 def _idsec2(m_, usados, items):
     cls, tt = m_.group(1), m_.group(4)
@@ -347,6 +347,7 @@ def pagina(path, title, desc, h1, cuerpo, marca=None, hero=None, crumbs=None, ld
             cuerpo = cuerpo + _eh
             if _ef and not any(isinstance(x, dict) and x.get("@type") == "FAQPage" for x in (ld or [])): ld = (ld or []) + [faq_ld(_ef)]
     if CFG.get("seo_plus") and path != "/" and CFG["ciudad"] not in title and len(title) + 3 + len(CFG["ciudad"]) <= 62: title += " | " + CFG["ciudad"]
+    if len(title) > 62 and CFG.get("ciudad_corta"): title = title.replace(CFG["ciudad"], CFG["ciudad_corta"])
     if len(title) > 62:
         partes = title.split(" | ")
         while len(" | ".join(partes)) > 62 and len(partes) > 1: partes.pop()
@@ -444,9 +445,9 @@ def _enlaces_pro(m, path, chips_b, nm, url):
     k = int(hashlib.md5(path.encode()).hexdigest(), 16) % len(ayuda); ayuda = (ayuda[k:] + ayuda[:k])[:8]
     c3 = "".join(L_(u, t) for u, t in ayuda)
     interno = sec(f"Más información sobre el servicio técnico {N}", f'<div class="lk3"><div><h3>Equipos y fallas</h3><ul>{c1}</ul></div><div><h3>Dónde atendemos</h3><ul>{c2}</ul></div><div><h3>Ayuda y consejos</h3><ul>{c3}</ul></div></div>', alt=True)
-    ext = [("Servicio Nacional del Consumidor (SERNAC)", "https://www.sernac.cl/", "Tus derechos como consumidor y cómo hacer un reclamo."),
+    ext = list(CFG.get("ext_oficiales") or [("Servicio Nacional del Consumidor (SERNAC)", "https://www.sernac.cl/", "Tus derechos como consumidor y cómo hacer un reclamo."),
            ("Ley N° 19.496 sobre protección de los derechos de los consumidores", "https://www.bcn.cl/leychile/navegar?i=61438", "Texto de la ley en la Biblioteca del Congreso Nacional."),
-           ("Superintendencia de Electricidad y Combustibles (SEC)", "https://www.sec.cl/", "Instalaciones de gas y electricidad: qué debe hacer un instalador autorizado.")]
+           ("Superintendencia de Electricidad y Combustibles (SEC)", "https://www.sec.cl/", "Instalaciones de gas y electricidad: qué debe hacer un instalador autorizado.")])
     if nm: ext.append((nm, url, f"Información general de la marca {N}."))
     externo = sec("Recursos oficiales y sitios de interés", "<ul class=\"ext\">" + "".join(f'<li><a href="{u}" target="_blank" rel="noopener">{esc(n)}</a><span>{esc(dsc)}</span></li>' for n, u, dsc in ext) + "</ul><p><small>Se abren en otra pestaña. Son sitios externos que no son nuestros; los enlazamos solo como información.</small></p>")
     return interno + externo + sec(f"Búsquedas relacionadas con {N} en {CFG['ciudad']}", chips_b)
@@ -654,6 +655,8 @@ CHILE_MI["neveras"]["mant_intro"] = "El mantenimiento preventivo de un refrigera
 CHILE_MI["lavadoras"]["mant_intro"] = "El mantenimiento preventivo de la lavadora evita bombas tapadas, malos olores y averías. La ropa húmeda y el jabón acumulado generan moho en el sello y en el tambor, sobre todo si la puerta queda cerrada."
 CHILE_MI["aires"]["mant_intro"] = "El mantenimiento de un aire acondicionado incluye limpiar filtros, evaporador, condensador y drenaje, además de medir presiones. Es lo que más alarga la vida del equipo, sobre todo en los veranos secos y calurosos de Santiago."
 CHILE_MI["centro-lavado"] = CHILE_MI["lavadoras"]
+from cst_guatemala_mi import GT_MI as _GT_MI
+MI_LOC = _GT_MI if CFG["sitio"] == "guatemala" else CHILE_MI
 def _gye_loc(t):
     """Adapta los textos de mantenimiento e instalación (escritos para Guayaquil) a la ciudad del sitio."""
     if CFG["sitio"] == "guayaquil" or CFG.get("tv"): return t
@@ -669,7 +672,7 @@ def bloque_mant_inst(m, e):
     if e.startswith("tv-"): g = _TV.MANT_INST[e]
     else: g = BATIDORA if e == "batidoras" else {"mant": _gye()[e]["mant"], "inst": _gye()[e]["inst"]}
     mt, ins = g["mant"], g["inst"]
-    ov = QUITO_MI.get(e, {}) if CFG["sitio"] == "quito" else (CHILE_MI.get(e, {}) if CFG["sitio"] == "chile" else {})
+    ov = QUITO_MI.get(e, {}) if CFG["sitio"] == "quito" else (MI_LOC.get(e, {}) if CFG["sitio"] in ("chile", "guatemala") else {})
     if CFG.get("tv"):
         mt = {**mt}; ins = {**ins} if ins else ins
     mt = {**mt, "intro": ov.get("mant_intro") or _gye_loc(mt["intro"]), "gye": ov.get("mant_gye") or _gye_loc(mt["gye"])}
@@ -829,7 +832,7 @@ def build_marca(m):
     pagina(path, t, f"Centro de servicio técnico {N} en Panamá: reparación a domicilio de {', '.join(EQ[e][2] for e in d['equipos'][:3])} y más. Diagnóstico en casa y atención por WhatsApp.",
            f"Centro de Servicio Técnico {N} Panamá", cuerpo, m, hero[0] if hero else None, [(f"Centro de Servicio Técnico {N} Panamá", base(m))], ld,
            bd=f"{N} · Panamá", prio="1.0" if m == "samsung" else "0.9",
-           lead=(f"Servicio técnico a domicilio de {junta(EQ[e][2] for e in d['equipos'])} {N} en las 52 comunas de la Región Metropolitana. Diagnóstico en tu casa y valor antes de reparar." if CFG.get("pro_layout") else f"Reparamos tus equipos {N} en tu casa. Elige tu equipo abajo y te guiamos paso a paso."), cta2=("Elegir mi equipo ↓", "#equipos"))
+           lead=(f"Servicio técnico a domicilio de {junta(EQ[e][2] for e in d['equipos'])} {N} en {CFG.get("lead_cob", "las 52 comunas de la Región Metropolitana")}. Diagnóstico en tu casa y valor antes de reparar." if CFG.get("pro_layout") else f"Reparamos tus equipos {N} en tu casa. Elige tu equipo abajo y te guiamos paso a paso."), cta2=("Elegir mi equipo ↓", "#equipos"))
     # --- por equipo
     for e in d["equipos"]:
         s, sing, pl = EQ[e]; fl = d["fallas"][e]

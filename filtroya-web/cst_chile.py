@@ -194,7 +194,7 @@ def build_extra(g, m):
            [("¿Siempre usan repuestos originales?", "Depende de la pieza y de su disponibilidad. Antes de que apruebes, te informamos qué pieza se cambia y su valor."), ("¿Afecta la garantía usar un repuesto alternativo?", "Puede afectar la garantía de fábrica. Si tu equipo aún la tiene, consulta primero a la marca o a la tienda.")], f"{N} · Repuestos", "rep")
     inst = []
     for e in E:
-        ov = g["CHILE_MI"].get(e, {}).get("inst_gye")
+        ov = g["MI_LOC"].get(e, {}).get("inst_gye")
         if ov: inst.append(f"<h3>{esc(cap(EQ[e][2]))} {N}</h3><p>{esc(oracion(d['tech'][e], bi))}</p><p>{esc(ov)}</p>" + (f"<p><b>Modelo:</b> {esc(minus(d['etiqueta'][e]))}</p>" if d.get('etiqueta', {}).get(e) else ""))
     if not inst: inst = [f"<h3>{esc(cap(EQ[e][2]))} {N}</h3><p>{esc(oracion(d['tech'][e], bi))}</p>" for e in E[:3]]
     if inst:
