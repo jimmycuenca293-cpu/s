@@ -231,6 +231,7 @@ BUCARAMANGA = dict(
 
 # ----------------------------------------------------------------------------- CHILE (Santiago, todas las comunas)
 from cst_guatemala_datos import ZONAS_GT, ZX_GT, CLIMA_GT, DESTACADAS as DEST_GT, SECTORES_GT, SECTOR_DE as SECTOR_DE_GT, COMUNAS_EQ as COMUNAS_EQ_GT
+from cst_salvador_datos import ZONAS_SV, ZX_SV, CLIMA_SV, DESTACADAS as DEST_SV, SECTORES_SV, SECTOR_DE as SECTOR_DE_SV, COMUNAS_EQ as COMUNAS_EQ_SV
 from cst_chile_datos import ZONAS_CL, ZX_CL, CLIMA_CL, DESTACADAS as DEST_CL, SECTORES_CL, SECTOR_DE, COMUNAS_EQ
 _TEL_CL = os.environ.get("CST_TEL", "+56 9 8317 6106")
 CHILE = dict(
@@ -294,7 +295,48 @@ GUATEMALA = dict(
     sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True, midea_mundial=True,
     excluir_fotos={"tecnico-midea-llegada-puerta-furgon"},   # la placa y el paisaje de esa foto son de Chile
 )
-CFG = {"guatemala": GUATEMALA, "chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
+
+# ----------------------------------------------------------------------------- EL SALVADOR (San Salvador y su área metropolitana)
+_TEL_SV = os.environ.get("CST_TEL", "+507 6933 7976")
+ELSALVADOR = dict(
+    sitio="elsalvador", dom="https://servicio-tecnico-el-salvador.click", ciudad="San Salvador", ciudad_larga="San Salvador", nombre="Servicio Técnico El Salvador",
+    tel=_TEL_SV, telw=re.sub(r"\D", "", _TEL_SV), solo_wa=True, locale="es-SV", cc="SV", region="San Salvador", pais="El Salvador",
+    gsc=[x for x in os.environ.get("CST_GSC", "").split(",") if x],
+    ext_lg=("Página del fabricante: LG El Salvador", "https://www.lg.com/sv/"), ext_samsung=("Página del fabricante: Samsung Latinoamérica", "https://www.samsung.com/latin/"),
+    ext_oficiales=[("Defensoría del Consumidor", "https://www.defensoria.gob.sv/", "Tus derechos como consumidor y cómo presentar un reclamo."),
+                   ("Superintendencia General de Electricidad y Telecomunicaciones (SIGET)", "https://www.siget.gob.sv/", "Información sobre el servicio eléctrico, voltaje y calidad de la energía."),
+                   ("Protección Civil de El Salvador", "https://www.proteccioncivil.gob.sv/", "Alertas y recomendaciones para la temporada de lluvias y tormentas.")],
+    trust_zonas=("32 colonias y municipios", "Todo el Área Metropolitana"), lead_cob="las colonias y municipios del Área Metropolitana de San Salvador",
+    guia_humedad=("humedad-y-tormentas-en-equipos", "Humedad y tormentas en equipos {N} en San Salvador", "Cómo la humedad, el calor y las tormentas eléctricas de la temporada de lluvias en San Salvador afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas."),
+    clima_art=dict(h2="Qué hacen el calor, la humedad y las tormentas en tus equipos ", etq="el calor y las tormentas",
+                   texto="El calor casi constante exige más a compresores y motores; la humedad de la temporada de lluvias favorece el moho y la corrosión; y las tormentas eléctricas provocan apagones y picos de voltaje que dañan placas."),
+    volt_art=dict(h2="Por qué importa el voltaje en equipos ", titulo="Apagones y voltaje: protege tus equipos {N}", desc="Qué equipos {N} sufren más con los apagones y las variaciones de voltaje en San Salvador y cómo proteger sus placas y compresores.",
+                  texto="Las tormentas eléctricas de la temporada de lluvias y los apagones pueden generar variaciones y picos de voltaje al volver la luz. En equipos {N}, los más sensibles son {eq}, porque dependen de placas y sensores electrónicos."),
+    aire_art=dict(slug="aire-acondicionado-{m}-calor", titulo="Aire acondicionado {N} con el calor: qué revisar", desc="Qué revisar en tu aire acondicionado {N} antes y durante los meses más calurosos en San Salvador."),
+    intro_clima="San Salvador tiene un clima cálido casi todo el año, con una temporada seca de noviembre a abril (el verano) y una temporada de lluvias de mayo a octubre (el invierno), con tormentas eléctricas y picos de voltaje.",
+    clima_extra="Las tormentas eléctricas de la temporada de lluvias pueden provocar apagones y variaciones de voltaje al volver el suministro, que dañan placas electrónicas. Un protector de voltaje adecuado y desconectar los equipos más sensibles durante tormentas fuertes reduce ese riesgo. El calor casi constante exige más a refrigeradoras y aires acondicionados, y la humedad favorece el moho en lavadoras y sellos.",
+    clima_txt=("calor y tormentas", "Calor y tormentas"), guias_clima="el calor, la humedad de la temporada de lluvias y los apagones con sus picos de voltaje",
+    ley_datos="la legislación de El Salvador aplicable a la protección de datos personales", ley_consumo="la Ley de Protección al Consumidor de El Salvador",
+    midea_garantia="La garantía de fábrica depende del modelo y de la tienda donde compraste el equipo; conserva la factura y revisa la tarjeta de garantía. En El Salvador, la Ley de Protección al Consumidor protege además tus derechos como consumidor.",
+    costero=False, nev=("refrigeradoras", "refrigeradora", "refrigeradoras"),
+    zonas=ZONAS_SV, zx=ZX_SV, clima=CLIMA_SV, zonas_destacadas=DEST_SV, sectores=SECTORES_SV, sector_de=SECTOR_DE_SV, comunas_eq=COMUNAS_EQ_SV,
+    area=[ZONAS_SV[z][0] for z in DEST_SV], geo=(13.6929, -89.2182), geo_region="SV-SS",
+    zlista="la Colonia Escalón, San Benito, Santa Tecla, Antiguo Cuscatlán, Soyapango, Mejicanos, Apopa y el resto de colonias y municipios del Área Metropolitana",
+    reemp=[("Atendemos las 52 comunas de la Región Metropolitana", "Atendemos las 32 colonias y municipios del Área Metropolitana de San Salvador"),
+           ("en Santiago de Chile y toda la Región Metropolitana", "en San Salvador y todo el Área Metropolitana"),
+           ("En Chile las viviendas usan 220 V.", "En El Salvador los tomacorrientes comunes son de 120 V y algunos equipos grandes usan 240 V."),
+           ("¿Qué voltaje se usa en Chile?", "¿Qué voltaje se usa en El Salvador?"),
+           ("En Chile, la Ley N° 19.496 sobre protección de los derechos de los consumidores contempla una garantía legal para productos nuevos; consulta en el SERNAC los plazos y condiciones vigentes.", "En El Salvador, la Ley de Protección al Consumidor protege tus derechos como consumidor; consulta en la Defensoría del Consumidor los plazos y condiciones vigentes."),
+           ("En Chile, la Ley N° 19.496 contempla además una garantía legal para productos nuevos.", "En El Salvador, la Ley de Protección al Consumidor protege además tus derechos como consumidor."),
+           ("su representante en Chile", "su representante en El Salvador"), ("Bomberos (132)", "Bomberos (913)"),
+           ("Los veranos de Santiago son secos y calurosos, y los equipos de frío trabajan más.", "El verano, la temporada seca de noviembre a abril, trae el calor más fuerte, y los equipos de frío trabajan más."),
+           ("En invierno hay temporales, cortes de luz y variaciones de voltaje al volver el suministro, y se usa más la secadora.", "En invierno, la temporada de lluvias de mayo a octubre, hay tormentas eléctricas, apagones y variaciones de voltaje al volver la luz, y se usa más la secadora."),
+           ("el verano de Santiago", "el verano de San Salvador"), ("el invierno de Santiago", "el invierno de San Salvador"),
+           ("Santiago de Chile", "San Salvador"), ("la Región Metropolitana", "el Área Metropolitana"), ("Región Metropolitana", "Área Metropolitana"), ("de Santiago", "de San Salvador"), ("para Santiago", "para San Salvador"), ("en Santiago", "en San Salvador")],
+    sin_recorte=True, lbl_guias="Blog de consejos", seo_plus=True, sin_tropico=True, esencial=True, busquedas=True, sin_toc=True, pro_layout=True, midea_mundial=True,
+    excluir_fotos={"tecnico-midea-llegada-puerta-furgon"},
+)
+CFG = {"elsalvador": ELSALVADOR, "guatemala": GUATEMALA, "chile": CHILE, "cali": CALI, "guayaquil": GUAYAQUIL, "quito": QUITO, "costarica": COSTARICA, "bucaramanga": BUCARAMANGA}.get(SITIO, PANAMA)
 
 # ----------------------------------------------------------------------------- localización de datos (solo Cali)
 REEMP_CALI = [
@@ -358,10 +400,13 @@ _GT_PAIRS = [(r"\bcomunas\b", "zonas"), (r"\bComunas\b", "Zonas"), (r"\bcomuna\b
              (r"\blavaplatos\b", "lavatrastos"), (r"\bgas licuado\b", "gas propano"), (r"\bGas licuado\b", "Gas propano"),
              (r"\bel valor de la pieza\b", "el precio de la pieza"), (r"\bvalor de la pieza\b", "precio de la pieza"), (r"\bel valor antes de reparar\b", "la cotización antes de reparar"), (r"\bvalor antes de reparar\b", "cotización antes de reparar"), (r"\bantes del valor\b", "antes del precio"), (r"\bel valor y\b", "el precio y"), (r"\bel valor cambian\b", "el precio cambian"),
              (r"\bvalor por escrito\b", "cotización por escrito"), (r"\bel valor de la visita\b", "el costo de la visita"), (r"\bsupermercado\b", "supermercado")]
+_SV_PAIRS = [(r"\bEstufas\b", "Cocinas"), (r"\bestufas\b", "cocinas"), (r"\bEstufa\b", "Cocina"), (r"\bestufa\b", "cocina")]   # en El Salvador se dice «cocina»
 def _gt_vocab(t):
     """Guatemala: zona (no comuna), parqueo, garita, factura, apartamento, tomacorriente, lavatrastos, gas propano, cotización."""
     t = re.sub(r"\b([Nn])evera(s?)\b", lambda m: ("R" if m.group(1) == "N" else "r") + "efrigeradora" + m.group(2), t) if t not in ("neveras", "nevera") else t
     for a, b in _GT_PAIRS: t = re.sub(a, b, t)
+    if CFG["sitio"] == "elsalvador":
+        for a, b in _SV_PAIRS: t = re.sub(a, b, t)
     return t
 def _loc_str(t, clave=None):
     for a, b in REEMP_CALI: t = t.replace(a, b)
@@ -370,7 +415,7 @@ def _loc_str(t, clave=None):
     t = t.replace("humedad y salitre", _cl).replace("la humedad y el salitre", "la " + _cl)
     if CFG.get("frio") or CFG.get("sin_tropico"): t = t.replace("en el trópico", "en la ciudad")
     t = t.replace("en Panamá", "en " + CFG["pais"]).replace("Panamá", CFG["pais"])
-    if CFG["sitio"] == "guatemala": t = _gt_vocab(t)
+    if CFG["sitio"] in ("guatemala", "elsalvador"): t = _gt_vocab(t)
     return _vocab(t) if CFG["nev"][1] != "refrigeradora" else t
 def _deep(x, clave=None):
     if isinstance(x, str): return _loc_str(x, clave)
@@ -410,7 +455,7 @@ def L(h):
                      (r"Teléfono servicio técnico", "WhatsApp servicio técnico"), (r"teléfono servicio técnico", "WhatsApp servicio técnico"), (r"Teléfono y WhatsApp", "WhatsApp"), (r"teléfono y WhatsApp", "WhatsApp"),
                      (r"Teléfono del servicio técnico", "WhatsApp del servicio técnico"), (r"el teléfono y WhatsApp", "el WhatsApp"), (r">Teléfono<", ">WhatsApp<"), (r"› Teléfono", "› WhatsApp"), (r'"name": "Teléfono"', '"name": "WhatsApp"')]:
             h = re.sub(a, b, h)
-    if CFG["sitio"] == "guatemala": h = _gt_vocab(h)
+    if CFG["sitio"] in ("guatemala", "elsalvador"): h = _gt_vocab(h)
     if CFG["nev"][1] == "refrigerador": h = _chile_vocab(_refri(h))
     elif CFG["nev"][1] != "refrigeradora":
         h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)

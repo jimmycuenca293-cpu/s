@@ -32,6 +32,7 @@ if CFG.get("midea_mundial"):     # Midea como marca internacional (Guatemala)
     import cst_midea_gt as _MGT
     M = dict(M); M["midea"] = _MGT.M_MIDEA; BRANDS_ORDER = list(BRANDS_ORDER) + ["midea"]
     CONSEJOS = dict(CONSEJOS); CONSEJOS.update(_MGT.CONSEJOS_MIDEA)
+    M["midea"] = dict(M["midea"], origen=M["midea"]["origen"].replace("Guatemala", CFG["pais"]), garantia=CFG.get("midea_garantia", M["midea"]["garantia"]))
 M = localizar(M); CONSEJOS = localizar(CONSEJOS)
 if "neveras" in EQ: EQ["neveras"] = CFG["nev"]
 if CFG.get("zonas"): ZONAS = CFG["zonas"]
@@ -661,7 +662,8 @@ CHILE_MI["lavadoras"]["mant_intro"] = "El mantenimiento preventivo de la lavador
 CHILE_MI["aires"]["mant_intro"] = "El mantenimiento de un aire acondicionado incluye limpiar filtros, evaporador, condensador y drenaje, además de medir presiones. Es lo que más alarga la vida del equipo, sobre todo en los veranos secos y calurosos de Santiago."
 CHILE_MI["centro-lavado"] = CHILE_MI["lavadoras"]
 from cst_guatemala_mi import GT_MI as _GT_MI
-MI_LOC = _GT_MI if CFG["sitio"] == "guatemala" else CHILE_MI
+from cst_salvador_mi import SV_MI as _SV_MI
+MI_LOC = _GT_MI if CFG["sitio"] == "guatemala" else (_SV_MI if CFG["sitio"] == "elsalvador" else CHILE_MI)
 def _gye_loc(t):
     """Adapta los textos de mantenimiento e instalación (escritos para Guayaquil) a la ciudad del sitio."""
     if CFG["sitio"] == "guayaquil" or CFG.get("tv"): return t
@@ -677,7 +679,7 @@ def bloque_mant_inst(m, e):
     if e.startswith("tv-"): g = _TV.MANT_INST[e]
     else: g = BATIDORA if e == "batidoras" else {"mant": _gye()[e]["mant"], "inst": _gye()[e]["inst"]}
     mt, ins = g["mant"], g["inst"]
-    ov = QUITO_MI.get(e, {}) if CFG["sitio"] == "quito" else (MI_LOC.get(e, {}) if CFG["sitio"] in ("chile", "guatemala") else {})
+    ov = QUITO_MI.get(e, {}) if CFG["sitio"] == "quito" else (MI_LOC.get(e, {}) if CFG["sitio"] in ("chile", "guatemala", "elsalvador") else {})
     if CFG.get("tv"):
         mt = {**mt}; ins = {**ins} if ins else ins
     mt = {**mt, "intro": ov.get("mant_intro") or _gye_loc(mt["intro"]), "gye": ov.get("mant_gye") or _gye_loc(mt["gye"])}
