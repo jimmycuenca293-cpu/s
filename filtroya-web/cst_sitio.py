@@ -235,7 +235,7 @@ _TEL_CL = os.environ.get("CST_TEL", "+56 9 8317 6106")
 CHILE = dict(
     sitio="chile", dom="https://serviciotecnicoautorizadochile.cl", ciudad="Santiago", nombre="Servicio Técnico Santiago",
     tel=_TEL_CL, telw=re.sub(r"\D", "", _TEL_CL), locale="es-CL", cc="CL", region="Región Metropolitana", pais="Chile",
-    gsc=[x for x in os.environ.get("CST_GSC", "").split(",") if x],
+    gsc=["HfrmiFTSV-tTN_4R72pZhkTZMgfPzv7mpPQJ1sAcDzs"] + [x for x in os.environ.get("CST_GSC", "").split(",") if x],
     ext_lg=("Página del fabricante: LG Chile", "https://www.lg.com/cl/"), ext_samsung=("Página del fabricante: Samsung Chile", "https://www.samsung.com/cl/"),
     guia_humedad=("polvo-calor-y-frio-en-equipos", "Polvo, calor y frío en equipos {N} en Santiago", "Cómo el polvo, los veranos calurosos y los inviernos fríos de Santiago afectan tus equipos {N}: qué fallas provocan y cómo prevenirlas."),
     clima_art=dict(h2="Qué hacen el polvo y los cambios de temperatura en tus equipos ", etq="el polvo y el calor",
@@ -285,8 +285,24 @@ def _refri(t):
         return m.group(1) + m.group(2) + out
     t = re.sub(r"\b([Rr]efrigerador(?:es)?)(\s+)(" + "|".join(sorted(_ADJ, key=len, reverse=True)) + r")(s?)\b", _adj, t)
     return t
+_CL_SIMPLE = [(r"\bEstufas\b", "Cocinas"), (r"\bestufas\b", "cocinas"), (r"\bEstufa\b", "Cocina"), (r"\bestufa\b", "cocina"),
+              (r"\bbreakers\b", "automáticos"), (r"\bBreaker\b", "Automático"), (r"\bbreaker\b", "automático"),
+              (r"\btomacorrientes\b", "enchufes"), (r"\btomacorriente\b", "enchufe"),
+              (r"\bApartamentos\b", "Departamentos"), (r"\bapartamentos\b", "departamentos"), (r"\bapartamento\b", "departamento"),
+              (r"\bconjuntos residenciales\b", "condominios"), (r"\bconjunto residencial\b", "condominio"), (r"\bbarrio o conjunto\b", "barrio o condominio"),
+              (r"\bcilindro de gas\b", "balón de gas"), (r"\bcilindro\b", "balón"), (r"\bhornear\b", "hornear")]
+def _fem_a_masc(t, f_s, m_s, f_p, m_p):
+    t = re.sub(r"\b([Dd]e|[Aa]) la %s\b" % f_s, lambda m: ("del" if m.group(1).lower() == "de" else "al") + " " + m_s, t)
+    t = re.sub(r"\b(la|una|esta|esa|otra|La|Una|Esta|Esa|Otra)\s+%s\b" % f_s, lambda m: _ART_S[m.group(1)] + " " + m_s, t)
+    t = re.sub(r"\b(las|unas|estas|esas|otras|Las|Unas|Estas|Esas|Otras)\s+%s\b" % f_p, lambda m: _ART_P[m.group(1)] + " " + m_p, t)
+    return re.sub(r"\b%s\b" % f_p, m_p, re.sub(r"\b%s\b" % f_s, m_s, t))
+def _chile_vocab(t):
+    """Vocabulario chileno: cocina (no estufa), quemador (no hornilla), automático (no breaker), enchufe, balón de gas, tambor, departamento, condominio."""
+    for a, b in _CL_SIMPLE: t = re.sub(a, b, t)
+    t = _fem_a_masc(t, "hornilla", "quemador", "hornillas", "quemadores")
+    return _fem_a_masc(t, "tina", "tambor", "tinas", "tambores")
 def _vocab(t):
-    if CFG["nev"][1] == "refrigerador": return _refri(t)
+    if CFG["nev"][1] == "refrigerador": return _chile_vocab(_refri(t))
     t = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), t)
     return t
 def _sentencias_sin_ciudad(t):
@@ -331,7 +347,7 @@ def L(h):
         for x, y in [("filtros, bombas, sensores y empaques", "fuentes de poder, tiras de LED, puertos y cables"), ("Las placas y los compresores", "Los paneles y las placas"), ("las placas y los compresores", "los paneles y las placas"),
                      ("placas y compresores", "placas y paneles"), ("en los equipos con compresor o placa electrónica", "en las pantallas"), ("en equipos con compresor o placa electrónica", "en las pantallas"), ("compresores", "paneles")]:
             h = h.replace(x, y)
-    if CFG["nev"][1] == "refrigerador": h = _refri(h)
+    if CFG["nev"][1] == "refrigerador": h = _chile_vocab(_refri(h))
     elif CFG["nev"][1] != "refrigeradora":
         h = re.sub(r"\b([Rr])efrigeradora(s?)\b", lambda m: ("N" if m.group(1) == "R" else "n") + "evera" + m.group(2), h)
     _cl = (CFG.get("clima_txt") or ("humedad y lluvias", "Humedad y lluvias")) if (CFG.get("frio") or CFG.get("sin_tropico")) else ("humedad y calor", "Humedad y calor")
