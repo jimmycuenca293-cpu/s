@@ -865,6 +865,10 @@ def build_marca(m):
           "hasOfferCatalog": {"@type": "OfferCatalog", "name": f"Servicios para equipos {N}", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Reparación de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0])}} for e in d["equipos"]]
               + ([{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Mantenimiento de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0]) + "#mantenimiento"}} for e in d["equipos"]]
                  + [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": f"Instalación de {EQ[e][2]} {N}", "url": DOM + pathb(m, "reparacion-" + EQ[e][0]) + "#instalacion"}} for e in d["equipos"] if e != "batidoras"] if CFG.get("sin_recorte") else [])}}]
+    if CFG.get("intl"):
+        ld.append({"@type": "HowTo", "name": f"Cómo pedir el servicio técnico {N} en {CFG['ciudad']}", "description": f"Pasos para coordinar la visita a domicilio de un técnico para tu equipo {N} en {CFG['ciudad']}.",
+                   "step": [{"@type": "HowToStep", "position": i + 1, "name": n_, "text": x_} for i, (n_, x_) in enumerate((("Escríbenos", f"Escríbenos por WhatsApp con la marca {N}, el modelo y lo que hace el equipo."), ("Coordinamos", f"Acordamos el día y la franja en tu zona de {CFG['ciudad']}."),
+                                                                                                                                                  ("Diagnóstico en casa", "El técnico revisa el equipo en tu casa y te explica la causa."), ("Reparación con tu aprobación", "Te damos el valor por escrito antes de empezar y solo se repara si tú lo apruebas.")))]})
     pagina(path, t, f"Centro de servicio técnico {N} en Panamá: reparación a domicilio de {', '.join(EQ[e][2] for e in d['equipos'][:3])} y más. Diagnóstico en casa y atención por WhatsApp.",
            f"Centro de Servicio Técnico {N} Panamá", cuerpo, m, hero[0] if hero else None, [(f"Centro de Servicio Técnico {N} Panamá", base(m))], ld,
            bd=f"{N} · Panamá", prio="1.0" if m == ROOTM else "0.9",
@@ -892,7 +896,12 @@ def build_marca(m):
                   + (f'<img loading="lazy" src="{h2[0]}" alt="{h2[1]}" width="1024" height="768">' if h2 else "") + '</div>')
         vd = EQ_VIDA.get(e)
         rc = sec(f"¿Reparar o cambiar tu {sing} {N}?", f"<p>Una {sing} dura en promedio <b>{vd[0]}</b> si se cuida bien. Antes de decidir, revisamos el equipo y te damos el valor por escrito; tú eliges.</p><div class=\"two\" style=\"align-items:start\"><div><h3>Casi siempre conviene reparar si…</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in vd[2]) + "</ul></div><div><h3>Conviene evaluar el cambio si…</h3><ul>" + "".join(f"<li>{esc(x)}</li>" for x in vd[1]) + "</ul></div></div>", id="reparar-o-cambiar", alt=True) if vd else ""
-        cuerpo = (sec(f"¿Qué le pasa a tu {sing} {N}?", anc + stepper(2) + sintomas_btn(m, e, fl), id="fallas", lead="Toca lo que notas en tu equipo. Te mostramos la causa más probable y qué puedes hacer antes de llamar.")
+        _req = ""
+        if CFG.get("intl"):
+            _fa = [f[0].rstrip(".").lower() for f in d["fallas"].get(e, [])[:3]]
+            _req = (sec(f"Respuesta rápida: reparación de {pl} {N} en {CFG['ciudad']}", f'<div class="rr"><p><b>¿Reparan {esc(pl)} {esc(N)} en {esc(CFG["ciudad"])}?</b> Sí, a domicilio. Las fallas más reportadas son: {esc(junta(_fa))}. El técnico revisa el equipo en tu casa, te explica la causa y te da el valor antes de reparar; solo se repara si tú lo apruebas. Para pedir la visita, escríbenos por WhatsApp con el modelo y lo que hace el equipo.</p></div>')
+                    + sec(f"Datos rápidos: {sing} {N}", tabla(["Dato", "Detalle"], [("Marca", esc(N)), ("Equipo", esc(cap(sing))), ("Líneas frecuentes", esc(", ".join(d["lineas"][:4]))), ("Dónde está el modelo", esc(d.get("etiqueta", {}).get(e, d["modelo_ej"]))), ("Ciudad", esc(CFG["ciudad"] + (", " + CFG["pais"] if CFG["pais"] != CFG["ciudad"] else ""))), ("Cómo pedir la visita", "WhatsApp con marca, modelo y falla")]), alt=True))
+        cuerpo = (_req + sec(f"¿Qué le pasa a tu {sing} {N}?", anc + stepper(2) + sintomas_btn(m, e, fl), id="fallas", lead="Toca lo que notas en tu equipo. Te mostramos la causa más probable y qué puedes hacer antes de llamar.")
                   + sec_cod
                   + sec(f"Cómo funciona tu {sing} {N}", f"<p>{esc(d['tech'][e])}</p>" + cuid_html, id="funciona", alt=not bool(sec_cod))
                   + rc

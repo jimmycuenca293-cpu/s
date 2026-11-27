@@ -357,7 +357,7 @@ if os.environ.get("CST_INTL"):
     CFG = dict(CFG, dom=DOM_INTL + _pre, prefijo=_pre, intl=True, bandera="/img/flags/" + CFG["cc"].lower() + ".svg", pais_nombre=CFG["pais"], solo_marca=MARCA_I, nombre=f"Servicio Técnico {NOMBRE_MARCA_I} {CFG['ciudad']}",
                hubs_locales=False, midea_mundial=False, marcas_extra=False, titulo_max=76,
                excluir_fotos=set(CFG.get("excluir_fotos", ())) | ({"banner-frigidaire-cocina"} if MARCA_I == "frigidaire" else {"producto-hornos-ge", "producto-lavadoras-ge", "producto-lavavajillas-ge", "producto-neveras-ge"}),
-               fotos_prioridad=({"recepcion-frigidaire-mostrador-tecnico-cliente", "tecnico-frigidaire-explicando-diagnostico-cliente-hogar", "recepcion-frigidaire-asesora-tecnico-llegada", "tecnico-frigidaire-llegada-hogar-herramientas", "recepcion-frigidaire-asesora-mostrador"} if MARCA_I == "frigidaire" else set()))
+               fotos_prioridad=({"recepcion-frigidaire-mostrador-tecnico-cliente", "tecnico-frigidaire-explicando-diagnostico-cliente-hogar", "recepcion-frigidaire-asesora-tecnico-llegada", "tecnico-frigidaire-llegada-hogar-herramientas", "recepcion-frigidaire-asesora-mostrador"} if MARCA_I == "frigidaire" else {"recepcion-ge-asesora-atencion-llamadas", "recepcion-ge-asesora-tecnico-orden-servicio", "tecnico-ge-llegada-domicilio-cliente", "tecnico-ge-explicando-diagnostico-refrigeradora-cliente", "tecnico-ge-saluda-cliente-puerta-hogar", "recepcion-ge-asesora-mostrador-sonriendo"}))
 
 # ----------------------------------------------------------------------------- localización de datos (solo Cali)
 REEMP_CALI = [
@@ -429,6 +429,15 @@ def _gt_vocab(t):
     if CFG["sitio"] == "elsalvador":
         for a, b in _SV_PAIRS: t = re.sub(a, b, t)
     return t
+def _refri_fem(t):
+    """Sitio internacional (menos Chile): «el refrigerador» -> «la refrigeradora» o «la nevera» según el país."""
+    if not CFG.get("intl") or CFG["pais"] == "Chile" or t in ("neveras", "nevera"): return t
+    d = "nevera" if CFG["nev"][1] == "nevera" else "refrigeradora"
+    art = {"el": "la", "El": "La", "un": "una", "Un": "Una", "del": "de la", "al": "a la", "Del": "De la", "Al": "A la"}
+    t = re.sub(r"\b(el|El|un|Un|del|al|Del|Al)\s+refrigerador\b", lambda m: art[m.group(1)] + " " + d, t)
+    t = re.sub(r"\b(los|Los|unos|Unos)\s+refrigeradores\b", lambda m: {"los": "las", "Los": "Las", "unos": "unas", "Unos": "Unas"}[m.group(1)] + " " + d + "s", t)
+    t = re.sub(r"\bRefrigeradores\b", d.capitalize() + "s", t); t = re.sub(r"\bRefrigerador\b", d.capitalize(), t)
+    return re.sub(r"\brefrigeradores\b", d + "s", re.sub(r"\brefrigerador\b", d, t))
 def _loc_str(t, clave=None):
     for a, b in REEMP_CALI: t = t.replace(a, b)
     if clave == "origen": t = _sentencias_sin_ciudad(t)
@@ -438,7 +447,7 @@ def _loc_str(t, clave=None):
     t = t.replace("en Panamá", "en " + CFG["pais"]).replace("Panamá", CFG["pais"])
     if CFG["sitio"] in ("guatemala", "elsalvador"): t = _gt_vocab(t)
     for _a, _b in (CFG.get("vocab") or ()): t = re.sub(_a, _b, t)
-    return _vocab(t) if CFG["nev"][1] != "refrigeradora" else t
+    return _refri_fem(_vocab(t) if CFG["nev"][1] != "refrigeradora" else t)
 def _deep(x, clave=None):
     if isinstance(x, str): return _loc_str(x, clave)
     if isinstance(x, dict): return {k: _deep(v, k) for k, v in x.items()}
@@ -490,6 +499,7 @@ def L(h):
         h = h.replace("Centro de Servicio Técnico", "Servicio Técnico").replace(" | Centro de Servicio", " | Servicio técnico")
     h = re.sub(r"(%s) \| %s\b" % (CFG["ciudad"], CFG["ciudad"]), r"\1", h)
     h = re.sub(r"(?<=[a-záéíóúñ])\.\.(?=[\s<])", ".", h)
+    h = _refri_fem(h)      # antes de devolver las rutas /img/ protegidas
     h = re.sub(r"\x00(\d+)\x00", lambda m: _rutas[int(m.group(1))], h)
     _pre = CFG.get("prefijo")
     if _pre:     # cada ciudad vive en /país/ciudad/: se antepone el prefijo a todos los enlaces internos
