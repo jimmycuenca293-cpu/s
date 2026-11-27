@@ -232,4 +232,4 @@ def mi_para(c):
 # ciudades principales de Colombia (además de Bogotá y Cali): se arman a partir de la configuración de Cali
 from cst_colombia import DATOS_COL
 for _k, (_D, _e) in DATOS_COL.items():
-    C[_k] = dict(C["cali"], DATOS=_D, **_e)
+    C[_k] = dict(C["cali"], DATOS=_D, ciudad_corta=_e["ciudad"], **_e)

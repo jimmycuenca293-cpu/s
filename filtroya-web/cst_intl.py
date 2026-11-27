@@ -5,7 +5,17 @@ Uso:  python3 cst_intl.py <carpeta_de_salida> [token_search_console,...]"""
 import html, json, os, pathlib, re, secrets, shutil, sys, datetime
 
 OUT = pathlib.Path(sys.argv[1]); GSC = [x for x in (sys.argv[2] if len(sys.argv) > 2 else "").split(",") if x]
-DOM = "https://serviciotecnicofrigidaire.com"
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from cst_sitio import MARCA_I as SLUG, NOMBRE_MARCA_I as NB, DOM_INTL as DOM
+from cst_datos import M as _M, EQ as _EQ
+INTRO = {"frigidaire": "Frigidaire es una marca de electrodomésticos de origen estadounidense, hoy parte del grupo Electrolux",
+         "general-electric": "General Electric (GE Appliances) es una marca de electrodomésticos de origen estadounidense, hoy parte del grupo Haier"}[SLUG]
+_EQS = [e for e in _M[SLUG]["equipos"] if not e.startswith("tv-")]
+def eqtxt(slug_pais):
+    """Equipos de la marca con el vocabulario del país (nevera, refrigerador o refrigeradora)."""
+    n = {"colombia": "neveras", "chile": "refrigeradores"}.get(slug_pais, "refrigeradoras")
+    xs = [(n if e == "neveras" else _EQ[e][2]) for e in _EQS]
+    return ", ".join(xs[:-1]) + " y " + xs[-1]
 HOY = datetime.date.today().isoformat()
 esc = html.escape
 jn = lambda xs: ", ".join(xs[:-1]) + (" y " if len(xs) > 1 else "") + xs[-1]
@@ -22,11 +32,12 @@ PAISES = [   # (carpeta, nombre, locale, ciudades[(carpeta, nombre, resumen)], e
 CR = "panama"          # vive en la raíz del dominio (portada del sitio)
 def DIRP(p, c=""): return OUT if p[0] == CR else (OUT / p[0] / c[0] if c else OUT / p[0])
 def RUTA(p): return "/" if p[0] == CR else f"/{p[0]}/"
+PAISES = [p[:4] + (eqtxt(p[0]),) + p[5:] for p in PAISES]
 PAISES = [p for p in PAISES if all((DIRP(p, c) / "index.html").exists() for c in p[3])]
 URLP = {p[0]: RUTA(p) for p in PAISES}
 _P0 = OUT
 CSSV = re.search(r"site\.css\?v=([0-9a-f]+)", (_P0 / "index.html").read_text(encoding="utf-8")).group(1)
-PAL = ("#c8102e", "#1f2a44", "#fff", "#fbf3f4", "#f8dde1", "#6e0719")
+PAL = {"frigidaire": ("#c8102e", "#1f2a44", "#fff", "#fbf3f4", "#f8dde1", "#6e0719"), "general-electric": ("#005eb8", "#00a3e0", "#fff", "#eef5fb", "#d7e8f6", "#003464")}[SLUG]
 NOMBRE = "Servicio Técnico Frigidaire Latinoamérica"
 sec = lambda t, b, alt=False, id=None: f'<section class="s{" alt" if alt else ""}"{f" id={chr(34)}{id}{chr(34)}" if id else ""}><div class="w"><h2>{t}</h2>{b}</div></section>'
 flag = lambda cc, w=21, h=14: f'<img class="flag" src="/img/flags/{cc}.svg" alt="Bandera de {{}}" width="{w}" height="{h}">'
@@ -41,7 +52,7 @@ URLS = []
 def pagina(path, title, desc, h1, lead, cuerpo, crumbs=None, extra_ld=None, hreflangs=None, prio="0.8", noindex=False, scope=None):
     url = DOM + path
     graf = [{"@type": "Organization", "@id": DOM + "/#org", "name": NOMBRE, "url": DOM + "/", "description": "Servicio técnico independiente a domicilio para equipos Frigidaire en varios países de Latinoamérica.",
-             "areaServed": [{"@type": "Country", "name": p[1]} for p in PAISES], "knowsAbout": ["Reparación de refrigeradoras Frigidaire", "Reparación de lavadoras Frigidaire", "Reparación de secadoras Frigidaire", "Reparación de estufas Frigidaire", "Centros de lavado Frigidaire"]},
+             "areaServed": [{"@type": "Country", "name": p[1]} for p in PAISES], "knowsAbout": [f"Reparación de {_EQ[e][2]} Frigidaire" for e in _EQS]},
             {"@type": "WebSite", "@id": DOM + "/#sitio", "url": DOM + "/", "name": NOMBRE, "inLanguage": "es", "publisher": {"@id": DOM + "/#org"}},
             {"@type": "WebPage", "@id": url + "#pagina", "url": url, "name": title, "description": desc, "isPartOf": {"@id": DOM + "/#sitio"}, "inLanguage": "es", "dateModified": HOY}]
     if crumbs: graf.append({"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": DOM + u} for i, (n, u) in enumerate(crumbs)]})
@@ -52,14 +63,15 @@ def pagina(path, title, desc, h1, lead, cuerpo, crumbs=None, extra_ld=None, href
     h = (f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title><meta name="description" content="{esc(desc)}">'
          f'<link rel="canonical" href="{url}">{alts}<meta name="robots" content="{"noindex,follow" if noindex else "index,follow,max-image-preview:large,max-snippet:-1"}"><meta name="theme-color" content="{PAL[0]}">{tags}'
          f'<meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{url}"><meta property="og:site_name" content="{esc(NOMBRE)}">'
-         f'<link rel="icon" href="/img/logos/frigidaire.png"><link rel="stylesheet" href="/assets/site.css?v={CSSV}"><style>body{{--c:{PAL[0]};--a:{PAL[1]};--ab:{PAL[2]};--bg:{PAL[3]};--soft:{PAL[4]};--hd:{PAL[5]}}}</style>'
+         f'<link rel="icon" href="/img/logos/{SLUG}.png"><link rel="stylesheet" href="/assets/site.css?v={CSSV}"><style>body{{--c:{PAL[0]};--a:{PAL[1]};--ab:{PAL[2]};--bg:{PAL[3]};--soft:{PAL[4]};--hd:{PAL[5]}}}</style>'
          f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body><a class="skip" href="#contenido">Saltar al contenido</a>'
-         f'<header class="h"><div class="w"><a class="logo" href="{('/' + scope[0] + '/') if scope else '/'}"><img class="lgo" src="/img/logos/frigidaire.png" alt="Logo Frigidaire" style="display:block;height:34px;width:auto;max-width:130px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none" width="600" height="71"><span>Servicio Técnico<small>Frigidaire · Latinoamérica</small></span></a></div></header>'
+         f'<header class="h"><div class="w"><a class="logo" href="{('/' + scope[0] + '/') if scope else '/'}"><img class="lgo" src="/img/logos/{SLUG}.png" alt="Logo Frigidaire" style="display:block;height:34px;width:auto;max-width:130px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none" width="600" height="71"><span>Servicio Técnico<small>Frigidaire · Latinoamérica</small></span></a></div></header>'
          f'<nav class="chips" aria-label="Menú"><div class="w">' + ("".join(f'<a href="/{scope[0]}/{c[0]}/">{fl(scope[0], 21, 14)}{esc(c[1])}</a>' for c in scope[1]) if scope else '<a href="/paises/">Todos los países</a>' + "".join(f'<a href="{URLP[p[0]]}">{fl(p[0], 21, 14)}{esc(p[1])}</a>' for p in PAISES)) + '</div></nav>'
          f'<main id="contenido"><section class="hero"><div class="w"><div><span class="bd">Frigidaire · Latinoamérica</span><h1>{esc(h1)}</h1><p>{lead}</p></div></div></section>{bc}{cuerpo}'
          f'<div class="w"><p class="upd">Actualizado el {datetime.date.today().strftime("%d/%m/%Y")} · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div></main>'
          f'<footer><div class="w"><div class="g c4"><div><h3>{"Ciudades" if scope else "Países"}</h3><ul>' + ("".join(f'<li><a href="/{scope[0]}/{c[0]}/">{fl(scope[0], 21, 14)}Servicio técnico Frigidaire en {esc(c[1])}</a></li>' for c in scope[1]) if scope else "".join(f'<li><a href="{URLP[p[0]]}">{fl(p[0], 21, 14)}Servicio técnico Frigidaire en {esc(p[1])}</a></li>' for p in PAISES)) + f'</ul></div><div><h3>{esc(NOMBRE)}</h3>'
          f'<p><small>Servicio técnico independiente. Frigidaire y su logo pertenecen a sus propietarios y se usan solo para indicar los equipos que reparamos.</small></p></div></div></div></footer></body></html>')
+    h = h.replace("Frigidaire", NB)
     f = OUT / path.lstrip("/") / "index.html" if path != "/" else OUT / "index.html"
     f.parent.mkdir(parents=True, exist_ok=True); f.write_text(h, encoding="utf-8")
     if not noindex: URLS.append((path, prio))
@@ -67,20 +79,20 @@ def pagina(path, title, desc, h1, lead, cuerpo, crumbs=None, extra_ld=None, href
 # ---------------------------------------------------------------- portada internacional
 hreflangs = [(p[2], URLP[p[0]]) for p in PAISES]
 faq = [("¿En qué países dan servicio técnico para Frigidaire?", f"Atendemos equipos Frigidaire a domicilio en {', '.join(p[1] for p in PAISES[:-1])} y {PAISES[-1][1]}. Elige tu país para ver las ciudades, las zonas y los equipos que reparamos."),
-       ("¿Qué equipos Frigidaire reparan?", "Refrigeradoras, lavadoras, secadoras, estufas y hornos y centros de lavado Frigidaire, según el país. En cada país verás los equipos disponibles."),
+       ("¿Qué equipos Frigidaire reparan?", f"{eqtxt('x').capitalize()} Frigidaire, según el país. En cada país verás los equipos disponibles."),
        ("¿Son servicio técnico oficial de Frigidaire?", "No. Somos un servicio técnico independiente: no somos el fabricante ni un servicio oficial, y la garantía de fábrica la define el fabricante o el vendedor."),
        ("¿Cómo pido una visita?", "Entra a la página de tu país, elige tu ciudad y escríbenos por WhatsApp con el modelo, la falla y tu zona. Coordinamos el día y la franja."),
        ("¿Reparan equipos Frigidaire comprados en otro país?", "Sí, siempre que podamos identificar el modelo en la etiqueta. Algunas piezas pueden requerir pedido y eso alarga la reparación; te lo informamos antes de empezar.")]
 cards = "".join(f'<a class="card l" href="{URLP[p[0]]}"><span class="t">{fl(p[0], 33, 22)}Servicio técnico Frigidaire en {esc(p[1])}</span><br><small>' + esc((f"{p[3][0][1]}: {p[3][0][2]}" if len(p[3]) == 1 else jn([c[1] for c in p[3]]))) + '</small></a>' for p in PAISES)
-eqs = ["Refrigeradoras (incluidas las de panel Inverter)", "Lavadoras de carga frontal y superior", "Secadoras", "Estufas y hornos", "Centros de lavado"]
+eqs = [x.capitalize() for x in eqtxt("x").replace(" y ", ", ").split(", ")]
 cuerpo = (sec("Elige tu país", f'<div class="g c3">{cards}</div>', id="paises")
-          + sec("Servicio técnico independiente para equipos Frigidaire", "<p>Frigidaire es una marca de electrodomésticos de origen estadounidense, hoy parte del grupo Electrolux, con refrigeradoras, lavadoras, secadoras, estufas y centros de lavado. "
+          + sec("Servicio técnico independiente para equipos Frigidaire", f"<p>{INTRO}, con {eqtxt('x')}. "
                 "Reparamos esos equipos a domicilio en varios países de Latinoamérica: el técnico va a tu casa, revisa el equipo, te explica la causa y te da el valor antes de reparar.</p>"
                 "<ul>" + "".join(f"<li>{x}</li>" for x in eqs) + "</ul>", alt=True)
           + sec("Cómo funciona la visita", "<ol><li><b>Elige tu país y tu ciudad</b> y escríbenos por WhatsApp con el modelo y lo que hace el equipo.</li><li><b>Coordinamos</b> el día y la franja en tu zona.</li><li><b>Diagnóstico en tu casa</b>: revisamos el equipo y te explicamos la causa.</li><li><b>Solo si tú lo apruebas</b> se repara, con el valor por escrito antes de empezar.</li></ol>")
           + sec("Preguntas frecuentes", faq_html(faq), alt=True))
 pagina("/paises/", "Servicio técnico Frigidaire en Latinoamérica | Por país", f"Servicio técnico independiente a domicilio para equipos Frigidaire en {', '.join(p[1] for p in PAISES)}. Elige tu país y coordina la visita por WhatsApp.",
-       "Servicio técnico Frigidaire en Latinoamérica", "Reparación a domicilio de refrigeradoras, lavadoras, secadoras, estufas y centros de lavado Frigidaire. Elige tu país.", cuerpo, [("Frigidaire Panamá", "/"), ("Países", "/paises/")],
+       "Servicio técnico Frigidaire en Latinoamérica", f"Reparación a domicilio de {eqtxt('x')} Frigidaire. Elige tu país.", cuerpo, [("Frigidaire Panamá", "/"), ("Países", "/paises/")],
        [faq_ld(faq), {"@type": "ItemList", "name": "Países donde atendemos equipos Frigidaire", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": p[1], "url": DOM + URLP[p[0]]} for i, p in enumerate(PAISES)]}],
        hreflangs=None, prio="0.9")
 
@@ -114,7 +126,7 @@ for p in PAISES:
 # ---------------------------------------------------------------- sitemaps, robots, llms, 404, clave IndexNow
 sm_urls = "".join(f"<url><loc>{DOM}{u}</loc><lastmod>{HOY}</lastmod><priority>{pr}</priority></url>" for u, pr in URLS)
 (OUT / "sitemap-principal.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm_urls}</urlset>')
-subs = ["sitemap-principal.xml"] + [("" if p[0] == CR else f"{p[0]}/") + (c[0] + "/" if c[0] else "") + "sitemap-frigidaire.xml" for p in PAISES for c in p[3]]
+subs = ["sitemap-principal.xml"] + [("" if p[0] == CR else f"{p[0]}/") + (c[0] + "/" if c[0] else "") + f"sitemap-{SLUG}.xml" for p in PAISES for c in p[3]]
 (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<sitemap><loc>{DOM}/{s}</loc><lastmod>{HOY}</lastmod></sitemap>" for s in subs) + "</sitemapindex>")
 (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {DOM}/sitemap.xml\n")
 L = [f"# {NOMBRE}", "> Servicio técnico independiente a domicilio para equipos Frigidaire en varios países de Latinoamérica.", "", "## Países"]
@@ -122,7 +134,7 @@ for p in PAISES:
     L.append(f"- [Servicio técnico Frigidaire en {p[1]}]({DOM}{URLP[p[0]]}): {', '.join(c[1] for c in p[3])}; {p[4]}.")
     if len(p[3]) > 1: L += [f"  - [Servicio técnico Frigidaire en {c[1]}]({DOM}/{p[0]}/{c[0]}/): {c[2]}." for c in p[3]]
 L += ["", f"- [Todos los países]({DOM}/paises/)"]
-(OUT / "llms.txt").write_text("\n".join(L) + "\n")
+(OUT / "llms.txt").write_text(("\n".join(L) + "\n").replace("Frigidaire", NB))
 (OUT / "404.html").write_text('<!doctype html><html lang="es"><meta charset="utf-8"><title>Página no encontrada</title><meta name="robots" content="noindex"><body style="font-family:system-ui;padding:40px"><h1>Página no encontrada</h1><p><a href="/">Ir al inicio</a></p></body></html>', encoding="utf-8")
 _ex = [f.stem for f in OUT.glob("*.txt") if re.fullmatch(r"[0-9a-f]{32}", f.stem)]
 key = _ex[0] if _ex else secrets.token_hex(16); (OUT / f"{key}.txt").write_text(key)
@@ -131,7 +143,7 @@ if GSC:
     _f = OUT / "index.html"; _t = _f.read_text(encoding="utf-8")
     _tags = "".join(f'<meta name="google-site-verification" content="{g}">' for g in GSC if g not in _t)
     if _tags: _f.write_text(_t.replace("</head>", _tags + "</head>", 1), encoding="utf-8")
-(OUT / "version.txt").write_text(f"Servicio Tecnico Frigidaire Latinoamerica. Si ves este texto en {DOM}/version.txt, los archivos nuevos estan en la raiz.\n")
+(OUT / "version.txt").write_text(f"Servicio Tecnico {NB} Latinoamerica. Si ves este texto en {DOM}/version.txt, los archivos nuevos estan en la raiz.\n")
 # limpieza de archivos de nivel ciudad que no deben quedar publicados
 for p in PAISES:
     if p[0] == CR: continue
