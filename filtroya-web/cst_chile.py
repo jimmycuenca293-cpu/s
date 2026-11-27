@@ -8,6 +8,16 @@ import re
 _CODIGO_RX = {"neveras": r"nevera|refrigerad", "lavadoras": r"^lavadora", "secadoras": r"secad", "aires": r"aire", "lavavajillas": r"lavavaj", "cocinas": r"cocina|horno|estufa", "centro-lavado": r"centro|torre|washtower"}
 
 
+_EFE = {"neveras": "el calor obliga al compresor a trabajar más y los picos de voltaje dañan la placa de control", "lavadoras": "la humedad favorece el moho en el sello y el tambor, y los picos de voltaje afectan la placa del motor",
+        "lavavajillas": "el sarro del agua tapa filtros y brazos rociadores, y los picos de voltaje afectan la placa", "cocinas": "la grasa ensucia quemadores y contactos, y los picos de voltaje dañan la electrónica del horno",
+        "centro-lavado": "la humedad y la pelusa afectan lavadora y secadora a la vez, y los picos de voltaje dañan la placa", "secadoras": "la pelusa tapa el filtro y el ducto, y los picos de voltaje dañan la placa",
+        "aires": "el polvo y la humedad ensucian filtros y serpentín, y los picos de voltaje dañan la placa exterior", "microondas": "los picos de voltaje dañan la electrónica y el magnetrón"}
+_TIP = {"neveras": "haya espacio libre detrás y a los lados para poder moverla y revisar el compresor", "lavadoras": "el equipo esté vacío y el acceso a la llave de agua y al desagüe esté despejado",
+        "lavavajillas": "el interior esté vacío y se pueda llegar a la conexión de agua bajo el fregadero", "cocinas": "los quemadores y el horno estén fríos y haya acceso a la conexión de gas o eléctrica",
+        "centro-lavado": "el espacio alrededor de la torre esté libre y se pueda llegar a las conexiones", "secadoras": "el filtro de pelusa esté accesible y el ducto no esté bloqueado",
+        "aires": "el equipo interior y la unidad exterior sean accesibles", "microondas": "el equipo esté desenchufado y despejado"}
+
+
 def build_busquedas(g, m):
     M, EQ, CFG, ZONAS, ZD, ZX, CLIMA = g["M"], g["EQ"], g["CFG"], g["ZONAS"], g["ZD"], g["ZX"], g["CLIMA"]
     pagina, sec, faq_html, faq_ld, cap, esc, pathb, base, junta = g["pagina"], g["sec"], g["faq_html"], g["faq_ld"], g["cap"], g["esc"], g["pathb"], g["base"], g["junta"]
@@ -41,6 +51,21 @@ def build_busquedas(g, m):
             else: intro = f"Reparación de {pl} {N} en {zn}: {rasgo} Visitamos {sect}, teniendo en cuenta {acc}."
             cod = codigos_de(e)
             bloques = sec(f"Reparación de {pl} {N} en {zn}", f"<p>{esc(intro)}</p><p>{esc(CLIMA[z].capitalize())} influyen en cómo envejecen los equipos de esta comuna.</p>")
+            # --- contenido propio de la zona (equipo x zona): clima, tipo de vivienda, accesos y sectores reales de la ciudad
+            _efe = _EFE.get(e, "los picos de voltaje dañan las placas")
+            _tip = _TIP.get(e, "ten a mano el modelo y una foto de la etiqueta")
+            _barr = ZONAS[z][1]
+            _sd = CFG.get("sector_de", {}).get(z); _sn = (CFG.get("sectores", {}).get(_sd) or ("",))[0]
+            _vec = [ZONAS[zz][0] for zz in comunas if zz != z and CFG.get("sector_de", {}).get(zz) == _sd][:3]
+            _v = (bi + zi * 2 + ei) % 4
+            _cl = CLIMA[z].rstrip(" .,;").strip()
+            if _v == 0: _p1 = f"En {zn} ({_barr}) lo habitual son {viv}. Eso cambia cómo se organiza la visita: se cuenta con {acc}. Con {pl} {N}, conviene que {_tip}."
+            elif _v == 1: _p1 = f"Quien vive en {zn} suele tener {viv}. Para llegar con tiempo se tiene en cuenta {acc}, y para {art} {sing} {N} conviene que {_tip}."
+            elif _v == 2: _p1 = f"{cap(viv)}: así describimos {zn}. Antes de ir se coordina con {acc}; con {pl} {N} lo útil es que {_tip}."
+            else: _p1 = f"Para {pl} {N} en {zn} el punto de partida es el entorno: {viv}. Se cuenta con {acc}, y conviene que {_tip}."
+            _p2 = f"En {zn} influyen {_cl}. Para {art} {sing} {N} esto pesa así: {_efe}."
+            _p3 = (f"{zn} forma parte {re.sub(r'^(de )?el ', 'del ', re.sub(r'^la ', 'de la ', _sn))}" + (f", junto con {junta(_vec)}" if _vec else "") + f". Si en tu edificio o calle hay otros equipos con la misma falla, avísanos al pedir la visita en {zn}.") if _sn else ""
+            bloques += sec(f"Cómo es la visita de {pl} {N} en {zn}", f"<p>{esc(_p1)}</p><p>{esc(_p2)}</p>" + (f"<p>{esc(_p3)}</p>" if _p3 else ""))
             bloques += sec(f"Fallas de {pl} {N} que más vemos", det, alt=True)
             bloques += sec(f"Cómo funciona {art} {sing} {N}", f"<p>{esc(oracion(d['tech'][e], zi + ei))}</p>")
             if cod: bloques += sec(f"Códigos de error de {pl} {N}", g["tabla"](["Código", "Qué suele indicar"], [(f"<b>{esc(c)}</b>", esc(t)) for c, t in cod[:5]]), alt=True)
@@ -54,6 +79,8 @@ def build_busquedas(g, m):
             enlaces = f'<p><a href="{pathb(m, "servicio-tecnico-" + z)}">Servicio técnico {N} en {esc(zn)}</a> · <a href="{pathb(m, "reparacion-" + EQ[e][0])}">Reparación de {pl} {N}</a> · <a href="{pathb(m, "cobertura")}">Todas las comunas</a></p>'
             bloques += sec(f"Reparación de {pl} {N} en otras comunas", f"<p>{pills}</p>" + (f"<h3>Otros equipos {N} en {esc(zn)}</h3><p>{oe}</p>" if oe else "") + enlaces, alt=True)
             faq = [(f"¿Reparan {pl} {N} a domicilio en {zn}?", f"Sí. Atendemos sectores como {sect}. Escríbenos con el modelo y lo que hace el equipo y coordinamos día y franja."),
+                   (f"¿Atienden {pl} {N} en {zn}, incluidos {_barr}?", f"Sí, en {zn} atendemos {_barr}" + (f" y también en {junta(_vec)}" if _vec else "") + f". Dinos tu dirección y el modelo y confirmamos la franja para {pl} {N}."),
+                   (f"¿Qué tan común es la falla «{minus(sel[0][0].rstrip('.'))}» en {zn}?", f"Es una de las que más vemos en {pl} {N}. En {zn}, donde influyen {_cl}, {_efe}. Por eso se revisa con prueba antes de dar el valor."),
                    (f"¿Qué fallas son frecuentes en {art} {sing} {N}?", f"Entre las que más vemos: {'; '.join(esc(minus(f[0].rstrip('.'))) for f in sel[:3])}."),
                    (f"¿Cuánto cuesta reparar {art} {sing} {N} en {zn}?", "El valor depende de la falla y de la pieza. Se confirma después del diagnóstico y solo se repara si tú lo apruebas.")]
             bloques += sec(f"Preguntas frecuentes: {pl} {N} en {zn}", faq_html(faq))
