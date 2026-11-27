@@ -29,6 +29,7 @@ PAISES = [   # (carpeta, nombre, locale, ciudades[(carpeta, nombre, resumen)], e
     ("ecuador", "Ecuador", "es-EC", [("quito", "Quito", "sectores de Quito y sus valles"), ("guayaquil", "Guayaquil", "ciudadelas de Guayaquil, Samborondón y Daule")], "refrigeradoras, lavadoras, secadoras, cocinas y centros de lavado", "ec"),
     ("chile", "Chile", "es-CL", [("", "Santiago", "las 52 comunas de la Región Metropolitana")], "refrigeradores, lavadoras, secadoras, cocinas y centros de lavado", "cl"),
 ]
+WA_HUB = {"colombia": "573013810242", "ecuador": "593980398179"}      # países con varias ciudades: mismo WhatsApp en todas
 CR = "panama"          # vive en la raíz del dominio (portada del sitio)
 def DIRP(p, c=""): return OUT if p[0] == CR else (OUT / p[0] / c[0] if c else OUT / p[0])
 def RUTA(p): return "/" if p[0] == CR else f"/{p[0]}/"
@@ -51,6 +52,8 @@ URLS = []
 
 def pagina(path, title, desc, h1, lead, cuerpo, crumbs=None, extra_ld=None, hreflangs=None, prio="0.8", noindex=False, scope=None):
     url = DOM + path
+    _n = WA_HUB.get(scope[0]) if scope else None
+    wa_btn = f'<p><a class="btn" href="https://wa.me/{_n}?text=Hola%2C%20necesito%20servicio%20t%C3%A9cnico%20Frigidaire" target="_blank" rel="noopener">Escribir por WhatsApp</a></p>' if _n else ""
     graf = [{"@type": "Organization", "@id": DOM + "/#org", "name": NOMBRE, "url": DOM + "/", "description": "Servicio técnico independiente a domicilio para equipos Frigidaire en varios países de Latinoamérica.",
              "areaServed": [{"@type": "Country", "name": p[1]} for p in PAISES], "knowsAbout": [f"Reparación de {_EQ[e][2]} Frigidaire" for e in _EQS]},
             {"@type": "WebSite", "@id": DOM + "/#sitio", "url": DOM + "/", "name": NOMBRE, "inLanguage": "es", "publisher": {"@id": DOM + "/#org"}},
@@ -67,7 +70,7 @@ def pagina(path, title, desc, h1, lead, cuerpo, crumbs=None, extra_ld=None, href
          f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graf}, ensure_ascii=False)}</script></head><body><a class="skip" href="#contenido">Saltar al contenido</a>'
          f'<header class="h"><div class="w"><a class="logo" href="{('/' + scope[0] + '/') if scope else '/'}"><img class="lgo" src="/img/logos/{SLUG}.png" alt="Logo Frigidaire" style="display:block;height:34px;width:auto;max-width:130px;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none" width="600" height="71"><span>Servicio Técnico<small>Frigidaire · Latinoamérica</small></span></a></div></header>'
          f'<nav class="chips" aria-label="Menú"><div class="w">' + ("".join(f'<a href="/{scope[0]}/{c[0]}/">{fl(scope[0], 21, 14)}{esc(c[1])}</a>' for c in scope[1]) if scope else '<a href="/paises/">Todos los países</a>' + "".join(f'<a href="{URLP[p[0]]}">{fl(p[0], 21, 14)}{esc(p[1])}</a>' for p in PAISES)) + '</div></nav>'
-         f'<main id="contenido"><section class="hero"><div class="w"><div><span class="bd">Frigidaire · Latinoamérica</span><h1>{esc(h1)}</h1><p>{lead}</p></div></div></section>{bc}{cuerpo}'
+         f'<main id="contenido"><section class="hero"><div class="w"><div><span class="bd">Frigidaire · Latinoamérica</span><h1>{esc(h1)}</h1><p>{lead}</p>{wa_btn}</div></div></section>{bc}{cuerpo}'
          f'<div class="w"><p class="upd">Actualizado el {datetime.date.today().strftime("%d/%m/%Y")} · Información orientativa; el diagnóstico final se confirma con pruebas en el equipo.</p></div></main>'
          f'<footer><div class="w"><div class="g c4"><div><h3>{"Ciudades" if scope else "Países"}</h3><ul>' + ("".join(f'<li><a href="/{scope[0]}/{c[0]}/">{fl(scope[0], 21, 14)}Servicio técnico Frigidaire en {esc(c[1])}</a></li>' for c in scope[1]) if scope else "".join(f'<li><a href="{URLP[p[0]]}">{fl(p[0], 21, 14)}Servicio técnico Frigidaire en {esc(p[1])}</a></li>' for p in PAISES)) + f'</ul></div><div><h3>{esc(NOMBRE)}</h3>'
          f'<p><small>Servicio técnico independiente. Frigidaire y su logo pertenecen a sus propietarios y se usan solo para indicar los equipos que reparamos.</small></p></div></div></div></footer></body></html>')
@@ -91,7 +94,7 @@ cuerpo = (sec("Elige tu país", f'<div class="g c3">{cards}</div>', id="paises")
                 "<ul>" + "".join(f"<li>{x}</li>" for x in eqs) + "</ul>", alt=True)
           + sec("Cómo funciona la visita", "<ol><li><b>Elige tu país y tu ciudad</b> y escríbenos por WhatsApp con el modelo y lo que hace el equipo.</li><li><b>Coordinamos</b> el día y la franja en tu zona.</li><li><b>Diagnóstico en tu casa</b>: revisamos el equipo y te explicamos la causa.</li><li><b>Solo si tú lo apruebas</b> se repara, con el valor por escrito antes de empezar.</li></ol>")
           + sec("Preguntas frecuentes", faq_html(faq), alt=True))
-pagina("/paises/", "Servicio técnico Frigidaire en Latinoamérica | Por país", f"Servicio técnico independiente a domicilio para equipos Frigidaire en {', '.join(p[1] for p in PAISES)}. Elige tu país y coordina la visita por WhatsApp.",
+pagina("/paises/", "Servicio técnico Frigidaire en Latinoamérica | Por país", f"Servicio técnico independiente a domicilio para equipos Frigidaire en {len(PAISES)} países de Latinoamérica. Elige tu país y coordina la visita por WhatsApp.",
        "Servicio técnico Frigidaire en Latinoamérica", f"Reparación a domicilio de {eqtxt('x')} Frigidaire. Elige tu país.", cuerpo, [("Frigidaire Panamá", "/"), ("Países", "/paises/")],
        [faq_ld(faq), {"@type": "ItemList", "name": "Países donde atendemos equipos Frigidaire", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": p[1], "url": DOM + URLP[p[0]]} for i, p in enumerate(PAISES)]}],
        hreflangs=None, prio="0.9")
@@ -107,7 +110,7 @@ for p in PAISES:
     cuerpo_p = (sec(f"Ciudades de {p[1]} donde atendemos", f'<div class="g c3">{cards_p}</div>')
                 + sec(f"Servicio técnico independiente para equipos Frigidaire en {p[1]}", f"<p>Reparamos {esc(p[4])} Frigidaire a domicilio en {esc(jn(nombres))}. El técnico va a tu casa, revisa el equipo, te explica la causa y te da el valor antes de reparar.</p>", alt=True)
                 + sec("Preguntas frecuentes", faq_html(faq_p)))
-    pagina(f"/{p[0]}/", f"Servicio técnico Frigidaire en {p[1]} | {jn(nombres[:3])}", f"Servicio técnico independiente a domicilio para equipos Frigidaire en {jn(nombres)}, {p[1]}. Elige tu ciudad y coordina la visita por WhatsApp.",
+    pagina(f"/{p[0]}/", f"Servicio técnico Frigidaire en {p[1]} | {jn(nombres[:3])}", f"Servicio técnico independiente a domicilio para equipos Frigidaire en {jn(nombres[:3])} y más ciudades de {p[1]}. Elige tu ciudad y pide la visita por WhatsApp.",
            f"Servicio técnico Frigidaire en {p[1]}", f"Reparación a domicilio de {esc(p[4])} Frigidaire en {esc(jn(nombres))}.", cuerpo_p, None,
            [faq_ld(faq_p)], hreflangs=hreflangs, prio="0.9", scope=(p[0], p[3]))
 
@@ -120,6 +123,7 @@ for p in PAISES:
         f.write_text(t.replace("</head>", alts + "</head>", 1), encoding="utf-8")
     else:      # varias ciudades con el mismo idioma-país: la alternativa entre países es la página del país, no cada ciudad
         for f in DIRP(p).rglob("index.html"):
+            if f == DIRP(p) / "index.html": continue      # la página del país conserva sus hreflang
             t = f.read_text(encoding="utf-8"); n = re.sub(r'<link rel="alternate" hreflang="[^"]*" href="[^"]*">', "", t)
             if n != t: f.write_text(n, encoding="utf-8")
 

@@ -901,6 +901,15 @@ def build_marca(m):
             _fa = [f[0].rstrip(".").lower() for f in d["fallas"].get(e, [])[:3]]
             _req = (sec(f"Respuesta rápida: reparación de {pl} {N} en {CFG['ciudad']}", f'<div class="rr"><p><b>¿Reparan {esc(pl)} {esc(N)} en {esc(CFG["ciudad"])}?</b> Sí, a domicilio. Las fallas más reportadas son: {esc(junta(_fa))}. El técnico revisa el equipo en tu casa, te explica la causa y te da el valor antes de reparar; solo se repara si tú lo apruebas. Para pedir la visita, escríbenos por WhatsApp con el modelo y lo que hace el equipo.</p></div>')
                     + sec(f"Datos rápidos: {sing} {N}", tabla(["Dato", "Detalle"], [("Marca", esc(N)), ("Equipo", esc(cap(sing))), ("Líneas frecuentes", esc(", ".join(d["lineas"][:4]))), ("Dónde está el modelo", esc(d.get("etiqueta", {}).get(e, d["modelo_ej"]))), ("Ciudad", esc(CFG["ciudad"] + (", " + CFG["pais"] if CFG["pais"] != CFG["ciudad"] else ""))), ("Cómo pedir la visita", "WhatsApp con marca, modelo y falla")]), alt=True))
+            _efe = {"neveras": "el calor obliga al compresor a trabajar más y los picos de voltaje dañan la placa de control", "lavadoras": "la humedad favorece el moho en el sello y en el tambor, y los picos de voltaje afectan la placa del motor",
+                    "lavavajillas": "el sarro del agua tapa filtros y brazos rociadores, y los picos de voltaje afectan la placa", "cocinas": "la grasa ensucia quemadores y contactos, y los picos de voltaje dañan la electrónica del horno",
+                    "centro-lavado": "la humedad y la pelusa afectan la lavadora y la secadora a la vez, y los picos de voltaje dañan la placa", "secadoras": "la pelusa tapa el filtro y el ducto, y los picos de voltaje dañan la placa",
+                    "aires": "el polvo y la humedad ensucian filtros y serpentín, y los picos de voltaje dañan la placa exterior", "microondas": "los picos de voltaje dañan la electrónica y el magnetrón"}.get(e, "los picos de voltaje dañan las placas")
+            _ps = []
+            for _sl, (_fr, _de, _zs) in (CFG.get("sectores") or {}).items():
+                _z0 = _zs[0]; _ac = ZX[_z0][1]; _nm = [ZONAS[z][0] for z in _zs[:4]]
+                _ps.append(f"<h3>{esc(cap(_fr))}</h3><p>Zonas como {esc(junta(_nm))}. Al coordinar la reparación de {esc(pl)} {esc(N)} aquí, la visita tiene en cuenta {esc(_ac)}. En esta parte de {esc(CFG['ciudad'])}, {esc(CLIMA[_z0].rstrip(',').lower())} influyen en el equipo: {esc(_efe)}.</p>")
+            if _ps: _req += sec(f"Cómo cambia la visita para tu {sing} {N} según la zona de {CFG['ciudad']}", "".join(_ps))
         cuerpo = (_req + sec(f"¿Qué le pasa a tu {sing} {N}?", anc + stepper(2) + sintomas_btn(m, e, fl), id="fallas", lead="Toca lo que notas en tu equipo. Te mostramos la causa más probable y qué puedes hacer antes de llamar.")
                   + sec_cod
                   + sec(f"Cómo funciona tu {sing} {N}", f"<p>{esc(d['tech'][e])}</p>" + cuid_html, id="funciona", alt=not bool(sec_cod))
